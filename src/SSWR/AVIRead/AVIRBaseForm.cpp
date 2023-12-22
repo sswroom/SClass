@@ -2727,12 +2727,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_REGIONAL_MAP:
 		{
-			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl);
+			NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl, csys);
 			if (frm.ShowDialog(this))
 			{
 				if (mapLyr.Set(frm.GetMapLayer()))
 					this->core->OpenObject(mapLyr);
 			}
+			csys.Delete();
 		}
 		break;
 	case MNU_BING_MAPS:

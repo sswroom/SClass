@@ -32,7 +32,7 @@ Media::Jasper::JasperReport::JasperReport(Text::CStringNN sourceName) : IO::Pars
 
 Media::Jasper::JasperReport::~JasperReport()
 {
-	SDEL_STRING(this->queryString);
+	OPTSTR_DEL(this->queryString);
 	SDEL_STRING(this->uuid);
 	SDEL_STRING(this->reportName);
 	SDEL_CLASS(this->title);
@@ -154,10 +154,10 @@ Text::String *Media::Jasper::JasperReport::GetUUID() const
 	return this->uuid;
 }
 
-void Media::Jasper::JasperReport::SetQueryString(Text::String *str)
+void Media::Jasper::JasperReport::SetQueryString(Optional<Text::String> str)
 {
-	SDEL_STRING(this->queryString);
-	this->queryString = SCOPY_STRING(str);
+	OPTSTR_DEL(this->queryString);
+	this->queryString = Text::String::CopyOrNull(str);
 }
 
 void Media::Jasper::JasperReport::SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value)

@@ -14,15 +14,16 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
+			NotNullPtr<Math::CoordinateSystem> envCSys;
 
 			NotNullPtr<UI::GUITextBox> txtDesc;
 			NotNullPtr<UI::GUIListView> lvMaps;
 			Map::MapDrawLayer *layer;
-
+			
 			static void __stdcall OnMapsSelChg(void *userObj);
 			static void __stdcall OnMapsDblClk(void *userObj, UOSInt index);
 		public:
-			AVIRRegionalMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRRegionalMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCSys);
 			virtual ~AVIRRegionalMapForm();
 
 			virtual void OnMonitorChanged();

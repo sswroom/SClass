@@ -1619,7 +1619,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_REGIONAL_MAP:
 		{
-			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NotNullPtr<Map::MapDrawLayer> layer;
@@ -1810,7 +1810,7 @@ void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Math::Geometry::Vector2D *vec
 	this->mapCtrl->SetSelectedVector(vec);
 }
 
-void SSWR::AVIRead::AVIRGISForm::SetSelectedVectors(NotNullPtr<Data::ArrayList<Math::Geometry::Vector2D*>> vecList)
+void SSWR::AVIRead::AVIRGISForm::SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList)
 {
 	this->mapCtrl->SetSelectedVectors(vecList);
 }

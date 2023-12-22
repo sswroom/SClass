@@ -4,7 +4,9 @@
 #include "Map/OWSFeatureParser.h"
 #include "Map/WebMapService.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/Point.h"
 #include "Net/HTTPClient.h"
+#include "Parser/FileParser/BMPParser.h"
 #include "Parser/FileParser/GIFParser.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Parser/FileParser/PNGParser.h"
@@ -42,83 +44,61 @@ void Map::WebMapService::LoadXML(Version version)
 		return;
 	mstm.SeekFromBeginning(0);
 	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
-	while (reader.ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	if (reader.NextElementName().SetTo(nodeName))
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("WMS_Capabilities")) || nodeName->Equals(UTF8STRC("WMT_MS_Capabilities")))
 		{
-			Text::String *nodeName = reader.GetNodeText();
-			if (nodeName->Equals(UTF8STRC("WMS_Capabilities")) || nodeName->Equals(UTF8STRC("WMT_MS_Capabilities")))
+			UOSInt i = reader.GetAttribCount();
+			Text::XMLAttrib *attr;
+			while (i-- > 0)
 			{
-				UOSInt i = reader.GetAttribCount();
-				Text::XMLAttrib *attr;
-				while (i-- > 0)
+				attr = reader.GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("version")))
 				{
-					attr = reader.GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("version")))
-					{
-						SDEL_STRING(this->version);
-						this->version = SCOPY_STRING(attr->value);
-					}
+					SDEL_STRING(this->version);
+					this->version = SCOPY_STRING(attr->value);
 				}
-				while (reader.ReadNext())
+			}
+			while (reader.NextElementName().SetTo(nodeName))
+			{
+				if (nodeName->Equals(UTF8STRC("Service")))
 				{
-					Text::XMLNode::NodeType nodeType = reader.GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					reader.SkipElement();
+				}
+				else if (nodeName->Equals(UTF8STRC("Capability")))
+				{
+					while (reader.NextElementName().SetTo(nodeName))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						nodeName = reader.GetNodeText();
-						if (nodeName->Equals(UTF8STRC("Service")))
+						if (nodeName->Equals(UTF8STRC("Request")))
+						{
+							this->LoadXMLRequest(reader);
+						}
+						else if (nodeName->Equals(UTF8STRC("Exception")))
 						{
 							reader.SkipElement();
 						}
-						else if (nodeName->Equals(UTF8STRC("Capability")))
+						else if (nodeName->Equals(UTF8STRC("Layer")))
 						{
-							while (reader.ReadNext())
-							{
-								nodeType = reader.GetNodeType();
-								if (nodeType == Text::XMLNode::NodeType::ElementEnd)
-								{
-									break;
-								}
-								else if (nodeType == Text::XMLNode::NodeType::Element)
-								{
-									nodeName = reader.GetNodeText();
-									if (nodeName->Equals(UTF8STRC("Request")))
-									{
-										this->LoadXMLRequest(reader);
-									}
-									else if (nodeName->Equals(UTF8STRC("Exception")))
-									{
-										reader.SkipElement();
-									}
-									else if (nodeName->Equals(UTF8STRC("Layer")))
-									{
-										this->LoadXMLLayers(reader);
-									}
-									else if (nodeName->Equals(UTF8STRC("UserDefinedSymbolization")))
-									{
-										reader.SkipElement();
-									}
-									else
-									{
-										printf("WMS: Unknown element in Capability: %s\r\n", nodeName->v);
-										reader.SkipElement();
-									}
-								}
-							}
+							this->LoadXMLLayers(reader);
+						}
+						else if (nodeName->Equals(UTF8STRC("UserDefinedSymbolization")))
+						{
+							reader.SkipElement();
 						}
 						else
 						{
-							printf("WMS: Unknown element in WMS_Capabilities: %s\r\n", nodeName->v);
+							printf("WMS: Unknown element in Capability: %s\r\n", nodeName->v);
 							reader.SkipElement();
 						}
 					}
 				}
+				else
+				{
+					printf("WMS: Unknown element in WMS_Capabilities: %s\r\n", nodeName->v);
+					reader.SkipElement();
+				}
 			}
-			break;
 		}
 	}
 	UOSInt errCode = reader.GetErrorCode();
@@ -132,101 +112,73 @@ void Map::WebMapService::LoadXML(Version version)
 void Map::WebMapService::LoadXMLRequest(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		Text::XMLNode::NodeType nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		if (nodeName->Equals(UTF8STRC("GetCapabilities")))
 		{
-			break;
+			reader->SkipElement();
 		}
-		else if (nodeType == Text::XMLNode::NodeType::Element)
+		else if (nodeName->Equals(UTF8STRC("GetMap")))
 		{
-			Text::String *nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("GetCapabilities")))
+			while (reader->NextElementName().SetTo(nodeName))
 			{
-				reader->SkipElement();
-			}
-			else if (nodeName->Equals(UTF8STRC("GetMap")))
-			{
-				while (reader->ReadNext())
+				if (nodeName->Equals(UTF8STRC("Format")))
 				{
-					nodeType = reader->GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						nodeName = reader->GetNodeText();
-						if (nodeName->Equals(UTF8STRC("Format")))
+						if (sb.Equals(UTF8STRC("image/png")))
 						{
-							sb.ClearStr();
-							if (reader->ReadNodeText(sb))
-							{
-								if (sb.Equals(UTF8STRC("image/png")))
-								{
-									this->mapImageType = this->mapImageTypeNames.GetCount();
-								}
-								this->mapImageTypeNames.Add(Text::String::New(sb.ToCString()));
-							}
+							this->mapImageType = this->mapImageTypeNames.GetCount();
 						}
-						else
-						{
-							reader->SkipElement();
-						}
+						this->mapImageTypeNames.Add(Text::String::New(sb.ToCString()));
 					}
 				}
-				reader->SkipElement();
-			}
-			else if (nodeName->Equals(UTF8STRC("GetFeatureInfo")))
-			{
-				while (reader->ReadNext())
+				else
 				{
-					nodeType = reader->GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					reader->SkipElement();
+				}
+			}
+		}
+		else if (nodeName->Equals(UTF8STRC("GetFeatureInfo")))
+		{
+			while (reader->NextElementName().SetTo(nodeName))
+			{
+				if (nodeName->Equals(UTF8STRC("Format")))
+				{
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						nodeName = reader->GetNodeText();
-						if (nodeName->Equals(UTF8STRC("Format")))
+						if (sb.Equals(UTF8STRC("application/json")))
 						{
-							sb.ClearStr();
-							if (reader->ReadNodeText(sb))
-							{
-								if (sb.Equals(UTF8STRC("application/json")))
-								{
-									this->infoType = this->infoTypeNames.GetCount();
-								}
-								this->infoTypeNames.Add(Text::String::New(sb.ToCString()));
-							}
+							this->infoType = this->infoTypeNames.GetCount();
 						}
-						else
-						{
-							reader->SkipElement();
-						}
+						this->infoTypeNames.Add(Text::String::New(sb.ToCString()));
 					}
 				}
-				reader->SkipElement();
+				else
+				{
+					reader->SkipElement();
+				}
 			}
-			else if (nodeName->Equals(UTF8STRC("DescribeLayer")))
-			{
-				reader->SkipElement();
-			}
-			else if (nodeName->Equals(UTF8STRC("GetLegendGraphic")))
-			{
-				reader->SkipElement();
-			}
-			else if (nodeName->Equals(UTF8STRC("GetStyles")))
-			{
-				reader->SkipElement();
-			}
-			else
-			{
-				printf("WMS: Unknown element in Request: %s\r\n", nodeName->v);
-				reader->SkipElement();
-			}
+		}
+		else if (nodeName->Equals(UTF8STRC("DescribeLayer")))
+		{
+			reader->SkipElement();
+		}
+		else if (nodeName->Equals(UTF8STRC("GetLegendGraphic")))
+		{
+			reader->SkipElement();
+		}
+		else if (nodeName->Equals(UTF8STRC("GetStyles")) || nodeName->EndsWith(UTF8STRC(":GetStyles")))
+		{
+			reader->SkipElement();
+		}
+		else
+		{
+			printf("WMS: Unknown element in Request: %s\r\n", nodeName->v);
+			reader->SkipElement();
 		}
 	}
 }
@@ -234,150 +186,134 @@ void Map::WebMapService::LoadXMLRequest(NotNullPtr<Text::XMLReader> reader)
 void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		Text::XMLNode::NodeType nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		if (nodeName->Equals(UTF8STRC("Layer")))
 		{
-			break;
-		}
-		else if (nodeType == Text::XMLNode::NodeType::Element)
-		{
-			if (reader->GetNodeText()->Equals(UTF8STRC("Layer")))
+			Bool queryable = false;
+			Text::String *layerName = 0;
+			Text::String *layerTitle = 0;
+			Data::ArrayList<LayerCRS*> layerCRS;
+			LayerCRS *crs;
+			UOSInt i;
+			Text::XMLAttrib *attr;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
 			{
-				Bool queryable = false;
-				Text::String *layerName = 0;
-				Text::String *layerTitle = 0;
-				Data::ArrayList<LayerCRS*> layerCRS;
-				LayerCRS *crs;
-				UOSInt i;
-				Text::XMLAttrib *attr;
-				i = reader->GetAttribCount();
-				while (i-- > 0)
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("queryable")))
 				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("queryable")))
+					queryable = (attr->value != 0 && attr->value->Equals(UTF8STRC("1")));
+				}
+			}
+			while (reader->NextElementName().SetTo(nodeName))
+			{
+				if (nodeName->Equals(UTF8STRC("Name")))
+				{
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
 					{
-						queryable = (attr->value != 0 && attr->value->Equals(UTF8STRC("1")));
+						SDEL_STRING(layerName);
+						layerName = Text::String::New(sb.ToCString()).Ptr();
 					}
 				}
-				while (reader->ReadNext())
+				else if (nodeName->Equals(UTF8STRC("Title")))
 				{
-					nodeType = reader->GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						Text::String *nodeName = reader->GetNodeText();
-						if (nodeName->Equals(UTF8STRC("Name")))
-						{
-							sb.ClearStr();
-							if (reader->ReadNodeText(sb))
-							{
-								SDEL_STRING(layerName);
-								layerName = Text::String::New(sb.ToCString()).Ptr();
-							}
-						}
-						else if (nodeName->Equals(UTF8STRC("Title")))
-						{
-							sb.ClearStr();
-							if (reader->ReadNodeText(sb))
-							{
-								SDEL_STRING(layerTitle);
-								layerTitle = Text::String::New(sb.ToCString()).Ptr();
-							}
-						}
-						else if (nodeName->Equals(UTF8STRC("BoundingBox")))
-						{
-							crs = MemAllocA(LayerCRS, 1);
-							crs->name = 0;
-							crs->swapXY = false;
-							i = reader->GetAttribCount();
-							while (i-- > 0)
-							{
-								attr = reader->GetAttrib(i);
-								if (attr->value)
-								{
-									if (attr->name->Equals(UTF8STRC("minx")))
-									{
-										crs->bounds.tl.x = attr->value->ToDouble();
-									}
-									else if (attr->name->Equals(UTF8STRC("miny")))
-									{
-										crs->bounds.tl.y = attr->value->ToDouble();
-									}
-									else if (attr->name->Equals(UTF8STRC("maxx")))
-									{
-										crs->bounds.br.x = attr->value->ToDouble();
-									}
-									else if (attr->name->Equals(UTF8STRC("maxy")))
-									{
-										crs->bounds.br.y = attr->value->ToDouble();
-									}
-									else if (attr->name->Equals(UTF8STRC("CRS")))
-									{
-										SDEL_STRING(crs->name);
-										crs->name = attr->value->Clone().Ptr();
-									}
-									else if (attr->name->Equals(UTF8STRC("SRS")))
-									{
-										SDEL_STRING(crs->name);
-										crs->name = attr->value->Clone().Ptr();
-									}
-								}
-							}
-							reader->SkipElement();
-							if (crs->name)
-							{
-								if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version->Equals(UTF8STRC("1.3.0")))
-								{
-									crs->bounds.tl = crs->bounds.tl.SwapXY();
-									crs->bounds.br = crs->bounds.br.SwapXY();
-									crs->swapXY = true;
-								}
-								layerCRS.Add(crs);
-							}
-							else
-							{
-								MemFreeA(crs);
-							}
-						}
-						else
-						{
-							reader->SkipElement();
-						}
+						SDEL_STRING(layerTitle);
+						layerTitle = Text::String::New(sb.ToCString()).Ptr();
 					}
 				}
-				NotNullPtr<Text::String> s;
-				if (s.Set(layerName) && layerTitle && layerCRS.GetCount() > 0)
+				else if (nodeName->Equals(UTF8STRC("BoundingBox")))
 				{
-					LayerInfo *layer;
-					NEW_CLASS(layer, LayerInfo());
-					layer->name = s;
-					layer->title = layerTitle;
-					layer->crsList.AddAll(layerCRS);
-					layer->queryable = queryable;
-					this->layers.Add(layer);
-				}
-				else
-				{
-					SDEL_STRING(layerName);
-					SDEL_STRING(layerTitle);
-					i = layerCRS.GetCount();
+					crs = MemAllocA(LayerCRS, 1);
+					crs->name = 0;
+					crs->swapXY = false;
+					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
-						crs = layerCRS.GetItem(i);
-						crs->name->Release();
+						attr = reader->GetAttrib(i);
+						if (attr->value)
+						{
+							if (attr->name->Equals(UTF8STRC("minx")))
+							{
+								crs->bounds.tl.x = attr->value->ToDouble();
+							}
+							else if (attr->name->Equals(UTF8STRC("miny")))
+							{
+								crs->bounds.tl.y = attr->value->ToDouble();
+							}
+							else if (attr->name->Equals(UTF8STRC("maxx")))
+							{
+								crs->bounds.br.x = attr->value->ToDouble();
+							}
+							else if (attr->name->Equals(UTF8STRC("maxy")))
+							{
+								crs->bounds.br.y = attr->value->ToDouble();
+							}
+							else if (attr->name->Equals(UTF8STRC("CRS")))
+							{
+								SDEL_STRING(crs->name);
+								crs->name = attr->value->Clone().Ptr();
+							}
+							else if (attr->name->Equals(UTF8STRC("SRS")))
+							{
+								SDEL_STRING(crs->name);
+								crs->name = attr->value->Clone().Ptr();
+							}
+						}
+					}
+					reader->SkipElement();
+					if (crs->name)
+					{
+						if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version->Equals(UTF8STRC("1.3.0")))
+						{
+							crs->bounds.tl = crs->bounds.tl.SwapXY();
+							crs->bounds.br = crs->bounds.br.SwapXY();
+							crs->swapXY = true;
+						}
+						layerCRS.Add(crs);
+					}
+					else
+					{
 						MemFreeA(crs);
 					}
 				}
+				else
+				{
+					reader->SkipElement();
+				}
+			}
+			NotNullPtr<Text::String> s;
+			if (s.Set(layerName) && layerTitle && layerCRS.GetCount() > 0)
+			{
+				LayerInfo *layer;
+				NEW_CLASS(layer, LayerInfo());
+				layer->name = s;
+				layer->title = layerTitle;
+				layer->crsList.AddAll(layerCRS);
+				layer->queryable = queryable;
+				this->layers.Add(layer);
 			}
 			else
 			{
-				reader->SkipElement();
+				SDEL_STRING(layerName);
+				SDEL_STRING(layerTitle);
+				i = layerCRS.GetCount();
+				while (i-- > 0)
+				{
+					crs = layerCRS.GetItem(i);
+					crs->name->Release();
+					MemFreeA(crs);
+				}
 			}
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
 }
@@ -467,7 +403,7 @@ Bool Map::WebMapService::CanQuery() const
 	return layer && layer->queryable;
 }
 
-Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	LayerInfo *layer = this->layers.GetItem(this->layer);
 	NotNullPtr<Text::String> imgFormat;
@@ -550,7 +486,9 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	{
 		return false;
 	}
-	//printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+#if defined(VERBOSE)
+	printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+#endif
 
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
@@ -564,13 +502,17 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		}
 		cli.Delete();
 
-		if (infoFormat->Equals(UTF8STRC("application/json")))
+		if (infoFormat->Equals(UTF8STRC("application/json")) || infoFormat->Equals(UTF8STRC("application/geo+json")))
 		{
 			return Map::OWSFeatureParser::ParseJSON(sbData.ToCString(), this->csys->GetSRID(), vecList, valueOfstList, nameList, valueList);
 		}
 		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.ogc.gml")) || infoFormat->StartsWith(UTF8STRC("text/xml")))
 		{
 			return Map::OWSFeatureParser::ParseGML(sbData.ToCString(), this->csys->GetSRID(), this->currCRS->swapXY, this->encFact, vecList, valueOfstList, nameList, valueList);
+		}
+		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.esri.wms_raw_xml")) || infoFormat->Equals(UTF8STRC("application/vnd.esri.wms_featureinfo_xml")))
+		{
+			return Map::OWSFeatureParser::ParseESRI_WMS_XML(sbData.ToCString(), this->csys->GetSRID(), this->currCRS->swapXY, this->encFact, vecList, valueOfstList, nameList, valueList, coord);
 		}
 		else if (infoFormat->Equals(UTF8STRC("text/plain")))
 		{
@@ -687,6 +629,19 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 			Parser::FileParser::GUIImgParser parser;
 			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
 		}
+		else if (imgFormat->Equals(UTF8STRC("image/bmp")))
+		{
+			Parser::FileParser::BMPParser parser;
+			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+		}
+		else
+		{
+			printf("WMS: Unsupported image format: %s\r\n", imgFormat->v);
+		}
+	}
+	else
+	{
+		printf("WMS: Failed in getting Image, URL: %s\r\n", sb.v);
 	}
 	cli.Delete();
 	return ret;

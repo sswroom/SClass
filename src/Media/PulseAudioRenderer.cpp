@@ -21,7 +21,7 @@
 
 void __stdcall Media::PulseAudioRenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::PulseAudioRenderer *me = (Media::PulseAudioRenderer *)thread->GetUserObj();
+	//Media::PulseAudioRenderer *me = (Media::PulseAudioRenderer *)thread->GetUserObj();
 /*	Media::AudioFormat af;
 	Int32 i;
 	UInt32 refStart;

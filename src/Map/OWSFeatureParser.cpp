@@ -3,11 +3,12 @@
 #include "Map/OWSFeatureParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
+#include "Math/Geometry/PointZM.h"
 #include "Parser/FileParser/JSONParser.h"
 #include "Parser/FileParser/XMLParser.h"
 #include "Text/JSON.h"
 
-Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	Text::PString lineArr[2];
 	Text::PString sarr[2];
@@ -25,8 +26,8 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 		{
 			if (newVec)
 			{
-				Math::Geometry::Vector2D *vec;
-				NEW_CLASS(vec, Math::Geometry::Point(srid, coord));
+				NotNullPtr<Math::Geometry::Vector2D> vec;
+				NEW_CLASSNN(vec, Math::Geometry::Point(srid, coord));
 				vecList->Add(vec);
 				valueOfstList->Add(nameList->GetCount());
 				newVec = false;
@@ -41,7 +42,7 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 	return nameList->GetCount() > 0;
 }
 
-Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(txt);
 	if (json)
@@ -71,8 +72,8 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, Data::Ar
 				Text::JSONBase *geometry = feature->GetValue(CSTR("geometry"));
 				if (geometry && geometry->GetType() == Text::JSONType::Object)
 				{
-					Math::Geometry::Vector2D *vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
-					if (vec)
+					NotNullPtr<Math::Geometry::Vector2D> vec;
+					if (vec.Set(Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid)))
 					{
 						valueOfstList->Add(nameList->GetCount());
 						Text::JSONBase *properties = feature->GetValue(CSTR("properties"));
@@ -108,7 +109,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, Data::Ar
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	UTF8Char tmpBuff[1024];
 	UTF8Char *tmpPtr;
@@ -131,8 +132,8 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 				UOSInt j = idArr.GetCount();
 				while (i < j)
 				{
-					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, idArr.GetItem(i));
-					if (vec)
+					NotNullPtr<Math::Geometry::Vector2D> vec;
+					if (vec.Set(layer->GetNewVectorById(sess, idArr.GetItem(i))))
 					{
 						if (swapXY)
 						{
@@ -164,4 +165,203 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 		DEL_CLASS(pobj);
 	}
 	return false;
+}
+
+Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
+{
+	IO::MemoryReadingStream mstm(xml.v, xml.leng);
+	NotNullPtr<Text::String> nodeText;
+	Text::XMLReader reader(encFact, mstm, Text::XMLReader::ParseMode::PM_XML);
+	while (reader.NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("esri_wms:FeatureInfoResponse")) || nodeText->Equals(UTF8STRC("FeatureInfoResponse")))
+		{
+			return ParseESRIFeatureInfoResponse(reader, srid, swapXY, vecList, valueOfstList, nameList, valueList, coord);
+		}
+		else
+		{
+			printf("OWSFeatureParser: Unknown element in esri wms xml: %s\r\n", nodeText->v);
+			reader.SkipElement();
+		}
+	}
+	return false;
+}
+
+Bool Map::OWSFeatureParser::ParseESRIFeatureInfoResponse(NotNullPtr<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
+{
+	Bool succ = true;
+	Bool found = false;
+	NotNullPtr<Text::String> nodeText;
+	while (reader->NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("esri_wms:FeatureInfoCollection")) || nodeText->Equals(UTF8STRC("FeatureInfoCollection")))
+		{
+			found = true;
+			succ = ParseESRIFeatureInfoCollection(reader, srid, swapXY, vecList, valueOfstList, nameList, valueList, coord);
+		}
+		else
+		{
+			printf("OWSFeatureParser: Unknown element in esri FeatureInfoResponse: %s\r\n", nodeText->v);
+			reader->SkipElement();
+		}
+	}
+	return found && succ;
+}
+
+Bool Map::OWSFeatureParser::ParseESRIFeatureInfoCollection(NotNullPtr<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
+{
+	Bool succ = true;
+	NotNullPtr<Text::String> nodeText;
+	while (reader->NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("esri_wms:FeatureInfo")) || nodeText->Equals(UTF8STRC("FeatureInfo")))
+		{
+			succ = ParseESRIFeatureInfo(reader, srid, swapXY, vecList, valueOfstList, nameList, valueList, coord) && succ;
+		}
+		else
+		{
+			printf("OWSFeatureParser: Unknown element in esri FeatureInfoCollection: %s\r\n", nodeText->v);
+			reader->SkipElement();
+		}
+	}
+	return succ;
+}
+
+Bool Map::OWSFeatureParser::ParseESRIFeatureInfo(NotNullPtr<Text::XMLReader> reader, UInt32 srid, Bool swapXY, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
+{
+	Bool succ = true;
+	Bool found = false;
+	NotNullPtr<Text::String> nodeText;
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	Text::StringBuilderUTF8 sb;
+	valueOfstList->Add(nameList->GetCount());
+	while (reader->NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("esri_wms:CRS")))
+		{
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			sb.ToUInt32(srid);
+		}
+		else if (nodeText->Equals(UTF8STRC("esri_wms:Field")) || nodeText->Equals(UTF8STRC("Field")))
+		{
+			Optional<Text::String> fieldName = 0;
+			Optional<Text::String> fieldValue = 0;
+			Optional<Math::Geometry::Vector2D> vec = 0;
+			NotNullPtr<Text::String> nnfieldName;
+			NotNullPtr<Text::String> nnfieldValue;
+			while (reader->NextElementName().SetTo(nodeText))
+			{
+				if (nodeText->Equals(UTF8STRC("esri_wms:FieldName")) || nodeText->Equals(UTF8STRC("FieldName")))
+				{
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
+					{
+						OPTSTR_DEL(fieldName);
+						fieldName = Text::String::New(sb.ToCString());
+					}
+				}
+				else if (nodeText->Equals(UTF8STRC("esri_wms:FieldValue")) || nodeText->Equals(UTF8STRC("FieldValue")))
+				{
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
+					{
+						OPTSTR_DEL(fieldValue);
+						fieldValue = Text::String::New(sb.ToCString());
+					}
+				}
+				else if (nodeText->Equals(UTF8STRC("esri_wms:FieldGeometry")))
+				{
+					vec.Delete();
+					vec = ParseESRIFieldGeometry(reader, srid, swapXY);
+				}
+				else
+				{
+					printf("OWSFeatureParser: Unknown element in esri Field: %s\r\n", nodeText->v);
+					reader->SkipElement();
+				}
+			}
+			if (fieldName.SetTo(nnfieldName) && fieldValue.SetTo(nnfieldValue))
+			{
+				if (vec.SetTo(nnvec))
+				{
+					if (!found)
+					{
+						vecList->Add(nnvec);
+						found = true;
+					}
+					else
+					{
+						nnvec.Delete();
+					}
+					nnfieldName->Release();
+					nnfieldValue->Release();
+				}
+				else
+				{
+					nameList->Add(nnfieldName);
+					valueList->Add(nnfieldValue.Ptr());
+				}
+			}
+			else
+			{
+				OPTSTR_DEL(fieldName);
+				OPTSTR_DEL(fieldValue);
+				vec.Delete();
+				succ = false;
+			}
+		}
+		else
+		{
+			printf("OWSFeatureParser: Unknown element in esri FeatureInfo: %s\r\n", nodeText->v);
+			reader->SkipElement();
+		}
+	}
+	if (!found)
+	{
+		NEW_CLASSNN(nnvec, Math::Geometry::Point(srid, coord));
+		vecList->Add(nnvec);
+	}
+	return succ;
+}
+
+Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry(NotNullPtr<Text::XMLReader> reader, UInt32 srid, Bool swapXY)
+{
+	NotNullPtr<Text::String> nodeText;
+	Optional<Math::Geometry::Vector2D> vec = 0;
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	while (reader->NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("esri_wms:Point")))
+		{
+			Text::StringBuilderUTF8 sb;
+			reader->ReadNodeText(sb);
+			Text::PString sarr[4];
+			UOSInt i = Text::StrSplitP(sarr, 4, sb, ',');
+			if (i == 2)
+			{
+				vec.Delete();
+				NEW_CLASSNN(nnvec, Math::Geometry::Point(srid, sarr[0].ToDouble(), sarr[1].ToDouble()));
+				vec = nnvec;
+			}
+			else if (i == 3)
+			{
+				vec.Delete();
+				NEW_CLASSNN(nnvec, Math::Geometry::PointZ(srid, sarr[0].ToDouble(), sarr[1].ToDouble(), sarr[2].ToDouble()));
+				vec = nnvec;
+			}
+			else if (i == 4)
+			{
+				vec.Delete();
+				NEW_CLASSNN(nnvec, Math::Geometry::PointZM(srid, sarr[0].ToDouble(), sarr[1].ToDouble(), sarr[2].ToDouble(), sarr[3].ToDouble()));
+				vec = nnvec;
+			}
+		}
+		else
+		{
+			printf("OWSFeatureParser: Unknown element in esri FieldGeometry: %s\r\n", nodeText->v);
+			reader->SkipElement();
+		}
+	}
+	return vec;
 }

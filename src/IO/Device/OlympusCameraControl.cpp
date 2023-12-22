@@ -20,68 +20,59 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_commandlist.cgi"));
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-	while (reader.ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader.NextElementName().SetTo(nodeName))
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("oishare")))
 		{
-			if (reader.GetNodeText()->Equals(UTF8STRC("oishare")))
+			while (reader.NextElementName().SetTo(nodeName))
 			{
-				while (reader.ReadNext())
+				if (nodeName->Equals(UTF8STRC("version")))
 				{
-					if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+					sb.ClearStr();
+					reader.ReadNodeText(sb);
+					sb.TrimWSCRLF();
+					SDEL_STRING(this->oiVersion);
+					this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+				}
+				else if (nodeName->Equals(UTF8STRC("oitrackversion")))
+				{
+					sb.ClearStr();
+					reader.ReadNodeText(sb);
+					sb.TrimWSCRLF();
+					SDEL_STRING(this->oiTrackVersion);
+					this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+				}
+				else if (nodeName->Equals(UTF8STRC("support")))
+				{
+					reader.SkipElement();
+				}
+				else if (nodeName->Equals(UTF8STRC("cgi")))
+				{
+					i = reader.GetAttribCount();
+					while (i-- > 0)
 					{
-						break;
-					}
-					else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-					{
-						if (reader.GetNodeText()->Equals(UTF8STRC("version")))
+						attr = reader.GetAttrib(i);
+						if (attr->value && attr->name->Equals(UTF8STRC("name")))
 						{
-							sb.ClearStr();
-							reader.ReadNodeText(sb);
-							sb.TrimWSCRLF();
-							SDEL_STRING(this->oiVersion);
-							this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-						}
-						else if (reader.GetNodeText()->Equals(UTF8STRC("oitrackversion")))
-						{
-							sb.ClearStr();
-							reader.ReadNodeText(sb);
-							sb.TrimWSCRLF();
-							SDEL_STRING(this->oiTrackVersion);
-							this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-						}
-						else if (reader.GetNodeText()->Equals(UTF8STRC("support")))
-						{
-							reader.SkipElement();
-						}
-						else if (reader.GetNodeText()->Equals(UTF8STRC("cgi")))
-						{
-							i = reader.GetAttribCount();
-							while (i-- > 0)
+							j = this->cmdList.SortedIndexOf(Text::String::OrEmpty(attr->value));
+							if (j < 0)
 							{
-								attr = reader.GetAttrib(i);
-								if (attr->value && attr->name->Equals(UTF8STRC("name")))
-								{
-									j = this->cmdList.SortedIndexOf(Text::String::OrEmpty(attr->value));
-									if (j < 0)
-									{
-										this->cmdList.SortedInsert(attr->value->Clone());
-									}
-								}
+								this->cmdList.SortedInsert(attr->value->Clone());
 							}
-							reader.SkipElement();
-						}
-						else
-						{
-							reader.SkipElement();
 						}
 					}
+					reader.SkipElement();
+				}
+				else
+				{
+					reader.SkipElement();
 				}
 			}
-			else
-			{
-				reader.SkipElement();
-			}
+		}
+		else
+		{
+			reader.SkipElement();
 		}
 	}
 	cli.Delete();
@@ -390,36 +381,27 @@ Bool IO::Device::OlympusCameraControl::GetModel(NotNullPtr<Text::StringBuilderUT
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_caminfo.cgi"));
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-	while (reader.ReadNext())
+	NotNullPtr<Text::String> nodeText;
+	while (reader.NextElementName().SetTo(nodeText))
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (nodeText->Equals(UTF8STRC("caminfo")))
 		{
-			if (reader.GetNodeText()->Equals(UTF8STRC("caminfo")))
+			while (reader.NextElementName().SetTo(nodeText))
 			{
-				while (reader.ReadNext())
+				if (nodeText->Equals(UTF8STRC("model")))
 				{
-					if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-					{
-						break;
-					}
-					else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-					{
-						if (reader.GetNodeText()->Equals(UTF8STRC("model")))
-						{
-							found = true;
-							reader.ReadNodeText(sb);
-						}
-						else
-						{
-							reader.SkipElement();
-						}
-					}
+					found = true;
+					reader.ReadNodeText(sb);
+				}
+				else
+				{
+					reader.SkipElement();
 				}
 			}
-			else
-			{
-				reader.SkipElement();
-			}
+		}
+		else
+		{
+			reader.SkipElement();
 		}
 	}
 	cli.Delete();

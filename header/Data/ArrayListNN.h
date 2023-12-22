@@ -38,6 +38,7 @@ namespace Data
 		void EnsureCapacity(UOSInt capacity);
 
 		virtual Optional<T> GetItem(UOSInt index) const;
+		NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
 		virtual Optional<T> SetItem(UOSInt index, NotNullPtr<T> val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(NotNullPtr<T> *outArr, UOSInt index, UOSInt cnt) const;
@@ -271,6 +272,11 @@ namespace Data
 	{
 		if (index >= this->objCnt || index < 0)
 			return nullptr;
+		return this->arr[index];
+	}
+
+	template <class T> NotNullPtr<T> ArrayListNN<T>::GetItemNoCheck(UOSInt index) const
+	{
 		return this->arr[index];
 	}
 

@@ -84,9 +84,9 @@ Int32 Test1()
 		UOSInt rowType = 0;
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("TABLE")))
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("TABLE")))
 			{
-				while (reader.NextElement())
+				while (!reader.NextElementName().IsNull())
 				{
 					if (rowType == 0)
 					{
@@ -98,17 +98,17 @@ Int32 Test1()
 						rowType = 2;
 						sb.ClearStr();
 						sb.AppendUTF8Char('{');
-						if (reader.NextElement())
+						if (!reader.NextElementName().IsNull())
 						{
 							reader.ReadNodeText(sb);
-							if (reader.NextElement())
+							if (!reader.NextElementName().IsNull())
 							{
 								sb2.ClearStr();
 								reader.ReadNodeText(sb2);
 								sb.AppendC(UTF8STRC(", UTF8STRC("));
 								Text::CPPText::ToCPPString(sb, sb2.v, sb2.leng);
 								sb.AppendUTF8Char(')');
-								while (reader.NextElement())
+								while (!reader.NextElementName().IsNull())
 								{
 									reader.SkipElement();
 								}
@@ -118,14 +118,14 @@ Int32 Test1()
 					else
 					{
 						rowType = 1;
-						if (reader.NextElement())
+						if (!reader.NextElementName().IsNull())
 						{
 							sb2.ClearStr();
 							reader.ReadNodeText(sb2);
 							sb.AppendC(UTF8STRC(", UTF8STRC("));
 							Text::CPPText::ToCPPString(sb, sb2.v, sb2.leng);
 							sb.AppendUTF8Char(')');
-							while (reader.NextElement())
+							while (!reader.NextElementName().IsNull())
 							{
 								reader.SkipElement();
 							}

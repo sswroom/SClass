@@ -33,19 +33,20 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
 		{
-			if (me->lyr->QueryInfos(mapPt, &me->queryVecList, &me->queryValueOfstList, &me->queryNameList, &me->queryValueList) && me->queryVecList.GetCount() > 0)
+			if (me->lyr->QueryInfos(mapPt, me->queryVecList, &me->queryValueOfstList, &me->queryNameList, &me->queryValueList) && me->queryVecList.GetCount() > 0)
 			{
-				Math::Geometry::Vector2D *vec;
+				NotNullPtr<Math::Geometry::Vector2D> vec;
 				me->cboObj->ClearItems();
 				i = 0;
 				j = me->queryVecList.GetCount();
 				while (i < j)
 				{
-					vec = me->queryVecList.GetItem(i);
+					vec = me->queryVecList.GetItemNoCheck(i);
 					me->cboObj->AddItem(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()), 0);
 					i++;
 				}
 				me->cboObj->SetSelectedIndex(0);
+				me->layerNames = false;
 				me->SetQueryItem(0);
 
 				if (!csys->Equals(lyrCSys))
@@ -54,12 +55,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					i = me->queryVecList.GetCount();
 					while (i-- > 0)
 					{
-						me->queryVecList.GetItem(i)->Convert(converter);
+						me->queryVecList.GetItemNoCheck(i)->Convert(converter);
 					}
 				}
 
 				me->navi->SetSelectedVectors(me->queryVecList);
-				me->layerNames = false;
 				return false;
 			}
 		}
@@ -91,7 +91,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		else
 		{
 			Map::MapDrawLayer::ObjectInfo *obj;
-			Math::Geometry::Vector2D *vec = 0;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
 			Text::StringBuilderUTF8 sb;
@@ -102,14 +102,13 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			{
 				obj = objList.GetItem(j);
 
-				vec = me->lyr->GetNewVectorById(sess, obj->objId);
-				if (vec && !csys->Equals(lyrCSys))
+				if (vec.Set(me->lyr->GetNewVectorById(sess, obj->objId)))
 				{
-					Math::CoordinateSystemConverter converter(lyrCSys, csys);
-					vec->Convert(converter);
-				}
-				if (vec)
-				{
+					if (!csys->Equals(lyrCSys))
+					{
+						Math::CoordinateSystemConverter converter(lyrCSys, csys);
+						vec->Convert(converter);
+					}
 					sb.ClearStr();
 					if (me->lyr->GetString(sb, nameArr, obj->objId, me->lyr->GetNameCol()))
 					{
@@ -238,7 +237,10 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 
 void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 {
-	NotNullPtr<Math::Geometry::Vector2D> vec = this->queryVecList.GetItem(index)->Clone();
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	if (!this->queryVecList.GetItem(index).SetTo(vec))
+		return;
+	vec = vec->Clone();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;

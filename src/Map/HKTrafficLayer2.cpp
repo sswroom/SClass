@@ -195,90 +195,53 @@ void Map::HKTrafficLayer2::ReloadData()
 			mstm.Write(buff, readSize);
 		}
 		mstm.SeekFromBeginning(0);
-		Text::XMLNode::NodeType nt;
-		Text::String *nodeName;
+		NotNullPtr<Text::String> nodeName;
 		Text::StringBuilderUTF8 sb;
 		Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
-		while (reader.ReadNext())
+		while (reader.NextElementName().SetTo(nodeName))
 		{
-			nt = reader.GetNodeType();
-			if (nt == Text::XMLNode::NodeType::Element)
+			if (nodeName->Equals(UTF8STRC("segment_speed_list")))
 			{
-				nodeName = reader.GetNodeText();
-				if (nodeName->Equals(UTF8STRC("segment_speed_list")))
+				while (reader.NextElementName().SetTo(nodeName))
 				{
-					while (reader.ReadNext())
+					if (nodeName->Equals(UTF8STRC("segments")))
 					{
-						nt = reader.GetNodeType();
-						if (nt == Text::XMLNode::NodeType::ElementEnd)
+						while (reader.NextElementName().SetTo(nodeName))
 						{
-							break;
-						}
-						else if (nt == Text::XMLNode::NodeType::Element)
-						{
-							nodeName = reader.GetNodeText();
-							if (nodeName->Equals(UTF8STRC("segments")))
+							if (nodeName->Equals(UTF8STRC("segment")))
 							{
-								while (reader.ReadNext())
-								{
-									nt = reader.GetNodeType();
-									if (nt == Text::XMLNode::NodeType::ElementEnd)
-									{
-										break;
-									}
-									else if (nt == Text::XMLNode::NodeType::Element)
-									{
-										nodeName = reader.GetNodeText();
-										if (nodeName->Equals(UTF8STRC("segment")))
-										{
-											Int32 segmentId = 0;
-											Double speed = -1;
-											Bool valid = false;
+								Int32 segmentId = 0;
+								Double speed = -1;
+								Bool valid = false;
 
-											while (reader.ReadNext())
-											{
-												nt = reader.GetNodeType();
-												if (nt == Text::XMLNode::NodeType::ElementEnd)
-												{
-													break;
-												}
-												else if (nt == Text::XMLNode::NodeType::Element)
-												{
-													nodeName = reader.GetNodeText();
-													if (nodeName->Equals(UTF8STRC("segment_id")))
-													{
-														sb.ClearStr();
-														reader.ReadNodeText(sb);
-														sb.ToInt32(segmentId);
-													}
-													else if (nodeName->Equals(UTF8STRC("speed")))
-													{
-														sb.ClearStr();
-														reader.ReadNodeText(sb);
-														sb.ToDouble(speed);
-													}
-													else if (nodeName->Equals(UTF8STRC("valid")))
-													{
-														sb.ClearStr();
-														reader.ReadNodeText(sb);
-														valid = sb.Equals(UTF8STRC("Y"));
-													}
-													else
-													{
-														reader.SkipElement();
-													}
-												}
-											}
-											if (segmentId != 0 && speed >= 0)
-											{
-												SetSpeedMap(segmentId, speed, valid);
-											}
-										}
-										else
-										{
-											reader.SkipElement();
-										}
+								while (reader.NextElementName().SetTo(nodeName))
+								{
+									if (nodeName->Equals(UTF8STRC("segment_id")))
+									{
+										sb.ClearStr();
+										reader.ReadNodeText(sb);
+										sb.ToInt32(segmentId);
 									}
+									else if (nodeName->Equals(UTF8STRC("speed")))
+									{
+										sb.ClearStr();
+										reader.ReadNodeText(sb);
+										sb.ToDouble(speed);
+									}
+									else if (nodeName->Equals(UTF8STRC("valid")))
+									{
+										sb.ClearStr();
+										reader.ReadNodeText(sb);
+										valid = sb.Equals(UTF8STRC("Y"));
+									}
+									else
+									{
+										reader.SkipElement();
+									}
+								}
+								if (segmentId != 0 && speed >= 0)
+								{
+									SetSpeedMap(segmentId, speed, valid);
 								}
 							}
 							else
@@ -287,11 +250,15 @@ void Map::HKTrafficLayer2::ReloadData()
 							}
 						}
 					}
+					else
+					{
+						reader.SkipElement();
+					}
 				}
-				else
-				{
-					reader.SkipElement();
-				}
+			}
+			else
+			{
+				reader.SkipElement();
 			}
 		}
 		DEL_CLASS(stm);

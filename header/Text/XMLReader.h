@@ -50,7 +50,8 @@ namespace Text
 		void GetCurrPath(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UOSInt GetPathLev() const;
 		Text::XMLNode::NodeType GetNodeType() const;
-		Text::String *GetNodeText() const; //TextNode = Value, ElementNode = Name
+		Optional<Text::String> GetNodeText() const; //TextNode = Value, ElementNode = Name
+		NotNullPtr<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
 		Text::String *GetNodeOriText() const;
 		UOSInt GetAttribCount() const;
 		Text::XMLAttrib *GetAttrib(UOSInt index) const;
@@ -58,10 +59,12 @@ namespace Text
 
 		Bool ReadNext();
 		Bool ReadNodeText(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool NextElement();
+//		Bool NextElement();
+		Optional<Text::String> NextElementName();
 		Bool SkipElement();
 		Bool IsElementEmpty() const;
 		Bool IsComplete() const;
+		Bool HasError() const;
 		UOSInt GetErrorCode() const;
 		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 

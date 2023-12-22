@@ -34,65 +34,45 @@ void Map::WebMapTileServiceSource::LoadXML()
 	{
 		Bool valid = false;
 		Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-		while (reader.ReadNext())
+		NotNullPtr<Text::String> nodeText;
+		if (reader.NextElementName().SetTo(nodeText))
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+			if (nodeText->Equals(UTF8STRC("Capabilities")))
 			{
-				if (reader.GetNodeText()->Equals(UTF8STRC("Capabilities")))
-				{
-					valid = true;
-				}
-				break;
+				valid = true;
 			}
 		}
 
 		if (valid)
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::String *s;
-			while (reader.ReadNext())
+			while (reader.NextElementName().SetTo(nodeText))
 			{
-				if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+				if (nodeText->Equals(UTF8STRC("Contents")))
 				{
-					s = reader.GetNodeText();
-					if (s->Equals(UTF8STRC("Contents")))
+					while (reader.NextElementName().SetTo(nodeText))
 					{
-						while (reader.ReadNext())
+						if (nodeText->Equals(UTF8STRC("Layer")))
 						{
-							if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+							ReadLayer(reader);
+						}
+						else if (nodeText->Equals(UTF8STRC("TileMatrixSet")))
+						{
+							TileMatrixDefSet *set = ReadTileMatrixSet(reader);
+							if (set)
 							{
-								s = reader.GetNodeText();
-								if (s->Equals(UTF8STRC("Layer")))
-								{
-									ReadLayer(reader);
-								}
-								else if (s->Equals(UTF8STRC("TileMatrixSet")))
-								{
-									TileMatrixDefSet *set = ReadTileMatrixSet(reader);
-									if (set)
-									{
-										this->matrixDef.Put(set->id, set);
-									}
-								}
-								else
-								{
-									reader.SkipElement();
-								}
-							}
-							else if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-							{
-								break;
+								this->matrixDef.Put(set->id, set);
 							}
 						}
-					}
-					else
-					{
-						reader.SkipElement();
+						else
+						{
+							reader.SkipElement();
+						}
 					}
 				}
-				else if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+				else
 				{
-					break;
+					reader.SkipElement();
 				}
 			}
 		}
@@ -104,173 +84,155 @@ void Map::WebMapTileServiceSource::LoadXML()
 void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 	TileLayer *layer;
 	UOSInt i;
 	Text::PString sarr[3];
 	NEW_CLASS(layer, TileLayer());
-	while (reader->ReadNext())
+	while (reader->NextElementName().SetTo(name))
 	{
-		Text::XMLNode::NodeType nt = reader->GetNodeType();
-		if (nt == Text::XMLNode::NodeType::Element)
+		if (name->Equals(UTF8STRC("ows:Title")))
 		{
-			name = reader->GetNodeText();
-			if (name->Equals(UTF8STRC("ows:Title")))
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
 			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					SDEL_STRING(layer->title);
-					layer->title = Text::String::New(sb.ToCString()).Ptr();
-				}
-			}
-			else if (name->Equals(UTF8STRC("ows:WGS84BoundingBox")))
-			{
-				while (reader->ReadNext())
-				{
-					nt = reader->GetNodeType();
-					if (nt == Text::XMLNode::NodeType::Element)
-					{
-						name = reader->GetNodeText();
-						if (name->Equals(UTF8STRC("ows:LowerCorner")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
-							{
-								layer->wgs84Bounds.tl.x = sarr[0].ToDouble();
-								layer->wgs84Bounds.tl.y = sarr[1].ToDouble();
-							}
-						}
-						else if (name->Equals(UTF8STRC("ows:UpperCorner")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
-							{
-								layer->wgs84Bounds.br.x = sarr[0].ToDouble();
-								layer->wgs84Bounds.br.y = sarr[1].ToDouble();
-							}
-						}
-						else
-						{
-							reader->SkipElement();
-						}
-					}
-					else if (nt == Text::XMLNode::NodeType::ElementEnd)
-					{
-						break;
-					}
-				}
-			}
-			else if (name->Equals(UTF8STRC("ows:Identifier")))
-			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					SDEL_STRING(layer->id);
-					layer->id = Text::String::New(sb.ToCString()).Ptr();
-				}
-			}
-			else if (name->Equals(UTF8STRC("Style")))
-			{
-				//////////////////////////////////////////
-				reader->SkipElement();
-			}
-			else if (name->Equals(UTF8STRC("Format")))
-			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					layer->format.Add(Text::String::New(sb.ToCString()));
-				}
-			}
-			else if (name->Equals(UTF8STRC("InfoFormat")))
-			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					layer->infoFormat.Add(Text::String::New(sb.ToCString()));
-				}
-			}
-			else if (name->Equals(UTF8STRC("TileMatrixSetLink")))
-			{
-				TileMatrixSet *set = ReadTileMatrixSetLink(reader);
-				if (set)
-				{
-					set->bounds.tl = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.tl);
-					set->bounds.br = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.br);
-					layer->tileMatrixes.Add(set);
-				}
-			}
-			else if (name->Equals(UTF8STRC("ResourceURL")))
-			{
-				Text::XMLAttrib *formatAttr = 0;
-				Text::XMLAttrib *resourceTypeAttr = 0;
-				Text::XMLAttrib *templateAttr = 0;
-				Text::XMLAttrib *attr;
-				i = reader->GetAttribCount();
-				while (i-- > 0)
-				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("format")))
-					{
-						formatAttr = attr;
-					}
-					else if (attr->name->Equals(UTF8STRC("resourceType")))
-					{
-						resourceTypeAttr = attr;
-					}
-					else if (attr->name->Equals(UTF8STRC("template")))
-					{
-						templateAttr = attr;
-					}
-				}
-				if (formatAttr && resourceTypeAttr && templateAttr && formatAttr->value && resourceTypeAttr->value && templateAttr->value)
-				{
-					ResourceURL *resource = MemAlloc(ResourceURL, 1);
-					resource->format = formatAttr->value->Clone();
-					resource->templateURL = templateAttr->value->Clone();
-					if (resourceTypeAttr->value->Equals(UTF8STRC("tile")))
-					{
-						resource->resourceType = ResourceType::Tile;
-					}
-					else if (resourceTypeAttr->value->Equals(UTF8STRC("FeatureInfo")))
-					{
-						resource->resourceType = ResourceType::FeatureInfo;
-					}
-					else
-					{
-						resource->resourceType = ResourceType::Unknown;
-					}
-					if (resource->format->Equals(UTF8STRC("image/png")))
-					{
-						resource->imgType = Map::TileMap::ImageType::IT_PNG;
-					}
-					else if (resource->format->Equals(UTF8STRC("image/jpeg")))
-					{
-						resource->imgType = Map::TileMap::ImageType::IT_JPG;
-					}
-					else
-					{
-						resource->imgType = Map::TileMap::ImageType::IT_PNG;
-					}
-					layer->resourceURLs.Add(resource);
-				}
-				reader->SkipElement();
-			}
-			else
-			{
-				reader->SkipElement();
+				SDEL_STRING(layer->title);
+				layer->title = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
-		else if (nt == Text::XMLNode::NodeType::ElementEnd)
+		else if (name->Equals(UTF8STRC("ows:WGS84BoundingBox")))
 		{
-			break;
+			while (reader->NextElementName().SetTo(name))
+			{
+				if (name->Equals(UTF8STRC("ows:LowerCorner")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
+					{
+						layer->wgs84Bounds.tl.x = sarr[0].ToDouble();
+						layer->wgs84Bounds.tl.y = sarr[1].ToDouble();
+					}
+				}
+				else if (name->Equals(UTF8STRC("ows:UpperCorner")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
+					{
+						layer->wgs84Bounds.br.x = sarr[0].ToDouble();
+						layer->wgs84Bounds.br.y = sarr[1].ToDouble();
+					}
+				}
+				else
+				{
+					reader->SkipElement();
+				}
+			}
+		}
+		else if (name->Equals(UTF8STRC("ows:Identifier")))
+		{
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
+			{
+				SDEL_STRING(layer->id);
+				layer->id = Text::String::New(sb.ToCString()).Ptr();
+			}
+		}
+		else if (name->Equals(UTF8STRC("Style")))
+		{
+			//////////////////////////////////////////
+			reader->SkipElement();
+		}
+		else if (name->Equals(UTF8STRC("Format")))
+		{
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
+			{
+				layer->format.Add(Text::String::New(sb.ToCString()));
+			}
+		}
+		else if (name->Equals(UTF8STRC("InfoFormat")))
+		{
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
+			{
+				layer->infoFormat.Add(Text::String::New(sb.ToCString()));
+			}
+		}
+		else if (name->Equals(UTF8STRC("TileMatrixSetLink")))
+		{
+			TileMatrixSet *set = ReadTileMatrixSetLink(reader);
+			if (set)
+			{
+				set->bounds.tl = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.tl);
+				set->bounds.br = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.br);
+				layer->tileMatrixes.Add(set);
+			}
+		}
+		else if (name->Equals(UTF8STRC("ResourceURL")))
+		{
+			Text::XMLAttrib *formatAttr = 0;
+			Text::XMLAttrib *resourceTypeAttr = 0;
+			Text::XMLAttrib *templateAttr = 0;
+			Text::XMLAttrib *attr;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("format")))
+				{
+					formatAttr = attr;
+				}
+				else if (attr->name->Equals(UTF8STRC("resourceType")))
+				{
+					resourceTypeAttr = attr;
+				}
+				else if (attr->name->Equals(UTF8STRC("template")))
+				{
+					templateAttr = attr;
+				}
+			}
+			if (formatAttr && resourceTypeAttr && templateAttr && formatAttr->value && resourceTypeAttr->value && templateAttr->value)
+			{
+				ResourceURL *resource = MemAlloc(ResourceURL, 1);
+				resource->format = formatAttr->value->Clone();
+				resource->templateURL = templateAttr->value->Clone();
+				if (resourceTypeAttr->value->Equals(UTF8STRC("tile")))
+				{
+					resource->resourceType = ResourceType::Tile;
+				}
+				else if (resourceTypeAttr->value->Equals(UTF8STRC("FeatureInfo")))
+				{
+					resource->resourceType = ResourceType::FeatureInfo;
+				}
+				else
+				{
+					resource->resourceType = ResourceType::Unknown;
+				}
+				if (resource->format->Equals(UTF8STRC("image/png")))
+				{
+					resource->imgType = Map::TileMap::ImageType::IT_PNG;
+				}
+				else if (resource->format->Equals(UTF8STRC("image/jpeg")))
+				{
+					resource->imgType = Map::TileMap::ImageType::IT_JPG;
+				}
+				else
+				{
+					resource->imgType = Map::TileMap::ImageType::IT_PNG;
+				}
+				layer->resourceURLs.Add(resource);
+			}
+			reader->SkipElement();
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
 	if (layer->title == 0 || layer->id == 0 || layer->format.GetCount() == 0 || layer->tileMatrixes.GetCount() == 0 || layer->resourceURLs.GetCount() == 0)
@@ -285,137 +247,109 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 
 Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadTileMatrixSetLink(NotNullPtr<Text::XMLReader> reader)
 {
-	Text::XMLNode::NodeType nt;
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 	TileMatrixSet *set;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(set, TileMatrixSet());
 	set->id = Text::String::NewEmpty();
 	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
-	while (reader->ReadNext())
+	while (reader->NextElementName().SetTo(name))
 	{
-		nt = reader->GetNodeType();
-		if (nt == Text::XMLNode::NodeType::Element)
+		if (name->Equals(UTF8STRC("TileMatrixSet")))
 		{
-			name = reader->GetNodeText();
-			if (name->Equals(UTF8STRC("TileMatrixSet")))
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
 			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					set->id->Release();
-					set->id = Text::String::New(sb.ToCString());
-				}
+				set->id->Release();
+				set->id = Text::String::New(sb.ToCString());
 			}
-			else if (name->Equals(UTF8STRC("TileMatrixSetLimits")))
+		}
+		else if (name->Equals(UTF8STRC("TileMatrixSetLimits")))
+		{
+			while (reader->NextElementName().SetTo(name))
 			{
-				while (reader->ReadNext())
+				if (name->Equals(UTF8STRC("TileMatrixLimits")))
 				{
-					nt = reader->GetNodeType();
-					if (nt == Text::XMLNode::NodeType::Element)
+					Text::String *id = 0;
+					Int32 minRow = 0x7fffffff;
+					Int32 maxRow = 0x7fffffff;
+					Int32 minCol = 0x7fffffff;
+					Int32 maxCol = 0x7fffffff;
+					while (reader->NextElementName().SetTo(name))
 					{
-						name = reader->GetNodeText();
-						if (name->Equals(UTF8STRC("TileMatrixLimits")))
+						if (name->Equals(UTF8STRC("TileMatrix")))
 						{
-							Text::String *id = 0;
-							Int32 minRow = 0x7fffffff;
-							Int32 maxRow = 0x7fffffff;
-							Int32 minCol = 0x7fffffff;
-							Int32 maxCol = 0x7fffffff;
-							while (reader->ReadNext())
+							sb.ClearStr();
+							reader->ReadNodeText(sb);
+							if (sb.GetLength() > 0)
 							{
-								nt = reader->GetNodeType();
-								if (nt == Text::XMLNode::NodeType::Element)
-								{
-									name = reader->GetNodeText();
-									if (name->Equals(UTF8STRC("TileMatrix")))
-									{
-										sb.ClearStr();
-										reader->ReadNodeText(sb);
-										if (sb.GetLength() > 0)
-										{
-											SDEL_STRING(id);
-											id = Text::String::New(sb.ToCString()).Ptr();
-										}
-									}
-									else if (name->Equals(UTF8STRC("MinTileRow")))
-									{
-										sb.ClearStr();
-										reader->ReadNodeText(sb);
-										if (sb.GetLength() > 0)
-										{
-											minRow = sb.ToInt32();
-										}
-									}
-									else if (name->Equals(UTF8STRC("MaxTileRow")))
-									{
-										sb.ClearStr();
-										reader->ReadNodeText(sb);
-										if (sb.GetLength() > 0)
-										{
-											maxRow = sb.ToInt32();
-										}
-									}
-									else if (name->Equals(UTF8STRC("MinTileCol")))
-									{
-										sb.ClearStr();
-										reader->ReadNodeText(sb);
-										if (sb.GetLength() > 0)
-										{
-											minCol = sb.ToInt32();
-										}
-									}
-									else if (name->Equals(UTF8STRC("MaxTileCol")))
-									{
-										sb.ClearStr();
-										reader->ReadNodeText(sb);
-										if (sb.GetLength() > 0)
-										{
-											maxCol = sb.ToInt32();
-										}
-									}
-									else
-									{
-										reader->SkipElement();
-									}
-								}
-								else if (nt == Text::XMLNode::NodeType::ElementEnd)
-								{
-									break;
-								}
+								SDEL_STRING(id);
+								id = Text::String::New(sb.ToCString()).Ptr();
 							}
-							if (id && minRow != 0x7fffffff && maxRow != 0x7fffffff && minCol != 0x7fffffff && maxCol != 0x7fffffff)
+						}
+						else if (name->Equals(UTF8STRC("MinTileRow")))
+						{
+							sb.ClearStr();
+							reader->ReadNodeText(sb);
+							if (sb.GetLength() > 0)
 							{
-								TileMatrix *tile = MemAlloc(TileMatrix, 1);
-								tile->id = id->Clone();
-								tile->minRow = minRow;
-								tile->maxRow = maxRow;
-								tile->minCol = minCol;
-								tile->maxCol = maxCol;
-								set->tiles.Add(tile);
+								minRow = sb.ToInt32();
 							}
-							SDEL_STRING(id);
+						}
+						else if (name->Equals(UTF8STRC("MaxTileRow")))
+						{
+							sb.ClearStr();
+							reader->ReadNodeText(sb);
+							if (sb.GetLength() > 0)
+							{
+								maxRow = sb.ToInt32();
+							}
+						}
+						else if (name->Equals(UTF8STRC("MinTileCol")))
+						{
+							sb.ClearStr();
+							reader->ReadNodeText(sb);
+							if (sb.GetLength() > 0)
+							{
+								minCol = sb.ToInt32();
+							}
+						}
+						else if (name->Equals(UTF8STRC("MaxTileCol")))
+						{
+							sb.ClearStr();
+							reader->ReadNodeText(sb);
+							if (sb.GetLength() > 0)
+							{
+								maxCol = sb.ToInt32();
+							}
 						}
 						else
 						{
 							reader->SkipElement();
 						}
 					}
-					else if (nt == Text::XMLNode::NodeType::ElementEnd)
+					if (id && minRow != 0x7fffffff && maxRow != 0x7fffffff && minCol != 0x7fffffff && maxCol != 0x7fffffff)
 					{
-						break;
+						TileMatrix *tile = MemAlloc(TileMatrix, 1);
+						tile->id = id->Clone();
+						tile->minRow = minRow;
+						tile->maxRow = maxRow;
+						tile->minCol = minCol;
+						tile->maxCol = maxCol;
+						set->tiles.Add(tile);
 					}
+					SDEL_STRING(id);
+				}
+				else
+				{
+					reader->SkipElement();
 				}
 			}
-			else
-			{
-				reader->SkipElement();
-			}
 		}
-		else if (nt == Text::XMLNode::NodeType::ElementEnd)
+		else
 		{
-			break;
+			reader->SkipElement();
 		}
 	}
 	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
@@ -437,159 +371,139 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 
 Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::ReadTileMatrixSet(NotNullPtr<Text::XMLReader> reader)
 {
-	Text::XMLNode::NodeType nt;
-	Text::String *name;
 	TileMatrixDefSet *set;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(set, TileMatrixDefSet());
 	set->id = 0;
 	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> name;
+	while (reader->NextElementName().SetTo(name))
 	{
-		nt = reader->GetNodeType();
-		if (nt == Text::XMLNode::NodeType::Element)
+		if (name->Equals(UTF8STRC("ows:Identifier")))
 		{
-			name = reader->GetNodeText();
-			if (name->Equals(UTF8STRC("ows:Identifier")))
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
 			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					SDEL_STRING(set->id);
-					set->id = Text::String::New(sb.ToCString()).Ptr();
-				}
-			}
-			else if (name->Equals(UTF8STRC("ows:SupportedCRS")))
-			{
-				sb.ClearStr();
-				reader->ReadNodeText(sb);
-				if (sb.GetLength() > 0)
-				{
-					set->csys.Delete();
-					set->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(sb.ToCString());
-				}
-			}
-			else if (name->Equals(UTF8STRC("TileMatrix")))
-			{
-				Text::String *id = 0;
-				Double scaleDenom = 0;
-				Double topPos = -1;
-				Double leftPos = -1;
-				UInt32 tileWidth = 0;
-				UInt32 tileHeight = 0;
-				UInt32 matrixWidth = 0;
-				UInt32 matrixHeight = 0;
-				while (reader->ReadNext())
-				{
-					nt = reader->GetNodeType();
-					if (nt == Text::XMLNode::NodeType::Element)
-					{
-						name = reader->GetNodeText();
-						if (name->Equals(UTF8STRC("ows:Identifier")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								SDEL_STRING(id);
-								id = Text::String::New(sb.ToCString()).Ptr();
-							}
-						}
-						else if (name->Equals(UTF8STRC("ScaleDenominator")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								scaleDenom = sb.ToDouble();
-							}
-						}
-						else if (name->Equals(UTF8STRC("TopLeftCorner")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								Text::PString sarr[3];
-								if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
-								{
-									leftPos = sarr[0].ToDouble();
-									topPos = sarr[1].ToDouble();
-								}
-							}
-						}
-						else if (name->Equals(UTF8STRC("TileWidth")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								tileWidth = sb.ToUInt32();
-							}
-						}
-						else if (name->Equals(UTF8STRC("TileHeight")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								tileHeight = sb.ToUInt32();
-							}
-						}
-						else if (name->Equals(UTF8STRC("MatrixWidth")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								matrixWidth = sb.ToUInt32();
-							}
-						}
-						else if (name->Equals(UTF8STRC("MatrixHeight")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							if (sb.GetLength() > 0)
-							{
-								matrixHeight = sb.ToUInt32();
-							}
-						}
-
-						else
-						{
-							reader->SkipElement();
-						}
-					}
-					else if (nt == Text::XMLNode::NodeType::ElementEnd)
-					{
-						break;
-					}
-				}
-				if (id && scaleDenom != 0 && topPos != -1 && leftPos != -1 && tileWidth != 0 && tileHeight != 0 && matrixWidth != 0 && matrixHeight != 0)
-				{
-					TileMatrixDef *tile = MemAlloc(TileMatrixDef, 1);
-					tile->id = id->Clone();
-					tile->scaleDenom = scaleDenom;
-					tile->unitPerPixel = scaleDenom / 3571.428571;
-					tile->origin.x = leftPos;
-					tile->origin.y = topPos;
-					tile->tileWidth = tileWidth;
-					tile->tileHeight = tileHeight;
-					tile->matrixWidth = matrixWidth;
-					tile->matrixHeight = matrixHeight;
-					set->tiles.Add(tile);
-				}
-				SDEL_STRING(id);
-			}
-			else
-			{
-				reader->SkipElement();
+				SDEL_STRING(set->id);
+				set->id = Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
-		else if (nt == Text::XMLNode::NodeType::ElementEnd)
+		else if (name->Equals(UTF8STRC("ows:SupportedCRS")))
 		{
-			break;
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (sb.GetLength() > 0)
+			{
+				set->csys.Delete();
+				set->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(sb.ToCString());
+			}
+		}
+		else if (name->Equals(UTF8STRC("TileMatrix")))
+		{
+			Text::String *id = 0;
+			Double scaleDenom = 0;
+			Double topPos = -1;
+			Double leftPos = -1;
+			UInt32 tileWidth = 0;
+			UInt32 tileHeight = 0;
+			UInt32 matrixWidth = 0;
+			UInt32 matrixHeight = 0;
+			while (reader->NextElementName().SetTo(name))
+			{
+				if (name->Equals(UTF8STRC("ows:Identifier")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						SDEL_STRING(id);
+						id = Text::String::New(sb.ToCString()).Ptr();
+					}
+				}
+				else if (name->Equals(UTF8STRC("ScaleDenominator")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						scaleDenom = sb.ToDouble();
+					}
+				}
+				else if (name->Equals(UTF8STRC("TopLeftCorner")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						Text::PString sarr[3];
+						if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
+						{
+							leftPos = sarr[0].ToDouble();
+							topPos = sarr[1].ToDouble();
+						}
+					}
+				}
+				else if (name->Equals(UTF8STRC("TileWidth")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						tileWidth = sb.ToUInt32();
+					}
+				}
+				else if (name->Equals(UTF8STRC("TileHeight")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						tileHeight = sb.ToUInt32();
+					}
+				}
+				else if (name->Equals(UTF8STRC("MatrixWidth")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						matrixWidth = sb.ToUInt32();
+					}
+				}
+				else if (name->Equals(UTF8STRC("MatrixHeight")))
+				{
+					sb.ClearStr();
+					reader->ReadNodeText(sb);
+					if (sb.GetLength() > 0)
+					{
+						matrixHeight = sb.ToUInt32();
+					}
+				}
+				else
+				{
+					reader->SkipElement();
+				}
+			}
+			if (id && scaleDenom != 0 && topPos != -1 && leftPos != -1 && tileWidth != 0 && tileHeight != 0 && matrixWidth != 0 && matrixHeight != 0)
+			{
+				TileMatrixDef *tile = MemAlloc(TileMatrixDef, 1);
+				tile->id = id->Clone();
+				tile->scaleDenom = scaleDenom;
+				tile->unitPerPixel = scaleDenom / 3571.428571;
+				tile->origin.x = leftPos;
+				tile->origin.y = topPos;
+				tile->tileWidth = tileWidth;
+				tile->tileHeight = tileHeight;
+				tile->matrixWidth = matrixWidth;
+				tile->matrixHeight = matrixHeight;
+				set->tiles.Add(tile);
+			}
+			SDEL_STRING(id);
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
 	if (set->id && set->tiles.GetCount() > 0)
@@ -876,7 +790,7 @@ Bool Map::WebMapTileServiceSource::CanQuery() const
 	return this->currResourceInfo != 0;
 }
 
-Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const
+Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
 	if (this->currResourceInfo == 0)
 		return false;

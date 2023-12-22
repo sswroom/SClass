@@ -181,9 +181,14 @@ Text::XMLNode::NodeType Text::XMLReader::GetNodeType() const
 	return this->nt;
 }
 
-Text::String *Text::XMLReader::GetNodeText() const
+Optional<Text::String> Text::XMLReader::GetNodeText() const
 {
 	return this->nodeText;
+}
+
+NotNullPtr<Text::String> Text::XMLReader::GetNodeTextNN() const
+{
+	return Text::String::OrEmpty(this->nodeText);
 }
 
 Text::String *Text::XMLReader::GetNodeOriText() const
@@ -1559,11 +1564,11 @@ Bool Text::XMLReader::ReadNodeText(NotNullPtr<Text::StringBuilderUTF8> sb)
 			}
 			else if (nt == Text::XMLNode::NodeType::Text)
 			{
-				sb->Append(this->GetNodeText());
+				sb->Append(this->nodeText);
 			}
 			else if (nt == Text::XMLNode::NodeType::CData)
 			{
-				sb->Append(this->GetNodeText());
+				sb->Append(this->nodeText);
 			}
 		}
 		return succ;
@@ -1574,7 +1579,7 @@ Bool Text::XMLReader::ReadNodeText(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Bool Text::XMLReader::NextElement()
+/*Bool Text::XMLReader::NextElement()
 {
 	while (true)
 	{
@@ -1584,6 +1589,19 @@ Bool Text::XMLReader::NextElement()
 			return true;
 		if (this->nt == Text::XMLNode::NodeType::ElementEnd)
 			return false;
+	}
+}*/
+
+Optional<Text::String> Text::XMLReader::NextElementName()
+{
+	while (true)
+	{
+		if (!this->ReadNext())
+			return 0;
+		if (this->nt == Text::XMLNode::NodeType::Element)
+			return this->nodeText;
+		if (this->nt == Text::XMLNode::NodeType::ElementEnd)
+			return 0;
 	}
 }
 
@@ -1627,6 +1645,11 @@ Bool Text::XMLReader::IsElementEmpty() const
 Bool Text::XMLReader::IsComplete() const
 {
 	return this->pathList.GetCount() == 0 && this->parseOfst == this->buffSize;	
+}
+
+Bool Text::XMLReader::HasError() const
+{
+	return this->parseError != 0;
 }
 
 UOSInt Text::XMLReader::GetErrorCode() const
@@ -1751,7 +1774,7 @@ Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<I
 		if (thisNT == Text::XMLNode::NodeType::Text)
 		{
 			toWrite = false;
-			const UTF8Char *csptr = reader.GetNodeText()->v;
+			const UTF8Char *csptr = Text::String::OrEmpty(reader.GetNodeText())->v;
 			UTF8Char c;
 			while (true)
 			{

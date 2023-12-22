@@ -385,7 +385,7 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
@@ -434,7 +434,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 			Text::JSONBase *o = json->GetValue(CSTR("results"));
 			if (o && o->GetType() == Text::JSONType::Array)
 			{
-				Math::Geometry::Vector2D *vec;
+				NotNullPtr<Math::Geometry::Vector2D> vec;
 				Text::JSONArray *results = (Text::JSONArray*)o;
 				succ = true;
 				UOSInt i = 0;
@@ -448,8 +448,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 						NotNullPtr<Text::String> geometryType;
 						if (result->GetValueString(CSTR("geometryType")).SetTo(geometryType))
 						{
-							vec = ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")));
-							if (vec)
+							if (vec.Set(ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")))))
 							{
 								valueOfstList->Add(nameList->GetCount());
 								o = result->GetObjectValue(CSTR("attributes"));

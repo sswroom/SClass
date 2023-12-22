@@ -43,7 +43,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR:
 				sbCont.AppendChar(' ', reader.GetPathLev() << 1);
 			}
 			sbCont.AppendC(UTF8STRC("<?"));
-			sbCont.Append(reader.GetNodeText());
+			sbCont.AppendOpt(reader.GetNodeText());
 			i = 0;
 			j = reader.GetAttribCount();
 			while (i < j)
@@ -74,7 +74,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR:
 				sbCont.AppendChar(' ', reader.GetPathLev() << 1);
 			}
 			sbCont.AppendC(UTF8STRC("</"));
-			sbCont.Append(reader.GetNodeText());
+			sbCont.AppendOpt(reader.GetNodeText());
 			sbCont.AppendC(UTF8STRC(">"));
 			sb.ClearStr();
 			reader.GetCurrPath(sb);
@@ -85,7 +85,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR:
 		else if (reader.GetNodeType() == Text::XMLNode::NodeType::Text)
 		{
 			sb.ClearStr();
-			sb.Append(reader.GetNodeText());
+			sb.AppendOpt(reader.GetNodeText());
 			sb.TrimWSCRLF();
 			if (sb.GetLength() > 0)
 			{
@@ -113,7 +113,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR:
 				sbCont.AppendChar(' ', reader.GetPathLev() << 1);
 			}
 			sbCont.AppendC(UTF8STRC("<"));
-			sbCont.Append(reader.GetNodeText());
+			sbCont.AppendOpt(reader.GetNodeText());
 			i = 0;
 			j = reader.GetAttribCount();
 			while (i < j)

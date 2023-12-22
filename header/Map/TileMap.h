@@ -49,7 +49,7 @@ namespace Map
 		virtual UOSInt GetTileSize() const = 0;
 		virtual ImageType GetImageType() const = 0;
 		virtual Bool CanQuery() const { return false; };
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids) = 0;

@@ -16,6 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 	{
 		me->txtStatus->SetText(CSTR("Success"));
 		Data::ArrayListStringNN nameList;
+		UOSInt selIndex;
 		UOSInt i = 0;
 		UOSInt j = me->wms->GetLayerNames(&nameList);
 		me->cboLayer->ClearItems();
@@ -32,15 +33,18 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 		nameList.Clear();
 		i = 0;
 		j = me->wms->GetMapImageTypeNames(&nameList);
+		selIndex = 0;
 		me->cboMapImageType->ClearItems();
 		while (i < j)
 		{
-			me->cboMapImageType->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+			me->cboMapImageType->AddItem(nameList.GetItemNoCheck(i), 0);
+			if (nameList.GetItemNoCheck(i)->Equals(UTF8STRC("image/png")))
+				selIndex = i;
 			i++;
 		}
 		if (j > 0)
 		{
-			me->cboMapImageType->SetSelectedIndex(0);
+			me->cboMapImageType->SetSelectedIndex(selIndex);
 		}
 
 		nameList.Clear();

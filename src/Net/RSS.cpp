@@ -219,10 +219,10 @@ Net::RSSItem::RSSItem(NotNullPtr<Text::XMLReader> reader)
 	this->lat = 0;
 	this->lon = 0;
 
-	Bool descHTML = reader->GetNodeText()->Equals(UTF8STRC("item"));
+	Bool descHTML = reader->GetNodeTextNN()->Equals(UTF8STRC("item"));
 	Text::StringBuilderUTF8 sb;
 	Text::XMLAttrib *attr;
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -238,9 +238,8 @@ Net::RSSItem::RSSItem(NotNullPtr<Text::XMLReader> reader)
 		i++;
 	}
 
-	while (reader->NextElement())
+	while (reader->NextElementName().SetTo(name))
 	{
-		name = reader->GetNodeText();
 		if (name->EqualsICase(UTF8STRC("title")))
 		{
 			sb.ClearStr();
@@ -370,9 +369,8 @@ Net::RSSItem::RSSItem(NotNullPtr<Text::XMLReader> reader)
 		}
 		else if (name->EqualsICase(UTF8STRC("media:group")))
 		{
-			while (reader->NextElement())
+			while (reader->NextElementName().SetTo(name))
 			{
-				name = reader->GetNodeText();
 				if (name->Equals(UTF8STRC("media:description")))
 				{
 					sb.ClearStr();
@@ -825,20 +823,17 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<
 	Text::XMLReader reader(&encFact, stm, Text::XMLReader::PM_XML);
 
 	Text::StringBuilderUTF8 sb;
-	Text::String *name;
-	while (reader.NextElement())
+	NotNullPtr<Text::String> name;
+	while (reader.NextElementName().SetTo(name))
 	{
-		name = reader.GetNodeText();
 		if (name->EqualsICase(UTF8STRC("RSS")))
 		{
-			while (reader.NextElement())
+			while (reader.NextElementName().SetTo(name))
 			{
-				name = reader.GetNodeText();
 				if (name->EqualsICase(UTF8STRC("Channel")))
 				{
-					while (reader.NextElement())
+					while (reader.NextElementName().SetTo(name))
 					{
-						name = reader.GetNodeText();
 						if (name->EqualsICase(UTF8STRC("title")))
 						{
 							sb.ClearStr();
@@ -933,14 +928,12 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<
 		}
 		else if (name->EqualsICase(UTF8STRC("rdf:RDF")))
 		{
-			while (reader.NextElement())
+			while (reader.NextElementName().SetTo(name))
 			{
-				name = reader.GetNodeText();
 				if (name->EqualsICase(UTF8STRC("Channel")))
 				{
-					while (reader.NextElement())
+					while (reader.NextElementName().SetTo(name))
 					{
-						name = reader.GetNodeText();
 						if (name->EqualsICase(UTF8STRC("title")))
 						{
 							sb.ClearStr();
@@ -1036,9 +1029,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<
 		else if (name->EqualsICase(UTF8STRC("feed")))
 		{
 			Text::XMLAttrib *attr;
-			while (reader.NextElement())
+			while (reader.NextElementName().SetTo(name))
 			{
-				name = reader.GetNodeText();
 				if (name->EqualsICase(UTF8STRC("title")))
 				{
 					sb.ClearStr();
@@ -1099,9 +1091,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<
 				}
 				else if (name->EqualsICase(UTF8STRC("author")))
 				{
-					while (reader.NextElement())
+					while (reader.NextElementName().SetTo(name))
 					{
-						name = reader.GetNodeText();
 						if (name->Equals(UTF8STRC("name")))
 						{
 							sb.ClearStr();

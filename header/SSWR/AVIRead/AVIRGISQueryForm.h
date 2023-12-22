@@ -58,7 +58,7 @@ namespace SSWR
 			Math::VectorTextWriterList writerList;
 			Bool layerNames;
 
-			Data::ArrayList<Math::Geometry::Vector2D*> queryVecList;
+			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
 			Data::ArrayList<UOSInt> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayList<Text::String*> queryValueList;

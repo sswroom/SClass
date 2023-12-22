@@ -467,7 +467,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		NotNullPtr<Math::Geometry::Vector2D> vec;
 		while (i < j)
 		{
-			if (vec.Set(this->selVecList.GetItem(i)))
+			if (this->selVecList.GetItem(i).SetTo(vec))
 			{
 				Map::MapDrawUtil::DrawVector(vec, img, view, b, p, ofst);
 			}
@@ -480,14 +480,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 
 void UI::GUIMapControl::ReleaseSelVecList()
 {
-	UOSInt i = this->selVecList.GetCount();
-	Math::Geometry::Vector2D *vec;
-	while (i-- > 0)
-	{
-		vec = this->selVecList.GetItem(i);
-		DEL_CLASS(vec);
-	}
-	this->selVecList.Clear();
+	this->selVecList.DeleteAll();
 }
 
 UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NotNullPtr<Map::MapView> view, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
@@ -845,14 +838,15 @@ void UI::GUIMapControl::HideMarker()
 void UI::GUIMapControl::SetSelectedVector(Math::Geometry::Vector2D *vec)
 {
 	this->ReleaseSelVecList();
-	if (vec)
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (nnvec.Set(vec))
 	{
-		this->selVecList.Add(vec);
+		this->selVecList.Add(nnvec);
 	}
 	this->Redraw();
 }
 
-void UI::GUIMapControl::SetSelectedVectors(NotNullPtr<Data::ArrayList<Math::Geometry::Vector2D*>> vecList)
+void UI::GUIMapControl::SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList)
 {
 	this->ReleaseSelVecList();
 	this->selVecList.AddAll(vecList);

@@ -15,7 +15,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<I
 	Text::XMLNode::NodeType thisNT;
 	OSInt elementType = 0;
 	const UTF8Char *csptr;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt strLen;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
@@ -25,10 +25,9 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<I
 		if (thisNT == Text::XMLNode::NodeType::Text)
 		{
 			toWrite = false;
-			s = reader.GetNodeOriText();
-			if (s == 0)
+			if (!s.Set(reader.GetNodeOriText()))
 			{
-				s = reader.GetNodeText();
+				s = reader.GetNodeTextNN();
 			}
 			csptr = s->v;
 			UTF8Char c;
@@ -52,27 +51,26 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<I
 		{
 			if (thisNT == Text::XMLNode::NodeType::Text && elementType == 1) //Style
 			{
-				s = reader.GetNodeText();
+				s = reader.GetNodeTextNN();
 				CSSWellFormat(s->v, s->leng, reader.GetPathLev(), sb);
 			}
 			else if (thisNT == Text::XMLNode::NodeType::Text && elementType == 2) //JavaScript
 			{
-				s = reader.GetNodeText();
+				s = reader.GetNodeTextNN();
 				Text::JSText::JSWellFormat(s->v, s->leng, reader.GetPathLev(), sb);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			else if (thisNT == Text::XMLNode::NodeType::Text && elementType == 3) //JSON
 			{
-				s = reader.GetNodeText();
+				s = reader.GetNodeTextNN();
 				Text::JSText::JSONWellFormat(s->v, s->leng, reader.GetPathLev(), sb);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			else if (thisNT == Text::XMLNode::NodeType::Text)
 			{
-				s = reader.GetNodeOriText();
-				if (s == 0)
+				if (!s.Set(reader.GetNodeOriText()))
 				{
-					s = reader.GetNodeText();
+					s = reader.GetNodeTextNN();
 				}
 				csptr = s->v;
 				UTF8Char c;
@@ -120,7 +118,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<I
 			elementType = 0;
 			if (thisNT == Text::XMLNode::NodeType::Element)
 			{
-				s = reader.GetNodeText();
+				s = reader.GetNodeTextNN();
 				if (s->EqualsICase(UTF8STRC("style")))
 				{
 					elementType = 1;
@@ -235,7 +233,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	Bool lastIsSpace = true;
 	const UTF8Char *csptr;
 	const UTF8Char *csptrEnd;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char c;
 	IO::MemoryStream wmstm;
 	IO::MemoryReadingStream mstm(buff, buffSize);
@@ -247,7 +245,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		{
 			if (lastType == 0)
 			{
-				s = reader.GetNodeText();
+				s = reader.GetNodeTextNN();
 				csptr = s->v;
 				csptrEnd = &s->v[s->leng];
 				while (true)
@@ -301,7 +299,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		}
 		else if (nt == Text::XMLNode::NodeType::Element)
 		{
-			s = reader.GetNodeText();
+			s = reader.GetNodeTextNN();
 			if (s->EqualsICase(UTF8STRC("SCRIPT")))
 			{
 				lastType = 1;

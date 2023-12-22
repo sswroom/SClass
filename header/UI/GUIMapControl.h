@@ -45,7 +45,7 @@ namespace UI
 		Double markerDir;
 		Bool markerHasDir;
 		Bool showMarker;
-		Data::ArrayList<Math::Geometry::Vector2D*> selVecList;
+		Data::ArrayListNN<Math::Geometry::Vector2D> selVecList;
 
 		Data::ArrayList<ScaleChangedHandler> scaleChgHdlrs;
 		Data::ArrayList<void *> scaleChgObjs;
@@ -113,7 +113,7 @@ namespace UI
 		void ShowMarkerMapXYDir(Math::Coord2DDbl mapPos, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();
 		void SetSelectedVector(Math::Geometry::Vector2D *vec);
-		void SetSelectedVectors(NotNullPtr<Data::ArrayList<Math::Geometry::Vector2D*>> vecList);
+		void SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 		void SetVAngle(Double angleRad);
 
 		void HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj);

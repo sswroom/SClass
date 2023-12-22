@@ -127,7 +127,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("script")))
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("script")))
 		{
 			sb.ClearStr();
 			reader.ReadNodeText(sb);

@@ -175,59 +175,76 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory 
 	MemClear(root, sizeof(SSDPRoot));
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 	Text::StringBuilderUTF8 sb;
-	while (reader.ReadNext())
+	NotNullPtr<Text::String> nodeText;
+	while (reader.NextElementName().SetTo(nodeText))
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (nodeText->Equals(UTF8STRC("root")))
 		{
-			sb.ClearStr();
-			reader.GetCurrPath(sb);
-			if (sb.EqualsICase(UTF8STRC("/root/device")))
+			while (reader.NextElementName().SetTo(nodeText))
 			{
-				if (reader.GetNodeText()->EqualsICase(UTF8STRC("udn")))
+				if (nodeText->Equals(UTF8STRC("device")))
 				{
-					SET_VALUE(root->udn);
+					while (reader.NextElementName().SetTo(nodeText))
+					{
+						if (nodeText->EqualsICase(UTF8STRC("udn")))
+						{
+							SET_VALUE(root->udn);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("friendlyName")))
+						{
+							SET_VALUE(root->friendlyName);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("manufacturer")))
+						{
+							SET_VALUE(root->manufacturer);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("manufacturerURL")))
+						{
+							SET_VALUE(root->manufacturerURL);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("modelName")))
+						{
+							SET_VALUE(root->modelName);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("modelNumber")))
+						{
+							SET_VALUE(root->modelNumber);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("modelURL")))
+						{
+							SET_VALUE(root->modelURL);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("serialNumber")))
+						{
+							SET_VALUE(root->serialNumber);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("presentationURL")))
+						{
+							SET_VALUE(root->presentationURL);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("deviceType")))
+						{
+							SET_VALUE(root->deviceType);
+						}
+						else if (nodeText->EqualsICase(UTF8STRC("deviceURL")))
+						{
+							SET_VALUE(root->deviceURL);
+						}
+						else
+						{
+							reader.SkipElement();
+						}
+					}
 				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("friendlyName")))
+				else
 				{
-					SET_VALUE(root->friendlyName);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("manufacturer")))
-				{
-					SET_VALUE(root->manufacturer);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("manufacturerURL")))
-				{
-					SET_VALUE(root->manufacturerURL);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("modelName")))
-				{
-					SET_VALUE(root->modelName);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("modelNumber")))
-				{
-					SET_VALUE(root->modelNumber);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("modelURL")))
-				{
-					SET_VALUE(root->modelURL);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("serialNumber")))
-				{
-					SET_VALUE(root->serialNumber);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("presentationURL")))
-				{
-					SET_VALUE(root->presentationURL);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("deviceType")))
-				{
-					SET_VALUE(root->deviceType);
-				}
-				else if (reader.GetNodeText()->EqualsICase(UTF8STRC("deviceURL")))
-				{
-					SET_VALUE(root->deviceURL);
+					reader.SkipElement();
 				}
 			}
+		}
+		else
+		{
+			reader.SkipElement();
 		}
 	}
 	return root;

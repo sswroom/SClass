@@ -42,96 +42,74 @@ void Map::WebFeatureService::LoadXML(Version version)
 	}
 	cli.Delete();
 	mstm.SeekFromBeginning(0);
+	NotNullPtr<Text::String> nodeName;
 	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
-	while (reader.ReadNext())
+	if (reader.NextElementName().SetTo(nodeName))
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("WFS_Capabilities")) || nodeName->EndsWith(UTF8STRC(":WFS_Capabilities")))
 		{
-			Text::String *nodeName = reader.GetNodeText();
-			if (nodeName->Equals(UTF8STRC("WFS_Capabilities")) || nodeName->EndsWith(UTF8STRC(":WFS_Capabilities")))
+			UOSInt i = reader.GetAttribCount();
+			Text::XMLAttrib *attr;
+			while (i-- > 0)
 			{
-				UOSInt i = reader.GetAttribCount();
-				Text::XMLAttrib *attr;
-				while (i-- > 0)
+				attr = reader.GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("version")))
 				{
-					attr = reader.GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("version")))
-					{
-						SDEL_STRING(this->version);
-						this->version = SCOPY_STRING(attr->value);
-					}
+					SDEL_STRING(this->version);
+					this->version = SCOPY_STRING(attr->value);
 				}
-				while (reader.ReadNext())
+			}
+			while (reader.NextElementName().SetTo(nodeName))
+			{
+				if (nodeName->Equals(UTF8STRC("Service")))
 				{
-					Text::XMLNode::NodeType nodeType = reader.GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					reader.SkipElement();
+				}
+				else if (nodeName->Equals(UTF8STRC("FeatureTypeList")) || nodeName->EndsWith(UTF8STRC(":FeatureTypeList")))
+				{
+					while (reader.NextElementName().SetTo(nodeName))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						nodeName = reader.GetNodeText();
-						if (nodeName->Equals(UTF8STRC("Service")))
+						if (nodeName->Equals(UTF8STRC("FeatureType")) || nodeName->EndsWith(UTF8STRC(":FeatureType")))
 						{
-							reader.SkipElement();
+							this->LoadXMLFeatureType(reader);
 						}
-						else if (nodeName->Equals(UTF8STRC("FeatureTypeList")))
-						{
-							while (reader.ReadNext())
-							{
-								nodeType = reader.GetNodeType();
-								if (nodeType == Text::XMLNode::NodeType::ElementEnd)
-								{
-									break;
-								}
-								else if (nodeType == Text::XMLNode::NodeType::Element)
-								{
-									nodeName = reader.GetNodeText();
-									if (nodeName->Equals(UTF8STRC("FeatureType")))
-									{
-										this->LoadXMLFeatureType(reader);
-									}
-									else if (nodeName->Equals(UTF8STRC("Operations")))
-									{
-										reader.SkipElement();
-									}
-									else
-									{
-										printf("WFS: Unknown element in FeatureTypeList: %s\r\n", nodeName->v);
-										reader.SkipElement();
-									}
-								}
-							}
-						}
-						else if (nodeName->Equals(UTF8STRC("Capability")))
-						{
-							reader.SkipElement();
-						}
-						else if (nodeName->EndsWith(UTF8STRC(":Filter_Capabilities")))
-						{
-							reader.SkipElement();
-						}
-						else if (nodeName->EndsWith(UTF8STRC(":ServiceIdentification")))
-						{
-							reader.SkipElement();
-						}
-						else if (nodeName->EndsWith(UTF8STRC(":ServiceProvider")))
-						{
-							reader.SkipElement();
-						}
-						else if (nodeName->EndsWith(UTF8STRC(":OperationsMetadata")))
+						else if (nodeName->Equals(UTF8STRC("Operations")))
 						{
 							reader.SkipElement();
 						}
 						else
 						{
-							printf("WFS: Unknown element in WFS_Capabilities: %s\r\n", nodeName->v);
+							printf("WFS: Unknown element in FeatureTypeList: %s\r\n", nodeName->v);
 							reader.SkipElement();
 						}
 					}
 				}
+				else if (nodeName->Equals(UTF8STRC("Capability")))
+				{
+					reader.SkipElement();
+				}
+				else if (nodeName->EndsWith(UTF8STRC(":Filter_Capabilities")))
+				{
+					reader.SkipElement();
+				}
+				else if (nodeName->EndsWith(UTF8STRC(":ServiceIdentification")))
+				{
+					reader.SkipElement();
+				}
+				else if (nodeName->EndsWith(UTF8STRC(":ServiceProvider")))
+				{
+					reader.SkipElement();
+				}
+				else if (nodeName->EndsWith(UTF8STRC(":OperationsMetadata")))
+				{
+					reader.SkipElement();
+				}
+				else
+				{
+					printf("WFS: Unknown element in WFS_Capabilities: %s\r\n", nodeName->v);
+					reader.SkipElement();
+				}
 			}
-			break;
 		}
 	}
 	UOSInt errCode = reader.GetErrorCode();
@@ -151,134 +129,122 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 	Math::RectAreaDbl wgs84Bounds = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(0, 0));
 	Bool hasTL = false;
 	Bool hasBR = false;
-	Text::XMLNode::NodeType nodeType;
 	Text::PString sarr[3];
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		if (nodeName->Equals(UTF8STRC("Name")) || nodeName->EndsWith(UTF8STRC(":Name")))
 		{
-			break;
+			sb.ClearStr();
+			if (reader->ReadNodeText(sb))
+			{
+				SDEL_STRING(name);
+				name = Text::String::New(sb.ToCString()).Ptr();
+			}
 		}
-		else if (nodeType == Text::XMLNode::NodeType::Element)
+		else if (nodeName->Equals(UTF8STRC("Title")) || nodeName->EndsWith(UTF8STRC(":Title")))
 		{
-			Text::String *nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("Name")))
+			sb.ClearStr();
+			if (reader->ReadNodeText(sb))
 			{
-				sb.ClearStr();
-				if (reader->ReadNodeText(sb))
-				{
-					SDEL_STRING(name);
-					name = Text::String::New(sb.ToCString()).Ptr();
-				}
+				SDEL_STRING(title);
+				title = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (nodeName->Equals(UTF8STRC("Title")))
+		}
+		else if (nodeName->Equals(UTF8STRC("DefaultCRS")) || nodeName->EndsWith(UTF8STRC(":DefaultCRS")))
+		{
+			sb.ClearStr();
+			if (reader->ReadNodeText(sb))
 			{
-				sb.ClearStr();
-				if (reader->ReadNodeText(sb))
-				{
-					SDEL_STRING(title);
-					title = Text::String::New(sb.ToCString()).Ptr();
-				}
+				SDEL_STRING(crs);
+				crs = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (nodeName->Equals(UTF8STRC("DefaultCRS")))
+		}
+		else if (nodeName->Equals(UTF8STRC("DefaultSRS")))
+		{
+			sb.ClearStr();
+			if (reader->ReadNodeText(sb))
 			{
-				sb.ClearStr();
-				if (reader->ReadNodeText(sb))
-				{
-					SDEL_STRING(crs);
-					crs = Text::String::New(sb.ToCString()).Ptr();
-				}
+				SDEL_STRING(crs);
+				crs = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (nodeName->Equals(UTF8STRC("DefaultSRS")))
+		}
+		else if (nodeName->Equals(UTF8STRC("SRS")))
+		{
+			sb.ClearStr();
+			if (reader->ReadNodeText(sb))
 			{
-				sb.ClearStr();
-				if (reader->ReadNodeText(sb))
-				{
-					SDEL_STRING(crs);
-					crs = Text::String::New(sb.ToCString()).Ptr();
-				}
+				SDEL_STRING(crs);
+				crs = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (nodeName->Equals(UTF8STRC("SRS")))
+		}
+		else if (nodeName->EndsWith(UTF8STRC(":WGS84BoundingBox")))
+		{
+			while (reader->NextElementName().SetTo(nodeName))
 			{
-				sb.ClearStr();
-				if (reader->ReadNodeText(sb))
+				if (nodeName->EndsWith(UTF8STRC(":LowerCorner")))
 				{
-					SDEL_STRING(crs);
-					crs = Text::String::New(sb.ToCString()).Ptr();
-				}
-			}
-			else if (nodeName->EndsWith(UTF8STRC(":WGS84BoundingBox")))
-			{
-				while (reader->ReadNext())
-				{
-					nodeType = reader->GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
 					{
-						break;
-					}
-					else if (nodeType == Text::XMLNode::NodeType::Element)
-					{
-						nodeName = reader->GetNodeText();
-						if (nodeName->EndsWith(UTF8STRC(":LowerCorner")))
+						if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 						{
-							sb.ClearStr();
-							if (reader->ReadNodeText(sb))
-							{
-								if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
-								{
-									hasTL = true;
-									wgs84Bounds.tl.x = sarr[0].ToDouble();
-									wgs84Bounds.tl.y = sarr[1].ToDouble();
-								}
-							}
-						}
-						else if (nodeName->EndsWith(UTF8STRC(":UpperCorner")))
-						{
-							sb.ClearStr();
-							if (reader->ReadNodeText(sb))
-							{
-								if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
-								{
-									hasBR = true;
-									wgs84Bounds.br.x = sarr[0].ToDouble();
-									wgs84Bounds.br.y = sarr[1].ToDouble();
-								}
-							}
+							hasTL = true;
+							wgs84Bounds.tl.x = sarr[0].ToDouble();
+							wgs84Bounds.tl.y = sarr[1].ToDouble();
 						}
 					}
 				}
-			}
-			else if (nodeName->Equals(UTF8STRC("LatLongBoundingBox")))
-			{
-				UOSInt i = reader->GetAttribCount();
-				Text::XMLAttrib *attr;
-				while (i-- > 0)
+				else if (nodeName->EndsWith(UTF8STRC(":UpperCorner")))
 				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("minx")) && attr->value != 0)
+					sb.ClearStr();
+					if (reader->ReadNodeText(sb))
 					{
-						hasTL = attr->value->ToDouble(wgs84Bounds.tl.x);
-					}
-					else if (attr->name->Equals(UTF8STRC("miny")) && attr->value != 0)
-					{
-						hasTL = attr->value->ToDouble(wgs84Bounds.tl.y);
-					}
-					else if (attr->name->Equals(UTF8STRC("maxx")) && attr->value != 0)
-					{
-						hasBR = attr->value->ToDouble(wgs84Bounds.br.x);
-					}
-					else if (attr->name->Equals(UTF8STRC("maxy")) && attr->value != 0)
-					{
-						hasBR = attr->value->ToDouble(wgs84Bounds.br.y);
+						if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
+						{
+							hasBR = true;
+							wgs84Bounds.br.x = sarr[0].ToDouble();
+							wgs84Bounds.br.y = sarr[1].ToDouble();
+						}
 					}
 				}
-				reader->SkipElement();
+				else
+				{
+					printf("WFS: Unknown node in WGS84BoundingBox: %s\r\n", nodeName->v);
+					reader->SkipElement();
+				}
 			}
-			else
+		}
+		else if (nodeName->Equals(UTF8STRC("LatLongBoundingBox")))
+		{
+			UOSInt i = reader->GetAttribCount();
+			Text::XMLAttrib *attr;
+			while (i-- > 0)
 			{
-				reader->SkipElement();
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("minx")) && attr->value != 0)
+				{
+					hasTL = attr->value->ToDouble(wgs84Bounds.tl.x);
+				}
+				else if (attr->name->Equals(UTF8STRC("miny")) && attr->value != 0)
+				{
+					hasTL = attr->value->ToDouble(wgs84Bounds.tl.y);
+				}
+				else if (attr->name->Equals(UTF8STRC("maxx")) && attr->value != 0)
+				{
+					hasBR = attr->value->ToDouble(wgs84Bounds.br.x);
+				}
+				else if (attr->name->Equals(UTF8STRC("maxy")) && attr->value != 0)
+				{
+					hasBR = attr->value->ToDouble(wgs84Bounds.br.y);
+				}
 			}
+			reader->SkipElement();
+		}
+		else
+		{
+			printf("WFS: Unknown node in FeatureType: %s\r\n", nodeName->v);
+			reader->SkipElement();
 		}
 	}
 	if (name && title && crs && hasTL && hasBR)

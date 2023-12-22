@@ -33,7 +33,7 @@ namespace Media
 			Data::ArrayList<JasperProperty*> properties;
 			Data::ArrayListStringNN importList;
 			Data::ArrayList<JasperParameter*> params;
-			Text::String *queryString;
+			Optional<Text::String> queryString;
 			JasperBand *title;
 			Data::ArrayList<JasperBand*> detailList;
 			Text::String *uuid;
@@ -71,7 +71,7 @@ namespace Media
 			UInt32 GetMarginBottom() const;
 			Text::String *GetUUID() const;
 
-			void SetQueryString(Text::String *str);
+			void SetQueryString(Optional<Text::String> str);
 			void SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value);
 			void AddImport(NotNullPtr<Text::String> value);
 			void AddParameter(Text::String *name, Text::String *className, Text::CString defValueExp);

@@ -135,12 +135,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NotNullPtr<IO::Str
 
 IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
-	Text::String *nodeText;
+	NotNullPtr<Text::String> nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 
-	if (!reader.NextElement())
+	if (!reader.NextElementName().SetTo(nodeText))
 		return 0;
-	nodeText = reader.GetNodeText();
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{
 		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile).OrNull();
@@ -160,126 +159,105 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			}
 		}
 		shortName = &fileName.v[i + 1];
-		while (reader.ReadNext())
+		while (reader.NextElementName().SetTo(nodeText))
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+			if (nodeText->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 			{
-				break;
-			}
-			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-			{
-				if (reader.GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
+				Map::GPSTrack *track;
+				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, CSTR_NULL));
+				track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
+				while (reader.NextElementName().SetTo(nodeText))
 				{
-					Map::GPSTrack *track;
-					NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, CSTR_NULL));
-					track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
-					while (reader.ReadNext())
+					if (nodeText->Equals(UTF8STRC("trkseg")))
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+						track->NewTrack();
+						while (reader.NextElementName().SetTo(nodeText))
 						{
-							break;
-						}
-						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader.GetNodeText()->Equals(UTF8STRC("trkseg")))
+							if (nodeText->EqualsICase(UTF8STRC("TRKPT")))
 							{
-								track->NewTrack();
-								while (reader.ReadNext())
+								Map::GPSTrack::GPSRecord3 rec;
+								if (ParseGPXPoint(reader, &rec))
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-									{
-										break;
-									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-									{
-										if (reader.GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
-										{
-											Map::GPSTrack::GPSRecord3 rec;
-											if (ParseGPXPoint(reader, &rec))
-											{
-												track->AddRecord(rec);
-											}
-										}
-										else
-										{
-											reader.SkipElement();
-										}
-									}
+									track->AddRecord(rec);
 								}
 							}
 							else
 							{
-								if (!reader.SkipElement())
-								{
-									break;
-								}
+								reader.SkipElement();
 							}
 						}
 					}
-					return track;
-				}
-/*				else if (reader->GetNodeText()->Equals(UTF8STRC("rte")) // /gpx/rte
-				{
-					Map::GPSTrack *track;
-					NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
-					j = 0;
-					while (j < i)
+					else
 					{
-						track->NewTrack();
-
-						size = nodeResult[j]->GetChildCnt();
-						k = 0;
-						while (k < size)
+						if (!reader.SkipElement())
 						{
-							node1 = nodeResult[j]->GetChild(k);
-							if (node1->GetNodeType() == Text::XMLNode::NodeType::Element)
-							{
-								if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("RTEPT")))
-								{
-									Map::GPSTrack::GPSRecord rec;
-									ParseGPXPoint(node1, &rec);
-									track->AddRecord(&rec);
-								}
-								else if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("NAME")))
-								{
-									Text::StringBuilderUTF8 sb;
-									node1->GetInnerText(sb);
-									track->SetTrackName(sb.ToString());
-								}
-							}
+							break;
+						}
+					}
+				}
+				return track;
+			}
+/*			else if (nodeText->Equals(UTF8STRC("rte")) // /gpx/rte
+			{
+				Map::GPSTrack *track;
+				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
+				j = 0;
+				while (j < i)
+				{
+					track->NewTrack();
 
-							k++;
+					size = nodeResult[j]->GetChildCnt();
+					k = 0;
+					while (k < size)
+					{
+						node1 = nodeResult[j]->GetChild(k);
+						if (node1->GetNodeType() == Text::XMLNode::NodeType::Element)
+						{
+							if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("RTEPT")))
+							{
+								Map::GPSTrack::GPSRecord rec;
+								ParseGPXPoint(node1, &rec);
+								track->AddRecord(&rec);
+							}
+							else if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("NAME")))
+							{
+								Text::StringBuilderUTF8 sb;
+								node1->GetInnerText(sb);
+								track->SetTrackName(sb.ToString());
+							}
 						}
 
-						j++;
-					}
-					DEL_CLASS(reader);
-					return track;
-				}*/
-/*				else if (reader->GetNodeText()->Equals(UTF8STRC("wpt")) // /gpx/wpt
-				{
-					Map::GPSTrack *track;
-					NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
-					track->NewTrack();
-					track->SetTrackName(shortName);
-					j = 0;
-					while (j < i)
-					{
-						Map::GPSTrack::GPSRecord rec;
-						ParseGPXPoint(nodeResult[j], &rec);
-						track->AddRecord(&rec);
-						j++;
+						k++;
 					}
 
-					DEL_CLASS(reader);
-					return track;
-				}*/
-//				else
+					j++;
+				}
+				DEL_CLASS(reader);
+				return track;
+			}*/
+/*			else if (nodeText->Equals(UTF8STRC("wpt")) // /gpx/wpt
+			{
+				Map::GPSTrack *track;
+				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
+				track->NewTrack();
+				track->SetTrackName(shortName);
+				j = 0;
+				while (j < i)
 				{
-					if (!reader.SkipElement())
-					{
-						return 0;
-					}
+					Map::GPSTrack::GPSRecord rec;
+					ParseGPXPoint(nodeResult[j], &rec);
+					track->AddRecord(&rec);
+					j++;
+				}
+
+				DEL_CLASS(reader);
+				return track;
+			}*/
+//			else
+			{
+				if (!reader.SkipElement())
+				{
+					return 0;
 				}
 			}
 		}
@@ -310,160 +288,115 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	else if (nodeText->Equals(UTF8STRC("OruxTracker")))
 	{
 		Map::OruxDBLayer *lyr = 0;
-		while (reader.ReadNext())
+		while (reader.NextElementName().SetTo(nodeText))
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+			if (nodeText->Equals(UTF8STRC("MapCalibration")))
 			{
-				break;
-			}
-			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
-			{
-				while (reader.ReadNext())
+				while (reader.NextElementName().SetTo(nodeText))
 				{
-					if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+					if (nodeText->Equals(UTF8STRC("OruxTracker")))
 					{
-						break;
-					}
-					else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-					{
-						if (reader.GetNodeText()->Equals(UTF8STRC("OruxTracker")))
+						if (lyr)
 						{
-							if (lyr)
+							while (reader.NextElementName().SetTo(nodeText))
 							{
-								while (reader.ReadNext())
+								if (nodeText->Equals(UTF8STRC("MapCalibration")))
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+									UInt32 layerId = (UInt32)-1;
+									UInt32 maxX = 0;
+									UInt32 maxY = 0;
+									UInt32 tileSize = 0;
+									Int32 flags = 0;
+									Double mapXMin;
+									Double mapYMin;
+									Double mapXMax;
+									Double mapYMax;
+									UOSInt i;
+									Text::XMLAttrib *attr;
+									i = reader.GetAttribCount();
+									while (i-- > 0)
 									{
-										break;
-									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
-									{
-										UInt32 layerId = (UInt32)-1;
-										UInt32 maxX = 0;
-										UInt32 maxY = 0;
-										UInt32 tileSize = 0;
-										Int32 flags = 0;
-										Double mapXMin;
-										Double mapYMin;
-										Double mapXMax;
-										Double mapYMax;
-										UOSInt i;
-										Text::XMLAttrib *attr;
-										i = reader.GetAttribCount();
-										while (i-- > 0)
+										attr = reader.GetAttrib(i);
+										if (attr->name->Equals(UTF8STRC("layerLevel")))
 										{
-											attr = reader.GetAttrib(i);
-											if (attr->name->Equals(UTF8STRC("layerLevel")))
+											if (attr->value->ToUInt32(layerId))
 											{
-												if (attr->value->ToUInt32(layerId))
-												{
-													flags |= 1;
-													break;
-												}
-											}
-										}
-
-										while (reader.ReadNext())
-										{
-											if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-											{
+												flags |= 1;
 												break;
 											}
-											else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+										}
+									}
+
+									while (reader.NextElementName().SetTo(nodeText))
+									{
+										if (nodeText->Equals(UTF8STRC("MapChunks")))
+										{
+											i = reader.GetAttribCount();
+											while (i-- > 0)
 											{
-												if (reader.GetNodeText()->Equals(UTF8STRC("MapChunks")))
+												attr = reader.GetAttrib(i);
+												if (attr->name->Equals(UTF8STRC("xMax")))
 												{
-													i = reader.GetAttribCount();
-													while (i-- > 0)
-													{
-														attr = reader.GetAttrib(i);
-														if (attr->name->Equals(UTF8STRC("xMax")))
-														{
-															if (attr->value->ToUInt32(maxX))
-																flags |= 2;
-														}
-														else if (attr->name->Equals(UTF8STRC("yMax")))
-														{
-															if (attr->value->ToUInt32(maxY))
-																flags |= 4;
-														}
-														else if (attr->name->Equals(UTF8STRC("img_width")))
-														{
-															if (attr->value->ToUInt32(tileSize))
-																flags |= 8;
-														}
-													}
-													reader.SkipElement();
+													if (attr->value->ToUInt32(maxX))
+														flags |= 2;
 												}
-												else if (reader.GetNodeText()->Equals(UTF8STRC("MapBounds")))
+												else if (attr->name->Equals(UTF8STRC("yMax")))
 												{
-													i = reader.GetAttribCount();
-													while (i-- > 0)
-													{
-														attr = reader.GetAttrib(i);
-														if (attr->name->Equals(UTF8STRC("minLat")))
-														{
-															if (attr->value->ToDouble(mapYMin))
-																flags |= 16;
-														}
-														else if (attr->name->Equals(UTF8STRC("maxLat")))
-														{
-															if (attr->value->ToDouble(mapYMax))
-																flags |= 32;
-														}
-														else if (attr->name->Equals(UTF8STRC("minLon")))
-														{
-															if (attr->value->ToDouble(mapXMin))
-																flags |= 64;
-														}
-														else if (attr->name->Equals(UTF8STRC("maxLon")))
-														{
-															if (attr->value->ToDouble(mapXMax))
-																flags |= 128;
-														}
-													}
-													reader.SkipElement();
+													if (attr->value->ToUInt32(maxY))
+														flags |= 4;
 												}
-												else
+												else if (attr->name->Equals(UTF8STRC("img_width")))
 												{
-													reader.SkipElement();
+													if (attr->value->ToUInt32(tileSize))
+														flags |= 8;
 												}
 											}
+											reader.SkipElement();
 										}
-
-										if (flags == 255)
+										else if (nodeText->Equals(UTF8STRC("MapBounds")))
 										{
-											lyr->AddLayer(layerId, mapXMin, mapYMin, mapXMax, mapYMax, maxX, maxY, tileSize);
+											i = reader.GetAttribCount();
+											while (i-- > 0)
+											{
+												attr = reader.GetAttrib(i);
+												if (attr->name->Equals(UTF8STRC("minLat")))
+												{
+													if (attr->value->ToDouble(mapYMin))
+														flags |= 16;
+												}
+												else if (attr->name->Equals(UTF8STRC("maxLat")))
+												{
+													if (attr->value->ToDouble(mapYMax))
+														flags |= 32;
+												}
+												else if (attr->name->Equals(UTF8STRC("minLon")))
+												{
+													if (attr->value->ToDouble(mapXMin))
+														flags |= 64;
+												}
+												else if (attr->name->Equals(UTF8STRC("maxLon")))
+												{
+													if (attr->value->ToDouble(mapXMax))
+														flags |= 128;
+												}
+											}
+											reader.SkipElement();
+										}
+										else
+										{
+											reader.SkipElement();
 										}
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+
+									if (flags == 255)
 									{
-										reader.SkipElement();
+										lyr->AddLayer(layerId, mapXMin, mapYMin, mapXMax, mapYMax, maxX, maxY, tileSize);
 									}
 								}
-							}
-							else
-							{
-								reader.SkipElement();
-							}
-						}
-						else if (reader.GetNodeText()->Equals(UTF8STRC("MapName")))
-						{
-							NotNullPtr<Parser::ParserList> nnparsers;
-							if (lyr == 0 && nnparsers.Set(parsers))
-							{
-								Text::StringBuilderUTF8 sb;
-								reader.ReadNodeText(sb);
-								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), nnparsers));
-								if (lyr->IsError())
+								else
 								{
-									DEL_CLASS(lyr);
-									lyr = 0;
+									reader.SkipElement();
 								}
-							}
-							else
-							{
-								reader.SkipElement();
 							}
 						}
 						else
@@ -471,11 +404,33 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							reader.SkipElement();
 						}
 					}
+					else if (nodeText->Equals(UTF8STRC("MapName")))
+					{
+						NotNullPtr<Parser::ParserList> nnparsers;
+						if (lyr == 0 && nnparsers.Set(parsers))
+						{
+							Text::StringBuilderUTF8 sb;
+							reader.ReadNodeText(sb);
+							NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), nnparsers));
+							if (lyr->IsError())
+							{
+								DEL_CLASS(lyr);
+								lyr = 0;
+							}
+						}
+						else
+						{
+							reader.SkipElement();
+						}
+					}
+					else
+					{
+						reader.SkipElement();
+					}
 				}
-
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+			else
 			{
 				reader.SkipElement();
 			}
@@ -518,34 +473,27 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			NEW_CLASS(proj, Text::VSProject(fileName, ver));
 			proj->SetProjectName(projName);
 			i = 0;
-			while (reader.ReadNext())
+			while (reader.NextElementName().SetTo(nodeText))
 			{
-				if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+				if (nodeText->Equals(UTF8STRC("Configurations")))
 				{
-					break;
+					if (!ParseVSConfFile(reader, proj))
+					{
+						break;
+					}
 				}
-				else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+				else if (nodeText->Equals(UTF8STRC("Files")))
 				{
-					if (reader.GetNodeText()->Equals(UTF8STRC("Configurations")))
+					if (!ParseVSProjFile(reader, proj))
 					{
-						if (!ParseVSConfFile(reader, proj))
-						{
-							break;
-						}
+						break;
 					}
-					else if (reader.GetNodeText()->Equals(UTF8STRC("Files")))
+				}
+				else
+				{
+					if (!reader.SkipElement())
 					{
-						if (!ParseVSProjFile(reader, proj))
-						{
-							break;
-						}
-					}
-					else
-					{
-						if (!reader.SkipElement())
-						{
-							break;
-						}
+						break;
 					}
 				}
 			}
@@ -582,138 +530,116 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			sbTableName.AppendSlow(shortName);
 		}
 
-		while (reader.ReadNext())
+		while (reader.NextElementName().SetTo(nodeText))
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+			if (nodeText->StartsWith(UTF8STRC("fme:")) && Text::StrStartsWith(nodeText->v + 4, sbTableName.ToString()) && Text::StrEquals(nodeText->v + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
 			{
-				break;
-			}
-			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-			{
-				if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrStartsWith(reader.GetNodeText()->v + 4, sbTableName.ToString()) && Text::StrEquals(reader.GetNodeText()->v + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
+				UOSInt i;
+				UOSInt j;
+				DB::TextDB *db = 0;
+				Text::StringBuilderUTF8 sb;
+				Data::ArrayList<const UTF8Char *> colList;
+				Data::ArrayList<const UTF8Char *> nameList;
+				Data::ArrayList<const UTF8Char *> valList;
+				Bool succ = false;
+				while (reader.NextElementName().SetTo(nodeText))
 				{
-					UOSInt i;
-					UOSInt j;
-					DB::TextDB *db = 0;
-					Text::StringBuilderUTF8 sb;
-					Data::ArrayList<const UTF8Char *> colList;
-					Data::ArrayList<const UTF8Char *> nameList;
-					Data::ArrayList<const UTF8Char *> valList;
-					Bool succ = false;
-					while (reader.ReadNext())
+					if (nodeText->StartsWith(UTF8STRC("fme:")) && Text::StrEquals(nodeText->v + 4, sbTableName.ToString()))
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+						while (reader.NextElementName().SetTo(nodeText))
 						{
-							succ = true;
-							break;
-						}
-						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrEquals(reader.GetNodeText()->v + 4, sbTableName.ToString()))
+							if (nodeText->StartsWith(UTF8STRC("fme:")))
 							{
-								while (reader.ReadNext())
-								{
-									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-									{
-										if (nameList.GetCount() > 0)
-										{
-											if (colList.GetCount() == 0)
-											{
-												i = 0;
-												j = nameList.GetCount();
-												while (i < j)
-												{
-													colList.Add(Text::StrCopyNew(nameList.GetItem(i)).Ptr());
-													i++;
-												}
-												NEW_CLASS(db, DB::TextDB(fileName));
-												db->AddTable(sbTableName.ToCString(), &colList);
-											}
-											Bool eq = true;
-											if (colList.GetCount() == nameList.GetCount())
-											{
-												i = colList.GetCount();
-												while (i-- > 0)
-												{
-													if (!Text::StrEquals(colList.GetItem(i), nameList.GetItem(i)))
-													{
-														eq = false;
-														break;
-													}
-												}
-											}
-											else
-											{
-												eq = false;
-											}
-											
-											if (eq)
-											{
-												db->AddTableData(&valList);
-											}
-											i = nameList.GetCount();
-											while (i-- > 0)
-											{
-												Text::StrDelNew(nameList.GetItem(i));
-											}
-											i = valList.GetCount();
-											while (i-- > 0)
-											{
-												Text::StrDelNew(valList.GetItem(i));
-											}
-											nameList.Clear();
-											valList.Clear();
-										}
-										break;
-									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-									{
-										if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")))
-										{
-											Text::String *txt = reader.GetNodeText();
-											nameList.Add(Text::StrCopyNewC(txt->v + 4, txt->leng - 4).Ptr());
-											sb.ClearStr();
-											reader.ReadNodeText(sb);
-											valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
-										}
-										else
-										{
-											reader.SkipElement();
-										}
-									}
-								}
+								nameList.Add(Text::StrCopyNewC(nodeText->v + 4, nodeText->leng - 4).Ptr());
+								sb.ClearStr();
+								reader.ReadNodeText(sb);
+								valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
 							}
 							else
 							{
 								reader.SkipElement();
 							}
 						}
+						if (nameList.GetCount() > 0)
+						{
+							if (colList.GetCount() == 0)
+							{
+								i = 0;
+								j = nameList.GetCount();
+								while (i < j)
+								{
+									colList.Add(Text::StrCopyNew(nameList.GetItem(i)).Ptr());
+									i++;
+								}
+								NEW_CLASS(db, DB::TextDB(fileName));
+								db->AddTable(sbTableName.ToCString(), &colList);
+							}
+							Bool eq = true;
+							if (colList.GetCount() == nameList.GetCount())
+							{
+								i = colList.GetCount();
+								while (i-- > 0)
+								{
+									if (!Text::StrEquals(colList.GetItem(i), nameList.GetItem(i)))
+									{
+										eq = false;
+										break;
+									}
+								}
+							}
+							else
+							{
+								eq = false;
+							}
+							
+							if (eq)
+							{
+								db->AddTableData(&valList);
+							}
+							i = nameList.GetCount();
+							while (i-- > 0)
+							{
+								Text::StrDelNew(nameList.GetItem(i));
+							}
+							i = valList.GetCount();
+							while (i-- > 0)
+							{
+								Text::StrDelNew(valList.GetItem(i));
+							}
+							nameList.Clear();
+							valList.Clear();
+						}
 					}
-					i = colList.GetCount();
-					while (i-- > 0)
+					else
 					{
-						Text::StrDelNew(colList.GetItem(i));
+						reader.SkipElement();
 					}
-					i = nameList.GetCount();
-					while (i-- > 0)
-					{
-						Text::StrDelNew(nameList.GetItem(i));
-					}
-					i = valList.GetCount();
-					while (i-- > 0)
-					{
-						Text::StrDelNew(valList.GetItem(i));
-					}
-					if (!succ)
-					{
-						SDEL_CLASS(db);
-					}
-					return db;
 				}
-				else
+				succ = !reader.HasError();
+				i = colList.GetCount();
+				while (i-- > 0)
 				{
-					reader.SkipElement();
+					Text::StrDelNew(colList.GetItem(i));
 				}
+				i = nameList.GetCount();
+				while (i-- > 0)
+				{
+					Text::StrDelNew(nameList.GetItem(i));
+				}
+				i = valList.GetCount();
+				while (i-- > 0)
+				{
+					Text::StrDelNew(valList.GetItem(i));
+				}
+				if (!succ)
+				{
+					SDEL_CLASS(db);
+				}
+				return db;
+			}
+			else
+			{
+				reader.SkipElement();
 			}
 		}
 	}
@@ -722,335 +648,283 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfoLog *sysInfo;
 		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
-		while (reader.ReadNext())
+		while (reader.NextElementName().SetTo(nodeText))
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+			if (nodeText->Equals(UTF8STRC("SYSTEM")))
 			{
-				break;
+				while (reader.NextElementName().SetTo(nodeText))
+				{
+					if (nodeText->Equals(UTF8STRC("OSNAME")))
+					{
+						sb.ClearStr();
+						if (reader.ReadNodeText(sb))
+						{
+							sysInfo->SetOSName(sb.ToCString());
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("OSVER")))
+					{
+						sb.ClearStr();
+						if (reader.ReadNodeText(sb))
+						{
+							sysInfo->SetOSVer(sb.ToCString());
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("OSLANGUAGE")))
+					{
+						sb.ClearStr();
+						if (reader.ReadNodeText(sb))
+						{
+							sysInfo->SetOSLocale(Text::StrToUInt32(sb.ToString()));
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("ARCHITECTURE")))
+					{
+						sb.ClearStr();
+						if (reader.ReadNodeText(sb))
+						{
+							sysInfo->SetArchitecture(Text::StrToUInt32(sb.ToString()));
+						}
+					}
+					else if (nodeText->Equals(UTF8STRC("PRODUCTTYPE")))
+					{
+						sb.ClearStr();
+						if (reader.ReadNodeText(sb))
+						{
+							sysInfo->SetProductType(Text::StrToUInt32(sb.ToString()));
+						}
+					}
+					else
+					{
+						reader.SkipElement();
+					}
+				}
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+			else if (nodeText->Equals(UTF8STRC("SERVERROLES")))
 			{
-				if (reader.GetNodeText()->Equals(UTF8STRC("SYSTEM")))
+				while (reader.NextElementName().SetTo(nodeText))
 				{
-					while (reader.ReadNext())
+					if (nodeText->Equals(UTF8STRC("REG_VALUE")))
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+						const UTF8Char *roleName = 0;
+						const UTF8Char *roleData = 0;
+						while (reader.NextElementName().SetTo(nodeText))
 						{
-							break;
-						}
-						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader.GetNodeText()->Equals(UTF8STRC("OSNAME")))
+							if (nodeText->Equals(UTF8STRC("NAME")))
 							{
-								sb.ClearStr();
-								if (reader.ReadNodeText(sb))
-								{
-									sysInfo->SetOSName(sb.ToCString());
-								}
-							}
-							else if (reader.GetNodeText()->Equals(UTF8STRC("OSVER")))
-							{
-								sb.ClearStr();
-								if (reader.ReadNodeText(sb))
-								{
-									sysInfo->SetOSVer(sb.ToCString());
-								}
-							}
-							else if (reader.GetNodeText()->Equals(UTF8STRC("OSLANGUAGE")))
-							{
-								sb.ClearStr();
-								if (reader.ReadNodeText(sb))
-								{
-									sysInfo->SetOSLocale(Text::StrToUInt32(sb.ToString()));
-								}
-							}
-							else if (reader.GetNodeText()->Equals(UTF8STRC("ARCHITECTURE")))
-							{
-								sb.ClearStr();
-								if (reader.ReadNodeText(sb))
-								{
-									sysInfo->SetArchitecture(Text::StrToUInt32(sb.ToString()));
-								}
-							}
-							else if (reader.GetNodeText()->Equals(UTF8STRC("PRODUCTTYPE")))
-							{
-								sb.ClearStr();
-								if (reader.ReadNodeText(sb))
-								{
-									sysInfo->SetProductType(Text::StrToUInt32(sb.ToString()));
-								}
-							}
-						}
-					}
-				}
-				else if (reader.GetNodeText()->Equals(UTF8STRC("SERVERROLES")))
-				{
-					while (reader.ReadNext())
-					{
-						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-						{
-							break;
-						}
-						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader.GetNodeText()->Equals(UTF8STRC("REG_VALUE")))
-							{
-								const UTF8Char *roleName = 0;
-								const UTF8Char *roleData = 0;
-								while (reader.ReadNext())
-								{
-									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-									{
-										break;
-									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-									{
-										if (reader.GetNodeText()->Equals(UTF8STRC("NAME")))
-										{
-											SDEL_TEXT(roleName);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("DATA")))
-										{
-											SDEL_TEXT(roleData);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else
-										{
-											reader.SkipElement();
-										}
-									}
-								}
-								if (roleName && roleData)
-								{
-									sysInfo->AddServerRole(roleName, roleData);
-								}
 								SDEL_TEXT(roleName);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("DATA")))
+							{
 								SDEL_TEXT(roleData);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
 							}
 							else
 							{
 								reader.SkipElement();
 							}
 						}
+						if (roleName && roleData)
+						{
+							sysInfo->AddServerRole(roleName, roleData);
+						}
+						SDEL_TEXT(roleName);
+						SDEL_TEXT(roleData);
+					}
+					else
+					{
+						reader.SkipElement();
 					}
 				}
-				else if (reader.GetNodeText()->Equals(UTF8STRC("DEVICES")))
+			}
+			else if (nodeText->Equals(UTF8STRC("DEVICES")))
+			{
+				while (reader.NextElementName().SetTo(nodeText))
 				{
-					while (reader.ReadNext())
+					if (nodeText->Equals(UTF8STRC("DEVICE")))
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+						const UTF8Char *desc = 0;
+						const UTF8Char *hwId = 0;
+						const UTF8Char *service = 0;
+						const UTF8Char *driver = 0;
+						while (reader.NextElementName().SetTo(nodeText))
 						{
-							break;
-						}
-						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader.GetNodeText()->Equals(UTF8STRC("DEVICE")))
+							if (nodeText->Equals(UTF8STRC("DESCRIPTION")))
 							{
-								const UTF8Char *desc = 0;
-								const UTF8Char *hwId = 0;
-								const UTF8Char *service = 0;
-								const UTF8Char *driver = 0;
-								while (reader.ReadNext())
-								{
-									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-									{
-										break;
-									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-									{
-										if (reader.GetNodeText()->Equals(UTF8STRC("DESCRIPTION")))
-										{
-											SDEL_TEXT(desc);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("HARDWAREID")))
-										{
-											SDEL_TEXT(hwId);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("SERVICE")))
-										{
-											SDEL_TEXT(service);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												service = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("DRIVER")))
-										{
-											SDEL_TEXT(driver);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else
-										{
-											reader.SkipElement();
-										}
-									}
-								}
-								if (desc && hwId)
-								{
-									sysInfo->AddDeviceInfo(desc, hwId, service, driver);
-								}
 								SDEL_TEXT(desc);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("HARDWAREID")))
+							{
 								SDEL_TEXT(hwId);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("SERVICE")))
+							{
 								SDEL_TEXT(service);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									service = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("DRIVER")))
+							{
 								SDEL_TEXT(driver);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
 							}
 							else
 							{
 								reader.SkipElement();
 							}
 						}
+						if (desc && hwId)
+						{
+							sysInfo->AddDeviceInfo(desc, hwId, service, driver);
+						}
+						SDEL_TEXT(desc);
+						SDEL_TEXT(hwId);
+						SDEL_TEXT(service);
+						SDEL_TEXT(driver);
 					}
-				}
-				else if (reader.GetNodeText()->Equals(UTF8STRC("DRIVERS")))
-				{
-					while (reader.ReadNext())
+					else
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+						reader.SkipElement();
+					}
+				}
+			}
+			else if (nodeText->Equals(UTF8STRC("DRIVERS")))
+			{
+				while (reader.NextElementName().SetTo(nodeText))
+				{
+					if (nodeText->Equals(UTF8STRC("DRIVER")))
+					{
+						const UTF8Char *fileName = 0;
+						UInt64 fileSize = 0;
+						const UTF8Char *createDate = 0;
+						const UTF8Char *version = 0;
+						const UTF8Char *manufacturer = 0;
+						const UTF8Char *productName = 0;
+						const UTF8Char *group = 0;
+						UInt32 altitude = 0;
+						while (reader.NextElementName().SetTo(nodeText))
 						{
-							break;
-						}
-						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader.GetNodeText()->Equals(UTF8STRC("DRIVER")))
+							if (nodeText->Equals(UTF8STRC("FILENAME")))
 							{
-								const UTF8Char *fileName = 0;
-								UInt64 fileSize = 0;
-								const UTF8Char *createDate = 0;
-								const UTF8Char *version = 0;
-								const UTF8Char *manufacturer = 0;
-								const UTF8Char *productName = 0;
-								const UTF8Char *group = 0;
-								UInt32 altitude = 0;
-								while (reader.ReadNext())
-								{
-									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-									{
-										break;
-									}
-									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-									{
-										if (reader.GetNodeText()->Equals(UTF8STRC("FILENAME")))
-										{
-											SDEL_TEXT(fileName);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("FILESIZE")))
-										{
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												fileSize = Text::StrToUInt64(sb.ToString());
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("CREATIONDATE")))
-										{
-											SDEL_TEXT(createDate);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("VERSION")))
-										{
-											SDEL_TEXT(version);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												version = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("MANUFACTURER")))
-										{
-											SDEL_TEXT(manufacturer);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("PRODUCTNAME")))
-										{
-											SDEL_TEXT(productName);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("GROUP")))
-										{
-											SDEL_TEXT(group);
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												group = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
-											}
-										}
-										else if (reader.GetNodeText()->Equals(UTF8STRC("ALTITUDE")))
-										{
-											sb.ClearStr();
-											if (reader.ReadNodeText(sb))
-											{
-												altitude = Text::StrToUInt32(sb.ToString());
-											}
-										}
-										else
-										{
-											reader.SkipElement();
-										}
-									}
-								}
-								if (fileName)
-								{
-									sysInfo->AddDriverInfo(fileName, fileSize, createDate, version, manufacturer, productName, group, altitude);
-								}
 								SDEL_TEXT(fileName);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("FILESIZE")))
+							{
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									fileSize = Text::StrToUInt64(sb.ToString());
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("CREATIONDATE")))
+							{
 								SDEL_TEXT(createDate);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("VERSION")))
+							{
 								SDEL_TEXT(version);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									version = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("MANUFACTURER")))
+							{
 								SDEL_TEXT(manufacturer);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("PRODUCTNAME")))
+							{
 								SDEL_TEXT(productName);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("GROUP")))
+							{
 								SDEL_TEXT(group);
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									group = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (nodeText->Equals(UTF8STRC("ALTITUDE")))
+							{
+								sb.ClearStr();
+								if (reader.ReadNodeText(sb))
+								{
+									altitude = Text::StrToUInt32(sb.ToString());
+								}
 							}
 							else
 							{
 								reader.SkipElement();
 							}
 						}
+						if (fileName)
+						{
+							sysInfo->AddDriverInfo(fileName, fileSize, createDate, version, manufacturer, productName, group, altitude);
+						}
+						SDEL_TEXT(fileName);
+						SDEL_TEXT(createDate);
+						SDEL_TEXT(version);
+						SDEL_TEXT(manufacturer);
+						SDEL_TEXT(productName);
+						SDEL_TEXT(group);
+					}
+					else
+					{
+						reader.SkipElement();
 					}
 				}
-				else
-				{
-					reader.SkipElement();
-				}
+			}
+			else
+			{
+				reader.SkipElement();
 			}
 		}
 		return sysInfo;
@@ -1086,47 +960,35 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NotNullPtr<Text::XMLReader> re
 		i++;
 	}
 
-	succ = true;
-	while (true)
+	NotNullPtr<Text::String> nodeText;
+	while (reader->NextElementName().SetTo(nodeText))
 	{
-		if (!reader->ReadNext())
+		if (nodeText->EqualsICase(UTF8STRC("ELE")))
 		{
-			succ = false;
-			break;
+			reader->ReadNodeText(sb);
+			rec->altitude = Text::StrToDouble(sb.ToString());
+			sb.ClearStr();
 		}
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+		else if (nodeText->EqualsICase(UTF8STRC("TIME")))
 		{
-			break;
+			reader->ReadNodeText(sb);
+			Data::DateTime dt;
+			dt.SetValue(sb.ToCString());
+			sb.ClearStr();
+			rec->recTime = dt.ToInstant();
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+		else if (nodeText->EqualsICase(UTF8STRC("SPEED")))
 		{
-			if (reader->GetNodeText()->EqualsICase(UTF8STRC("ELE")))
-			{
-				reader->ReadNodeText(sb);
-				rec->altitude = Text::StrToDouble(sb.ToString());
-				sb.ClearStr();
-			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("TIME")))
-			{
-				reader->ReadNodeText(sb);
-				Data::DateTime dt;
-				dt.SetValue(sb.ToCString());
-				sb.ClearStr();
-				rec->recTime = dt.ToInstant();
-			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("SPEED")))
-			{
-				reader->ReadNodeText(sb);
-				rec->speed = Text::StrToDouble(sb.ToString()) * 3.6 / 1.852;
-				sb.ClearStr();
-			}
-			else
-			{
-				reader->SkipElement();
-			}
+			reader->ReadNodeText(sb);
+			rec->speed = Text::StrToDouble(sb.ToString()) * 3.6 / 1.852;
+			sb.ClearStr();
 		}
-		i++;
+		else
+		{
+			reader->SkipElement();
+		}
 	}
+	succ = !reader->HasError();
 	rec->heading = 0;
 	rec->nSateUsed = 0;
 	rec->nSateUsedGPS = 0;
@@ -1146,79 +1008,64 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NotNullPtr<Text::XMLReader> 
 	UOSInt i;
 	Bool found;
 	Text::XMLAttrib *attr;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeText;
+	while (reader->NextElementName().SetTo(nodeText))
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+		if (nodeText->Equals(UTF8STRC("Filter")))
 		{
-			return true;
+			found = false;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("Name")))
+				{
+					NotNullPtr<Text::String> name;
+					if (name.Set(attr->value))
+					{
+						Text::VSContainer *childCont;
+						found = true;
+						NEW_CLASS(childCont, Text::VSContainer(name));
+						container->AddChild(childCont);
+						if (!ParseVSProjFile(reader, childCont))
+						{
+							return false;
+						}
+						break;
+					}
+				}
+			}
+			if (!found)
+			{
+				reader->SkipElement();
+			}
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+		else if (nodeText->Equals(UTF8STRC("File")))
 		{
-			if (reader->GetNodeText()->Equals(UTF8STRC("Filter")))
+			i = reader->GetAttribCount();
+			while (i-- > 0)
 			{
-				found = false;
-				i = reader->GetAttribCount();
-				while (i-- > 0)
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("RelativePath")))
 				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("Name")))
+					NotNullPtr<Text::String> path;
+					if (path.Set(attr->value))
 					{
-						NotNullPtr<Text::String> name;
-						if (name.Set(attr->value))
-						{
-							Text::VSContainer *childCont;
-							found = true;
-							NEW_CLASS(childCont, Text::VSContainer(name));
-							container->AddChild(childCont);
-							if (!ParseVSProjFile(reader, childCont))
-							{
-								return false;
-							}
-							break;
-						}
-					}
-				}
-				if (!found)
-				{
-					if (!reader->SkipElement())
-					{
-						return false;
+						Text::VSFile *childFile;
+						NEW_CLASS(childFile, Text::VSFile(path));
+						container->AddChild(childFile);
+						break;
 					}
 				}
 			}
-			else if (reader->GetNodeText()->Equals(UTF8STRC("File")))
-			{
-				i = reader->GetAttribCount();
-				while (i-- > 0)
-				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("RelativePath")))
-					{
-						NotNullPtr<Text::String> path;
-						if (path.Set(attr->value))
-						{
-							Text::VSFile *childFile;
-							NEW_CLASS(childFile, Text::VSFile(path));
-							container->AddChild(childFile);
-							break;
-						}
-					}
-				}
-				if (!reader->SkipElement())
-				{
-					return false;
-				}
-			}
-			else
-			{
-				if (!reader->SkipElement())
-				{
-					return false;
-				}
-			}
+			reader->SkipElement();
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
-	return false;
+	return !reader->HasError();
 }
 
 Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> reader, Text::CodeProject *proj)
@@ -1227,78 +1074,65 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> 
 	Text::CodeProjectCfg *cfg;
 	Text::XMLAttrib *attr;
 	Text::String *cfgName;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+		if (nodeName->Equals(UTF8STRC("Configuration")))
 		{
-			return true;
-		}
-		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-		{
-			if (reader->GetNodeText()->Equals(UTF8STRC("Configuration")))
+			cfg = 0;
+			cfgName = 0;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
 			{
-				cfg = 0;
-				cfgName = 0;
-				i = reader->GetAttribCount();
-				while (i-- > 0)
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("Name")))
 				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("Name")))
-					{
-						cfgName = attr->value;
-						break;
-					}
+					cfgName = attr->value;
+					break;
 				}
-				NotNullPtr<Text::String> cfgNameStr;
-				if (cfgNameStr.Set(cfgName))
+			}
+			NotNullPtr<Text::String> cfgNameStr;
+			if (cfgNameStr.Set(cfgName))
+			{
+				NEW_CLASS(cfg, Text::CodeProjectCfg(cfgNameStr));
+				while (true)
 				{
-					NEW_CLASS(cfg, Text::CodeProjectCfg(cfgNameStr));
-					while (true)
-					{
-						if (!reader->ReadNext())
-						{
-							return false;
-						}
-						if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
-						{
-							break;
-						}
-						else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
-						{
-							if (reader->GetNodeText()->Equals(UTF8STRC("Tool")))
-							{
-								i = reader->GetAttribCount();
-								while (i-- > 0)
-								{
-									attr = reader->GetAttrib(i);
-									NotNullPtr<Text::String> name;
-									if (name.Set(attr->name))
-									{
-										if (name->Equals(UTF8STRC("Name")))
-										{
-										}
-										else
-										{
-											cfg->SetValue(Text::String::NewEmpty(), name, attr->value);
-										}
-									}
-								}
-							}
-							if (!reader->SkipElement())
-							{
-								return false;
-							}
-						}
-					}
-					proj->AddConfig(cfg);
-				}
-				else
-				{
-					if (!reader->SkipElement())
+					if (!reader->ReadNext())
 					{
 						return false;
 					}
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+					{
+						break;
+					}
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+					{
+						if (Text::String::OrEmpty(reader->GetNodeText())->Equals(UTF8STRC("Tool")))
+						{
+							i = reader->GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader->GetAttrib(i);
+								NotNullPtr<Text::String> name;
+								if (name.Set(attr->name))
+								{
+									if (name->Equals(UTF8STRC("Name")))
+									{
+									}
+									else
+									{
+										cfg->SetValue(Text::String::NewEmpty(), name, attr->value);
+									}
+								}
+							}
+						}
+						if (!reader->SkipElement())
+						{
+							return false;
+						}
+					}
 				}
+				proj->AddConfig(cfg);
 			}
 			else
 			{
@@ -1308,6 +1142,10 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> 
 				}
 			}
 		}
+		else
+		{
+			reader->SkipElement();
+		}
 	}
-	return false;
+	return reader->IsComplete();
 }

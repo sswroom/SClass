@@ -6,7 +6,11 @@
 #include "Map/RegionalMapSource.h"
 #include "Map/TileMapLayer.h"
 #include "Map/TileMapServiceSource.h"
+#include "Map/WebFeatureService.h"
+#include "Map/WebMapService.h"
 #include "Map/ESRI/ESRIMapServer.h"
+
+#include <stdio.h>
 
 Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 	// https://aginfo.cgk.affrc.go.jp/tmc/layers.html.en
@@ -226,6 +230,12 @@ Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 		UTF8STRC("")},
 	{UTF8STRC("Radar 256km"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Observatory"), MapType::File, 0, UTF8STRC("https://www.hko.gov.hk/wxinfo/radars/radar_256_kml/Radar_256k.kml"),
 		UTF8STRC("")},
+	{UTF8STRC("Daily total rainfall"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Observatory"), MapType::WFS, 0, UTF8STRC("https://portal.csdi.gov.hk/server/services/common/hko_rcd_1634958957456_52030/MapServer/WFSServer"),
+		UTF8STRC("")},
+	{UTF8STRC("Daily total rainfall"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Observatory"), MapType::WMS, 0, UTF8STRC("https://portal.csdi.gov.hk/server/services/common/hko_rcd_1634958957456_52030/MapServer/WMSServer"),
+		UTF8STRC("")},
+	{UTF8STRC("Daily total rainfall"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Observatory"), MapType::ESRIMap, 0, UTF8STRC("https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634958957456_52030/FeatureServer"),
+		UTF8STRC("")},
 	{UTF8STRC("Boundaries of New Towns (for 2006 Population By-census)"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Planning Department"), MapType::File, 0, UTF8STRC("https://www.pland.gov.hk/open_data/newtowns/NewTown_2006.json"),
 		UTF8STRC("")},
 	{UTF8STRC("Boundaries of New Towns (for 2011 Population Census)"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Planning Department"), MapType::File, 0, UTF8STRC("https://www.pland.gov.hk/open_data/newtowns/NewTown_2011.json"),
@@ -268,7 +278,7 @@ const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSIn
 	return maps;
 }
 
-Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, NotNullPtr<Parser::ParserList> parsers, Net::WebBrowser *browser)
+Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, NotNullPtr<Parser::ParserList> parsers, Net::WebBrowser *browser, NotNullPtr<Math::CoordinateSystem> envCSys)
 {
 	Map::MapDrawLayer *layer;
 	switch (map->mapType)
@@ -334,7 +344,46 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPt
 		NEW_CLASS(layer, Map::DrawMapServiceLayer(esriMap));
 		return layer;
 	}
+	case MapType::WMS:
+	{
+		Map::WebMapService *wms;
+		NEW_CLASS(wms, Map::WebMapService(sockf, ssl, encFact, Text::CString(map->url, map->urlLen), Map::WebMapService::Version::ANY, envCSys));
+		if (wms->IsError())
+		{
+			printf("RegionalMapSource: Error in loading wms layer\r\n");
+			DEL_CLASS(wms);
+			return 0;
+		}
+		NEW_CLASS(layer, Map::DrawMapServiceLayer(wms));
+		return layer;
+	}
+	case MapType::WFS:
+	{
+		Map::WebFeatureService wfs(sockf, ssl, encFact, Text::CString(map->url, map->urlLen), Map::WebFeatureService::Version::ANY);
+		return wfs.LoadAsLayer();
+	}
 	default:
 		return 0;
+	}
+}
+
+Text::CStringNN Map::RegionalMapSource::MapTypeGetName(MapType val)
+{
+	switch (val)
+	{
+	case MapType::TMS:
+		return CSTR("TMS");
+	case MapType::File:
+		return CSTR("File");
+	case MapType::CustomTile:
+		return CSTR("CustomTile");
+	case MapType::ESRIMap:
+		return CSTR("ESRIMap");
+	case MapType::WMS:
+		return CSTR("WMS");
+	case MapType::WFS:
+		return CSTR("WFS");
+	default:
+		return CSTR("Unknown");
 	}
 }

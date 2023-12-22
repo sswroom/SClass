@@ -25,266 +25,246 @@ void Map::TileMapServiceSource::LoadXML()
 	{
 		Bool valid = false;
 		Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-		while (reader.ReadNext())
+		NotNullPtr<Text::String> nodeText;
+		if (reader.NextElementName().SetTo(nodeText))
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-			{
-				if (reader.GetNodeText()->Equals(UTF8STRC("TileMap")))
-				{
-					valid = true;
-				}
-				break;
-			}
+			valid = nodeText->Equals(UTF8STRC("TileMap"));
 		}
 
 		if (valid)
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::String *s;
 			Text::XMLAttrib *attr;
-			Text::XMLNode::NodeType nt;
 			UOSInt i;
-			while (reader.ReadNext())
+			while (reader.NextElementName().SetTo(nodeText))
 			{
-				if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+				if (nodeText->Equals(UTF8STRC("Title")))
 				{
-					s = reader.GetNodeText();
-					if (s->Equals(UTF8STRC("Title")))
+					sb.ClearStr();
+					if (reader.ReadNodeText(sb))
 					{
-						sb.ClearStr();
-						if (reader.ReadNodeText(sb))
-						{
-							SDEL_STRING(this->title);
-							this->title = Text::String::New(sb.ToCString()).Ptr();
+						SDEL_STRING(this->title);
+						this->title = Text::String::New(sb.ToCString()).Ptr();
 #if defined(VERBOSE)
-							printf("Title = %s\r\n", this->title->v);
+						printf("Title = %s\r\n", this->title->v);
 #endif
-						}
 					}
-					else if (s->Equals(UTF8STRC("SRS")))
+				}
+				else if (nodeText->Equals(UTF8STRC("SRS")))
+				{
+					sb.ClearStr();
+					if (reader.ReadNodeText(sb))
 					{
-						sb.ClearStr();
-						if (reader.ReadNodeText(sb))
+						NotNullPtr<Math::CoordinateSystem> csys;
+						if (csys.Set(Math::CoordinateSystemManager::CreateFromName(sb.ToCString())))
 						{
-							NotNullPtr<Math::CoordinateSystem> csys;
-							if (csys.Set(Math::CoordinateSystemManager::CreateFromName(sb.ToCString())))
+							this->csys.Delete();
+							this->csys = csys;
+#if defined(VERBOSE)
+							printf("SRID = %d\r\n", this->csys->GetSRID());
+#endif
+							const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
+							if (srInfo)
 							{
-								this->csys.Delete();
-								this->csys = csys;
+								NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+								this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
+								wgs84.Delete();
 #if defined(VERBOSE)
-								printf("SRID = %d\r\n", this->csys->GetSRID());
+								printf("SR Origin = (%lf, %lf)\r\n", this->csysOrigin.x, this->csysOrigin.y);
 #endif
-								const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
-								if (srInfo)
-								{
-									NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
-									this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
-									wgs84.Delete();
-#if defined(VERBOSE)
-									printf("SR Origin = (%lf, %lf)\r\n", this->csysOrigin.x, this->csysOrigin.y);
-#endif
-								}
 							}
 						}
 					}
-					else if (s->Equals(UTF8STRC("BoundingBox")))
+				}
+				else if (nodeText->Equals(UTF8STRC("BoundingBox")))
+				{
+					i = reader.GetAttribCount();
+					while (i-- > 0)
 					{
-						i = reader.GetAttribCount();
-						while (i-- > 0)
+						attr = reader.GetAttrib(i);
+						if (attr->name->Equals(UTF8STRC("minx")))
 						{
-							attr = reader.GetAttrib(i);
-							if (attr->name->Equals(UTF8STRC("minx")))
-							{
-								this->bounds.tl.x = attr->value->ToDouble();
+							this->bounds.tl.x = attr->value->ToDouble();
 #if defined(VERBOSE)
-								printf("minx = %lf\r\n", this->bounds.tl.x);
+							printf("minx = %lf\r\n", this->bounds.tl.x);
 #endif
-							}
-							else if (attr->name->Equals(UTF8STRC("miny")))
-							{
-								this->bounds.tl.y = attr->value->ToDouble();
-#if defined(VERBOSE)
-								printf("miny = %lf\r\n", this->bounds.tl.y);
-#endif
-							}
-							else if (attr->name->Equals(UTF8STRC("maxx")))
-							{
-								this->bounds.br.x = attr->value->ToDouble();
-#if defined(VERBOSE)
-								printf("maxx = %lf\r\n", this->bounds.br.x);
-#endif
-							}
-							else if (attr->name->Equals(UTF8STRC("maxy")))
-							{
-								this->bounds.br.y = attr->value->ToDouble();
-#if defined(VERBOSE)
-								printf("maxy = %lf\r\n", this->bounds.br.y);
-#endif
-							}
 						}
-						reader.SkipElement();
-					}
-					else if (s->Equals(UTF8STRC("Origin")))
-					{
-						i = reader.GetAttribCount();
-						while (i-- > 0)
+						else if (attr->name->Equals(UTF8STRC("miny")))
 						{
-							attr = reader.GetAttrib(i);
-							if (attr->name->Equals(UTF8STRC("x")))
-							{
-								this->origin.x = attr->value->ToDouble();
+							this->bounds.tl.y = attr->value->ToDouble();
 #if defined(VERBOSE)
-								printf("originX = %lf\r\n", this->origin.x);
+							printf("miny = %lf\r\n", this->bounds.tl.y);
 #endif
-							}
-							else if (attr->name->Equals(UTF8STRC("y")))
-							{
-								this->origin.y = attr->value->ToDouble();
-#if defined(VERBOSE)
-								printf("originY = %lf\r\n", this->origin.y);
-#endif
-							}
 						}
-						reader.SkipElement();
-					}
-					else if (s->Equals(UTF8STRC("Origin")))
-					{
-						i = reader.GetAttribCount();
-						while (i-- > 0)
+						else if (attr->name->Equals(UTF8STRC("maxx")))
 						{
-							attr = reader.GetAttrib(i);
-							if (attr->name->Equals(UTF8STRC("x")))
-							{
-								this->origin.x = attr->value->ToDouble();
+							this->bounds.br.x = attr->value->ToDouble();
 #if defined(VERBOSE)
-								printf("originX = %lf\r\n", this->origin.x);
+							printf("maxx = %lf\r\n", this->bounds.br.x);
 #endif
-							}
-							else if (attr->name->Equals(UTF8STRC("y")))
-							{
-								this->origin.y = attr->value->ToDouble();
-#if defined(VERBOSE)
-								printf("originY = %lf\r\n", this->origin.y);
-#endif
-							}
 						}
-						reader.SkipElement();
-					}
-					else if (s->Equals(UTF8STRC("TileFormat")))
-					{
-						i = reader.GetAttribCount();
-						while (i-- > 0)
+						else if (attr->name->Equals(UTF8STRC("maxy")))
 						{
-							attr = reader.GetAttrib(i);
-							if (attr->name->Equals(UTF8STRC("width")))
-							{
-								this->tileWidth = attr->value->ToUInt32();
+							this->bounds.br.y = attr->value->ToDouble();
 #if defined(VERBOSE)
-								printf("tileWidth = %d\r\n", (UInt32)this->tileWidth);
+							printf("maxy = %lf\r\n", this->bounds.br.y);
 #endif
-							}
-							else if (attr->name->Equals(UTF8STRC("height")))
-							{
-								this->tileHeight = attr->value->ToUInt32();
-#if defined(VERBOSE)
-								printf("tileHeight = %d\r\n", (UInt32)this->tileHeight);
-#endif
-							}
-							else if (attr->name->Equals(UTF8STRC("extension")))
-							{
-								if (attr->value->Equals(UTF8STRC("jpg")))
-								{
-									SDEL_STRING(this->tileExt);
-									this->tileExt = attr->value->Clone().Ptr();
-									this->imgType = IT_JPG;
-								}
-								else if (attr->value->Equals(UTF8STRC("png")))
-								{
-									SDEL_STRING(this->tileExt);
-									this->tileExt = attr->value->Clone().Ptr();
-									this->imgType = IT_PNG;
-								}
-#if defined(VERBOSE)
-								printf("found tileExt = %s, use = %s\r\n", attr->value->v, STR_PTR(this->tileExt));
-#endif
-							}
 						}
-						reader.SkipElement();
 					}
-					else if (s->Equals(UTF8STRC("TileSets")))
+					reader.SkipElement();
+				}
+				else if (nodeText->Equals(UTF8STRC("Origin")))
+				{
+					i = reader.GetAttribCount();
+					while (i-- > 0)
 					{
-						while (reader.ReadNext())
+						attr = reader.GetAttrib(i);
+						if (attr->name->Equals(UTF8STRC("x")))
 						{
-							nt = reader.GetNodeType();
-							if (nt == Text::XMLNode::NodeType::Element)
+							this->origin.x = attr->value->ToDouble();
+#if defined(VERBOSE)
+							printf("originX = %lf\r\n", this->origin.x);
+#endif
+						}
+						else if (attr->name->Equals(UTF8STRC("y")))
+						{
+							this->origin.y = attr->value->ToDouble();
+#if defined(VERBOSE)
+							printf("originY = %lf\r\n", this->origin.y);
+#endif
+						}
+					}
+					reader.SkipElement();
+				}
+				else if (nodeText->Equals(UTF8STRC("Origin")))
+				{
+					i = reader.GetAttribCount();
+					while (i-- > 0)
+					{
+						attr = reader.GetAttrib(i);
+						if (attr->name->Equals(UTF8STRC("x")))
+						{
+							this->origin.x = attr->value->ToDouble();
+#if defined(VERBOSE)
+							printf("originX = %lf\r\n", this->origin.x);
+#endif
+						}
+						else if (attr->name->Equals(UTF8STRC("y")))
+						{
+							this->origin.y = attr->value->ToDouble();
+#if defined(VERBOSE)
+							printf("originY = %lf\r\n", this->origin.y);
+#endif
+						}
+					}
+					reader.SkipElement();
+				}
+				else if (nodeText->Equals(UTF8STRC("TileFormat")))
+				{
+					i = reader.GetAttribCount();
+					while (i-- > 0)
+					{
+						attr = reader.GetAttrib(i);
+						if (attr->name->Equals(UTF8STRC("width")))
+						{
+							this->tileWidth = attr->value->ToUInt32();
+#if defined(VERBOSE)
+							printf("tileWidth = %d\r\n", (UInt32)this->tileWidth);
+#endif
+						}
+						else if (attr->name->Equals(UTF8STRC("height")))
+						{
+							this->tileHeight = attr->value->ToUInt32();
+#if defined(VERBOSE)
+							printf("tileHeight = %d\r\n", (UInt32)this->tileHeight);
+#endif
+						}
+						else if (attr->name->Equals(UTF8STRC("extension")))
+						{
+							if (attr->value->Equals(UTF8STRC("jpg")))
 							{
-								if (reader.GetNodeText()->Equals(UTF8STRC("TileSet")))
-								{
-									TileLayer *lyr;
-									Text::String *href = 0;
-									Double unitPerPixel= 0;
-									UOSInt order = INVALID_INDEX;
+								SDEL_STRING(this->tileExt);
+								this->tileExt = attr->value->Clone().Ptr();
+								this->imgType = IT_JPG;
+							}
+							else if (attr->value->Equals(UTF8STRC("png")))
+							{
+								SDEL_STRING(this->tileExt);
+								this->tileExt = attr->value->Clone().Ptr();
+								this->imgType = IT_PNG;
+							}
+#if defined(VERBOSE)
+							printf("found tileExt = %s, use = %s\r\n", attr->value->v, STR_PTR(this->tileExt));
+#endif
+						}
+					}
+					reader.SkipElement();
+				}
+				else if (nodeText->Equals(UTF8STRC("TileSets")))
+				{
+					while (reader.NextElementName().SetTo(nodeText))
+					{
+						if (nodeText->Equals(UTF8STRC("TileSet")))
+						{
+							TileLayer *lyr;
+							Text::String *href = 0;
+							Double unitPerPixel= 0;
+							UOSInt order = INVALID_INDEX;
 
-									i = reader.GetAttribCount();
-									while (i-- > 0)
-									{
-										attr = reader.GetAttrib(i);
-										if (attr->name->Equals(UTF8STRC("href")))
-										{
-											SDEL_STRING(href);
-											href = attr->value->Clone().Ptr();
-#if defined(VERBOSE)
-											printf("tileHref = %s\r\n", href->v);
-#endif
-										}
-										else if (attr->name->Equals(UTF8STRC("profile")))
-										{
-											SDEL_STRING(href);
-											href = attr->value->Clone().Ptr();
-#if defined(VERBOSE)
-											printf("tileProfile = %s\r\n", href->v);
-#endif
-										}
-										else if (attr->name->Equals(UTF8STRC("units-per-pixel")))
-										{
-											unitPerPixel = attr->value->ToDouble();
-#if defined(VERBOSE)
-											printf("tileUnitPerPixel = %lf\r\n", unitPerPixel);
-#endif
-										}
-										else if (attr->name->Equals(UTF8STRC("order")))
-										{
-											order = attr->value->ToUOSInt();
-#if defined(VERBOSE)
-											printf("tileOrder = %d\r\n", (UInt32)order);
-#endif
-										}
-									}
-									if (href && order != INVALID_INDEX && unitPerPixel != 0)
-									{
-										lyr = MemAlloc(TileLayer, 1);
-										lyr->url = href->Clone();
-										lyr->unitPerPixel = unitPerPixel;
-										lyr->order = order;
-										this->layers.Add(lyr);
-#if defined(VERBOSE)
-										printf("Added Layer Cnt=%d, order=%d, upp=%lf, url=%s\r\n", (UInt32)this->layers.GetCount(), (UInt32)order, unitPerPixel, href->v);
-#endif
-									}
-									SDEL_STRING(href);
-								}
-								reader.SkipElement();
-							}
-							else if (nt == Text::XMLNode::NodeType::ElementEnd)
+							i = reader.GetAttribCount();
+							while (i-- > 0)
 							{
-								break;
+								attr = reader.GetAttrib(i);
+								if (attr->name->Equals(UTF8STRC("href")))
+								{
+									SDEL_STRING(href);
+									href = attr->value->Clone().Ptr();
+#if defined(VERBOSE)
+									printf("tileHref = %s\r\n", href->v);
+#endif
+								}
+								else if (attr->name->Equals(UTF8STRC("profile")))
+								{
+									SDEL_STRING(href);
+									href = attr->value->Clone().Ptr();
+#if defined(VERBOSE)
+									printf("tileProfile = %s\r\n", href->v);
+#endif
+								}
+								else if (attr->name->Equals(UTF8STRC("units-per-pixel")))
+								{
+									unitPerPixel = attr->value->ToDouble();
+#if defined(VERBOSE)
+									printf("tileUnitPerPixel = %lf\r\n", unitPerPixel);
+#endif
+								}
+								else if (attr->name->Equals(UTF8STRC("order")))
+								{
+									order = attr->value->ToUOSInt();
+#if defined(VERBOSE)
+									printf("tileOrder = %d\r\n", (UInt32)order);
+#endif
+								}
 							}
+							if (href && order != INVALID_INDEX && unitPerPixel != 0)
+							{
+								lyr = MemAlloc(TileLayer, 1);
+								lyr->url = href->Clone();
+								lyr->unitPerPixel = unitPerPixel;
+								lyr->order = order;
+								this->layers.Add(lyr);
+#if defined(VERBOSE)
+								printf("Added Layer Cnt=%d, order=%d, upp=%lf, url=%s\r\n", (UInt32)this->layers.GetCount(), (UInt32)order, unitPerPixel, href->v);
+#endif
+							}
+							SDEL_STRING(href);
 						}
-					}
-					else
-					{
 						reader.SkipElement();
 					}
+				}
+				else
+				{
+					reader.SkipElement();
 				}
 			}
 		}
