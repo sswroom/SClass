@@ -214,7 +214,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 	y += 24;
 	this->pnlResult->SetRect(0, 0, 100, y + 8, false);
 
-	NEW_CLASS(this->lvPayload, UI::GUIListView(ui, this->pnlMain, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvPayload = ui->NewListView(this->pnlMain, UI::ListViewStyle::Table, 3);
 	this->lvPayload->SetFullRowSelect(true);
 	this->lvPayload->SetShowGrid(true);
 	this->lvPayload->SetDockType(UI::GUIControl::DOCK_FILL);

@@ -689,7 +689,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->btnDeviceAdd = ui->NewButton(this->pnlDevice, CSTR("Add"));
 	this->btnDeviceAdd->SetRect(404, 4, 75, 23, false);
 	this->btnDeviceAdd->HandleButtonClick(OnDeviceAddClicked, this);
-	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 4);
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);

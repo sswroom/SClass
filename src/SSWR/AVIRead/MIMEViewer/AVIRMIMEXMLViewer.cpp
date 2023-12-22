@@ -8,7 +8,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR:
 {
 	this->obj = obj;
 
-	NEW_CLASS(this->lvXML, UI::GUIListView(ui, ctrl, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvXML = ui->NewListView(ctrl, UI::ListViewStyle::Table, 3);
 	this->lvXML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvXML->SetShowGrid(true);
 	this->lvXML->SetFullRowSelect(true);

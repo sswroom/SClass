@@ -346,7 +346,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->txtTimeTotal = ui->NewTextBox(this->pnlResponse, CSTR(""));
 	this->txtTimeTotal->SetRect(104, 124, 150, 23, false);
 	this->txtTimeTotal->SetReadOnly(true);
-	NEW_CLASS(this->lvHeaders, UI::GUIListView(ui, this->grpResponse, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvHeaders = ui->NewListView(this->grpResponse, UI::ListViewStyle::Table, 1);
 	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);

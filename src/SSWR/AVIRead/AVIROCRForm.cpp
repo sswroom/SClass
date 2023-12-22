@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr
 	NEW_CLASS(this->pbResult, UI::GUIPictureBoxSimple(ui, this->pnlResult, this->core->GetDrawEngine(), false));
 	this->pbResult->SetRect(0, 0, 100, 80, false);
 	this->pbResult->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lvText, UI::GUIListView(ui, this->pnlResult, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvText = ui->NewListView(this->pnlResult, UI::ListViewStyle::Table, 4);
 	this->lvText->SetRect(0, 0, 250, 100, false);
 	this->lvText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvText->AddColumn(CSTR("Result"), 100);

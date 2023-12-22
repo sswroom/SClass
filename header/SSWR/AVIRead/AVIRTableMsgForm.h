@@ -11,7 +11,7 @@ namespace SSWR
 		class AVIRTableMsgForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListView *lvTable;
+			NotNullPtr<UI::GUIListView> lvTable;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UOSInt colCnt;
 

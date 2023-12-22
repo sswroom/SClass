@@ -57,7 +57,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtQuery;
 			NotNullPtr<UI::GUITextBox> txtQueryStatus;
 			NotNullPtr<UI::GUIVSplitter> vspQuery;
-			UI::GUIListView *lvQueryResult;
+			NotNullPtr<UI::GUIListView> lvQueryResult;
 
 		private:
 			static void __stdcall OnStartClicked(void *userObj);

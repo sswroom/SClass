@@ -108,7 +108,7 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *paren
 	this->btnStartTime = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("DataFileStartTime")));
 	this->btnStartTime->SetRect(104, 4, 75, 23, false);
 	this->btnStartTime->HandleButtonClick(OnStartTimeClicked, this);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->SetFullRowSelect(true);

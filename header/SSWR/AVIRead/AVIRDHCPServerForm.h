@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDNS2;
 			NotNullPtr<UI::GUITextBox> txtDNS2;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUIListView *lvDevices;
+			NotNullPtr<UI::GUIListView> lvDevices;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

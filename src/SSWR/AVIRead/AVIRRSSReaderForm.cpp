@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->tcRSS->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcRSS->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this->tpInfo, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvInfo = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 2);
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
@@ -227,7 +227,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->lvInfo->AddColumn(CSTR("Value"), 400);
 
 	this->tpItems = this->tcRSS->AddTabPage(CSTR("Items"));
-	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this->tpItems, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvItems = ui->NewListView(this->tpItems, UI::ListViewStyle::Table, 3);
 	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);

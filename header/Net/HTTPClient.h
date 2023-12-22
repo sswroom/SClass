@@ -92,6 +92,7 @@ namespace Net
 		static Data::Timestamp ParseDateStr(Text::CStringNN dateStr);
 		static NotNullPtr<Net::HTTPClient> CreateClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
 		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
+		static NotNullPtr<Net::HTTPClient> CreateGet(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn);
 		static Bool IsHTTPURL(Text::CStringNN url);
 		static void PrepareSSL(Optional<Net::SSLEngine> ssl);
 		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<IO::Stream> stm, UInt64 maxSize);

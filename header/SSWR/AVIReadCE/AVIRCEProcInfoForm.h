@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDetail;
 
 			NotNullPtr<UI::GUIPanel> pnlSummary;
-			UI::GUIListView *lvSummary;
+			NotNullPtr<UI::GUIListView> lvSummary;
 
 			UI::GUIListBox *lbDetail;
 			NotNullPtr<UI::GUIHSplitter> hspDetail;
@@ -64,17 +64,17 @@ namespace SSWR
 			
 			NotNullPtr<UI::GUIPanel> pnlDetModule;
 			NotNullPtr<UI::GUIButton> btnDetModule;
-			UI::GUIListView *lvDetModule;
+			NotNullPtr<UI::GUIListView> lvDetModule;
 
 			NotNullPtr<UI::GUIPanel> pnlDetThread;
 			NotNullPtr<UI::GUIButton> btnDetThread;
-			UI::GUIListView *lvDetThread;
+			NotNullPtr<UI::GUIListView> lvDetThread;
 
 			NotNullPtr<UI::GUIPanel> pnlDetHeap;
 			NotNullPtr<UI::GUIButton> btnDetHeap;
 			UI::GUIListBox *lbDetHeap;
 			NotNullPtr<UI::GUIHSplitter> hspDetHeap;
-			UI::GUIListView *lvDetHeap;
+			NotNullPtr<UI::GUIListView> lvDetHeap;
 
 			NotNullPtr<UI::GUIGroupBox> grpDetChartCPU;
 			UI::GUIRealtimeLineChart *rlcDetChartCPU;

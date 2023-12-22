@@ -43,7 +43,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtCode;
 			NotNullPtr<UI::GUIButton> btnResultSave;
 
-			UI::GUIListView *lvResult;
+			NotNullPtr<UI::GUIListView> lvResult;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN extList;

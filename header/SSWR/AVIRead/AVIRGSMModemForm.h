@@ -74,7 +74,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboPhoneStorage;
 			NotNullPtr<UI::GUIButton> btnPhoneRead;
 			NotNullPtr<UI::GUILabel> lblPhoneStatus;
-			UI::GUIListView *lvPhone;
+			NotNullPtr<UI::GUIListView> lvPhone;
 
 			NotNullPtr<UI::GUITabPage> tpSMS;
 			NotNullPtr<UI::GUIPanel> pnlSMS;
@@ -85,7 +85,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSMSSave;
 			NotNullPtr<UI::GUIButton> btnSMSDelete;
 			NotNullPtr<UI::GUIButton> btnSMSSaveAll;
-			UI::GUIListView *lvSMS;
+			NotNullPtr<UI::GUIListView> lvSMS;
 
 			NotNullPtr<UI::GUITabPage> tpPDPContext;
 			NotNullPtr<UI::GUIPanel> pnlPDPContext;
@@ -105,7 +105,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnPDPContextActiveSelected;
 			NotNullPtr<UI::GUIButton> btnPDPContextDeactiveAll;
 			NotNullPtr<UI::GUIButton> btnPDPContextDeactiveSelected;
-			UI::GUIListView *lvPDPContext;
+			NotNullPtr<UI::GUIListView> lvPDPContext;
 
 			NotNullPtr<UI::GUITabPage> tpATCommand;
 			NotNullPtr<UI::GUIPanel> pnlATCommand;

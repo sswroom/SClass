@@ -76,7 +76,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblHeaders;
 			NotNullPtr<UI::GUITextBox> txtHeaders;
 			NotNullPtr<UI::GUIButton> btnRequest;
-			UI::GUIListView *lvReqData;
+			NotNullPtr<UI::GUIListView> lvReqData;
 
 			NotNullPtr<UI::GUITabPage> tpResponse;
 			NotNullPtr<UI::GUIPanel> pnlResponse;
@@ -106,7 +106,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtRespTransfSize;
 			NotNullPtr<UI::GUILabel> lblRespContSize;
 			NotNullPtr<UI::GUITextBox> txtRespContSize;
-			UI::GUIListView *lvHeaders;
+			NotNullPtr<UI::GUIListView> lvHeaders;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnSave;
 			NotNullPtr<UI::GUIButton> btnView;
@@ -117,7 +117,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtCert;
 
 			NotNullPtr<UI::GUITabPage> tpCookie;
-			UI::GUIListView *lvCookie;
+			NotNullPtr<UI::GUIListView> lvCookie;
 
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;

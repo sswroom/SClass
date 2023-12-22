@@ -36,7 +36,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSeaTempTime;
 			NotNullPtr<UI::GUILabel> lblGeneralSituation;
 			NotNullPtr<UI::GUITextBox> txtGeneralSituation;
-			UI::GUIListView *lvForecast;
+			NotNullPtr<UI::GUIListView> lvForecast;
 
 			static void __stdcall OnReloadClicked(void *userObj);
 			void Reload(Net::HKOWeather::Language lang);

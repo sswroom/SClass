@@ -509,6 +509,30 @@ NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(NotNullPtr<Net::Socke
 	return cli;
 }
 
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateGet(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn)
+{
+	Data::ArrayListStringNN urlList;
+	while (true)
+	{
+		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		Net::WebStatus::StatusCode status = cli->GetRespStatus();
+		if (status != Net::WebStatus::SC_MOVED_TEMPORARILY && status != Net::WebStatus::SC_MOVED_PERMANENTLY)
+		{
+			urlList.FreeAll();
+			return cli;
+		}
+		Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
+		if (newUrl.leng == 0 || urlList.IndexOfC(newUrl) >= 0 || urlList.GetCount() >= 20)
+		{
+			urlList.FreeAll();
+			return cli;
+		}
+		urlList.Add(Text::String::New(url));
+		cli.Delete();
+	}
+}
+
 Bool Net::HTTPClient::IsHTTPURL(Text::CStringNN url)
 {
 	return url.StartsWith(UTF8STRC("http://")) || url.StartsWith(UTF8STRC("https://"));

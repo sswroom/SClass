@@ -112,7 +112,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->btnRequestUser = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequestUser->SetRect(254, 4, 75, 23, false);
 	this->btnRequestUser->HandleButtonClick(OnRequestUserClicked, this);
-	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this->tpUser, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvItems = ui->NewListView(this->tpUser, UI::ListViewStyle::Table, 5);
 	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);

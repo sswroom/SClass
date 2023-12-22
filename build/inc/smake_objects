@@ -1878,6 +1878,7 @@ AVIRSelStreamForm.o: ../../src/SSWR/AVIRead/AVIRSelStreamForm.cpp
 AVIRServiceCreateForm.o: ../../src/SSWR/AVIRead/AVIRServiceCreateForm.cpp
 AVIRServiceForm.o: ../../src/SSWR/AVIRead/AVIRServiceForm.cpp
 AVIRSetAudioForm.o: ../../src/SSWR/AVIRead/AVIRSetAudioForm.cpp
+AVIRSetDNSForm.o: ../../src/SSWR/AVIRead/AVIRSetDNSForm.cpp
 AVIRSetDPIForm.o: ../../src/SSWR/AVIRead/AVIRSetDPIForm.cpp
 AVIRSetLocationSvcForm.o: ../../src/SSWR/AVIRead/AVIRSetLocationSvcForm.cpp
 AVIRSMakeForm.o: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
@@ -2147,6 +2148,7 @@ GUICheckBox.o: ../../src/UI/GUICheckBox.cpp
 GUICheckedListBox.o: ../../src/UI/GUICheckedListBox.cpp
 GUIComboBox.o: ../../src/UI/GUIComboBox.cpp
 GUIComboBoxUtil.o: ../../src/UI/GUIComboBoxUtil.cpp
+GUICore.o: ../../src/UI/GUICore.cpp
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
 GUIFileDialog.o: ../../src/UI/GUIFileDialog.cpp
 GUIFolderDialog.o: ../../src/UI/GUIFolderDialog.cpp

@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpParameter;
-			UI::GUIListView *lvParameter;
+			NotNullPtr<UI::GUIListView> lvParameter;
 
 			UI::GUIMainMenu *mnuMain;
 

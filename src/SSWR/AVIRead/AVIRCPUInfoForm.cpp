@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	this->btnCopyInfo = ui->NewButton(this->pnlMain, CSTR("Copy Info"));
 	this->btnCopyInfo->SetRect(108, 4, 100, 23, false);
 	this->btnCopyInfo->HandleButtonClick(OnCopyInfoClick, this);
-	NEW_CLASS(this->lvMain, UI::GUIListView(ui, this->tpCPU, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvMain = ui->NewListView(this->tpCPU, UI::ListViewStyle::Table, 2);
 	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMain->SetFullRowSelect(true);
 	this->lvMain->SetShowGrid(true);
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	this->lbCache->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));
-	NEW_CLASS(this->lvFeature, UI::GUIListView(ui, this->tpFeature, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvFeature = ui->NewListView(this->tpFeature, UI::ListViewStyle::Table, 4);
 	this->lvFeature->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFeature->SetFullRowSelect(true);
 	this->lvFeature->SetShowGrid(true);

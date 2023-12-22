@@ -26,9 +26,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtTargetAddr;
 			NotNullPtr<UI::GUICheckBox> chkTargetScan;
 			NotNullPtr<UI::GUIButton> btnRequest;
-			UI::GUIListView *lvAnswers;
+			NotNullPtr<UI::GUIListView> lvAnswers;
 			NotNullPtr<UI::GUIVSplitter> vspAnswers;
-			UI::GUIListView *lvEntries;
+			NotNullPtr<UI::GUIListView> lvEntries;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static void __stdcall OnAnswerSelChg(void *userObj);

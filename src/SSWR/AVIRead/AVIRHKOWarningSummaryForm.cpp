@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(UI::GUIClien
 	this->txtReqTime = ui->NewTextBox(*this, CSTR(""));
 	this->txtReqTime->SetRect(104, 4, 160, 23, false);
 	this->txtReqTime->SetReadOnly(true);
-	NEW_CLASS(this->lvWarning, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 6));
+	this->lvWarning = ui->NewListView(*this, UI::ListViewStyle::Table, 6);
 	this->lvWarning->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWarning->SetFullRowSelect(true);
 	this->lvWarning->SetShowGrid(true);

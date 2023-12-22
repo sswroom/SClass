@@ -173,7 +173,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	this->chkAllowTimeSkip = ui->NewCheckBox(this->pnlCtrl, CSTR("Allow Time Skip"), false);
 	this->chkAllowTimeSkip->SetRect(84, 4, 120, 23, false);
 	this->chkAllowTimeSkip->HandleCheckedChange(OnAllowTimeSkipChange, this);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn(CSTR("File Name"), 400);
 	this->lvFiles->AddColumn(CSTR("Status"), 300);

@@ -31,12 +31,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcEXE;
 
 			NotNullPtr<UI::GUITabPage> tpProp;
-			UI::GUIListView *lvProp;
+			NotNullPtr<UI::GUIListView> lvProp;
 
 			NotNullPtr<UI::GUITabPage> tpImport;
 			UI::GUIListBox *lbImport;
 			NotNullPtr<UI::GUIHSplitter> hspImport;
-			UI::GUIListView *lvImport;
+			NotNullPtr<UI::GUIListView> lvImport;
 
 			NotNullPtr<UI::GUITabPage> tpExport;
 			UI::GUIListBox *lbExport;

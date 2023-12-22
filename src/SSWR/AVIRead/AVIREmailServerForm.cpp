@@ -594,7 +594,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->btnGCISStart->HandleButtonClick(OnGCISStartClicked, this);
 
 	this->tpEmail = this->tcMain->AddTabPage(CSTR("Email"));
-	NEW_CLASS(this->lvEmail, UI::GUIListView(ui, this->tpEmail, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvEmail = ui->NewListView(this->tpEmail, UI::ListViewStyle::Table, 5);
 	this->lvEmail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEmail->SetShowGrid(true);
 	this->lvEmail->SetFullRowSelect(true);

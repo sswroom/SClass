@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPageNo;
 			NotNullPtr<UI::GUITextBox> txtPageNo;
 			NotNullPtr<UI::GUIButton> btnRequestPage;
-			UI::GUIListView *lvItems;
+			NotNullPtr<UI::GUIListView> lvItems;
 
 			NotNullPtr<UI::GUITabPage> tpDownloadLink;
 			NotNullPtr<UI::GUILabel> lblVideoId;

@@ -115,14 +115,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
 	this->txtStartName->SetReadOnly(true);
 
-	NEW_CLASS(this->lvContext, UI::GUIListView(ui, this->tpContext, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvContext = ui->NewListView(this->tpContext, UI::ListViewStyle::Table, 2));
 	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContext->SetFullRowSelect(true);
 	this->lvContext->SetShowGrid(true);
 	this->lvContext->AddColumn(CSTR("Name"), 100);
 	this->lvContext->AddColumn(CSTR("Value"), 300);
 
-	NEW_CLASS(this->lvStack, UI::GUIListView(ui, this->tpStack, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvStack = ui->NewListView(this->tpStack, UI::ListViewStyle::Table, 2));
 	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStack->SetFullRowSelect(true);
 	this->lvStack->SetShowGrid(true);
@@ -141,7 +141,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);
 	this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false);
-	NEW_CLASS(this->lvMyStack, UI::GUIListView(ui, this->pnlMyStack, UI::GUIListView::LVSTYLE_TABLE, 10));
+	NEW_CLASS(this->lvMyStack = ui->NewListView(this->pnlMyStack, UI::ListViewStyle::Table, 10));
 	this->lvMyStack->SetShowGrid(true);
 	this->lvMyStack->SetFullRowSelect(true);
 	this->lvMyStack->AddColumn(CSTR("Esp"), 70);

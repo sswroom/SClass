@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(204, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lvPort, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvPort = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvPort->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPort->SetFullRowSelect(true);
 	this->lvPort->SetShowGrid(true);

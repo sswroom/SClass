@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspPath;
 			UI::GUIListBox *lbObjects;
 			NotNullPtr<UI::GUIHSplitter> hspObjects;
-			UI::GUIListView *lvValues;
+			NotNullPtr<UI::GUIListView> lvValues;
 		
 			static void __stdcall OnConnectClicked(void *userObj);
 			static void __stdcall OnPathSelChg(void *userObj);

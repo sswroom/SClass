@@ -50,9 +50,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlTasks;
 			NotNullPtr<UI::GUIButton> btnTasksClear;
-			UI::GUIListView *lvTasks;
+			NotNullPtr<UI::GUIListView> lvTasks;
 
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Sync::Event fileEvt;

@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->btnRequest->SetRect(104, 100, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 
-	NEW_CLASS(this->lvResults, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvResults = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);

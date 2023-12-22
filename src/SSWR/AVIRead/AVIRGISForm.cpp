@@ -377,13 +377,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(void *userObj)
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_TILEDOWN, ((Map::MapEnv::LayerItem*)ind->item)->layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER);
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_IMPORT_TILES, canImport);
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_OPTIMIZE_FILE, canImport);
-			me->mnuLayer->ShowMenu(me, cursorPos);
+			me->mnuLayer->ShowMenu(*me, cursorPos);
 		}
 		else if (ind->itemType == Map::MapEnv::IT_GROUP)
 		{
 			me->popNode = item;
 			me->mnuGroup->SetItemEnabled(MNU_GROUP_REMOVE, (ind->item != 0));
-			me->mnuGroup->ShowMenu(me, cursorPos);
+			me->mnuGroup->ShowMenu(*me, cursorPos);
 		}
 	}
 }

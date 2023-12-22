@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 	this->btnRequestPage = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequestPage->SetRect(254, 4, 75, 23, false);
 	this->btnRequestPage->HandleButtonClick(OnRequestPageClicked, this);
-	NEW_CLASS(this->lvItems, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvItems = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);

@@ -14,7 +14,7 @@ namespace SSWR
 		class SHPConvDBFViewForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListView *lvDBF;
+			NotNullPtr<UI::GUIListView> lvDBF;
 			Media::MonitorMgr *monMgr;
 
 		public:

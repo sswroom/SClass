@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, No
 	this->pbNewCases->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbNewCases->HandleSizeChanged(OnNewCasesSizeChanged, this);
 	this->vspNewCases = ui->NewVSplitter(*this, 3, true);
-	NEW_CLASS(this->lvCountry, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvCountry = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvCountry->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCountry->SetShowGrid(true);
 	this->lvCountry->SetFullRowSelect(true);

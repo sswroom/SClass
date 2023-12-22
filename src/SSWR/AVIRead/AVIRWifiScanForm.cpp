@@ -191,7 +191,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	this->txtWifi->SetReadOnly(true);
 	this->txtWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspWifi = ui->NewVSplitter(*this, 3, true);
-	NEW_CLASS(this->lvWifi, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 16));
+	this->lvWifi = ui->NewListView(*this, UI::ListViewStyle::Table, 16);
 	this->lvWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWifi->SetShowGrid(true);
 	this->lvWifi->SetFullRowSelect(true);

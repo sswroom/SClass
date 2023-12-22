@@ -21,7 +21,7 @@ namespace SSWR
 			private:
 				NotNullPtr<UI::GUITabControl> tcHeader;
 				NotNullPtr<UI::GUITabPage> tpHeading;
-				UI::GUIListView *lvRecp;
+				NotNullPtr<UI::GUIListView> lvRecp;
 				NotNullPtr<UI::GUIPanel> pnlFrom;
 				NotNullPtr<UI::GUILabel> lblFrom;
 				NotNullPtr<UI::GUITextBox> txtFrom;
@@ -33,7 +33,7 @@ namespace SSWR
 				NotNullPtr<UI::GUITextBox> txtDate;
 
 				NotNullPtr<UI::GUITabPage> tpRAW;
-				UI::GUIListView *lvRAW;
+				NotNullPtr<UI::GUIListView> lvRAW;
 
 				NotNullPtr<UI::GUIPanel> pnlContent;
 

@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, No
 	this->btnScan = ui->NewButton(this->pnlCtrl, CSTR("Scan"));
 	this->btnScan->SetRect(254, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
-	NEW_CLASS(this->lvARP, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvARP = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvARP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvARP->SetFullRowSelect(true);
 	this->lvARP->SetShowGrid(true);

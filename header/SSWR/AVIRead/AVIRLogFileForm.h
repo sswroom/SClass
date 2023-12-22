@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRLogFileForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListView *lvLogs;
+			NotNullPtr<UI::GUIListView> lvLogs;
 			UI::GUIMainMenu *mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

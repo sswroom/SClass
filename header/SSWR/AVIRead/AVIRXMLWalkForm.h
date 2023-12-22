@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFile;
 			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnBrowse;
-			UI::GUIListView *lvXML;
+			NotNullPtr<UI::GUIListView> lvXML;
 
 			static void __stdcall OnBrowseClick(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt nFiles);

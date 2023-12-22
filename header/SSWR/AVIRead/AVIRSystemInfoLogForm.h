@@ -31,10 +31,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtProductType;
 
 			NotNullPtr<UI::GUITabPage> tpDevices;
-			UI::GUIListView *lvDevices;
+			NotNullPtr<UI::GUIListView> lvDevices;
 
 			NotNullPtr<UI::GUITabPage> tpDrivers;
-			UI::GUIListView *lvDrivers;
+			NotNullPtr<UI::GUIListView> lvDrivers;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SystemInfoLog *sysInfo;

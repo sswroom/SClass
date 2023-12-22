@@ -332,7 +332,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->lbObjects->HandleSelectionChange(OnObjectsSelChg, this);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
 	this->hspObjects = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->lvValues, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvValues = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvValues->SetFullRowSelect(true);
 	this->lvValues->SetShowGrid(true);

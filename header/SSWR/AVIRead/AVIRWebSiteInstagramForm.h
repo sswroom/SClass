@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblChannelId;
 			NotNullPtr<UI::GUITextBox> txtChannelId;
 			NotNullPtr<UI::GUIButton> btnRequestUser;
-			UI::GUIListView *lvItems;
+			NotNullPtr<UI::GUIListView> lvItems;
 
 			NotNullPtr<UI::GUITabPage> tpPage;
 			NotNullPtr<UI::GUIPanel> pnlPage;

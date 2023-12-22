@@ -2567,22 +2567,29 @@ void Map::MapConfig2TGen::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerS
 					UOSInt maxPos;
 					UOSInt nPoint;
 					Math::Coord2DDbl *pointArr;
-					maxSize = pl->GetItem(0)->GetPointCount();
+					NotNullPtr<Math::Geometry::LineString> ls;
+					maxSize = (pl->GetItem(0).SetTo(ls))?ls->GetPointCount():0;
 					maxPos = 0;
 					k = pl->GetCount();
 					while (k-- > 1)
 					{
-						nPoint = pl->GetItem(k)->GetPointCount();
-						if (nPoint > maxSize)
+						if (pl->GetItem(k).SetTo(ls))
 						{
-							maxSize = nPoint;
-							maxPos = k;
+							nPoint = ls->GetPointCount();
+							if (nPoint > maxSize)
+							{
+								maxSize = nPoint;
+								maxPos = k;
+							}
 						}
 					}
 					sb.ClearStr();
 					lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
-					pointArr = pl->GetItem(maxPos)->GetPointList(nPoint);
-					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					if (pl->GetItem(maxPos).SetTo(ls))
+					{
+						pointArr = ls->GetPointList(nPoint);
+						AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					}
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::Polygon:	
@@ -2593,22 +2600,29 @@ void Map::MapConfig2TGen::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerS
 					UOSInt maxPos;
 					UOSInt nPoint;
 					Math::Coord2DDbl *pointArr;
-					maxSize = pg->GetItem(0)->GetPointCount();
+					NotNullPtr<Math::Geometry::LinearRing> lr;
+					maxSize = (pg->GetItem(0).SetTo(lr))?lr->GetPointCount():0;
 					maxPos = 0;
 					k = pg->GetCount();
 					while (k-- > 1)
 					{
-						nPoint = pg->GetItem(k)->GetPointCount();
-						if (nPoint > maxSize)
+						if (pg->GetItem(k).SetTo(lr))
 						{
-							maxSize = nPoint;
-							maxPos = k;
+							nPoint = lr->GetPointCount();
+							if (nPoint > maxSize)
+							{
+								maxSize = nPoint;
+								maxPos = k;
+							}
 						}
 					}
 					sb.ClearStr();
 					lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
-					pointArr = pg->GetItem(maxPos)->GetPointList(nPoint);
-					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					if (pg->GetItem(maxPos).SetTo(lr))
+					{
+						pointArr = lr->GetPointList(nPoint);
+						AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					}
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::LineString:
@@ -2645,35 +2659,39 @@ void Map::MapConfig2TGen::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerS
 				case Math::Geometry::Vector2D::VectorType::Polyline:
 				{
 					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pl->GetItem(pl->GetCount() >> 1)->GetPointList(nPoint);
-					if (nPoint & 1)
+					NotNullPtr<Math::Geometry::LineString> ls;
+					if (pl->GetItem(pl->GetCount() >> 1).SetTo(ls))
 					{
-						UOSInt l = nPoint >> 1;
-						pts = pointArr[l];
+						UOSInt nPoint;
+						Math::Coord2DDbl *pointArr = ls->GetPointList(nPoint);
+						if (nPoint & 1)
+						{
+							UOSInt l = nPoint >> 1;
+							pts = pointArr[l];
 
-						scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
-						scaleH = pointArr[l + 1].y - pointArr[l - 1].y;
-					}
-					else
-					{
-						UOSInt l = nPoint >> 1;
-						pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
-						pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
+							scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
+							scaleH = pointArr[l + 1].y - pointArr[l - 1].y;
+						}
+						else
+						{
+							UOSInt l = nPoint >> 1;
+							pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
+							pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
 
-						scaleW = pointArr[l].x - pointArr[l - 1].x;
-						scaleH = pointArr[l].y - pointArr[l - 1].y;
-					}
+							scaleW = pointArr[l].x - pointArr[l - 1].x;
+							scaleH = pointArr[l].y - pointArr[l - 1].y;
+						}
 
 
-					if ((lyrs->bkColor & SFLG_ROTATE) == 0)
-						scaleW = scaleH = 0;
-					Math::Coord2DDbl szThis;
-					GetCharsSize(img, &szThis, sb.ToCString(), fonts[lyrs->style], scaleW, scaleH);
-					pts = view->MapXYToScnXY(pts);
-					if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
-					{
-						DrawChars(img, sb.ToCString(), pts.x, pts.y, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+						if ((lyrs->bkColor & SFLG_ROTATE) == 0)
+							scaleW = scaleH = 0;
+						Math::Coord2DDbl szThis;
+						GetCharsSize(img, &szThis, sb.ToCString(), fonts[lyrs->style], scaleW, scaleH);
+						pts = view->MapXYToScnXY(pts);
+						if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+						{
+							DrawChars(img, sb.ToCString(), pts.x, pts.y, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+						}
 					}
 					break;
 				}

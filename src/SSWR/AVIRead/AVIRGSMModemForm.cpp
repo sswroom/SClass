@@ -1139,7 +1139,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnPhoneRead->HandleButtonClick(OnPhoneRClick, this);
 	this->lblPhoneStatus = ui->NewLabel(this->pnlPhone, CSTR(""));
 	this->lblPhoneStatus->SetRect(188, 4, 200, 23, false);
-	NEW_CLASS(this->lvPhone, UI::GUIListView(ui, this->tpPhoneBook, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvPhone = ui->NewListView(this->tpPhoneBook, UI::ListViewStyle::Table, 2);
 	this->lvPhone->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPhone->AddColumn(CSTR("Name"), 200);
 	this->lvPhone->AddColumn(CSTR("Phone"), 200);
@@ -1174,7 +1174,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnSMSSaveAll = ui->NewButton(this->pnlSMS, CSTR("Save All"));
 	this->btnSMSSaveAll->SetRect(528, 4, 75, 23, false);
 	this->btnSMSSaveAll->HandleButtonClick(OnSMSSaveAllClick, this);
-	NEW_CLASS(this->lvSMS, UI::GUIListView(ui, this->tpSMS, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvSMS = ui->NewListView(this->tpSMS, UI::ListViewStyle::Table, 4);
 	this->lvSMS->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSMS->AddColumn(CSTR("From"), 100);
 	this->lvSMS->AddColumn(CSTR("Time"), 180);
@@ -1227,7 +1227,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnPDPContextDeactiveSelected = ui->NewButton(this->pnlPDPContext, CSTR("Deactive Selected"));
 	this->btnPDPContextDeactiveSelected->SetRect(240, 48, 75, 23, false);
 	this->btnPDPContextDeactiveSelected->HandleButtonClick(OnPDPContextDeactiveSelectedClicked, this);
-	NEW_CLASS(this->lvPDPContext, UI::GUIListView(ui, this->tpPDPContext, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvPDPContext = ui->NewListView(this->tpPDPContext, UI::ListViewStyle::Table, 4);
 	this->lvPDPContext->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPDPContext->SetFullRowSelect(true);
 	this->lvPDPContext->SetShowGrid(true);

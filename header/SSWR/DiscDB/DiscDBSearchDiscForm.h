@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDiscType;
 			NotNullPtr<UI::GUILabel> lblBurntDate;
 			NotNullPtr<UI::GUITextBox> txtBurntDate;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 
 			static void __stdcall OnSearchClicked(void *userObj);
 		public:

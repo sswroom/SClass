@@ -90,7 +90,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSpBookAdd;
 			NotNullPtr<UI::GUIPanel> pnlSpBookCtrl;
 			NotNullPtr<UI::GUIButton> btnSpBookDel;
-			UI::GUIListView *lvSpBook;
+			NotNullPtr<UI::GUIListView> lvSpBook;
 
 			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImg;

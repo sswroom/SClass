@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStoreList;
-			UI::GUIListView *lvDevices;
+			NotNullPtr<UI::GUIListView> lvDevices;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnStoreListClicked(void *userObj);

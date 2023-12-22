@@ -10,7 +10,7 @@ SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(UI::GUIClientControl *parent, 
 	this->colCnt = colCnt;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lvTable, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, this->colCnt));
+	this->lvTable = ui->NewListView(*this, UI::ListViewStyle::Table, this->colCnt);
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);

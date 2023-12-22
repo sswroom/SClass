@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblJWTId;
 			NotNullPtr<UI::GUITextBox> txtJWTId;
 
-			UI::GUIListView *lvPayload;
+			NotNullPtr<UI::GUIListView> lvPayload;
 		
 			static void __stdcall OnParseClicked(void *userObj);
 

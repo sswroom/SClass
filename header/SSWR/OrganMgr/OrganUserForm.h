@@ -18,7 +18,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnModify;
-			UI::GUIListView *lvUser;
+			NotNullPtr<UI::GUIListView> lvUser;
 			Data::ArrayList<OrganWebUser*> userList;
 
 			static void __stdcall OnAddClicked(void *userObj);

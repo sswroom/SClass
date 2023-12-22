@@ -454,7 +454,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->pbTopic->SetRect(0, 0, 100, 300, false);
 	this->pbTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspTopic = ui->NewVSplitter(this->tpTopic, 3, true);
-	NEW_CLASS(this->lvTopic, UI::GUIListView(ui, this->tpTopic, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvTopic = ui->NewListView(this->tpTopic, UI::ListViewStyle::Table, 4);
 	this->lvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTopic->SetShowGrid(true);
 	this->lvTopic->SetFullRowSelect(true);

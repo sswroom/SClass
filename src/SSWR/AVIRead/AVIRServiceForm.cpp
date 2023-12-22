@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 
-	NEW_CLASS(this->lvService, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvService = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvService->SetRect(0, 0, 220, 23, false);
 	this->lvService->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lvService->AddColumn(CSTR("Name"), 150);

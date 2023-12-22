@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->btnResultSave->SetRect(304, 244, 100, 23, false);
 	this->btnResultSave->HandleButtonClick(OnResultSaveClicked, this);
 
-	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvResult = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetShowGrid(true);
 	this->lvResult->SetFullRowSelect(true);

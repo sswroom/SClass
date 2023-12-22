@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	this->btnStoreList = ui->NewButton(this->pnlControl, CSTR("Store Devices"));
 	this->btnStoreList->SetRect(84, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 12));
+	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 12);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);

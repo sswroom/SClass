@@ -35,7 +35,7 @@ namespace UI
 		Double hdpi;
 		Double ddpi;
 
-		GUIForm *mnuForm;
+		Optional<GUIForm> mnuForm;
 
 	protected:
 		void *hMenu;
@@ -56,7 +56,7 @@ namespace UI
 		void ClearItems();
 		void SetDPI(Double hdpi, Double ddpi);
 
-		void SetMenuForm(GUIForm *mnuForm);
+		void SetMenuForm(Optional<GUIForm> mnuForm);
 		void EventMenuClick(UInt16 cmdId);
 	};
 }

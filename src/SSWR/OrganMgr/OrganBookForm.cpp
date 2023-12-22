@@ -293,7 +293,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNu
 	this->pnlBookDet->SetRect(0, 0, 168, 320, false);
 	this->pnlBookDet->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->hspBook = ui->NewHSplitter(*this, 3, true);
-	NEW_CLASS(this->lvBook, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvBook = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvBook->SetShowGrid(true);
 	this->lvBook->SetFullRowSelect(true);

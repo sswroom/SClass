@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSelStatus;
 			NotNullPtr<UI::GUIPanel> pnlPlate;
 			UI::GUIPictureBoxSimple *pbPlate;
-			UI::GUIListView *lvPlate;
+			NotNullPtr<UI::GUIListView> lvPlate;
 			NotNullPtr<UI::GUIHSplitter> hspPlate;
 			UI::GUIPictureBoxDD *pbImg;
 

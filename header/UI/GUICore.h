@@ -22,14 +22,25 @@ namespace UI
 	class GUIGroupBox;
 	class GUIHSplitter;
 	class GUILabel;
+	class GUIListView;
 	class GUIPanel;
 	class GUIPanelBase;
 	class GUITabControl;
 	class GUITextBox;
 	class GUIVSplitter;
+
+	enum class ListViewStyle
+	{
+		Icon,
+		List,
+		Table,
+		SmallIcon
+	};
+
 	class GUICore
 	{
 	public:
+		
 		typedef enum
 		{
 			DR_NONE,
@@ -37,8 +48,7 @@ namespace UI
 			DR_PORT
 		} DisplayRotation;
 	public:
-		GUICore() {};
-		virtual ~GUICore(){};
+		virtual ~GUICore();
 
 		virtual void Run() = 0;
 		virtual void ProcessMessages() = 0;
@@ -78,6 +88,8 @@ namespace UI
 
 		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd) = 0;
 		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent) = 0;
+
+		NotNullPtr<GUIListView> NewListView(NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
 	};
 }
 #endif

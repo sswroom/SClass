@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblAgent;
 			NotNullPtr<UI::GUITextBox> txtAgent;
-			UI::GUIListView *lvResults;
+			NotNullPtr<UI::GUIListView> lvResults;
 
 		public:
 			AVIRSNMPWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community);

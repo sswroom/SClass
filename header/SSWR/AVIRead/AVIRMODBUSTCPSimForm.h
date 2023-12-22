@@ -49,7 +49,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDelay;
 			NotNullPtr<UI::GUIButton> btnDelay;
 			UI::GUIListBox *lbDevice;
-			UI::GUIListView *lvDeviceValues;
+			NotNullPtr<UI::GUIListView> lvDeviceValues;
 
 			static void __stdcall OnListenClicked(void *userObj);
 			static void __stdcall OnDevAddClicked(void *userObj);

@@ -904,12 +904,17 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	this->reqMstm.Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
 	this->reqMstm.Write((UInt8*)host, hostLen);
+#ifdef SHOWDEBUG
+	printf("Resquest Data: %s", dataBuff);
+	printf("Add Header: %s", host);
+#endif
+
 
 	if (defHeaders)
 	{
 		this->AddHeaderC(CSTR("User-Agent"), this->userAgent->ToCString());
 		this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
-		this->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
+		this->AddHeaderC(CSTR("Accept-Language"), CSTR("*"));
 		if (this->kaConn)
 		{
 			this->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
@@ -1077,6 +1082,9 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"));
 			MemCopyNO(buff, this->dataBuff, i);
 			buff[i] = 0;
+#ifdef SHOWDEBUG
+			printf("Read HTTP response: %s\r\n", buff);
+#endif
 			Text::StrSplit(ptrs, 3, buff, ' ');
 			this->respStatus = (Net::WebStatus::StatusCode)Text::StrToInt32(ptrs[1]);
 

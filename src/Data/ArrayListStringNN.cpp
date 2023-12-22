@@ -52,6 +52,18 @@ OSInt Data::ArrayListStringNN::SortedIndexOfC(Text::CStringNN val) const
 	return -i - 1;
 }
 
+UOSInt Data::ArrayListStringNN::IndexOfC(Text::CStringNN val) const
+{
+	UOSInt i = 0;
+	while (i < this->objCnt)
+	{
+		if (this->arr[i]->Equals(val))
+			return i;
+		i++;
+	}
+	return INVALID_INDEX;
+}
+
 NotNullPtr<Text::String> Data::ArrayListStringNN::JoinString() const
 {
 	NotNullPtr<Text::String> newStr;

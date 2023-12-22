@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnConnect;
-			UI::GUIListView *lvDevices;
+			NotNullPtr<UI::GUIListView> lvDevices;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::MQTTStaticClient *cli;

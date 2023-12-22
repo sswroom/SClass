@@ -71,7 +71,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcDetail;
 
 			NotNullPtr<UI::GUITabPage> tpRecv;
-			UI::GUIListView *lvRecvTopic;
+			NotNullPtr<UI::GUIListView> lvRecvTopic;
 			NotNullPtr<UI::GUIVSplitter> vspRecvTopic;
 			UI::GUIPictureBoxSimple *pbRecvTopic;
 

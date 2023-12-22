@@ -84,7 +84,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->txtBurntDate = ui->NewTextBox(this->pnlOut, CSTR(""));
 	this->txtBurntDate->SetRect(72, 61, 100, 20, false);
 	this->txtBurntDate->SetReadOnly(true);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);

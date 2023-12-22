@@ -178,7 +178,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpClient;
 			UI::GUIListBox *lbClientIP;
 			NotNullPtr<UI::GUIHSplitter> hspClient;
-			UI::GUIListView *lvClient;
+			NotNullPtr<UI::GUIListView> lvClient;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;

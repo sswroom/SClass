@@ -119,7 +119,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnMTKTest;
 
 			NotNullPtr<UI::GUITabPage> tpSate;
-			UI::GUIListView *lvSate;
+			NotNullPtr<UI::GUIListView> lvSate;
 
 			NotNullPtr<UI::GUITabPage> tpNMEA;
 			UI::GUIListBox *lbNMEA;

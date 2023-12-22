@@ -64,7 +64,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDataRate;
 
 			NotNullPtr<UI::GUITabPage> tpTopic;
-			UI::GUIListView *lvTopic;
+			NotNullPtr<UI::GUIListView> lvTopic;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;

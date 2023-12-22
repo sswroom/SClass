@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(UI::GUIClientControl *pa
 	this->txtDesc->SetRect(0, 0, 100, 71, false);
 	this->txtDesc->SetReadOnly(true);
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvMaps, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvMaps = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvMaps->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMaps->HandleSelChg(OnMapsSelChg, this);
 	this->lvMaps->HandleDblClk(OnMapsDblClk, this);

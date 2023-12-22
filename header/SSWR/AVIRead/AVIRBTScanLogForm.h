@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnFile;
 			NotNullPtr<UI::GUIButton> btnStore;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUIListView *lvContent;
+			NotNullPtr<UI::GUIListView> lvContent;
 
 			IO::BTScanLog *btLog;
 			Net::MACInfoList *macList;

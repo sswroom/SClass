@@ -14,6 +14,7 @@
 #include <curl/curl.h>
 
 #define BUFFSIZE 2048
+//#define VERBOSE
 
 struct Net::HTTPOSClient::ClassData
 {
@@ -70,6 +71,9 @@ Net::HTTPOSClient::HTTPOSClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStr
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->curl = curl_easy_init();
+#if defined(VERBOSE)
+	curl_easy_setopt(this->clsData->curl, CURLOPT_VERBOSE, 1);
+#endif
 	this->clsData->headers = 0;
 	this->clsData->respHeaders = &this->headers;
 	NEW_CLASS(this->clsData->respData, IO::MemoryStream());
@@ -426,7 +430,6 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->writing = false;
 			break;
 	}
-	//curl_easy_setopt(data->curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_URL, url);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYPEER, 0);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYHOST, 0);
@@ -436,7 +439,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	if (defHeaders)
 	{
 		this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
-		this->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
+		this->AddHeaderC(CSTR("Accept-Language"), CSTR("*"));
 		if (this->kaConn)
 		{
 			this->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));

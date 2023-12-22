@@ -42,7 +42,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpSiteList;
 			NotNullPtr<UI::GUIPanel> pnlSiteList;
-			UI::GUIListView *lvSiteList;
+			NotNullPtr<UI::GUIListView> lvSiteList;
 			NotNullPtr<UI::GUILabel> lblSiteCountry;
 			NotNullPtr<UI::GUITextBox> txtSiteCountry;
 			NotNullPtr<UI::GUILabel> lblSiteCity;

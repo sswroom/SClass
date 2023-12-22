@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 8);
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);

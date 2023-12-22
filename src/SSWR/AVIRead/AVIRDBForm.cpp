@@ -572,7 +572,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	this->tcDB->SetRect(0, 0, 100, 400, false);
 	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->vspDB = ui->NewVSplitter(*this, 3, false);
-	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvResult = ui->NewListView(*this, UI::ListViewStyle::Table, 1);
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetFullRowSelect(true);
 	this->lvResult->SetShowGrid(true);
@@ -588,7 +588,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	this->hspTable = ui->NewHSplitter(this->tpTable, 3, false);
-	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvTable = ui->NewListView(this->tpTable, UI::ListViewStyle::Table, 8);
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->AddColumn(CSTR("Name"), 200);

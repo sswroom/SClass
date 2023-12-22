@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->btnNew = ui->NewButton(this->grpNew, CSTR("New"));
 	this->btnNew->SetRect(104, 76, 75, 23, false);
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
-	NEW_CLASS(this->lvEntry, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvEntry = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvEntry->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntry->AddColumn(CSTR("Name"), 150);
 	this->lvEntry->AddColumn(CSTR("Code"), 100);

@@ -608,7 +608,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->txtStatus->SetRect(0, 0, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvCoord, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 7));
+	this->lvCoord = ui->NewListView(*this, UI::ListViewStyle::Table, 7);
 	this->lvCoord->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCoord->AddColumn(CSTR("Name"), 100);
 	this->lvCoord->AddColumn(CSTR("Easting"), 100);

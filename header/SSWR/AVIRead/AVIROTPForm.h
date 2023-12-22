@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnNew;
-			UI::GUIListView *lvEntry;
+			NotNullPtr<UI::GUIListView> lvEntry;
 
 			void RandBytes(UOSInt len);
 			static void __stdcall OnKeyRand80Clicked(void *userObj);

@@ -19,7 +19,7 @@ namespace SSWR
 			} PinState;
 			
 		private:
-			UI::GUIListView *lvStatus;
+			NotNullPtr<UI::GUIListView> lvStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::GPIOControl *ctrl;

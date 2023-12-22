@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->txtLogs->SetRect(0, 0, 100, 144, false);
 	this->txtLogs->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspLogs = ui->NewVSplitter(*this, 3, true);
-	NEW_CLASS(this->lvLogs, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvLogs = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogs->SetShowGrid(true);
 	this->lvLogs->SetFullRowSelect(true);

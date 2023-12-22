@@ -125,7 +125,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDevice;
 			NotNullPtr<UI::GUIComboBox> cboDevice;
 			NotNullPtr<UI::GUIButton> btnDeviceAdd;
-			UI::GUIListView *lvDevice;
+			NotNullPtr<UI::GUIListView> lvDevice;
 
 			NotNullPtr<UI::GUITabPage> tpRAWSend;
 			NotNullPtr<UI::GUITextBox> txtRAWSend;

@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtScanTime;
 			NotNullPtr<UI::GUILabel> lblResultTime;
 			NotNullPtr<UI::GUITextBox> txtResultTime;
-			UI::GUIListView *lvWifi;
+			NotNullPtr<UI::GUIListView> lvWifi;
 			NotNullPtr<UI::GUIVSplitter> vspWifi;
 			NotNullPtr<UI::GUITextBox> txtWifi;
 

@@ -55,7 +55,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtRecvTime;
 			NotNullPtr<UI::GUILabel> lblTrapTime;
 			NotNullPtr<UI::GUITextBox> txtTrapTime;
-			UI::GUIListView *lvResults;
+			NotNullPtr<UI::GUIListView> lvResults;
 
 			static void __stdcall OnResultSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

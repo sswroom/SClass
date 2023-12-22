@@ -36,16 +36,16 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblStartName;
 			NotNullPtr<UI::GUITextBox> txtStartName;
 
-			UI::GUIListView *lvContext;
+			NotNullPtr<UI::GUIListView> lvContext;
 
-			UI::GUIListView *lvStack;
+			NotNullPtr<UI::GUIListView> lvStack;
 
 			UI::GUIListBox *lbMyStack;
 			NotNullPtr<UI::GUIHSplitter> hspMyStack;
 			NotNullPtr<UI::GUIPanel> pnlMyStack;
 			NotNullPtr<UI::GUITextBox> txtMyStackMem;
 			NotNullPtr<UI::GUIVSplitter> vspMyStack;
-			UI::GUIListView *lvMyStack;
+			NotNullPtr<UI::GUIListView> lvMyStack;
 
 			Data::ArrayListStringNN stacks;
 			Data::ArrayListStringNN stacksMem;

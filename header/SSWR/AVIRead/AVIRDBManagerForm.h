@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIPopupMenu *mnuConn;
 			UI::GUIMainMenu *mnuMain;
 
-			UI::GUIListBox *lbConn;
+			NotNullPtr<UI::GUIListBox> lbConn;
 			NotNullPtr<UI::GUIHSplitter> hspConn;
 			NotNullPtr<UI::GUITabControl> tcMain;
 
@@ -41,13 +41,13 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpTable;
 			NotNullPtr<UI::GUIPanel> pnlTable;
-			UI::GUIListBox *lbSchema;
+			NotNullPtr<UI::GUIListBox> lbSchema;
 			NotNullPtr<UI::GUIHSplitter> hspSchema;
-			UI::GUIListBox *lbTable;
+			NotNullPtr<UI::GUIListBox> lbTable;
 			NotNullPtr<UI::GUIHSplitter> hspTable;
-			UI::GUIListView *lvTable;
+			NotNullPtr<UI::GUIListView> lvTable;
 			NotNullPtr<UI::GUIVSplitter> vspTable;
-			UI::GUIListView *lvTableResult;
+			NotNullPtr<UI::GUIListView> lvTableResult;
 
 			NotNullPtr<UI::GUITabPage> tpSQL;
 			NotNullPtr<UI::GUIPanel> pnlSQL;
@@ -56,7 +56,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSQLFile;
 			NotNullPtr<UI::GUITextBox> txtSQL;
 			NotNullPtr<UI::GUIVSplitter> vspSQL;
-			UI::GUIListView *lvSQLResult;
+			NotNullPtr<UI::GUIListView> lvSQLResult;
 
 			NotNullPtr<UI::GUITabPage> tpMap;
 			NotNullPtr<UI::GUIPanel> pnlMap;
@@ -64,7 +64,7 @@ namespace SSWR
 			UI::GUIMapControl *mapMain;
 			NotNullPtr<UI::GUIPanel> pnlMapTable;
 			NotNullPtr<UI::GUIVSplitter> vspMapRecord;
-			UI::GUIListView *lvMapRecord;
+			NotNullPtr<UI::GUIListView> lvMapRecord;
 			UI::GUIListBox *lbMapSchema;
 			NotNullPtr<UI::GUIHSplitter> hspMapTable;
 			UI::GUIListBox *lbMapTable;
@@ -72,13 +72,13 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpVariable;
 			NotNullPtr<UI::GUIPanel> pnlVariable;
 			NotNullPtr<UI::GUIButton> btnVariable;
-			UI::GUIListView *lvVariable;
+			NotNullPtr<UI::GUIListView> lvVariable;
 
 			NotNullPtr<UI::GUITabPage> tpSvrConn;
 			NotNullPtr<UI::GUIPanel> pnlSvrConn;
 			NotNullPtr<UI::GUIButton> btnSvrConn;
 			NotNullPtr<UI::GUIButton> btnSvrConnKill;
-			UI::GUIListView *lvSvrConn;
+			NotNullPtr<UI::GUIListView> lvSvrConn;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
@@ -124,7 +124,7 @@ namespace SSWR
 			void UpdateTableList();
 			void UpdateMapTableList();
 			void UpdateTableData(Text::CString schemaName, Optional<Text::String> tableName);
-			static void UpdateResult(NotNullPtr<DB::DBReader> r, UI::GUIListView *lv);
+			static void UpdateResult(NotNullPtr<DB::DBReader> r, NotNullPtr<UI::GUIListView> lv);
 			void UpdateVariableList();
 			void UpdateSvrConnList();
 			void RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName);

@@ -542,7 +542,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnDevStatus = ui->NewButton(this->pnlDevCtrl, CSTR("Get Status"));
 	this->btnDevStatus->SetRect(484, 4, 75, 23, false);
 	this->btnDevStatus->HandleButtonClick(OnDevStatusClicked, this);
-	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->grpDevice, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvDevice = ui->NewListView(this->grpDevice, UI::ListViewStyle::Table, 5);
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->AddColumn(CSTR("Device Id"), 120);
 	this->lvDevice->AddColumn(CSTR("Short Addr"), 60);

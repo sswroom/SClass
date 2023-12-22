@@ -21,7 +21,7 @@ typedef struct
 	UOSInt colCnt;
 	Double *colSizes;
 	Data::ArrayList<MyRow*> *rows;
-	UI::GUIListView::ListViewStyle lvstyle;
+	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
 } GUIListViewData;
 
@@ -78,7 +78,7 @@ UI::GUIListView::GUIListView(NotNullPtr<GUICore> ui, NotNullPtr<GUIClientControl
 	data->noChgEvt = false;
 	UOSInt i;
 	GType *types;
-	if (lvstyle == UI::GUIListView::LVSTYLE_SMALLICON)
+	if (lvstyle == UI::ListViewStyle::SmallIcon)
 	{
 		colCount++;
 		types = MemAlloc(GType, colCount);
@@ -106,11 +106,11 @@ UI::GUIListView::GUIListView(NotNullPtr<GUICore> ui, NotNullPtr<GUIClientControl
 	data->listStore = gtk_list_store_newv((gint)colCount, types);
 	data->treeView = gtk_tree_view_new_with_model(GTK_TREE_MODEL(data->listStore));
 	MemFree(types);
-	if (lvstyle == UI::GUIListView::LVSTYLE_TABLE)
+	if (lvstyle == UI::ListViewStyle::Table)
 	{
 		gtk_tree_view_set_headers_clickable((GtkTreeView*)data->treeView, true);
 	}
-	else if (lvstyle == UI::GUIListView::LVSTYLE_SMALLICON)
+	else if (lvstyle == UI::ListViewStyle::SmallIcon)
 	{
 		GtkCellRenderer *tickRenderer = gtk_cell_renderer_toggle_new();
 		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
@@ -158,7 +158,7 @@ void UI::GUIListView::ChangeColumnCnt(UOSInt newColCnt)
 	UOSInt i;
 	GType *types;
 	MemFree(data->colSizes);
-	if (data->lvstyle == UI::GUIListView::LVSTYLE_SMALLICON)
+	if (data->lvstyle == UI::ListViewStyle::SmallIcon)
 	{
 		newColCnt++;
 		types = MemAlloc(GType, newColCnt);

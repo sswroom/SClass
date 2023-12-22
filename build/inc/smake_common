@@ -4100,6 +4100,8 @@ SSWR/AVIRead/AVIRServiceForm.h:
 @AVIRServiceForm.o
 SSWR/AVIRead/AVIRSetAudioForm.h:
 @AVIRSetAudioForm.o
+SSWR/AVIRead/AVIRSetDNSForm.h:
+@AVIRSetDNSForm.o
 SSWR/AVIRead/AVIRSetDPIForm.h:
 @AVIRSetDPIForm.o
 SSWR/AVIRead/AVIRSetLocationSvcForm.h:
@@ -4649,6 +4651,7 @@ UI/GUIComboBox.h:
 UI/GUIComboBoxUtil.h:
 @GUIComboBoxUtil.o
 UI/GUICore.h:
+@GUICore.o
 UI/GUIDObjArea.h:
 @GUIDObjArea.o
 UI/GUIFileDialog.h:

@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUITextBox> txtLayer;
-			UI::GUIListView *lvInfo;
+			NotNullPtr<UI::GUIListView> lvInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;

@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpParameter = this->tcMain->AddTabPage(CSTR("Parameter"));
-	NEW_CLASS(this->lvParameter, UI::GUIListView(ui, this->tpParameter, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvParameter = ui->NewListView(this->tpParameter, UI::ListViewStyle::Table, 2);
 	this->lvParameter->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvParameter->SetFullRowSelect(true);
 	this->lvParameter->SetShowGrid(true);

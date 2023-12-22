@@ -629,7 +629,7 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 	this->ddpi = ddpi;
 }
 
-void UI::GUIMenu::SetMenuForm(GUIForm *mnuForm)
+void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 {
 	UI::GUIMenu *item;
 	UOSInt i;
@@ -644,9 +644,10 @@ void UI::GUIMenu::SetMenuForm(GUIForm *mnuForm)
 
 void UI::GUIMenu::EventMenuClick(UInt16 cmdId)
 {
-	if (this->mnuForm)
+	NotNullPtr<GUIForm> frm;
+	if (this->mnuForm.SetTo(frm))
 	{
-		this->mnuForm->EventMenuClicked(cmdId);
+		frm->EventMenuClicked(cmdId);
 	}
 }
 

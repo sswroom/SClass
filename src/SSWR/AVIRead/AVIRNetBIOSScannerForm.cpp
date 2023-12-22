@@ -134,7 +134,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->btnRequest->SetRect(104, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 
-	NEW_CLASS(this->lvAnswers, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvAnswers = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvAnswers->SetRect(0, 0, 100, 300, false);
 	this->lvAnswers->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvAnswers->SetShowGrid(true);
@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvAnswers->AddColumn(CSTR("TTL"), 80);
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
 	this->vspAnswers = ui->NewVSplitter(*this, 3, false);
-	NEW_CLASS(this->lvEntries, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvEntries = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntries->SetShowGrid(true);
 	this->lvEntries->SetFullRowSelect(true);

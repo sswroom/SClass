@@ -460,7 +460,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	}
 
 	this->tpSate = this->tcMain->AddTabPage(CSTR("Satellite"));
-	NEW_CLASS(this->lvSate, UI::GUIListView(ui, this->tpSate, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvSate = ui->NewListView(this->tpSate, UI::ListViewStyle::Table, 5);
 	this->lvSate->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSate->AddColumn(CSTR("Type"), 80);
 	this->lvSate->AddColumn(CSTR("PRN"), 60);

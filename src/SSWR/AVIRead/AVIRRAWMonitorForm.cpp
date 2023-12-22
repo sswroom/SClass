@@ -1217,7 +1217,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtDevice->SetRect(0, 0, 100, 300, false);
 	this->txtDevice->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspDevice = ui->NewVSplitter(this->tpDevice, 3, true);
-	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 10));
+	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 10);
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);
@@ -1242,7 +1242,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->tcIPTran = ui->NewTabControl(this->tpIPTran);
 	this->tcIPTran->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpIPTranInfo = this->tcIPTran->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lvIPTranInfo, UI::GUIListView(ui, this->tpIPTranInfo, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvIPTranInfo = ui->NewListView(this->tpIPTranInfo, UI::ListViewStyle::Table, 2);
 	this->lvIPTranInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvIPTranInfo->SetFullRowSelect(true);
 	this->lvIPTranInfo->SetShowGrid(true);
@@ -1293,7 +1293,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtDNSReqv4TTL = ui->NewTextBox(this->pnlDNSReqv4, CSTR(""));
 	this->txtDNSReqv4TTL->SetRect(104, 52, 80, 23, false);
 	this->txtDNSReqv4TTL->SetReadOnly(true);
-	NEW_CLASS(this->lvDNSReqv4, UI::GUIListView(ui, this->tpDNSReqv4, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvDNSReqv4 = ui->NewListView(this->tpDNSReqv4, UI::ListViewStyle::Table, 5);
 	this->lvDNSReqv4->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSReqv4->SetFullRowSelect(true);
 	this->lvDNSReqv4->SetShowGrid(true);
@@ -1327,7 +1327,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtDNSReqv6TTL = ui->NewTextBox(this->pnlDNSReqv6, CSTR(""));
 	this->txtDNSReqv6TTL->SetRect(104, 52, 80, 23, false);
 	this->txtDNSReqv6TTL->SetReadOnly(true);
-	NEW_CLASS(this->lvDNSReqv6, UI::GUIListView(ui, this->tpDNSReqv6, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvDNSReqv6 = ui->NewListView(this->tpDNSReqv6, UI::ListViewStyle::Table, 5);
 	this->lvDNSReqv6->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSReqv6->SetFullRowSelect(true);
 	this->lvDNSReqv6->SetShowGrid(true);
@@ -1361,7 +1361,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtDNSReqOthTTL = ui->NewTextBox(this->pnlDNSReqOth, CSTR(""));
 	this->txtDNSReqOthTTL->SetRect(104, 52, 80, 23, false);
 	this->txtDNSReqOthTTL->SetReadOnly(true);
-	NEW_CLASS(this->lvDNSReqOth, UI::GUIListView(ui, this->tpDNSReqOth, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvDNSReqOth = ui->NewListView(this->tpDNSReqOth, UI::ListViewStyle::Table, 5);
 	this->lvDNSReqOth->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSReqOth->SetFullRowSelect(true);
 	this->lvDNSReqOth->SetShowGrid(true);
@@ -1427,7 +1427,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSClient->HandleSelectionChange(OnDNSClientSelChg, this);
 	this->hspDNSClient = ui->NewHSplitter(this->tpDNSClient, 3, false);
-	NEW_CLASS(this->lvDNSClient, UI::GUIListView(ui, this->tpDNSClient, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvDNSClient = ui->NewListView(this->tpDNSClient, UI::ListViewStyle::Table, 2);
 	this->lvDNSClient->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSClient->SetFullRowSelect(true);
 	this->lvDNSClient->SetShowGrid(true);
@@ -1435,7 +1435,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSClient->AddColumn(CSTR("Count"), 100);
 
 	this->tpDHCP = this->tcMain->AddTabPage(CSTR("DHCP"));
-	NEW_CLASS(this->lvDHCP, UI::GUIListView(ui, this->tpDHCP, UI::GUIListView::LVSTYLE_TABLE, 14));
+	this->lvDHCP = ui->NewListView(this->tpDHCP, UI::ListViewStyle::Table, 14);
 	this->lvDHCP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDHCP->SetFullRowSelect(true);
 	this->lvDHCP->SetShowGrid(true);
@@ -1493,7 +1493,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtPingIPWhois->SetReadOnly(true);
 
 	this->tpTCP4SYN = this->tcMain->AddTabPage(CSTR("TCPv4 SYN"));
-	NEW_CLASS(this->lvTCP4SYN, UI::GUIListView(ui, this->tpTCP4SYN, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvTCP4SYN = ui->NewListView(this->tpTCP4SYN, UI::ListViewStyle::Table, 5);
 	this->lvTCP4SYN->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTCP4SYN->SetFullRowSelect(true);
 	this->lvTCP4SYN->SetShowGrid(true);

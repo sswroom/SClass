@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDeviceChanged, this);
-	NEW_CLASS(this->lvDeviceValues, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvDeviceValues = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvDeviceValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDeviceValues->SetFullRowSelect(true);
 	this->lvDeviceValues->SetShowGrid(true);

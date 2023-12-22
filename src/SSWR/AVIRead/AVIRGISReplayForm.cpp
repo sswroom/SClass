@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
-	me->mnuRecord->ShowMenu(me, scnPos);
+	me->mnuRecord->ShowMenu(*me, scnPos);
 	return false;
 }
 
@@ -279,7 +279,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->lblAddress->SetVisible(false);
 	this->txtAddress->SetVisible(false);
 
-	NEW_CLASS(this->lvExtra, UI::GUIListView(ui, pnl2, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvExtra = ui->NewListView(pnl2, UI::ListViewStyle::Table, 2);
 	this->lvExtra->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvExtra->SetShowGrid(true);
 	this->lvExtra->SetFullRowSelect(true);

@@ -14,7 +14,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIMainMenu *mnu;
-			UI::GUIListView *lvFileChk;
+			NotNullPtr<UI::GUIListView> lvFileChk;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::FileCheck> fileChk;

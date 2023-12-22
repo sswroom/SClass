@@ -17,7 +17,7 @@ typedef struct
 	OSInt colCnt;
 	Double *colSizes;
 	Data::ArrayList<MyRow*> *rows;
-	UI::GUIListView::ListViewStyle lvstyle;
+	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
 } GUIListViewData;
 

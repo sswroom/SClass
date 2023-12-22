@@ -33,7 +33,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlResult;
 			UI::GUIPictureBoxSimple *pbResult;
-			UI::GUIListView *lvText;
+			NotNullPtr<UI::GUIListView> lvText;
 			NotNullPtr<UI::GUIHSplitter> hspText;
 			UI::GUIPictureBoxDD *pbImg;
 

@@ -76,7 +76,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	Net::TCPClient *cli;
 	Int64 t;
 	Int64 msgTime;
-	Text::String *msg;
+	NotNullPtr<Text::String> msg;
 	UOSInt msgLen;
 	Int64 nextKATime = 0;
 	UInt8 kaBuff[10];
@@ -115,12 +115,11 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 			if (t >= me->lastSendTime + 30000)
 			{
 				Sync::MutexUsage mutUsage(me->mut);
-				if (me->msgList.GetCount() > 0)
+				if (me->msgList.GetItem(0).SetTo(msg))
 				{
 					UInt8 *buff1;
 					UInt8 *buff2;
 					msgTime = me->dateList.GetItem(0).ToTicks();
-					msg = me->msgList.GetItem(0);
 					msgLen = msg->leng;
 					buff1 = MemAlloc(UInt8, 8 + msgLen);
 					buff2 = MemAlloc(UInt8, 18 + msgLen);
@@ -181,7 +180,7 @@ Net::LogClient::~LogClient()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	LIST_FREE_STRING(&this->msgList);
+	this->msgList.FreeAll();
 }
 
 void Net::LogClient::LogClosed()
@@ -211,7 +210,7 @@ void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 
 			if (msgTime == this->dateList.GetItem(0).ToTicks())
 			{
 				this->dateList.RemoveAt(0);
-				this->msgList.RemoveAt(0)->Release();
+				OPTSTR_DEL(this->msgList.RemoveAt(0));
 				this->lastSendTime = 0;
 				this->sendEvt.Set();
 			}

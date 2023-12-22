@@ -16,7 +16,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUITextBox> txtDesc;
-			UI::GUIListView *lvMaps;
+			NotNullPtr<UI::GUIListView> lvMaps;
 			Map::MapDrawLayer *layer;
 
 			static void __stdcall OnMapsSelChg(void *userObj);

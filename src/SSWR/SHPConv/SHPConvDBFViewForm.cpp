@@ -9,7 +9,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lvDBF, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, dbf->GetColCount() + 1));
+	this->lvDBF = ui->NewListView(*this, UI::ListViewStyle::Table, dbf->GetColCount() + 1);
 	this->lvDBF->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UTF8Char sbuff[256];

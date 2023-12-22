@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->cboSearchResult->SetRect(0, 0, 100, 23, false);
 	this->cboSearchResult->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSearchResult->HandleSelectionChange(OnSearchResultSelChg, this);
-	NEW_CLASS(this->lvSearch, UI::GUIListView(ui, this->grpSearch, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvSearch = ui->NewListView(this->grpSearch, UI::ListViewStyle::Table, 2);
 	this->lvSearch->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSearch->SetFullRowSelect(true);
 	this->lvSearch->SetShowGrid(true);

@@ -45,7 +45,7 @@ namespace SSWR
 			UI::GUIListBox *lbProgSource;
 
 			NotNullPtr<UI::GUITabPage> tpConfig;
-			UI::GUIListView *lvConfig;
+			NotNullPtr<UI::GUIListView> lvConfig;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::SMake> smake;

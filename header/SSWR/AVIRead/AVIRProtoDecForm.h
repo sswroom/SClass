@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDecoder;
 			NotNullPtr<UI::GUIComboBox> cboDecoder;
 			NotNullPtr<UI::GUIButton> btnLoad;
-			UI::GUIListView *lvLogs;
+			NotNullPtr<UI::GUIListView> lvLogs;
 			NotNullPtr<UI::GUIVSplitter> vspLogs;
 			NotNullPtr<UI::GUITextBox> txtLogs;
 

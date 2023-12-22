@@ -1019,7 +1019,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->txtUDPStatNumAddrs->SetReadOnly(true);
 
 	this->tpARPInfo = this->tcMain->AddTabPage(CSTR("ARP Info"));
-	NEW_CLASS(this->lvARPInfo, UI::GUIListView(ui, this->tpARPInfo, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvARPInfo = ui->NewListView(this->tpARPInfo, UI::ListViewStyle::Table, 4);
 	this->lvARPInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvARPInfo->AddColumn(CSTR("IP Address"), 150);
 	this->lvARPInfo->AddColumn(CSTR("Physical Address"), 250);
@@ -1035,7 +1035,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
 	this->chkPortAuto = ui->NewCheckBox(this->pnlPortInfo, CSTR("Auto Refresh"), false);
 	this->chkPortAuto->SetRect(100, 8, 100, 23, false);
-	NEW_CLASS(this->lvPortInfo, UI::GUIListView(ui, this->tpPortInfo, UI::GUIListView::LVSTYLE_TABLE, 6));
+	this->lvPortInfo = ui->NewListView(this->tpPortInfo, UI::ListViewStyle::Table, 6);
 	this->lvPortInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPortInfo->AddColumn(CSTR("Proto"), 50);
 	this->lvPortInfo->AddColumn(CSTR("Local Addr"), 150);
@@ -1055,14 +1055,14 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 		this->tcWIFI = ui->NewTabControl(this->tpWIFIInfo);
 		this->tcWIFI->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->tpWIFIAP = this->tcWIFI->AddTabPage(CSTR("AP"));
-		NEW_CLASS(this->lvWIFINetwork, UI::GUIListView(ui, this->tpWIFIAP, UI::GUIListView::LVSTYLE_TABLE, 2));
+		this->lvWIFINetwork = ui->NewListView(this->tpWIFIAP, UI::ListViewStyle::Table, 2);
 		this->lvWIFINetwork->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvWIFINetwork->SetShowGrid(true);
 		this->lvWIFINetwork->SetFullRowSelect(true);
 		this->lvWIFINetwork->AddColumn(CSTR("SSID"), 200);
 		this->lvWIFINetwork->AddColumn(CSTR("RSSI"), 100);
 		this->tpWIFIBSS = this->tcWIFI->AddTabPage(CSTR("BSS"));
-		NEW_CLASS(this->lvWIFIBSS, UI::GUIListView(ui, this->tpWIFIBSS, UI::GUIListView::LVSTYLE_TABLE, 10));
+		this->lvWIFIBSS = ui->NewListView(this->tpWIFIBSS, UI::ListViewStyle::Table, 10);
 		this->lvWIFIBSS->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvWIFIBSS->SetShowGrid(true);
 		this->lvWIFIBSS->SetFullRowSelect(true);

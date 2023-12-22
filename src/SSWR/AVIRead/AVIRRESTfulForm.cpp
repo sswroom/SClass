@@ -254,7 +254,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 
 	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
-	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvTable = ui->NewListView(this->tpTable, UI::ListViewStyle::Table, 2);
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);

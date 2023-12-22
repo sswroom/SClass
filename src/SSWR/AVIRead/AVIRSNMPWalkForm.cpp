@@ -25,7 +25,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	this->txtAgent = ui->NewTextBox(this->pnlRequest, CSTRP(sbuff, sptr));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	this->txtAgent->SetReadOnly(true);
-	NEW_CLASS(this->lvResults, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvResults = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);

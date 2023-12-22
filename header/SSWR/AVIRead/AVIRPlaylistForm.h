@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRPlaylistForm : public UI::GUIForm 
 		{
 		private:
-			UI::GUIListView *lvPlaylist;
+			NotNullPtr<UI::GUIListView> lvPlaylist;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;

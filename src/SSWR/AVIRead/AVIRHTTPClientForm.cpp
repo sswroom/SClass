@@ -594,7 +594,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 				Text::String *contType = 0;
 				NEW_CLASS(mstm, IO::MemoryStream());
 				cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
-				cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
+				cli->AddHeaderC(CSTR("Accept-Language"), CSTR("*"));
 				cli->AddHeaderC(CSTR("User-Agent"), me->userAgent->ToCString());
 				if (me->noShutdown)
 				{
@@ -1316,7 +1316,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequest->SetRect(104, 292, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvReqData = ui->NewListView(this->tpRequest, UI::ListViewStyle::Table, 2);
 	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvReqData->AddColumn(CSTR("Name"), 150);
 	this->lvReqData->AddColumn(CSTR("Value"), 400);
@@ -1399,7 +1399,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->btnView = ui->NewButton(this->pnlControl, CSTR("View"));
 	this->btnView->SetRect(84, 4, 75, 23, false);
 	this->btnView->HandleButtonClick(OnViewClicked, this);
-	NEW_CLASS(this->lvHeaders, UI::GUIListView(ui, this->tpResponse, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvHeaders = ui->NewListView(this->tpResponse, UI::ListViewStyle::Table, 1);
 	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
@@ -1418,7 +1418,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->txtCert->SetReadOnly(true);
 
 	this->tpCookie = this->tcMain->AddTabPage(CSTR("Cookie"));
-	NEW_CLASS(this->lvCookie, UI::GUIListView(ui, this->tpCookie, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvCookie = ui->NewListView(this->tpCookie, UI::ListViewStyle::Table, 4);
 	this->lvCookie->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCookie->SetShowGrid(true);
 	this->lvCookie->SetFullRowSelect(true);

@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblChannelId;
 			NotNullPtr<UI::GUITextBox> txtChannelId;
 			NotNullPtr<UI::GUIButton> btnRequestPage;
-			UI::GUIListView *lvItems;
+			NotNullPtr<UI::GUIListView> lvItems;
 
 			Net::WebSite::WebSite7gogoControl *ctrl;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

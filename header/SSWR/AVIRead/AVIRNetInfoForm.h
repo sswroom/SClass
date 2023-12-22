@@ -155,20 +155,20 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblUDPStatNumAddrs;
 			NotNullPtr<UI::GUITextBox> txtUDPStatNumAddrs;
 
-			UI::GUIListView *lvARPInfo;
+			NotNullPtr<UI::GUIListView> lvARPInfo;
 
 			UI::GUIListBox *lbWIFIIFs;
 			NotNullPtr<UI::GUIHSplitter> hspWIFI;
 			NotNullPtr<UI::GUITabControl> tcWIFI;
 			NotNullPtr<UI::GUITabPage> tpWIFIAP;
-			UI::GUIListView *lvWIFINetwork;
+			NotNullPtr<UI::GUIListView> lvWIFINetwork;
 			NotNullPtr<UI::GUITabPage> tpWIFIBSS;
-			UI::GUIListView *lvWIFIBSS;
+			NotNullPtr<UI::GUIListView> lvWIFIBSS;
 
 			NotNullPtr<UI::GUIPanel> pnlPortInfo;
 			NotNullPtr<UI::GUIButton> btnPortRefresh;
 			NotNullPtr<UI::GUICheckBox> chkPortAuto;
-			UI::GUIListView *lvPortInfo;
+			NotNullPtr<UI::GUIListView> lvPortInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

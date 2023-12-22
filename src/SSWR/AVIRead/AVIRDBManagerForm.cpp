@@ -671,7 +671,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	}
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NotNullPtr<DB::DBReader> r, UI::GUIListView *lv)
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NotNullPtr<DB::DBReader> r, NotNullPtr<UI::GUIListView> lv)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1224,7 +1224,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbConn, UI::GUIListBox(ui, *this, false));
+	NEW_CLASSNN(this->lbConn, UI::GUIListBox(ui, *this, false));
 	this->lbConn->SetRect(0, 0, 150, 23, false);
 	this->lbConn->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbConn->HandleSelectionChange(OnConnSelChg, this);
@@ -1252,19 +1252,19 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
 	this->pnlTable->SetRect(0, 0, 100, 250, false);
 	this->pnlTable->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lbSchema, UI::GUIListBox(ui, this->pnlTable, false));
+	NEW_CLASSNN(this->lbSchema, UI::GUIListBox(ui, this->pnlTable, false));
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
 	this->lbSchema->HandleRightClicked(OnSchemaRClicked, this);
 	this->hspSchema = ui->NewHSplitter(this->pnlTable, 3, false);
-	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->pnlTable, false));
+	NEW_CLASSNN(this->lbTable, UI::GUIListBox(ui, this->pnlTable, false));
 	this->lbTable->SetRect(0, 0, 150, 23, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	this->lbTable->HandleRightClicked(OnTableRClicked, this);
 	this->hspTable = ui->NewHSplitter(this->pnlTable, 3, false);
-	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->pnlTable, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvTable = ui->NewListView(this->pnlTable, UI::ListViewStyle::Table, 8);
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);
@@ -1277,7 +1277,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvTable->AddColumn(CSTR("Default Val"), 100);
 	this->lvTable->AddColumn(CSTR("Attribute"), 100);
 	this->vspTable = ui->NewVSplitter(this->tpTable, 3, false);
-	NEW_CLASS(this->lvTableResult, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvTableResult = ui->NewListView(this->tpTable, UI::ListViewStyle::Table, 1);
 	this->lvTableResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTableResult->SetFullRowSelect(true);
 	this->lvTableResult->SetShowGrid(true);
@@ -1298,7 +1298,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->txtSQL = ui->NewTextBox(this->pnlSQL, CSTR(""), true);
 	this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vspSQL = ui->NewVSplitter(this->tpSQL, 3, false);
-	NEW_CLASS(this->lvSQLResult, UI::GUIListView(ui, this->tpSQL, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvSQLResult = ui->NewListView(this->tpSQL, UI::ListViewStyle::Table, 1);
 	this->lvSQLResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSQLResult->SetFullRowSelect(true);
 	this->lvSQLResult->SetShowGrid(true);
@@ -1316,7 +1316,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
 	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->vspMapRecord = ui->NewVSplitter(this->pnlMap, 3, false);
-	NEW_CLASS(this->lvMapRecord, UI::GUIListView(ui, this->pnlMap, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvMapRecord = ui->NewListView(this->pnlMap, UI::ListViewStyle::Table, 2);
 	this->lvMapRecord->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMapRecord->SetFullRowSelect(true);
 	this->lvMapRecord->SetShowGrid(true);
@@ -1338,7 +1338,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnVariable = ui->NewButton(this->pnlVariable, CSTR("Show"));
 	this->btnVariable->SetRect(4, 4, 75, 23, false);
 	this->btnVariable->HandleButtonClick(OnVariableClicked, this);
-	NEW_CLASS(this->lvVariable, UI::GUIListView(ui, this->tpVariable, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvVariable = ui->NewListView(this->tpVariable, UI::ListViewStyle::Table, 2);
 	this->lvVariable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvVariable->SetShowGrid(true);
 	this->lvVariable->SetFullRowSelect(true);
@@ -1355,7 +1355,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnSvrConnKill = ui->NewButton(this->pnlSvrConn, CSTR("Kill"));
 	this->btnSvrConnKill->SetRect(84, 4, 75, 23, false);
 	this->btnSvrConnKill->HandleButtonClick(OnSvrConnKillClicked, this);
-	NEW_CLASS(this->lvSvrConn, UI::GUIListView(ui, this->tpSvrConn, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvSvrConn = ui->NewListView(this->tpSvrConn, UI::ListViewStyle::Table, 8);
 	this->lvSvrConn->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSvrConn->SetShowGrid(true);
 	this->lvSvrConn->SetFullRowSelect(true);

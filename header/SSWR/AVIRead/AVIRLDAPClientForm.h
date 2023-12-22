@@ -46,7 +46,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSearchFilter;
 			NotNullPtr<UI::GUIButton> btnSearch;
 			NotNullPtr<UI::GUIComboBox> cboSearchResult;
-			UI::GUIListView *lvSearch;
+			NotNullPtr<UI::GUIListView> lvSearch;
 		
 			static void __stdcall OnConnectClicked(void *userObj);
 			static void __stdcall OnSearchClicked(void *userObj);

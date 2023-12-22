@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnWebUpdate;
 			NotNullPtr<UI::GUILabel> lblAlarm;
 			NotNullPtr<UI::GUIButton> btn30Minutes;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnPasteTableClicked(void *userObj);

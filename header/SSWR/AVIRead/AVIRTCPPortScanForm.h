@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblMaxPort;
 			NotNullPtr<UI::GUITextBox> txtMaxPort;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUIListView *lvPort;
+			NotNullPtr<UI::GUIListView> lvPort;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

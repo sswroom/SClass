@@ -24,7 +24,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, No
 	mnu->AddItem(CSTR("&Validate"), MNU_FILE_VALIDATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnu);
 
-	NEW_CLASS(this->lvFileChk, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvFileChk = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvFileChk->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFileChk->AddColumn(CSTR("File Name"), 600);
 	this->lvFileChk->AddColumn(CSTR("Check Value"), 250);

@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRServiceForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListView *lvService;
+			NotNullPtr<UI::GUIListView> lvService;
 			NotNullPtr<UI::GUIHSplitter> hspService;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnStart;

@@ -525,7 +525,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->txtSLBaudRate = ui->NewTextBox(this->pnlSLControl, CSTR("115200"));
 		this->txtSLBaudRate->SetRect(104, 4, 100, 23, false);
 
-		NEW_CLASS(this->lvSLPort, UI::GUIListView(ui, this->tpSiLabPort, UI::GUIListView::LVSTYLE_TABLE, 5));
+		this->lvSLPort = ui->NewListView(this->tpSiLabPort, UI::ListViewStyle::Table, 5);
 		this->lvSLPort->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvSLPort->AddColumn(CSTR("Num"), 40);
 		this->lvSLPort->AddColumn(CSTR("VID"), 60);

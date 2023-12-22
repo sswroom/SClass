@@ -19,9 +19,9 @@ namespace SSWR
 		class AVIRCameraControlForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListView *lvInfo;
+			NotNullPtr<UI::GUIListView> lvInfo;
 			NotNullPtr<UI::GUIVSplitter> vspInfo;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIPictureBoxSimple *pbPreview;
 			NotNullPtr<UI::GUIButton> btnDownload;

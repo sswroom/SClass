@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, 
 	this->currFileName = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lvPlaylist, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvPlaylist = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvPlaylist->SetRect(0, 0, 160, 100, false);
 	this->lvPlaylist->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lvPlaylist->AddColumn(CSTR("Title"), 100);

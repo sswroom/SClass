@@ -24,7 +24,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> 
 	if (gooCliId && gooPrivKey)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		this->gooCliId = gooCliId->Clone().Ptr();
+		this->gooCliId = gooCliId->Clone();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->v, gooPrivKey->leng, this->gooPrivKey);
 		this->gooKey = 0;
@@ -45,7 +45,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> 
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 
-		this->gooCliId = Text::String::New(gooCliId).Ptr();
+		this->gooCliId = Text::String::New(gooCliId);
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
 		this->gooKey = 0;
@@ -60,13 +60,13 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> 
 
 Map::GoogleMap::GoogleStaticMap::~GoogleStaticMap()
 {
-	SDEL_STRING(this->gooCliId);
+	OPTSTR_DEL(this->gooCliId);
 	if (this->gooPrivKey)
 	{
 		MemFree(this->gooPrivKey);
 		this->gooPrivKey = 0;
 	}
-	SDEL_STRING(this->gooKey);
+	OPTSTR_DEL(this->gooKey);
 }
 
 UInt32 Map::GoogleMap::GoogleStaticMap::Level2Scale(UInt32 level)
@@ -155,6 +155,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	UTF8Char *urlStart;
 	UOSInt retSize = 0;
 	UOSInt thisSize;
+	NotNullPtr<Text::String> s;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/staticmap?format="));
 	if (format == 1)
@@ -186,11 +187,11 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, marker_lon);
 	}
-	if (this->gooCliId)
+	if (this->gooCliId.SetTo(s))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
-		sptr = this->gooCliId->ConcatTo(sptr);
+		sptr = s->ConcatTo(sptr);
 
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
@@ -201,11 +202,11 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
 		sptr = b64.EncodeBin(sptr, result, 20);
 	}
-	else if (this->gooKey)
+	else if (this->gooKey.SetTo(s))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
-		sptr = this->gooKey->ConcatTo(sptr);
+		sptr = s->ConcatTo(sptr);
 	}
 
 //	wprintf(L"%s\r\n", url);

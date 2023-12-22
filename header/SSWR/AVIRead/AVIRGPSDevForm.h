@@ -65,11 +65,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspDevice;
 			NotNullPtr<UI::GUITabControl> tcDevice;
 			NotNullPtr<UI::GUITabPage> tpDevInfo;
-			UI::GUIListView *lvDevInfo;
+			NotNullPtr<UI::GUIListView> lvDevInfo;
 			NotNullPtr<UI::GUITabPage> tpDevAlert;
-			UI::GUIListView *lvDevAlert;
+			NotNullPtr<UI::GUIListView> lvDevAlert;
 			NotNullPtr<UI::GUITabPage> tpDevGuard;
-			UI::GUIListView *lvDevGuard;
+			NotNullPtr<UI::GUIListView> lvDevGuard;
 
 			NotNullPtr<UI::GUITabPage> tpUser;
 			NotNullPtr<UI::GUIPanel> pnlUserC;
@@ -78,7 +78,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspUser;
 			NotNullPtr<UI::GUIPanel> pnlUser;
 			UI::GUIListBox *lbUserDev;
-			UI::GUIListView *lvUser;
+			NotNullPtr<UI::GUIListView> lvUser;
 
 			NotNullPtr<UI::GUITabPage> tpAlert;
 			NotNullPtr<UI::GUIPanel> pnlAlertC;
@@ -87,7 +87,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspAlert;
 			NotNullPtr<UI::GUIPanel> pnlAlert;
 			UI::GUIListBox *lbAlertDev;
-			UI::GUIListView *lvAlert;
+			NotNullPtr<UI::GUIListView> lvAlert;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Sync::Mutex cliMut;

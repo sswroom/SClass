@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUICheckBox> chkUnkOnly;
 			NotNullPtr<UI::GUIButton> btnStore;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUIListView *lvContent;
+			NotNullPtr<UI::GUIListView> lvContent;
 
 			IO::BTDevLog btLog;
 			Net::MACInfoList macList;

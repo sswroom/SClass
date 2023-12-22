@@ -36,10 +36,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtThreadName;
 
 			NotNullPtr<UI::GUITabPage> tpContext;
-			UI::GUIListView *lvContext;
+			NotNullPtr<UI::GUIListView> lvContext;
 
 			NotNullPtr<UI::GUITabPage> tpStack;
-			UI::GUIListView *lvStack;
+			NotNullPtr<UI::GUIListView> lvStack;
 
 			NotNullPtr<UI::GUITabPage> tpMyStack;
 			UI::GUIListBox *lbMyStack;
@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMyStack;
 			NotNullPtr<UI::GUITextBox> txtMyStackMem;
 			NotNullPtr<UI::GUIVSplitter> vspMyStack;
-			UI::GUIListView *lvMyStack;
+			NotNullPtr<UI::GUIListView> lvMyStack;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

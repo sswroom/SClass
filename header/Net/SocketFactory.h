@@ -146,8 +146,10 @@ namespace Net
 		Sync::Mutex dnsMut;
 		IO::LogTool log;
 		Bool noV6DNS;
+		Optional<Text::String> forceDNS;
 	protected:
 		Net::DNSHandler *dnsHdlr;
+		Bool GetEffectiveDNS(NotNullPtr<Net::SocketUtil::AddressInfo> addr);
 	public:
 		SocketFactory(Bool noV6DNS);
 		virtual ~SocketFactory();
@@ -224,6 +226,7 @@ namespace Net
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
 
 		Bool ReloadDNS();
+		Bool ForceDNSServer(Text::CStringNN ip);
 		Bool DNSResolveIP(Text::CStringNN host, NotNullPtr<Net::SocketUtil::AddressInfo> addr);
 		UOSInt DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
 		UInt32 DNSResolveIPv4(Text::CStringNN host);

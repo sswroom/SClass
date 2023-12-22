@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	}
 
 	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
-	NEW_CLASS(this->lvContext, UI::GUIListView(ui, this->tpContext, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvContext = ui->NewListView(this->tpContext, UI::ListViewStyle::Table, 2);
 	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContext->SetFullRowSelect(true);
 	this->lvContext->SetShowGrid(true);
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->lvContext->AddColumn(CSTR("Value"), 300);
 
 	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
-	NEW_CLASS(this->lvStack, UI::GUIListView(ui, this->tpStack, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvStack = ui->NewListView(this->tpStack, UI::ListViewStyle::Table, 2);
 	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStack->SetFullRowSelect(true);
 	this->lvStack->SetShowGrid(true);
@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);
 	this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false);
-	NEW_CLASS(this->lvMyStack, UI::GUIListView(ui, this->pnlMyStack, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvMyStack = ui->NewListView(this->pnlMyStack, UI::ListViewStyle::Table, 1);
 	this->lvMyStack->SetShowGrid(true);
 	this->lvMyStack->SetFullRowSelect(true);
 	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);

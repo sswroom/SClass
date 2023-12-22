@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtIntegrationTime;
 			NotNullPtr<UI::GUILabel> lblSlewRate;
 			NotNullPtr<UI::GUITextBox> txtSlewRate;
-			UI::GUIListView *lvData;
+			NotNullPtr<UI::GUIListView> lvData;
 
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);

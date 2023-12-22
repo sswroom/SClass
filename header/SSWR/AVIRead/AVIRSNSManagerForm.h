@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcChannels;
 
 			NotNullPtr<UI::GUITabPage> tpCurrItems;
-			UI::GUIListView *lvCurrItems;
+			NotNullPtr<UI::GUIListView> lvCurrItems;
 
 			Net::SNS::SNSManager *mgr;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

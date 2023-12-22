@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUICheckBox> chkAllowTimeSkip;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 
 			Data::ArrayList<FileQueue*> fileList;
 			Sync::Mutex fileMut;

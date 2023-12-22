@@ -14,7 +14,7 @@ namespace SSWR
 			class AVIRMIMEXMLViewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUIListView *lvXML;
+				NotNullPtr<UI::GUIListView> lvXML;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 

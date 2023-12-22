@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	this->btnSearch = ui->NewButton(this->pnlControl, CSTR("Search"));
 	this->btnSearch->SetRect(104, 76, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn(CSTR("File Name"), 400);
 	this->lvFiles->AddColumn(CSTR("Match Count"), 200);

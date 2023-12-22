@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->txtProductType->SetReadOnly(true);
 
 	this->tpDevices = this->tcMain->AddTabPage(CSTR("Devices"));
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this->tpDevices, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvDevices = ui->NewListView(this->tpDevices, UI::ListViewStyle::Table, 4);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
@@ -51,7 +51,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->lvDevices->AddColumn(CSTR("Driver"), 100);
 
 	this->tpDrivers = this->tcMain->AddTabPage(CSTR("Devices"));
-	NEW_CLASS(this->lvDrivers, UI::GUIListView(ui, this->tpDrivers, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvDrivers = ui->NewListView(this->tpDrivers, UI::ListViewStyle::Table, 8);
 	this->lvDrivers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDrivers->SetShowGrid(true);
 	this->lvDrivers->SetFullRowSelect(true);

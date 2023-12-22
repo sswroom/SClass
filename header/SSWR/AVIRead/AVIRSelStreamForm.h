@@ -54,7 +54,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSLControl;
 			NotNullPtr<UI::GUILabel> lblSLBaudRate;
 			NotNullPtr<UI::GUITextBox> txtSLBaudRate;
-			UI::GUIListView *lvSLPort;
+			NotNullPtr<UI::GUIListView> lvSLPort;
 
 			NotNullPtr<UI::GUITabPage> tpTCPSvr;
 			NotNullPtr<UI::GUILabel> lblTCPSvrPort;

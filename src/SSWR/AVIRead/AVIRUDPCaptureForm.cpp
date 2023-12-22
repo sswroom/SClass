@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->tpPorts = this->tcMain->AddTabPage(CSTR("Common Ports"));
-	NEW_CLASS(this->lvPorts, UI::GUIListView(ui, this->tpPorts, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvPorts = ui->NewListView(this->tpPorts, UI::ListViewStyle::Table, 2);
 	this->lvPorts->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPorts->SetFullRowSelect(true);
 	this->lvPorts->SetShowGrid(true);

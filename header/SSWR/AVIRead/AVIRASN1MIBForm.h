@@ -29,12 +29,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpObjects;
-			UI::GUIListView *lvObjects;
+			NotNullPtr<UI::GUIListView> lvObjects;
 			NotNullPtr<UI::GUIVSplitter> vspObjects;
-			UI::GUIListView *lvObjectsVal;
+			NotNullPtr<UI::GUIListView> lvObjectsVal;
 
 			NotNullPtr<UI::GUITabPage> tpOID;
-			UI::GUIListView *lvOID;
+			NotNullPtr<UI::GUIListView> lvOID;
 
 			NotNullPtr<UI::GUITabPage> tpOIDText;
 			NotNullPtr<UI::GUITextBox> txtOIDText;

@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->btnDevUnauthen->HandleButtonClick(OnDevUnauthenClicked, this);
 	NEW_CLASS(this->lbDevServices, UI::GUIListBox(ui, this->pnlDevDetail, false));
 	this->lbDevServices->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 6));
+	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 6);
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
 	this->lvDevice->AddColumn(CSTR("Name"), 150);

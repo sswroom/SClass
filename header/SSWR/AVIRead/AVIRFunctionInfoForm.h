@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRFunctionInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListView *lvMyStack;
+			NotNullPtr<UI::GUIListView> lvMyStack;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

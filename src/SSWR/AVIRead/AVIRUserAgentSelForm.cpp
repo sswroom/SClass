@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	this->btnOk = ui->NewButton(this->pnlControl, CSTR("Ok"));
 	this->btnOk->SetRect(4, 4, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->lvUserAgent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 7));
+	this->lvUserAgent = ui->NewListView(*this, UI::ListViewStyle::Table, 7);
 	this->lvUserAgent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUserAgent->HandleSelChg(OnUserAgentSelChg, this);
 	this->lvUserAgent->SetFullRowSelect(true);

@@ -364,7 +364,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->txtAgentModel = ui->NewTextBox(this->pnlAgent, CSTR(""));
 	this->txtAgentModel->SetRect(104, 220, 150, 23, false);
 	this->txtAgentModel->SetReadOnly(true);
-	NEW_CLASS(this->lvAgentReading, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvAgentReading = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvAgentReading->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvAgentReading->SetShowGrid(true);
 	this->lvAgentReading->SetFullRowSelect(true);

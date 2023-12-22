@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *pa
 	this->txtGeneralSituation->SetReadOnly(true);
 	this->txtGeneralSituation->SetWordWrap(true);
 
-	NEW_CLASS(this->lvForecast, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvForecast = ui->NewListView(*this, UI::ListViewStyle::Table, 8);
 	this->lvForecast->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvForecast->SetFullRowSelect(true);
 	this->lvForecast->SetShowGrid(true);

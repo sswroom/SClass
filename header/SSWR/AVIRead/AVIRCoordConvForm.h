@@ -42,7 +42,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnClear;
 			NotNullPtr<UI::GUIButton> btnCopyAll;
-			UI::GUIListView *lvCoord;
+			NotNullPtr<UI::GUIListView> lvCoord;
 			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

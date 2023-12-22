@@ -19,7 +19,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUIListView *lvTables;
+			NotNullPtr<UI::GUIListView> lvTables;
 			NotNullPtr<UI::GUILabel> lblDBType;
 			NotNullPtr<UI::GUIComboBox> cboDBType;
 			NotNullPtr<UI::GUICheckBox> chkAxisAware;

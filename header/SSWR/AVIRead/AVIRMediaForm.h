@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRMediaForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbFiles;
+			NotNullPtr<UI::GUIListBox> lbFiles;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;

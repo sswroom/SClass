@@ -97,8 +97,8 @@ Net::MSGraphEventMessageRequest::~MSGraphEventMessageRequest()
 
 Optional<Net::MSGraphEventMessageRequest> Net::MSGraphEventMessageRequest::Parse(NotNullPtr<Text::JSONObject> obj)
 {
-	Text::String *type = obj->GetValueString(CSTR("@odata.type"));
-	if (type && type->Equals(CSTR("#microsoft.graph.eventMessageRequest")))
+	NotNullPtr<Text::String> type;
+	if (obj->GetValueString(CSTR("@odata.type")).SetTo(type) && type->Equals(CSTR("#microsoft.graph.eventMessageRequest")))
 	{
 		MSGraphClient::HasUnknownTypes(obj, IsKnownType, CSTR("MSGraphEventMessageRequest"));
 		NotNullPtr<MSGraphEventMessageRequest> msg;
@@ -245,8 +245,8 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 	NotNullPtr<Text::String> at;
 	Int32 expiresIn;
 	Int32 extExpiresIn;
-	if (t.Set(result->GetValueString(CSTR("token_type"))) &&
-		at.Set(result->GetValueString(CSTR("access_token"))) &&
+	if (result->GetValueString(CSTR("token_type")).SetTo(t) &&
+		result->GetValueString(CSTR("access_token")).SetTo(at) &&
 		result->GetValueAsInt32(CSTR("expires_in"), expiresIn) &&
 		result->GetValueAsInt32(CSTR("ext_expires_in"), extExpiresIn))
 	{

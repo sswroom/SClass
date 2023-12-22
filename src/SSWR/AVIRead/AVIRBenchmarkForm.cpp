@@ -365,7 +365,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCopy = this->tcMain->AddTabPage(CSTR("Copy"));
-	NEW_CLASS(this->lvCopy, UI::GUIListView(ui, this->tpCopy, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvCopy = ui->NewListView(this->tpCopy, UI::ListViewStyle::Table, 2);
 	this->lvCopy->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCopy->SetShowGrid(true);
 	this->lvCopy->SetFullRowSelect(true);
@@ -373,7 +373,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvCopy->AddColumn(CSTR("Data Rate"), 150);
 
 	this->tpRead = this->tcMain->AddTabPage(CSTR("Read"));
-	NEW_CLASS(this->lvRead, UI::GUIListView(ui, this->tpRead, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvRead = ui->NewListView(this->tpRead, UI::ListViewStyle::Table, 2);
 	this->lvRead->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRead->SetShowGrid(true);
 	this->lvRead->SetFullRowSelect(true);
@@ -381,7 +381,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvRead->AddColumn(CSTR("Data Rate"), 150);
 
 	this->tpWrite = this->tcMain->AddTabPage(CSTR("Write"));
-	NEW_CLASS(this->lvWrite, UI::GUIListView(ui, this->tpWrite, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvWrite = ui->NewListView(this->tpWrite, UI::ListViewStyle::Table, 2);
 	this->lvWrite->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWrite->SetShowGrid(true);
 	this->lvWrite->SetFullRowSelect(true);
@@ -402,7 +402,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->txtCPU = ui->NewTextBox(this->pnlInfo, CSTR(""));
 	this->txtCPU->SetRect(104, 28, 300, 23, false);
 	this->txtCPU->SetReadOnly(true);
-	NEW_CLASS(this->lvRAM, UI::GUIListView(ui, this->tpInfo, UI::GUIListView::LVSTYLE_TABLE, 9));
+	this->lvRAM = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 9);
 	this->lvRAM->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRAM->SetFullRowSelect(true);
 	this->lvRAM->SetShowGrid(true);

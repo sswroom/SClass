@@ -622,10 +622,10 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 									{
 										return false;
 									}
-									if (thisTime > lastTime)
+/*									if (thisTime > lastTime)
 									{
 										lastTime = thisTime;
-									}
+									}*/
 								}
 							}
 							it = prog->libs.Iterator();

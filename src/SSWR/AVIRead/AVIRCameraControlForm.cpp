@@ -184,7 +184,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->camera = camera;
 
-	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvInfo = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvInfo->SetRect(0, 0, 100, 96, false);
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvInfo->SetFullRowSelect(true);
@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->btnDownload = ui->NewButton(this->pnlControl, CSTR("Download"));
 	this->btnDownload->SetRect(164, 4, 75, 23, false);
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);

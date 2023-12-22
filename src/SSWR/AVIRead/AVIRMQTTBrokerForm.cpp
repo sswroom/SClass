@@ -283,7 +283,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->txtDataRate->SetRect(104, 76, 200, 23, false);
 
 	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topic"));
-	NEW_CLASS(this->lvTopic, UI::GUIListView(ui, this->tpTopic, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvTopic = ui->NewListView(this->tpTopic, UI::ListViewStyle::Table, 3);
 	this->lvTopic->SetDockType(UI::GUIClientControl::DOCK_FILL);
 	this->lvTopic->SetFullRowSelect(true);
 	this->lvTopic->SetShowGrid(true);

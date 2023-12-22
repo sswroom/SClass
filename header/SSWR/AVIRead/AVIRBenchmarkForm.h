@@ -45,13 +45,13 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpCopy;
-			UI::GUIListView *lvCopy;
+			NotNullPtr<UI::GUIListView> lvCopy;
 
 			NotNullPtr<UI::GUITabPage> tpRead;
-			UI::GUIListView *lvRead;
+			NotNullPtr<UI::GUIListView> lvRead;
 
 			NotNullPtr<UI::GUITabPage> tpWrite;
-			UI::GUIListView *lvWrite;
+			NotNullPtr<UI::GUIListView> lvWrite;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
@@ -59,7 +59,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtPlatform;
 			NotNullPtr<UI::GUILabel> lblCPU;
 			NotNullPtr<UI::GUITextBox> txtCPU;
-			UI::GUIListView *lvRAM;
+			NotNullPtr<UI::GUIListView> lvRAM;
 
 			static UTF8Char *ByteDisp(UTF8Char *sbuff, UOSInt byteSize);
 			void StartTest(UOSInt startSize, UOSInt buffSize);

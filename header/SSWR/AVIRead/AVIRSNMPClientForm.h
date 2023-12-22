@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCommandType;
 			NotNullPtr<UI::GUIComboBox> cboCommandType;
 			NotNullPtr<UI::GUIButton> btnRequest;
-			UI::GUIListView *lvResults;
+			NotNullPtr<UI::GUIListView> lvResults;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

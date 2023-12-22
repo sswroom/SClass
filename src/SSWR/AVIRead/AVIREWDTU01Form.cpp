@@ -201,7 +201,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, No
 	this->btnConnect->SetRect(404, 4, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);

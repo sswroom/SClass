@@ -75,7 +75,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDevOn;
 			NotNullPtr<UI::GUIButton> btnDevOff;
 			NotNullPtr<UI::GUIButton> btnDevStatus;
-			UI::GUIListView *lvDevice;
+			NotNullPtr<UI::GUIListView> lvDevice;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;

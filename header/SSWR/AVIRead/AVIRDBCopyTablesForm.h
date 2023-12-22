@@ -35,7 +35,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpData;
 			NotNullPtr<UI::GUIGroupBox> grpDest;
-			UI::GUIListView *lvData;
+			NotNullPtr<UI::GUIListView> lvData;
 			NotNullPtr<UI::GUILabel> lblDestDB;
 			NotNullPtr<UI::GUIComboBox> cboDestDB;
 			NotNullPtr<UI::GUILabel> lblDestSchema;

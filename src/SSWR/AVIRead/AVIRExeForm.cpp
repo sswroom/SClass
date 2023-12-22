@@ -323,7 +323,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProp = this->tcEXE->AddTabPage(CSTR("Properties"));
-	NEW_CLASS(this->lvProp, UI::GUIListView(ui, this->tpProp, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvProp = ui->NewListView(this->tpProp, UI::ListViewStyle::Table, 2);
 	this->lvProp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvProp->SetShowGrid(true);
 	this->lvProp->SetFullRowSelect(true);
@@ -347,7 +347,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lbImport->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImport->HandleSelectionChange(OnImportSelChg, this);
 	this->hspImport = ui->NewHSplitter(this->tpImport, 3, false);
-	NEW_CLASS(this->lvImport, UI::GUIListView(ui, this->tpImport, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvImport = ui->NewListView(this->tpImport, UI::ListViewStyle::Table, 1);
 	this->lvImport->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvImport->SetShowGrid(true);
 	this->lvImport->SetFullRowSelect(true);

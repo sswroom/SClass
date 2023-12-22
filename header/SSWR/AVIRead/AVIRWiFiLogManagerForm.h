@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboDblClk;
 			NotNullPtr<UI::GUITextBox> txtFileIE;
 			NotNullPtr<UI::GUIVSplitter> vspFile;
-			UI::GUIListView *lvContent;
+			NotNullPtr<UI::GUIListView> lvContent;
 
 			Net::WiFiLogFile *wifiLogFile;
 			Net::MACInfoList *macList;

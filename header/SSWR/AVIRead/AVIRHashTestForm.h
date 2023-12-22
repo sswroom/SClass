@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpCompare;
 			NotNullPtr<UI::GUIPanel> pnlCompare;
 			NotNullPtr<UI::GUIButton> btnCompare;
-			UI::GUIListView *lvCompare;
+			NotNullPtr<UI::GUIListView> lvCompare;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

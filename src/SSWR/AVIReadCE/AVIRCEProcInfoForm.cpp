@@ -437,7 +437,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
 	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvSummary, UI::GUIListView(ui, this->tpSummary, UI::GUIListView::LVSTYLE_TABLE, 10));
+	NEW_CLASS(this->lvSummary = ui->NewListView(this->tpSummary, UI::ListViewStyle::Table, 10));
 	this->lvSummary->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSummary->SetFullRowSelect(true);
 	this->lvSummary->SetShowGrid(true);
@@ -498,7 +498,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->btnDetModule = ui->NewButton(this->pnlDetModule, CSTR("Refresh"));
 	this->btnDetModule->SetRect(4, 4, 75, 23, false);
 	this->btnDetModule->HandleButtonClick(OnDetModuleRefClicked, this);
-	NEW_CLASS(this->lvDetModule, UI::GUIListView(ui, this->tpDetModule, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvDetModule = ui->NewListView(this->tpDetModule, UI::ListViewStyle::Table, 3));
 	this->lvDetModule->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetModule->SetFullRowSelect(true);
 	this->lvDetModule->SetShowGrid(true);
@@ -512,7 +512,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->btnDetThread = ui->NewButton(this->pnlDetThread, CSTR("Refresh"));
 	this->btnDetThread->SetRect(4, 4, 75, 23, false);
 	this->btnDetThread->HandleButtonClick(OnDetThreadRefClicked, this);
-	NEW_CLASS(this->lvDetThread, UI::GUIListView(ui, this->tpDetThread, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvDetThread = ui->NewListView(this->tpDetThread, UI::ListViewStyle::Table, 3));
 	this->lvDetThread->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetThread->HandleDblClk(OnDetThreadDblClicked, this);
 	this->lvDetThread->SetFullRowSelect(true);
@@ -532,7 +532,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->lbDetHeap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetHeap->HandleSelectionChange(OnDetHeapSelChg, this);
 	this->hspDetHeap = ui->NewHSplitter(this->tpDetHeap, 3, false);
-	NEW_CLASS(this->lvDetHeap, UI::GUIListView(ui, this->tpDetHeap, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvDetHeap = ui->NewListView(this->tpDetHeap, UI::ListViewStyle::Table, 3));
 	this->lvDetHeap->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetHeap->SetFullRowSelect(true);
 	this->lvDetHeap->SetShowGrid(true);

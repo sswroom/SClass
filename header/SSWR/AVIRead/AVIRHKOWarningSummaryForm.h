@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlReqTime;
 			NotNullPtr<UI::GUILabel> lblReqTime;
 			NotNullPtr<UI::GUITextBox> txtReqTime;
-			UI::GUIListView *lvWarning;
+			NotNullPtr<UI::GUIListView> lvWarning;
 
 			void Reload();
 		public:

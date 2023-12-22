@@ -56,7 +56,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtAgentVendor;
 			NotNullPtr<UI::GUILabel> lblAgentModel;
 			NotNullPtr<UI::GUITextBox> txtAgentModel;
-			UI::GUIListView *lvAgentReading;
+			NotNullPtr<UI::GUIListView> lvAgentReading;
 
 			static void __stdcall OnAgentAddClicked(void *userObj);
 			static void __stdcall OnAgentSelChg(void *userObj);

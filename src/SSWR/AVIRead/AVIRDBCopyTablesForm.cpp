@@ -405,7 +405,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->grpDest = ui->NewGroupBox(this->tpData, CSTR("Destination"));
 	this->grpDest->SetRect(0, 0, 100, 130, false);
 	this->grpDest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvData, UI::GUIListView(ui, this->tpData, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvData = ui->NewListView(this->tpData, UI::ListViewStyle::Table, 2);
 	this->lvData->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvData->SetFullRowSelect(true);
 	this->lvData->SetShowGrid(true);

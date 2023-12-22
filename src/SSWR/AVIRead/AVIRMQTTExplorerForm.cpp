@@ -608,7 +608,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->pbRecvTopic->SetRect(0, 0, 100, 300, false);
 	this->pbRecvTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspRecvTopic = ui->NewVSplitter(this->tpRecv, 3, true);
-	NEW_CLASS(this->lvRecvTopic, UI::GUIListView(ui, this->tpRecv, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvRecvTopic = ui->NewListView(this->tpRecv, UI::ListViewStyle::Table, 4);
 	this->lvRecvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRecvTopic->SetShowGrid(true);
 	this->lvRecvTopic->SetFullRowSelect(true);

@@ -16,7 +16,7 @@ namespace SSWR
 		private:
 			UI::GUIListBox *lbGPU;
 			NotNullPtr<UI::GUIHSplitter> hspGPU;
-			UI::GUIListView *lvMain;
+			NotNullPtr<UI::GUIListView> lvMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::GPUManager *gpuMgr;

@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUIListView *lvInfo;
+			NotNullPtr<UI::GUIListView> lvInfo;
 
 			NotNullPtr<UI::GUITabPage> tpShape;
 			NotNullPtr<UI::GUIPanel> pnlShape;

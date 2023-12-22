@@ -143,7 +143,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->lbProgSource->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpConfig = this->tcMain->AddTabPage(CSTR("Config"));
-	NEW_CLASS(this->lvConfig, UI::GUIListView(ui, this->tpConfig, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvConfig = ui->NewListView(this->tpConfig, UI::ListViewStyle::Table, 2);
 	this->lvConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvConfig->SetShowGrid(true);
 	this->lvConfig->SetFullRowSelect(true);

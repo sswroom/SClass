@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnTest;
-			UI::GUIListView *lvResult;
+			NotNullPtr<UI::GUIListView> lvResult;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

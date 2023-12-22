@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblText;
 			NotNullPtr<UI::GUITextBox> txtText;
 			NotNullPtr<UI::GUIButton> btnSearch;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 
 			static void __stdcall OnSearchClicked(void *userObj);
 			static void __stdcall OnDirectoryDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

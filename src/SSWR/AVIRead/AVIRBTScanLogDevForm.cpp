@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->btnCSV = ui->NewButton(this->pnlDevInfo, CSTR("Save CSV"));
 	this->btnCSV->SetRect(304, 28, 75, 23, false);
 	this->btnCSV->HandleButtonClick(OnCSVClicked, this);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);

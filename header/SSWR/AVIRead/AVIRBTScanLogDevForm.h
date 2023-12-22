@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblName;
 			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUIButton> btnCSV;
-			UI::GUIListView *lvContent;
+			NotNullPtr<UI::GUIListView> lvContent;
 
 			const IO::BTScanLog::DevEntry *entry;
 

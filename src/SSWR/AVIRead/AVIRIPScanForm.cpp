@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, NotN
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(254, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lvIP, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvIP = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvIP->SetFullRowSelect(true);
 	this->lvIP->SetShowGrid(true);

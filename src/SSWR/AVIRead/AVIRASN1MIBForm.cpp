@@ -138,7 +138,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpObjects = this->tcMain->AddTabPage(CSTR("Objects"));
-	NEW_CLASS(this->lvObjectsVal, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvObjectsVal = ui->NewListView(this->tpObjects, UI::ListViewStyle::Table, 2);
 	this->lvObjectsVal->SetRect(0, 0, 100, 150, false);
 	this->lvObjectsVal->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvObjectsVal->SetShowGrid(true);
@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	this->lvObjectsVal->AddColumn(CSTR("Name"), 200);
 	this->lvObjectsVal->AddColumn(CSTR("Value"), 600);
 	this->vspObjects = ui->NewVSplitter(this->tpObjects, 3, true);
-	NEW_CLASS(this->lvObjects, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvObjects = ui->NewListView(this->tpObjects, UI::ListViewStyle::Table, 4);
 	this->lvObjects->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvObjects->SetShowGrid(true);
 	this->lvObjects->SetFullRowSelect(true);
@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	this->lvObjects->HandleSelChg(OnObjectsSelChg, this);
 
 	this->tpOID = this->tcMain->AddTabPage(CSTR("OID"));
-	NEW_CLASS(this->lvOID, UI::GUIListView(ui, this->tpOID, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvOID = ui->NewListView(this->tpOID, UI::ListViewStyle::Table, 3);
 	this->lvOID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvOID->SetShowGrid(true);
 	this->lvOID->SetFullRowSelect(true);

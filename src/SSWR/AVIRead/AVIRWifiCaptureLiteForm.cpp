@@ -613,7 +613,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpCurr = this->tcMain->AddTabPage(CSTR("Current"));
-	NEW_CLASS(this->lvCurrWifi, UI::GUIListView(ui, this->tpCurr, UI::GUIListView::LVSTYLE_TABLE, 12));
+	this->lvCurrWifi = ui->NewListView(this->tpCurr, UI::ListViewStyle::Table, 12);
 	this->lvCurrWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrWifi->SetShowGrid(true);
 	this->lvCurrWifi->SetFullRowSelect(true);
@@ -640,7 +640,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	this->btnLogWifiSaveF = ui->NewButton(this->pnlLogWifi, CSTR("Save Unk only"));
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
-	NEW_CLASS(this->lvLogWifi, UI::GUIListView(ui, this->tpLogWifi, UI::GUIListView::LVSTYLE_TABLE, 12));
+	this->lvLogWifi = ui->NewListView(this->tpLogWifi, UI::ListViewStyle::Table, 12);
 	this->lvLogWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogWifi->SetShowGrid(true);
 	this->lvLogWifi->SetFullRowSelect(true);

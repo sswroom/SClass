@@ -83,7 +83,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
-			UI::GUIListView *lvDevice;
+			NotNullPtr<UI::GUIListView> lvDevice;
 			NotNullPtr<UI::GUIVSplitter> vspDevice;
 			NotNullPtr<UI::GUITextBox> txtDevice;
 
@@ -92,7 +92,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspIPTran;
 			NotNullPtr<UI::GUITabControl> tcIPTran;
 			NotNullPtr<UI::GUITabPage> tpIPTranInfo;
-			UI::GUIListView *lvIPTranInfo;
+			NotNullPtr<UI::GUIListView> lvIPTranInfo;
 			NotNullPtr<UI::GUITabPage> tpIPTranWhois;
 			NotNullPtr<UI::GUITextBox> txtIPTranWhois;
 
@@ -106,7 +106,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDNSReqv4ReqTime;
 			NotNullPtr<UI::GUILabel> lblDNSReqv4TTL;
 			NotNullPtr<UI::GUITextBox> txtDNSReqv4TTL;
-			UI::GUIListView *lvDNSReqv4;
+			NotNullPtr<UI::GUIListView> lvDNSReqv4;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv6;
 			UI::GUIListBox *lbDNSReqv6;
@@ -118,7 +118,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDNSReqv6ReqTime;
 			NotNullPtr<UI::GUILabel> lblDNSReqv6TTL;
 			NotNullPtr<UI::GUITextBox> txtDNSReqv6TTL;
-			UI::GUIListView *lvDNSReqv6;
+			NotNullPtr<UI::GUIListView> lvDNSReqv6;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqOth;
 			UI::GUIListBox *lbDNSReqOth;
@@ -130,7 +130,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDNSReqOthReqTime;
 			NotNullPtr<UI::GUILabel> lblDNSReqOthTTL;
 			NotNullPtr<UI::GUITextBox> txtDNSReqOthTTL;
-			UI::GUIListView *lvDNSReqOth;
+			NotNullPtr<UI::GUIListView> lvDNSReqOth;
 
 			NotNullPtr<UI::GUITabPage> tpDNSTarget;
 			UI::GUIListBox *lbDNSTarget;
@@ -159,10 +159,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDNSClient;
 			UI::GUIListBox *lbDNSClient;
 			NotNullPtr<UI::GUIHSplitter> hspDNSClient;
-			UI::GUIListView *lvDNSClient;
+			NotNullPtr<UI::GUIListView> lvDNSClient;
 
 			NotNullPtr<UI::GUITabPage> tpDHCP;
-			UI::GUIListView *lvDHCP;
+			NotNullPtr<UI::GUIListView> lvDHCP;
 			
 			NotNullPtr<UI::GUITabPage> tpIPLog;
 			UI::GUIListBox *lbIPLog;
@@ -184,7 +184,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtPingIPWhois;
 
 			NotNullPtr<UI::GUITabPage> tpTCP4SYN;
-			UI::GUIListView *lvTCP4SYN;
+			NotNullPtr<UI::GUIListView> lvTCP4SYN;
 			
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUITextBox> txtLog;

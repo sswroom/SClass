@@ -43,7 +43,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDownload;
 			UI::GUIPictureBoxSimple *pbNewCases;
 			NotNullPtr<UI::GUIVSplitter> vspNewCases;
-			UI::GUIListView *lvCountry;
+			NotNullPtr<UI::GUIListView> lvCountry;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnDownloadClicked(void *userObj);

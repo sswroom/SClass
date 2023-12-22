@@ -360,7 +360,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtFileIE->SetReadOnly(true);
 	this->vspFile = ui->NewVSplitter(*this, 3, true);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 13));
+	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 13);
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);

@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	this->txtTrapTime = ui->NewTextBox(this->pnlTrap, CSTR(""));
 	this->txtTrapTime->SetRect(104, 220, 200, 23, false);
 	this->txtTrapTime->SetReadOnly(true);
-	NEW_CLASS(this->lvResults, UI::GUIListView(ui, this->pnlResults, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvResults = ui->NewListView(this->pnlResults, UI::ListViewStyle::Table, 4);
 	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);

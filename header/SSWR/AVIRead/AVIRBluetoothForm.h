@@ -53,7 +53,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDevAuthen;
 			NotNullPtr<UI::GUIButton> btnDevUnauthen;
 			UI::GUIListBox *lbDevServices;
-			UI::GUIListView *lvDevice;
+			NotNullPtr<UI::GUIListView> lvDevice;
 
 			Data::ArrayList<BTStatus*> btList;
 			IO::BTController::BTDevice *currDev;

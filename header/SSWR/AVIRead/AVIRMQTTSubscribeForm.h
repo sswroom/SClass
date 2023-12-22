@@ -74,7 +74,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnPublish;
 
 			NotNullPtr<UI::GUITabPage> tpTopic;
-			UI::GUIListView *lvTopic;
+			NotNullPtr<UI::GUIListView> lvTopic;
 			NotNullPtr<UI::GUIVSplitter> vspTopic;
 			UI::GUIPictureBoxSimple *pbTopic;
 

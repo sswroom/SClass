@@ -38,7 +38,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpSummary;
 			NotNullPtr<UI::GUIPanel> pnlSummary;
-			UI::GUIListView *lvSummary;
+			NotNullPtr<UI::GUIListView> lvSummary;
 
 			NotNullPtr<UI::GUITabPage> tpDetail;
 			NotNullPtr<UI::GUIPanel> pnlDetail;
@@ -70,12 +70,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDetModule;
 			NotNullPtr<UI::GUIPanel> pnlDetModule;
 			NotNullPtr<UI::GUIButton> btnDetModule;
-			UI::GUIListView *lvDetModule;
+			NotNullPtr<UI::GUIListView> lvDetModule;
 
 			NotNullPtr<UI::GUITabPage> tpDetThread;
 			NotNullPtr<UI::GUIPanel> pnlDetThread;
 			NotNullPtr<UI::GUIButton> btnDetThread;
-			UI::GUIListView *lvDetThread;
+			NotNullPtr<UI::GUIListView> lvDetThread;
 
 			NotNullPtr<UI::GUITabPage> tpDetHeap;
 			NotNullPtr<UI::GUIPanel> pnlDetHeap;
@@ -83,12 +83,12 @@ namespace SSWR
 			UI::GUIListBox *lbDetHeap;
 			NotNullPtr<UI::GUIHSplitter> hspDetHeap;
 			NotNullPtr<UI::GUITextBox> txtDetHeap;
-			UI::GUIListView *lvDetHeap;
+			NotNullPtr<UI::GUIListView> lvDetHeap;
 
 			NotNullPtr<UI::GUITabPage> tpDetHandle;
 			NotNullPtr<UI::GUIPanel> pnlDetHandle;
 			NotNullPtr<UI::GUIButton> btnDetHandle;
-			UI::GUIListView *lvDetHandle;
+			NotNullPtr<UI::GUIListView> lvDetHandle;
 
 			NotNullPtr<UI::GUITabPage> tpDetChart;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartCPU;

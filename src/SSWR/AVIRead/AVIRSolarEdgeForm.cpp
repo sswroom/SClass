@@ -402,7 +402,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlSiteList, UI::GUIPanel(ui, this->tpSiteList));
 	this->pnlSiteList->SetRect(0, 0, 100, 216, false);
 	this->pnlSiteList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvSiteList, UI::GUIListView(ui, this->tpSiteList, UI::GUIListView::ListViewStyle::LVSTYLE_TABLE, 11));
+	this->lvSiteList = ui->NewListView(this->tpSiteList, UI::ListViewStyle::Table, 11);
 	this->lvSiteList->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSiteList->SetFullRowSelect(true);
 	this->lvSiteList->SetShowGrid(true);

@@ -2688,7 +2688,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->pnlSpBookCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnSpBookDel = ui->NewButton(this->pnlSpBookCtrl, this->env->GetLang(CSTR("MainFormTabSpeciesBookDel")));
 	this->btnSpBookDel->SetRect(8, 0, 75, 23, false);
-	NEW_CLASS(this->lvSpBook, UI::GUIListView(ui, this->grpSpBook, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvSpBook = ui->NewListView(this->grpSpBook, UI::ListViewStyle::Table, 2);
 	this->lvSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSpBook->SetFullRowSelect(true);
 	this->lvSpBook->AddColumn(this->env->GetLang(CSTR("MainFormTabSpeciesBookColDisp")), 200);

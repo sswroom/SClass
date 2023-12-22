@@ -126,7 +126,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers)
 		{
 			Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
-			this->mnuLayers->ShowMenu(this, scnPos + pos);
+			this->mnuLayers->ShowMenu(*this, scnPos + pos);
 		}
 	}
 }

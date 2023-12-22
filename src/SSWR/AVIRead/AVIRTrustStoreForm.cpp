@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 	this->store = store;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lvTrustCert, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvTrustCert = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvTrustCert->SetShowGrid(true);
 	this->lvTrustCert->SetFullRowSelect(true);
 	this->lvTrustCert->SetDockType(UI::GUIControl::DOCK_FILL);

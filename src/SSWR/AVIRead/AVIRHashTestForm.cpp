@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->btnCompare = ui->NewButton(this->pnlCompare, CSTR("Compare"));
 	this->btnCompare->SetRect(4, 4, 75, 23, false);
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
-	NEW_CLASS(this->lvCompare, UI::GUIListView(ui, this->tpCompare, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvCompare = ui->NewListView(this->tpCompare, UI::ListViewStyle::Table, 2);
 	this->lvCompare->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCompare->AddColumn(CSTR("Hash Function"), 200);
 	this->lvCompare->AddColumn(CSTR("Speed (Byte/s)"), 200);

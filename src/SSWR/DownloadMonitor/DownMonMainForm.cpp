@@ -632,7 +632,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->btn30Minutes->SetRect(104, 28, 75, 23, false);
 	this->btn30Minutes->HandleButtonClick(On30MinutesClicked, this);
 
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn(CSTR("Id"), 60);
 	this->lvFiles->AddColumn(CSTR("File Name"), 240);

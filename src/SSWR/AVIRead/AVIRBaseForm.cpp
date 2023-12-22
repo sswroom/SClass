@@ -192,6 +192,7 @@
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "SSWR/AVIRead/AVIRServiceForm.h"
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
+#include "SSWR/AVIRead/AVIRSetDNSForm.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
 #include "SSWR/AVIRead/AVIRSMBIOSForm.h"
@@ -502,7 +503,8 @@ typedef enum
 	MNU_FILE_SEARCH,
 	MNU_VBOX_MANAGER,
 	MNU_JWT_PARSER,
-	MNU_GCIS_CLIENT
+	MNU_GCIS_CLIENT,
+	MNU_SET_DNS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
@@ -703,6 +705,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, NotNullP
 	mnu->AddItem(CSTR("Set &Audio Device"), MNU_SET_AUDIO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Set Monitor &DPI"), MNU_SET_DPI, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Set &Location Service"), MNU_SETLOCATIONSVC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Set D&NS Server"), MNU_SET_DNS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Network"));
 	mnu->AddItem(CSTR("Network Info"), MNU_NET_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2912,6 +2915,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRGCISClientForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRGCISClientForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SET_DNS:
+		{
+			SSWR::AVIRead::AVIRSetDNSForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSetDNSForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

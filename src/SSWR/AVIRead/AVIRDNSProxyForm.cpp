@@ -1105,7 +1105,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbClientIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbClientIP->HandleSelectionChange(OnClientSelChg, this);
 	this->hspClient = ui->NewHSplitter(this->tpClient, 3, false);
-	NEW_CLASS(this->lvClient, UI::GUIListView(ui, this->tpClient, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvClient = ui->NewListView(this->tpClient, UI::ListViewStyle::Table, 2);
 	this->lvClient->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvClient->AddColumn(CSTR("Time"), 200);
 	this->lvClient->AddColumn(CSTR("Count"), 100);

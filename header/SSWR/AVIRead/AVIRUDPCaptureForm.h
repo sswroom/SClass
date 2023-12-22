@@ -50,7 +50,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			NotNullPtr<UI::GUITabPage> tpPorts;
-			UI::GUIListView *lvPorts;
+			NotNullPtr<UI::GUIListView> lvPorts;
 
 			NotNullPtr<UI::GUITabPage> tpMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCommon;

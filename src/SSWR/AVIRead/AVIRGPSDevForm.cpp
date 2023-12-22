@@ -498,14 +498,14 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->tcDevice = ui->NewTabControl(this->tpDevice);
 	this->tcDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDevInfo = this->tcDevice->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lvDevInfo, UI::GUIListView(ui, this->tpDevInfo, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvDevInfo = ui->NewListView(this->tpDevInfo, UI::ListViewStyle::Table, 2);
 	this->lvDevInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevInfo->SetFullRowSelect(true);
 	this->lvDevInfo->SetShowGrid(true);
 	this->lvDevInfo->AddColumn(CSTR("Name"), 200);
 	this->lvDevInfo->AddColumn(CSTR("Value"), 400);
 	this->tpDevAlert = this->tcDevice->AddTabPage(CSTR("Alert"));
-	NEW_CLASS(this->lvDevAlert, UI::GUIListView(ui, this->tpDevAlert, UI::GUIListView::LVSTYLE_TABLE, 6));
+	this->lvDevAlert = ui->NewListView(this->tpDevAlert, UI::ListViewStyle::Table, 6);
 	this->lvDevAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevAlert->SetFullRowSelect(true);
 	this->lvDevAlert->SetShowGrid(true);
@@ -516,7 +516,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lvDevAlert->AddColumn(CSTR("Begin Time (UTC)"), 200);
 	this->lvDevAlert->AddColumn(CSTR("Last Time (UTC)"), 200);
 	this->tpDevGuard = this->tcDevice->AddTabPage(CSTR("Guard"));
-	NEW_CLASS(this->lvDevGuard, UI::GUIListView(ui, this->tpDevGuard, UI::GUIListView::LVSTYLE_TABLE, 11));
+	this->lvDevGuard = ui->NewListView(this->tpDevGuard, UI::ListViewStyle::Table, 11);
 	this->lvDevGuard->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevGuard->SetFullRowSelect(true);
 	this->lvDevGuard->SetShowGrid(true);
@@ -549,7 +549,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->lbUserDev, UI::GUIListBox(ui, this->pnlUser, false));
 	this->lbUserDev->SetRect(0, 0, 150, 23, false);
 	this->lbUserDev->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASS(this->lvUser, UI::GUIListView(ui, this->pnlUser, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvUser = ui->NewListView(this->pnlUser, UI::ListViewStyle::Table, 2);
 	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);
@@ -573,7 +573,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->lbAlertDev, UI::GUIListBox(ui, this->pnlAlert, false));
 	this->lbAlertDev->SetRect(0, 0, 150, 23, false);
 	this->lbAlertDev->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASS(this->lvAlert, UI::GUIListView(ui, this->pnlAlert, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvAlert = ui->NewListView(this->pnlAlert, UI::ListViewStyle::Table, 2);
 	this->lvAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvAlert->SetShowGrid(true);
 	this->lvAlert->SetFullRowSelect(true);

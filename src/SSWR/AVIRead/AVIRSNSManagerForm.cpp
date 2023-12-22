@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->tcChannels->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCurrItems = this->tcChannels->AddTabPage(CSTR("Curr Items"));
-	NEW_CLASS(this->lvCurrItems, UI::GUIListView(ui, this->tpCurrItems, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvCurrItems = ui->NewListView(this->tpCurrItems, UI::ListViewStyle::Table, 4);
 	this->lvCurrItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrItems->SetFullRowSelect(true);
 	this->lvCurrItems->SetShowGrid(true);

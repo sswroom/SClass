@@ -888,7 +888,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 
 
 	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 6));
+	this->lvFiles = ui->NewListView(this->tpFiles, UI::ListViewStyle::Table, 6);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn(CSTR("Item Name"), 150);
 	this->lvFiles->AddColumn(CSTR("Type"), 80);
@@ -960,7 +960,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->rlcStatus->SetRect(0, 0, 100, 360, false);
 	this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspStatus = ui->NewVSplitter(this->tpStatus, 3, true);
-	NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this->tpStatus, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvStatus = ui->NewListView(this->tpStatus, UI::ListViewStyle::Table, 2);
 	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStatus->SetFullRowSelect(true);
 	this->lvStatus->AddColumn(CSTR("Source File"), 200);

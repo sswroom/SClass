@@ -29,10 +29,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcRSS;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUIListView *lvInfo;
+			NotNullPtr<UI::GUIListView> lvInfo;
 
 			NotNullPtr<UI::GUITabPage> tpItems;
-			UI::GUIListView *lvItems;
+			NotNullPtr<UI::GUIListView> lvItems;
 
 			Net::RSS *rss;
 			Data::ArrayListStringNN rssList;

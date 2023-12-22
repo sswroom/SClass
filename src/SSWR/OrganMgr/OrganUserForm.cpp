@@ -66,7 +66,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, NotNu
 	this->btnModify = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("UserFormModify")));
 	this->btnModify->SetRect(84, 4, 75, 23, false);
 	this->btnModify->HandleButtonClick(OnModifyClicked, this);
-	NEW_CLASS(this->lvUser, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvUser = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);

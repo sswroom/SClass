@@ -171,7 +171,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	NEW_CLASS(this->pbPlate, UI::GUIPictureBoxSimple(ui, this->pnlPlate, this->core->GetDrawEngine(), false));
 	this->pbPlate->SetRect(0, 0, 100, 80, false);
 	this->pbPlate->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lvPlate, UI::GUIListView(ui, this->pnlPlate, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvPlate = ui->NewListView(this->pnlPlate, UI::ListViewStyle::Table, 4);
 	this->lvPlate->SetRect(0, 0, 250, 100, false);
 	this->lvPlate->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPlate->AddColumn(CSTR("Result"), 100);

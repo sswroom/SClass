@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, No
 	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClick, this);
-	NEW_CLASS(this->lvXML, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvXML = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
 	this->lvXML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvXML->SetShowGrid(true);
 	this->lvXML->SetFullRowSelect(true);

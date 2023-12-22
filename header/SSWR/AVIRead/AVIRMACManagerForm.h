@@ -50,7 +50,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnFile;
 			NotNullPtr<UI::GUITextBox> txtFileIE;
 			NotNullPtr<UI::GUIVSplitter> vspFile;
-			UI::GUIListView *lvContent;
+			NotNullPtr<UI::GUIListView> lvContent;
 
 			NotNullPtr<UI::GUITabPage> tpInput;
 			NotNullPtr<UI::GUILabel> lblInput;

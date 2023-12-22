@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpCPU;
-			UI::GUIListView *lvMain;
+			NotNullPtr<UI::GUIListView> lvMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUIButton> btnUpload;
 			NotNullPtr<UI::GUIButton> btnCopyInfo;
@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUIListBox *lbCache;
 
 			NotNullPtr<UI::GUITabPage> tpFeature;
-			UI::GUIListView *lvFeature;
+			NotNullPtr<UI::GUIListView> lvFeature;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

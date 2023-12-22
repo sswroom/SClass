@@ -57,10 +57,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpCurr;
-			UI::GUIListView *lvCurrWifi;
+			NotNullPtr<UI::GUIListView> lvCurrWifi;
 
 			NotNullPtr<UI::GUITabPage> tpLogWifi;
-			UI::GUIListView *lvLogWifi;
+			NotNullPtr<UI::GUIListView> lvLogWifi;
 			NotNullPtr<UI::GUIPanel> pnlLogWifi;
 			NotNullPtr<UI::GUIButton> btnLogWifiSave;
 			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;

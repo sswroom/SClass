@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboFilterBrowser;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnOk;
-			UI::GUIListView *lvUserAgent;
+			NotNullPtr<UI::GUIListView> lvUserAgent;
 
 			static void __stdcall OnOkClicked(void *userObj);
 			static void __stdcall OnFilterChg(void *userObj);

@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAddress;
 			NotNullPtr<UI::GUIComboBox> cboName;
 			NotNullPtr<UI::GUILabel> lblDist;
-			UI::GUIListView *lvExtra;
+			NotNullPtr<UI::GUIListView> lvExtra;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Map::GPSTrack> track;

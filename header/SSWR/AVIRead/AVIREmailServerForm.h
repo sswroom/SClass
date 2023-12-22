@@ -63,7 +63,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnGCISStart;
 
 			NotNullPtr<UI::GUITabPage> tpEmail;
-			UI::GUIListView *lvEmail;
+			NotNullPtr<UI::GUIListView> lvEmail;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUITextBox> txtLog;

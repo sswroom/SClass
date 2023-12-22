@@ -390,7 +390,7 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 		return;
 	}
 	UOSInt i;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Text::JSONObject *jobj = (Text::JSONObject*)obj;
 	obj = jobj->GetObjectValue(CSTR("content"));
 	if (obj && obj->GetType() == Text::JSONType::Object)
@@ -535,27 +535,30 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 	return true;
 }
 
-void Map::MapServerHandler::AddLayer(Map::MapDrawLayer *layer)
+void Map::MapServerHandler::AddLayer(NotNullPtr<Map::MapDrawLayer> layer)
 {
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 	{
-		Map::MapLayerCollection *layerColl = (Map::MapLayerCollection*)layer;
+		NotNullPtr<Map::MapLayerCollection> layerColl = NotNullPtr<Map::MapLayerCollection>::ConvertFrom(layer);
 		UOSInt i = 0;
 		UOSInt j = layerColl->GetCount();
 		while (i < j)
 		{
-			Map::MapDrawLayer *sublayer = layerColl->GetItem(i);
-			this->AddLayer(sublayer);
+			NotNullPtr<Map::MapDrawLayer> sublayer;
+			if (layerColl->GetItem(i).SetTo(sublayer))
+			{
+				this->AddLayer(sublayer);
+			}
 			i++;
 		}
 	}
 	else
 	{
-		this->layerMap.PutNN(layer->GetName(), layer);
+		this->layerMap.PutNN(layer->GetName(), layer.Ptr());
 	}
 }
 
-Map::MapServerHandler::MapServerHandler(Parser::ParserList *parsers)
+Map::MapServerHandler::MapServerHandler(NotNullPtr<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 	this->cesiumScenePath = 0;
@@ -569,13 +572,7 @@ Map::MapServerHandler::MapServerHandler(Parser::ParserList *parsers)
 
 Map::MapServerHandler::~MapServerHandler()
 {
-	IO::ParsedObject *pobj;
-	UOSInt i = this->assets.GetCount();
-	while (i-- > 0)
-	{
-		pobj = this->assets.GetItem(i);
-		DEL_CLASS(pobj);
-	}
+	this->assets.DeleteAll();
 	SDEL_STRING(this->cesiumScenePath);
 	DEL_CLASS(this->wgs84);
 }
@@ -583,7 +580,8 @@ Map::MapServerHandler::~MapServerHandler()
 Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(filePath);
-	IO::ParsedObject *pobj;
+	Optional<IO::ParsedObject> pobj;
+	NotNullPtr<IO::ParsedObject> nnpobj;
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData fd(filePath, false);
@@ -598,21 +596,21 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 	{
 		return false;
 	}
-	if (pobj == 0)
+	if (!pobj.SetTo(nnpobj))
 	{
 		return false;
 	}
 
-	if (pobj->GetParserType() == IO::ParserType::MapLayer)
+	if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
 	{
-		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+		NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(nnpobj);
 		this->AddLayer(layer);
-		this->assets.Add(pobj);
+		this->assets.Add(nnpobj);
 		return true;
 	}
 	else
 	{
-		DEL_CLASS(pobj);
+		nnpobj.Delete();
 		return false;
 	}
 }

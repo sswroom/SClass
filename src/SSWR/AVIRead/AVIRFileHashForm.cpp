@@ -337,14 +337,14 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->pnlTasks->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnTasksClear = ui->NewButton(this->pnlTasks, CSTR("Clear Completed"));
 	this->btnTasksClear->SetRect(4, 4, 120, 23, false);
-	NEW_CLASS(this->lvTasks, UI::GUIListView(ui, this->tpTasks, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvTasks = ui->NewListView(this->tpTasks, UI::ListViewStyle::Table, 2);
 	this->lvTasks->AddColumn(CSTR("File Name"), 500);
 	this->lvTasks->AddColumn(CSTR("Status"), 100);
 	this->lvTasks->SetShowGrid(true);
 	this->lvTasks->SetFullRowSelect(true);
 	this->lvTasks->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvFiles = ui->NewListView(this->tpFiles, UI::ListViewStyle::Table, 2);
 	this->lvFiles->AddColumn(CSTR("File Name"), 500);
 	this->lvFiles->AddColumn(CSTR("Hash"), 200);
 	this->lvFiles->SetShowGrid(true);

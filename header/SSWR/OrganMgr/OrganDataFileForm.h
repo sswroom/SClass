@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			OrganEnv *env;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnDelete;
 			NotNullPtr<UI::GUIButton> btnStartTime;

@@ -115,7 +115,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 		}
 		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers)
 		{
-			this->mnuLayers->ShowMenu(this, this->GetScreenPosP() + pos);
+			this->mnuLayers->ShowMenu(*this, this->GetScreenPosP() + pos);
 		}
 	}
 }

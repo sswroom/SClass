@@ -232,7 +232,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, NotNullP
 	this->txtSlewRate->SetRect(104, 292, 100, 23, false);
 	this->txtSlewRate->SetReadOnly(true);
 
-	NEW_CLASS(this->lvData, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvData = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvData->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvData->SetFullRowSelect(true);
 	this->lvData->SetShowGrid(true);

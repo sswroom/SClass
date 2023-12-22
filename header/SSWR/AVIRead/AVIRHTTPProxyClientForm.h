@@ -42,7 +42,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtTimeResp;
 			NotNullPtr<UI::GUILabel> lblTimeTotal;
 			NotNullPtr<UI::GUITextBox> txtTimeTotal;
-			UI::GUIListView *lvHeaders;
+			NotNullPtr<UI::GUIListView> lvHeaders;
 
 			NotNullPtr<Net::SocketFactory> sockf;
 			Bool threadRunning;

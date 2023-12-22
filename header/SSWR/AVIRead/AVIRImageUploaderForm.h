@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUICheckBox> chkErrorCont;
 			NotNullPtr<UI::GUIButton> btnUpload;
-			UI::GUIListView *lvStatus;
+			NotNullPtr<UI::GUIListView> lvStatus;
 
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt);
 			static void __stdcall OnUploadClicked(void *userObj);

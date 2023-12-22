@@ -9,14 +9,6 @@ namespace UI
 	class GUIListView : public GUIControl
 	{
 	public:
-		typedef enum
-		{
-			LVSTYLE_ICON,
-			LVSTYLE_LIST,
-			LVSTYLE_TABLE,
-			LVSTYLE_SMALLICON
-		} ListViewStyle;
-
 		typedef void (__stdcall *ItemEvent)(void *userObj, UOSInt itemIndex);
 		typedef void (__stdcall *MouseEvent)(void *userObj, Math::Coord2DDbl pos, UOSInt index);
 	protected:

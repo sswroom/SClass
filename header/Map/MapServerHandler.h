@@ -13,8 +13,8 @@ namespace Map
 	class MapServerHandler : public Net::WebServer::WebServiceHandler
 	{
 	private:
-		Parser::ParserList *parsers;
-		Data::ArrayList<IO::ParsedObject*> assets;
+		NotNullPtr<Parser::ParserList> parsers;
+		Data::ArrayListNN<IO::ParsedObject> assets;
 		Data::FastStringMap<Map::MapDrawLayer*> layerMap;
 		Text::String *cesiumScenePath;
 		Double cesiumMinError;
@@ -28,9 +28,9 @@ namespace Map
 		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NotNullPtr<Text::String> fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool InObjectRange(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2);
 		Bool InSphereRange(Text::JSONBase *sphere, Double x1, Double y1, Double x2, Double y2);
-		void AddLayer(Map::MapDrawLayer *layer);
+		void AddLayer(NotNullPtr<Map::MapDrawLayer> layer);
 	public:
-		MapServerHandler(Parser::ParserList *parsers);
+		MapServerHandler(NotNullPtr<Parser::ParserList> parsers);
 		virtual ~MapServerHandler();
 
 		Bool AddAsset(Text::CStringNN filePath);

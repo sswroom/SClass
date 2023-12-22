@@ -60,7 +60,7 @@ namespace SSWR
 			UI::GUIProgressBar *prgStatus;
 
 			NotNullPtr<UI::GUITabPage> tpFiles;
-			UI::GUIListView *lvFiles;
+			NotNullPtr<UI::GUIListView> lvFiles;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUIPanel> pnlStatus;
@@ -75,7 +75,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtStatusCurrSpeed;
 			NotNullPtr<UI::GUILabel> lblStatusTimeLeft;
 			NotNullPtr<UI::GUITextBox> txtStatusTimeLeft;
-			UI::GUIListView *lvStatus;
+			NotNullPtr<UI::GUIListView> lvStatus;
 			NotNullPtr<UI::GUIVSplitter> vspStatus;
 			UI::GUIRealtimeLineChart *rlcStatus;
 

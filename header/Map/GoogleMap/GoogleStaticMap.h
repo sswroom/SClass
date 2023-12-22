@@ -13,8 +13,8 @@ namespace Map
 		class GoogleStaticMap
 		{
 		private:
-			Text::String *gooKey;
-			Text::String *gooCliId;
+			Optional<Text::String> gooKey;
+			Optional<Text::String> gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
 			NotNullPtr<Net::SocketFactory> sockf;

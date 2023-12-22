@@ -549,7 +549,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
 	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvSummary, UI::GUIListView(ui, this->tpSummary, UI::GUIListView::LVSTYLE_TABLE, 10));
+	this->lvSummary = ui->NewListView(this->tpSummary, UI::ListViewStyle::Table, 10);
 	this->lvSummary->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSummary->SetFullRowSelect(true);
 	this->lvSummary->SetShowGrid(true);
@@ -634,7 +634,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->btnDetModule = ui->NewButton(this->pnlDetModule, CSTR("Refresh"));
 	this->btnDetModule->SetRect(4, 4, 75, 23, false);
 	this->btnDetModule->HandleButtonClick(OnDetModuleRefClicked, this);
-	NEW_CLASS(this->lvDetModule, UI::GUIListView(ui, this->tpDetModule, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvDetModule = ui->NewListView(this->tpDetModule, UI::ListViewStyle::Table, 3);
 	this->lvDetModule->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetModule->SetFullRowSelect(true);
 	this->lvDetModule->SetShowGrid(true);
@@ -649,7 +649,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->btnDetThread = ui->NewButton(this->pnlDetThread, CSTR("Refresh"));
 	this->btnDetThread->SetRect(4, 4, 75, 23, false);
 	this->btnDetThread->HandleButtonClick(OnDetThreadRefClicked, this);
-	NEW_CLASS(this->lvDetThread, UI::GUIListView(ui, this->tpDetThread, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvDetThread = ui->NewListView(this->tpDetThread, UI::ListViewStyle::Table, 4);
 	this->lvDetThread->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetThread->HandleDblClk(OnDetThreadDblClicked, this);
 	this->lvDetThread->SetFullRowSelect(true);
@@ -675,7 +675,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->txtDetHeap->SetReadOnly(true);
 	this->txtDetHeap->SetRect(0, 0, 100, 128, false);
 	this->txtDetHeap->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvDetHeap, UI::GUIListView(ui, this->tpDetHeap, UI::GUIListView::LVSTYLE_TABLE, 3));
+	this->lvDetHeap = ui->NewListView(this->tpDetHeap, UI::ListViewStyle::Table, 3);
 	this->lvDetHeap->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetHeap->SetFullRowSelect(true);
 	this->lvDetHeap->SetShowGrid(true);
@@ -691,7 +691,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->btnDetHandle = ui->NewButton(this->pnlDetHandle, CSTR("Refresh"));
 	this->btnDetHandle->SetRect(4, 4, 75, 23, false);
 	this->btnDetHandle->HandleButtonClick(OnDetHandleClicked, this);
-	NEW_CLASS(this->lvDetHandle, UI::GUIListView(ui, this->tpDetHandle, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvDetHandle = ui->NewListView(this->tpDetHandle, UI::ListViewStyle::Table, 4);
 	this->lvDetHandle->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetHandle->SetFullRowSelect(true);
 	this->lvDetHandle->SetShowGrid(true);

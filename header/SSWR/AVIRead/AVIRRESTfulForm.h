@@ -56,7 +56,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStop;
 
 			NotNullPtr<UI::GUITabPage> tpTable;
-			UI::GUIListView *lvTable;
+			NotNullPtr<UI::GUIListView> lvTable;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
