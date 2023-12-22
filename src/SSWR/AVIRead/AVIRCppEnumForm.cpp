@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblType = ui->NewLabel(this->pnlCtrl, CSTR("Type"));

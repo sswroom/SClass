@@ -877,7 +877,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->progUpdated = false;
 	this->progEnd = false;
 	
-/*	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+/*	NEW_CLASSNN(this->pnlCtrl = ui->NewPanel(*this));
 	this->pnlCtrl->SetRect(0, 0, 100, 28, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);*/
 	NEW_CLASS(this->prgStatus, UI::GUIProgressBar(ui, *this, 1));
@@ -925,7 +925,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->lvFiles->HandleRightClick(OnFilesRightClick, this);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
+	this->pnlStatus = ui->NewPanel(this->tpStatus);
 	this->pnlStatus->SetRect(0, 0, 100, 48, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStatusFile = ui->NewLabel(this->pnlStatus, CSTR("Copy From"));
@@ -933,7 +933,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->txtStatusFile = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatusFile->SetRect(100, 0, 800, 23, false);
 	this->txtStatusFile->SetReadOnly(true);
-	NEW_CLASSNN(this->pnlStatusBNT, UI::GUIPanel(ui, this->pnlStatus));
+	this->pnlStatusBNT = ui->NewPanel(this->pnlStatus);
 	this->pnlStatusBNT->SetBGColor(0xffc0c0c0);
 	this->pnlStatusBNT->SetRect(900, 0, 23, 23, false);
 	this->lblStatusFileSize = ui->NewLabel(this->pnlStatus, CSTR("File Size"));

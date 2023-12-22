@@ -297,10 +297,10 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->txtRecvDisp = ui->NewTextBox(this->grpRecv, CSTR(""), true);
 	this->txtRecvDisp->SetReadOnly(true);
 	this->txtRecvDisp->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlSendOption, UI::GUIPanel(ui, this->grpSend));
+	this->pnlSendOption = ui->NewPanel(this->grpSend);
 	this->pnlSendOption->SetRect(0, 0, 100, 72, false);
 	this->pnlSendOption->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->pnlSend, UI::GUIPanel(ui, this->pnlSendOption));
+	this->pnlSend = ui->NewPanel(this->pnlSendOption);
 	this->pnlSend->SetRect(0, 0, 100, 24, false);
 	this->pnlSend->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnSend = ui->NewButton(this->pnlSend, CSTR("&Send"));

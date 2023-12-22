@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->txtClass->SetReadOnly(true);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
+	this->pnlDevice = ui->NewPanel(this->tpDevice);
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDeviceSrch = ui->NewButton(this->pnlDevice, CSTR("Search"));
@@ -220,11 +220,11 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->btnDeviceUpdate = ui->NewButton(this->pnlDevice, CSTR("Update"));
 	this->btnDeviceUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnDeviceUpdate->HandleButtonClick(OnDeviceUpdateClicked, this);
-	NEW_CLASSNN(this->pnlDevDetail, UI::GUIPanel(ui, this->tpDevice));
+	this->pnlDevDetail = ui->NewPanel(this->tpDevice);
 	this->pnlDevDetail->SetRect(0, 0, 100, 360, false);
 	this->pnlDevDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspDevice = ui->NewVSplitter(this->tpDevice, 3, true);
-	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->pnlDevDetail));
+	this->pnlDevCtrl = ui->NewPanel(this->pnlDevDetail);
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDevAuthen = ui->NewButton(this->pnlDevCtrl, CSTR("Pair"));

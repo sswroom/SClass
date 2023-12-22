@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->yCols, Data::ArrayList<UInt32>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlStrCols, UI::GUIPanel(ui, *this));
+	this->pnlStrCols = ui->NewPanel(*this);
 	this->pnlStrCols->SetRect(0, 0, 100, 128, false);
 	this->pnlStrCols->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStrCols = ui->NewLabel(this->pnlStrCols, CSTR("String Columns"));
@@ -311,14 +311,14 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->btnStrColsInt32 = ui->NewButton(this->pnlStrCols, CSTR("Force as Int32"));
 	this->btnStrColsInt32->SetRect(304, 32, 120, 23, false);
 	this->btnStrColsInt32->HandleButtonClick(OnStrColsInt32Clicked, this);
-	NEW_CLASSNN(this->pnlXAxis, UI::GUIPanel(ui, *this));
+	this->pnlXAxis = ui->NewPanel(*this);
 	this->pnlXAxis->SetRect(0, 0 , 100, 32, false);
 	this->pnlXAxis->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblXAxis = ui->NewLabel(this->pnlXAxis, CSTR("X-Axis"));
 	this->lblXAxis->SetRect(4, 4, 100, 23, false);
 	this->cboXAxis = ui->NewComboBox(this->pnlXAxis, false);
 	this->cboXAxis->SetRect(104, 4, 200, 23, false);
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnPlot = ui->NewButton(this->pnlControl, CSTR("Plot"));
@@ -329,7 +329,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->grpYAxis = ui->NewGroupBox(*this, CSTR("Y-Axis"));
 	this->grpYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlYAxis, UI::GUIPanel(ui, this->grpYAxis));
+	this->pnlYAxis = ui->NewPanel(this->grpYAxis);
 	this->pnlYAxis->SetRect(0, 0, 100, 32, false);
 	this->pnlYAxis->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblYAxis = ui->NewLabel(this->pnlYAxis, CSTR("Column"));

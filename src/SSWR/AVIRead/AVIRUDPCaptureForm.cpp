@@ -206,7 +206,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	}
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("UDP Port"));
@@ -274,7 +274,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lvPorts->SetSubItem(i, 1, CSTR("3702"));
 
 	this->tpMulticast = this->tcMain->AddTabPage(CSTR("Multicast"));
-	NEW_CLASSNN(this->pnlMulticastCommon, UI::GUIPanel(ui, this->tpMulticast));
+	this->pnlMulticastCommon = ui->NewPanel(this->tpMulticast);
 	this->pnlMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCommon->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lblMulticastCommon = ui->NewLabel(this->pnlMulticastCommon, CSTR("Common IP"));
@@ -284,9 +284,9 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbMulticastCommon->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMulticastCommon->HandleDoubleClicked(OnMulticastDoubleClk, this);
 	this->hspMulticast = ui->NewHSplitter(this->tpMulticast, 3, false);
-	NEW_CLASSNN(this->pnlMulticast, UI::GUIPanel(ui, this->tpMulticast));
+	this->pnlMulticast = ui->NewPanel(this->tpMulticast);
 	this->pnlMulticast->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlMulticastCtrl, UI::GUIPanel(ui, this->pnlMulticast));
+	this->pnlMulticastCtrl = ui->NewPanel(this->pnlMulticast);
 	this->pnlMulticastCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblMulticastCurr = ui->NewLabel(this->pnlMulticastCtrl, CSTR("Multicast IP"));

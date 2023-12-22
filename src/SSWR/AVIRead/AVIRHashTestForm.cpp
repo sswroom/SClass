@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->txtSpeed->SetReadOnly(true);
 
 	this->tpCompare = this->tcMain->AddTabPage(CSTR("Compare"));
-	NEW_CLASSNN(this->pnlCompare, UI::GUIPanel(ui, this->tpCompare));
+	this->pnlCompare = ui->NewPanel(this->tpCompare);
 	this->pnlCompare->SetRect(0, 0, 100, 31, false);
 	this->pnlCompare->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnCompare = ui->NewButton(this->pnlCompare, CSTR("Compare"));

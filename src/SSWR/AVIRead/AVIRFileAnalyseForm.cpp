@@ -186,7 +186,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->file = 0;
 	this->lastPackCount = 0;
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 40, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->tcMain = ui->NewTabControl(*this);

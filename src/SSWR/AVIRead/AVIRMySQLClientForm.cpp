@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->txtServerCS->SetReadOnly(true);
 
 	tpQuery = this->tcMain->AddTabPage(CSTR("Query"));
-	NEW_CLASSNN(this->pnlQuery, UI::GUIPanel(ui, this->tpQuery));
+	this->pnlQuery = ui->NewPanel(this->tpQuery);
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
 	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnQuery = ui->NewButton(this->pnlQuery, CSTR("Query"));

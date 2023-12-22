@@ -201,7 +201,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->cmdInfos = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlPort, UI::GUIPanel(ui, *this));
+	this->pnlPort = ui->NewPanel(*this);
 	this->pnlPort->SetRect(0, 0, 100, 64, false);
 	this->pnlPort->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblTVType = ui->NewLabel(this->pnlPort, CSTR("TV Type"));

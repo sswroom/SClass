@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->core = core;
 	this->entry = entry;
 
-	NEW_CLASSNN(this->pnlDevInfo, UI::GUIPanel(ui, *this));
+	this->pnlDevInfo = ui->NewPanel(*this);
 	this->pnlDevInfo->SetRect(0, 0, 100, 56, false);
 	this->pnlDevInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblMAC = ui->NewLabel(this->pnlDevInfo, CSTR("MAC"));

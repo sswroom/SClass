@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotN
 	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);
 	this->hspDevices = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlDevices, UI::GUIPanel(ui, *this));
+	this->pnlDevices = ui->NewPanel(*this);
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblName = ui->NewLabel(this->pnlDevices, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);

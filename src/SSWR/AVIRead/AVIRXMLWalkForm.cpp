@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
+	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("XML File"));

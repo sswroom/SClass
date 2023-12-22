@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	this->log = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	NEW_CLASSNN(this->pnlCtrl = ui->NewPanel(*this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	this->lbUser->SetRect(0, 0, 100, 23, false);
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspUser = ui->NewHSplitter(this->tpUser, 3, false);
-	NEW_CLASSNN(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
+	NEW_CLASSNN(this->pnlUser = ui->NewPanel(this->tpUser));
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblUserName = ui->NewLabel(this->pnlUser, CSTR("User Name"));
 	this->lblUserName->SetRect(8, 8, 100, 23, false);

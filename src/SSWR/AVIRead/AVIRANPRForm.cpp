@@ -154,7 +154,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnSelPlate = ui->NewButton(this->pnlCtrl, CSTR("Sel Plate"));
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->btnSelCorners->HandleButtonClick(OnSelCornersClicked, this);
 	this->lblSelStatus = ui->NewLabel(this->pnlCtrl, CSTR(""));
 	this->lblSelStatus->SetRect(164, 4, 200, 23, false);
-	NEW_CLASSNN(this->pnlPlate, UI::GUIPanel(ui, *this));
+	this->pnlPlate = ui->NewPanel(*this);
 	this->pnlPlate->SetRect(0, 0, 250, 100, false);
 	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	NEW_CLASS(this->pbPlate, UI::GUIPictureBoxSimple(ui, this->pnlPlate, this->core->GetDrawEngine(), false));

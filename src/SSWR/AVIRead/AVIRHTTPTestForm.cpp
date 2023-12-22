@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->txtTimeUsed->SetRect(104, 100, 150, 23, false);
 	this->txtTimeUsed->SetReadOnly(true);
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblConcurrCnt = ui->NewLabel(this->pnlRequest, CSTR("Concurrent Count"));
@@ -393,10 +393,10 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	
 	this->grpURL = ui->NewGroupBox(*this, CSTR("URL"));
 	this->grpURL->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlURL, UI::GUIPanel(ui, this->grpURL));
+	this->pnlURL = ui->NewPanel(this->grpURL);
 	this->pnlURL->SetRect(0, 0, 100, 23, false);
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlURLCtrl, UI::GUIPanel(ui, this->grpURL));
+	this->pnlURLCtrl = ui->NewPanel(this->grpURL);
 	this->pnlURLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnURLAdd = ui->NewButton(this->pnlURL, CSTR("&Add"));

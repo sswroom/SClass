@@ -484,7 +484,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
+	this->pnlDevice = ui->NewPanel(this->tpDevice);
 	this->pnlDevice->SetRect(0, 0, 100, 103, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDongleInfo = ui->NewButton(this->pnlDevice, CSTR("Get Dongle Info"));
@@ -521,7 +521,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
 	this->grpDevice = ui->NewGroupBox(this->tpDevice, CSTR("Device"));
 	this->grpDevice->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->grpDevice));
+	this->pnlDevCtrl = ui->NewPanel(this->grpDevice);
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnCopyDevId = ui->NewButton(this->pnlDevCtrl, CSTR("Copy Device Id"));

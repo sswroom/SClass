@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *pa
 	this->proj = proj;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblConfig = ui->NewLabel(this->pnlCtrl, CSTR("Config"));

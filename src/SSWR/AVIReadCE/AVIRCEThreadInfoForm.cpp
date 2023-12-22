@@ -134,7 +134,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
 	this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false);
-	NEW_CLASSNN(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
+	NEW_CLASSNN(this->pnlMyStack = ui->NewPanel(this->tpMyStack));
 	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMyStackMem = ui->NewTextBox(this->pnlMyStack, CSTR(""), true);
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);

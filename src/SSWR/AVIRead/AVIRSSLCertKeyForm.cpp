@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->HandleFormClosed(OnFormClosed, this);
 
-	NEW_CLASSNN(this->pnlCurr, UI::GUIPanel(ui, *this));
+	this->pnlCurr = ui->NewPanel(*this);
 	this->pnlCurr->SetRect(0, 0, 100, 55, false);
 	this->pnlCurr->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCurrCert = ui->NewLabel(this->pnlCurr, CSTR("Curr Cert"));

@@ -719,7 +719,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->lbAdaptors->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAdaptors->HandleSelectionChange(OnAdaptorSelChg, this);
 	this->hSplitter = ui->NewHSplitter(this->tpAdaptor, 3, false);
-	NEW_CLASSNN(this->pnlAdaptor, UI::GUIPanel(ui, this->tpAdaptor));
+	this->pnlAdaptor = ui->NewPanel(this->tpAdaptor);
 	this->pnlAdaptor->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->lblAdaptorName = ui->NewLabel(this->pnlAdaptor, CSTR("Name"));
@@ -1027,7 +1027,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->lvARPInfo->AddColumn(CSTR("Type"), 150);
 
 	this->tpPortInfo = this->tcMain->AddTabPage(CSTR("Port Info"));
-	NEW_CLASSNN(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
+	this->pnlPortInfo = ui->NewPanel(this->tpPortInfo);
 	this->pnlPortInfo->SetRect(0, 0, 100, 40, false);
 	this->pnlPortInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnPortRefresh = ui->NewButton(this->pnlPortInfo, CSTR("&Refresh"));

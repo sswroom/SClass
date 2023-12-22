@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl
 	NEW_CLASS(this->items, Data::ArrayList<FileItem*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	NEW_CLASSNN(this->pnlCtrl = ui->NewPanel(*this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblUsername = ui->NewLabel(this->pnlCtrl, CSTR("Username"));

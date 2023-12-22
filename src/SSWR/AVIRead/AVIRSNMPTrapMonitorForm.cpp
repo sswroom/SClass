@@ -133,9 +133,9 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 	this->hspResults = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlResults, UI::GUIPanel(ui, *this));
+	this->pnlResults = ui->NewPanel(*this);
 	this->pnlResults->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlTrap, UI::GUIPanel(ui, this->pnlResults));
+	this->pnlTrap = ui->NewPanel(this->pnlResults);
 	this->pnlTrap->SetRect(0, 0, 100, 248, false);
 	this->pnlTrap->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCommunity = ui->NewLabel(this->pnlTrap, CSTR("Community"));

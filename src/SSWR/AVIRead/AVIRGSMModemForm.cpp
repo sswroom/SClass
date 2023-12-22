@@ -1029,7 +1029,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->regNetACT = IO::GSMModemController::AccessTech::GSM;
 	this->operNextTime = Data::Timestamp::UtcNow();
 
-	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, *this));
+	this->pnlDevice = ui->NewPanel(*this);
 	this->pnlDevice->SetRect(0, 0, 100, 48, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDeviceSerial = ui->NewLabel(this->pnlDevice, CSTR("Serial Port"));
@@ -1054,7 +1054,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->rlcRSSI, UI::GUIRealtimeLineChart(ui, this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000));
 	this->rlcRSSI->SetRect(0, 0, 100, 100, false);
 	this->rlcRSSI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	this->pnlInfo = ui->NewPanel(this->tpInfo);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblModemManu = ui->NewLabel(this->pnlInfo, CSTR("Manufacture"));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
@@ -1118,7 +1118,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->txtSignalQuality->SetReadOnly(true);
 
 	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
-	NEW_CLASSNN(this->pnlPhone, UI::GUIPanel(ui, this->tpPhoneBook));
+	this->pnlPhone = ui->NewPanel(this->tpPhoneBook);
 	this->pnlPhone->SetRect(0, 0, 100, 32, false);
 	this->pnlPhone->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboPhoneStorage = ui->NewComboBox(this->pnlPhone, false);
@@ -1147,7 +1147,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvPhone->SetShowGrid(true);
 
 	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
-	NEW_CLASSNN(this->pnlSMS, UI::GUIPanel(ui, this->tpSMS));
+	this->pnlSMS = ui->NewPanel(this->tpSMS);
 	this->pnlSMS->SetRect(0, 0, 100, 32, false);
 	this->pnlSMS->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSMSStorage = ui->NewComboBox(this->pnlSMS, false);
@@ -1183,7 +1183,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvSMS->SetFullRowSelect(true);
 
 	this->tpPDPContext = this->tcMain->AddTabPage(CSTR("PDP Context(APN)"));
-	NEW_CLASSNN(this->pnlPDPContext, UI::GUIPanel(ui, this->tpPDPContext));
+	this->pnlPDPContext = ui->NewPanel(this->tpPDPContext);
 	this->pnlPDPContext->SetRect(0, 0, 100, 72, false);
 	this->pnlPDPContext->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnPDPContextLoad = ui->NewButton(this->pnlPDPContext, CSTR("Load"));
@@ -1237,7 +1237,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvPDPContext->AddColumn(CSTR("Activate"), 80);
 
 	this->tpATCommand = this->tcMain->AddTabPage(CSTR("AT Command"));
-	NEW_CLASSNN(this->pnlATCommand, UI::GUIPanel(ui, this->tpATCommand));
+	this->pnlATCommand = ui->NewPanel(this->tpATCommand);
 	this->pnlATCommand->SetRect(0, 0, 100, 24, false);
 	this->pnlATCommand->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblATCommand = ui->NewLabel(this->pnlATCommand, CSTR("AT Command"));

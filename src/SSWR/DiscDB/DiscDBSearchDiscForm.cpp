@@ -56,7 +56,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlDiscId, UI::GUIPanel(ui, *this));
+	this->pnlDiscId = ui->NewPanel(*this);
 	this->pnlDiscId->SetRect(0, 0, 292, 43, false);
 	this->pnlDiscId->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDiscId = ui->NewLabel(this->pnlDiscId, CSTR("Disc ID"));
@@ -66,7 +66,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->btnSearch = ui->NewButton(this->pnlDiscId, CSTR("&Search"));
 	this->btnSearch->SetRect(208, 9, 75, 25, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
-	NEW_CLASSNN(this->pnlOut, UI::GUIPanel(ui, *this));
+	this->pnlOut = ui->NewPanel(*this);
 	this->pnlOut->SetRect(0, 0, 292, 108, false);
 	this->pnlOut->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDiscIdOut = ui->NewLabel(this->pnlOut, CSTR("Disc ID"));

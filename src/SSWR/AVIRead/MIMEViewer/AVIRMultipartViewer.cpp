@@ -23,7 +23,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 
 	if (obj->GetContentType().StartsWith(UTF8STRC("multipart/signed")))
 	{
-		NEW_CLASSNN(this->pnlSMIME, UI::GUIPanel(ui, ctrl));
+		this->pnlSMIME = ui->NewPanel(ctrl);
 		this->pnlSMIME->SetRect(0, 0, 100, 31, false);
 		this->pnlSMIME->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		this->lblSignState = ui->NewLabel(this->pnlSMIME, CSTR("Signature"));

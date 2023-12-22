@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 103, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDir = ui->NewLabel(this->pnlControl, CSTR("Directory"));

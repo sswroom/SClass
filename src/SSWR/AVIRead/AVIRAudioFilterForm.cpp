@@ -1006,7 +1006,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->fftImg = 0;
 	this->dtmfMod = false;
 
-	NEW_CLASSNN(this->pnlInput, UI::GUIPanel(ui, *this));
+	this->pnlInput = ui->NewPanel(*this);
 	this->pnlInput->SetRect(0, 0, 100, 168, false);
 	this->pnlInput->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->pbsFFT, UI::GUIPictureBoxSimple(ui, *this, this->eng, false));
@@ -1016,7 +1016,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->tcFilter = ui->NewTabControl(*this);
 	this->tcFilter->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASSNN(this->pnlAudioSource, UI::GUIPanel(ui, this->pnlInput));
+	this->pnlAudioSource = ui->NewPanel(this->pnlInput);
 	this->pnlAudioSource->SetRect(0, 0, 400, 23, false);
 	this->lblAudioSource = ui->NewLabel(this->pnlAudioSource, CSTR("Audio Source"));
 	this->lblAudioSource->SetRect(0, 0, 100, 23, false);
@@ -1024,7 +1024,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->radInputWaveIn->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->radInputSilent, UI::GUIRadioButton(ui, this->pnlAudioSource, CSTR("Silent"), false));
 	this->radInputSilent->SetRect(200, 0, 100, 23, false);
-	NEW_CLASSNN(this->pnlAudioOutput, UI::GUIPanel(ui, this->pnlInput));
+	this->pnlAudioOutput = ui->NewPanel(this->pnlInput);
 	this->pnlAudioOutput->SetRect(0, 24, 400, 23, false);
 	this->lblAudioOutput = ui->NewLabel(this->pnlAudioOutput, CSTR("Audio Output"));
 	this->lblAudioOutput->SetRect(0, 0, 100, 23, false);
@@ -1068,7 +1068,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->pbsFFT->SetNoBGColor(true);*/
 
 	this->tpDTMF = this->tcFilter->AddTabPage(CSTR("DTMF"));
-	NEW_CLASSNN(this->pnlDTMF, UI::GUIPanel(ui, this->tpDTMF));
+	this->pnlDTMF = ui->NewPanel(this->tpDTMF);
 	this->pnlDTMF->SetRect(0, 0, 100, 56, false);
 	this->pnlDTMF->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDTMFInterval = ui->NewLabel(this->pnlDTMF, CSTR("Decode Interval"));

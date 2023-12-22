@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->SetText(CSTR("Line Counter"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASSNN(this->pnlConfig, UI::GUIPanel(ui, *this));
+	this->pnlConfig = ui->NewPanel(*this);
 	this->pnlConfig->SetRect(0, 0, 100, 268, false);
 	this->pnlConfig->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPath = ui->NewLabel(this->pnlConfig, CSTR("Path"));

@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->currWeightUpd = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->grpStream = ui->NewGroupBox(this->pnlCtrl, CSTR("Stream"));

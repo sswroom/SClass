@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent, CSTR_NULL, this->core->GetLog()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlChannel, UI::GUIPanel(ui, *this));
+	this->pnlChannel = ui->NewPanel(*this);
 	this->pnlChannel->SetRect(0, 0, 100, 31, false);
 	this->pnlChannel->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboChannel = ui->NewComboBox(this->pnlChannel, false);

@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	this->listUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 79, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblIP = ui->NewLabel(this->pnlControl, CSTR("IP"));

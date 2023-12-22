@@ -146,9 +146,9 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 	this->txtJWT->SetRect(0, 0, 300, 23, false);
 	this->txtJWT->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspJWT = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlResult, UI::GUIPanel(ui, this->pnlMain));
+	this->pnlResult = ui->NewPanel(this->pnlMain);
 	this->pnlResult->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnParse = ui->NewButton(this->pnlResult, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);

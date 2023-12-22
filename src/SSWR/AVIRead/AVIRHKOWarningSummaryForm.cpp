@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(UI::GUIClien
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlReqTime, UI::GUIPanel(ui, *this));
+	this->pnlReqTime = ui->NewPanel(*this);
 	this->pnlReqTime->SetRect(0, 0, 100, 31, false);
 	this->pnlReqTime->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblReqTime = ui->NewLabel(this->pnlReqTime, CSTR("Request Time"));

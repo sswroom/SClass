@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(UI::GUIClientControl *
 	this->ipListUpd = false;
 	this->msgListUpd = false;
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("Port"));

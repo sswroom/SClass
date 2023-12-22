@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	this->svr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 55, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlRequest, CSTR("Port"));

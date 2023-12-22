@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->table = table;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 96, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvTables = ui->NewListView(*this, UI::ListViewStyle::Table, 3);

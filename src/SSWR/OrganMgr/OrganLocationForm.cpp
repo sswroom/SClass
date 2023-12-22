@@ -299,7 +299,7 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->lbSublocations->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSublocations->HandleSelectionChange(OnSubLocSelChg, this);
 	this->lbSublocations->HandleDoubleClicked(OnSubLocDblClk, this);
-	NEW_CLASSNN(this->pnlLocation, UI::GUIPanel(ui, *this));
+	this->pnlLocation = ui->NewPanel(*this);
 	this->pnlLocation->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblID = ui->NewLabel(this->pnlLocation, this->env->GetLang(CSTR("LocationId")));
 	this->lblID->SetRect(11, 16, 80, 23, false);

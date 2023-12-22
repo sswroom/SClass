@@ -199,7 +199,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 	this->lbTrips->SetRect(0, 0, 320, 268, false);
 	this->lbTrips->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTrips->HandleSelectionChange(OnTripSelChg, this);
-	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, *this));
+	this->pnlDetail = ui->NewPanel(*this);
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblFrom = ui->NewLabel(this->pnlDetail, this->env->GetLang(CSTR("TripFormFrom")));
 	this->lblFrom->SetRect(0, 24, 72, 23, false);

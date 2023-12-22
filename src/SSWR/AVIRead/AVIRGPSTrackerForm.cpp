@@ -410,7 +410,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->lbAlertAdd, UI::GUIListBox(ui, this->tpAlertAdd, false));
 	this->lbAlertAdd->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpAlertView = this->tcAlert->AddTabPage(CSTR("View"));
-	NEW_CLASSNN(this->pnlAlertView, UI::GUIPanel(ui, this->tpAlertView));
+	this->pnlAlertView = ui->NewPanel(this->tpAlertView);
 	this->pnlAlertView->SetRect(0, 0, 100, 31, false);
 	this->pnlAlertView->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lbAlert, UI::GUIListBox(ui, this->tpAlertView, false));

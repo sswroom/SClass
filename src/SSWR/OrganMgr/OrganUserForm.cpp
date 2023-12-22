@@ -57,7 +57,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, NotNu
 
 	this->SetText(this->env->GetLang(CSTR("UserFormTitle")));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnAdd = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("UserFormAdd")));

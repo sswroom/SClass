@@ -174,7 +174,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, No
 	this->failCnt = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblIP = ui->NewLabel(this->pnlRequest, CSTR("IP"));

@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *pa
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 248, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblLang = ui->NewLabel(this->pnlMain, CSTR("Language"));

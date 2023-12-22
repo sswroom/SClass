@@ -650,10 +650,10 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->UpdateTitle();
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetArea(0, 0, 100, 24, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, *this));
+	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetArea(0, 0, 100, 19, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtScale = ui->NewTextBox(pnlStatus, CSTR(""));

@@ -1240,7 +1240,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpRequest = this->tcMain->AddTabPage(CSTR("Request"));
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
+	this->pnlRequest = ui->NewPanel(this->tpRequest);
 	this->pnlRequest->SetRect(0, 0, 100, 316, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
@@ -1322,7 +1322,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvReqData->AddColumn(CSTR("Value"), 400);
 
 	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
-	NEW_CLASSNN(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
+	this->pnlResponse = ui->NewPanel(this->tpResponse);
 	this->pnlResponse->SetRect(0, 0, 100, 319, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblReqURL = ui->NewLabel(this->pnlResponse, CSTR("Req URL"));
@@ -1390,7 +1390,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->txtRespContSize = ui->NewTextBox(this->pnlResponse, CSTR(""));
 	this->txtRespContSize->SetRect(104, 292, 150, 23, false);
 	this->txtRespContSize->SetReadOnly(true);
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
+	this->pnlControl = ui->NewPanel(this->tpResponse);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnSave = ui->NewButton(this->pnlControl, CSTR("Save"));
@@ -1406,7 +1406,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 
 	this->tpCert = this->tcMain->AddTabPage(CSTR("Cert"));
-	NEW_CLASSNN(this->pnlCert, UI::GUIPanel(ui, this->tpCert));
+	this->pnlCert = ui->NewPanel(this->tpCert);
 	this->pnlCert->SetRect(0, 0, 100, 31, false);
 	this->pnlCert->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnCert = ui->NewButton(this->pnlCert, CSTR("Open"));

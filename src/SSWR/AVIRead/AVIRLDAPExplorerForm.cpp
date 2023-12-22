@@ -290,7 +290,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->rootLev = 0;
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblHost = ui->NewLabel(this->pnlRequest, CSTR("Host"));

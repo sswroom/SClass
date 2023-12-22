@@ -339,7 +339,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpScan = this->tcMain->AddTabPage(CSTR("Scan"));
-	NEW_CLASSNN(this->pnlScan, UI::GUIPanel(ui, this->tpScan));
+	this->pnlScan = ui->NewPanel(this->tpScan);
 	this->pnlScan->SetRect(0, 0, 100, 32, false);
 	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblScan = ui->NewLabel(this->pnlScan, CSTR("Last Result"));

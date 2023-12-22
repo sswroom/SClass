@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->itemList, Data::ArrayList<ProtocolItem*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlCtrl, CSTR("File"));

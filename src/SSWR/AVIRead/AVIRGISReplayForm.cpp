@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	NotNullPtr<UI::GUILabel> lbl;
 	NotNullPtr<UI::GUIHSplitter> splitter;
 
-	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
+	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 408, 24, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 	lbl = ui->NewLabel(pnl, CSTR("Name"));
@@ -205,9 +205,9 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->lbRecord->HandleSelectionChange(OnLbRecordChg, this);
 	this->lbRecord->HandleRightClicked(OnLbRecordRClick, this);
 	splitter = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(pnl2, UI::GUIPanel(ui, *this));
+	pnl2 = ui->NewPanel(*this);
 	pnl2->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(pnl, UI::GUIPanel(ui, pnl2));
+	pnl = ui->NewPanel(pnl2);
 	pnl->SetRect(0, 0, 100, 348, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 

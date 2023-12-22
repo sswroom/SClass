@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
+	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("File"));
@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProg->HandleSelectionChange(OnProgSelChg, this);
 	this->hspProg = ui->NewHSplitter(this->tpProg, 3, false);
-	NEW_CLASSNN(this->pnlProg, UI::GUIPanel(ui, this->tpProg));
+	this->pnlProg = ui->NewPanel(this->tpProg);
 	this->pnlProg->SetRect(0, 0, 100, 31, false);
 	this->pnlProg->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->tcProg = ui->NewTabControl(this->tpProg);

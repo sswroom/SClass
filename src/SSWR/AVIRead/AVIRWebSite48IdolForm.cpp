@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpItems = this->tcMain->AddTabPage(CSTR("Items"));
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, this->tpItems));
+	this->pnlRequest = ui->NewPanel(this->tpItems);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPageNo = ui->NewLabel(this->pnlRequest, CSTR("PageNo"));

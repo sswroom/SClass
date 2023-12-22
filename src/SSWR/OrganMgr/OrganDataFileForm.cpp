@@ -99,7 +99,7 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *paren
 
 	this->env = env;
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnDelete = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("DataFileDelete")));

@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 24, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnFolder = ui->NewButton(this->pnlCtrl, CSTR("Folder..."));
@@ -275,7 +275,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->icMain->SetProgressHandler(OnProgressUpdated, this);
 	this->icMain->HandleKeyDown(OnKeyDown, this);
 //	NEW_CLASS(this->hspLeft = ui->NewHSplitter(*this, 3, false));
-	NEW_CLASSNN(this->pnlImage, UI::GUIPanel(ui, *this));
+	this->pnlImage = ui->NewPanel(*this);
 	this->pnlImage->SetRect(0, 0, 200, 100, false);
 	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->pbMain, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));

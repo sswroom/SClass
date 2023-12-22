@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnCancel = ui->NewButton(this->pnlCtrl, CSTR("Cancel"));

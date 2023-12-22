@@ -603,7 +603,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	if (this->dbt)
 	{
 		this->tpSQL = this->tcDB->AddTabPage(CSTR("SQL"));
-		NEW_CLASSNN(this->pnlSQLCtrl, UI::GUIPanel(ui, this->tpSQL));
+		this->pnlSQLCtrl = ui->NewPanel(this->tpSQL);
 		this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
 		this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		this->btnSQL = ui->NewButton(this->pnlSQLCtrl, CSTR("Execute"));

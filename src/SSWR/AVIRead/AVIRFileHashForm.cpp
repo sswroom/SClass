@@ -279,7 +279,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->totalRead = 0;
 	this->fileListChg = false;
 
-	NEW_CLASSNN(this->pnlCheckType, UI::GUIPanel(ui, *this));
+	this->pnlCheckType = ui->NewPanel(*this);
 	this->pnlCheckType->SetRect(0, 0, 100, 31, false);
 	this->pnlCheckType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCheckType = ui->NewLabel(this->pnlCheckType, CSTR("Hash Type"));
@@ -304,10 +304,10 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->tpTasks = this->tcMain->AddTabPage(CSTR("Tasks"));
 	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
 
-	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
+	this->pnlStatus = ui->NewPanel(this->tpStatus);
 	this->pnlStatus->SetRect(0, 0, 100, 72, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlStatusFile, UI::GUIPanel(ui, this->pnlStatus));
+	this->pnlStatusFile = ui->NewPanel(this->pnlStatus);
 	this->pnlStatusFile->SetRect(0, 0, 100, 24, false);
 	this->pnlStatusFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlStatusFile, CSTR("File"));
@@ -332,7 +332,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
  	NEW_CLASS(this->rlcSpeed, UI::GUIRealtimeLineChart(ui, this->tpStatus, this->core->GetDrawEngine(), 1, 350, 500));
 	this->rlcSpeed->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASSNN(this->pnlTasks, UI::GUIPanel(ui, this->tpTasks));
+	this->pnlTasks = ui->NewPanel(this->tpTasks);
 	this->pnlTasks->SetRect(0, 0, 100, 32, false);
 	this->pnlTasks->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnTasksClear = ui->NewButton(this->pnlTasks, CSTR("Clear Completed"));

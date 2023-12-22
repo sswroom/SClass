@@ -68,10 +68,10 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlButton, UI::GUIPanel(ui, *this));
+	this->pnlButton = ui->NewPanel(*this);
 	this->pnlButton->SetRect(0, 0, 100, 31, false);
 	this->pnlButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->pnlLabel, UI::GUIPanel(ui, *this));
+	this->pnlLabel = ui->NewPanel(*this);
 	this->pnlLabel->SetRect(0, 0, 100, 23, false);
 	this->pnlLabel->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lblEncType = ui->NewLabel(this->pnlLabel, CSTR("Enc Type"));

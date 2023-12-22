@@ -1177,7 +1177,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->analyzer->HandlePingv4Request(OnPingPacket, this);
 	this->tcp4synLastIndex = 0;
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 79, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR("Info Port"));
@@ -1275,7 +1275,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSReqv4->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqv4->HandleSelectionChange(OnDNSReqv4SelChg, this);
 	this->hspDNSReqv4 = ui->NewHSplitter(this->tpDNSReqv4, 3, false);
-	NEW_CLASSNN(this->pnlDNSReqv4, UI::GUIPanel(ui, this->tpDNSReqv4));
+	this->pnlDNSReqv4 = ui->NewPanel(this->tpDNSReqv4);
 	this->pnlDNSReqv4->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqv4->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDNSReqv4Name = ui->NewLabel(this->pnlDNSReqv4, CSTR("Req Name"));
@@ -1309,7 +1309,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSReqv6->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqv6->HandleSelectionChange(OnDNSReqv6SelChg, this);
 	this->hspDNSReqv6 = ui->NewHSplitter(this->tpDNSReqv6, 3, false);
-	NEW_CLASSNN(this->pnlDNSReqv6, UI::GUIPanel(ui, this->tpDNSReqv6));
+	this->pnlDNSReqv6 = ui->NewPanel(this->tpDNSReqv6);
 	this->pnlDNSReqv6->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqv6->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDNSReqv6Name = ui->NewLabel(this->pnlDNSReqv6, CSTR("Req Name"));
@@ -1343,7 +1343,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSReqOth->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqOth->HandleSelectionChange(OnDNSReqOthSelChg, this);
 	this->hspDNSReqOth = ui->NewHSplitter(this->tpDNSReqOth, 3, false);
-	NEW_CLASSNN(this->pnlDNSReqOth, UI::GUIPanel(ui, this->tpDNSReqOth));
+	this->pnlDNSReqOth = ui->NewPanel(this->tpDNSReqOth);
 	this->pnlDNSReqOth->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqOth->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDNSReqOthName = ui->NewLabel(this->pnlDNSReqOth, CSTR("Req Name"));
@@ -1393,7 +1393,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbMDNS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMDNS->HandleSelectionChange(OnMDNSSelChg, this);
 	this->hspMDNS = ui->NewHSplitter(this->tpMDNS, 3, false);
-	NEW_CLASSNN(this->pnlMDNS, UI::GUIPanel(ui, this->tpMDNS));
+	this->pnlMDNS = ui->NewPanel(this->tpMDNS);
 	this->pnlMDNS->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblMDNSName = ui->NewLabel(this->pnlMDNS, CSTR("Name"));
 	this->lblMDNSName->SetRect(4, 4, 100, 23, false);

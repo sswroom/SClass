@@ -546,7 +546,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
-	NEW_CLASSNN(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
+	this->pnlSummary = ui->NewPanel(this->tpSummary);
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
 	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvSummary = ui->NewListView(this->tpSummary, UI::ListViewStyle::Table, 10);
@@ -566,7 +566,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvSummary->AddColumn(CSTR("Handles"), 50);
 
 	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
-	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, this->tpDetail));
+	this->pnlDetail = ui->NewPanel(this->tpDetail);
 	this->pnlDetail->SetRect(0, 0, 200, 100, false);
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnDetailCurr = ui->NewButton(this->pnlDetail, CSTR("Current Process"));
@@ -628,7 +628,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->txtDetArchitecture->SetReadOnly(true);
 
 	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));
-	NEW_CLASSNN(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
+	this->pnlDetModule = ui->NewPanel(this->tpDetModule);
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
 	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetModule = ui->NewButton(this->pnlDetModule, CSTR("Refresh"));
@@ -643,7 +643,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetModule->AddColumn(CSTR("Size"), 80);
 
 	this->tpDetThread = this->tcDetail->AddTabPage(CSTR("Thread"));
-	NEW_CLASSNN(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
+	this->pnlDetThread = ui->NewPanel(this->tpDetThread);
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
 	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetThread = ui->NewButton(this->pnlDetThread, CSTR("Refresh"));
@@ -660,7 +660,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetThread->AddColumn(CSTR("Start Address(Name)"), 600);
 
 	this->tpDetHeap = this->tcDetail->AddTabPage(CSTR("Heap"));
-	NEW_CLASSNN(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
+	this->pnlDetHeap = ui->NewPanel(this->tpDetHeap);
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetHeap = ui->NewButton(this->pnlDetHeap, CSTR("Refresh"));
@@ -685,7 +685,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetHeap->HandleSelChg(OnDetHeapItemSelChg, this);
 
 	this->tpDetHandle = this->tcDetail->AddTabPage(CSTR("Handles"));
-	NEW_CLASSNN(this->pnlDetHandle, UI::GUIPanel(ui, this->tpDetHandle));
+	this->pnlDetHandle = ui->NewPanel(this->tpDetHandle);
 	this->pnlDetHandle->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHandle->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetHandle = ui->NewButton(this->pnlDetHandle, CSTR("Refresh"));

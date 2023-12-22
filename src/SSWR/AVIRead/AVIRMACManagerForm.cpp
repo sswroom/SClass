@@ -492,7 +492,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store"));
@@ -504,7 +504,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("WiFi Log"));
-	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, this->tpFile));
+	this->pnlFile = ui->NewPanel(this->tpFile);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("Log File"));

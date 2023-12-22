@@ -626,7 +626,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	this->pbImage->HandleMouseMove(OnImageMouseMove, this);
 
 	this->tpInfo = this->tcImage->AddTabPage(CSTR("Info"));
-	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	this->pnlInfo = ui->NewPanel(this->tpInfo);
 	this->pnlInfo->SetRect(0, 0, 100, 31, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnInfoICC = ui->NewButton(this->pnlInfo, CSTR("ICC Profile"));

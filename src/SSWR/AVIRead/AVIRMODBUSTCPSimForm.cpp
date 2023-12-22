@@ -194,7 +194,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->listener = 0;
 	this->currDev = 0;
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 120, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));

@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr
 	this->ocr.HandleOCRResult(OnOCRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlResult, UI::GUIPanel(ui, *this));
+	this->pnlResult = ui->NewPanel(*this);
 	this->pnlResult->SetRect(0, 0, 250, 100, false);
 	this->pnlResult->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	NEW_CLASS(this->pbResult, UI::GUIPictureBoxSimple(ui, this->pnlResult, this->core->GetDrawEngine(), false));

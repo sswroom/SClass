@@ -346,7 +346,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->resultList, Data::ArrayList<SSWR::AVIRead::AVIRBenchmarkForm::TestResult*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
@@ -389,7 +389,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvWrite->AddColumn(CSTR("Data Rate"), 150);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	this->pnlInfo = ui->NewPanel(this->tpInfo);
 	this->pnlInfo->SetRect(0, 0, 100, 52, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPlatform = ui->NewLabel(this->pnlInfo, CSTR("Platform"));

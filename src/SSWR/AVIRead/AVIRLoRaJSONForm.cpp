@@ -165,10 +165,10 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlJSON, UI::GUIPanel(ui, *this));
+	this->pnlJSON = ui->NewPanel(*this);
 	this->pnlJSON->SetRect(0, 0, 100, 103, false);
 	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlJSONCtrl, UI::GUIPanel(ui, this->pnlJSON));
+	this->pnlJSONCtrl = ui->NewPanel(this->pnlJSON);
 	this->pnlJSONCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlJSONCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblJSON = ui->NewLabel(this->pnlJSON, CSTR("JSON"));

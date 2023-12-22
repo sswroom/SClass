@@ -73,7 +73,7 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, No
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 		
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
-	NEW_CLASSNN(this->pnlSource, UI::GUIPanel(ui, this->tpSource));
+	this->pnlSource = ui->NewPanel(this->tpSource);
 	this->pnlSource->SetRect(0, 0, 100, 31, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnConvert = ui->NewButton(this->pnlSource, CSTR("Convert"));

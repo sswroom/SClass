@@ -563,7 +563,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	}
 	this->SetMenu(this->mnuMain);
 
-	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, *this));
+	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetRect(0, 0, 100, 31, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblStatus = ui->NewLabel(this->pnlStatus, CSTR("Valid Status"));

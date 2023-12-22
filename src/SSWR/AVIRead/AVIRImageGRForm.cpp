@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->modifying = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlLayers, UI::GUIPanel(ui, *this));
+	this->pnlLayers = ui->NewPanel(*this);
 	this->pnlLayers->SetRect(0, 0, 200, 23, false);
 	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnAddLayer = ui->NewButton(this->pnlLayers, CSTR("New Layer"));
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayers->HandleSelectionChange(OnLayersChanged, this);
 	this->hspLayers = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlSetting, UI::GUIPanel(ui, *this));
+	this->pnlSetting = ui->NewPanel(*this);
 	this->pnlSetting->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->btnRemoveLayer = ui->NewButton(this->pnlSetting, CSTR("Remove Layer"));
 	this->btnRemoveLayer->SetRect(4, 4, 75, 23, false);

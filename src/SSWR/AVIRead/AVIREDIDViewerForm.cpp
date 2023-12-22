@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	this->edid = 0;
 	this->edidSize = 0;
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnSave = ui->NewButton(this->pnlCtrl, CSTR("Save"));

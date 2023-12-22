@@ -668,7 +668,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
+	this->pnlDevice = ui->NewPanel(this->tpDevice);
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDeviceAddr = ui->NewLabel(this->pnlDevice, CSTR("Addr"));

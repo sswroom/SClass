@@ -835,7 +835,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbV4Request->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbV4Request->HandleSelectionChange(OnV4ReqSelChg, this);
 	this->hspV4Request = ui->NewHSplitter(this->tpV4Main, 3, false);
-	NEW_CLASSNN(this->pnlV4Request, UI::GUIPanel(ui, this->tpV4Main));
+	this->pnlV4Request = ui->NewPanel(this->tpV4Main);
 	this->pnlV4Request->SetRect(0, 0, 100, 56, false);
 	this->pnlV4Request->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblV4RequestTime = ui->NewLabel(this->pnlV4Request, CSTR("Request Time"));
@@ -853,7 +853,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbV4Answer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbV4Answer->HandleSelectionChange(OnV4AnsSelChg, this);
 	this->hspV4Answer = ui->NewHSplitter(this->tpV4Main, 3, false);
-	NEW_CLASSNN(this->pnlV4Detail, UI::GUIPanel(ui, this->tpV4Main));
+	this->pnlV4Detail = ui->NewPanel(this->tpV4Main);
 	this->pnlV4Detail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblV4AnsName = ui->NewLabel(this->pnlV4Detail, CSTR("Name"));
 	this->lblV4AnsName->SetRect(4, 4, 100, 23, false);
@@ -887,7 +887,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbV6Request->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbV6Request->HandleSelectionChange(OnV6ReqSelChg, this);
 	this->hspV6Request = ui->NewHSplitter(this->tpV6Main, 3, false);
-	NEW_CLASSNN(this->pnlV6Request, UI::GUIPanel(ui, this->tpV6Main));
+	this->pnlV6Request = ui->NewPanel(this->tpV6Main);
 	this->pnlV6Request->SetRect(0, 0, 100, 56, false);
 	this->pnlV6Request->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblV6RequestTime = ui->NewLabel(this->pnlV6Request, CSTR("Request Time"));
@@ -905,7 +905,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbV6Answer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbV6Answer->HandleSelectionChange(OnV6AnsSelChg, this);
 	this->hspV6Answer = ui->NewHSplitter(this->tpV6Main, 3, false);
-	NEW_CLASSNN(this->pnlV6Detail, UI::GUIPanel(ui, this->tpV6Main));
+	this->pnlV6Detail = ui->NewPanel(this->tpV6Main);
 	this->pnlV6Detail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblV6AnsName = ui->NewLabel(this->pnlV6Detail, CSTR("Name"));
 	this->lblV6AnsName->SetRect(4, 4, 100, 23, false);
@@ -939,7 +939,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbOthRequest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbOthRequest->HandleSelectionChange(OnOthReqSelChg, this);
 	this->hspOthRequest = ui->NewHSplitter(this->tpOthMain, 3, false);
-	NEW_CLASSNN(this->pnlOthRequest, UI::GUIPanel(ui, this->tpOthMain));
+	this->pnlOthRequest = ui->NewPanel(this->tpOthMain);
 	this->pnlOthRequest->SetRect(0, 0, 100, 56, false);
 	this->pnlOthRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblOthRequestTime = ui->NewLabel(this->pnlOthRequest, CSTR("Request Time"));
@@ -957,7 +957,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbOthAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbOthAnswer->HandleSelectionChange(OnOthAnsSelChg, this);
 	this->hspOthAnswer = ui->NewHSplitter(this->tpOthMain, 3, false);
-	NEW_CLASSNN(this->pnlOthDetail, UI::GUIPanel(ui, this->tpOthMain));
+	this->pnlOthDetail = ui->NewPanel(this->tpOthMain);
 	this->pnlOthDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblOthAnsName = ui->NewLabel(this->pnlOthDetail, CSTR("Name"));
 	this->lblOthAnsName->SetRect(4, 4, 100, 23, false);
@@ -1014,7 +1014,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtTargetWhois->SetReadOnly(true);
 
 	this->tpSearch = this->tcMain->AddTabPage(CSTR("Search"));
-	NEW_CLASSNN(this->pnlSearch, UI::GUIPanel(ui, this->tpSearch));
+	this->pnlSearch = ui->NewPanel(this->tpSearch);
 	this->pnlSearch->SetRect(0, 0, 100, 31, false);
 	this->pnlSearch->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSearchIPRange = ui->NewLabel(this->pnlSearch, CSTR("IP Range"));
@@ -1033,7 +1033,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbSearch->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSearch->HandleSelectionChange(OnSReqSelChg, this);
 	this->hspSearch = ui->NewHSplitter(this->tpSearch, 3, false);
-	NEW_CLASSNN(this->pnlSRequest, UI::GUIPanel(ui, this->tpSearch));
+	this->pnlSRequest = ui->NewPanel(this->tpSearch);
 	this->pnlSRequest->SetRect(0, 0, 100, 56, false);
 	this->pnlSRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSRequestTime = ui->NewLabel(this->pnlSRequest, CSTR("Request Time"));
@@ -1051,7 +1051,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbSAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSAnswer->HandleSelectionChange(OnSAnsSelChg, this);
 	this->hspSAnswer = ui->NewHSplitter(this->tpSearch, 3, false);
-	NEW_CLASSNN(this->pnlSDetail, UI::GUIPanel(ui, this->tpSearch));
+	this->pnlSDetail = ui->NewPanel(this->tpSearch);
 	this->pnlSDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblSAnsName = ui->NewLabel(this->pnlSDetail, CSTR("Name"));
 	this->lblSAnsName->SetRect(4, 4, 100, 23, false);
@@ -1080,7 +1080,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtSAnsRD->SetReadOnly(true);
 
 	this->tpBlackList = this->tcMain->AddTabPage(CSTR("Blacklist"));
-	NEW_CLASSNN(this->pnlBlackList, UI::GUIPanel(ui, this->tpBlackList));
+	this->pnlBlackList = ui->NewPanel(this->tpBlackList);
 	this->pnlBlackList->SetRect(0, 0, 100, 32, false);
 	this->pnlBlackList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lbBlackList, UI::GUIListBox(ui, this->tpBlackList, false));

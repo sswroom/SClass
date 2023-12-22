@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
+	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 55, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("JS Text"));

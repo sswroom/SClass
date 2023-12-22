@@ -776,7 +776,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->currImage = -1;
 	this->downType = 0;
 
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->chkAutoPan = ui->NewCheckBox(this->pnlCtrl, CSTR("Auto Pan"), true);
@@ -788,7 +788,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(OnImageChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblLeft = ui->NewLabel(this->pnlMain, CSTR("Left"));
 	this->lblLeft->SetRect(0, 0, 100, 23, false);

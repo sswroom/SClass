@@ -1249,7 +1249,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnDatabaseNew->HandleButtonClick(OnDatabaseNewClicked, this);
 
 	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
-	NEW_CLASSNN(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
+	this->pnlTable = ui->NewPanel(this->tpTable);
 	this->pnlTable->SetRect(0, 0, 100, 250, false);
 	this->pnlTable->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASSNN(this->lbSchema, UI::GUIListBox(ui, this->pnlTable, false));
@@ -1283,10 +1283,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvTableResult->SetShowGrid(true);
 
 	this->tpSQL = this->tcMain->AddTabPage(CSTR("SQL"));
-	NEW_CLASSNN(this->pnlSQL, UI::GUIPanel(ui, this->tpSQL));
+	this->pnlSQL = ui->NewPanel(this->tpSQL);
 	this->pnlSQL->SetRect(0, 0, 100, 152, false);
 	this->pnlSQL->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlSQLCtrl, UI::GUIPanel(ui, this->pnlSQL));
+	this->pnlSQLCtrl = ui->NewPanel(this->pnlSQL);
 	this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnSQLExec = ui->NewButton(this->pnlSQLCtrl, CSTR("Execute"));
@@ -1304,7 +1304,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvSQLResult->SetShowGrid(true);
 
 	this->tpMap = this->tcMain->AddTabPage(CSTR("Map"));
-	NEW_CLASSNN(this->pnlMap, UI::GUIPanel(ui, this->tpMap));
+	this->pnlMap = ui->NewPanel(this->tpMap);
 	this->pnlMap->SetRect(0, 0, 250, 23, false);
 	this->pnlMap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspMap = ui->NewHSplitter(this->tpMap, 3, false);
@@ -1312,7 +1312,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mapMain->HandleMouseDown(OnMapMouseDown, this);
 	this->mapMain->HandleMouseUp(OnMapMouseUp, this);
-	NEW_CLASSNN(this->pnlMapTable, UI::GUIPanel(ui, this->pnlMap));
+	this->pnlMapTable = ui->NewPanel(this->pnlMap);
 	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
 	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->vspMapRecord = ui->NewVSplitter(this->pnlMap, 3, false);
@@ -1332,7 +1332,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbMapTable->HandleSelectionChange(OnMapTableSelChg, this);
 
 	this->tpVariable = this->tcMain->AddTabPage(CSTR("Variable"));
-	NEW_CLASSNN(this->pnlVariable, UI::GUIPanel(ui, this->tpVariable));
+	this->pnlVariable = ui->NewPanel(this->tpVariable);
 	this->pnlVariable->SetRect(0, 0, 100, 31, false);
 	this->pnlVariable->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnVariable = ui->NewButton(this->pnlVariable, CSTR("Show"));
@@ -1346,7 +1346,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvVariable->AddColumn(CSTR("Value"), 300);
 
 	this->tpSvrConn = this->tcMain->AddTabPage(CSTR("Connection"));
-	NEW_CLASSNN(this->pnlSvrConn, UI::GUIPanel(ui, this->tpSvrConn));
+	this->pnlSvrConn = ui->NewPanel(this->tpSvrConn);
 	this->pnlSvrConn->SetRect(0, 0, 100, 31, false);
 	this->pnlSvrConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnSvrConn = ui->NewButton(this->pnlSvrConn, CSTR("Show"));

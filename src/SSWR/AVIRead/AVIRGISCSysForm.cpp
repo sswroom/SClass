@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, No
 	this->txtCurrCSys->SetRect(0, 0, 100, 240, false);
 	this->txtCurrCSys->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtCurrCSys->SetReadOnly(true);
-	NEW_CLASSNN(this->pnlSel, UI::GUIPanel(ui, *this));
+	this->pnlSel = ui->NewPanel(*this);
 	this->pnlSel->SetRect(0, 0, 300, 23, false);
 	this->pnlSel->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->radGeo, UI::GUIRadioButton(ui, this->pnlSel, CSTR("Geographic CS"), true));
@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, No
 	this->btnCancel = ui->NewButton(this->pnlSel, CSTR("Cancel"));
 	this->btnCancel->SetRect(150, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, *this));
+	this->pnlInfo = ui->NewPanel(*this);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->SetDefaultButton(this->btnOK);

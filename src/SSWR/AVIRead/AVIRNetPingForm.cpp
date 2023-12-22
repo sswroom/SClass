@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 80, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->vspRequest = ui->NewVSplitter(*this, 3, false);

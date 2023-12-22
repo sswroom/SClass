@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlURL, UI::GUIPanel(ui, *this));
+	this->pnlURL = ui->NewPanel(*this);
 	this->pnlURL->SetRect(0, 0, 100, 55, false);
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblRecent = ui->NewLabel(this->pnlURL, CSTR("Recent"));

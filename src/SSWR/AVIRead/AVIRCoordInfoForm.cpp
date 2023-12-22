@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCoord, UI::GUIPanel(ui, *this));
+	this->pnlCoord = ui->NewPanel(*this);
 	this->pnlCoord->SetRect(0, 0, 100, 31, false);
 	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSRID = ui->NewLabel(this->pnlCoord, CSTR("SRID"));

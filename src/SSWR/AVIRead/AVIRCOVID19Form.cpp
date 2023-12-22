@@ -248,7 +248,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, No
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnFile = ui->NewButton(this->pnlRequest, CSTR("&Load File"));

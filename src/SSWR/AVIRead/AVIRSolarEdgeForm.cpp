@@ -373,7 +373,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->imgSiteEnergy = 0;
 	this->imgSitePower = 0;
 
-	NEW_CLASSNN(this->pnlAPIKey, UI::GUIPanel(ui, *this));
+	this->pnlAPIKey = ui->NewPanel(*this);
 	this->pnlAPIKey->SetRect(0, 0, 100, 31, false);
 	this->pnlAPIKey->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblAPIKey = ui->NewLabel(this->pnlAPIKey, CSTR("API Key"));
@@ -399,7 +399,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->txtSuppVer->SetReadOnly(true);
 
 	this->tpSiteList = this->tcMain->AddTabPage(CSTR("Site List"));
-	NEW_CLASSNN(this->pnlSiteList, UI::GUIPanel(ui, this->tpSiteList));
+	this->pnlSiteList = ui->NewPanel(this->tpSiteList);
 	this->pnlSiteList->SetRect(0, 0, 100, 216, false);
 	this->pnlSiteList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvSiteList = ui->NewListView(this->tpSiteList, UI::ListViewStyle::Table, 11);
@@ -495,7 +495,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->txtSiteCurrentPower->SetReadOnly(true);
 
 	this->tpSiteEnergy = this->tcMain->AddTabPage(CSTR("Site Energy"));
-	NEW_CLASSNN(this->pnlSiteEnergy, UI::GUIPanel(ui, this->tpSiteEnergy));
+	this->pnlSiteEnergy = ui->NewPanel(this->tpSiteEnergy);
 	this->pnlSiteEnergy->SetRect(0, 0, 100, 103, false);
 	this->pnlSiteEnergy->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSiteEnergySite = ui->NewLabel(this->pnlSiteEnergy, CSTR("Site"));
@@ -529,7 +529,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->pbSiteEnergy->HandleSizeChanged(OnSiteEnergySizeChg, this);
 
 	this->tpSitePower = this->tcMain->AddTabPage(CSTR("Site Power"));
-	NEW_CLASSNN(this->pnlSitePower, UI::GUIPanel(ui, this->tpSitePower));
+	this->pnlSitePower = ui->NewPanel(this->tpSitePower);
 	this->pnlSitePower->SetRect(0, 0, 100, 79, false);
 	this->pnlSitePower->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSitePowerSite = ui->NewLabel(this->pnlSitePower, CSTR("Site"));

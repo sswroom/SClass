@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->codeImgGen = 0;
 	this->simg = 0;
 
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 84, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->pbMain, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));

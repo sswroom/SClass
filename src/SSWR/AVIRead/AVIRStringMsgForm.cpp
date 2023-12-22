@@ -20,7 +20,7 @@ SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlButton, UI::GUIPanel(ui, *this));
+	this->pnlButton = ui->NewPanel(*this);
 	this->pnlButton->SetRect(0, 0, 100, 32, false);
 	this->pnlButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnOK = ui->NewButton(this->pnlButton, CSTR("OK"));

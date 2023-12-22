@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->gpioPin = this->core->GetGPIOControl();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlPinType, UI::GUIPanel(ui, *this));
+	this->pnlPinType = ui->NewPanel(*this);
 	this->pnlPinType->SetRect(0, 0, 100, 31, false);
 	this->pnlPinType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPinType = ui->NewLabel(this->pnlPinType, CSTR("Pin Type"));
@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::IOPinTypeGetName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN), (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
 	this->cboPinType->HandleSelectionChange(OnPinTypeChg, this);
 
-	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
+	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));

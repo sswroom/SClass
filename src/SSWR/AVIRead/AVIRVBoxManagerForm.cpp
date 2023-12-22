@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlVersion, UI::GUIPanel(ui, *this));
+	this->pnlVersion = ui->NewPanel(*this);
 	this->pnlVersion->SetRect(0, 0, 100, 31, false);
 	this->pnlVersion->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblVersion = ui->NewLabel(this->pnlVersion, CSTR("Version"));

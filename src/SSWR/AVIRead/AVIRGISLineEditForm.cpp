@@ -287,21 +287,21 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
-	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
+	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 456, 32, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->pnlStyle, UI::GUIPanel(ui, *this));
+	this->pnlStyle = ui->NewPanel(*this);
 	this->pnlStyle->SetRect(0, 0, 456, 56, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->grpLayer = ui->NewGroupBox(*this, CSTR("Layers"));
 	this->grpLayer->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlLayers, UI::GUIPanel(ui, this->grpLayer));
+	this->pnlLayers = ui->NewPanel(this->grpLayer);
 	this->pnlLayers->SetRect(0, 0, 152, 157, false);
 	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASSNN(this->pnlLayersButton, UI::GUIPanel(ui, this->pnlLayers));
+	this->pnlLayersButton = ui->NewPanel(this->pnlLayers);
 	this->pnlLayersButton->SetRect(0, 0, 152, 32, false);
 	this->pnlLayersButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->pnlLayer, UI::GUIPanel(ui, this->grpLayer));
+	this->pnlLayer = ui->NewPanel(this->grpLayer);
 	this->pnlLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	Math::Size2D<UOSInt> sz;

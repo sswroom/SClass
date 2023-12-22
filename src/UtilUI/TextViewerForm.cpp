@@ -38,7 +38,7 @@ UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, NotNullPtr<
 
 	this->monMgr = monMgr;
 	this->srchFrm = 0;
-	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, *this));
+	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetRect(0, 0, 100, 24, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtStatus = ui->NewTextBox(this->pnlStatus, CSTR(""));

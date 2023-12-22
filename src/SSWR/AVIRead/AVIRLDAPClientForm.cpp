@@ -143,7 +143,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblHost = ui->NewLabel(this->pnlRequest, CSTR("Host"));
@@ -176,7 +176,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 
 	this->grpSearch = ui->NewGroupBox(*this, CSTR("Search"));
 	this->grpSearch->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlSearchRequest, UI::GUIPanel(ui, this->grpSearch));
+	this->pnlSearchRequest = ui->NewPanel(this->grpSearch);
 	this->pnlSearchRequest->SetRect(0, 0, 100, 124, false);
 	this->pnlSearchRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSearchBase = ui->NewLabel(this->pnlSearchRequest, CSTR("Base Object"));

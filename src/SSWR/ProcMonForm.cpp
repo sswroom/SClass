@@ -305,7 +305,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->lbProg->SetRect(0, 0, 150, 100, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProg->HandleSelectionChange(OnProgSelChange, this);
-	NEW_CLASSNN(this->pnlProg, UI::GUIPanel(ui, this->tpProg));
+	this->pnlProg = ui->NewPanel(this->tpProg);
 	this->pnlProg->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->grpProgAdd = ui->NewGroupBox(this->pnlProg, CSTR("Add Prog"));
 	this->grpProgAdd->SetRect(0, 0, 100, 64, false);

@@ -173,7 +173,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 	this->lvService->SetShowGrid(true);
 	this->lvService->HandleSelChg(OnServiceSelChg, this);
 	this->hspService = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
@@ -194,7 +194,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 	this->btnCreate = ui->NewButton(this->pnlCtrl, CSTR("Create"));
 	this->btnCreate->SetRect(84, 28, 75, 23, false);
 	this->btnCreate->HandleButtonClick(OnCreateClicked, this);
-	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, *this));
+	this->pnlDetail = ui->NewPanel(*this);
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblName = ui->NewLabel(this->pnlDetail, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);

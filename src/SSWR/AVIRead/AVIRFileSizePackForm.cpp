@@ -350,7 +350,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->filePath = 0;
 
-	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
+	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 424, 104, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDir = ui->NewLabel(this->pnlFile, CSTR("Directory"));

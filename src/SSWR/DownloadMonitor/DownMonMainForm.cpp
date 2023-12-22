@@ -601,7 +601,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->alarmTime = 0;
 	this->core->SetFileEndHandler(OnFileEnd, this);
 
-	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
+	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 55, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStatus = ui->NewLabel(this->pnlButtons, CSTR("Status"));

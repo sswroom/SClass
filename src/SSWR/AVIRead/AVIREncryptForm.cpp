@@ -71,16 +71,16 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASSNN(this->pnlSrc, UI::GUIPanel(ui, *this));
+	this->pnlSrc = ui->NewPanel(*this);
 	this->pnlSrc->SetRect(0, 0, 512, 100, false);
 	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASSNN(this->pnlSrcCtrl, UI::GUIPanel(ui, this->pnlSrc));
+	this->pnlSrcCtrl = ui->NewPanel(this->pnlSrc);
 	this->pnlSrcCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlSrcCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlDest, UI::GUIPanel(ui, *this));
+	this->pnlDest = ui->NewPanel(*this);
 	this->pnlDest->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlDestCtrl, UI::GUIPanel(ui, this->pnlDest));
+	this->pnlDestCtrl = ui->NewPanel(this->pnlDest);
 	this->pnlDestCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlDestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSrc = ui->NewLabel(this->pnlSrcCtrl, CSTR("Source Encryption"));

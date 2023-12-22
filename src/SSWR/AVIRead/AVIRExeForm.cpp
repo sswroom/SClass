@@ -395,7 +395,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	if (this->exeFile->HasDOS())
 	{
 		this->tp16Bit = this->tcEXE->AddTabPage(CSTR("16 Bit"));
-		NEW_CLASSNN(this->pnl16BitInfo, UI::GUIPanel(ui, this->tp16Bit));
+		this->pnl16BitInfo = ui->NewPanel(this->tp16Bit);
 		this->pnl16BitInfo->SetRect(0, 0, 100, 40, false);
 		this->pnl16BitInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 		NEW_CLASS(this->lb16BitFuncs, UI::GUIListBox(ui, this->tp16Bit, false));

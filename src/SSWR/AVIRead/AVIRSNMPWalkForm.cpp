@@ -16,7 +16,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblAgent = ui->NewLabel(this->pnlRequest, CSTR("Agent"));

@@ -2533,7 +2533,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 
 	this->unkCnt = 0;
 
-	NEW_CLASSNN(this->pnlLeft, UI::GUIPanel(ui, *this));
+	this->pnlLeft = ui->NewPanel(*this);
 	this->pnlLeft->SetArea(0, 0, 100, 100, false);
 	this->pnlLeft->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lblLeft = ui->NewLabel(this->pnlLeft, this->env->GetLang(CSTR("MainFormLeft")));
@@ -2544,13 +2544,13 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lbDir->HandleSelectionChange(OnDirChanged, this);
 	this->hsbLeft = ui->NewHSplitter(*this, 3, false);
 
-	NEW_CLASSNN(this->pnlMid, UI::GUIPanel(ui, *this));
+	this->pnlMid = ui->NewPanel(*this);
 	this->pnlMid->SetArea(0, 0, 238, 50, false);
 	this->pnlMid->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lblMid = ui->NewLabel(this->pnlMid, this->env->GetLang(CSTR("MainFormMid")));
 	this->lblMid->SetArea(0,0, 138, 20, false);
 	this->lblMid->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlMidBottom, UI::GUIPanel(ui, this->pnlMid));
+	this->pnlMidBottom = ui->NewPanel(this->pnlMid);
 	this->pnlMidBottom->SetArea(0, 0, 138, 80, false);
 	this->pnlMidBottom->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblPickMsg = ui->NewLabel(this->pnlMidBottom, CSTR(""));
@@ -2616,7 +2616,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 
 
 	this->tpSpecies = this->tcMain->AddTabPage(this->env->GetLang(CSTR("MainFormTabSpecies")));
-	NEW_CLASSNN(this->pnlSpecies, UI::GUIPanel(ui, this->tpSpecies));
+	this->pnlSpecies = ui->NewPanel(this->tpSpecies);
 	this->pnlSpecies->SetRect(0, 0, 480, 288, false);
 	this->pnlSpecies->SetDockType(UI::GUIControl::DOCK_TOP);
 	lbl = ui->NewLabel(this->pnlSpecies, this->env->GetLang(CSTR("MainFormTabSpeciesId")));
@@ -2664,7 +2664,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->btnSpeciesColor->HandleButtonClick(OnSpeciesColorClicked, this);
 	this->grpSpBook = ui->NewGroupBox(this->tpSpecies, this->env->GetLang(CSTR("MainFormTabSpeciesBook")));
 	this->grpSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlSpBook, UI::GUIPanel(ui, this->grpSpBook));
+	this->pnlSpBook = ui->NewPanel(this->grpSpBook);
 	this->pnlSpBook->SetRect(0, 0, 474, 49, false);
 	this->pnlSpBook->SetDockType(UI::GUIControl::DOCK_TOP);
 	lbl = ui->NewLabel(this->pnlSpBook, this->env->GetLang(CSTR("MainFormTabSpeciesBookDisp")));
@@ -2683,7 +2683,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->txtSpBookYear->HandleTextChanged(OnSpBookYearChg, this);
 	this->cboSpBook = ui->NewComboBox(this->pnlSpBook, false);
 	this->cboSpBook->SetRect(248, 24, 700, 23, false);
-	NEW_CLASSNN(this->pnlSpBookCtrl, UI::GUIPanel(ui, this->grpSpBook));
+	this->pnlSpBookCtrl = ui->NewPanel(this->grpSpBook);
 	this->pnlSpBookCtrl->SetRect(0, 0, 474, 24, false);
 	this->pnlSpBookCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnSpBookDel = ui->NewButton(this->pnlSpBookCtrl, this->env->GetLang(CSTR("MainFormTabSpeciesBookDel")));
@@ -2696,7 +2696,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lvSpBook->HandleSelChg(OnSpBookSelChg, this);
 	
 	this->tpImage = this->tcMain->AddTabPage(this->env->GetLang(CSTR("MainFormTabImage")));
-	NEW_CLASSNN(this->pnlImage, UI::GUIPanel(ui, this->tpImage));
+	this->pnlImage = ui->NewPanel(this->tpImage);
 	this->pnlImage->SetArea(0, 0, 480, 22, false);
 	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnImageSaveAll = ui->NewButton(this->pnlImage, this->env->GetLang(CSTR("MainFormTabImageSaveAll")));
@@ -2743,10 +2743,10 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 //	RegisterDragDrop((HWND)this->pbImg->GetHandle(), this);
 
 	this->tpMap = this->tcMain->AddTabPage(this->env->GetLang(CSTR("MainFormTabMap")));
-	NEW_CLASSNN(this->pnlMapCtrl, UI::GUIPanel(ui, this->tpMap));
+	this->pnlMapCtrl = ui->NewPanel(this->tpMap);
 	this->pnlMapCtrl->SetRect(0, 0, 100, 24, false);
 	this->pnlMapCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlMapStatus, UI::GUIPanel(ui, this->tpMap));
+	this->pnlMapStatus = ui->NewPanel(this->tpMap);
 	this->pnlMapStatus->SetRect(0, 0, 100, 24, false);
 	this->pnlMapStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->tbMapScale, UI::GUITrackBar(ui, this->pnlMapCtrl, 0, 18, 16));

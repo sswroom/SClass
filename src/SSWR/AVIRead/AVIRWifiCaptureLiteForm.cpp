@@ -631,7 +631,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	this->lvCurrWifi->AddColumn(CSTR("S/N"), 100);
 
 	this->tpLogWifi = this->tcMain->AddTabPage(CSTR("Wifi Log"));
-	NEW_CLASSNN(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
+	this->pnlLogWifi = ui->NewPanel(this->tpLogWifi);
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnLogWifiSave = ui->NewButton(this->pnlLogWifi, CSTR("Save"));

@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 300, 23, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lblHost = ui->NewLabel(this->pnlControl, CSTR("Host"));

@@ -90,6 +90,7 @@ namespace UI
 		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent) = 0;
 
 		NotNullPtr<GUIListView> NewListView(NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
+		NotNullPtr<GUIPanel> NewPanel(NotNullPtr<UI::GUIClientControl> parent);
 	};
 }
 #endif

@@ -18,7 +18,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	this->lvRecp->AddColumn(CSTR("Email"), 150);
 	this->lvRecp->SetShowGrid(true);
 	this->lvRecp->SetFullRowSelect(true);
-	NEW_CLASSNN(this->pnlFrom, UI::GUIPanel(ui, this->tpHeading));
+	this->pnlFrom = ui->NewPanel(this->tpHeading);
 	this->pnlFrom->SetRect(0, 0, 100, 24, false);
 	this->pnlFrom->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFrom = ui->NewLabel(this->pnlFrom, CSTR("From"));
@@ -27,7 +27,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	this->txtFrom = ui->NewTextBox(this->pnlFrom, CSTR(""));
 	this->txtFrom->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtFrom->SetReadOnly(true);
-	NEW_CLASSNN(this->pnlSubject, UI::GUIPanel(ui, this->tpHeading));
+	this->pnlSubject = ui->NewPanel(this->tpHeading);
 	this->pnlSubject->SetRect(0, 0, 100, 24, false);
 	this->pnlSubject->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSubject = ui->NewLabel(this->pnlSubject, CSTR("Subject"));
@@ -36,7 +36,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	this->txtSubject = ui->NewTextBox(this->pnlSubject, CSTR(""));
 	this->txtSubject->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtSubject->SetReadOnly(true);
-	NEW_CLASSNN(this->pnlDate, UI::GUIPanel(ui, this->tpHeading));
+	this->pnlDate = ui->NewPanel(this->tpHeading);
 	this->pnlDate->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblDate = ui->NewLabel(this->pnlDate, CSTR("Date"));
 	this->lblDate->SetRect(0, 0, 100, 23, false);
@@ -53,7 +53,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	this->lvRAW->SetShowGrid(true);
 	this->lvRAW->SetFullRowSelect(true);
 
-	NEW_CLASSNN(this->pnlContent, UI::GUIPanel(ui, ctrl));
+	this->pnlContent = ui->NewPanel(ctrl);
 	this->pnlContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(this->core, ui, this->pnlContent, sess, this->mail->GetRAWContent());
 

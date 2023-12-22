@@ -35,7 +35,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDisplayOff = ui->NewButton(this->pnlMain, CSTR("Display Off"));

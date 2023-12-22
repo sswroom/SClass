@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, this->tpUser));
+	this->pnlRequest = ui->NewPanel(this->tpUser);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblChannelId = ui->NewLabel(this->pnlRequest, CSTR("ChannelId"));
@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->lvItems->AddColumn(CSTR("Message"), 400);
 
 	this->tpPage = this->tcMain->AddTabPage(CSTR("Page"));
-	NEW_CLASSNN(this->pnlPage, UI::GUIPanel(ui, this->tpPage));
+	this->pnlPage = ui->NewPanel(this->tpPage);
 	this->pnlPage->SetRect(0, 0, 100, 31, false);
 	this->pnlPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblShortCode = ui->NewLabel(this->pnlPage, CSTR("ShortCode"));

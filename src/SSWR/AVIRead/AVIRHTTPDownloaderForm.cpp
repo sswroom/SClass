@@ -280,7 +280,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->lastSize = 0;
 	this->currSize = 0;
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->txtTotalSize->SetReadOnly(true);
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlResponse, UI::GUIPanel(ui, this->grpResponse));
+	this->pnlResponse = ui->NewPanel(this->grpResponse);
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSvrIP = ui->NewLabel(this->pnlResponse, CSTR("Server IP"));

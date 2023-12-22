@@ -186,7 +186,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, No
 	this->dataChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlMQTT, UI::GUIPanel(ui, *this));
+	this->pnlMQTT = ui->NewPanel(*this);
 	this->pnlMQTT->SetRect(0, 0, 100, 31, false);
 	this->pnlMQTT->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblServer = ui->NewLabel(this->pnlMQTT, CSTR("MQTT Server"));

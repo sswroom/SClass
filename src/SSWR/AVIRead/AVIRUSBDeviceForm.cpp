@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent
 	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);
 	this->hspDevices = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlDevices, UI::GUIPanel(ui, *this));
+	this->pnlDevices = ui->NewPanel(*this);
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblVendorId = ui->NewLabel(this->pnlDevices, CSTR("VendorId"));
 	this->lblVendorId->SetRect(4, 4, 100, 23, false);

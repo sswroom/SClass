@@ -419,7 +419,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->ssl = ssl;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlStreamType, UI::GUIPanel(ui, *this));
+	this->pnlStreamType = ui->NewPanel(*this);
 	this->pnlStreamType->SetRect(0, 0, 100, 31, false);
 	this->pnlStreamType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStreamType = ui->NewLabel(this->pnlStreamType, CSTR("Stream Type"));
@@ -446,7 +446,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::HID), (void*)IO::StreamType::HID);
 	this->cboStreamType->HandleSelectionChange(OnStmTypeChg, this);
 
-	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
+	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));
@@ -503,7 +503,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	if (this->siLabDriver)
 	{
 		this->tpSiLabPort = this->tcConfig->AddTabPage(CSTR("SiLab"));
-		NEW_CLASSNN(this->pnlSLInfo, UI::GUIPanel(ui, this->tpSiLabPort));
+		this->pnlSLInfo = ui->NewPanel(this->tpSiLabPort);
 		this->pnlSLInfo->SetRect(0, 0, 100, 55, false);
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 		this->lblDLLVer = ui->NewLabel(this->pnlSLInfo, CSTR("DLL Version"));
@@ -517,7 +517,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->txtDriverVer->SetRect(104, 28, 100, 23, false);
 		this->txtDriverVer->SetReadOnly(true);
 
-		NEW_CLASSNN(this->pnlSLControl, UI::GUIPanel(ui, this->tpSiLabPort));
+		this->pnlSLControl = ui->NewPanel(this->tpSiLabPort);
 		this->pnlSLControl->SetRect(0, 0, 100, 67, false);
 		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		this->lblSLBaudRate = ui->NewLabel(this->pnlSLControl, CSTR("Baud Rate"));

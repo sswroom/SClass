@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, NotNullP
 	this->stm = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 316, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->grpStream = ui->NewGroupBox(this->pnlMain, CSTR("Stream"));

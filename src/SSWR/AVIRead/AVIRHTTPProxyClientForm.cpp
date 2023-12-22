@@ -194,7 +194,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->reqURL = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 79, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
@@ -214,7 +214,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlResponse, UI::GUIPanel(ui, this->grpResponse));
+	this->pnlResponse = ui->NewPanel(this->grpResponse);
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSvrIP = ui->NewLabel(this->pnlResponse, CSTR("Server IP"));

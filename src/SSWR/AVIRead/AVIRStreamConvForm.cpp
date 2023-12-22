@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->grpStream1 = ui->NewGroupBox(*this, CSTR("Stream 1"));
 	this->grpStream1->SetRect(0, 0, 250, 48, false);
 	this->grpStream1->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASSNN(this->pnlStream1, UI::GUIPanel(ui, this->grpStream1));
+	this->pnlStream1 = ui->NewPanel(this->grpStream1);
 	this->pnlStream1->SetRect(0, 0, 100, 104, false);
 	this->pnlStream1->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream1 = ui->NewLabel(this->pnlStream1, CSTR("Stream Type"));
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 
 	this->grpStream2 = ui->NewGroupBox(*this, CSTR("Stream 2"));
 	this->grpStream2->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlStream2, UI::GUIPanel(ui, this->grpStream2));
+	this->pnlStream2 = ui->NewPanel(this->grpStream2);
 	this->pnlStream2->SetRect(0, 0, 100, 104, false);
 	this->pnlStream2->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream2 = ui->NewLabel(this->pnlStream2, CSTR("Stream Type"));

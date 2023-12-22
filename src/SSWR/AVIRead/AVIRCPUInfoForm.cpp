@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCPU = this->tcMain->AddTabPage(CSTR("CPU"));
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, this->tpCPU));
+	this->pnlMain = ui->NewPanel(this->tpCPU);
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnUpload = ui->NewButton(this->pnlMain, CSTR("Upload Info"));

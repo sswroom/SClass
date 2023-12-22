@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
 
-	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
+	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblServer = ui->NewLabel(this->pnlRequest, CSTR("DNS Server"));
@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->lbAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAnswer->HandleSelectionChange(OnAnswerSelChg, this);
 	this->hspAnswer = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASSNN(this->pnlAnswer, UI::GUIPanel(ui, *this));
+	this->pnlAnswer = ui->NewPanel(*this);
 	this->pnlAnswer->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblAnsName = ui->NewLabel(this->pnlAnswer, CSTR("Name"));
 	this->lblAnsName->SetRect(4, 4, 100, 23, false);

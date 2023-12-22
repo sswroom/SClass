@@ -547,7 +547,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->inited = false;
 
-	NEW_CLASSNN(this->pnlSrc, UI::GUIPanel(ui, *this));
+	this->pnlSrc = ui->NewPanel(*this);
 	this->pnlSrc->SetRect(0, 0, 100, 24, false);
 	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSrc = ui->NewLabel(this->pnlSrc, CSTR("Source Type"));
@@ -560,7 +560,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->cboSrc = ui->NewComboBox(this->pnlSrc, false);
 	this->cboSrc->SetRect(300, 0, 200, 23, false);
 	this->cboSrc->HandleSelectionChange(OnSrcCboChanged, this);
-	NEW_CLASSNN(this->pnlDest, UI::GUIPanel(ui, *this));
+	this->pnlDest = ui->NewPanel(*this);
 	this->pnlDest->SetRect(0, 0, 100, 24, false);
 	this->pnlDest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDest = ui->NewLabel(this->pnlDest, CSTR("Dest Type"));
@@ -576,7 +576,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->btnConvFile = ui->NewButton(this->pnlDest, CSTR("Conv File"));
 	this->btnConvFile->SetRect(500, 0, 75, 23, false);
 	this->btnConvFile->HandleButtonClick(OnConvFileClicked, this);
-	NEW_CLASSNN(this->pnlCoord, UI::GUIPanel(ui, *this));
+	this->pnlCoord = ui->NewPanel(*this);
 	this->pnlCoord->SetRect(0, 0, 100, 24, false);
 	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblName = ui->NewLabel(this->pnlCoord, CSTR("Name"));

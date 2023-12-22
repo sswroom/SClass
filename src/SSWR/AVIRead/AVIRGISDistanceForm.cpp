@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 
 	this->lblType = ui->NewLabel(*this, CSTR("Type"));
 	this->lblType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASSNN(this->pnlType, UI::GUIPanel(ui, *this));
+	this->pnlType = ui->NewPanel(*this);
 	this->pnlType->SetRect(104, 4, 200, 24, false);
 	NEW_CLASS(this->radTypeLine, UI::GUIRadioButton(ui, this->pnlType, CSTR("Line"), true));
 	this->radTypeLine->SetRect(0, 0, 100, 23, false);
@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	this->radTypePath->HandleSelectedChange(OnTypeSelChg, this);
 	this->lblAction = ui->NewLabel(*this, CSTR("Action"));
 	this->lblAction->SetRect(4, 28, 100, 23, false);
-	NEW_CLASSNN(this->pnlAction, UI::GUIPanel(ui, *this));
+	this->pnlAction = ui->NewPanel(*this);
 	this->pnlAction->SetRect(104, 28, 200, 24, false);
 	NEW_CLASS(this->radActionPause, UI::GUIRadioButton(ui, this->pnlAction, CSTR("Pause"), false));
 	this->radActionPause->SetRect(0, 0, 100, 23, false);

@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(UI::GUIClientControl *
 	this->SetText(CSTR("Font Style"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASSNN(this->pnlBtn, UI::GUIPanel(ui, *this));
+	this->pnlBtn = ui->NewPanel(*this);
 	this->pnlBtn->SetRect(0, 0, 100, 48, false);
 	this->pnlBtn->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnOK = ui->NewButton(this->pnlBtn, CSTR("OK"));
@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(UI::GUIClientControl *
 
 	this->grpStyle = ui->NewGroupBox(*this, CSTR("Style"));
 	this->grpStyle->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASSNN(this->pnlStyle, UI::GUIPanel(ui, this->grpStyle));
+	this->pnlStyle = ui->NewPanel(this->grpStyle);
 	this->pnlStyle->SetRect(0, 0, 100, 32, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnAddStyle = ui->NewButton(this->pnlStyle, CSTR("New Style"));

@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->lblText = ui->NewLabel(*this, CSTR("Text"));
 	this->lblText->SetRect(4, 4, 100, 23, false);
 	this->lblText->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtText = ui->NewTextBox(*this, CSTR(""), true);

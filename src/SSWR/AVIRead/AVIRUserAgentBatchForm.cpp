@@ -201,10 +201,10 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 
 	this->core = core;
 
-	NEW_CLASSNN(this->pnlSource, UI::GUIPanel(ui, *this));
+	this->pnlSource = ui->NewPanel(*this);
 	this->pnlSource->SetRect(0, 0, 100, 256, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, this->pnlSource));
+	this->pnlControl = ui->NewPanel(this->pnlSource);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtSource = ui->NewTextBox(this->pnlSource, CSTR(""), true);

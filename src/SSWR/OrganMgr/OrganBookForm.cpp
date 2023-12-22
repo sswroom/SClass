@@ -286,10 +286,10 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNu
 	this->SetText(this->env->GetLang(CSTR("BookFormTitle")));
 	this->SetFont(0, 0, 10.5, false);
 
-	NEW_CLASSNN(this->pnlBook, UI::GUIPanel(ui, *this));
+	this->pnlBook = ui->NewPanel(*this);
 	this->pnlBook->SetRect(0, 0, 168, 500, false);
 	this->pnlBook->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASSNN(this->pnlBookDet, UI::GUIPanel(ui, this->pnlBook));
+	this->pnlBookDet = ui->NewPanel(this->pnlBook);
 	this->pnlBookDet->SetRect(0, 0, 168, 320, false);
 	this->pnlBookDet->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->hspBook = ui->NewHSplitter(*this, 3, true);

@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	this->simg = 0;
 	this->handType = handType;
 
-	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
+	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 200, 100, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lblType = ui->NewLabel(this->pnlControl, CSTR("Type"));

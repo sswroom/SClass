@@ -434,7 +434,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
 	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
 
-	NEW_CLASSNN(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
+	NEW_CLASSNN(this->pnlSummary = ui->NewPanel(this->tpSummary));
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
 	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lvSummary = ui->NewListView(this->tpSummary, UI::ListViewStyle::Table, 10));
@@ -492,7 +492,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->txtDetPriority->SetRect(55, 96, 100, 23, false);
 	this->txtDetPriority->SetReadOnly(true);
 
-	NEW_CLASSNN(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
+	NEW_CLASSNN(this->pnlDetModule = ui->NewPanel(this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
 	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetModule = ui->NewButton(this->pnlDetModule, CSTR("Refresh"));
@@ -506,7 +506,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->lvDetModule->AddColumn(CSTR("Address"), 80);
 	this->lvDetModule->AddColumn(CSTR("Size"), 80);
 
-	NEW_CLASSNN(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
+	NEW_CLASSNN(this->pnlDetThread = ui->NewPanel(this->tpDetThread));
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
 	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetThread = ui->NewButton(this->pnlDetThread, CSTR("Refresh"));
@@ -521,7 +521,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->lvDetThread->AddColumn(CSTR("Start Address"), 120);
 	this->lvDetThread->AddColumn(CSTR("Start Address(Name)"), 600);
 
-	NEW_CLASSNN(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
+	NEW_CLASSNN(this->pnlDetHeap = ui->NewPanel(this->tpDetHeap));
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetHeap = ui->NewButton(this->pnlDetHeap, CSTR("Refresh"));

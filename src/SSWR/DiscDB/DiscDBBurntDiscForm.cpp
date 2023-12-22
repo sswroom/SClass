@@ -1316,10 +1316,10 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->selectedFile = 0;
 	NEW_CLASS(this->fileList, Data::ArrayList<BurntFile*>());
 
-	NEW_CLASSNN(this->pnlTop, UI::GUIPanel(ui, *this));
+	this->pnlTop = ui->NewPanel(*this);
 	this->pnlTop->SetRect(0, 0, 624, 121, false);
 	this->pnlTop->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlBurntDisc, UI::GUIPanel(ui, this->pnlTop));
+	this->pnlBurntDisc = ui->NewPanel(this->pnlTop);
 	this->pnlBurntDisc->SetRect(0, 0, 472, 121, false);
 	this->pnlBurntDisc->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnBrowse = ui->NewButton(this->pnlBurntDisc, CSTR("&Browse"));
@@ -1353,7 +1353,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->lbDVDName->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDVDName->HandleSelectionChange(OnDVDNameSelChg, this);
 
-	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
+	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(416, 121, 208, 335, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->lblCategory = ui->NewLabel(this->pnlFile, CSTR("Category"));
@@ -1361,7 +1361,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->cboCategory = ui->NewComboBox(this->pnlFile, false);
 	this->cboCategory->SetRect(80, 17, 121, 21, false);
 	this->cboCategory->HandleSelectionChange(OnCategorySelChg, this);
-	NEW_CLASSNN(this->pnlDVDV, UI::GUIPanel(ui, this->pnlFile));
+	this->pnlDVDV = ui->NewPanel(this->pnlFile);
 	this->pnlDVDV->SetRect(0, 43, 208, 165, false);
 	this->lblDVDName = ui->NewLabel(this->pnlDVDV, CSTR("Name"));
 	this->lblDVDName->SetRect(8, 17, 48, 25, false);

@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASSNN(this->pnlObj, UI::GUIPanel(ui, *this));
+	this->pnlObj = ui->NewPanel(*this);
 	this->pnlObj->SetRect(0, 0, 100, 31, false);
 	this->pnlObj->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboObj = ui->NewComboBox(this->pnlObj, false);
@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->lvInfo->SetFullRowSelect(true);
 
 	this->tpShape = this->tcMain->AddTabPage(CSTR("Shape"));
-	NEW_CLASSNN(this->pnlShape, UI::GUIPanel(ui, this->tpShape));
+	this->pnlShape = ui->NewPanel(this->tpShape);
 	this->pnlShape->SetRect(0, 0, 100, 31, false);
 	this->pnlShape->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblShapeFmt = ui->NewLabel(this->pnlShape, CSTR("Format"));

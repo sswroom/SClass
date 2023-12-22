@@ -251,7 +251,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	lbl->SetRect(60, 50, 200, 19, false);
 
 	
-	NEW_CLASSNN(this->pnlProfile1, UI::GUIPanel(ui, this->tpProfile));
+	this->pnlProfile1 = ui->NewPanel(this->tpProfile);
 	this->pnlProfile1->SetRect(0, 0, 100, 100, false);
 	this->pnlProfile1->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnProfileDel = ui->NewButton(this->pnlProfile1, CSTR("&Delete"));
@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	NEW_CLASS(this->lbProfile, UI::GUIListBox(ui, this->pnlProfile1, false));
 	this->lbProfile->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASSNN(this->pnlProfile2, UI::GUIPanel(ui, this->tpProfile));
+	this->pnlProfile2 = ui->NewPanel(this->tpProfile);
 	this->pnlProfile2->SetDockType(UI::GUIControl::DOCK_FILL);
 	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Name"));
 	lbl->SetRect(0, 0, 60, 19, false);

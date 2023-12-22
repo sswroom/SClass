@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 	this->lbl = ui->NewLabel(*this, CSTR("Drag and drop to add icons"));
 	this->lbl->SetRect(0, 0, 100, 23, false);
 	this->lbl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
+	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 456, 48, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));

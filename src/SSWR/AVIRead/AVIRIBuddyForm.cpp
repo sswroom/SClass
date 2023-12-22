@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, NotN
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDevChanged, this);
-	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
+	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblHead = ui->NewLabel(this->pnlMain, CSTR("Head"));
 	this->lblHead->SetRect(4, 4, 100, 23, false);
