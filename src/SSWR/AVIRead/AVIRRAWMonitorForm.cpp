@@ -1234,7 +1234,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
 
 	this->tpIPTran = this->tcMain->AddTabPage(CSTR("IP Tran"));
-	NEW_CLASS(this->lbIPTran, UI::GUIListBox(ui, this->tpIPTran, false));
+	this->lbIPTran = ui->NewListBox(this->tpIPTran, false);
 	this->lbIPTran->SetRect(0, 0, 150, 23, false);
 	this->lbIPTran->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIPTran->HandleSelectionChange(OnIPTranSelChg, this);
@@ -1270,7 +1270,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtIPTranWhois->SetReadOnly(true);
 
 	this->tpDNSReqv4 = this->tcMain->AddTabPage(CSTR("DNS Req v4"));
-	NEW_CLASS(this->lbDNSReqv4, UI::GUIListBox(ui, this->tpDNSReqv4, false));
+	this->lbDNSReqv4 = ui->NewListBox(this->tpDNSReqv4, false);
 	this->lbDNSReqv4->SetRect(0, 0, 250, 23, false);
 	this->lbDNSReqv4->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqv4->HandleSelectionChange(OnDNSReqv4SelChg, this);
@@ -1304,7 +1304,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSReqv4->AddColumn(CSTR("RD"), 250);
 
 	this->tpDNSReqv6 = this->tcMain->AddTabPage(CSTR("DNS Req v6"));
-	NEW_CLASS(this->lbDNSReqv6, UI::GUIListBox(ui, this->tpDNSReqv6, false));
+	this->lbDNSReqv6 = ui->NewListBox(this->tpDNSReqv6, false);
 	this->lbDNSReqv6->SetRect(0, 0, 250, 23, false);
 	this->lbDNSReqv6->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqv6->HandleSelectionChange(OnDNSReqv6SelChg, this);
@@ -1338,7 +1338,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSReqv6->AddColumn(CSTR("RD"), 250);
 
 	this->tpDNSReqOth = this->tcMain->AddTabPage(CSTR("DNS Req Other"));
-	NEW_CLASS(this->lbDNSReqOth, UI::GUIListBox(ui, this->tpDNSReqOth, false));
+	this->lbDNSReqOth = ui->NewListBox(this->tpDNSReqOth, false);
 	this->lbDNSReqOth->SetRect(0, 0, 250, 23, false);
 	this->lbDNSReqOth->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqOth->HandleSelectionChange(OnDNSReqOthSelChg, this);
@@ -1372,7 +1372,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSReqOth->AddColumn(CSTR("RD"), 250);
 
 	this->tpDNSTarget = this->tcMain->AddTabPage(CSTR("DNS Target"));
-	NEW_CLASS(this->lbDNSTarget, UI::GUIListBox(ui, this->tpDNSTarget, false));
+	this->lbDNSTarget = ui->NewListBox(this->tpDNSTarget, false);
 	this->lbDNSTarget->SetRect(0, 0, 150, 23, false);
 	this->lbDNSTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSTarget->HandleSelectionChange(OnDNSTargetSelChg, this);
@@ -1380,7 +1380,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->tcDNSTarget = ui->NewTabControl(this->tpDNSTarget);
 	this->tcDNSTarget->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDNSTargetDomain = this->tcDNSTarget->AddTabPage(CSTR("Domains"));
-	NEW_CLASS(this->lbDNSTargetDomain, UI::GUIListBox(ui, this->tpDNSTargetDomain, false));
+	this->lbDNSTargetDomain = ui->NewListBox(this->tpDNSTargetDomain, false);
 	this->lbDNSTargetDomain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDNSTargetWhois = this->tcDNSTarget->AddTabPage(CSTR("Whois"));
 	this->txtDNSTargetWhois = ui->NewTextBox(this->tpDNSTargetWhois, CSTR(""), true);
@@ -1388,7 +1388,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtDNSTargetWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpMDNS = this->tcMain->AddTabPage(CSTR("MDNS"));
-	NEW_CLASS(this->lbMDNS, UI::GUIListBox(ui, this->tpMDNS, false));
+	this->lbMDNS = ui->NewListBox(this->tpMDNS, false);
 	this->lbMDNS->SetRect(0, 0, 200, 23, false);
 	this->lbMDNS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMDNS->HandleSelectionChange(OnMDNSSelChg, this);
@@ -1422,7 +1422,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtMDNSResult->SetReadOnly(true);
 
 	this->tpDNSClient = this->tcMain->AddTabPage(CSTR("DNS Client"));
-	NEW_CLASS(this->lbDNSClient, UI::GUIListBox(ui, this->tpDNSClient, false));
+	this->lbDNSClient = ui->NewListBox(this->tpDNSClient, false);
 	this->lbDNSClient->SetRect(0, 0, 150, 23, false);
 	this->lbDNSClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSClient->HandleSelectionChange(OnDNSClientSelChg, this);
@@ -1455,16 +1455,16 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDHCP->AddColumn(CSTR("Vendor Class"), 100);
 
 	this->tpIPLog = this->tcMain->AddTabPage(CSTR("IP Log"));
-	NEW_CLASS(this->lbIPLog, UI::GUIListBox(ui, this->tpIPLog, false));
+	this->lbIPLog = ui->NewListBox(this->tpIPLog, false);
 	this->lbIPLog->SetRect(0, 0, 150, 23, false);
 	this->lbIPLog->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIPLog->HandleSelectionChange(OnIPLogSelChg, this);
 	this->hspIPLog = ui->NewHSplitter(this->tpIPLog, 3, false);
-	NEW_CLASS(this->lbIPLogVal, UI::GUIListBox(ui, this->tpIPLog, false));
+	this->lbIPLogVal = ui->NewListBox(this->tpIPLog, false);
 	this->lbIPLogVal->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpPingIP = this->tcMain->AddTabPage(CSTR("Ping IP"));
-	NEW_CLASS(this->lbPingIP, UI::GUIListBox(ui, this->tpPingIP, false));
+	this->lbPingIP = ui->NewListBox(this->tpPingIP, false);
 	this->lbPingIP->SetRect(0, 0, 150, 23, false);
 	this->lbPingIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPingIP->HandleSelectionChange(OnPingIPSelChg, this);
@@ -1508,7 +1508,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

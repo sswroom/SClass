@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	this->txtVersion = ui->NewTextBox(this->pnlVersion, CSTR(""));
 	this->txtVersion->SetReadOnly(true);
 	this->txtVersion->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lbVMS, UI::GUIListBox(ui, *this, false));
+	this->lbVMS = ui->NewListBox(*this, false);
 	this->lbVMS->SetRect(0, 0, 150, 23, false);
 	this->lbVMS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbVMS->HandleSelectionChange(OnVMSSelChg, this);

@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	this->lvMain->AddColumn(CSTR("Value"), 550);
 
 	this->tpCache = this->tcMain->AddTabPage(CSTR("Cache"));
-	NEW_CLASS(this->lbCache, UI::GUIListBox(ui, this->tpCache, false));
+	this->lbCache = ui->NewListBox(this->tpCache, false);
 	this->lbCache->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));

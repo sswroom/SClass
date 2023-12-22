@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblRespTime;
 			NotNullPtr<UI::GUITextBox> txtRespTime;
 			NotNullPtr<UI::GUIButton> btnRequest;
-			UI::GUIListBox *lbResponse;
+			NotNullPtr<UI::GUIListBox> lbResponse;
 
 			NotNullPtr<Net::SocketFactory> sockf;
 

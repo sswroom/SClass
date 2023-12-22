@@ -380,11 +380,11 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->btnMove = ui->NewButton(this->pnlFile, CSTR("Move"));
 	this->btnMove->SetRect(232, 76, 75, 23, false);
 	this->btnMove->HandleButtonClick(OnMoveClicked, this);
-	NEW_CLASS(this->lbFilePack, UI::GUIListBox(ui, *this, false));
+	this->lbFilePack = ui->NewListBox(*this, false);
 	this->lbFilePack->SetRect(0, 0, 120, 212, false);
 	this->lbFilePack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspFile = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->lbFileDir, UI::GUIListBox(ui, *this, false));
+	this->lbFileDir = ui->NewListBox(*this, false);
 	this->lbFileDir->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 

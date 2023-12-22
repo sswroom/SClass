@@ -16,7 +16,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::StringUTF8Map<const UTF8Char *> *dropMap;
 
-			UI::GUIListBox *lbType;
+			NotNullPtr<UI::GUIListBox> lbType;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITextBox> txtMain;
 

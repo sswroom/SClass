@@ -556,7 +556,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogClicked, this);
 

@@ -42,12 +42,12 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlLeft;
 			NotNullPtr<UI::GUILabel> lblLeft;
-			UI::GUIListBox *lbDir;
+			NotNullPtr<UI::GUIListBox> lbDir;
 			NotNullPtr<UI::GUIHSplitter> hsbLeft;
 
 			NotNullPtr<UI::GUIPanel> pnlMid;
 			NotNullPtr<UI::GUILabel> lblMid;
-			UI::GUIListBox *lbObj;
+			NotNullPtr<UI::GUIListBox> lbObj;
 			NotNullPtr<UI::GUIPanel> pnlMidBottom;
 			NotNullPtr<UI::GUILabel> lblPickMsg;
 			NotNullPtr<UI::GUIButton> btnObjPick;
@@ -95,7 +95,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImg;
 			NotNullPtr<UI::GUIVSplitter> vsbImg;
-			UI::GUIListBox *lbImage;
+			NotNullPtr<UI::GUIListBox> lbImage;
 			NotNullPtr<UI::GUIPanel> pnlImage;
 			NotNullPtr<UI::GUIButton> btnImageSaveAll;
 			NotNullPtr<UI::GUIButton> btnImageSave;

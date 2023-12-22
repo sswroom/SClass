@@ -29,7 +29,7 @@ namespace SSWR
 			
 			NotNullPtr<UI::GUITabPage> tpProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile1;
-			UI::GUIListBox *lbProfile;
+			NotNullPtr<UI::GUIListBox> lbProfile;
 			NotNullPtr<UI::GUIButton> btnProfileDel;
 		//	NotNullPtr<UI::GUIHSplitter> hspProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile2;

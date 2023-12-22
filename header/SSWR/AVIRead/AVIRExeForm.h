@@ -34,23 +34,23 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvProp;
 
 			NotNullPtr<UI::GUITabPage> tpImport;
-			UI::GUIListBox *lbImport;
+			NotNullPtr<UI::GUIListBox> lbImport;
 			NotNullPtr<UI::GUIHSplitter> hspImport;
 			NotNullPtr<UI::GUIListView> lvImport;
 
 			NotNullPtr<UI::GUITabPage> tpExport;
-			UI::GUIListBox *lbExport;
+			NotNullPtr<UI::GUIListBox> lbExport;
 
 			NotNullPtr<UI::GUITabPage> tpResource;
-			UI::GUIListBox *lbResource;
+			NotNullPtr<UI::GUIListBox> lbResource;
 			NotNullPtr<UI::GUIHSplitter> hspResource;
 			NotNullPtr<UI::GUITextBox> txtResource;
 
 			NotNullPtr<UI::GUITabPage> tp16Bit;
 			NotNullPtr<UI::GUIPanel> pnl16BitInfo;
-			UI::GUIListBox *lb16BitFuncs;
+			NotNullPtr<UI::GUIListBox> lb16BitFuncs;
 			NotNullPtr<UI::GUIHSplitter> hsp16Bit;
-			UI::GUIListBox *lb16BitCont;
+			NotNullPtr<UI::GUIListBox> lb16BitCont;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::EXEFile *exeFile;

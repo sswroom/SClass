@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	NEW_CLASS(this->exporter, Exporter::GUIJPGExporter());
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
+	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(0, 8, 256, 88, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDevChg, this);

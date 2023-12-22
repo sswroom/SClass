@@ -325,7 +325,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, NotNul
 	this->currChapters = mediaFile->GetChapterInfo();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->lbFiles, UI::GUIListBox(ui, *this, false));
+	this->lbFiles = ui->NewListBox(*this, false);
 	this->lbFiles->SetRect(0, 0, 160, 100, false);
 	this->lbFiles->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbFiles->HandleRightClicked(OnFileRClicked, this);

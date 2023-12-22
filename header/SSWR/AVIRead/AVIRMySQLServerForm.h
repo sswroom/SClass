@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpUser;
-			UI::GUIListBox *lbUser;
+			NotNullPtr<UI::GUIListBox> lbUser;
 			NotNullPtr<UI::GUIHSplitter> hspUser;
 			NotNullPtr<UI::GUIPanel> pnlUser;
 			NotNullPtr<UI::GUILabel> lblUserName;

@@ -89,7 +89,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnFileBrowse;
 
 			NotNullPtr<UI::GUITabPage> tpHID;
-			UI::GUIListBox *lbHIDDevice;
+			NotNullPtr<UI::GUIListBox> lbHIDDevice;
 
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 			NotNullPtr<UI::GUIButton> btnOK;

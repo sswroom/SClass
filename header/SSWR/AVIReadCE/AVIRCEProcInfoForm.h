@@ -42,7 +42,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSummary;
 			NotNullPtr<UI::GUIListView> lvSummary;
 
-			UI::GUIListBox *lbDetail;
+			NotNullPtr<UI::GUIListBox> lbDetail;
 			NotNullPtr<UI::GUIHSplitter> hspDetail;
 			NotNullPtr<UI::GUITabControl> tcDetail;
 			NotNullPtr<UI::GUITabPage> tpDetInfo;
@@ -72,7 +72,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlDetHeap;
 			NotNullPtr<UI::GUIButton> btnDetHeap;
-			UI::GUIListBox *lbDetHeap;
+			NotNullPtr<UI::GUIListBox> lbDetHeap;
 			NotNullPtr<UI::GUIHSplitter> hspDetHeap;
 			NotNullPtr<UI::GUIListView> lvDetHeap;
 

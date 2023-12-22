@@ -203,12 +203,12 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->tpStream = this->tcMain->AddTabPage(CSTR("Stream"));
 	this->tpTool = this->tcMain->AddTabPage(CSTR("Tool"));
 
-	NEW_CLASS(this->lbPackList, UI::GUIListBox(ui, this->tpContent, false));
+	this->lbPackList = ui->NewListBox(this->tpContent, false);
 	this->lbPackList->SetRect(0, 0, 200, 100, false);
 	this->lbPackList->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPackList->HandleSelectionChange(OnPackListChanged, this);
 	this->hspPack = ui->NewHSplitter(this->tpContent, 3, false);
-	NEW_CLASS(this->lbPackItems, UI::GUIListBox(ui, this->tpContent, false));
+	this->lbPackItems = ui->NewListBox(this->tpContent, false);
 	this->lbPackItems->SetRect(0, 0, 250, 100, false);
 	this->lbPackItems->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPackItems->HandleSelectionChange(OnPackItemChanged, this);

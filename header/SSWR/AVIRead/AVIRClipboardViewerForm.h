@@ -17,7 +17,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::Clipboard *clipboard;
 
-			UI::GUIListBox *lbType;
+			NotNullPtr<UI::GUIListBox> lbType;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITextBox> txtMain;
 

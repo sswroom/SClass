@@ -26,7 +26,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlStrCols;
 			NotNullPtr<UI::GUILabel> lblStrCols;
-			UI::GUIListBox *lbStrCols;
+			NotNullPtr<UI::GUIListBox> lbStrCols;
 			NotNullPtr<UI::GUIButton> btnStrColsDbl;
 			NotNullPtr<UI::GUIButton> btnStrColsInt32;
 			NotNullPtr<UI::GUIPanel> pnlXAxis;
@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblYAxis;
 			NotNullPtr<UI::GUIComboBox> cboYAxis;
 			NotNullPtr<UI::GUIButton> btnYAxis;
-			UI::GUIListBox *lbYAxis;
+			NotNullPtr<UI::GUIListBox> lbYAxis;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnPlot;
 			NotNullPtr<UI::GUIButton> btnCancel;

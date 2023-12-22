@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent
 	this->txtSearchStr->SetRect(0, 0, 100, 21, false);
 	this->txtSearchStr->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtSearchStr->HandleTextChanged(OnTextChg, this);
-	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, *this, false));
+	this->lbResults = ui->NewListBox(*this, false);
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 

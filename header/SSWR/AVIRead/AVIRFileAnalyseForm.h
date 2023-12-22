@@ -28,9 +28,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpStream;
 			NotNullPtr<UI::GUITabPage> tpTool;
 
-			UI::GUIListBox *lbPackList;
+			NotNullPtr<UI::GUIListBox> lbPackList;
 			NotNullPtr<UI::GUIHSplitter> hspPack;
-			UI::GUIListBox *lbPackItems;
+			NotNullPtr<UI::GUIListBox> lbPackItems;
 			NotNullPtr<UI::GUIHSplitter> hspPack2;
 			NotNullPtr<UI::GUITextBox> txtPack;
 

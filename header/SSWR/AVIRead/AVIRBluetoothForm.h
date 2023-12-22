@@ -27,7 +27,7 @@ namespace SSWR
 				Data::ArrayList<IO::BTController::BTDevice*> *devList;
 			} BTStatus;
 		private:
-			UI::GUIListBox *lbCtrl;
+			NotNullPtr<UI::GUIListBox> lbCtrl;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITabControl> tcMain;
 
@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
 			NotNullPtr<UI::GUIButton> btnDevAuthen;
 			NotNullPtr<UI::GUIButton> btnDevUnauthen;
-			UI::GUIListBox *lbDevServices;
+			NotNullPtr<UI::GUIListBox> lbDevServices;
 			NotNullPtr<UI::GUIListView> lvDevice;
 
 			Data::ArrayList<BTStatus*> btList;

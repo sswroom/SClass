@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
-	NEW_CLASS(this->lbData, UI::GUIListBox(ui, this->tpData, false));
+	this->lbData = ui->NewListBox(this->tpData, false);
 	this->lbData->SetRect(0, 0, 200, 100, false);
 	this->lbData->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbData->HandleSelectionChange(OnDataSelChg, this);
@@ -236,7 +236,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
@@ -280,7 +280,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lblMulticastCommon = ui->NewLabel(this->pnlMulticastCommon, CSTR("Common IP"));
 	this->lblMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->lblMulticastCommon->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lbMulticastCommon, UI::GUIListBox(ui, this->pnlMulticastCommon, false));
+	this->lbMulticastCommon = ui->NewListBox(this->pnlMulticastCommon, false);
 	this->lbMulticastCommon->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMulticastCommon->HandleDoubleClicked(OnMulticastDoubleClk, this);
 	this->hspMulticast = ui->NewHSplitter(this->tpMulticast, 3, false);
@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->btnMulticastAdd = ui->NewButton(this->pnlMulticastCtrl, CSTR("&Add"));
 	this->btnMulticastAdd->SetRect(200, 0, 75, 23, false);
 	this->btnMulticastAdd->HandleButtonClick(OnMulticastClicked, this);
-	NEW_CLASS(this->lbMulticastCurr, UI::GUIListBox(ui, this->pnlMulticast, false));
+	this->lbMulticastCurr = ui->NewListBox(this->pnlMulticast, false);
 	this->lbMulticastCurr->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)"239.255.255.250");
 

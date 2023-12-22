@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnDecode;
 			NotNullPtr<UI::GUILabel> lblDecode;
-			UI::GUIListBox *lbStream;
+			NotNullPtr<UI::GUIListBox> lbStream;
 			NotNullPtr<UI::GUIHSplitter> hspStream;
 			NotNullPtr<UI::GUITextBox> txtStream;
 

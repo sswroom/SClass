@@ -31,7 +31,7 @@ namespace SSWR
 			Sync::Mutex packetMut;
 			Data::ArrayList<SNMPPacket*> packetList;
 
-			UI::GUIListBox *lbResults;
+			NotNullPtr<UI::GUIListBox> lbResults;
 			NotNullPtr<UI::GUIHSplitter> hspResults;
 			NotNullPtr<UI::GUIPanel> pnlResults;
 			NotNullPtr<UI::GUIPanel> pnlTrap;

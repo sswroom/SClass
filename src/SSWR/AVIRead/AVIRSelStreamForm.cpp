@@ -661,7 +661,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	}
 
 	this->tpHID = tcConfig->AddTabPage(CSTR("HID"));
-	NEW_CLASS(this->lbHIDDevice, UI::GUIListBox(ui, this->tpHID, false));
+	this->lbHIDDevice = ui->NewListBox(this->tpHID, false);
 	this->lbHIDDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	IO::DeviceInfo *dev;
 	j = this->devMgr.QueryHIDDevices(&this->devList);

@@ -46,8 +46,6 @@ UI/GUIHScrollBar.h:
 @GUIHScrollBarWin.o
 UI/GUIIcon.h:
 @GUIIconWin.o
-UI/GUIListBox.h:
-@GUIListBoxWin.o
 UI/GUIListView.h:
 @GUIListViewWin.o
 UI/GUIMainMenu.h:

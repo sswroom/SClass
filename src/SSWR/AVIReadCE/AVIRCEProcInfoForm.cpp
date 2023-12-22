@@ -453,7 +453,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->lvSummary->AddColumn(CSTR("User Objects"), 50);
 	this->lvSummary->AddColumn(CSTR("Handles"), 50);
 
-	NEW_CLASS(this->lbDetail, UI::GUIListBox(ui, this->tpDetail, false));
+	NEW_CLASS(this->lbDetail = ui->NewListBox(this->tpDetail, false));
 	this->lbDetail->SetRect(0, 0, 80, 100, false);
 	this->lbDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetail->HandleSelectionChange(OnProcSelChg, this);
@@ -527,7 +527,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->btnDetHeap = ui->NewButton(this->pnlDetHeap, CSTR("Refresh"));
 	this->btnDetHeap->SetRect(4, 4, 75, 23, false);
 	this->btnDetHeap->HandleButtonClick(OnDetHeapRefClicked, this);
-	NEW_CLASS(this->lbDetHeap, UI::GUIListBox(ui, this->tpDetHeap, false));
+	NEW_CLASS(this->lbDetHeap = ui->NewListBox(this->tpDetHeap, false));
 	this->lbDetHeap->SetRect(0, 0, 100, 23, false);
 	this->lbDetHeap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetHeap->HandleSelectionChange(OnDetHeapSelChg, this);

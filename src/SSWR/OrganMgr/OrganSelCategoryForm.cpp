@@ -32,7 +32,7 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 
 	this->lbl = ui->NewLabel(*this, this->env->GetLang(CSTR("SelCategoryDB")));
 	this->lbl->SetRect(16, 8, 100, 23, false);
-	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, *this, false));
+	this->lbCategory = ui->NewListBox(*this, false);
 	this->lbCategory->SetRect(8, 32, 344, 136, false);
 	this->lbCategory->HandleDoubleClicked(OnOKClicked, this);
 	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("SelCategoryOk")));

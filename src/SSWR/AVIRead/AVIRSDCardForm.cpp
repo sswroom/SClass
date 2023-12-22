@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotN
 	this->SetText(CSTR("SD Cards"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, *this, false));
+	this->lbDevices = ui->NewListBox(*this, false);
 	this->lbDevices->SetRect(0, 0, 100, 23, false);
 	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);

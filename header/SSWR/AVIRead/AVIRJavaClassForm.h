@@ -22,10 +22,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtFileStruct;
 
 			NotNullPtr<UI::GUITabPage> tpFields;
-			UI::GUIListBox *lbFields;
+			NotNullPtr<UI::GUIListBox> lbFields;
 
 			NotNullPtr<UI::GUITabPage> tpMethods;
-			UI::GUIListBox *lbMethods;
+			NotNullPtr<UI::GUIListBox> lbMethods;
 			NotNullPtr<UI::GUIVSplitter> vspMethods;
 			NotNullPtr<UI::GUITextBox> txtMethods;
 

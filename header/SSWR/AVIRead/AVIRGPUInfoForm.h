@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRGPUInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbGPU;
+			NotNullPtr<UI::GUIListBox> lbGPU;
 			NotNullPtr<UI::GUIHSplitter> hspGPU;
 			NotNullPtr<UI::GUIListView> lvMain;
 

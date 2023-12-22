@@ -353,7 +353,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, NotN
 	this->txtEmailAddress->SetReadOnly(true);
 	this->lblSAN = ui->NewLabel(*this, CSTR("SubjAltName"));
 	this->lblSAN->SetRect(4, 244, 100, 23, false);
-	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, *this, false));
+	this->lbSAN = ui->NewListBox(*this, false);
 	this->lbSAN->SetRect(104, 244, 200, 95, false);
 	this->lblValidDays = ui->NewLabel(*this, CSTR("Valid Days"));
 	this->lblValidDays->SetRect(4, 340, 100, 23, false);

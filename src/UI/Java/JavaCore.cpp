@@ -15,6 +15,7 @@
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
+#include "UI/Java/JavaListBox.h"
 #include "UI/Java/JavaMessageDialog.h"
 #include "UI/Java/JavaPanelBase.h"
 #include "UI/Java/JavaTabControl.h"
@@ -248,6 +249,13 @@ NotNullPtr<UI::GUILabel> UI::Java::JavaCore::NewLabel(NotNullPtr<GUIClientContro
 {
 	NotNullPtr<UI::Java::JavaLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIListBox> UI::Java::JavaCore::NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect)
+{
+	NotNullPtr<UI::Java::JavaListBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaListBox(*this, parent, multiSelect));
 	return ctrl;
 }
 

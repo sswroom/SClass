@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	this->doc = doc;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lbObject, UI::GUIListBox(ui, *this, false));
+	this->lbObject = ui->NewListBox(*this, false);
 	this->lbObject->SetRect(0, 0, 100, 23, false);
 	this->lbObject->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObject->HandleSelectionChange(OnObjectSelChg, this);

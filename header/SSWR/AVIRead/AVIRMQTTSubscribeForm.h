@@ -64,7 +64,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSTopic;
 			NotNullPtr<UI::GUITextBox> txtSTopic;
 			NotNullPtr<UI::GUIButton> btnSTopic;
-			UI::GUIListBox *lbSTopic;
+			NotNullPtr<UI::GUIListBox> lbSTopic;
 
 			NotNullPtr<UI::GUITabPage> tpPublish;
 			NotNullPtr<UI::GUILabel> lblPublishTopic;

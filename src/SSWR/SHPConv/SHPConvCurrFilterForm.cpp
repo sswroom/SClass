@@ -46,7 +46,7 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl
 	this->dbf = dbf;
 	this->filters = filters;
 	
-	NEW_CLASS(this->lbFilters, UI::GUIListBox(ui, *this, false));
+	this->lbFilters = ui->NewListBox(*this, false);
 	this->lbFilters->SetRect(8, 8, 392, 199, false);
 	this->btnAdd = ui->NewButton(*this, CSTR("Add Filter"));
 	this->btnAdd->SetRect(8, 224, 96, 23, false);

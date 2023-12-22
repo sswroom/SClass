@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(UI::GUIClientControl *
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

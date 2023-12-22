@@ -1224,7 +1224,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->lbConn, UI::GUIListBox(ui, *this, false));
+	this->lbConn = ui->NewListBox(*this, false);
 	this->lbConn->SetRect(0, 0, 150, 23, false);
 	this->lbConn->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbConn->HandleSelectionChange(OnConnSelChg, this);
@@ -1235,7 +1235,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDatabase = this->tcMain->AddTabPage(CSTR("Database"));
-	NEW_CLASS(this->lbDatabase, UI::GUIListBox(ui, this->tpDatabase, false));
+	this->lbDatabase = ui->NewListBox(this->tpDatabase, false);
 	this->lbDatabase->SetRect(0, 0, 150, 23, false);
 	this->lbDatabase->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnDatabaseChange = ui->NewButton(this->tpDatabase, CSTR("Change"));
@@ -1252,13 +1252,13 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->pnlTable = ui->NewPanel(this->tpTable);
 	this->pnlTable->SetRect(0, 0, 100, 250, false);
 	this->pnlTable->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->lbSchema, UI::GUIListBox(ui, this->pnlTable, false));
+	this->lbSchema = ui->NewListBox(this->pnlTable, false);
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
 	this->lbSchema->HandleRightClicked(OnSchemaRClicked, this);
 	this->hspSchema = ui->NewHSplitter(this->pnlTable, 3, false);
-	NEW_CLASSNN(this->lbTable, UI::GUIListBox(ui, this->pnlTable, false));
+	this->lbTable = ui->NewListBox(this->pnlTable, false);
 	this->lbTable->SetRect(0, 0, 150, 23, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
@@ -1322,12 +1322,12 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvMapRecord->SetShowGrid(true);
 	this->lvMapRecord->AddColumn(CSTR("Name"), 100);
 	this->lvMapRecord->AddColumn(CSTR("Value"), 100);
-	NEW_CLASS(this->lbMapSchema, UI::GUIListBox(ui, this->pnlMapTable, false));
+	this->lbMapSchema = ui->NewListBox(this->pnlMapTable, false);
 	this->lbMapSchema->SetRect(0, 0, 100, 23, false);
 	this->lbMapSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMapSchema->HandleSelectionChange(OnMapSchemaSelChg, this);
 	this->hspMapTable = ui->NewHSplitter(this->pnlMapTable, 3, false);
-	NEW_CLASS(this->lbMapTable, UI::GUIListBox(ui, this->pnlMapTable, false));
+	this->lbMapTable = ui->NewListBox(this->pnlMapTable, false);
 	this->lbMapTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMapTable->HandleSelectionChange(OnMapTableSelChg, this);
 
@@ -1372,7 +1372,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, true));

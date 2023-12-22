@@ -290,11 +290,11 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 
 	this->SetText(this->env->GetLang(CSTR("LocationTitle")));
 
-	NEW_CLASS(this->lbLocation, UI::GUIListBox(ui, *this, false));
+	this->lbLocation = ui->NewListBox(*this, false);
 	this->lbLocation->SetRect(0, 0, 96, 100, false);
 	this->lbLocation->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbLocation->HandleSelectionChange(OnLocSelChg, this);
-	NEW_CLASS(this->lbSublocations, UI::GUIListBox(ui, *this, false));
+	this->lbSublocations = ui->NewListBox(*this, false);
 	this->lbSublocations->SetRect(0, 0, 96, 100, false);
 	this->lbSublocations->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSublocations->HandleSelectionChange(OnSubLocSelChg, this);

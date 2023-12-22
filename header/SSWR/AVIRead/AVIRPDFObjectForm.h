@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::PDFDocument *doc;
 
-			UI::GUIListBox *lbObject;
+			NotNullPtr<UI::GUIListBox> lbObject;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITabControl> tcMain;
 			

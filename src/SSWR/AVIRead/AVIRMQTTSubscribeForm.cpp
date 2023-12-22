@@ -433,7 +433,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->btnSTopic = ui->NewButton(this->tpSTopic, CSTR("Subscribe"));
 	this->btnSTopic->SetRect(254, 4, 75, 23, false);
 	this->btnSTopic->HandleButtonClick(OnSTopicClicked, this);
-	NEW_CLASS(this->lbSTopic, UI::GUIListBox(ui, this->tpSTopic, false));
+	this->lbSTopic = ui->NewListBox(this->tpSTopic, false);
 	this->lbSTopic->SetRect(104, 28, 150, 119, false);
 
 	this->tpPublish = this->tcMain->AddTabPage(CSTR("Publish"));
@@ -469,7 +469,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

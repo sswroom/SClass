@@ -408,7 +408,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->btnURLClear = ui->NewButton(this->pnlURLCtrl, CSTR("&Clear"));
 	this->btnURLClear->SetRect(4, 4, 75, 23, false);
 	this->btnURLClear->HandleButtonClick(OnURLClearClicked, this);
-	NEW_CLASS(this->lbURL, UI::GUIListBox(ui, this->grpURL, false));
+	this->lbURL = ui->NewListBox(this->grpURL, false);
 	this->lbURL->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->SetDefaultButton(this->btnURLAdd);

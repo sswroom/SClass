@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpChar;
-			UI::GUIListBox *lbChar;
+			NotNullPtr<UI::GUIListBox> lbChar;
 			NotNullPtr<UI::GUIHSplitter> hspChar;
 			UI::GUIPictureBoxDD *pbChar;
 

@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtCommunity;
 			NotNullPtr<UI::GUIButton> btnAgentAdd;
 			NotNullPtr<UI::GUICheckBox> chkSendToSvr;
-			UI::GUIListBox *lbAgent;
+			NotNullPtr<UI::GUIListBox> lbAgent;
 			NotNullPtr<UI::GUIHSplitter> hspAgent;
 			NotNullPtr<UI::GUIPanel> pnlAgent;
 			NotNullPtr<UI::GUILabel> lblAgentDAddr;

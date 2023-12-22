@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDatabase;
-			UI::GUIListBox *lbDatabase;
+			NotNullPtr<UI::GUIListBox> lbDatabase;
 			NotNullPtr<UI::GUIButton> btnDatabaseChange;
 			NotNullPtr<UI::GUIButton> btnDatabaseDelete;
 			NotNullPtr<UI::GUIButton> btnDatabaseNew;
@@ -65,9 +65,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMapTable;
 			NotNullPtr<UI::GUIVSplitter> vspMapRecord;
 			NotNullPtr<UI::GUIListView> lvMapRecord;
-			UI::GUIListBox *lbMapSchema;
+			NotNullPtr<UI::GUIListBox> lbMapSchema;
 			NotNullPtr<UI::GUIHSplitter> hspMapTable;
-			UI::GUIListBox *lbMapTable;
+			NotNullPtr<UI::GUIListBox> lbMapTable;
 
 			NotNullPtr<UI::GUITabPage> tpVariable;
 			NotNullPtr<UI::GUIPanel> pnlVariable;

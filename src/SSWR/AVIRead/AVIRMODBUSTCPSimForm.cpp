@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->btnDelay = ui->NewButton(this->pnlCtrl, CSTR("Set"));
 	this->btnDelay->SetRect(204, 96, 75, 23, false);
 	this->btnDelay->HandleButtonClick(OnDelayClicked, this);
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
+	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDeviceChanged, this);

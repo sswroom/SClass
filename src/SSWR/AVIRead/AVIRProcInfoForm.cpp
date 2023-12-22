@@ -573,7 +573,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->btnDetailCurr->SetRect(0, 0, 100, 23, false);
 	this->btnDetailCurr->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetailCurr->HandleButtonClick(OnDetailCurrClicked, this);
-	NEW_CLASS(this->lbDetail, UI::GUIListBox(ui, this->pnlDetail, false));
+	this->lbDetail = ui->NewListBox(this->pnlDetail, false);
 	this->lbDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDetail->HandleSelectionChange(OnProcSelChg, this);
 	this->hspDetail = ui->NewHSplitter(this->tpDetail, 3, false);
@@ -666,7 +666,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->btnDetHeap = ui->NewButton(this->pnlDetHeap, CSTR("Refresh"));
 	this->btnDetHeap->SetRect(4, 4, 75, 23, false);
 	this->btnDetHeap->HandleButtonClick(OnDetHeapRefClicked, this);
-	NEW_CLASS(this->lbDetHeap, UI::GUIListBox(ui, this->tpDetHeap, false));
+	this->lbDetHeap = ui->NewListBox(this->tpDetHeap, false);
 	this->lbDetHeap->SetRect(0, 0, 100, 23, false);
 	this->lbDetHeap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetHeap->HandleSelectionChange(OnDetHeapSelChg, this);

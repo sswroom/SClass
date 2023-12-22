@@ -2539,7 +2539,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lblLeft = ui->NewLabel(this->pnlLeft, this->env->GetLang(CSTR("MainFormLeft")));
 	this->lblLeft->SetArea(0, 0, 88, 20, false);
 	this->lblLeft->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lbDir, UI::GUIListBox(ui, this->pnlLeft, false));
+	this->lbDir = ui->NewListBox(this->pnlLeft, false);
 	this->lbDir->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDir->HandleSelectionChange(OnDirChanged, this);
 	this->hsbLeft = ui->NewHSplitter(*this, 3, false);
@@ -2565,7 +2565,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->btnObjCombine = ui->NewButton(this->pnlMidBottom, this->env->GetLang(CSTR("MainFormMidCombine")));
 	this->btnObjCombine->SetArea(72, 56, 136, 79, false);
 	this->btnObjCombine->HandleButtonClick(OnObjCombineClicked, this);
-	NEW_CLASS(this->lbObj, UI::GUIListBox(ui, this->pnlMid, false));
+	this->lbObj = ui->NewListBox(this->pnlMid, false);
 	this->lbObj->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbObj->HandleDoubleClicked(OnObjDblClicked, this);
 	this->lbObj->HandleSelectionChange(OnObjSelChg, this);
@@ -2726,7 +2726,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->btnImageClipboard = ui->NewButton(this->pnlImage, this->env->GetLang(CSTR("MainFormTabImageClipboard")));
 	this->btnImageClipboard->SetRect(648, 0, 75, 21, false);
 	this->btnImageClipboard->HandleButtonClick(OnImageClipboardClicked, this);
-	NEW_CLASS(this->lbImage, UI::GUIListBox(ui, this->tpImage, false));
+	this->lbImage = ui->NewListBox(this->tpImage, false);
 	this->lbImage->SetArea(0, 0, 480, 76, false);
 	this->lbImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lbImage->HandleSelectionChange(OnImgSelChg, this);

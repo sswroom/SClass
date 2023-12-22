@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, NotN
 	this->currBuddy = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
+	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDevChanged, this);
@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, NotN
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblHead = ui->NewLabel(this->pnlMain, CSTR("Head"));
 	this->lblHead->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->lbHead, UI::GUIListBox(ui, this->pnlMain, false));
+	this->lbHead = ui->NewListBox(this->pnlMain, false);
 	this->lbHead->SetRect(104, 4, 200, 120, false);
 	this->lbHead->HandleSelectionChange(OnHeadChanged, this);
 	this->lbHead->AddItem(CSTR("Off"), (void*)IO::Device::IBuddy::IBHDE_OFF);

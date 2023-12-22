@@ -22,6 +22,7 @@ namespace UI
 	class GUIGroupBox;
 	class GUIHSplitter;
 	class GUILabel;
+	class GUIListBox;
 	class GUIListView;
 	class GUIPanel;
 	class GUIPanelBase;
@@ -76,6 +77,7 @@ namespace UI
 		virtual NotNullPtr<GUIComboBox> NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit) = 0;
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 		virtual NotNullPtr<GUILabel> NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
+		virtual NotNullPtr<GUIListBox> NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect) = 0;
 		virtual NotNullPtr<GUITabControl> NewTabControl(NotNullPtr<GUIClientControl> parent) = 0;
 		virtual NotNullPtr<GUITextBox> NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText) = 0;
 		virtual NotNullPtr<GUITextBox> NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine) = 0;

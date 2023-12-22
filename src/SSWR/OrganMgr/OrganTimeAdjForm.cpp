@@ -288,7 +288,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxDD(ui, this->pnlLeft, this->colorSess, true, false));
 	this->pbPreview->SetRect(0, 0, 300, 240, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbTrack, UI::GUIListBox(ui, this->pnlLeft, false));
+	this->lbTrack = ui->NewListBox(this->pnlLeft, false);
 	this->lbTrack->SetRect(0, 0, 130, 23, false);
 	this->lbTrack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTrack->HandleSelectionChange(OnTrackChg, this);
@@ -296,7 +296,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->cboSpecies->SetRect(0, 0, 100, 23, false);
 	this->cboSpecies->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSpecies->HandleSelectionChange(OnSpeciesChg, this);
-	NEW_CLASS(this->lbPictures, UI::GUIListBox(ui, this->pnlLeft, false));
+	this->lbPictures = ui->NewListBox(this->pnlLeft, false);
 	this->lbPictures->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbPictures->HandleSelectionChange(OnPictureChg, this);
 	this->pnlMapCtrl = ui->NewPanel(*this);

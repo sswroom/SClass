@@ -18,7 +18,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::SDCardInfo*> sdCardList;
 
-			UI::GUIListBox *lbDevices;
+			NotNullPtr<UI::GUIListBox> lbDevices;
 			NotNullPtr<UI::GUIHSplitter> hspDevices;
 			NotNullPtr<UI::GUIPanel> pnlDevices;
 			NotNullPtr<UI::GUILabel> lblName;

@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(UI::GUIClientControl *
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbItems, UI::GUIListBox(ui, *this, false));
+	this->lbItems = ui->NewListBox(*this, false);
 	this->lbItems->SetRect(0, 0, 200, 23, false);
 	this->lbItems->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbItems->HandleSelectionChange(OnItemsSelChg, this);

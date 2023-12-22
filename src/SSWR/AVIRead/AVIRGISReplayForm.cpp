@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->lblDist = ui->NewLabel(pnl, CSTR(""));
 	this->lblDist->SetRect(245, 0, 200, 23, false);
 
-	NEW_CLASS(this->lbRecord, UI::GUIListBox(ui, *this, false));
+	this->lbRecord = ui->NewListBox(*this, false);
 	this->lbRecord->SetRect(0, 24, 150, 152, false);
 	this->lbRecord->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbRecord->HandleSelectionChange(OnLbRecordChg, this);

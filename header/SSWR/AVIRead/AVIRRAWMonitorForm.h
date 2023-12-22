@@ -88,7 +88,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDevice;
 
 			NotNullPtr<UI::GUITabPage> tpIPTran;
-			UI::GUIListBox *lbIPTran;
+			NotNullPtr<UI::GUIListBox> lbIPTran;
 			NotNullPtr<UI::GUIHSplitter> hspIPTran;
 			NotNullPtr<UI::GUITabControl> tcIPTran;
 			NotNullPtr<UI::GUITabPage> tpIPTranInfo;
@@ -97,7 +97,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtIPTranWhois;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv4;
-			UI::GUIListBox *lbDNSReqv4;
+			NotNullPtr<UI::GUIListBox> lbDNSReqv4;
 			NotNullPtr<UI::GUIHSplitter> hspDNSReqv4;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqv4;
 			NotNullPtr<UI::GUILabel> lblDNSReqv4Name;
@@ -109,7 +109,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvDNSReqv4;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv6;
-			UI::GUIListBox *lbDNSReqv6;
+			NotNullPtr<UI::GUIListBox> lbDNSReqv6;
 			NotNullPtr<UI::GUIHSplitter> hspDNSReqv6;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqv6;
 			NotNullPtr<UI::GUILabel> lblDNSReqv6Name;
@@ -121,7 +121,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvDNSReqv6;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqOth;
-			UI::GUIListBox *lbDNSReqOth;
+			NotNullPtr<UI::GUIListBox> lbDNSReqOth;
 			NotNullPtr<UI::GUIHSplitter> hspDNSReqOth;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqOth;
 			NotNullPtr<UI::GUILabel> lblDNSReqOthName;
@@ -133,16 +133,16 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvDNSReqOth;
 
 			NotNullPtr<UI::GUITabPage> tpDNSTarget;
-			UI::GUIListBox *lbDNSTarget;
+			NotNullPtr<UI::GUIListBox> lbDNSTarget;
 			NotNullPtr<UI::GUIHSplitter> hspDNSTarget;
 			NotNullPtr<UI::GUITabControl> tcDNSTarget;
 			NotNullPtr<UI::GUITabPage> tpDNSTargetDomain;
-			UI::GUIListBox *lbDNSTargetDomain;
+			NotNullPtr<UI::GUIListBox> lbDNSTargetDomain;
 			NotNullPtr<UI::GUITabPage> tpDNSTargetWhois;
 			NotNullPtr<UI::GUITextBox> txtDNSTargetWhois;
 
 			NotNullPtr<UI::GUITabPage> tpMDNS;
-			UI::GUIListBox *lbMDNS;
+			NotNullPtr<UI::GUIListBox> lbMDNS;
 			NotNullPtr<UI::GUIHSplitter> hspMDNS;
 			NotNullPtr<UI::GUIPanel> pnlMDNS;
 			NotNullPtr<UI::GUILabel> lblMDNSName;
@@ -157,7 +157,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtMDNSResult;
 
 			NotNullPtr<UI::GUITabPage> tpDNSClient;
-			UI::GUIListBox *lbDNSClient;
+			NotNullPtr<UI::GUIListBox> lbDNSClient;
 			NotNullPtr<UI::GUIHSplitter> hspDNSClient;
 			NotNullPtr<UI::GUIListView> lvDNSClient;
 
@@ -165,12 +165,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvDHCP;
 			
 			NotNullPtr<UI::GUITabPage> tpIPLog;
-			UI::GUIListBox *lbIPLog;
+			NotNullPtr<UI::GUIListBox> lbIPLog;
 			NotNullPtr<UI::GUIHSplitter> hspIPLog;
-			UI::GUIListBox *lbIPLogVal;
+			NotNullPtr<UI::GUIListBox> lbIPLogVal;
 
 			NotNullPtr<UI::GUITabPage> tpPingIP;
-			UI::GUIListBox *lbPingIP;
+			NotNullPtr<UI::GUIListBox> lbPingIP;
 			NotNullPtr<UI::GUIHSplitter> hspPingIP;
 			NotNullPtr<UI::GUITabControl> tcPingIP;
 			NotNullPtr<UI::GUITabPage> tpPingIPInfo;

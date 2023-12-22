@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(UI::GUIClientControl *parent, NotN
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lblDevice = ui->NewLabel(*this, CSTR("Capture Device"));
 	this->lblDevice->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
+	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(112, 8, 256, 112, false);
 
 	this->btnOK = ui->NewButton(*this, CSTR("&OK"));

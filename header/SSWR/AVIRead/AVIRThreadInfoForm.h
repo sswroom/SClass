@@ -42,7 +42,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvStack;
 
 			NotNullPtr<UI::GUITabPage> tpMyStack;
-			UI::GUIListBox *lbMyStack;
+			NotNullPtr<UI::GUIListBox> lbMyStack;
 			NotNullPtr<UI::GUIHSplitter> hspMyStack;
 			NotNullPtr<UI::GUIPanel> pnlMyStack;
 			NotNullPtr<UI::GUITextBox> txtMyStackMem;

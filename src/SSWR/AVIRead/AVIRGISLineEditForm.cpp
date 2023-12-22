@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->txtName = ui->NewTextBox(this->pnlStyle, CSTR(""));
 	this->txtName->SetRect(100, 32, 112, 23, false);
 
-	NEW_CLASS(this->lbLayer, UI::GUIListBox(ui, this->pnlLayers, false));
+	this->lbLayer = ui->NewListBox(this->pnlLayers, false);
 	this->lbLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayer->HandleSelectionChange(LayerSelChanged, this);
 	this->btnNewLayer = ui->NewButton(this->pnlLayersButton, CSTR("&Add"));

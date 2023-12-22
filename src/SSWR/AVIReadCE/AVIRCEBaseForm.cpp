@@ -160,12 +160,12 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, No
 	UOSInt w;
 	UOSInt h;
 	this->GetSizeP(&w, &h);
-	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, this, true));
+	NEW_CLASS(this->lbCategory = ui->NewListBox(this, true));
 	this->lbCategory->SetRect(0, 0, (w >> 1) - 3, 23, false);
 	this->lbCategory->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCategory->HandleSelectionChange(OnCategoryChg, this);
 	NEW_CLASS(this->hspMain = ui->NewHSplitter(this, 3, false));
-	NEW_CLASS(this->lbContent, UI::GUIListBox(ui, this, true));
+	NEW_CLASS(this->lbContent = ui->NewListBox(this, true));
 	this->lbContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbContent->HandleDoubleClicked(OnContentClick, this);
 	

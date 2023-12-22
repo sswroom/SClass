@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->pnlStrCols->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStrCols = ui->NewLabel(this->pnlStrCols, CSTR("String Columns"));
 	this->lblStrCols->SetRect(0, 4, 100, 23, false);
-	NEW_CLASS(this->lbStrCols, UI::GUIListBox(ui, this->pnlStrCols, false));
+	this->lbStrCols = ui->NewListBox(this->pnlStrCols, false);
 	this->lbStrCols->SetRect(100, 0, 200, 128, false);
 	this->btnStrColsDbl = ui->NewButton(this->pnlStrCols, CSTR("Force as Double"));
 	this->btnStrColsDbl->SetRect(304, 4, 120, 23, false);
@@ -339,7 +339,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->btnYAxis = ui->NewButton(this->pnlYAxis, CSTR("Add"));
 	this->btnYAxis->SetRect(304, 4, 75, 23, false);
 	this->btnYAxis->HandleButtonClick(OnYAxisClicked, this);
-	NEW_CLASS(this->lbYAxis, UI::GUIListBox(ui, this->grpYAxis, false));
+	this->lbYAxis = ui->NewListBox(this->grpYAxis, false);
 	this->lbYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NotNullPtr<DB::DBReader> reader;

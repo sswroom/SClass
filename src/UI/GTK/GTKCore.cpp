@@ -13,6 +13,7 @@
 #include "UI/GTK/GTKGroupBox.h"
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKLabel.h"
+#include "UI/GTK/GTKListBox.h"
 #include "UI/GTK/GTKMessageDialog.h"
 #include "UI/GTK/GTKPanelBase.h"
 #include "UI/GTK/GTKTabControl.h"
@@ -243,6 +244,13 @@ NotNullPtr<UI::GUILabel> UI::GTK::GTKCore::NewLabel(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::GTK::GTKLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIListBox> UI::GTK::GTKCore::NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect)
+{
+	NotNullPtr<UI::GTK::GTKListBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKListBox(*this, parent, multiSelect));
 	return ctrl;
 }
 

@@ -2,9 +2,8 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUIListBox.h"
 #include "UI/Win/WinCore.h"
-#include <windows.h>
+#include "UI/Win/WinListBox.h"
 
 #ifdef _WIN32_WCE
 #define GWLP_WNDPROC GWL_WNDPROC
@@ -14,9 +13,9 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+OSInt __stdcall UI::Win::WinListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIListBox *me = (UI::GUIListBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::Win::WinListBox *me = (UI::Win::WinListBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	OSInt index;
 	switch (msg)
 	{
@@ -25,15 +24,15 @@ OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam,
 //		y = HIWORD(lParam);
 		index = SendMessage((HWND)hWnd, LB_ITEMFROMPOINT, 0, lParam);
 		me->SetSelectedIndex((UOSInt)index);
-		me->EventRightClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
+		me->EventRightClick(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)) + me->GetScreenPosP());
 		break;
 	default:
-		return CallWindowProc((WNDPROC)me->clsData, (HWND)hWnd, msg, wParam, lParam);
+		return CallWindowProc(me->wndproc, (HWND)hWnd, msg, wParam, lParam);
 	}
 	return 0;
 }
 
-UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIControl(ui, parent)
+UI::Win::WinListBox::WinListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
 {
 	this->mulSel = multiSelect;
 
@@ -48,46 +47,16 @@ UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 		style = style | LBS_EXTENDEDSEL;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
-	this->clsData = (ClassData*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
+	this->wndproc = (WNDPROC)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
 }
 
-UI::GUIListBox::~GUIListBox()
+UI::Win::WinListBox::~WinListBox()
 {
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->clsData);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->wndproc);
 }
 
-void UI::GUIListBox::EventSelectionChange()
-{
-	UOSInt i = this->selChgHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
-	}
-}
 
-void UI::GUIListBox::EventDoubleClick()
-{
-	UOSInt i = this->dblClickHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->dblClickHdlrs.GetItem(i)(this->dblClickObjs.GetItem(i));
-	}
-}
-
-void UI::GUIListBox::EventRightClick(Math::Coord2D<OSInt> pos)
-{
-	UOSInt i = this->rightClickHdlrs.GetCount();
-	if (i > 0)
-	{
-		Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
-		while (i-- > 0)
-		{
-			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), pos + scnPos, UI::GUIControl::MBTN_RIGHT);
-		}
-	}
-}
-
-UOSInt UI::GUIListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -103,7 +72,7 @@ UOSInt UI::GUIListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 	return i;
 }
 
-UOSInt UI::GUIListBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -119,7 +88,7 @@ UOSInt UI::GUIListBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return i;
 }
 
-UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, void *itemObj)
 {
 	OSInt i = SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)itemText);
 	if (i < 0)
@@ -131,7 +100,7 @@ UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
@@ -145,7 +114,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *it
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
@@ -159,7 +128,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
 {
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)itemText);
 	if (i < 0)
@@ -171,40 +140,40 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *ite
 	return (UOSInt)i;
 }
 
-void *UI::GUIListBox::RemoveItem(UOSInt index)
+void *UI::Win::WinListBox::RemoveItem(UOSInt index)
 {
 	void *obj = (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, LB_DELETESTRING, index, 0);
 	return obj;
 }
 
-void *UI::GUIListBox::GetItem(UOSInt index)
+void *UI::Win::WinListBox::GetItem(UOSInt index)
 {
 	return (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
 }
 
-void UI::GUIListBox::ClearItems()
+void UI::Win::WinListBox::ClearItems()
 {
 	SendMessage((HWND)hwnd, LB_RESETCONTENT, 0, 0);
 }
 
-UOSInt UI::GUIListBox::GetCount()
+UOSInt UI::Win::WinListBox::GetCount()
 {
 	return (UOSInt)SendMessage((HWND)hwnd, LB_GETCOUNT, 0, 0);
 }
 
-void UI::GUIListBox::SetSelectedIndex(UOSInt index)
+void UI::Win::WinListBox::SetSelectedIndex(UOSInt index)
 {
 	SendMessage((HWND)hwnd, LB_SETCURSEL, index, 0);
 	this->EventSelectionChange();
 }
 
-UOSInt UI::GUIListBox::GetSelectedIndex()
+UOSInt UI::Win::WinListBox::GetSelectedIndex()
 {
 	return (UOSInt)(OSInt)SendMessage((HWND)hwnd, LB_GETCURSEL, 0, 0);
 }
 
-Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
+Bool UI::Win::WinListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 {
 	if (this->mulSel)
 	{
@@ -231,7 +200,7 @@ Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 	}
 }
 
-void *UI::GUIListBox::GetSelectedItem()
+void *UI::Win::WinListBox::GetSelectedItem()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -239,7 +208,7 @@ void *UI::GUIListBox::GetSelectedItem()
 	return GetItem(currSel);
 }
 
-UTF8Char *UI::GUIListBox::GetSelectedItemText(UTF8Char *buff)
+UTF8Char *UI::Win::WinListBox::GetSelectedItemText(UTF8Char *buff)
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -247,7 +216,7 @@ UTF8Char *UI::GUIListBox::GetSelectedItemText(UTF8Char *buff)
 	return GetItemText(buff, currSel);
 }
 
-WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
+WChar *UI::Win::WinListBox::GetSelectedItemText(WChar *buff)
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -255,7 +224,7 @@ WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 	return GetItemText(buff, currSel);
 }
 
-Optional<Text::String> UI::GUIListBox::GetSelectedItemTextNew()
+Optional<Text::String> UI::Win::WinListBox::GetSelectedItemTextNew()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -263,7 +232,7 @@ Optional<Text::String> UI::GUIListBox::GetSelectedItemTextNew()
 	return GetItemTextNew(currSel);
 }
 
-UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
+UTF8Char *UI::Win::WinListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
 	NotNullPtr<Text::String> s;
 	if (!this->GetItemTextNew(index).SetTo(s))
@@ -275,7 +244,7 @@ UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 	return buff;
 }
 
-WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
+WChar *UI::Win::WinListBox::GetItemText(WChar *buff, UOSInt index)
 {
 	OSInt strLen = SendMessageW((HWND)hwnd, LB_GETTEXT, index, (LPARAM)buff);
 	if (strLen == LB_ERR)
@@ -288,14 +257,14 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 	}
 }
 
-void UI::GUIListBox::SetItemText(UOSInt index, Text::CStringNN text)
+void UI::Win::WinListBox::SetItemText(UOSInt index, Text::CStringNN text)
 {
 	void *item = GetItem(index);
 	this->RemoveItem(index);
 	this->InsertItem(index, text, item);
 }
 
-Optional<Text::String> UI::GUIListBox::GetItemTextNew(UOSInt index)
+Optional<Text::String> UI::Win::WinListBox::GetItemTextNew(UOSInt index)
 {
 	OSInt strLen = SendMessageW((HWND)hwnd, LB_GETTEXTLEN, index, 0);
 	if (strLen == LB_ERR)
@@ -315,7 +284,7 @@ Optional<Text::String> UI::GUIListBox::GetItemTextNew(UOSInt index)
 	}
 }
 
-OSInt UI::GUIListBox::GetItemHeight()
+OSInt UI::Win::WinListBox::GetItemHeight()
 {
 	TEXTMETRIC tm;
 	HDC hdc = GetDC((HWND)this->hwnd);
@@ -323,12 +292,7 @@ OSInt UI::GUIListBox::GetItemHeight()
 	return tm.tmHeight;
 }
 
-Text::CStringNN UI::GUIListBox::GetObjectClass() const
-{
-	return CSTR("ListBox");
-}
-
-OSInt UI::GUIListBox::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinListBox::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -340,22 +304,4 @@ OSInt UI::GUIListBox::OnNotify(UInt32 code, void *lParam)
 		return 0;
 	}
 	return 0;
-}
-
-void UI::GUIListBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
-{
-	this->selChgHdlrs.Add(hdlr);
-	this->selChgObjs.Add(userObj);
-}
-
-void UI::GUIListBox::HandleDoubleClicked(UI::UIEvent hdlr, void *userObj)
-{
-	this->dblClickHdlrs.Add(hdlr);
-	this->dblClickObjs.Add(userObj);
-}
-
-void UI::GUIListBox::HandleRightClicked(UI::GUIControl::MouseEventHandler hdlr, void *userObj)
-{
-	this->rightClickHdlrs.Add(hdlr);
-	this->rightClickObjs.Add(userObj);
 }

@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, *this, false));
+	this->lbResults = ui->NewListBox(*this, false);
 	this->lbResults->SetRect(0, 0, 140, 23, false);
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);

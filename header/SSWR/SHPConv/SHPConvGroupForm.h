@@ -14,7 +14,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblGroup;
-			UI::GUIListBox *lbGroup;
+			NotNullPtr<UI::GUIListBox> lbGroup;
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			Media::MonitorMgr *monMgr;

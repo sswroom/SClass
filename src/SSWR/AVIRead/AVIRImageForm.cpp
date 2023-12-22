@@ -608,7 +608,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	this->currImgDelay = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lbImages, UI::GUIListBox(ui, *this, false));
+	this->lbImages = ui->NewListBox(*this, false);
 	this->lbImages->SetRect(0, 0, 160, 10, false);
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(ImagesSelChg, this);

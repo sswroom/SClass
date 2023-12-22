@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(UI::GUIClientControl
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->lbObjects, UI::GUIListBox(ui, *this, false));
+	this->lbObjects = ui->NewListBox(*this, false);
 	this->lbObjects->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
 

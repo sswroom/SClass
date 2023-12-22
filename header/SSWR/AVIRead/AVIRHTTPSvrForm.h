@@ -124,7 +124,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblReqTotal;
 			NotNullPtr<UI::GUITextBox> txtReqTotal;
 
-			UI::GUIListBox *lbAccess;
+			NotNullPtr<UI::GUIListBox> lbAccess;
 			NotNullPtr<UI::GUIHSplitter> hspAccess;
 			NotNullPtr<UI::GUITextBox> txtAccess;
 

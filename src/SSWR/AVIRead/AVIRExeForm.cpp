@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	}
 
 	this->tpImport = this->tcEXE->AddTabPage(CSTR("Import"));
-	NEW_CLASS(this->lbImport, UI::GUIListBox(ui, this->tpImport, false));
+	this->lbImport = ui->NewListBox(this->tpImport, false);
 	this->lbImport->SetRect(0, 0, 150, 23, false);
 	this->lbImport->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImport->HandleSelectionChange(OnImportSelChg, this);
@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	}
 
 	this->tpExport = this->tcEXE->AddTabPage(CSTR("Export"));
-	NEW_CLASS(this->lbExport, UI::GUIListBox(ui, this->tpExport, false));
+	this->lbExport = ui->NewListBox(this->tpExport, false);
 	this->lbExport->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbExport->HandleDoubleClicked(OnExportDblClk, this);
 	i = 0;
@@ -373,7 +373,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	}
 
 	this->tpResource = this->tcEXE->AddTabPage(CSTR("Resource"));
-	NEW_CLASS(this->lbResource, UI::GUIListBox(ui, this->tpResource, false));
+	this->lbResource = ui->NewListBox(this->tpResource, false);
 	this->lbResource->SetRect(0, 0, 200, 100, false);
 	this->lbResource->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbResource->HandleSelectionChange(OnResourceSelChg, this);
@@ -398,12 +398,12 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 		this->pnl16BitInfo = ui->NewPanel(this->tp16Bit);
 		this->pnl16BitInfo->SetRect(0, 0, 100, 40, false);
 		this->pnl16BitInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-		NEW_CLASS(this->lb16BitFuncs, UI::GUIListBox(ui, this->tp16Bit, false));
+		this->lb16BitFuncs = ui->NewListBox(this->tp16Bit, false);
 		this->lb16BitFuncs->SetRect(0, 0, 120, 208, false);
 		this->lb16BitFuncs->SetDockType(UI::GUIControl::DOCK_LEFT);
 		this->lb16BitFuncs->HandleSelectionChange(On16BitFuncsChg, this);
 		this->hsp16Bit = ui->NewHSplitter(this->tp16Bit, 3, false);
-		NEW_CLASS(this->lb16BitCont, UI::GUIListBox(ui, this->tp16Bit, false));
+		this->lb16BitCont = ui->NewListBox(this->tp16Bit, false);
 		this->lb16BitCont->SetDockType(UI::GUIControl::DOCK_FILL);
 
 		this->InitSess16();

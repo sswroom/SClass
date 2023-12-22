@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->btnPage = ui->NewButton(this->pnlPage, CSTR("Request"));
 	this->btnPage->SetRect(254, 4, 75, 23, false);
 	this->btnPage->HandleButtonClick(OnPageClicked, this);
-	NEW_CLASS(this->lbImageURL, UI::GUIListBox(ui, this->tpPage, false));
+	this->lbImageURL = ui->NewListBox(this->tpPage, false);
 	this->lbImageURL->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 

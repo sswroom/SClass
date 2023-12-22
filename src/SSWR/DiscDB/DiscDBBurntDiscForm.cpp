@@ -1343,13 +1343,13 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->lblDate->SetRect(96, 78, 56, 25, false);
 	this->txtDate = ui->NewTextBox(this->pnlBurntDisc, CSTR(""));
 	this->txtDate->SetRect(160, 78, 96, 20, false);
-	NEW_CLASS(this->lbDiscId, UI::GUIListBox(ui, this->pnlBurntDisc, false));
+	this->lbDiscId = ui->NewListBox(this->pnlBurntDisc, false);
 	this->lbDiscId->SetRect(256, 0, 80, 121, false);
-	NEW_CLASS(this->lbBrand, UI::GUIListBox(ui, this->pnlBurntDisc, false));
+	this->lbBrand = ui->NewListBox(this->pnlBurntDisc, false);
 	this->lbBrand->SetRect(336, 0, 136, 121, false);
 	this->lbBrand->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->lbBrand->HandleSelectionChange(OnBrandSelChg, this);
-	NEW_CLASS(this->lbDVDName, UI::GUIListBox(ui, this->pnlTop, false));
+	this->lbDVDName = ui->NewListBox(this->pnlTop, false);
 	this->lbDVDName->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDVDName->HandleSelectionChange(OnDVDNameSelChg, this);
 
@@ -1401,7 +1401,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->btnSectorSize = ui->NewButton(this->pnlFile, CSTR("Apply"));
 	this->btnSectorSize->SetRect(120, 303, 75, 25, false);
 	this->btnSectorSize->HandleButtonClick(OnSectorSizeClicked, this);
-	NEW_CLASS(this->lbFileName, UI::GUIListBox(ui, *this, false));
+	this->lbFileName = ui->NewListBox(*this, false);
 	this->lbFileName->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbFileName->HandleSelectionChange(OnFileNameSelChg, this);
 

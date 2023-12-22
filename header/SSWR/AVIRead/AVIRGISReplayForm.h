@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRGISReplayForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbRecord;
+			NotNullPtr<UI::GUIListBox> lbRecord;
 			NotNullPtr<UI::GUITextBox> txtGPSTime;
 			NotNullPtr<UI::GUITextBox> txtLatitude;
 			NotNullPtr<UI::GUITextBox> txtLongitude;

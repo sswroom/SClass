@@ -95,12 +95,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpAlert;
 			NotNullPtr<UI::GUITabControl> tcAlert;
 			NotNullPtr<UI::GUITabPage> tpAlertAdd;
-			UI::GUIListBox *lbAlertLyr;
+			NotNullPtr<UI::GUIListBox> lbAlertLyr;
 			NotNullPtr<UI::GUIHSplitter> hspAlertAdd;
-			UI::GUIListBox *lbAlertAdd;
+			NotNullPtr<UI::GUIListBox> lbAlertAdd;
 			NotNullPtr<UI::GUITabPage> tpAlertView;
 			NotNullPtr<UI::GUIPanel> pnlAlertView;
-			UI::GUIListBox *lbAlert;
+			NotNullPtr<UI::GUIListBox> lbAlert;
 
 			NotNullPtr<UI::GUITabPage> tpMTK;
 			NotNullPtr<UI::GUIGroupBox> grpMTKFirmware;
@@ -122,7 +122,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvSate;
 
 			NotNullPtr<UI::GUITabPage> tpNMEA;
-			UI::GUIListBox *lbNMEA;
+			NotNullPtr<UI::GUIListBox> lbNMEA;
 
 			static void __stdcall OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
 			static void __stdcall OnTimerTick(void *userObj);

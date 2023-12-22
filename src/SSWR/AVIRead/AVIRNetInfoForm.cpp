@@ -714,7 +714,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpAdaptor = this->tcMain->AddTabPage(CSTR("Adaptor"));
-	NEW_CLASS(this->lbAdaptors, UI::GUIListBox(ui, this->tpAdaptor, false));
+	this->lbAdaptors = ui->NewListBox(this->tpAdaptor, false);
 	this->lbAdaptors->SetRect(0, 0, 200, 100, false);
 	this->lbAdaptors->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAdaptors->HandleSelectionChange(OnAdaptorSelChg, this);
@@ -765,7 +765,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->btnAdaptorDisable->HandleButtonClick(OnAdaptorDisableClicked, this);
 	this->lblAdaptorIP = ui->NewLabel(this->pnlAdaptor, CSTR("IP Addresses"));
 	this->lblAdaptorIP->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->lbAdaptorIP, UI::GUIListBox(ui, this->pnlAdaptor, false));
+	this->lbAdaptorIP = ui->NewListBox(this->pnlAdaptor, false);
 	this->lbAdaptorIP->SetRect(104, 172, 150, 95, false);
 	this->lblAdaptorGW = ui->NewLabel(this->pnlAdaptor, CSTR("Default Gateway"));
 	this->lblAdaptorGW->SetRect(4, 268, 100, 23, false);
@@ -774,7 +774,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->txtAdaptorGW->SetReadOnly(true);
 	this->lblAdaptorDNS = ui->NewLabel(this->pnlAdaptor, CSTR("DNS Addresses"));
 	this->lblAdaptorDNS->SetRect(4, 292, 100, 23, false);
-	NEW_CLASS(this->lbAdaptorDNS, UI::GUIListBox(ui, this->pnlAdaptor, false));
+	this->lbAdaptorDNS = ui->NewListBox(this->pnlAdaptor, false);
 	this->lbAdaptorDNS->SetRect(104, 292, 150, 95, false);
 	this->lblAdaptorDHCPEnable = ui->NewLabel(this->pnlAdaptor, CSTR("DHCP Enabled"));
 	this->lblAdaptorDHCPEnable->SetRect(4, 388, 100, 23, false);
@@ -1048,7 +1048,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	if (!this->wlan->IsError())
 	{
 		this->tpWIFIInfo = this->tcMain->AddTabPage(CSTR("Wireless"));
-		NEW_CLASS(this->lbWIFIIFs, UI::GUIListBox(ui, this->tpWIFIInfo, false));
+		this->lbWIFIIFs = ui->NewListBox(this->tpWIFIInfo, false);
 		this->lbWIFIIFs->SetRect(0, 0, 200, 100, false);
 		this->lbWIFIIFs->SetDockType(UI::GUIControl::DOCK_LEFT);
 		this->hspWIFI = ui->NewHSplitter(this->tpWIFIInfo, 3, false);

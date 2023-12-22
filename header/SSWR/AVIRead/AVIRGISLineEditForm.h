@@ -50,7 +50,7 @@ namespace SSWR
 			UI::GUIPictureBox *pbPreview;
 			NotNullPtr<UI::GUILabel> lblName;
 			NotNullPtr<UI::GUITextBox> txtName;
-			UI::GUIListBox *lbLayer;
+			NotNullPtr<UI::GUIListBox> lbLayer;
 			NotNullPtr<UI::GUIButton> btnNewLayer;
 			NotNullPtr<UI::GUIButton> btnRemoveLayer;
 

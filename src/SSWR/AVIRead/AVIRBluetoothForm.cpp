@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbCtrl, UI::GUIListBox(ui, *this, false));
+	this->lbCtrl = ui->NewListBox(*this, false);
 	this->lbCtrl->SetRect(0, 0, 200, 23, false);
 	this->lbCtrl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCtrl->HandleSelectionChange(OnCtrlChanged, this);
@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->btnDevUnauthen = ui->NewButton(this->pnlDevCtrl, CSTR("Unpair"));
 	this->btnDevUnauthen->SetRect(84, 4, 75, 23, false);
 	this->btnDevUnauthen->HandleButtonClick(OnDevUnauthenClicked, this);
-	NEW_CLASS(this->lbDevServices, UI::GUIListBox(ui, this->pnlDevDetail, false));
+	this->lbDevServices = ui->NewListBox(this->pnlDevDetail, false);
 	this->lbDevServices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 6);
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);

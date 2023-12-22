@@ -5,12 +5,11 @@
 void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDragDropViewerForm *me = (SSWR::AVIRead::AVIRDragDropViewerForm*)userObj;
-	WChar wbuff[256];
-	UTF8Char sbuff[256];
-	if (me->lbType->GetSelectedItemText(wbuff))
+	NotNullPtr<Text::String> s;
+	if (me->lbType->GetSelectedItemTextNew().SetTo(s))
 	{
-		Text::StrWChar_UTF8(sbuff, wbuff);
-		const UTF8Char *msg = me->dropMap->Get(sbuff);
+		const UTF8Char *msg = me->dropMap->Get(s->v);
+		s->Release();
 		if (msg)
 		{
 			me->txtMain->SetText({msg, Text::StrCharCnt(msg)});
@@ -45,7 +44,7 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(UI::GUIClientContr
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->dropMap, Data::StringUTF8Map<const UTF8Char*>());
 
-	NEW_CLASS(this->lbType, UI::GUIListBox(ui, *this, false));
+	this->lbType = ui->NewListBox(*this, false);
 	this->lbType->SetRect(0, 0, 200, 23, false);
 	this->lbType->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbType->HandleSelectionChange(OnTypeSelChg, this);

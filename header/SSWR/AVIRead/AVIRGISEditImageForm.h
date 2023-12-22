@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUICheckBox> chkAutoPan;
 			NotNullPtr<UI::GUICheckBox> chkEdit;
-			UI::GUIListBox *lbImages;
+			NotNullPtr<UI::GUIListBox> lbImages;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUILabel> lblLeft;

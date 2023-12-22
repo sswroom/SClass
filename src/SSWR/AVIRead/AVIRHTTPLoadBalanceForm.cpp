@@ -407,7 +407,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->txtReqTotal->SetRect(104, 172, 100, 23, false);
 	this->txtReqTotal->SetReadOnly(true);
 
-	NEW_CLASS(this->lbAccess, UI::GUIListBox(ui, this->tpAccess, false));
+	this->lbAccess = ui->NewListBox(this->tpAccess, false);
 	this->lbAccess->SetRect(0, 0, 200, 100, false);
 	this->lbAccess->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAccess->HandleSelectionChange(OnAccessSelChg, this);
@@ -419,7 +419,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 

@@ -19,7 +19,7 @@ namespace SSWR
 			Media::WIAManager *wiaMgr;
 
 			NotNullPtr<UI::GUILabel> lblDevice;
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

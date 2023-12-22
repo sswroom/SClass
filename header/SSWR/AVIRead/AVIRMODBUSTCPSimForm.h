@@ -48,7 +48,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDelay;
 			NotNullPtr<UI::GUITextBox> txtDelay;
 			NotNullPtr<UI::GUIButton> btnDelay;
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUIListView> lvDeviceValues;
 
 			static void __stdcall OnListenClicked(void *userObj);

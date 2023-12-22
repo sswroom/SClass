@@ -15,7 +15,7 @@ namespace SSWR
 		class SHPConvCurrFilterForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbFilters;
+			NotNullPtr<UI::GUIListBox> lbFilters;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnDelete;

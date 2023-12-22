@@ -49,9 +49,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDirName;
 			NotNullPtr<UI::GUITextBox> txtDirName;
 			NotNullPtr<UI::GUIButton> btnMove;
-			UI::GUIListBox *lbFilePack;
+			NotNullPtr<UI::GUIListBox> lbFilePack;
 			NotNullPtr<UI::GUIHSplitter> hspFile;
-			UI::GUIListBox *lbFileDir;
+			NotNullPtr<UI::GUIListBox> lbFileDir;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnMoveClicked(void *userObj);

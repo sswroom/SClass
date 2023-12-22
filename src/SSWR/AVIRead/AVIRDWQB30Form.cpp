@@ -347,7 +347,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->txtScan = ui->NewTextBox(this->pnlScan, CSTR(""), false);
 	this->txtScan->SetReadOnly(true);
 	this->txtScan->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->lbScan, UI::GUIListBox(ui, this->tpScan, false));
+	this->lbScan = ui->NewListBox(this->tpScan, false);
 	this->lbScan->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));

@@ -28,9 +28,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvResult;
 
 			NotNullPtr<UI::GUITabPage> tpTable;
-			UI::GUIListBox *lbSchema;
+			NotNullPtr<UI::GUIListBox> lbSchema;
 			NotNullPtr<UI::GUIHSplitter> hspSchema;
-			UI::GUIListBox *lbTable;
+			NotNullPtr<UI::GUIListBox> lbTable;
 			NotNullPtr<UI::GUIHSplitter> hspTable;
 			NotNullPtr<UI::GUIListView> lvTable;
 

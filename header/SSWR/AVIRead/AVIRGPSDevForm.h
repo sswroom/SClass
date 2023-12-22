@@ -61,7 +61,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDeviceC;
 			NotNullPtr<UI::GUIButton> btnDeviceR;
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUIHSplitter> hspDevice;
 			NotNullPtr<UI::GUITabControl> tcDevice;
 			NotNullPtr<UI::GUITabPage> tpDevInfo;
@@ -74,19 +74,19 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpUser;
 			NotNullPtr<UI::GUIPanel> pnlUserC;
 			NotNullPtr<UI::GUIButton> btnUserR;
-			UI::GUIListBox *lbUser;
+			NotNullPtr<UI::GUIListBox> lbUser;
 			NotNullPtr<UI::GUIHSplitter> hspUser;
 			NotNullPtr<UI::GUIPanel> pnlUser;
-			UI::GUIListBox *lbUserDev;
+			NotNullPtr<UI::GUIListBox> lbUserDev;
 			NotNullPtr<UI::GUIListView> lvUser;
 
 			NotNullPtr<UI::GUITabPage> tpAlert;
 			NotNullPtr<UI::GUIPanel> pnlAlertC;
 			NotNullPtr<UI::GUIButton> btnAlertR;
-			UI::GUIListBox *lbAlert;
+			NotNullPtr<UI::GUIListBox> lbAlert;
 			NotNullPtr<UI::GUIHSplitter> hspAlert;
 			NotNullPtr<UI::GUIPanel> pnlAlert;
-			UI::GUIListBox *lbAlertDev;
+			NotNullPtr<UI::GUIListBox> lbAlertDev;
 			NotNullPtr<UI::GUIListView> lvAlert;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

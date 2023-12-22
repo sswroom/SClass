@@ -578,12 +578,12 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	this->lvResult->SetShowGrid(true);
 
 	this->tpTable = this->tcDB->AddTabPage(CSTR("Tables"));
-	NEW_CLASS(this->lbSchema, UI::GUIListBox(ui, this->tpTable, false));
+	this->lbSchema = ui->NewListBox(this->tpTable, false);
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
 	this->hspSchema = ui->NewHSplitter(this->tpTable, 3, false);
-	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->tpTable, false));
+	this->lbTable = ui->NewListBox(this->tpTable, false);
 	this->lbTable->SetRect(0, 0, 150, 100, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);

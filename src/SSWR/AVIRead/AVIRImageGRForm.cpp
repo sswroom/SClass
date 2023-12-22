@@ -224,7 +224,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->btnAddLayer->SetRect(0, 0, 100, 23, false);
 	this->btnAddLayer->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnAddLayer->HandleButtonClick(OnAddLayerClicked, this);
-	NEW_CLASS(this->lbLayers, UI::GUIListBox(ui, this->pnlLayers, false));
+	this->lbLayers = ui->NewListBox(this->pnlLayers, false);
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayers->HandleSelectionChange(OnLayersChanged, this);
 	this->hspLayers = ui->NewHSplitter(*this, 3, false);

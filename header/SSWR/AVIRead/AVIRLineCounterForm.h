@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblExtensions;
 			NotNullPtr<UI::GUITextBox> txtExtensions;
 			NotNullPtr<UI::GUIButton> btnExtensionsAdd;
-			UI::GUIListBox *lbExtensions;
+			NotNullPtr<UI::GUIListBox> lbExtensions;
 			NotNullPtr<UI::GUIButton> btnExtensionsRemove;
 			NotNullPtr<UI::GUIButton> btnExtensionsClear;
 			NotNullPtr<UI::GUIButton> btnCalc;

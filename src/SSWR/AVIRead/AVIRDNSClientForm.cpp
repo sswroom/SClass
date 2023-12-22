@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->txtRequestTime = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtRequestTime->SetRect(124, 76, 150, 23, false);
 	this->txtRequestTime->SetReadOnly(true);
-	NEW_CLASS(this->lbAnswer, UI::GUIListBox(ui, *this, false));
+	this->lbAnswer = ui->NewListBox(*this, false);
 	this->lbAnswer->SetRect(0, 0, 200, 23, false);
 	this->lbAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAnswer->HandleSelectionChange(OnAnswerSelChg, this);

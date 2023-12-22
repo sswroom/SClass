@@ -21,9 +21,9 @@ namespace SSWR
 			Net::SSDPClient *ssdp;
 			Data::FastStringMap<Net::SSDPClient::SSDPRoot*> *rootMap;
 
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUIHSplitter> hspDevice;
-			UI::GUIListBox *lbService;
+			NotNullPtr<UI::GUIListBox> lbService;
 			NotNullPtr<UI::GUIHSplitter> hspService;
 			NotNullPtr<UI::GUIPanel> pnlService;
 			NotNullPtr<UI::GUILabel> lblLocation;

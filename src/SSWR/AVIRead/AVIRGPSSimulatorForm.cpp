@@ -311,7 +311,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->txtCurrLon->SetReadOnly(true);
 	this->lblPoints = ui->NewLabel(*this, CSTR("Points"));
 	this->lblPoints->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->lbPoints, UI::GUIListBox(ui, *this, false));
+	this->lbPoints = ui->NewListBox(*this, false);
 	this->lbPoints->SetRect(104, 124, 300, 300, false);
 
 	this->navi->HandleMapMouseDown(OnMouseDown, this);

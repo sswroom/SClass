@@ -24,10 +24,10 @@ namespace SSWR
 			IO::Device::IBuddy::IBuddyHeadEffect currHead;
 			IO::Device::IBuddy::IBuddyHeartEffect currHeart;
 
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUILabel> lblHead;
-			UI::GUIListBox *lbHead;
+			NotNullPtr<UI::GUIListBox> lbHead;
 			NotNullPtr<UI::GUILabel> lblHeart;
 			NotNullPtr<UI::GUICheckBox> chkHeart;
 			NotNullPtr<UI::GUILabel> lblTurn;

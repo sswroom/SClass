@@ -60,9 +60,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDiscType;
 			NotNullPtr<UI::GUILabel> lblDate;
 			NotNullPtr<UI::GUITextBox> txtDate;
-			UI::GUIListBox *lbDiscId;
-			UI::GUIListBox *lbBrand;
-			UI::GUIListBox *lbDVDName;
+			NotNullPtr<UI::GUIListBox> lbDiscId;
+			NotNullPtr<UI::GUIListBox> lbBrand;
+			NotNullPtr<UI::GUIListBox> lbDVDName;
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			NotNullPtr<UI::GUILabel> lblCategory;
 			NotNullPtr<UI::GUIComboBox> cboCategory;
@@ -81,7 +81,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSectorSize;
 			NotNullPtr<UI::GUITextBox> txtSectorSize;
 			NotNullPtr<UI::GUIButton> btnSectorSize;
-			UI::GUIListBox *lbFileName;
+			NotNullPtr<UI::GUIListBox> lbFileName;
 
 			void UpdateDiscId();
 			void UpdateBrand();

@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtTargetIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 
-			UI::GUIListBox *lbIP;
+			NotNullPtr<UI::GUIListBox> lbIP;
 			NotNullPtr<UI::GUIHSplitter> hspIP;
 			NotNullPtr<UI::GUITextBox> txtIPWhois;
 

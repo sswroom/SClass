@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpData;
-			UI::GUIListBox *lbData;
+			NotNullPtr<UI::GUIListBox> lbData;
 			NotNullPtr<UI::GUIHSplitter> hspData;
 			NotNullPtr<UI::GUITextBox> txtData;
 
@@ -55,14 +55,14 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCommon;
 			NotNullPtr<UI::GUILabel> lblMulticastCommon;
-			UI::GUIListBox *lbMulticastCommon;
+			NotNullPtr<UI::GUIListBox> lbMulticastCommon;
 			NotNullPtr<UI::GUIHSplitter> hspMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
 			NotNullPtr<UI::GUILabel> lblMulticastCurr;
 			NotNullPtr<UI::GUITextBox> txtMulticastCurr;
 			NotNullPtr<UI::GUIButton> btnMulticastAdd;
-			UI::GUIListBox *lbMulticastCurr;
+			NotNullPtr<UI::GUIListBox> lbMulticastCurr;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;

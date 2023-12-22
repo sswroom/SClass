@@ -18,7 +18,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::PCIInfo*> pciList;
 
-			UI::GUIListBox *lbDevices;
+			NotNullPtr<UI::GUIListBox> lbDevices;
 			NotNullPtr<UI::GUIHSplitter> hspDevices;
 			NotNullPtr<UI::GUIPanel> pnlDevices;
 			NotNullPtr<UI::GUILabel> lblVendorId;

@@ -49,7 +49,7 @@ namespace SSWR
 			UInt32 saveCnt;
 			Media::TimedImageList *timedImageList;
 
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITabControl> tcMain;
 

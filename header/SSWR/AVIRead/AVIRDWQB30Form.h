@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlScan;
 			NotNullPtr<UI::GUILabel> lblScan;
 			NotNullPtr<UI::GUITextBox> txtScan;
-			UI::GUIListBox *lbScan;
+			NotNullPtr<UI::GUIListBox> lbScan;
 
 			NotNullPtr<UI::GUITabPage> tpSetting;
 			NotNullPtr<UI::GUILabel> lblSetCmd;

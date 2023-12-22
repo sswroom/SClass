@@ -249,7 +249,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->lvStack->AddColumn(CSTR("Name"), 500);
 
 	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
-	NEW_CLASS(this->lbMyStack, UI::GUIListBox(ui, this->tpMyStack, false));
+	this->lbMyStack = ui->NewListBox(this->tpMyStack, false);
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
 	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);

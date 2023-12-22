@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
 	this->lblDecode = ui->NewLabel(this->pnlFile, CSTR(""));
 	this->lblDecode->SetRect(254, 28, 100, 23, false);
-	NEW_CLASS(this->lbStream, UI::GUIListBox(ui, *this, false));
+	this->lbStream = ui->NewListBox(*this, false);
 	this->lbStream->SetRect(0, 0, 150, 23, false);
 	this->lbStream->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbStream->HandleSelectionChange(OnStreamChg, this);

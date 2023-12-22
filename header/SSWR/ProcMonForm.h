@@ -32,7 +32,7 @@ namespace SSWR
 		NotNullPtr<UI::GUITextBox> txtLog;
 
 		NotNullPtr<UI::GUITabPage> tpProg;
-		UI::GUIListBox *lbProg;
+		NotNullPtr<UI::GUIListBox> lbProg;
 		NotNullPtr<UI::GUIPanel> pnlProg;
 		NotNullPtr<UI::GUIGroupBox> grpProgAdd;
 		NotNullPtr<UI::GUILabel> lblProgAddName;

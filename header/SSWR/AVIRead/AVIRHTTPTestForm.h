@@ -45,7 +45,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpURL;
 			NotNullPtr<UI::GUIPanel> pnlURL;
 			NotNullPtr<UI::GUIPanel> pnlURLCtrl;
-			UI::GUIListBox *lbURL;
+			NotNullPtr<UI::GUIListBox> lbURL;
 			NotNullPtr<UI::GUITextBox> txtURL;
 			NotNullPtr<UI::GUIButton> btnURLAdd;
 			NotNullPtr<UI::GUIButton> btnURLClear;

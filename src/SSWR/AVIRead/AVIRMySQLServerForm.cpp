@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
-	NEW_CLASS(this->lbUser, UI::GUIListBox(ui, this->tpUser, false));
+	this->lbUser = ui->NewListBox(this->tpUser, false);
 	this->lbUser->SetRect(0, 0, 100, 23, false);
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspUser = ui->NewHSplitter(this->tpUser, 3, false);
@@ -105,7 +105,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 

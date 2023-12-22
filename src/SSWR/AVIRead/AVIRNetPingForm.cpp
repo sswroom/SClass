@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->rlcPing->SetUnit(CSTR("ms"));
 	this->vspPing = ui->NewVSplitter(*this, 3, true);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, *this, false));
+	this->lbLog = ui->NewListBox(*this, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));

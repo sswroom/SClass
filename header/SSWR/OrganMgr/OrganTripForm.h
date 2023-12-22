@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnLocation;
 			NotNullPtr<UI::GUIButton> btnLocationLast;
 			NotNullPtr<UI::GUIButton> btnAdd;
-			UI::GUIListBox *lbTrips;
+			NotNullPtr<UI::GUIListBox> lbTrips;
 			OrganEnv *env;
 			Int32 locId;
 			Bool updating;

@@ -73,7 +73,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->btnChannelAdd = ui->NewButton(this->pnlChannel, CSTR("Add"));
 	this->btnChannelAdd->SetRect(404, 4, 75, 23, false);
 	this->btnChannelAdd->HandleButtonClick(OnChannelAddClicked, this);
-	NEW_CLASS(this->lbChannels, UI::GUIListBox(ui, *this, false));
+	this->lbChannels = ui->NewListBox(*this, false);
 	this->lbChannels->SetRect(0, 0, 150, 23, false);
 	this->lbChannels->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbChannels->HandleSelectionChange(OnChannelsSelChg, this);

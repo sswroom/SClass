@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lbl;
-			UI::GUIListBox *lbCategory;
+			NotNullPtr<UI::GUIListBox> lbCategory;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			SSWR::OrganMgr::OrganEnv *env;

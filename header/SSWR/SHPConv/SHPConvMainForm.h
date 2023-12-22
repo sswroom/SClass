@@ -53,7 +53,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtMMin;
 			NotNullPtr<UI::GUILabel> lblMMax;
 			NotNullPtr<UI::GUITextBox> txtMMax;
-			UI::GUIListBox *lstRecords;
+			NotNullPtr<UI::GUIListBox> lstRecords;
 
 			NotNullPtr<UI::GUILabel> lblXMin;
 			NotNullPtr<UI::GUITextBox> txtXMin;
@@ -72,7 +72,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblBlkScale;
 			NotNullPtr<UI::GUITextBox> txtBlkScale;
 
-			UI::GUIListBox *lstLang;
+			NotNullPtr<UI::GUIListBox> lstLang;
 			NotNullPtr<UI::GUITextBox> txtCodePage;
 
 			NotNullPtr<UI::GUILabel> lblSeperator;

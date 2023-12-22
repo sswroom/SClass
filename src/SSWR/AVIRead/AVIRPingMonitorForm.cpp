@@ -245,7 +245,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpIP = this->tcMain->AddTabPage(CSTR("IP"));
-	NEW_CLASS(this->lbIP, UI::GUIListBox(ui, this->tpIP, false));
+	this->lbIP = ui->NewListBox(this->tpIP, false);
 	this->lbIP->SetRect(0, 0, 150, 23, false);
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

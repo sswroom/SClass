@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->btnAgentAdd->HandleButtonClick(OnAgentAddClicked, this);
 	this->chkSendToSvr = ui->NewCheckBox(this->pnlControl, CSTR("Send to Server"), false);
 	this->chkSendToSvr->SetRect(104, 76, 150, 23, false);
-	NEW_CLASS(this->lbAgent, UI::GUIListBox(ui, *this, false));
+	this->lbAgent = ui->NewListBox(*this, false);
 	this->lbAgent->SetRect(0, 0, 150, 23, false);
 	this->lbAgent->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAgent->HandleSelectionChange(OnAgentSelChg, this);

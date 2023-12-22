@@ -23,8 +23,8 @@ namespace SSWR
 				SM_ANY
 			} SelectMode;
 		private:
-			UI::GUIListBox *lbLocation;
-			UI::GUIListBox *lbSublocations;
+			NotNullPtr<UI::GUIListBox> lbLocation;
+			NotNullPtr<UI::GUIListBox> lbSublocations;
 			NotNullPtr<UI::GUIPanel> pnlLocation;
 			NotNullPtr<UI::GUILabel> lblID;
 			NotNullPtr<UI::GUILabel> lblEName;

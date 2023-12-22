@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIListBox *lbPlaylist;
+			NotNullPtr<UI::GUIListBox> lbPlaylist;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnAddDir;
 			NotNullPtr<UI::GUIButton> btnClear;

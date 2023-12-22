@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRProgramLinksForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbItems;
+			NotNullPtr<UI::GUIListBox> lbItems;
 			NotNullPtr<UI::GUIHSplitter> hspItems;
 			NotNullPtr<UI::GUIPanel> pnlItem;
 			NotNullPtr<UI::GUIButton> btnDelete;

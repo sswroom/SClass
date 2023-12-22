@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpWIFIInfo;
 			NotNullPtr<UI::GUITabPage> tpPortInfo;
 
-			UI::GUIListBox *lbAdaptors;
+			NotNullPtr<UI::GUIListBox> lbAdaptors;
 			NotNullPtr<UI::GUIHSplitter> hSplitter;
 			NotNullPtr<UI::GUIPanel> pnlAdaptor;
 
@@ -52,11 +52,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnAdaptorEnable;
 			NotNullPtr<UI::GUIButton> btnAdaptorDisable;
 			NotNullPtr<UI::GUILabel> lblAdaptorIP;
-			UI::GUIListBox *lbAdaptorIP;
+			NotNullPtr<UI::GUIListBox> lbAdaptorIP;
 			NotNullPtr<UI::GUILabel> lblAdaptorGW;
 			NotNullPtr<UI::GUITextBox> txtAdaptorGW;
 			NotNullPtr<UI::GUILabel> lblAdaptorDNS;
-			UI::GUIListBox *lbAdaptorDNS;
+			NotNullPtr<UI::GUIListBox> lbAdaptorDNS;
 			NotNullPtr<UI::GUILabel> lblAdaptorDHCPEnable;
 			NotNullPtr<UI::GUITextBox> txtAdaptorDHCPEnable;
 			NotNullPtr<UI::GUILabel> lblAdaptorDHCPServer;
@@ -157,7 +157,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIListView> lvARPInfo;
 
-			UI::GUIListBox *lbWIFIIFs;
+			NotNullPtr<UI::GUIListBox> lbWIFIIFs;
 			NotNullPtr<UI::GUIHSplitter> hspWIFI;
 			NotNullPtr<UI::GUITabControl> tcWIFI;
 			NotNullPtr<UI::GUITabPage> tpWIFIAP;

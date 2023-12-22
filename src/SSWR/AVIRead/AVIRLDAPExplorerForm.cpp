@@ -321,12 +321,12 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
-	NEW_CLASS(this->lbPath, UI::GUIListBox(ui, *this, false));
+	this->lbPath = ui->NewListBox(*this, false);
 	this->lbPath->SetRect(0, 0, 150, 23, false);
 	this->lbPath->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPath->HandleSelectionChange(OnPathSelChg, this);
 	this->hspPath = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->lbObjects, UI::GUIListBox(ui, *this, false));
+	this->lbObjects = ui->NewListBox(*this, false);
 	this->lbObjects->SetRect(0, 0, 150, 23, false);
 	this->lbObjects->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObjects->HandleSelectionChange(OnObjectsSelChg, this);

@@ -42,9 +42,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlLeft;
 			UI::GUIPictureBoxDD *pbPreview;
-			UI::GUIListBox *lbTrack;
+			NotNullPtr<UI::GUIListBox> lbTrack;
 			NotNullPtr<UI::GUIComboBox> cboSpecies;
-			UI::GUIListBox *lbPictures;
+			NotNullPtr<UI::GUIListBox> lbPictures;
 			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUITrackBar *tbMapScale;

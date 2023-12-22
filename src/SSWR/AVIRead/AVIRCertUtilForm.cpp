@@ -503,7 +503,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->btnSANAdd = ui->NewButton(*this, CSTR("Add"));
 	this->btnSANAdd->SetRect(304, 268, 75, 23, false);
 	this->btnSANAdd->HandleButtonClick(OnSANAddClicked, this);
-	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, *this, false));
+	this->lbSAN = ui->NewListBox(*this, false);
 	this->lbSAN->SetRect(104, 292, 200, 95, false);
 	this->btnSANClear = ui->NewButton(*this, CSTR("Clear"));
 	this->btnSANClear->SetRect(304, 292, 75, 23, false);

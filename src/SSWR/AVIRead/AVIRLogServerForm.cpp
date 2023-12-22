@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->lbClient, UI::GUIListBox(ui, *this, false));
+	this->lbClient = ui->NewListBox(*this, false);
 	this->lbClient->SetRect(0, 0, 150, 23, false);
 	this->lbClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbClient->HandleSelectionChange(OnClientSelChg, this);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, *this, false));
+	this->lbLog = ui->NewListBox(*this, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

@@ -11,7 +11,7 @@ namespace SSWR
 		class AVIRCodePageForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbCodePages;
+			NotNullPtr<UI::GUIListBox> lbCodePages;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

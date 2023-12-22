@@ -23,7 +23,7 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, 
 	
 	this->lblGroup = ui->NewLabel(*this, CSTR("Groups"));
 	this->lblGroup->SetRect(8, 0, 100, 23, false);
-	NEW_CLASS(this->lbGroup, UI::GUIListBox(ui, *this, false));
+	this->lbGroup = ui->NewListBox(*this, false);
 	this->lbGroup->SetRect(8, 24, 264, 121, false);
 	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(40, 152, 75, 23, false);

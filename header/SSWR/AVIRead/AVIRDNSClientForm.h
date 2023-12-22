@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUILabel> lblRequestTime;
 			NotNullPtr<UI::GUITextBox> txtRequestTime;
-			UI::GUIListBox *lbAnswer;
+			NotNullPtr<UI::GUIListBox> lbAnswer;
 			NotNullPtr<UI::GUIHSplitter> hspAnswer;
 			NotNullPtr<UI::GUIPanel> pnlAnswer;
 			NotNullPtr<UI::GUILabel> lblAnsName;

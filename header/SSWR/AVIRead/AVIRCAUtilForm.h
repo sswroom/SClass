@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblEmailAddress;
 			NotNullPtr<UI::GUITextBox> txtEmailAddress;
 			NotNullPtr<UI::GUILabel> lblSAN;
-			UI::GUIListBox *lbSAN;
+			NotNullPtr<UI::GUIListBox> lbSAN;
 			NotNullPtr<UI::GUILabel> lblValidDays;
 			NotNullPtr<UI::GUITextBox> txtValidDays;
 			NotNullPtr<UI::GUIButton> btnIssue;

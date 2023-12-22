@@ -258,7 +258,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->btnProfileDel->SetRect(0, 0, 100, 22, false);
 	this->btnProfileDel->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnProfileDel->HandleButtonClick(OnClickedDelProfile, this);
-	NEW_CLASS(this->lbProfile, UI::GUIListBox(ui, this->pnlProfile1, false));
+	this->lbProfile = ui->NewListBox(this->pnlProfile1, false);
 	this->lbProfile->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->pnlProfile2 = ui->NewPanel(this->tpProfile);

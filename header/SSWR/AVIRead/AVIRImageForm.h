@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRImageForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbImages;
+			NotNullPtr<UI::GUIListBox> lbImages;
 			NotNullPtr<UI::GUIHSplitter> hSplitter;
 			UI::GUIMainMenu *mnuMain;
 			NotNullPtr<UI::GUITabControl> tcImage;

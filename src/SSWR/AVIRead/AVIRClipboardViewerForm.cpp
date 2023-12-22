@@ -21,7 +21,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientCon
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lbType, UI::GUIListBox(ui, *this, false));
+	this->lbType = ui->NewListBox(*this, false);
 	this->lbType->SetRect(0, 0, 200, 23, false);
 	this->lbType->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbType->HandleSelectionChange(OnTypeSelChg, this);

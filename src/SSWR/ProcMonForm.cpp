@@ -296,12 +296,12 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->tpProg = this->tcMain->AddTabPage(CSTR("Prog"));
-	NEW_CLASS(this->lbProg, UI::GUIListBox(ui, this->tpProg, false));
+	this->lbProg = ui->NewListBox(this->tpProg, false);
 	this->lbProg->SetRect(0, 0, 150, 100, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProg->HandleSelectionChange(OnProgSelChange, this);

@@ -190,7 +190,7 @@ NotNullPtr<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NotNullPtr<UI::GUIForm
 	txt->SetReadOnly(true);
 	txt->SetRect(0, 0, 100, 23, false);
 	txt->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(lb, UI::GUIListBox(ui, ctrl, false));
+	lb = ui->NewListBox(ctrl, false);
 	lb->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(logger, UI::ListBoxLogger(frm, lb, maxLog, reverse));
 	logger->txt = txt;

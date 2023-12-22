@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->btnExtensionsAdd = ui->NewButton(this->pnlConfig, CSTR("Add"));
 	this->btnExtensionsAdd->SetRect(204, 28, 75, 23, false);
 	this->btnExtensionsAdd->HandleButtonClick(OnExtensionsAddClicked, this);
-	NEW_CLASS(this->lbExtensions, UI::GUIListBox(ui, this->pnlConfig, false));
+	this->lbExtensions = ui->NewListBox(this->pnlConfig, false);
 	this->lbExtensions->SetRect(104, 52, 100, 71, false);
 	this->btnExtensionsRemove = ui->NewButton(this->pnlConfig, CSTR("Remove"));
 	this->btnExtensionsRemove->SetRect(104, 124, 75, 23, false);

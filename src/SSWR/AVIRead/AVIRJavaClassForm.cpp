@@ -32,11 +32,11 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->txtFileStruct->SetText(sb.ToCString());
 
 	this->tpFields = this->tcMain->AddTabPage(CSTR("Fields"));
-	NEW_CLASS(this->lbFields, UI::GUIListBox(ui, this->tpFields, false));
+	this->lbFields = ui->NewListBox(this->tpFields, false);
 	this->lbFields->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpMethods = this->tcMain->AddTabPage(CSTR("Methods"));
-	NEW_CLASS(this->lbMethods, UI::GUIListBox(ui, this->tpMethods, false));
+	this->lbMethods = ui->NewListBox(this->tpMethods, false);
 	this->lbMethods->SetRect(0, 0, 100, 300, false);
 	this->lbMethods->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lbMethods->HandleSelectionChange(OnMethodsSelChg, this);

@@ -110,16 +110,16 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProgGroup = this->tcMain->AddTabPage(CSTR("Program Group"));
-	NEW_CLASS(this->lbProgGroup, UI::GUIListBox(ui, this->tpProgGroup, false));
+	this->lbProgGroup = ui->NewListBox(this->tpProgGroup, false);
 	this->lbProgGroup->SetRect(0, 0, 150, 23, false);
 	this->lbProgGroup->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProgGroup->HandleSelectionChange(OnProgGroupSelChg, this);
 	this->hspProgGroup = ui->NewHSplitter(this->tpProgGroup, 3, false);
-	NEW_CLASS(this->lbProgGroupItems, UI::GUIListBox(ui, this->tpProgGroup, false));
+	this->lbProgGroupItems = ui->NewListBox(this->tpProgGroup, false);
 	this->lbProgGroupItems->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProg = this->tcMain->AddTabPage(CSTR("Program"));
-	NEW_CLASS(this->lbProg, UI::GUIListBox(ui, this->tpProg, false));
+	this->lbProg = ui->NewListBox(this->tpProg, false);
 	this->lbProg->SetRect(0, 0, 150, 23, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProg->HandleSelectionChange(OnProgSelChg, this);
@@ -131,15 +131,15 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->tcProg->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProgObject = this->tcProg->AddTabPage(CSTR("Object"));
-	NEW_CLASS(this->lbProgObject, UI::GUIListBox(ui, this->tpProgObject, false));
+	this->lbProgObject = ui->NewListBox(this->tpProgObject, false);
 	this->lbProgObject->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProgHeader = this->tcProg->AddTabPage(CSTR("Header"));
-	NEW_CLASS(this->lbProgHeader, UI::GUIListBox(ui, this->tpProgHeader, false));
+	this->lbProgHeader = ui->NewListBox(this->tpProgHeader, false);
 	this->lbProgHeader->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProgSource = this->tcProg->AddTabPage(CSTR("Source"));
-	NEW_CLASS(this->lbProgSource, UI::GUIListBox(ui, this->tpProgSource, false));
+	this->lbProgSource = ui->NewListBox(this->tpProgSource, false);
 	this->lbProgSource->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpConfig = this->tcMain->AddTabPage(CSTR("Config"));

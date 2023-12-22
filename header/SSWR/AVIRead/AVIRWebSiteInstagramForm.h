@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblShortCode;
 			NotNullPtr<UI::GUITextBox> txtShortCode;
 			NotNullPtr<UI::GUIButton> btnPage;
-			UI::GUIListBox *lbImageURL;
+			NotNullPtr<UI::GUIListBox> lbImageURL;
 
 			Net::WebSite::WebSiteInstagramControl *ctrl;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

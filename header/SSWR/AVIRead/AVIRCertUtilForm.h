@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSAN;
 			NotNullPtr<UI::GUITextBox> txtSAN;
 			NotNullPtr<UI::GUIButton> btnSANAdd;
-			UI::GUIListBox *lbSAN;
+			NotNullPtr<UI::GUIListBox> lbSAN;
 			NotNullPtr<UI::GUIButton> btnSANClear;
 			NotNullPtr<UI::GUIButton> btnCSRGenerate;
 			NotNullPtr<UI::GUIButton> btnSelfSignedCert;

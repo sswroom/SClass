@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->gpuMgr, IO::GPUManager());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lbGPU, UI::GUIListBox(ui, *this, false));
+	this->lbGPU = ui->NewListBox(*this, false);
 	this->lbGPU->SetRect(0, 0, 250, 23, false);
 	this->lbGPU->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbGPU->HandleSelectionChange(OnGPUSelChange, this);

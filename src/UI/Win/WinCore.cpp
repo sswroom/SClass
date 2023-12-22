@@ -14,6 +14,7 @@
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
+#include "UI/Win/WinListBox.h"
 #include "UI/Win/WinMessageDialog.h"
 #include "UI/Win/WinPanelBase.h"
 #include "UI/Win/WinTabControl.h"
@@ -293,6 +294,13 @@ NotNullPtr<UI::GUILabel> UI::Win::WinCore::NewLabel(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::Win::WinLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIListBox> UI::Win::WinCore::NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect)
+{
+	NotNullPtr<UI::Win::WinListBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinListBox(*this, parent, multiSelect));
 	return ctrl;
 }
 

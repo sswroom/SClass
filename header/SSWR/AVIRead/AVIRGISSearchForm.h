@@ -18,7 +18,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUITextBox> txtSearchStr;
-			UI::GUIListBox *lbResults;
+			NotNullPtr<UI::GUIListBox> lbResults;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;

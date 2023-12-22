@@ -38,7 +38,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	lbl = ui->NewLabel(*this, CSTR("Code Pages"));
 	lbl->SetRect(8, 8, 120, 23, false);
 
-	NEW_CLASS(this->lbCodePages, UI::GUIListBox(ui, *this, false));
+	this->lbCodePages = ui->NewListBox(*this, false);
 	this->lbCodePages->SetRect(8, 32, 240, 560, false);
 
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));

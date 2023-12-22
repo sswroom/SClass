@@ -37,9 +37,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPassword;
 			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUIButton> btnConnect;
-			UI::GUIListBox *lbPath;
+			NotNullPtr<UI::GUIListBox> lbPath;
 			NotNullPtr<UI::GUIHSplitter> hspPath;
-			UI::GUIListBox *lbObjects;
+			NotNullPtr<UI::GUIListBox> lbObjects;
 			NotNullPtr<UI::GUIHSplitter> hspObjects;
 			NotNullPtr<UI::GUIListView> lvValues;
 		

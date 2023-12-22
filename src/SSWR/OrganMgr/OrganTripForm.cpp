@@ -195,7 +195,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 
 	this->SetText(this->env->GetLang(CSTR("TripFormTitle")));
 
-	NEW_CLASS(this->lbTrips, UI::GUIListBox(ui, *this, false));
+	this->lbTrips = ui->NewListBox(*this, false);
 	this->lbTrips->SetRect(0, 0, 320, 268, false);
 	this->lbTrips->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTrips->HandleSelectionChange(OnTripSelChg, this);

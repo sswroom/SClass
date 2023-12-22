@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCopyInfo;
 
 			NotNullPtr<UI::GUITabPage> tpCache;
-			UI::GUIListBox *lbCache;
+			NotNullPtr<UI::GUIListBox> lbCache;
 
 			NotNullPtr<UI::GUITabPage> tpFeature;
 			NotNullPtr<UI::GUIListView> lvFeature;

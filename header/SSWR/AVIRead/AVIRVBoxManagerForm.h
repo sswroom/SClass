@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlVersion;
 			NotNullPtr<UI::GUILabel> lblVersion;
 			NotNullPtr<UI::GUITextBox> txtVersion;
-			UI::GUIListBox *lbVMS;
+			NotNullPtr<UI::GUIListBox> lbVMS;
 			NotNullPtr<UI::GUIHSplitter> hspVM;
 			NotNullPtr<UI::GUITabControl> tcVM;
 			NotNullPtr<UI::GUITabPage> tpControl;

@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lblNS = ui->NewLabel(*this, CSTR("WMI Namespace"));
 	this->lblNS->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->lbNS, UI::GUIListBox(ui, *this, false));
+	this->lbNS = ui->NewListBox(*this, false);
 	this->lbNS->SetRect(112, 8, 256, 112, false);
 	this->lbNS->HandleDoubleClicked(OnDblClicked, this);
 
@@ -82,6 +82,8 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr
 	this->SetCancelButton(this->btnCancel);
 
 	Data::ArrayList<const WChar *> nsList;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Win32::WMIQuery::GetNSList(&nsList);
 	UOSInt i;
 	UOSInt j;
@@ -89,7 +91,8 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr
 	j = nsList.GetCount();
 	while (i < j)
 	{
-		this->lbNS->AddItem(nsList.GetItem(i), 0);
+		sptr = Text::StrWChar_UTF8(sbuff, nsList.GetItem(i));
+		this->lbNS->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 	Win32::WMIQuery::FreeNSList(&nsList);

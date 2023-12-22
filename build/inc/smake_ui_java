@@ -43,8 +43,6 @@ UI/GUIForm.h:
 @GUIFormJava.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarGTK.o
-UI/GUIListBox.h:
-@GUIListBoxGTK.o
 UI/GUIListView.h:
 @GUIListViewGTK.o
 UI/GUIMainMenu.h:

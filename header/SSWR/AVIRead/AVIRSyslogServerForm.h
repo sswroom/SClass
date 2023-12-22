@@ -33,10 +33,10 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUIListBox *lbClient;
+			NotNullPtr<UI::GUIListBox> lbClient;
 			NotNullPtr<UI::GUIHSplitter> hspClient;
 			NotNullPtr<UI::GUITextBox> txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			UInt32 currIP;
 			Bool ipListUpd;

@@ -33,7 +33,7 @@ namespace SSWR
 			Bool modifying;
 
 			NotNullPtr<UI::GUIPanel> pnlLayers;
-			UI::GUIListBox *lbLayers;
+			NotNullPtr<UI::GUIListBox> lbLayers;
 			NotNullPtr<UI::GUIHSplitter> hspLayers;
 			NotNullPtr<UI::GUIPanel> pnlSetting;
 			NotNullPtr<UI::GUILabel> lblHOfst;

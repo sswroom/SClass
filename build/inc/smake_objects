@@ -2157,6 +2157,7 @@ GUIGroupBox.o: ../../src/UI/GUIGroupBox.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIHSplitter.o: ../../src/UI/GUIHSplitter.cpp
 GUILabel.o: ../../src/UI/GUILabel.cpp
+GUIListBox.o: ../../src/UI/GUIListBox.cpp
 GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
@@ -2214,6 +2215,8 @@ GTKHSplitter.o: ../../src/UI/GTK/GTKHSplitter.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKLabel.o: ../../src/UI/GTK/GTKLabel.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKListBox.o: ../../src/UI/GTK/GTKListBox.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKPanelBase.o: ../../src/UI/GTK/GTKPanelBase.cpp
@@ -2241,8 +2244,6 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormGTK.o: ../../src/UI/GTK/GUIFormGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIHScrollBarGTK.o: ../../src/UI/GTK/GUIHScrollBarGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIListBoxGTK.o: ../../src/UI/GTK/GUIListBoxGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIListViewGTK.o: ../../src/UI/GTK/GUIListViewGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2311,6 +2312,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaLabel.o: ../../src/UI/Java/JavaLabel.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaListBox.o: ../../src/UI/Java/JavaListBox.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaMessageDialog.o: ../../src/UI/Java/JavaMessageDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2341,7 +2345,6 @@ GUIDDrawControlWin.o: ../../src/UI/Win/GUIDDrawControlWin.cpp
 GUIFormWin.o: ../../src/UI/Win/GUIFormWin.cpp
 GUIHScrollBarWin.o: ../../src/UI/Win/GUIHScrollBarWin.cpp
 GUIIconWin.o: ../../src/UI/Win/GUIIconWin.cpp
-GUIListBoxWin.o: ../../src/UI/Win/GUIListBoxWin.cpp
 GUIListViewWin.o: ../../src/UI/Win/GUIListViewWin.cpp
 !-lcomctl32
 GUIMenuWin.o: ../../src/UI/Win/GUIMenuWin.cpp
@@ -2371,6 +2374,7 @@ WinFontDialog.o: ../../src/UI/Win/WinFontDialog.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp
 WinLabel.o: ../../src/UI/Win/WinLabel.cpp
+WinListBox.o: ../../src/UI/Win/WinListBox.cpp
 WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
 WinPanelBase.o: ../../src/UI/Win/WinPanelBase.cpp
 WinTabControl.o: ../../src/UI/Win/WinTabControl.cpp

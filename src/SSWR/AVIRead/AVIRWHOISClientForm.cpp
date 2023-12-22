@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(UI::GUIClientControl *pa
 	this->txtRespTime = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtRespTime->SetRect(104, 28, 400, 23, false);
 	this->txtRespTime->SetReadOnly(true);
-	NEW_CLASS(this->lbResponse, UI::GUIListBox(ui, *this, false));
+	this->lbResponse = ui->NewListBox(*this, false);
 	this->lbResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->SetDefaultButton(this->btnRequest);

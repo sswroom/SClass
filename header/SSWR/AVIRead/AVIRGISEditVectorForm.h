@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRGISEditVectorForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIListBox *lbObjects;
+			NotNullPtr<UI::GUIListBox> lbObjects;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Map::VectorLayer> lyr;

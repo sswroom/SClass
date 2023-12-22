@@ -34,7 +34,7 @@ namespace SSWR
 			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devInfoList;
 			Data::ArrayList<CaptureFormat*> currFormats;
 			NotNullPtr<UI::GUILabel> lblDevice;
-			UI::GUIListBox *lbDevice;
+			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUILabel> lblFormat;
 			NotNullPtr<UI::GUIComboBox> cboFormat;
 			NotNullPtr<UI::GUITextBox> txtDeviceInfo;

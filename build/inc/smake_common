@@ -4668,6 +4668,8 @@ UI/GUIHSplitter.h:
 @GUIHSplitter.o
 UI/GUILabel.h:
 @GUILabel.o
+UI/GUIListBox.h:
+@GUIListBox.o
 UI/GUIMapControl.h:
 @GUIMapControl.o
 UI/GUIMapTreeView.h:
@@ -4753,6 +4755,8 @@ UI/GTK/GTKHSplitter.h:
 @GTKHSplitter.o
 UI/GTK/GTKLabel.h:
 @GTKLabel.o
+UI/GTK/GTKListBox.h:
+@GTKListBox.o
 UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
 UI/GTK/GTKPanelBase.h:
@@ -4787,6 +4791,8 @@ UI/Java/JavaHSplitter.h:
 @JavaHSplitter.o
 UI/Java/JavaLabel.h:
 @JavaLabel.o
+UI/Java/JavaListBox.h:
+@JavaListBox.o
 UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
 UI/Java/JavaPanelBase.h:
@@ -4823,6 +4829,8 @@ UI/Win/WinHSplitter.h:
 @WinHSplitter.o
 UI/Win/WinLabel.h:
 @WinLabel.o
+UI/Win/WinListBox.h:
+@WinListBox.o
 UI/Win/WinMessageDialog.h:
 @WinMessageDialog.o
 UI/Win/WinPanelBase.h:

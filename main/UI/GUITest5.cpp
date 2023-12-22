@@ -5,7 +5,7 @@
 #include "UI/GUIForm.h"
 #include "UI/GUIListBox.h"
 
-UI::GUIListBox *lb;
+NotNullPtr<UI::GUIListBox> lb;
 
 void __stdcall OnLBDblClick(void *userObj)
 {
@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		NotNullPtr<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 5 - ListBox"));
-		NEW_CLASS(lb, UI::GUIListBox(core, frm, false));
+		lb = core->NewListBox(frm, false);
 		lb->SetDockType(UI::GUIControl::DOCK_FILL);
 		lb->AddItem(CSTR("Item 1"), 0);
 		lb->AddItem(CSTR("Item 2"), 0);

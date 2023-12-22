@@ -783,7 +783,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->chkAutoPan->SetRect(0, 0, 100, 23, false);
 	this->chkEdit = ui->NewCheckBox(this->pnlCtrl, CSTR("Edit Mode"), true);
 	this->chkEdit->SetRect(120, 0, 100, 23, false);
-	NEW_CLASS(this->lbImages, UI::GUIListBox(ui, *this, false));
+	this->lbImages = ui->NewListBox(*this, false);
 	this->lbImages->SetRect(0, 0, 200, 10, false);
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(OnImageChg, this);

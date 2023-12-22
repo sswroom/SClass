@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCurrLon;
 			NotNullPtr<UI::GUITextBox> txtCurrLon;
 			NotNullPtr<UI::GUILabel> lblPoints;
-			UI::GUIListBox *lbPoints;
+			NotNullPtr<UI::GUIListBox> lbPoints;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;

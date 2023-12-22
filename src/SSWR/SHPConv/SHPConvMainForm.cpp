@@ -1421,7 +1421,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, No
 	this->txtMMax = ui->NewTextBox(*this, CSTR(""));
 	this->txtMMax->SetReadOnly(true);
 	this->txtMMax->SetRect(120, 200, 112, 20, false);
-	NEW_CLASS(this->lstRecords, UI::GUIListBox(ui, *this, true));
+	this->lstRecords = ui->NewListBox(*this, true);
 	this->lstRecords->SetRect(16, 241, 216, 95, false);
 	this->lstRecords->HandleSelectionChange(OnRecordsSelChg, this);
 
@@ -1465,7 +1465,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, No
 	this->txtBlkScale = ui->NewTextBox(*this, CSTR(""));
 	this->txtBlkScale->SetRect(320, 320, 112, 20, false);
 
-	NEW_CLASS(this->lstLang, UI::GUIListBox(ui, *this, false));
+	this->lstLang = ui->NewListBox(*this, false);
 	this->lstLang->SetRect(440, 9, 120, 303, false);
 	this->lstLang->HandleSelectionChange(OnLangSelChg, this);
 	this->txtCodePage = ui->NewTextBox(*this, CSTR(""));
