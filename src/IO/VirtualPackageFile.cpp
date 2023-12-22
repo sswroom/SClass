@@ -702,6 +702,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 	UOSInt i;
 	NotNullPtr<IO::PackFileItem> item;
 	Data::ArrayIterator<NotNullPtr<PackFileItem>> it = this->items.Iterator();
+	i = 0;
 	while (it.HasNext())
 	{
 		item = it.Next();
@@ -718,6 +719,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 			if (item->pobj->GetSourceNameObj()->EqualsICase(name))
 				return i;
 		}
+		i++;
 	}
 	return INVALID_INDEX;
 }

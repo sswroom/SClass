@@ -8,11 +8,11 @@ UI::GUIPopupMenu::GUIPopupMenu() : UI::GUIMenu(true)
 {
 }
 
-void UI::GUIPopupMenu::ShowMenu(UI::GUIControl *ctrl, Math::Coord2D<OSInt> scnPos)
+void UI::GUIPopupMenu::ShowMenu(NotNullPtr<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos)
 {
 //	UInt32 err;
-	UI::GUIForm *frm = ctrl->GetRootForm();
-	if (frm)
+	NotNullPtr<UI::GUIForm> frm;
+	if (frm.Set(ctrl->GetRootForm()))
 		ctrl = frm;
 	if (TrackPopupMenu((HMENU)this->hMenu, TPM_LEFTALIGN | TPM_RIGHTBUTTON, (Int32)scnPos.x, (Int32)scnPos.y, 0, (HWND)ctrl->GetHandle(), 0) == 0)
 	{

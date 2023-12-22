@@ -92,6 +92,11 @@ UOSInt Math::Geometry::PieArea::GetCoordinates(NotNullPtr<Data::ArrayListA<Math:
 	return 3;
 }
 
+Bool Math::Geometry::PieArea::InsideOrTouch(Math::Coord2DDbl coord) const
+{
+	return false;
+}
+
 void Math::Geometry::PieArea::SwapXY()
 {
 	this->center = this->center.SwapXY();
@@ -101,6 +106,11 @@ void Math::Geometry::PieArea::MultiplyCoordinatesXY(Double v)
 {
 	this->center = this->center * v;
 	this->r = this->r * v;
+}
+
+UOSInt Math::Geometry::PieArea::GetPointCount() const
+{
+	return 3;
 }
 
 Double Math::Geometry::PieArea::GetCX() const

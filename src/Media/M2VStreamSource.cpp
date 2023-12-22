@@ -167,7 +167,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("Add to Play buff "));
-						sb.AppendI32((this->thisFrameTime + fieldAdd));
+						sb.AppendDur((this->thisFrameTime + fieldAdd));
 						sb.AppendC(UTF8STRC(" skipped"));
 						Sync::MutexUsage debugMutUsage(debugMut);
 						this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
@@ -185,7 +185,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("Add to Play buff "));
-					sb.AppendI32((this->thisFrameTime + fieldAdd));
+					sb.AppendDur((this->thisFrameTime + fieldAdd));
 					Sync::MutexUsage debugMutUsage(debugMut);
 					this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
 				}
@@ -386,7 +386,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Output frame "));
-				sb.AppendU32(frameTime);
+				sb.AppendDur(frameTime);
 				Sync::MutexUsage debugMutUsage(debugMut);
 				me->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -649,7 +649,7 @@ void Media::M2VStreamSource::SetStreamTime(Data::Duration time)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Set Stream Time "));
-		sb.AppendU32(time);
+		sb.AppendDur(time);
 		Sync::MutexUsage debugMutUsage(debugMut);
 		this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
 	}

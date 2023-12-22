@@ -28,8 +28,10 @@ namespace Math
 			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter);
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
+			virtual UOSInt GetPointCount() const;
 
 			Double GetCX() const;
 			Double GetCY() const;

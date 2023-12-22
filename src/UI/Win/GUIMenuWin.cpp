@@ -419,6 +419,7 @@ UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI
 UI::GUIMenu::GUIMenu(Bool isPopup)
 {
 	this->hdpi = 96.0;
+	this->ddpi = 96.0;
 
 	if (isPopup)
 	{
@@ -557,7 +558,7 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 	this->ddpi = ddpi;
 }
 
-void UI::GUIMenu::SetMenuForm(GUIForm *mnuForm)
+void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 {
 	this->mnuForm = mnuForm;
 }

@@ -34,7 +34,7 @@ namespace SSWR
 			Media::ChapterInfo *currChapInfo;
 			Int32 uOfst;
 			Int32 vOfst;
-			Int32 storeTime;
+			Data::Duration storeTime;
 			QualityMode qMode;
 
 			UI::GUIVideoBoxDD *vbox;

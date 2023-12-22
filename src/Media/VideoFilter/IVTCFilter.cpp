@@ -1151,7 +1151,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, this->ivtcLastEven);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
-					sptr = Text::StrInt32(sptr, outFrameTime);
+					sptr = Text::StrInt64(sptr, outFrameTime.GetTotalMS());
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					switch (frameType)
 					{

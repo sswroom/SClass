@@ -166,7 +166,7 @@ Bool Media::AVIUtl::AUIVideo::CanSeek()
 Data::Duration Media::AVIUtl::AUIVideo::SeekToTime(Data::Duration time)
 {
 	Sync::MutexUsage mutUsage(this->frameNumMut);
-	this->currFrameNum = (UInt32)time.MulDivU32(this->frameRateNorm, this->frameRateDenorm);
+	this->currFrameNum = (UInt32)time.SecsMulDivU32(this->frameRateNorm, this->frameRateDenorm);
 	if (this->currFrameNum > this->frameCnt)
 		this->currFrameNum = this->frameCnt;
 	return Data::Duration::FromRatioU64(this->currFrameNum * this->frameRateDenorm, this->frameRateNorm);

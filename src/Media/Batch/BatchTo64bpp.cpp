@@ -18,7 +18,7 @@ void Media::Batch::BatchTo64bpp::SetHandler(Media::Batch::BatchHandler *hdlr)
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchTo64bpp::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
+void Media::Batch::BatchTo64bpp::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	OSInt j;
 	OSInt k;

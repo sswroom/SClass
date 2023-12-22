@@ -29,19 +29,19 @@ UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	this->lvStyle = lvstyle;
 	Math::Size2DDbl sz = parent->GetClientSize();
 	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER;
-	if (lvstyle == LVSTYLE_ICON)
+	if (lvstyle == ListViewStyle::Icon)
 	{
 		style |= LVS_ICON;
 	}
-	else if (lvstyle == LVSTYLE_LIST)
+	else if (lvstyle == ListViewStyle::List)
 	{
 		style |= LVS_LIST;
 	}
-	else if (lvstyle == LVSTYLE_SMALLICON)
+	else if (lvstyle == ListViewStyle::SmallIcon)
 	{
 		style |= LVS_SMALLICON;
 	}
-	else if (lvstyle == LVSTYLE_TABLE)
+	else if (lvstyle == ListViewStyle::Table)
 	{
 		style |= LVS_REPORT;
 	}
@@ -94,7 +94,7 @@ UOSInt UI::GUIListView::AddImage(Media::DrawImage *img)
 
 void UI::GUIListView::EndAddingImage()
 {
-	if (this->lvStyle == UI::GUIListView::LVSTYLE_SMALLICON)
+	if (this->lvStyle == UI::ListViewStyle::SmallIcon)
 	{
 		SendMessage((HWND)this->hwnd, LVM_SETIMAGELIST, LVSIL_SMALL, (LPARAM)this->himgList);
 	}
@@ -581,7 +581,7 @@ OSInt UI::GUIListView::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIListView::OnSizeChanged(Bool updateScn)
 {
-	if (this->lvStyle == UI::GUIListView::LVSTYLE_ICON)
+	if (this->lvStyle == UI::ListViewStyle::Icon)
 	{
 		SendMessage((HWND)this->hwnd, LVM_ARRANGE, LVA_DEFAULT, 0);
 	}

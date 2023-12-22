@@ -13,7 +13,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIVideoBoxDDLQ.h"
-#include "UI/MessageDialog.h"
 
 //#include <windows.h>
 #define VFSMODE true
@@ -154,10 +153,10 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		Media::VideoRenderer::RendererStatus2 dbg;
 		me->vbox->GetStatus(dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
-		sb.AppendI32(dbg.currTime);
+		sb.AppendDur(dbg.currTime);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Disp Frame Time: "));
-		sb.AppendI32(dbg.dispFrameTime);
+		sb.AppendDur(dbg.dispFrameTime);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Disp Frame Num: "));
 		sb.AppendI32(dbg.dispFrameNum);
@@ -172,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.dispJitter);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Video Delay: "));
-		sb.AppendI32(dbg.videoDelay);
+		sb.AppendDur(dbg.videoDelay);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Source Delay: "));
 		sb.AppendI32(dbg.srcDelay);
@@ -266,7 +265,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(void *userObj, UI::G
 
 Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
 {
-	Parser::ParserList *parsers = this->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
 	IO::ParsedObject *pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
@@ -317,7 +316,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-				sptr = this->currChapInfo->GetChapterName(j)->ConcatTo(sptr);
+				sptr = Text::String::OrEmpty(this->currChapInfo->GetChapterName(j))->ConcatTo(sptr);
 				this->mnuChapters->AddItem(CSTRP(sbuff, sptr), (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
@@ -525,15 +524,15 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(UI::GUIClientControl *parent, NotN
 
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, this, this->colorSess, 6, 2));
+		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_UQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, this, this->colorSess, 6, 2));
+		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDDLQ(ui, this, this->colorSess, 6, 2));
+		NEW_CLASS(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
 	}
 
 	this->vbox->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -558,12 +557,12 @@ SSWR::AVIRead::AVIRHQMPDSForm::~AVIRHQMPDSForm()
 		this->dbgFrm->Close();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 {
-	Int32 currTime;
+	Data::Duration currTime;
 	OSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
@@ -593,7 +592,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl, 15000, this->core->GetLog());
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("HQMP"), this);
+						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
 					else
 					{
@@ -654,8 +653,10 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_INFO:
 		if (this->dbgFrm == 0)
 		{
-			NEW_CLASS(this->dbgFrm, UI::GUIForm(0, 320, 360, ui));
-			this->txtDebug = ui->NewTextBox(this->dbgFrm, CSTR(""), true);
+			NotNullPtr<UI::GUIForm> frm;
+			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 360, ui));
+			this->dbgFrm = frm.Ptr();
+			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);
@@ -687,7 +688,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		if (this->player->IsPlaying())
 		{
 			currTime = this->player->GetCurrTime() - 10000;
-			if (currTime < 0)
+			if (currTime.IsNegative())
 				currTime = 0;
 			this->player->SeekTo(currTime);
 		}
@@ -703,7 +704,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		if (this->player->IsPlaying())
 		{
 			currTime = this->player->GetCurrTime() - 60000;
-			if (currTime < 0)
+			if (currTime.IsNegative())
 				currTime = 0;
 			this->player->SeekTo(currTime);
 		}
@@ -715,7 +716,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_PB_RESUME_TIME:
-		if (this->storeTime != -1)
+		if (!this->storeTime.IsNegative())
 		{
 			if (!this->player->IsPlaying())
 			{

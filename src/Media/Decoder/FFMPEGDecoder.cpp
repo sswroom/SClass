@@ -226,7 +226,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		}
 		sb.AppendU32(frameNum);
 		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendU32(frameTime);
+		sb.AppendDur(frameTime);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendChar(fType, 1);
 		sb.AppendC(UTF8STRC("\t"));

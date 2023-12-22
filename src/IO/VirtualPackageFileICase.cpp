@@ -8,16 +8,12 @@ IO::VirtualPackageFileICase::VirtualPackageFileICase(NotNullPtr<const VirtualPac
 	this->parent = pkg->parent;
 	this->items.AddAll(pkg->items);
 	this->namedItems.PutAll(pkg->namedItems);
-	IO::PackFileItem *item;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->items.GetCount();
-	while (i < j)
+	NotNullPtr<IO::PackFileItem> item;
+	Data::ArrayIterator<NotNullPtr<IO::PackFileItem>> it = this->items.Iterator();
+	while (it.HasNext())
 	{
-		item = this->items.GetItem(i);
+		item = it.Next();
 		Sync::Interlocked::IncrementI32(item->useCnt);
-		i++;
 	}
 }
 

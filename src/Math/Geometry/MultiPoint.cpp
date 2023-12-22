@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Geometry/MultiPoint.h"
 
-Math::Geometry::MultiPoint::MultiPoint(UInt32 srid, Bool hasZ, Bool hasM) : Math::Geometry::MultiGeometry<Math::Geometry::Point>(srid, hasZ, hasM)
+Math::Geometry::MultiPoint::MultiPoint(UInt32 srid) : Math::Geometry::MultiGeometry<Math::Geometry::Point>(srid)
 {
 }
 
@@ -18,13 +18,11 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiPoint::GetVectorType()
 NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiPoint::Clone() const
 {
 	NotNullPtr<Math::Geometry::MultiPoint> newObj;
-	NEW_CLASSNN(newObj, Math::Geometry::MultiPoint(this->srid, this->hasZ, this->hasM));
-	UOSInt i = 0;
-	UOSInt j = this->geometries.GetCount();
-	while (i < j)
+	NEW_CLASSNN(newObj, Math::Geometry::MultiPoint(this->srid));
+	Data::ArrayIterator<NotNullPtr<Point>> it = this->geometries.Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddGeometry(NotNullPtr<Math::Geometry::Point>::ConvertFrom(this->geometries.GetItem(i)->Clone()));
-		i++;
+		newObj->AddGeometry(NotNullPtr<Math::Geometry::Point>::ConvertFrom(it.Next()->Clone()));
 	}
 	return newObj;
 }

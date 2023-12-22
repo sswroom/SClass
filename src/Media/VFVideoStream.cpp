@@ -209,7 +209,7 @@ Bool Media::VFVideoStream::CanSeek()
 
 Data::Duration Media::VFVideoStream::SeekToTime(Data::Duration time)
 {
-	UInt32 newFrameNum = (UInt32)time.MulDivU32(this->frameRate, this->frameRateScale);
+	UInt32 newFrameNum = (UInt32)time.SecsMulDivU32(this->frameRate, this->frameRateScale);
 	if (newFrameNum >= this->frameCnt)
 		newFrameNum = this->frameCnt;
 	this->currFrameNum = newFrameNum;
