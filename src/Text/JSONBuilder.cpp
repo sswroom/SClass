@@ -793,15 +793,14 @@ Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
-	Data::ArrayList<Text::String*> names;
+	Data::ArrayListNN<Text::String> names;
 	obj->GetObjectNames(names);
-	UOSInt i = 0;
-	UOSInt j = names.GetCount();
 	NotNullPtr<Text::JSONBase> json;
-	Text::String *name;
-	while (i < j)
+	NotNullPtr<Text::String> name;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	while (it.HasNext())
 	{
-		name = names.GetItem(i);
+		name = it.Next();
 		if (json.Set(obj->GetObjectValue(name->ToCString())))
 		{
 			switch (json->GetType())
@@ -838,7 +837,6 @@ Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)
 				break;
 			}
 		}
-		i++;
 	}
 	return true;
 }

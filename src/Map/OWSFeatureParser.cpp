@@ -128,21 +128,19 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullP
 						Text::JSONBase *properties = feature->GetValue(CSTR("properties"));
 						if (properties && properties->GetType() == Text::JSONType::Object)
 						{
-							Data::ArrayList<Text::String*> names;
-							Text::String *name;
+							Data::ArrayListNN<Text::String> names;
+							NotNullPtr<Text::String> name;
 							Text::StringBuilderUTF8 sb;
 							Text::JSONObject *obj = (Text::JSONObject*)properties;
 							obj->GetObjectNames(names);
-							UOSInt k = 0;
-							UOSInt l = names.GetCount();
-							while (k < l)
+							Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+							while (it.HasNext())
 							{
-								name = names.GetItem(k);
+								name = it.Next();
 								nameList->Add(name->Clone());
 								sb.ClearStr();
 								obj->GetValue(name->ToCString())->ToString(sb);
 								valueList->Add(Text::String::New(sb.ToCString()).Ptr());
-								k++;
 							}
 						}
 						vecList->Add(nnvec);

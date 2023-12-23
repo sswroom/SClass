@@ -455,20 +455,18 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 								if (o && o->GetType() == Text::JSONType::Object)
 								{
 									Text::JSONObject *attr = (Text::JSONObject*)o;
-									Data::ArrayList<Text::String*> attNames;
-									Text::String *name;
+									Data::ArrayListNN<Text::String> attNames;
+									NotNullPtr<Text::String> name;
 									Text::StringBuilderUTF8 sb;
 									attr->GetObjectNames(attNames);
-									UOSInt k = 0;
-									UOSInt l = attNames.GetCount();
-									while (k < l)
+									Data::ArrayIterator<NotNullPtr<Text::String>> it = attNames.Iterator();
+									while (it.HasNext())
 									{
-										name = attNames.GetItem(k);
+										name = it.Next();
 										sb.ClearStr();
 										attr->GetObjectValue(name->ToCString())->ToString(sb);
 										nameList->Add(name->Clone());
 										valueList->Add(Text::String::New(sb.ToCString()).Ptr());
-										k++;
 									}
 								}
 								vecList->Add(vec);

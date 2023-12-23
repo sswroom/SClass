@@ -359,9 +359,10 @@ Int32 ESRIFeatureServerTest()
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, false);
 	{
 		Map::ESRI::ESRIFeatureServer svr(CSTR("https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634958957456_52030/FeatureServer"), sockf, ssl);
-
+		svr.GetLayerInfo().Delete();
 	}
 	ssl.Delete();
+	return 0;
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)

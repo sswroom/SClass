@@ -3086,6 +3086,8 @@ Net/IRTPController.h:
 Net/IRTPPLHandler.h:
 Net/ISDPData.h:
 Net/ISDPMedia.h:
+Net/JSONResponse.h:
+@JSONResponse.o
 Net/LDAPClient.h:
 @LDAPClient.o
 Net/LogClient.h:

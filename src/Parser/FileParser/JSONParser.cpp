@@ -151,13 +151,13 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 					featGeom = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("geometry"));
 					if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
 					{
-						Data::ArrayList<Text::String *> colNames;
+						Data::ArrayListNN<Text::String> colNames;
 						((Text::JSONObject*)featProp)->GetObjectNames(colNames);
 						colCnt = colNames.GetCount();
 						k = 0;
 						while (k < colCnt)
 						{
-							tabCols[k] = colNames.GetItem(k);
+							tabCols[k] = colNames.GetItem(k).OrNull();
 							tabHdrs[k] = tabCols[k]->v;
 							k++;
 						}
@@ -655,17 +655,17 @@ Text::JSONArray *Parser::FileParser::JSONParser::GetDataArray(Text::JSONBase *fi
 	Text::String *arrayName = 0;
 	Text::JSONObject *obj = (Text::JSONObject*)fileJSON;
 	Text::JSONBase *o;
-	Data::ArrayList<Text::String*> names;
+	Data::ArrayListNN<Text::String> names;
 	obj->GetObjectNames(names);
 	UOSInt i = names.GetCount();
 	while (i-- > 0)
 	{
-		o = obj->GetObjectValue(names.GetItem(i)->ToCString());
+		o = obj->GetObjectValue(names.GetItemNoCheck(i)->ToCString());
 		if (o && o->GetType() == Text::JSONType::Array)
 		{
 			if (arrayName == 0)
 			{
-				arrayName = names.GetItem(i);
+				arrayName = names.GetItem(i).OrNull();
 			}
 			else
 			{

@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_JSON
 #define _SM_TEXT_JSON
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/FastStringMap.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -214,7 +215,7 @@ namespace Text
 		JSONBase *GetObjectValue(Text::CStringNN name);
 		JSONArray *GetObjectArray(Text::CStringNN name);
 		JSONObject *GetObjectObject(Text::CStringNN name);
-		void GetObjectNames(NotNullPtr<Data::ArrayList<Text::String *>> names);
+		void GetObjectNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
 		Optional<Text::String> GetObjectString(Text::CStringNN name);
 		Optional<Text::String> GetObjectNewString(Text::CStringNN name);
 		Double GetObjectDouble(Text::CStringNN name);

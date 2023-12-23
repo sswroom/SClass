@@ -2,7 +2,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/HTTPJSONReader.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -13,7 +13,7 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, 
 	if (cli->IsError())
 	{
 #if defined(VERBOSE)
-		printf("HTTPJSONReader: Error in connecting to server\r\n");
+		printf("HTTPJSONReader: Error in connecting to server: %s\r\n", url.v);
 #endif
 		cli.Delete();
 		return 0;

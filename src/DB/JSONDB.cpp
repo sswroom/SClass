@@ -282,16 +282,17 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	Text::JSONBase *json = this->data->GetArrayValue(0);
 	if (json != 0 && json->GetType() == Text::JSONType::Object)
 	{
-		Data::ArrayList<Text::String*> names;
+		Data::ArrayListNN<Text::String> names;
 		Text::JSONObject *obj = (Text::JSONObject*)json;
 		Text::JSONType type;
 		NotNullPtr<DB::ColDef> col;
 		obj->GetObjectNames(names);
-		UOSInt i = 0;
-		UOSInt j = names.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+		NotNullPtr<Text::String> name;
+		while (it.HasNext())
 		{
-			json = obj->GetObjectValue(names.GetItem(i)->ToCString());
+			name = it.Next();
+			json = obj->GetObjectValue(name->ToCString());
 			type = json->GetType();
 			if (type == Text::JSONType::Array)
 			{
@@ -299,36 +300,35 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 			}
 			else if (type == Text::JSONType::BOOL)
 			{
-				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(name));
 				col->SetColType(DB::DBUtil::ColType::CT_Bool);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::INT32)
 			{
-				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(name));
 				col->SetColType(DB::DBUtil::ColType::CT_Int32);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::INT64)
 			{
-				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(name));
 				col->SetColType(DB::DBUtil::ColType::CT_Int64);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::Number)
 			{
-				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(name));
 				col->SetColType(DB::DBUtil::ColType::CT_Double);
 				tab->AddCol(col);
 			}
 			else if (type == Text::JSONType::String)
 			{
-				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(names.GetItem(i))));
+				NEW_CLASSNN(col, DB::ColDef(name));
 				col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
 				col->SetColSize((UOSInt)-1);
 				tab->AddCol(col);
 			}
-			i++;
 		}
 	}
 	return tab;

@@ -4,6 +4,7 @@
 #include "IO/Stream.h"
 #include "Map/DrawMapService.h"
 #include "Math/CoordinateSystem.h"
+#include "Net/JSONResponse.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Text/JSON.h"
@@ -15,6 +16,10 @@ namespace Map
 	{
 		class ESRIFeatureServer
 		{
+		public:
+			JSONRESP_BEGIN(LayerInfo)
+			JSONRESP_SEC_GET(LayerInfo)
+			JSONRESP_END
 		private:
 			NotNullPtr<Text::String> url;
 			NotNullPtr<Text::String> name;
@@ -24,6 +29,8 @@ namespace Map
 		public:
 			ESRIFeatureServer(Text::CStringNN url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			virtual ~ESRIFeatureServer();
+
+			Optional<LayerInfo> GetLayerInfo();
 
 			NotNullPtr<Text::String> GetURL() const;
 			NotNullPtr<Text::String> GetName() const;

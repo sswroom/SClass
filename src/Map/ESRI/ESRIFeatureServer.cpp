@@ -5,11 +5,7 @@ Map::ESRI::ESRIFeatureServer::ESRIFeatureServer(Text::CStringNN url, NotNullPtr<
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UInt8 buff[2048];
-	UOSInt readSize;
-	UInt32 codePage;
 	UOSInt i;
-	UOSInt j;
 	this->url = Text::String::New(url);
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -37,6 +33,14 @@ Map::ESRI::ESRIFeatureServer::~ESRIFeatureServer()
 {
 	this->url->Release();
 	this->name->Release();
+}
+
+Optional<Map::ESRI::ESRIFeatureServer::LayerInfo> Map::ESRI::ESRIFeatureServer::GetLayerInfo()
+{
+	Text::StringBuilderUTF8 sb;
+	sb.Append(this->url);
+	sb.Append(CSTR("/0?f=json"));
+	JSONREQ_RET(this->sockf, this->ssl, sb.ToCString(), LayerInfo)
 }
 
 NotNullPtr<Text::String> Map::ESRI::ESRIFeatureServer::GetURL() const

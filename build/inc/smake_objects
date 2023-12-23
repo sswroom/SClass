@@ -1326,6 +1326,7 @@ HTTPQueue.o: ../../src/Net/HTTPQueue.cpp
 HTTPServerMonitor.o: ../../src/Net/HTTPServerMonitor.cpp
 ICMPScanner.o: ../../src/Net/ICMPScanner.cpp
 IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
+JSONResponse.o: ../../src/Net/JSONResponse.cpp
 LDAPClient.o: ../../src/Net/LDAPClient.cpp
 LogClient.o: ../../src/Net/LogClient.cpp
 LogServer.o: ../../src/Net/LogServer.cpp

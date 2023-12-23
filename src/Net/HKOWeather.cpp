@@ -342,14 +342,13 @@ Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Op
 		if (json->GetType() == Text::JSONType::Object)
 		{
 			Text::JSONObject *obj = (Text::JSONObject*)json;
-			Data::ArrayList<Text::String*> objNames;
+			Data::ArrayListNN<Text::String> objNames;
 			obj->GetObjectNames(objNames);
 			Text::JSONObject *warnObj;
-			UOSInt i = 0;
-			UOSInt j = objNames.GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = objNames.Iterator();
+			while (it.HasNext())
 			{
-				warnObj = obj->GetValueObject(objNames.GetItem(i)->ToCString());
+				warnObj = obj->GetValueObject(it.Next()->ToCString());
 				if (warnObj)
 				{
 					NotNullPtr<Text::String> sCode;
@@ -379,7 +378,6 @@ Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Op
 						warnings->Add(summary);
 					}
 				}
-				i++;
 			}
 			json->EndUse();
 			return true;

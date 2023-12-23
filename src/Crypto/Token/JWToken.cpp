@@ -201,15 +201,14 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NotNullPtr<
 	NEW_CLASS(retMap, Data::StringMap<Text::String *>());
 	Text::JSONObject *payloadObj = (Text::JSONObject*)payloadJson;
 	Text::JSONBase *json;
-	Data::ArrayList<Text::String *> objNames;
+	Data::ArrayListNN<Text::String> objNames;
 	payloadObj->GetObjectNames(objNames);
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 	Bool isDefault;
-	UOSInt i = 0;
-	UOSInt j = objNames.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = objNames.Iterator();
+	while (it.HasNext())
 	{
-		name = objNames.GetItem(i);
+		name = it.Next();
 		json = payloadObj->GetObjectValue(name->ToCString());
 
 		isDefault = true;
@@ -270,20 +269,19 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NotNullPtr<
 		{
 			if (json == 0)
 			{
-				retMap->Put(name, 0);
+				retMap->PutNN(name, 0);
 			}
 			else if (json->GetType() == Text::JSONType::String)
 			{
-				retMap->Put(name, ((Text::JSONString*)json)->GetValue()->Clone().Ptr());
+				retMap->PutNN(name, ((Text::JSONString*)json)->GetValue()->Clone().Ptr());
 			}
 			else
 			{
 				sb.ClearStr();
 				json->ToJSONString(sb);
-				retMap->Put(name, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
+				retMap->PutNN(name, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 			}
 		}
-		i++;
 	}
 	payloadJson->EndUse();
 	return retMap;

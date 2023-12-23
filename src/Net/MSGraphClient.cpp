@@ -525,20 +525,20 @@ Bool Net::MSGraphClient::MailFoldersGet(NotNullPtr<MSGraphAccessToken> token, Te
 Bool Net::MSGraphClient::HasUnknownTypes(NotNullPtr<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName)
 {
 	Bool ret = false;
-	Data::ArrayList<Text::String*> names;
+	Data::ArrayListNN<Text::String> names;
 	obj->GetObjectNames(names);
-	UOSInt i = 0;
-	UOSInt j = names.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	NotNullPtr<Text::String> name;
+	while (it.HasNext())
 	{
-		if (!isKnownType(names.GetItem(i)->ToCString()))
+		name = it.Next();
+		if (!isKnownType(name->ToCString()))
 		{
 #if defined(VERBOSE)
-			printf("%s: type unknown: %s\r\n", typeName.v, names.GetItem(i)->v);
+			printf("%s: type unknown: %s\r\n", typeName.v, name->v);
 #endif
 			ret = true;
 		}
-		i++;
 	}
 	return ret;
 }

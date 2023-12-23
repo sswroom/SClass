@@ -1430,14 +1430,12 @@ Text::JSONObject *Text::JSONObject::GetObjectObject(Text::CStringNN name)
 	return 0;
 }
 
-void Text::JSONObject::GetObjectNames(NotNullPtr<Data::ArrayList<Text::String *>> names)
+void Text::JSONObject::GetObjectNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
-	UOSInt i = 0;
-	UOSInt j = this->objVals.GetCount();
-	while (i < j)
+	Data::FastStringKeyIterator<Text::JSONBase*> it = this->objVals.KeyIterator();
+	while (it.HasNext())
 	{
-		names->Add(this->objVals.GetKey(i));
-		i++;
+		names->Add(it.Next());
 	}
 }
 
