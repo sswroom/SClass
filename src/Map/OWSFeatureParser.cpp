@@ -10,39 +10,78 @@
 
 Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
-	Text::PString lineArr[2];
-	Text::PString sarr[2];
-	UOSInt lineCnt;
-	Bool newVec = true;
-	lineArr[1] = txt;
-	while (true)
+	txt.RTrim();
+	if (txt.StartsWith('@') && txt.EndsWith(';'))
 	{
-		lineCnt = Text::StrSplitLineP(lineArr, 2, lineArr[1]);
-		if (lineArr[0].StartsWith(UTF8STRC("----")))
+		Text::PString nameArr[2];
+		Text::PString valueArr[2];
+		UOSInt nameCnt;
+		UOSInt i = txt.IndexOf(' ');
+		if (i == INVALID_INDEX)
+			return false;
+		txt = txt.Substring(i + 1);
+		i = txt.IndexOf(CSTR("; "));
+		if (i == INVALID_INDEX)
+			return false;
+		valueArr[1] = txt.Substring(i + 2);
+		txt.TrimToLength(i + 1);
+		nameArr[1] = txt;
+		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NEW_CLASSNN(vec, Math::Geometry::Point(srid, coord));
+		vecList->Add(vec);
+		valueOfstList->Add(nameList->GetCount());
+		while ((nameCnt = Text::StrSplitP(nameArr, 2, nameArr[1], ';')) == 2)
 		{
-			newVec = true;
+			if (Text::StrSplitP(valueArr, 2, valueArr[1], ';') != 2)
+				return false;
+			nameList->Add(Text::String::New(nameArr[0].ToCString()));
+			valueList->Add(Text::String::New(valueArr[0].ToCString()).Ptr());			
 		}
-		else if (Text::StrSplitTrimP(sarr, 2, lineArr[0], '=') == 2)
+		if (Text::StrSplitP(valueArr, 2, valueArr[1], ';') != 1)
+			return false;
+		if (nameArr[0].leng != 0)
 		{
-			if (newVec)
-			{
-				NotNullPtr<Math::Geometry::Vector2D> vec;
-				NEW_CLASSNN(vec, Math::Geometry::Point(srid, coord));
-				vecList->Add(vec);
-				valueOfstList->Add(nameList->GetCount());
-				newVec = false;
-			}
-			nameList->Add(Text::String::New(sarr[0].ToCString()));
-			valueList->Add(Text::String::New(sarr[1].ToCString()).Ptr());
+			nameList->Add(Text::String::New(nameArr[0].ToCString()));
+			valueList->Add(Text::String::New(valueArr[0].ToCString()).Ptr());			
 		}
-
-		if (lineCnt != 2)
-			break;
+		return true;
 	}
-	return nameList->GetCount() > 0;
+	else
+	{
+		Text::PString lineArr[2];
+		Text::PString sarr[2];
+		UOSInt lineCnt;
+		Bool newVec = true;
+		lineArr[1] = txt;
+		while (true)
+		{
+			lineCnt = Text::StrSplitLineP(lineArr, 2, lineArr[1]);
+			if (lineArr[0].StartsWith(UTF8STRC("----")))
+			{
+				newVec = true;
+			}
+			else if (Text::StrSplitTrimP(sarr, 2, lineArr[0], '=') == 2)
+			{
+				if (newVec)
+				{
+					NotNullPtr<Math::Geometry::Vector2D> vec;
+					NEW_CLASSNN(vec, Math::Geometry::Point(srid, coord));
+					vecList->Add(vec);
+					valueOfstList->Add(nameList->GetCount());
+					newVec = false;
+				}
+				nameList->Add(Text::String::New(sarr[0].ToCString()));
+				valueList->Add(Text::String::New(sarr[1].ToCString()).Ptr());
+			}
+
+			if (lineCnt != 2)
+				break;
+		}
+		return nameList->GetCount() > 0;
+	}
 }
 
-Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
 {
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(txt);
 	if (json)
@@ -70,10 +109,20 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullP
 			{
 				Text::JSONBase *feature = features->GetArrayValue(i);
 				Text::JSONBase *geometry = feature->GetValue(CSTR("geometry"));
-				if (geometry && geometry->GetType() == Text::JSONType::Object)
+				if (geometry)
 				{
-					NotNullPtr<Math::Geometry::Vector2D> vec;
-					if (vec.Set(Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid)))
+					Optional<Math::Geometry::Vector2D> vec = 0;
+					NotNullPtr<Math::Geometry::Vector2D> nnvec;
+					if (geometry->GetType() == Text::JSONType::Object)
+					{
+						vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
+					}
+					else if (geometry->GetType() == Text::JSONType::Null)
+					{
+						NEW_CLASSNN(nnvec, Math::Geometry::Point(srid, coord));
+						vec = nnvec;
+					}
+					if (vec.SetTo(nnvec))
 					{
 						valueOfstList->Add(nameList->GetCount());
 						Text::JSONBase *properties = feature->GetValue(CSTR("properties"));
@@ -96,7 +145,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullP
 								k++;
 							}
 						}
-						vecList->Add(vec);
+						vecList->Add(nnvec);
 					}
 				}
 				i++;
@@ -364,4 +413,52 @@ Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry
 		}
 	}
 	return vec;
+}
+
+Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, Math::Coord2DDbl coord, Text::EncodingFactory *encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+{
+	IO::MemoryReadingStream mstm(xml.v, xml.leng);
+	NotNullPtr<Text::String> nodeText;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	Text::XMLAttrib *attr;
+	Bool found = false;
+	UOSInt i;
+	UOSInt j;
+	Text::XMLReader reader(encFact, mstm, Text::XMLReader::ParseMode::PM_XML);
+	while (reader.NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("FeatureInfoResponse")))
+		{
+			while (reader.NextElementName().SetTo(nodeText))
+			{
+				if (nodeText->Equals(UTF8STRC("FIELDS")))
+				{
+					valueOfstList->Add(nameList->GetCount());
+					NEW_CLASSNN(vec, Math::Geometry::Point(srid, coord));
+					vecList->Add(vec);
+					i = 0;
+					j = reader.GetAttribCount();
+					while (i < j)
+					{
+						attr = reader.GetAttrib(i);
+						nameList->Add(attr->name->Clone());
+						valueList->Add(Text::String::CopyOrNull(attr->value).OrNull());
+						i++;
+					}
+					found = true;
+				}
+				else
+				{
+					printf("OWSFeatureParser: Unknown element in FeatureInfoResponse: %s\r\n", nodeText->v);
+					reader.SkipElement();
+				}
+			}
+		}
+		else
+		{
+			printf("OWSFeatureParser: Unknown element in ogc wms xml: %s\r\n", nodeText->v);
+			reader.SkipElement();
+		}
+	}
+	return found;
 }

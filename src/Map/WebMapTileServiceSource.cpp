@@ -846,7 +846,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 	}
 	else if (this->currResourceInfo->format->Equals(UTF8STRC("application/json")))
 	{
-		return Map::OWSFeatureParser::ParseJSON(sb.ToCString(), this->currDef->csys->GetSRID(), vecList, valueOfstList, nameList, valueList);
+		return Map::OWSFeatureParser::ParseJSON(sb.ToCString(), this->currDef->csys->GetSRID(), vecList, valueOfstList, nameList, valueList, coord);
 	}
 	else if (this->currResourceInfo->format->StartsWith(UTF8STRC("application/vnd.ogc.gml")) || this->currResourceInfo->format->Equals(UTF8STRC("text/xml")))
 	{

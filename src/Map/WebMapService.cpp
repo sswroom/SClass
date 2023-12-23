@@ -504,15 +504,24 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 
 		if (infoFormat->Equals(UTF8STRC("application/json")) || infoFormat->Equals(UTF8STRC("application/geo+json")))
 		{
-			return Map::OWSFeatureParser::ParseJSON(sbData.ToCString(), this->csys->GetSRID(), vecList, valueOfstList, nameList, valueList);
+			return Map::OWSFeatureParser::ParseJSON(sbData.ToCString(), this->csys->GetSRID(), vecList, valueOfstList, nameList, valueList, coord);
 		}
-		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.ogc.gml")) || infoFormat->StartsWith(UTF8STRC("text/xml")))
+		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.ogc.gml")))
 		{
 			return Map::OWSFeatureParser::ParseGML(sbData.ToCString(), this->csys->GetSRID(), this->currCRS->swapXY, this->encFact, vecList, valueOfstList, nameList, valueList);
+		}
+		else if (infoFormat->StartsWith(UTF8STRC("text/xml")))
+		{
+			return Map::OWSFeatureParser::ParseGML(sbData.ToCString(), this->csys->GetSRID(), this->currCRS->swapXY, this->encFact, vecList, valueOfstList, nameList, valueList) ||
+				Map::OWSFeatureParser::ParseOGC_WMS_XML(sbData.ToCString(), this->csys->GetSRID(), coord, this->encFact, vecList, valueOfstList, nameList, valueList);
 		}
 		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.esri.wms_raw_xml")) || infoFormat->Equals(UTF8STRC("application/vnd.esri.wms_featureinfo_xml")))
 		{
 			return Map::OWSFeatureParser::ParseESRI_WMS_XML(sbData.ToCString(), this->csys->GetSRID(), this->currCRS->swapXY, this->encFact, vecList, valueOfstList, nameList, valueList, coord);
+		}
+		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.ogc.wms_xml")))
+		{
+			return Map::OWSFeatureParser::ParseOGC_WMS_XML(sbData.ToCString(), this->csys->GetSRID(), coord, this->encFact, vecList, valueOfstList, nameList, valueList);
 		}
 		else if (infoFormat->Equals(UTF8STRC("text/plain")))
 		{

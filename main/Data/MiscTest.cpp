@@ -10,6 +10,9 @@
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
+#include "Map/ESRI/ESRIFeatureServer.h"
+#include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Parser/FullParserList.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
@@ -350,7 +353,18 @@ Int32 CFBTimeTest()
 	return 0;
 }
 
+Int32 ESRIFeatureServerTest()
+{
+	Net::OSSocketFactory sockf(true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, false);
+	{
+		Map::ESRI::ESRIFeatureServer svr(CSTR("https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634958957456_52030/FeatureServer"), sockf, ssl);
+
+	}
+	ssl.Delete();
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	return CFBTimeTest();
+	return ESRIFeatureServerTest();
 }
