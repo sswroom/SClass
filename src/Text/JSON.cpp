@@ -203,6 +203,16 @@ Int64 Text::JSONBase::GetValueAsInt64(Text::CStringNN path)
 	return 0;
 }
 
+Bool Text::JSONBase::GetValueAsInt64(Text::CStringNN path, OutParam<Int64> val)
+{
+	Text::JSONBase *json = this->GetValue(path);
+	if (json)
+	{
+		return json->GetAsInt64(val);
+	}
+	return 0;
+}
+
 Double Text::JSONBase::GetValueAsDouble(Text::CStringNN path)
 {
 	Text::JSONBase *json = this->GetValue(path);
@@ -267,7 +277,6 @@ Int32 Text::JSONBase::GetAsInt32()
 		return Double2Int32(((Text::JSONNumber*)this)->GetValue());
 	case Text::JSONType::String:
 		return ((Text::JSONString*)this)->GetValue()->ToInt32();
-	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
@@ -300,7 +309,6 @@ Bool Text::JSONBase::GetAsInt32(OutParam<Int32> val)
 		}
 	case Text::JSONType::String:
 		return ((Text::JSONString*)this)->GetValue()->ToInt32(val);
-	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
@@ -323,13 +331,41 @@ Int64 Text::JSONBase::GetAsInt64()
 		return Double2Int64(((Text::JSONNumber*)this)->GetValue());
 	case Text::JSONType::String:
 		return ((Text::JSONString*)this)->GetValue()->ToInt64();
-	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
 		return 0;
 	}
 	return 0;
+}
+
+Bool Text::JSONBase::GetAsInt64(OutParam<Int64> val)
+{
+	switch (this->GetType())
+	{
+	case Text::JSONType::BOOL:
+		val.Set(((Text::JSONBool*)this)->GetValue()?1:0);
+		return true;
+	case Text::JSONType::INT32:
+		val.Set(((Text::JSONInt32*)this)->GetValue());
+		return true;
+	case Text::JSONType::INT64:
+		val.Set(((Text::JSONInt64*)this)->GetValue());
+		return true;
+	case Text::JSONType::Number:
+		{
+			Int64 iv = Double2Int64(((Text::JSONNumber*)this)->GetValue());
+			val.Set(iv);
+			return (Double)iv == ((Text::JSONNumber*)this)->GetValue();
+		}
+	case Text::JSONType::String:
+		return ((Text::JSONString*)this)->GetValue()->ToInt64(val);
+	case Text::JSONType::Array:
+	case Text::JSONType::Object:
+	case Text::JSONType::Null:
+		return false;
+	}
+	return false;
 }
 
 Double Text::JSONBase::GetAsDouble()
@@ -346,7 +382,6 @@ Double Text::JSONBase::GetAsDouble()
 		return ((Text::JSONNumber*)this)->GetValue();
 	case Text::JSONType::String:
 		return ((Text::JSONString*)this)->GetValue()->ToDouble();
-	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
@@ -373,7 +408,6 @@ Bool Text::JSONBase::GetAsDouble(OutParam<Double> val)
 		return true;
 	case Text::JSONType::String:
 		return ((Text::JSONString*)this)->GetValue()->ToDouble(val);
-	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
@@ -396,7 +430,6 @@ Bool Text::JSONBase::GetAsBool()
 		return ((Text::JSONNumber*)this)->GetValue() != 0;
 	case Text::JSONType::String:
 		return Str2Bool(((Text::JSONString*)this)->GetValue());
-	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 		return true;
@@ -1693,8 +1726,6 @@ Text::CString Text::JSONTypeGetName(JSONType t)
 		return CSTR("INT32");
 	case JSONType::INT64:
 		return CSTR("INT64");
-	case JSONType::StringWO:
-		return CSTR("StringWO");
 	default:
 		return CSTR("Unknown");
 	}

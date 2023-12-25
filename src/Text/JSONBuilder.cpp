@@ -376,8 +376,6 @@ Bool Text::JSONBuilder::ArrayAdd(NotNullPtr<Text::JSONArray> arr)
 			case Text::JSONType::INT64:
 				this->ArrayAddInt64(((Text::JSONInt64*)json.Ptr())->GetValue());
 				break;
-			case Text::JSONType::StringWO:
-				break;
 			}
 		}
 		else
@@ -832,8 +830,6 @@ Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)
 				break;
 			case Text::JSONType::INT64:
 				this->ObjectAddInt64(name->ToCString(), ((Text::JSONInt64*)json.Ptr())->GetValue());
-				break;
-			case Text::JSONType::StringWO:
 				break;
 			}
 		}

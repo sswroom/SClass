@@ -27,6 +27,8 @@ namespace Text
 		static Bool IsDoubleSize(UTF32Char c);
 		static UTF8Char ToUpper(UTF8Char c);
 		static UTF8Char ToLower(UTF8Char c);
+		static Bool IsUpperCase(UTF8Char c);
+		static Bool IsLowerCase(UTF8Char c);
 	};
 }
 #endif

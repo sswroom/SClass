@@ -9,7 +9,10 @@
 #include "Sync/MutexUsage.h"
 #include "Text/UTF8Reader.h"
 
-//#include <stdio.h>
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 
 #define OBJECTPATH "obj"
 
@@ -553,6 +556,9 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 		this->SetErrorMsg(tmpSb->ToCString());
 		return false;
 	}
+#if defined(VERBOSE)
+	printf("Parsing source %s\r\n", fileName.v);
+#endif
 	Int64 lastTime;
 	Int64 thisTime;
 	lastTime = fs.GetModifyTime().ToTicks();
@@ -604,6 +610,31 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 							NotNullPtr<Text::String> debugObj;
 							procList->PutNN(prog->name, 1);
 
+							if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
+							{
+								Text::StringBuilderUTF8 sb2;
+								sb2.Append(debugObj);
+								sb2.AppendC(UTF8STRC(" found in "));
+								sb2.Append(sourceFile);
+								this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
+							}
+#if defined(VERBOSE)
+							printf("Parsing header \"%s\" in source %s\r\n", prog->name->v, sourceFile.v);
+#endif
+							if (!this->ParseHeader(objList, libList, procList, headerList, thisTime, prog->name, sourceFile, tmpSb))
+							{
+								return false;
+							}
+#if defined(VERBOSE)
+							tmpSb->ClearStr();
+							tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
+							printf("Found new header \"%s\" with time = %s\r\n", prog->name->v, tmpSb->v);
+#endif
+							if (thisTime > lastTime)
+							{
+								lastTime = thisTime;
+							}
+
 							Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
 							while (it.HasNext())
 							{
@@ -618,6 +649,9 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 								}
 								if (objList->PutNN(subItem, 1) != 1)
 								{
+#if defined(VERBOSE)
+									printf("Parsing object \"%s\"\r\n", prog->name->v);
+#endif
 									if (!this->ParseObject(objList, libList, procList, headerList, thisTime, subItem, prog->name->ToCString(), tmpSb))
 									{
 										return false;
@@ -633,32 +667,6 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 							{
 								libList->PutNN(it.Next(), 1);
 							}
-							if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
-							{
-								Text::StringBuilderUTF8 sb2;
-								sb2.Append(debugObj);
-								sb2.AppendC(UTF8STRC(" found in "));
-								sb2.Append(sourceFile);
-								this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
-							}
-							if (!this->ParseHeader(objList, libList, procList, headerList, thisTime, prog->name, sourceFile, tmpSb))
-							{
-								return false;
-							}
-							if (thisTime > lastTime)
-							{
-								lastTime = thisTime;
-							}
-/*							NotNullPtr<Text::String> s;
-							///////////////////////////////////
-							if (s.Set(prog->srcFile))
-							{
-								if (!this->ParseSource(objList, libList, procList, headerList, thisTime, s->ToCString(), tmpSb))
-								{
-									return false;
-								}
-								this->fileTimeMap.PutNN(s, thisTime);
-							}*/
 						}
 					}
 				}
@@ -710,6 +718,11 @@ Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
 			}
 			if (this->ParseSource(objList, libList, procList, headerList, thisTime, CSTRP(sbuff, sptr), tmpSb))
 			{
+#if defined(VERBOSE)
+				tmpSb->ClearStr();
+				tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
+				printf("Header %s found time = %s\r\n", headerFile->v, tmpSb->v);
+#endif
 				this->fileTimeMap.PutNN(headerFile, thisTime);
 				latestTime.Set(thisTime);
 				return true;
@@ -744,6 +757,11 @@ Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
 		}
 		if (this->ParseSource(objList, libList, procList, headerList, thisTime, CSTRP(sbuff, sptr), tmpSb))
 		{
+#if defined(VERBOSE)
+			tmpSb->ClearStr();
+			tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			printf("Header %s found time = %s\r\n", headerFile->v, tmpSb->v);
+#endif
 			this->fileTimeMap.PutNN(headerFile, thisTime);
 			latestTime.Set(thisTime);
 			return true;
@@ -827,6 +845,11 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 			{
 				return false;
 			}
+#if defined(VERBOSE)
+			tmpSb->ClearStr();
+			tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			printf("Source file \"%s\" Time = %s\r\n", s->v, tmpSb->v);
+#endif
 			this->fileTimeMap.PutNN(s, thisTime);
 			latestTime.Set(thisTime);
 		}
@@ -1095,6 +1118,22 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			}
 			lastTime = dt1.ToTicks();
 			thisTime = this->fileTimeMap.GetNN(srcFile);
+			if (this->messageWriter)
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("SrcFile "));
+				sb.Append(srcFile);
+				sb.AppendC(UTF8STRC(", time = "));
+				if (thisTime == 0)
+				{
+					sb.AppendC(UTF8STRC("null"));
+				}
+				else
+				{
+					sb.AppendTSNoZone(Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr()));
+				}
+				this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			}
 			if (thisTime && thisTime > lastTime)
 			{
 				lastTime = thisTime;

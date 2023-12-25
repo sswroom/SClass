@@ -513,3 +513,13 @@ UTF8Char Text::CharUtil::ToLower(UTF8Char c)
 		return c;
 	}
 }
+
+Bool Text::CharUtil::IsUpperCase(UTF8Char c)
+{
+	return c >= 'A' && c <= 'Z';
+}
+
+Bool Text::CharUtil::IsLowerCase(UTF8Char c)
+{
+	return c >= 'a' && c <= 'z';
+}

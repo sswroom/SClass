@@ -17,8 +17,7 @@ namespace Text
 		BOOL,
 		Null,
 		INT32,
-		INT64,
-		StringWO
+		INT64
 	};
 
 	class JSONObject;
@@ -50,6 +49,7 @@ namespace Text
 		Int32 GetValueAsInt32(Text::CStringNN path);
 		Bool GetValueAsInt32(Text::CStringNN path, OutParam<Int32> val);
 		Int64 GetValueAsInt64(Text::CStringNN path);
+		Bool GetValueAsInt64(Text::CStringNN path, OutParam<Int64> val);
 		Double GetValueAsDouble(Text::CStringNN path);
 		Bool GetValueAsDouble(Text::CStringNN path, OutParam<Double> val);
 		Bool GetValueAsBool(Text::CStringNN path);
@@ -58,6 +58,7 @@ namespace Text
 		Int32 GetAsInt32();
 		Bool GetAsInt32(OutParam<Int32> val);
 		Int64 GetAsInt64();
+		Bool GetAsInt64(OutParam<Int64> val);
 		Double GetAsDouble();
 		Bool GetAsDouble(OutParam<Double> val);
 		Bool GetAsBool();
@@ -149,25 +150,6 @@ namespace Text
 		virtual Bool Identical(NotNullPtr<JSONBase> obj);
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
 		NotNullPtr<Text::String> GetValue();
-	};
-
-	class JSONStringW : public JSONBase
-	{
-	private:
-		const WChar *val;
-
-	public:
-		JSONStringW(const WChar *val);
-	private:
-		virtual ~JSONStringW();
-
-	public:
-		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
-		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
-		const WChar *GetValue();
 	};
 
 	class JSONBool : public JSONBase
