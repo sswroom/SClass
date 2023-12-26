@@ -69,8 +69,10 @@ namespace Map
 
 			JSONRESP_BEGIN(AdvancedEditingCapabilities)
 			JSONRESP_BOOL("supportsAsyncApplyEdits",false,false)
+			JSONRESP_ARRAY_STR("supportedSqlFormatsInCalculate",false,false)
 			JSONRESP_SEC_GET(AdvancedEditingCapabilities)
 			JSONRESP_GETBOOL("supportsAsyncApplyEdits",IsSupportsAsyncApplyEdits)
+			JSONRESP_GETARRAY_STR("supportedSqlFormatsInCalculate",IsSupportedSqlFormatsInCalculate)
 			JSONRESP_END
 
 			JSONRESP_BEGIN(AdvancedQueryCapabilities)
@@ -120,13 +122,16 @@ namespace Map
 			JSONRESP_END
 
 			JSONRESP_BEGIN(SymbolOutline)
+			JSONRESP_ARRAY_DOUBLE("color",false,false)
 			JSONRESP_DOUBLE("width",false,false)
 			JSONRESP_SEC_GET(SymbolOutline)
+			JSONRESP_GETARRAY_DOUBLE("color",IsColor)
 			JSONRESP_GETDOUBLE("width",GetWidth,0.0)
 			JSONRESP_END
 
 			JSONRESP_BEGIN(RendererSymbol)
 			JSONRESP_DOUBLE("angle",false,false)
+			JSONRESP_ARRAY_DOUBLE("color",false,false)
 			JSONRESP_OBJ("outline",false,false,SymbolOutline)
 			JSONRESP_DOUBLE("size",false,false)
 			JSONRESP_STR("style",false,false)
@@ -135,6 +140,7 @@ namespace Map
 			JSONRESP_DOUBLE("yoffset",false,false)
 			JSONRESP_SEC_GET(RendererSymbol)
 			JSONRESP_GETDOUBLE("angle",GetAngle,0.0)
+			JSONRESP_GETARRAY_DOUBLE("color",IsColor)
 			JSONRESP_GETOBJ("outline",GetOutline,SymbolOutline)
 			JSONRESP_GETDOUBLE("size",GetSize,0.0)
 			JSONRESP_GETSTR("style",GetStyle)
@@ -183,6 +189,65 @@ namespace Map
 			JSONRESP_GETSTR("type",GetType)
 			JSONRESP_END
 
+			JSONRESP_BEGIN(LayerIndex)
+			JSONRESP_STR("description",false,false)
+			JSONRESP_STR("fields",false,false)
+			JSONRESP_BOOL("isAscending",false,false)
+			JSONRESP_BOOL("isUnique",false,false)
+			JSONRESP_STR("name",false,false)
+			JSONRESP_SEC_GET(LayerIndex)
+			JSONRESP_GETSTR("description",GetDescription)
+			JSONRESP_GETSTR("fields",GetFields)
+			JSONRESP_GETBOOL("isAscending",IsAscending)
+			JSONRESP_GETBOOL("isUnique",IsUnique)
+			JSONRESP_GETSTR("name",GetName)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(PrototypeAttribute)
+			JSONRESP_ALLOW_ALL
+			JSONRESP_SEC_GET(PrototypeAttribute)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(TemplatePrototype)
+			JSONRESP_OBJ("attributes",false,false,PrototypeAttribute)
+			JSONRESP_SEC_GET(TemplatePrototype)
+			JSONRESP_GETOBJ("attributes",GetAttributes,PrototypeAttribute)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(LayerTemplate)
+			JSONRESP_STR("description",false,false)
+			JSONRESP_STR("drawingTool",false,false)
+			JSONRESP_STR("name",false,false)
+			JSONRESP_OBJ("prototype",false,false,TemplatePrototype)
+			JSONRESP_SEC_GET(LayerTemplate)
+			JSONRESP_GETSTR("description",GetDescription)
+			JSONRESP_GETSTR("drawingTool",GetDrawingTool)
+			JSONRESP_GETSTR("name",GetName)
+			JSONRESP_GETOBJ("prototype",GetPrototype,TemplatePrototype)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(FieldInfo)
+			JSONRESP_STR("alias",false,false)
+			JSONRESP_STR("defaultValue",false,true)
+			JSONRESP_STR("domain",false,true)
+			JSONRESP_BOOL("editable",false,false)
+			JSONRESP_DOUBLE("length",false,false)
+			JSONRESP_STR("modelName",false,false)
+			JSONRESP_STR("name",false,false)
+			JSONRESP_BOOL("nullable",false,false)
+			JSONRESP_STR("type",false,false)
+			JSONRESP_SEC_GET(FieldInfo)
+			JSONRESP_GETSTR("alias",GetAlias)
+			JSONRESP_GETSTROPT("defaultValue",GetDefaultValue)
+			JSONRESP_GETSTROPT("domain",GetDomain)
+			JSONRESP_GETBOOL("editable",IsEditable)
+			JSONRESP_GETDOUBLE("length",GetLength,0.0)
+			JSONRESP_GETSTR("modelName",GetModelName)
+			JSONRESP_GETSTR("name",GetName)
+			JSONRESP_GETBOOL("nullable",IsNullable)
+			JSONRESP_GETSTR("type",GetType)
+			JSONRESP_END
+
 			JSONRESP_BEGIN(LayerInfo)
 			JSONRESP_OBJ("advancedEditingCapabilities",false,false,AdvancedEditingCapabilities)
 			JSONRESP_OBJ("advancedQueryCapabilities",false,false,AdvancedQueryCapabilities)
@@ -202,6 +267,7 @@ namespace Map
 			JSONRESP_OBJ("drawingInfo",false,false,DrawingInfo)
 			JSONRESP_STR("editFieldsInfo",false,true)
 			JSONRESP_OBJ("extent",false,false,Extent)
+			JSONRESP_ARRAY_OBJ("fields",false,false,FieldInfo)
 			JSONRESP_OBJ("geometryField",false,false,GeometryField)
 			JSONRESP_STR("geometryType",false,false)
 			JSONRESP_STR("globalIdField",false,false)
@@ -211,6 +277,8 @@ namespace Map
 			JSONRESP_BOOL("hasZ",false,false)
 			JSONRESP_STR("htmlPopupType",false,false)
 			JSONRESP_DOUBLE("id",false,false)
+			JSONRESP_ARRAY_OBJ("indexes",false,false,LayerIndex)
+			JSONRESP_ARRAY_STR("infoInEstimates",false,false)
 			JSONRESP_BOOL("isCoGoEnabled",false,false)
 			JSONRESP_BOOL("isDataArchived",false,false)
 			JSONRESP_BOOL("isDataBranchVersioned",false,false)
@@ -233,6 +301,7 @@ namespace Map
 			JSONRESP_STR("subtypeField",false,false)
 			JSONRESP_STR("supportedExportFormats",false,false)
 			JSONRESP_STR("supportedQueryFormats",false,false)
+			JSONRESP_ARRAY_STR("supportedSpatialRelationships",false,false)
 			JSONRESP_BOOL("supportsASyncCalculate",false,false)
 			JSONRESP_BOOL("supportsAdvancedQueries",false,false)
 			JSONRESP_BOOL("supportsApplyEditsWithGlobalIds",false,false)
@@ -245,6 +314,7 @@ namespace Map
 			JSONRESP_BOOL("supportsStatistics",false,false)
 			JSONRESP_BOOL("supportsValidateSQL",false,false)
 			JSONRESP_BOOL("syncCanReturnChanges",false,false)
+			JSONRESP_ARRAY_OBJ("templates",false,false,LayerTemplate)
 			JSONRESP_DOUBLE("tileMaxRecordCount",false,false)
 			JSONRESP_STR("type",false,false)
 			JSONRESP_STR("typeIdField",false,false)
@@ -268,6 +338,7 @@ namespace Map
 			JSONRESP_GETOBJ("drawingInfo",GetDrawingInfo,DrawingInfo)
 			JSONRESP_GETSTROPT("editFieldsInfo",GetEditFieldsInfo)
 			JSONRESP_GETOBJ("extent",GetExtent,Extent)
+			JSONRESP_GETARRAY_OBJ("fields",GetFields,FieldInfo)
 			JSONRESP_GETOBJ("geometryField",GetGeometryField,GeometryField)
 			JSONRESP_GETSTR("geometryType",GetGeometryType)
 			JSONRESP_GETSTR("globalIdField",GetGlobalIdField)
@@ -277,6 +348,8 @@ namespace Map
 			JSONRESP_GETBOOL("hasZ",HasZ)
 			JSONRESP_GETSTR("htmlPopupType",GetHtmlPopupType)
 			JSONRESP_GETDOUBLE("id",GetId,0.0)
+			JSONRESP_GETARRAY_OBJ("indexes",GetIndexes,LayerIndex)
+			JSONRESP_GETARRAY_STR("infoInEstimates",GetInfoInEstimates)
 			JSONRESP_GETBOOL("isCoGoEnabled",IsCoGoEnabled)
 			JSONRESP_GETBOOL("isDataArchived",IsDataArchived)
 			JSONRESP_GETBOOL("isDataBranchVersioned",IsDataBranchVersioned)
@@ -299,6 +372,7 @@ namespace Map
 			JSONRESP_GETSTR("subtypeField",GetSubtypeField)
 			JSONRESP_GETSTR("supportedExportFormats",GetSupportedExportFormats)
 			JSONRESP_GETSTR("supportedQueryFormats",GetSupportedQueryFormats)
+			JSONRESP_GETARRAY_STR("supportedSpatialRelationships",GetSupportedSpatialRelationships)
 			JSONRESP_GETBOOL("supportsASyncCalculate",IsSupportsASyncCalculate)
 			JSONRESP_GETBOOL("supportsAdvancedQueries",IsSupportsAdvancedQueries)
 			JSONRESP_GETBOOL("supportsApplyEditsWithGlobalIds",IsSupportsApplyEditsWithGlobalIds)
@@ -311,11 +385,13 @@ namespace Map
 			JSONRESP_GETBOOL("supportsStatistics",IsSupportsStatistics)
 			JSONRESP_GETBOOL("supportsValidateSQL",IsSupportsValidateSQL)
 			JSONRESP_GETBOOL("syncCanReturnChanges",IsSyncCanReturnChanges)
+			JSONRESP_GETARRAY_OBJ("templates",GetTemplates,LayerTemplate)
 			JSONRESP_GETDOUBLE("tileMaxRecordCount",GetTileMaxRecordCount,0.0)
 			JSONRESP_GETSTR("type",GetType)
 			JSONRESP_GETSTR("typeIdField",GetTypeIdField)
 			JSONRESP_GETBOOL("useStandardizedQueries",UseStandardizedQueries)
 			JSONRESP_END
+
 		private:
 			NotNullPtr<Text::String> url;
 			NotNullPtr<Text::String> name;
