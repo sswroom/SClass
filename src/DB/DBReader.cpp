@@ -82,7 +82,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 	case DB::DBUtil::CT_Vector:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
 			}

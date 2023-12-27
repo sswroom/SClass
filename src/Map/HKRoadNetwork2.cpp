@@ -120,7 +120,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 				{
 					Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
 					NotNullPtr<Math::Geometry::Vector2D> vec;
-					if (vec.Set(r->GetVector((UOSInt)shapeCol)))
+					if (r->GetVector((UOSInt)shapeCol).SetTo(vec))
 					{
 						sbuff[0] = 0;
 						r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));

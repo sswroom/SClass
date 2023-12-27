@@ -52,10 +52,10 @@ Map::TileMapFolderWriter::~TileMapFolderWriter()
 	json.ObjectAddStr(CSTR("maxzoom"), CSTRP(sbuff, sptr));
 	json.ObjectAddStr(CSTR("scale"), CSTR("1.000000"));
 	json.ObjectBeginArray(CSTR("bounds"));
-	json.ArrayAddFloat64(this->bounds.tl.x);
-	json.ArrayAddFloat64(this->bounds.tl.y);
-	json.ArrayAddFloat64(this->bounds.br.x);
-	json.ArrayAddFloat64(this->bounds.br.y);
+	json.ArrayAddFloat64(this->bounds.min.x);
+	json.ArrayAddFloat64(this->bounds.min.y);
+	json.ArrayAddFloat64(this->bounds.max.x);
+	json.ArrayAddFloat64(this->bounds.max.y);
 	json.ArrayEnd();
 	json.ObjectAddStr(CSTR("profile"), CSTR("mercator"));
 	Text::CStringNN metadata = json.Build();

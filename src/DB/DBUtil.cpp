@@ -1648,18 +1648,18 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::SQLType sqlTyp
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::SQLType sqlType, Bool axisAware)
+UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType, Bool axisAware)
 {
 	NotNullPtr<Math::Geometry::Vector2D> nnvec;
-	if (!nnvec.Set(vec))
+	if (!vec.SetTo(nnvec))
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
 	if (sqlType == DB::SQLType::MSSQL)
 	{
-		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
+		if (nnvec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+			NotNullPtr<Math::Geometry::Point> pt = NotNullPtr<Math::Geometry::Point>::ConvertFrom(nnvec);
 			UInt8 buff[22];
 			WriteUInt32(buff, nnvec->GetSRID());
 			buff[4] = 1;
@@ -1719,8 +1719,50 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 	}
 	else if (sqlType == DB::SQLType::SQLite)
 	{
-		Math::WKBWriter writer;
+		Math::WKBWriter writer(false);
 		IO::MemoryStream mstm;
+		UInt8 buff[72];
+		buff[0] = 'G';
+		buff[1] = 'P';
+		buff[2] = 0;
+		buff[3] = IS_BYTEORDER_LE;
+		WriteNUInt32(&buff[4], nnvec->GetSRID());
+		Math::RectAreaDbl bounds = nnvec->GetBounds();
+		WriteNDouble(&buff[8], bounds.min.x);
+		WriteNDouble(&buff[16], bounds.min.y);
+		WriteNDouble(&buff[24], bounds.max.x);
+		WriteNDouble(&buff[32], bounds.max.y);
+		Double min;
+		Double max;
+		if (nnvec->GetZBounds(min, max))
+		{
+			WriteNDouble(&buff[40], min);
+			WriteNDouble(&buff[48], max);
+			if (nnvec->GetMBounds(min, max))
+			{
+				WriteNDouble(&buff[56], min);
+				WriteNDouble(&buff[64], max);
+				buff[3] = (UInt8)(buff[3] + 8);
+				mstm.Write(buff, 72);
+			}
+			else
+			{
+				buff[3] = (UInt8)(buff[3] + 4);
+				mstm.Write(buff, 56);
+			}
+		}
+		else if (nnvec->GetMBounds(min, max))
+		{
+			WriteNDouble(&buff[40], min);
+			WriteNDouble(&buff[48], max);
+			buff[3] = (UInt8)(buff[3] + 6);
+			mstm.Write(buff, 56);
+		}
+		else
+		{
+			buff[3] = (UInt8)(buff[3] + 2);
+			mstm.Write(buff, 40);
+		}
 		if (writer.Write(mstm, nnvec))
 		{
 			return SDBBin(sqlstr, mstm.GetBuff(), (UOSInt)mstm.GetLength(), sqlType);
@@ -1736,10 +1778,10 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 	}
 }
 
-UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType)
 {
 	NotNullPtr<Math::Geometry::Vector2D> nnvec;
-	if (!nnvec.Set(vec))
+	if (!vec.SetTo(nnvec))
 	{
 		return 4;
 	}
@@ -1790,11 +1832,16 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlT
 	}
 	else if (sqlType == DB::SQLType::SQLite)
 	{
-		Math::WKBWriter writer;
+		Math::WKBWriter writer(false);
 		IO::MemoryStream mstm;
 		if (writer.Write(mstm, nnvec))
 		{
-			return SDBBinLeng(mstm.GetBuff(), (UOSInt)mstm.GetLength(), sqlType);
+			UOSInt headerSize = 40;
+			if (nnvec->HasZ())
+				headerSize += 16;
+			if (nnvec->HasM())
+				headerSize += 16;
+			return SDBBinLeng(mstm.GetBuff(), (UOSInt)mstm.GetLength() + headerSize, sqlType);
 		}
 		else
 		{

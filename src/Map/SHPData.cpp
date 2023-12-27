@@ -465,7 +465,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, 
 			rec = (Map::SHPData::RecHdr*)this->recs->GetItem(i);
 			if (rec)
 			{
-				if (rec->x2 >= rect.tl.x && rec->x1 <= rect.br.x && rec->y2 >= rect.tl.y && rec->y1 <= rect.br.y)
+				if (rec->x2 >= rect.min.x && rec->x1 <= rect.max.x && rec->y2 >= rect.min.y && rec->y1 <= rect.max.y)
 				{
 					outArr->Add((Int64)i);
 					retCnt++;

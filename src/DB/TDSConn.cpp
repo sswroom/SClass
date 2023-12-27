@@ -323,7 +323,7 @@ public:
 		case SYBGEOMETRY:
 			{
 				NotNullPtr<Math::Geometry::Vector2D> vec;
-				if (vec.Set(this->GetVector(colIndex)))
+				if (this->GetVector(colIndex).SetTo(vec))
 				{
 					Math::WKTWriter wkt;
 					wkt.ToText(sb, vec);
@@ -394,7 +394,7 @@ public:
 		case SYBGEOMETRY:
 			{
 				NotNullPtr<Math::Geometry::Vector2D> vec;
-				if (vec.Set(this->GetVector(colIndex)))
+				if (this->GetVector(colIndex).SetTo(vec))
 				{
 					Text::StringBuilderUTF8 sb;
 					Math::WKTWriter wkt;
@@ -553,7 +553,7 @@ public:
 		return dataSize;
 	}
 
-	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
 		if (colIndex >= this->nCols)
 			return 0;
@@ -566,7 +566,7 @@ public:
 		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 		UInt32 srId;
-		return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
+		return Math::MSGeography::ParseBinary(buffPtr, dataSize, srId);
 	}
 
 	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
@@ -655,7 +655,13 @@ public:
 			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 			UInt32 srId;
-			return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (Math::MSGeography::ParseBinary(buffPtr, dataSize, srId).SetTo(vec))
+			{
+				item->SetVectorDirect(vec);
+				return true;
+			}
+			return false;
 		}
 		case SYBBINARY:
 		{

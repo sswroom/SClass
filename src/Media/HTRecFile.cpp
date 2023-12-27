@@ -422,7 +422,7 @@ UOSInt Media::HTRecFile::HTRecReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *Media::HTRecFile::HTRecReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Media::HTRecFile::HTRecReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

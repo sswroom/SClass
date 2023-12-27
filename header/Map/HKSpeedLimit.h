@@ -15,7 +15,7 @@ namespace Map
 			Int32 objectId;
 			Int32 routeId;
 			Int32 speedLimit;
-			Math::Geometry::Vector2D *vecOri;
+			Optional<Math::Geometry::Vector2D> vecOri;
 		};
 	private:
 		NotNullPtr<Math::CoordinateSystem> dataCsys;

@@ -135,13 +135,13 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 				thisBounds = vec->GetBounds();
 				if (this->min.x == 0 && this->min.y == 0 && this->max.x == 0 && this->max.y == 0)
 				{
-					min = thisBounds.tl;
-					max = thisBounds.br;
+					min = thisBounds.min;
+					max = thisBounds.max;
 				}
 				else
 				{
-					min = min.Min(thisBounds.tl);
-					max = max.Max(thisBounds.br);
+					min = min.Min(thisBounds.min);
+					max = max.Max(thisBounds.max);
 				}
 
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
@@ -512,7 +512,7 @@ UOSInt Map::ESRI::ESRIMDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMDBReader::GetVector(UOSInt colIndex)
 {
 	return this->r->GetVector(colIndex);
 }

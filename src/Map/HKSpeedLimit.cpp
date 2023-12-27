@@ -9,7 +9,7 @@
 
 void Map::HKSpeedLimit::FreeRoute(RouteInfo *route)
 {
-	SDEL_CLASS(route->vecOri);
+	route->vecOri.Delete();
 	DEL_CLASS(route);
 }
 
@@ -39,15 +39,15 @@ void Map::HKSpeedLimit::BuildIndex()
 	Int64 key;
 	this->FreeIndex();
 	i = this->routeMap.GetCount();
-	if (this->bounds.br.x > 180 || this->bounds.br.y > 90 || this->bounds.tl.x < -180 || this->bounds.tl.y < -90)
+	if (this->bounds.max.x > 180 || this->bounds.max.y > 90 || this->bounds.min.x < -180 || this->bounds.min.y < -90)
 	{
 		while (i-- > 0)
 		{
 			route = this->routeMap.GetItem(i);
-			minX = (Int32)(route->bounds.tl.x / PROJECTMuL);
-			minY = (Int32)(route->bounds.tl.y / PROJECTMuL);
-			maxX = (Int32)(route->bounds.br.x / PROJECTMuL);
-			maxY = (Int32)(route->bounds.br.y / PROJECTMuL);
+			minX = (Int32)(route->bounds.min.x / PROJECTMuL);
+			minY = (Int32)(route->bounds.min.y / PROJECTMuL);
+			maxX = (Int32)(route->bounds.max.x / PROJECTMuL);
+			maxY = (Int32)(route->bounds.max.y / PROJECTMuL);
 			x = minX;
 			while (x <= maxX)
 			{
@@ -73,10 +73,10 @@ void Map::HKSpeedLimit::BuildIndex()
 		while (i-- > 0)
 		{
 			route = this->routeMap.GetItem(i);
-			minX = (Int32)(route->bounds.tl.x * LATLONMUL);
-			minY = (Int32)(route->bounds.tl.y * LATLONMUL);
-			maxX = (Int32)(route->bounds.br.x * LATLONMUL);
-			maxY = (Int32)(route->bounds.br.y * LATLONMUL);
+			minX = (Int32)(route->bounds.min.x * LATLONMUL);
+			minY = (Int32)(route->bounds.min.y * LATLONMUL);
+			maxX = (Int32)(route->bounds.max.x * LATLONMUL);
+			maxY = (Int32)(route->bounds.max.y * LATLONMUL);
 			x = minX;
 			while (x <= maxX)
 			{
@@ -147,12 +147,16 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 			{
 				while (r->ReadNext())
 				{
+					NotNullPtr<Math::Geometry::Vector2D> vec;
 					NEW_CLASS(route, RouteInfo());
 					route->objectId = r->GetInt32(objIdCol);
 					route->routeId = r->GetInt32(routeIdCol);
 					route->speedLimit = 50;
 					route->vecOri = r->GetVector(shapeCol);
-					route->bounds = route->vecOri->GetBounds();
+					if (route->vecOri.SetTo(vec))
+						route->bounds = vec->GetBounds();
+					else
+						route->bounds = Math::RectAreaDbl(0, 0, 0, 0);
 					route = this->routeMap.Put(route->routeId, route);
 					if (route)
 					{
@@ -243,7 +247,7 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 	Int32 routeId;
 	Int32 xInd;
 	Int32 yInd;
-	if (this->bounds.br.x > 180 || this->bounds.br.y > 90 || this->bounds.tl.x < -180 || this->bounds.tl.y < -90)
+	if (this->bounds.max.x > 180 || this->bounds.max.y > 90 || this->bounds.min.x < -180 || this->bounds.min.y < -90)
 	{
 		xInd = (Int32)(pt.x / PROJECTMuL);
 		yInd = (Int32)(pt.y / PROJECTMuL);
@@ -271,10 +275,11 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 		{
 			lastRouteId = routeId;
 			route = this->routeMap.Get(routeId);
-			if (route)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (route && route->vecOri.SetTo(vec))
 			{
 				Math::Coord2DDbl nearPt;
-				thisDist = route->vecOri->CalSqrDistance(pt, nearPt);
+				thisDist = vec->CalSqrDistance(pt, nearPt);
 				if (thisDist < minDist)
 				{
 					minDist = thisDist;
@@ -304,7 +309,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 	Int32 routeId;
 	Int32 xInd;
 	Int32 yInd;
-	if (this->bounds.br.x > 180 || this->bounds.br.y > 90 || this->bounds.tl.x < -180 || this->bounds.tl.y < -90)
+	if (this->bounds.max.x > 180 || this->bounds.max.y > 90 || this->bounds.min.x < -180 || this->bounds.min.y < -90)
 	{
 		xInd = (Int32)(pt.x / PROJECTMuL);
 		yInd = (Int32)(pt.y / PROJECTMuL);
@@ -332,10 +337,11 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 		{
 			lastRouteId = routeId;
 			route = this->routeMap.Get(routeId);
-			if (route && route->speedLimit > speedLimit)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (route && route->speedLimit > speedLimit && route->vecOri.SetTo(vec))
 			{
 				Math::Coord2DDbl nearPt;
-				thisDist = route->vecOri->CalSqrDistance(pt, nearPt);
+				thisDist = vec->CalSqrDistance(pt, nearPt);
 				if (thisDist <= distComp)
 				{
 					speedLimit = route->speedLimit;

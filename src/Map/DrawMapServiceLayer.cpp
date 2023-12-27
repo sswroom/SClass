@@ -300,13 +300,13 @@ Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSe
 	if (this->dispId == id && this->dispImage)
 	{
 		Math::Geometry::Vector2D *vec;
-		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->dispImage, this->dispBounds.tl, this->dispBounds.br, false, this->dispImageURL, 0, 0));
+		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->dispImage, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
 		return vec;
 	}
 	else if (this->lastId == id && this->lastImage)
 	{
 		Math::Geometry::Vector2D *vec;
-		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->lastImage, this->lastBounds.tl, this->lastBounds.br, false, this->lastImageURL, 0, 0));
+		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->lastImage, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
 		return vec;
 	}
 	return 0;

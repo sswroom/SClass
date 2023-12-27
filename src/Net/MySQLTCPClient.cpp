@@ -292,7 +292,7 @@ namespace Net
 			return 0;
 		}
 
-		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 		{
 			/////////////////////////////
 			return 0;
@@ -820,7 +820,7 @@ namespace Net
 			return len;
 		}
 
-		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
@@ -1008,7 +1008,7 @@ namespace Net
 				{
 					Math::WKBReader wkb(ReadUInt32(&this->currRow->rowBuff[col->ofst]));
 					NotNullPtr<Math::Geometry::Vector2D> vec;
-					if (vec.Set(wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0)))
+					if (wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0).SetTo(vec))
 					{
 						item->SetVectorDirect(vec);
 						return true;

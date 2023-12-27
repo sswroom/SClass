@@ -216,13 +216,13 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 				if (i == 0)
 				{
-					min = box.tl;
-					max = box.br;
+					min = box.min;
+					max = box.max;
 				}
 				else
 				{
-					min = min.Min(box.tl);
-					max = max.Max(box.br);
+					min = min.Min(box.min);
+					max = max.Max(box.max);
 				}
 
 				WriteMInt32(buff, (Int32)(fileSize >> 1));
@@ -291,15 +291,15 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 			if (i == 0)
 			{
-				min = box.tl;
-				max = box.br;
+				min = box.min;
+				max = box.max;
 				zMin = ranges[0];
 				zMax = ranges[1];
 			}
 			else
 			{
-				min = min.Min(box.tl);
-				max = max.Max(box.br);
+				min = min.Min(box.min);
+				max = max.Max(box.max);
 				if (ranges[1] > zMax)
 				{
 					zMax = ranges[1];
@@ -361,13 +361,13 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 			if (i == 0)
 			{
-				min = box.tl;
-				max = box.br;
+				min = box.min;
+				max = box.max;
 			}
 			else
 			{
-				min = min.Min(box.tl);
-				max = max.Max(box.br);
+				min = min.Min(box.min);
+				max = max.Max(box.max);
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));

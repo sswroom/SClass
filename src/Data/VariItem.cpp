@@ -807,11 +807,11 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr() const
 	return this->val.byteArr->Clone().Ptr();
 }
 
-Math::Geometry::Vector2D *Data::VariItem::GetAsNewVector() const
+Optional<Math::Geometry::Vector2D> Data::VariItem::GetAsNewVector() const
 {
 	if (this->itemType == ItemType::Vector)
 	{
-		return this->val.vector->Clone().Ptr();
+		return this->val.vector->Clone();
 	}
 	else if (this->itemType == ItemType::CStr)
 	{
@@ -841,12 +841,12 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAndRemoveByteArr()
 	return this->val.byteArr;
 }
 
-Math::Geometry::Vector2D *Data::VariItem::GetAndRemoveVector()
+Optional<Math::Geometry::Vector2D> Data::VariItem::GetAndRemoveVector()
 {
 	if (this->itemType != ItemType::Vector)
 		return 0;
 	this->itemType = ItemType::Null;
-	return this->val.vector.Ptr();
+	return this->val.vector;
 }
 
 Data::UUID *Data::VariItem::GetAndRemoveUUID()
@@ -1519,11 +1519,12 @@ NotNullPtr<Data::VariItem> Data::VariItem::NewByteArr(Data::ReadonlyArray<UInt8>
 	return item;
 }
 
-NotNullPtr<Data::VariItem> Data::VariItem::NewVector(Math::Geometry::Vector2D *vec)
+NotNullPtr<Data::VariItem> Data::VariItem::NewVector(Optional<Math::Geometry::Vector2D> vec)
 {
-	if (vec == 0) return NewNull();
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (!vec.SetTo(nnvec)) return NewNull();
 	ItemValue ival;
-	ival.vector = vec->Clone();
+	ival.vector = nnvec->Clone();
 	NotNullPtr<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
@@ -1539,10 +1540,10 @@ NotNullPtr<Data::VariItem> Data::VariItem::NewUUID(Data::UUID *uuid)
 	return item;
 }
 
-NotNullPtr<Data::VariItem> Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
+NotNullPtr<Data::VariItem> Data::VariItem::NewVectorDirect(Optional<Math::Geometry::Vector2D> vec)
 {
 	NotNullPtr<Math::Geometry::Vector2D> nnvec;
-	if (!nnvec.Set(vec)) return NewNull();
+	if (!vec.SetTo(nnvec)) return NewNull();
 	ItemValue ival;
 	ival.vector = nnvec;
 	NotNullPtr<Data::VariItem> item;
@@ -1781,7 +1782,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NotNullPtr<VariItem> i
 		*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
 		break;
 	case ItemType::Vector:
-		*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector();
+		*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector().OrNull();
 		break;
 	case ItemType::UUID:
 		*(Data::UUID**)ptr = item->GetAsNewUUID();
@@ -1900,11 +1901,11 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, NotNullPtr<V
 	case ItemType::Vector:
 		if (item->GetItemType() == ItemType::Vector)
 		{
-			*(Math::Geometry::Vector2D**)ptr = item->GetAndRemoveVector();
+			*(Math::Geometry::Vector2D**)ptr = item->GetAndRemoveVector().OrNull();
 		}
 		else
 		{
-			*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector();
+			*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector().OrNull();
 		}
 		break;
 	case ItemType::UUID:

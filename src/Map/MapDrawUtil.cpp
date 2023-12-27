@@ -208,20 +208,20 @@ Bool Map::MapDrawUtil::DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage> v
 	
 	if (vimg->IsScnCoord())
 	{
-		vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &bounds.tl.x, &bounds.tl.y, &bounds.br.x, &bounds.br.y);
-		pts[0] = bounds.tl + ofst;
-		pts[1].x = bounds.tl.x + ofst.x;
-		pts[1].y = bounds.br.y + ofst.y;
-		pts[2] = bounds.br + ofst;
-		pts[3].x = bounds.br.x + ofst.x;
-		pts[3].y = bounds.tl.y + ofst.y;
-		pts[4] = bounds.tl + ofst;
+		vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &bounds.min.x, &bounds.min.y, &bounds.max.x, &bounds.max.y);
+		pts[0] = bounds.min + ofst;
+		pts[1].x = bounds.min.x + ofst.x;
+		pts[1].y = bounds.max.y + ofst.y;
+		pts[2] = bounds.max + ofst;
+		pts[3].x = bounds.max.x + ofst.x;
+		pts[3].y = bounds.min.y + ofst.y;
+		pts[4] = bounds.min + ofst;
 	}
 	else
 	{
 		bounds = vimg->GetBounds();
-		Math::Coord2DDbl pt1 = view->MapXYToScnXY(bounds.tl);
-		Math::Coord2DDbl pt2 = view->MapXYToScnXY(bounds.br);
+		Math::Coord2DDbl pt1 = view->MapXYToScnXY(bounds.min);
+		Math::Coord2DDbl pt2 = view->MapXYToScnXY(bounds.max);
 		pts[0] = pt1 + ofst;
 		pts[1].x = pt1.x + ofst.x;
 		pts[1].y = pt2.y + ofst.y;

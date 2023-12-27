@@ -56,6 +56,8 @@ namespace Math
 			virtual Bool JoinVector(NotNullPtr<const Vector2D> vec) = 0;
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };
+			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const = 0;
+			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const = 0;
 			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter) = 0;
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const = 0;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;

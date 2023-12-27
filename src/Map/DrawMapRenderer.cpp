@@ -218,10 +218,10 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		Int32 toUpdate;
 
 		////////////////////////////
-		Double left = rect.tl.x;
-		Double top = rect.tl.y;
-		Double right = rect.br.x;
-		Double bottom = rect.br.y;
+		Double left = rect.min.x;
+		Double top = rect.min.y;
+		Double right = rect.max.x;
+		Double bottom = rect.max.y;
 
 		visibleSize = 0;
 		size = 0;
@@ -488,10 +488,10 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		if (found == 0)
 		{
 			////////////////////////////
-			Double left = rect.tl.x;
-			Double top = rect.tl.y;
-			Double right = rect.br.x;
-			Double bottom = rect.br.y;
+			Double left = rect.min.x;
+			Double top = rect.min.y;
+			Double right = rect.max.x;
+			Double bottom = rect.max.y;
 
 			Math::Coord2DDbl lastPt;
 			Math::Coord2DDbl thisPt;
@@ -697,40 +697,40 @@ void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				overlapped = true;
 				if (denv->labels[i].xOfst == 0)
 				{
-					rect.tl = scnPt - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x + 1 + OSInt2Double(denv->labels[i].xOfst >> 1);
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x + 1 + OSInt2Double(denv->labels[i].xOfst >> 1);
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x - szThis.x - 1 - OSInt2Double(denv->labels[i].xOfst >> 1);
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - szThis.x - 1 - OSInt2Double(denv->labels[i].xOfst >> 1);
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y - szThis.y - 1 - OSInt2Double(denv->labels[i].yOfst >> 1);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y - szThis.y - 1 - OSInt2Double(denv->labels[i].yOfst >> 1);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y + 1 + OSInt2Double(denv->labels[i].yOfst >> 1);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y + 1 + OSInt2Double(denv->labels[i].yOfst >> 1);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
@@ -992,8 +992,8 @@ void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
 				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
 				{
-					rect.tl = scnPt - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 					if (!overlapped)
@@ -1012,8 +1012,8 @@ void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 					j = 1;
 					while (j)
 					{
-						rect.tl = scnPt - (szThis * 0.5);
-						rect.br = rect.tl + szThis;
+						rect.min = scnPt - (szThis * 0.5);
+						rect.max = rect.min + szThis;
 
 						overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 						if (!overlapped || --tryCnt <= 0)
@@ -1133,12 +1133,12 @@ void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 						{
 							n = 0;
 							tmpV = thisPts[--m];
-							if (OSInt2Double(tmpV - LBLMINDIST) < rect.br.y && OSInt2Double(tmpV + LBLMINDIST) > rect.tl.y)
+							if (OSInt2Double(tmpV - LBLMINDIST) < rect.max.y && OSInt2Double(tmpV + LBLMINDIST) > rect.min.y)
 							{
 								n++;
 							}
 							tmpV = thisPts[--m];
-							if (OSInt2Double(tmpV - LBLMINDIST) < rect.br.x && OSInt2Double(tmpV + LBLMINDIST) > rect.tl.x)
+							if (OSInt2Double(tmpV - LBLMINDIST) < rect.max.x && OSInt2Double(tmpV + LBLMINDIST) > rect.min.x)
 							{
 								n++;
 							}
@@ -1189,40 +1189,40 @@ void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				overlapped = true;
 				if (overlapped)
 				{
-					rect.tl = scnPt  - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt  - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x + 1;
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x + 1;
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x - szThis.x - 1;
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - szThis.x - 1;
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y - szThis.y - 1;
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y - szThis.y - 1;
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y + 1;
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y + 1;
+					rect.max = rect.min + szThis;
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
@@ -1541,8 +1541,8 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		Math::Coord2DDbl tl;
 		Math::Coord2DDbl br;
 		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-		tl = rect.tl;
-		br = rect.GetBR();
+		tl = rect.min;
+		br = rect.max;
 		tl = Math::CoordinateSystem::Convert(envCSys, lyrCSys, tl);
 		br = Math::CoordinateSystem::Convert(envCSys, lyrCSys, br);
 		layer->GetObjectIdsMapXY(denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
@@ -1599,8 +1599,8 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		Math::Coord2DDbl tl;
 		Math::Coord2DDbl br;
 		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-		tl = rect.tl;
-		br = rect.br;
+		tl = rect.min;
+		br = rect.max;
 		layer->GetObjectIdsMapXY(denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
 
 		if ((i = denv->idArr.GetCount()) > 0)
@@ -1659,8 +1659,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
 	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-	tl = rect.tl;
-	br = rect.br;
+	tl = rect.min;
+	br = rect.max;
 	Double spotX;
 	Double spotY;
 	UOSInt maxLabel = denv->env->GetNString();
@@ -1842,8 +1842,8 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
 	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-	tl = rect.tl;
-	br = rect.br;
+	tl = rect.min;
+	br = rect.max;
 	NotNullPtr<Math::CoordinateSystem> lyrCSys = layer->GetCoordinateSystem();
 	NotNullPtr<Math::CoordinateSystem> envCSys = this->env->GetCoordinateSystem();
 	if (!lyrCSys->Equals(envCSys))
@@ -2103,8 +2103,8 @@ void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<M
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
 	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-	tl = rect.tl;
-	br = rect.br;
+	tl = rect.min;
+	br = rect.max;
 	if (geoConv)
 	{
 		tl = Math::CoordinateSystem::Convert(denv->env->GetCoordinateSystem(), coord, tl);
@@ -2151,16 +2151,16 @@ void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<M
 		else
 		{
 			Math::RectAreaDbl mapCoords = vimg->GetBounds();
-			Double t = mapCoords.tl.y;
-			mapCoords.tl.y = mapCoords.br.y;
-			mapCoords.br.y = t;
+			Double t = mapCoords.min.y;
+			mapCoords.min.y = mapCoords.max.y;
+			mapCoords.max.y = t;
 			if (geoConv)
 			{
-				mapCoords.tl = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.tl);
-				mapCoords.br = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.br);
+				mapCoords.min = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.min);
+				mapCoords.max = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.max);
 			}
-			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords.tl);
-			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords.br);
+			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords.min);
+			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords.max);
 		}
 		UInt32 imgTimeMS;
 		NotNullPtr<Media::StaticImage> simg;
@@ -3121,8 +3121,8 @@ void Map::DrawMapRenderer::DrawCharsL(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		szLast.x = szThis.x;
 	}
 
-	realBounds->tl = min;
-	realBounds->br = max;
+	realBounds->min = min;
+	realBounds->max = max;
 }
 
 void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
@@ -3686,8 +3686,8 @@ void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN
 		szLast = szThis;
 	}
 
-	realBounds->tl = min;
-	realBounds->br = max;
+	realBounds->min = min;
+	realBounds->max = max;
 }
 
 Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType)

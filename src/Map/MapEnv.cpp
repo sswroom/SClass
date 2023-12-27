@@ -1466,8 +1466,8 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, OutParam<Math::RectAr
 			lyrCSys = lyr->GetCoordinateSystem();
 			if (!this->csys->Equals(lyrCSys))
 			{
-				thisBounds.tl = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.tl);
-				thisBounds.br = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.br);
+				thisBounds.min = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.min);
+				thisBounds.max = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.max);
 			}
 			if (isFirst)
 			{
@@ -1476,8 +1476,8 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, OutParam<Math::RectAr
 			}
 			else
 			{
-				minMax.tl = minMax.tl.Min(thisBounds.tl);
-				minMax.br = minMax.br.Max(thisBounds.br);
+				minMax.min = minMax.min.Min(thisBounds.min);
+				minMax.max = minMax.max.Max(thisBounds.max);
 			}
 		}	
 	}

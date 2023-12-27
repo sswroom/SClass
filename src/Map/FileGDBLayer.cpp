@@ -127,25 +127,24 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 		while (r->ReadNext())
 		{
 			Int32 objId;
-			Math::Geometry::Vector2D *vec;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::RectAreaDbl bounds;
 
 			objId = r->GetInt32(this->objIdCol);
-			vec = r->GetVector(this->shapeCol);
-			if (vec)
+			if (r->GetVector(this->shapeCol).SetTo(vec))
 			{
-				this->objects.Put(objId, vec);
+				this->objects.Put(objId, vec.Ptr());
 
 				bounds = vec->GetBounds();
 				if (this->minPos.IsZero() && this->maxPos.IsZero())
 				{
-					this->minPos = bounds.tl;
-					this->maxPos = bounds.br;
+					this->minPos = bounds.min;
+					this->maxPos = bounds.max;
 				}
 				else
 				{
-					this->minPos = this->minPos.Min(bounds.tl);
-					this->maxPos = this->maxPos.Max(bounds.br);
+					this->minPos = this->minPos.Min(bounds.min);
+					this->maxPos = this->maxPos.Max(bounds.max);
 				}
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
 				{
@@ -482,7 +481,7 @@ UOSInt Map::FileGDBLReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Math::Geometry::Vector2D *Map::FileGDBLReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::FileGDBLReader::GetVector(UOSInt colIndex)
 {
 	return this->r->GetVector(colIndex);
 }

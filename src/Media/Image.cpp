@@ -297,7 +297,7 @@ Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) con
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, area.tl.x, area.tl.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
+	this->GetImageData(outImg->data, area.min.x, area.min.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;

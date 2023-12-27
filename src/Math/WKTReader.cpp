@@ -81,7 +81,7 @@ Math::WKTReader::~WKTReader()
 	SDEL_TEXT(this->lastError);
 }
 
-Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
+Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 {
 	if (Text::StrStartsWith(wkt, (const UTF8Char*)"POINT"))
 	{

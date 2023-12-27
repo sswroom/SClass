@@ -84,30 +84,30 @@ void Map::TileMapServiceSource::LoadXML()
 						attr = reader.GetAttrib(i);
 						if (attr->name->Equals(UTF8STRC("minx")))
 						{
-							this->bounds.tl.x = attr->value->ToDouble();
+							this->bounds.min.x = attr->value->ToDouble();
 #if defined(VERBOSE)
-							printf("minx = %lf\r\n", this->bounds.tl.x);
+							printf("minx = %lf\r\n", this->bounds.min.x);
 #endif
 						}
 						else if (attr->name->Equals(UTF8STRC("miny")))
 						{
-							this->bounds.tl.y = attr->value->ToDouble();
+							this->bounds.min.y = attr->value->ToDouble();
 #if defined(VERBOSE)
-							printf("miny = %lf\r\n", this->bounds.tl.y);
+							printf("miny = %lf\r\n", this->bounds.min.y);
 #endif
 						}
 						else if (attr->name->Equals(UTF8STRC("maxx")))
 						{
-							this->bounds.br.x = attr->value->ToDouble();
+							this->bounds.max.x = attr->value->ToDouble();
 #if defined(VERBOSE)
-							printf("maxx = %lf\r\n", this->bounds.br.x);
+							printf("maxx = %lf\r\n", this->bounds.max.x);
 #endif
 						}
 						else if (attr->name->Equals(UTF8STRC("maxy")))
 						{
-							this->bounds.br.y = attr->value->ToDouble();
+							this->bounds.max.y = attr->value->ToDouble();
 #if defined(VERBOSE)
-							printf("maxy = %lf\r\n", this->bounds.br.y);
+							printf("maxy = %lf\r\n", this->bounds.max.y);
 #endif
 						}
 					}
@@ -419,10 +419,10 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	
 	rect = rect.OverlapArea(this->bounds);
 	UOSInt ret = 0;
-	Int32 minX = (Int32)((rect.tl.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
-	Int32 maxX = (Int32)((rect.br.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
-	Int32 minY = (Int32)((rect.tl.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
-	Int32 maxY = (Int32)((rect.br.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
+	Int32 minX = (Int32)((rect.min.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
+	Int32 maxX = (Int32)((rect.max.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
+	Int32 minY = (Int32)((rect.min.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
+	Int32 maxY = (Int32)((rect.max.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
 	Int32 i = minY;
 	Int32 j;
 	while (i <= maxY)

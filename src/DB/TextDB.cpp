@@ -176,7 +176,7 @@ public:
 		return len;
 	}
 
-	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
 		return 0;
 	}

@@ -287,13 +287,13 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	writer->ToText(sb, vec);
 	this->txtShape->SetText(sb.ToCString());
 
-	sptr = Text::StrDouble(sbuff, bounds.tl.x);
+	sptr = Text::StrDouble(sbuff, bounds.min.x);
 	this->txtMinX->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, bounds.tl.y);
+	sptr = Text::StrDouble(sbuff, bounds.min.y);
 	this->txtMinY->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, bounds.br.x);
+	sptr = Text::StrDouble(sbuff, bounds.max.x);
 	this->txtMaxX->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrDouble(sbuff, bounds.br.y);
+	sptr = Text::StrDouble(sbuff, bounds.max.y);
 	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
 
 	SDEL_CLASS(this->currVec);

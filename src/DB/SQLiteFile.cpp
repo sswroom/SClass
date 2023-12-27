@@ -328,7 +328,7 @@ void DB::SQLiteReader::UpdateColTypes()
 	}
 }
 
-Math::Geometry::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOSInt buffSize)
+Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize < 8 || buff[0] != 'G' || buff[1] != 'P')
 	{
@@ -502,7 +502,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 			if (data)
 			{
 				NotNullPtr<Math::Geometry::Vector2D> vec;
-				if (vec.Set(DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len)))
+				if (DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len).SetTo(vec))
 				{
 					Math::WKTWriter wkt;
 					wkt.ToText(sb, vec);
@@ -580,7 +580,7 @@ UOSInt DB::SQLiteReader::GetBinarySize(UOSInt colIndex)
 	return (UOSInt)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt, (int)colIndex);
 }
 
-Math::Geometry::Vector2D *DB::SQLiteReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::SQLiteReader::GetVector(UOSInt colIndex)
 {
 	UOSInt leng = GetBinarySize(colIndex);
 	if (leng > 0)

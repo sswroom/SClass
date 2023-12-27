@@ -122,23 +122,23 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 	Int32 i;
 	Int32 j;
 	Double max = 85.051128779806592377796715521925;
-	if (rect.tl.y < -max)
-		rect.tl.y = -max;
-	else if (rect.tl.y > max)
-		rect.tl.y = max;
-	if (rect.br.y < -max)
-		rect.br.y = -max;
-	else if (rect.br.y > max)
-		rect.br.y = max;
+	if (rect.min.y < -max)
+		rect.min.y = -max;
+	else if (rect.min.y > max)
+		rect.min.y = max;
+	if (rect.max.y < -max)
+		rect.max.y = -max;
+	else if (rect.max.y > max)
+		rect.max.y = max;
 	
-	if (rect.tl.x == rect.br.x)
+	if (rect.min.x == rect.max.x)
 		return 0;
-	if (rect.tl.y == rect.br.y)
+	if (rect.min.y == rect.max.y)
 		return 0;
-	Int32 pixX1 = Lon2TileX(rect.tl.x, level);
-	Int32 pixX2 = Lon2TileX(rect.br.x, level);
-	Int32 pixY1 = Lat2TileY(rect.tl.y, level);
-	Int32 pixY2 = Lat2TileY(rect.br.y, level);
+	Int32 pixX1 = Lon2TileX(rect.min.x, level);
+	Int32 pixX2 = Lon2TileX(rect.max.x, level);
+	Int32 pixY1 = Lat2TileY(rect.min.y, level);
+	Int32 pixY2 = Lat2TileY(rect.max.y, level);
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;

@@ -10,66 +10,56 @@ namespace Math
 	class RectAreaDbl
 	{
 	public:
-		Coord2DDbl tl;
-		Coord2DDbl br;
+		Coord2DDbl min;
+		Coord2DDbl max;
 
 		RectAreaDbl() = default;
 
-		RectAreaDbl(Double left, Double top, Double width, Double height)
+		RectAreaDbl(Double minX, Double minY, Double width, Double height)
 		{
-			this->tl = Coord2DDbl(left, top);
-			this->br = Coord2DDbl(left + width, top + height);
+			this->min = Coord2DDbl(minX, minY);
+			this->max = Coord2DDbl(minX + width, minY + height);
 		}
 
-		RectAreaDbl(Coord2DDbl tl, Coord2DDbl br)
+		RectAreaDbl(Coord2DDbl min, Coord2DDbl max)
 		{
-			this->tl = tl;
-			this->br = br;
+			this->min = min;
+			this->max = max;
 		}
 
 		Bool ContainPt(Double x, Double y) const
 		{
-			return (x >= tl.x && x < br.x && y >= tl.y && y < br.y);
+			return (x >= min.x && x < max.x && y >= min.y && y < max.y);
 		}
 
-		Math::Coord2DDbl GetTL() const
+		Math::Coord2DDbl GetMin() const
 		{
-			return this->tl;
+			return this->min;
 		}
 
-		Math::Coord2DDbl GetTR() const
+		Math::Coord2DDbl GetMax() const
 		{
-			return Math::Coord2DDbl(this->br.x, this->tl.y);
-		}
-
-		Math::Coord2DDbl GetBR() const
-		{
-			return this->br;
-		}
-
-		Math::Coord2DDbl GetBL() const
-		{
-			return Math::Coord2DDbl(this->tl.x, this->br.y);
+			return this->max;
 		}
 
 		Math::Coord2DDbl GetCenter() const
 		{
-			return (this->tl + this->br) * 0.5;
+			return (this->min + this->max) * 0.5;
 		}
 
 		Double GetWidth() const
 		{
-			return this->br.x - this->tl.x;
+			return this->max.x - this->min.x;
 		}
 
 		Double GetHeight() const
 		{
-			return this->br.y - this->tl.y;
+			return this->max.y - this->min.y;
 		}
 
 		Math::Size2DDbl GetSize() const
 		{
-			return this->br - this->tl;
+			return this->max - this->min;
 		}
 
 		Double GetArea() const
@@ -79,76 +69,76 @@ namespace Math
 
 		Math::Quadrilateral ToQuadrilateral() const
 		{
-			return Math::Quadrilateral(GetTL(), GetTR(), GetBR(), GetBL());
+			return Math::Quadrilateral(GetMin(), Math::Coord2DDbl(max.x, min.y), GetMax(), Math::Coord2DDbl(min.x, max.y));
 		}
 
 		Math::RectAreaDbl Reorder() const
 		{
-			return Math::RectAreaDbl(this->tl.Min(this->br), this->tl.Max(this->br));
+			return Math::RectAreaDbl(this->min.Min(this->max), this->min.Max(this->max));
 		}
 
 		Math::RectAreaDbl Expand(Double size) const
 		{
-			return Math::RectAreaDbl(this->tl - size, this->br + size);
+			return Math::RectAreaDbl(this->min - size, this->max + size);
 		}
 
 		Bool operator==(Math::RectAreaDbl v) const
 		{
-			return this->tl == v.tl && this->br == v.br;
+			return this->min == v.min && this->max == v.max;
 		}
 
 		Bool operator!=(Math::RectAreaDbl v) const
 		{
-			return this->tl != v.tl || this->br != v.br;
+			return this->min != v.min || this->max != v.max;
 		}
 
 		Math::RectAreaDbl operator*(Double v) const
 		{
-			return Math::RectAreaDbl(this->tl * v, this->br * v);
+			return Math::RectAreaDbl(this->min * v, this->max * v);
 		}
 
 		Math::RectAreaDbl operator/(Double v) const
 		{
-			return Math::RectAreaDbl(this->tl / v, this->br / v);
+			return Math::RectAreaDbl(this->min / v, this->max / v);
 		}
 
 		Bool OverlapOrTouch(RectAreaDbl rect) const
 		{
-			return rect.tl.x <= this->br.x && rect.br.x >= this->tl.x && rect.tl.y <= this->br.y && rect.br.y >= this->tl.y;	
+			return rect.min.x <= this->max.x && rect.max.x >= this->min.x && rect.min.y <= this->max.y && rect.max.y >= this->min.y;	
 		}
 
 		Math::RectAreaDbl OverlapArea(Math::RectAreaDbl area) const
 		{
-			if (area.tl.x <= this->tl.x)
+			if (area.min.x <= this->min.x)
 			{
-				area.tl.x = this->tl.x;
+				area.min.x = this->min.x;
 			}
-			if (area.tl.y <= this->tl.y)
+			if (area.min.y <= this->min.y)
 			{
-				area.tl.y = this->tl.y;
+				area.min.y = this->min.y;
 			}
-			if (area.br.x >= this->br.x)
+			if (area.max.x >= this->max.x)
 			{
-				area.br.x = this->br.x;
+				area.max.x = this->max.x;
 			}
-			if (area.br.y >= this->br.y)
+			if (area.max.y >= this->max.y)
 			{
-				area.br.y = this->br.y;
+				area.max.y = this->max.y;
 			}
 			return area;
 		}
 		
 		Math::RectAreaDbl MergeArea(Math::RectAreaDbl area) const
 		{
-			return Math::RectAreaDbl(this->tl.Min(area.tl), this->br.Max(area.br));
+			return Math::RectAreaDbl(this->min.Min(area.min), this->max.Max(area.max));
 		}
 
 		Math::RectAreaDbl MergePoint(Math::Coord2DDbl pt) const
 		{
-			return Math::RectAreaDbl(this->tl.Min(pt), this->br.Max(pt));
+			return Math::RectAreaDbl(this->min.Min(pt), this->max.Max(pt));
 		}
 
-		static void GetRectArea(RectAreaDbl *area, Coord2DDbl *points, UOSInt nPoints)
+		static RectAreaDbl GetRectArea(Coord2DDbl *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;
 			Coord2DDbl min = points[i];
@@ -158,8 +148,7 @@ namespace Math
 				min = min.Min(points[i]);
 				max = max.Max(points[i]);
 			}
-			area->tl = min;
-			area->br = max;
+			return Math::RectAreaDbl(min, max);
 		}
 
 		static RectAreaDbl FromQuadrilateral(Math::Quadrilateral quad)

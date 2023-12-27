@@ -118,7 +118,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr,
 	{
 		Map::GPSTrack::TrackRecord *track;
 		track = this->currTracks.GetItem(i);
-		if (track->minLon <= rect.br.x && track->maxLon >= rect.tl.x && track->minLat <= rect.br.y && track->maxLat >= rect.tl.y)
+		if (track->minLon <= rect.max.x && track->maxLon >= rect.min.x && track->minLat <= rect.max.y && track->maxLat >= rect.min.y)
 		{
 			outArr->Add((Int64)i);
 			cnt++;
@@ -127,7 +127,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr,
 	}
 	if (this->currTimes.GetCount() > 0)
 	{
-		if (this->currMinLon <= rect.br.x && this->currMaxLon >= rect.tl.x && this->currMinLat <= rect.br.y && this->currMaxLat >= rect.tl.y)
+		if (this->currMinLon <= rect.max.x && this->currMaxLon >= rect.min.x && this->currMinLat <= rect.max.y && this->currMaxLat >= rect.min.y)
 		{
 			outArr->Add((Int64)j);
 			cnt++;
@@ -1333,7 +1333,7 @@ UOSInt Map::GPSDataReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::GPSDataReader::GetVector(UOSInt colIndex)
 {
 	if (this->currRec == 0)
 		return 0;

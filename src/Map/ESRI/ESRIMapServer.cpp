@@ -96,20 +96,20 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 					if (o != 0 && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *ext = (Text::JSONObject*)o;
-						this->initBounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
-						this->initBounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
-						this->initBounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
-						this->initBounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+						this->initBounds.min.x = ext->GetObjectDouble(CSTR("xmin"));
+						this->initBounds.min.y = ext->GetObjectDouble(CSTR("ymin"));
+						this->initBounds.max.x = ext->GetObjectDouble(CSTR("xmax"));
+						this->initBounds.max.y = ext->GetObjectDouble(CSTR("ymax"));
 						hasInit = true;
 					}
 					o = jobj->GetObjectValue(CSTR("fullExtent"));
 					if (o != 0 && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *ext = (Text::JSONObject*)o;
-						this->bounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
-						this->bounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
-						this->bounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
-						this->bounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+						this->bounds.min.x = ext->GetObjectDouble(CSTR("xmin"));
+						this->bounds.min.y = ext->GetObjectDouble(CSTR("ymin"));
+						this->bounds.max.x = ext->GetObjectDouble(CSTR("xmax"));
+						this->bounds.max.y = ext->GetObjectDouble(CSTR("ymax"));
 						if (!hasInit)
 						{
 							this->initBounds = this->bounds;
@@ -217,7 +217,7 @@ Map::ESRI::ESRIMapServer::~ESRIMapServer()
 
 Bool Map::ESRI::ESRIMapServer::IsError() const
 {
-	return (this->bounds.tl.x == this->bounds.br.x || this->bounds.tl.y == this->bounds.br.y);
+	return (this->bounds.min.x == this->bounds.max.x || this->bounds.min.y == this->bounds.max.y);
 }
 
 Bool Map::ESRI::ESRIMapServer::HasTile() const
@@ -401,13 +401,13 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&tolerance="));
 	sptr = Text::StrInt32(sptr, Double2Int32(tolerance));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&mapExtent="));
-	sptr = Text::StrDouble(sptr, bounds.tl.x);
+	sptr = Text::StrDouble(sptr, bounds.min.x);
 	*sptr++ = ',';
-	sptr = Text::StrDouble(sptr, bounds.tl.y);
+	sptr = Text::StrDouble(sptr, bounds.min.y);
 	*sptr++ = ',';
-	sptr = Text::StrDouble(sptr, bounds.br.x);
+	sptr = Text::StrDouble(sptr, bounds.max.x);
 	*sptr++ = ',';
-	sptr = Text::StrDouble(sptr, bounds.br.y);
+	sptr = Text::StrDouble(sptr, bounds.max.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&imageDisplay="));
 	sptr = Text::StrUInt32(sptr, width);
 	*sptr++ = ',';
@@ -500,13 +500,13 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/export?dpi="));
 	sptr = Text::StrDouble(sptr, dpi);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&transparent=true&format=png8&bbox="));
-	sptr = Text::StrDouble(sptr, bounds.tl.x);
+	sptr = Text::StrDouble(sptr, bounds.min.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
-	sptr = Text::StrDouble(sptr, bounds.tl.y);
+	sptr = Text::StrDouble(sptr, bounds.min.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
-	sptr = Text::StrDouble(sptr, bounds.br.x);
+	sptr = Text::StrDouble(sptr, bounds.max.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
-	sptr = Text::StrDouble(sptr, bounds.br.y);
+	sptr = Text::StrDouble(sptr, bounds.max.y);
 	if (srid != 0)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&bboxSR="));

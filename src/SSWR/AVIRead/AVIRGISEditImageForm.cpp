@@ -29,16 +29,16 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	if (vec)
 	{
 		bounds = vec->GetBounds();
-		sptr = Text::StrDouble(sbuff,  bounds.tl.x);
+		sptr = Text::StrDouble(sbuff,  bounds.min.x);
 		this->txtLeft->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, bounds.tl.y);
+		sptr = Text::StrDouble(sbuff, bounds.min.y);
 		this->txtBottom->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, bounds.br.x);
+		sptr = Text::StrDouble(sbuff, bounds.max.x);
 		this->txtRight->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, bounds.br.y);
+		sptr = Text::StrDouble(sbuff, bounds.max.y);
 		this->txtTop->SetText(CSTRP(sbuff, sptr));
-		this->imgMin = bounds.tl;
-		this->imgMax = bounds.br;
+		this->imgMin = bounds.min;
+		this->imgMax = bounds.max;
 		DEL_CLASS(vec);
 	}
 	else

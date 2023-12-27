@@ -210,7 +210,7 @@ public:
 		return 0;
 	}
 
-	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
+	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -252,7 +252,7 @@ public:
 			UOSInt wkbLen = sb.Hex2Bytes(wkb);
 			Math::WKBReader reader(0);
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(reader.ParseWKB(wkb, wkbLen, 0)))
+			if (reader.ParseWKB(wkb, wkbLen, 0).SetTo(vec))
 			{
 				MemFree(wkb);
 				item->SetVectorDirect(vec);

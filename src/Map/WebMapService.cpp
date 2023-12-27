@@ -240,19 +240,19 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 						{
 							if (attr->name->Equals(UTF8STRC("minx")))
 							{
-								crs->bounds.tl.x = attr->value->ToDouble();
+								crs->bounds.min.x = attr->value->ToDouble();
 							}
 							else if (attr->name->Equals(UTF8STRC("miny")))
 							{
-								crs->bounds.tl.y = attr->value->ToDouble();
+								crs->bounds.min.y = attr->value->ToDouble();
 							}
 							else if (attr->name->Equals(UTF8STRC("maxx")))
 							{
-								crs->bounds.br.x = attr->value->ToDouble();
+								crs->bounds.max.x = attr->value->ToDouble();
 							}
 							else if (attr->name->Equals(UTF8STRC("maxy")))
 							{
-								crs->bounds.br.y = attr->value->ToDouble();
+								crs->bounds.max.y = attr->value->ToDouble();
 							}
 							else if (attr->name->Equals(UTF8STRC("CRS")))
 							{
@@ -271,8 +271,8 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 					{
 						if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version->Equals(UTF8STRC("1.3.0")))
 						{
-							crs->bounds.tl = crs->bounds.tl.SwapXY();
-							crs->bounds.br = crs->bounds.br.SwapXY();
+							crs->bounds.min = crs->bounds.min.SwapXY();
+							crs->bounds.max = crs->bounds.max.SwapXY();
 							crs->swapXY = true;
 						}
 						layerCRS.Add(crs);
@@ -411,13 +411,13 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	if (layer == 0 || !layer->queryable || !this->infoTypeNames.GetItem(this->infoType).SetTo(infoFormat) || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat))
 		return false;
 
-	Double x = (coord.x - bounds.tl.x) * width / bounds.GetWidth();
-	Double y = (bounds.br.y - coord.y) * height / bounds.GetHeight();
+	Double x = (coord.x - bounds.min.x) * width / bounds.GetWidth();
+	Double y = (bounds.max.y - coord.y) * height / bounds.GetHeight();
 
 	if (this->currCRS->swapXY)
 	{
-		bounds.tl = bounds.tl.SwapXY();
-		bounds.br = bounds.br.SwapXY();
+		bounds.min = bounds.min.SwapXY();
+		bounds.max = bounds.max.SwapXY();
 	}
 	Text::StringBuilderUTF8 sb;
 	if (this->version->Equals(UTF8STRC("1.1.1")))
@@ -426,13 +426,13 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetFeatureInfo&layers="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
 		sb.AppendC(UTF8STRC("&bbox="));
-		sb.AppendDouble(bounds.tl.x);
+		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.tl.y);
+		sb.AppendDouble(bounds.min.y);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.x);
+		sb.AppendDouble(bounds.max.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.y);
+		sb.AppendDouble(bounds.max.y);
 		sb.AppendC(UTF8STRC("&width="));
 		sb.AppendU32(width);
 		sb.AppendC(UTF8STRC("&height="));
@@ -457,13 +457,13 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetFeatureInfo&layers="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
 		sb.AppendC(UTF8STRC("&bbox="));
-		sb.AppendDouble(bounds.tl.x);
+		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.tl.y);
+		sb.AppendDouble(bounds.min.y);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.x);
+		sb.AppendDouble(bounds.max.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.y);
+		sb.AppendDouble(bounds.max.y);
 		sb.AppendC(UTF8STRC("&width="));
 		sb.AppendU32(width);
 		sb.AppendC(UTF8STRC("&height="));
@@ -547,8 +547,8 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		return 0;
 	if (this->currCRS->swapXY)
 	{
-		bounds.tl = bounds.tl.SwapXY();
-		bounds.br = bounds.br.SwapXY();
+		bounds.min = bounds.min.SwapXY();
+		bounds.max = bounds.max.SwapXY();
 	}
 	if (this->version->Equals(UTF8STRC("1.1.1")))
 	{
@@ -557,13 +557,13 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetMap&layers="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
 		sb.AppendC(UTF8STRC("&bbox="));
-		sb.AppendDouble(bounds.tl.x);
+		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.tl.y);
+		sb.AppendDouble(bounds.min.y);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.x);
+		sb.AppendDouble(bounds.max.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.y);
+		sb.AppendDouble(bounds.max.y);
 		sb.AppendC(UTF8STRC("&width="));
 		sb.AppendU32(width);
 		sb.AppendC(UTF8STRC("&height="));
@@ -580,13 +580,13 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetMap&layers="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
 		sb.AppendC(UTF8STRC("&bbox="));
-		sb.AppendDouble(bounds.tl.x);
+		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.tl.y);
+		sb.AppendDouble(bounds.min.y);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.x);
+		sb.AppendDouble(bounds.max.x);
 		sb.AppendC(UTF8STRC("%2C"));
-		sb.AppendDouble(bounds.br.y);
+		sb.AppendDouble(bounds.max.y);
 		sb.AppendC(UTF8STRC("&width="));
 		sb.AppendU32(width);
 		sb.AppendC(UTF8STRC("&height="));

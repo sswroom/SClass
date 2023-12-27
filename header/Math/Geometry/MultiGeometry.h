@@ -65,8 +65,8 @@ namespace Math
 				Data::ArrayIterator<NotNullPtr<T>> it = this->Iterator();
 				if (!it.HasNext())
 				{
-					bounds.tl = Math::Coord2DDbl(0, 0);
-					bounds.br = Math::Coord2DDbl(0, 0);
+					bounds.min = Math::Coord2DDbl(0, 0);
+					bounds.max = Math::Coord2DDbl(0, 0);
 				}
 				else
 				{

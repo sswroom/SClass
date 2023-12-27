@@ -236,20 +236,20 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, N
 
 UOSInt Map::SPDLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	rect.tl.x = Double2Int32(rect.tl.x * 200000.0 / mapRate);
-	rect.tl.y = Double2Int32(rect.tl.y * 200000.0 / mapRate);
-	rect.br.x = Double2Int32(rect.br.x * 200000.0 / mapRate);
-	rect.br.y = Double2Int32(rect.br.y * 200000.0 / mapRate);
+	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
+	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
+	rect.max.x = Double2Int32(rect.max.x * 200000.0 / mapRate);
+	rect.max.y = Double2Int32(rect.max.y * 200000.0 / mapRate);
 	rect = rect.Reorder();
 	Int32 leftBlk;
 	Int32 rightBlk;
 	Int32 topBlk;
 	Int32 bottomBlk;
 //	this->mut->Lock();
-	leftBlk = rect.tl.x / blkScale;
-	rightBlk = rect.br.x / blkScale;
-	topBlk = rect.tl.y / blkScale;
-	bottomBlk = rect.br.y / blkScale;
+	leftBlk = rect.min.x / blkScale;
+	rightBlk = rect.max.x / blkScale;
+	topBlk = rect.min.y / blkScale;
+	bottomBlk = rect.max.y / blkScale;
 
 	UOSInt textSize;
 	Int32 i;
@@ -373,8 +373,8 @@ UOSInt Map::SPDLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Name
 UOSInt Map::SPDLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
-	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.tl.x), Double2Int32(rect.tl.y)),
-		 Math::Coord2D<Int32>(Double2Int32(rect.br.x), Double2Int32(rect.br.y))), keepEmpty);
+	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
+		 Math::Coord2D<Int32>(Double2Int32(rect.max.x), Double2Int32(rect.max.y))), keepEmpty);
 }
 
 Int64 Map::SPDLayer::GetObjectIdMax() const

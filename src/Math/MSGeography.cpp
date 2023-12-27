@@ -13,17 +13,14 @@
 #include <stdio.h>
 // https://sqlprotocoldoc.blob.core.windows.net/productionsqlarchives/MS-SSCLRT/%5bMS-SSCLRT%5d.pdf
 
-Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, UInt32 *srIdOut)
+Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, OptOut<UInt32> srIdOut)
 {
 	if (buffSize < 6)
 	{
 		return 0;
 	}
 	UInt32 srid = ReadUInt32(&buffPtr[0]);
-	if (srIdOut)
-	{
-		*srIdOut = srid;
-	}
+	srIdOut.Set(srid);
 	if (buffPtr[4] == 1 || buffPtr[4] == 2) //version 1 or 2
 	{
 		if (buffPtr[5] == 0x0C) //Point 2D

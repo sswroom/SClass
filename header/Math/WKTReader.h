@@ -17,7 +17,7 @@ namespace Math
 		WKTReader(UInt32 srid);
 		~WKTReader();
 
-		Math::Geometry::Vector2D *ParseWKT(const UTF8Char *wkt);
+		Optional<Math::Geometry::Vector2D> ParseWKT(const UTF8Char *wkt);
 		const UTF8Char *GetLastError();
 	};
 }

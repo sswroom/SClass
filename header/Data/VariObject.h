@@ -44,9 +44,9 @@ namespace Data
 		void SetItemU64(const UTF8Char *name, UInt64 val);
 		void SetItemBool(const UTF8Char *name, Bool val);
 		void SetItemByteArray(const UTF8Char *name, const UInt8 *arr, UOSInt cnt);
-		void SetItemVector(const UTF8Char *name, Math::Geometry::Vector2D *vec);
+		void SetItemVector(const UTF8Char *name, Optional<Math::Geometry::Vector2D> vec);
 		void SetItemUUID(const UTF8Char *name, Data::UUID *uuid);
-		void SetItemVectorDirect(const UTF8Char *name, Math::Geometry::Vector2D *vec);
+		void SetItemVectorDirect(const UTF8Char *name, Optional<Math::Geometry::Vector2D> vec);
 		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);
 
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;

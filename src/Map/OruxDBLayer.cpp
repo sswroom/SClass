@@ -165,10 +165,10 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outA
 	{
 		rect = rect.Reorder();
 		diff = (lyr->mapMax - lyr->mapMin) / lyr->max.ToDouble();
-		minX = (Int32)((rect.tl.x - lyr->mapMin.x) / diff.x);
-		minY = (Int32)((lyr->mapMax.y - rect.br.y) / diff.y);
-		maxX = 1 + (Int32)((rect.br.x - lyr->mapMin.x) / diff.x);
-		maxY = 1 + (Int32)((lyr->mapMax.y - rect.tl.y) / diff.y);
+		minX = (Int32)((rect.min.x - lyr->mapMin.x) / diff.x);
+		minY = (Int32)((lyr->mapMax.y - rect.max.y) / diff.y);
+		maxX = 1 + (Int32)((rect.max.x - lyr->mapMin.x) / diff.x);
+		maxY = 1 + (Int32)((lyr->mapMax.y - rect.min.y) / diff.y);
 		if (maxX < 0)
 			return 0;
 		if (maxY < 0)

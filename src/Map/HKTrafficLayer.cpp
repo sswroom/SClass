@@ -772,10 +772,10 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 			road->vec = lineInfo->pl->Clone().Ptr();
 			Math::RectAreaDbl bounds;
 			bounds = road->vec->GetBounds();
-			road->minX = bounds.tl.x;
-			road->minY = bounds.tl.y;
-			road->maxX = bounds.br.x;
-			road->maxY = bounds.br.y;
+			road->minX = bounds.min.x;
+			road->minY = bounds.min.y;
+			road->maxX = bounds.max.x;
+			road->maxY = bounds.max.y;
 		}
 		else
 		{
@@ -959,21 +959,21 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 							if (isFirst)
 							{
 								isFirst = false;
-								this->minX = minMax.tl.x;
-								this->minY = minMax.tl.y;
-								this->maxX = minMax.br.x;
-								this->maxY = minMax.br.y;
+								this->minX = minMax.min.x;
+								this->minY = minMax.min.y;
+								this->maxX = minMax.max.x;
+								this->maxY = minMax.max.y;
 							}
 							else
 							{
-								if (minMax.tl.x < this->minX)
-									this->minX = minMax.tl.x;
-								if (minMax.tl.y < this->minY)
-									this->minY = minMax.tl.y;
-								if (minMax.br.x > this->maxX)
-									this->maxX = minMax.br.x;
-								if (minMax.br.y > this->maxY)
-									this->maxY = minMax.br.y;
+								if (minMax.min.x < this->minX)
+									this->minX = minMax.min.x;
+								if (minMax.min.y < this->minY)
+									this->minY = minMax.min.y;
+								if (minMax.max.x > this->maxX)
+									this->maxX = minMax.max.x;
+								if (minMax.max.y > this->maxY)
+									this->maxY = minMax.max.y;
 							}
 
 							lineInfo = MemAlloc(CenterlineInfo, 1);
@@ -1165,7 +1165,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> o
 	while (i < j)
 	{
 		road = this->roadMap.GetItem(i);
-		if (road->vec && road->minX <= rect.br.x && road->maxX >= rect.tl.x && road->minY <= rect.br.y && road->maxY >= rect.tl.y)
+		if (road->vec && road->minX <= rect.max.x && road->maxX >= rect.min.x && road->minY <= rect.max.y && road->maxY >= rect.min.y)
 		{
 			outArr->Add(road->objId);
 			retCnt++;

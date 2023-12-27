@@ -48,7 +48,7 @@ namespace DB
 		Bool IsError();
 		NotNullPtr<Text::String> GetFileName();
 
-		static Math::Geometry::Vector2D *GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
+		static Optional<Math::Geometry::Vector2D> GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
 		
 		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		static Optional<DBTool> CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
@@ -93,7 +93,7 @@ namespace DB
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
-		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
+		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);

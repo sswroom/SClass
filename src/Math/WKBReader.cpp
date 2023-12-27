@@ -46,7 +46,7 @@ Math::WKBReader::~WKBReader()
 
 }
 
-Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSInt *sizeUsed)
+Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, OptOut<UOSInt> sizeUsed)
 {
 	if (wkbLen < 5)
 	{
@@ -105,10 +105,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 		{
 			Math::Geometry::Point *pt;
 			NEW_CLASS(pt, Math::Geometry::Point(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst + 16;
-			}
+			sizeUsed.Set(ofst + 16);
 			return pt;
 		}
 	case 1001: //PointZ
@@ -119,10 +116,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 		{
 			Math::Geometry::PointZ *pt;
 			NEW_CLASS(pt, Math::Geometry::PointZ(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]), readDouble(&wkb[ofst + 16])));
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst + 24;
-			}
+			sizeUsed.Set(ofst + 24);
 			return pt;
 		}
 	case 2001: //PointM
@@ -133,10 +127,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 		{
 			Math::Geometry::Point *pt;
 			NEW_CLASS(pt, Math::Geometry::Point(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst + 24;
-			}
+			sizeUsed.Set(ofst + 24);
 			return pt;
 		}
 	case 3001: //PointZM
@@ -147,10 +138,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 		{
 			Math::Geometry::PointZ *pt;
 			NEW_CLASS(pt, Math::Geometry::PointZ(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]), readDouble(&wkb[ofst + 16])));
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst + 32;
-			}
+			sizeUsed.Set(ofst + 32);
 			return pt;
 		}
 	case 2: //LineString
@@ -173,10 +161,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 16;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 1002: //LineStringZ
@@ -202,10 +187,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 24;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 2002: //LineStringM
@@ -231,10 +213,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 24;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 3002: //LineStringZM
@@ -262,10 +241,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 32;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 3: //Polygon
@@ -312,10 +288,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				pg->AddGeometry(lr);
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pg;
 		}
 	case 1003: //PolygonZ
@@ -365,10 +338,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				pg->AddGeometry(lr);
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pg;
 		}
 	case 2003: //PolygonM
@@ -418,10 +388,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				pg->AddGeometry(lr);
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pg;
 		}
 	case 3003: //PolygonZM
@@ -473,10 +440,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				pg->AddGeometry(lr);
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pg;
 		}
 	case 6: //MultiPolygon
@@ -513,7 +477,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nPolygon)
 			{
-				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(mpg);
 					return 0;
@@ -532,10 +496,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				}
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return mpg;
 		}
 	case 7: //GeometryCollection
@@ -572,7 +533,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nGeometry)
 			{
-				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(mpg);
 					return 0;
@@ -584,10 +545,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				}
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return mpg;
 		}
 	case 8: //CircularString
@@ -610,10 +568,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 16;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 1008: //CircularStringZ
@@ -639,10 +594,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 24;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 2008: //CircularStringM
@@ -668,10 +620,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 24;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 3008: //CircularStringZM
@@ -699,10 +648,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				ofst += 32;
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return pl;
 		}
 	case 9: //CompoundCurve
@@ -739,7 +685,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nPolyline)
 			{
-				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(cpl);
 					return 0;
@@ -762,10 +708,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				}
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return cpl;
 		}
 	case 10: //CurvePolygon
@@ -802,7 +745,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nCPolyline)
 			{
-				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(cpg);
 					return 0;
@@ -825,10 +768,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				}
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return cpg;
 		}
 	case 12: //MultiSurface
@@ -865,7 +805,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nCPolyline)
 			{
-				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(cpg);
 					return 0;
@@ -888,10 +828,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				}
 				i++;
 			}
-			if (sizeUsed)
-			{
-				*sizeUsed = ofst;
-			}
+			sizeUsed.Set(ofst);
 			return cpg;
 		}
 	default:

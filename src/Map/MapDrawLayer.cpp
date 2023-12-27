@@ -235,7 +235,7 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 				this->GetAllObjectIds(idList, 0);
 		
 		Double tVal = minMax.GetArea() / UOSInt2Double(idList.GetCount());
-		if (minMax.br.x > 180)
+		if (minMax.max.x > 180)
 		{
 			blkSize = Double2Int32(Math_Sqrt(tVal) * 3);
 			if (blkSize < 5000)
@@ -879,7 +879,7 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
-		if (!vec.Set(this->GetVector(0)))
+		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
@@ -904,7 +904,7 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilder
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
-		if (!vec.Set(this->GetVector(0)))
+		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
 		Bool succ = writer.ToText(sb, vec);
@@ -919,7 +919,7 @@ Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
-		if (!vec.Set(this->GetVector(0)))
+		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
@@ -942,7 +942,7 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
-		if (!vec.Set(this->GetVector(0)))
+		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
@@ -998,7 +998,7 @@ UOSInt Map::MapLayerReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return 0;

@@ -93,12 +93,12 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 				CalDispRect(srcRect, destRect);
 			}
 			UInt8 *dptr = this->bgBuff;
-			Int32 iLeft = (Int32)srcRect.tl.x;
-			Int32 iTop = (Int32)srcRect.tl.y;
-			dptr = dptr + destRect.tl.y * (OSInt)(this->bgBuffSize.x << 2) + destRect.tl.x * 4;
+			Int32 iLeft = (Int32)srcRect.min.x;
+			Int32 iTop = (Int32)srcRect.min.y;
+			dptr = dptr + destRect.min.y * (OSInt)(this->bgBuffSize.x << 2) + destRect.min.x * 4;
 			Math::Size2DDbl srcSize = srcRect.GetSize();
 			Math::Size2D<OSInt> destSize = destRect.GetSize();
-			resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (OSInt)this->currImageSize.x * 8, (OSInt)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.tl.x - iLeft, srcRect.tl.y - iTop, dptr, (OSInt)this->bgBuffSize.x << 2, (UOSInt)destSize.x, (UOSInt)destSize.y);
+			resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (OSInt)this->currImageSize.x * 8, (OSInt)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (OSInt)this->bgBuffSize.x << 2, (UOSInt)destSize.x, (UOSInt)destSize.y);
 
 			this->DrawFromBG();
 		}
@@ -171,13 +171,13 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 				{
 					CalDispRect(srcRect, destRect);
 				}
-				Int32 iLeft = (Int32)srcRect.tl.x;
-				Int32 iTop = (Int32)srcRect.tl.y;
-				dptr = dptr + destRect.tl.y * (OSInt)bpl + destRect.tl.x * 4;
+				Int32 iLeft = (Int32)srcRect.min.x;
+				Int32 iTop = (Int32)srcRect.min.y;
+				dptr = dptr + destRect.min.y * (OSInt)bpl + destRect.min.x * 4;
 				Math::Size2DDbl srcSize = srcRect.GetSize();
 				if (srcSize.x > 0 && srcSize.y > 0)
 				{
-					resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (OSInt)this->currImageSize.x * 8, (OSInt)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.tl.x - iLeft, srcRect.tl.y - iTop, dptr, (OSInt)bpl, (UOSInt)destRect.GetWidth(), (UOSInt)destRect.GetHeight());
+					resizer->Resize(this->imgBuff + iLeft * 8 + iTop * (OSInt)this->currImageSize.x * 8, (OSInt)this->currImageSize.x << 3, srcSize.x, srcSize.y, srcRect.min.x - iLeft, srcRect.min.y - iTop, dptr, (OSInt)bpl, (UOSInt)destRect.GetWidth(), (UOSInt)destRect.GetHeight());
 				}
 
 				this->LockSurfaceEnd();
@@ -190,37 +190,37 @@ void UI::GUIPictureBoxDD::CalDispRect(NotNullPtr<Math::RectAreaDbl> srcRect, Not
 {
 	if (this->currImage == 0)
 	{
-		srcRect->tl = Math::Coord2DDbl(0, 0);
-		srcRect->br = Math::Coord2DDbl(0, 0);
-		destRect->tl = Math::Coord2D<OSInt>(0, 0);
-		destRect->br = Math::Coord2D<OSInt>(0, 0);
+		srcRect->min = Math::Coord2DDbl(0, 0);
+		srcRect->max = Math::Coord2DDbl(0, 0);
+		destRect->min = Math::Coord2D<OSInt>(0, 0);
+		destRect->max = Math::Coord2D<OSInt>(0, 0);
 		return;
 	}
 
-	srcRect->tl = this->zoomCenter - this->bkBuffSize.ToDouble() * 0.5 / this->zoomScale;
-	srcRect->br = srcRect->tl + this->bkBuffSize.ToDouble() / this->zoomScale;
-	destRect->tl = Math::Coord2D<OSInt>(0, 0);
-	destRect->br = Math::Coord2D<OSInt>((OSInt)this->bkBuffSize.x, (OSInt)this->bkBuffSize.y);
+	srcRect->min = this->zoomCenter - this->bkBuffSize.ToDouble() * 0.5 / this->zoomScale;
+	srcRect->max = srcRect->min + this->bkBuffSize.ToDouble() / this->zoomScale;
+	destRect->min = Math::Coord2D<OSInt>(0, 0);
+	destRect->max = Math::Coord2D<OSInt>((OSInt)this->bkBuffSize.x, (OSInt)this->bkBuffSize.y);
 
-	if (srcRect->tl.x < 0)
+	if (srcRect->min.x < 0)
 	{
-		destRect->tl.x += Double2OSInt(-srcRect->tl.x * this->zoomScale);
-		srcRect->tl.x = 0;
+		destRect->min.x += Double2OSInt(-srcRect->min.x * this->zoomScale);
+		srcRect->min.x = 0;
 	}
-	if (srcRect->br.x > UOSInt2Double(this->currImageSize.x))
+	if (srcRect->max.x > UOSInt2Double(this->currImageSize.x))
 	{
-		srcRect->br.x = UOSInt2Double(this->currImageSize.x);
-		destRect->br.x = Double2OSInt(srcRect->GetWidth() * this->zoomScale) + destRect->tl.x;
+		srcRect->max.x = UOSInt2Double(this->currImageSize.x);
+		destRect->max.x = Double2OSInt(srcRect->GetWidth() * this->zoomScale) + destRect->min.x;
 	}
-	if (srcRect->tl.y < 0)
+	if (srcRect->min.y < 0)
 	{
-		destRect->tl.y = Double2OSInt(-srcRect->tl.y * this->zoomScale);
-		srcRect->tl.y = 0;
+		destRect->min.y = Double2OSInt(-srcRect->min.y * this->zoomScale);
+		srcRect->min.y = 0;
 	}
-	if (srcRect->br.y > UOSInt2Double(this->currImageSize.y))
+	if (srcRect->max.y > UOSInt2Double(this->currImageSize.y))
 	{
-		srcRect->br.y = UOSInt2Double(this->currImageSize.y);
-		destRect->br.y = Double2OSInt(srcRect->GetHeight() * this->zoomScale) + destRect->tl.y;
+		srcRect->max.y = UOSInt2Double(this->currImageSize.y);
+		destRect->max.y = Double2OSInt(srcRect->GetHeight() * this->zoomScale) + destRect->min.y;
 	}
 }
 
@@ -696,12 +696,12 @@ void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
 			return;
 		}
 		CalDispRect(srcRect, destRect);
-		mousePoint = srcRect.tl + (pos - destRect.tl).ToDouble() * srcRect.GetSize() / destRect.GetSize().ToDouble();
+		mousePoint = srcRect.min + (pos - destRect.min).ToDouble() * srcRect.GetSize() / destRect.GetSize().ToDouble();
 		zoomScale = zoomScale * 2;
 		UpdateZoomRange();
 
 		CalDispRect(srcRect, destRect);
-		this->zoomCenter -= (pos.ToDouble() - (mousePoint - srcRect.tl) * destRect.GetSize().ToDouble() / srcRect.GetSize() - destRect.tl.ToDouble()) / zoomScale;
+		this->zoomCenter -= (pos.ToDouble() - (mousePoint - srcRect.min) * destRect.GetSize().ToDouble() / srcRect.GetSize() - destRect.min.ToDouble()) / zoomScale;
 		if (this->zoomCenter.x < zoomMinX)
 			this->zoomCenter.x = zoomMinX;
 		if (this->zoomCenter.x > zoomMaxX)
@@ -721,7 +721,7 @@ void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
 			return;
 		}
 		CalDispRect(srcRect, destRect);
-		mousePoint = srcRect.tl + (pos - destRect.tl).ToDouble() * srcRect.GetSize() / destRect.GetSize().ToDouble();
+		mousePoint = srcRect.min + (pos - destRect.min).ToDouble() * srcRect.GetSize() / destRect.GetSize().ToDouble();
 
 		zoomScale = zoomScale * 0.5;
 		if (zoomScale < this->zoomMinScale)
@@ -731,7 +731,7 @@ void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
 		UpdateZoomRange();
 
 		CalDispRect(srcRect, destRect);
-		this->zoomCenter -= (pos.ToDouble() - (mousePoint - srcRect.tl) * destRect.GetSize().ToDouble() / srcRect.GetSize() - destRect.tl.ToDouble()) / zoomScale;
+		this->zoomCenter -= (pos.ToDouble() - (mousePoint - srcRect.min) * destRect.GetSize().ToDouble() / srcRect.GetSize() - destRect.min.ToDouble()) / zoomScale;
 
 		if (this->zoomCenter.x < zoomMinX)
 			this->zoomCenter.x = zoomMinX;
@@ -1126,7 +1126,7 @@ Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
 		y = destRect[1] + destRect[3];
 	}*/
 
-	return srcRect.tl + (scnPos - destRect.tl).ToDouble() * srcRect.GetSize() / destRect.GetSize().ToDouble();
+	return srcRect.min + (scnPos - destRect.min).ToDouble() * srcRect.GetSize() / destRect.GetSize().ToDouble();
 }
 
 Math::Coord2DDbl UI::GUIPictureBoxDD::Image2ScnPos(Math::Coord2DDbl imgPos)
@@ -1152,11 +1152,11 @@ Math::Coord2DDbl UI::GUIPictureBoxDD::Image2ScnPos(Math::Coord2DDbl imgPos)
 			currCenter.y = this->zoomMaxY;
 		
 		Math::Coord2DDbl sub = (currCenter - this->zoomCenter) * this->zoomScale;
-		return destRect.tl.ToDouble() + (imgPos - srcRect.tl) * destRect.GetSize().ToDouble() / srcRect.GetSize() - sub;
+		return destRect.min.ToDouble() + (imgPos - srcRect.min) * destRect.GetSize().ToDouble() / srcRect.GetSize() - sub;
 	}
 	else
 	{
-		return destRect.tl.ToDouble() + (imgPos - srcRect.tl) * destRect.GetSize().ToDouble() / srcRect.GetSize();
+		return destRect.min.ToDouble() + (imgPos - srcRect.min) * destRect.GetSize().ToDouble() / srcRect.GetSize();
 	}
 }
 

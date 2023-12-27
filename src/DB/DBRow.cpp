@@ -148,7 +148,7 @@ Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, const Data::Timestamp &ts)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Math::Geometry::Vector2D *vec)
+Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Optional<Math::Geometry::Vector2D> vec)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
@@ -157,13 +157,14 @@ Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Math::Geometry::Vector2D
 	}
 	SDEL_CLASS(field->currentData.vec);
 	field->currentChanged = true;
-	if (vec == 0)
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (!vec.SetTo(nnvec))
 	{
 		field->currentNull = true;
 	}
 	else
 	{
-		field->currentData.vec = vec->Clone().Ptr();
+		field->currentData.vec = nnvec->Clone().Ptr();
 		field->currentNull = false;
 	}
 	return true;
@@ -378,9 +379,9 @@ Bool DB::DBRow::SetByReader(NotNullPtr<DB::DBReader> r, Bool commit)
 				break;
 			case DT_VECTOR:
 				{
-					Math::Geometry::Vector2D *vec = r->GetVector(i);
+					Optional<Math::Geometry::Vector2D> vec = r->GetVector(i);
 					this->SetFieldVector(field, vec);
-					SDEL_CLASS(vec);
+					vec.Delete();
 				}
 				break;
 			case DT_INT64:

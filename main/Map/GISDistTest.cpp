@@ -20,7 +20,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			if (hk80Csys.Set(Math::CoordinateSystemManager::SRCreateCSys(2326)))
 			{
 				Math::WKTReader wktReader(4326);
-				Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)wktReader.ParseWKT(pgWKT.v);
+				Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)wktReader.ParseWKT(pgWKT.v).OrNull();
 				Math::Coord2DDbl pt = Math::Coord2DDbl(114.22122894202,22.362089455590);
 				Math::Coord2DDbl nearPt;
 				pg->CalBoundarySqrDistance(pt, nearPt);

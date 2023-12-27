@@ -188,7 +188,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 				if (this->hdlr)
 				{
 					Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
-					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
+					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.min.x), (UOSInt)Double2OSInt(dblArea.min.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
 					this->hdlr(this->hdlrObj, simg, &area, s1, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 				}
 				found = true;
@@ -213,7 +213,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 					if (this->hdlr)
 					{
 						Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
-						Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
+						Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.min.x), (UOSInt)Double2OSInt(dblArea.min.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
 						this->hdlr(this->hdlrObj, simg, &area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 					}
 					found = true;
@@ -271,5 +271,5 @@ Bool Media::ANPR::ParseImagePlatePoint(Media::StaticImage *simg, Math::Coord2D<U
 	Exporter::PNGExporter exporter;
 	exporter.ExportNewFile(imgList.GetSourceNameObj()->ToCString(), &imgList, 0);*/
 
-	return this->ParseImageQuad(simg, Math::Quadrilateral(rect.GetTL().ToDouble(), rect.GetTR().ToDouble(), rect.GetBR().ToDouble(), rect.GetBL().ToDouble()));
+	return this->ParseImageQuad(simg, Math::Quadrilateral(rect.GetMin().ToDouble(), Math::Coord2DDbl((Double)rect.max.x, (Double)rect.min.y), rect.GetMax().ToDouble(), Math::Coord2DDbl((Double)rect.min.x, (Double)rect.max.y)));
 }

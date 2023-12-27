@@ -114,7 +114,7 @@ Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UO
 		return 0;
 	}
 	Text::String *s = 0;
-	this->clsData->api.SetRectangle((int)area.tl.x, (int)area.tl.y, (int)area.GetWidth(), (int)area.GetHeight());
+	this->clsData->api.SetRectangle((int)area.min.x, (int)area.min.y, (int)area.GetWidth(), (int)area.GetHeight());
 	char *resultText = this->clsData->api.GetUTF8Text();
 	if (resultText)
 	{

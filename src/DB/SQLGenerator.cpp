@@ -1080,7 +1080,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 		}
 		else
 		{
-			Math::Geometry::Vector2D *vec;
+			Optional<Math::Geometry::Vector2D> vec;
 			UInt8 *binBuff;
 			UOSInt colSize;
 			colType = r->GetColType(i, colSize);
@@ -1121,7 +1121,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 			case DB::DBUtil::CT_Vector:
 				vec = r->GetVector(i);
 				sql->AppendVector(vec);
-				SDEL_CLASS(vec);
+				vec.Delete();
 				break;
 			case DB::DBUtil::CT_Binary:
 				if (r->IsNull(i))

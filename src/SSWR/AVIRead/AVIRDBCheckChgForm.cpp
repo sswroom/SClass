@@ -712,12 +712,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Vector:
 								{
 									NotNullPtr<Math::Geometry::Vector2D> vec1;
-									if (vec1.Set(r->GetVector(i)))
+									if (r->GetVector(i).SetTo(vec1))
 									{
 										vec1->SetSRID(col->GetGeometrySRID());
 										NotNullPtr<Math::Geometry::Vector2D> vec2;
 										Math::WKTReader reader(vec1->GetSRID());
-										if (!vec2.Set(reader.ParseWKT(rowData[i]->v)))
+										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 										{
 											diff = true;
 										}
@@ -1355,10 +1355,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									case DB::DBUtil::CT_Vector:
 										{
-											Math::Geometry::Vector2D *vec2;;
+											NotNullPtr<Math::Geometry::Vector2D> vec2;;
 											Math::WKTReader reader(SRID);
-											vec2 = reader.ParseWKT(rowData[i]->v);
-											if (vec2 == 0)
+											if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 											{
 											}
 											else
@@ -1374,7 +1373,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 												sql.AppendCol(col->GetColName()->v);
 												sql.AppendCmdC(CSTR(" = "));
 												sql.AppendVector(vec2);
-												SDEL_CLASS(vec2);
+												vec2.Delete();
 											}
 										}
 										break;
@@ -1548,11 +1547,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 								{
 									NotNullPtr<Math::Geometry::Vector2D> vec1;
 									NotNullPtr<Math::Geometry::Vector2D> vec2;
-									if (vec1.Set(r->GetVector(i)))
+									if (r->GetVector(i).SetTo(vec1))
 									{
 										vec1->SetSRID(col->GetGeometrySRID());
 										Math::WKTReader reader(vec1->GetSRID());
-										if (!vec2.Set(reader.ParseWKT(rowData[i]->v)))
+										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 										{
 										}
 										else
@@ -1889,18 +1888,18 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql,
 		{
 			UInt8 *buff = MemAlloc(UInt8, nns->leng >> 1);
 			UOSInt buffSize = Text::StrHex2Bytes(&nns->v[2], buff);
-			Math::Geometry::Vector2D *vec2 = Math::MSGeography::ParseBinary(buff, buffSize, 0);
+			Optional<Math::Geometry::Vector2D> vec2 = Math::MSGeography::ParseBinary(buff, buffSize, 0);
 			MemFree(buff);
 			sql->AppendVector(vec2);
-			SDEL_CLASS(vec2);
+			vec2.Delete();
 		}
 		else
 		{
-			Math::Geometry::Vector2D *vec2;
+			Optional<Math::Geometry::Vector2D> vec2;
 			Math::WKTReader reader(0);
 			vec2 = reader.ParseWKT(nns->v);
 			sql->AppendVector(vec2);
-			SDEL_CLASS(vec2);
+			vec2.Delete();
 		}
 		break;
 	case DB::DBUtil::CT_Binary:

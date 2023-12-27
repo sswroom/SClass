@@ -51,10 +51,10 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 		UOSInt level = minLev;
 		while (level <= maxLev)
 		{
-			Int32 minX = Map::OSM::OSMTileMap::Lon2TileX(bounds.tl.x, level);
-			Int32 minY = Map::OSM::OSMTileMap::Lat2TileY(bounds.br.y, level);
-			Int32 maxX = Map::OSM::OSMTileMap::Lon2TileX(bounds.br.x, level);
-			Int32 maxY = Map::OSM::OSMTileMap::Lat2TileY(bounds.tl.y, level);
+			Int32 minX = Map::OSM::OSMTileMap::Lon2TileX(bounds.min.x, level);
+			Int32 minY = Map::OSM::OSMTileMap::Lat2TileY(bounds.max.y, level);
+			Int32 maxX = Map::OSM::OSMTileMap::Lon2TileX(bounds.max.x, level);
+			Int32 maxY = Map::OSM::OSMTileMap::Lat2TileY(bounds.min.y, level);
 			Double minLon = Map::OSM::OSMTileMap::TileX2Lon(minX, level);
 			Double maxLon = Map::OSM::OSMTileMap::TileX2Lon(maxX + 1, level);
 			Double minLat = Map::OSM::OSMTileMap::TileY2Lat(maxY + 1, level);

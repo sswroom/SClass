@@ -133,7 +133,7 @@ void Data::VariObject::SetItemByteArray(const UTF8Char *name, const UInt8 *arr, 
 	this->SetItem(name, Data::VariItem::NewByteArr(arr, cnt));
 }
 
-void Data::VariObject::SetItemVector(const UTF8Char *name, Math::Geometry::Vector2D *vec)
+void Data::VariObject::SetItemVector(const UTF8Char *name, Optional<Math::Geometry::Vector2D> vec)
 {
 	this->SetItem(name, Data::VariItem::NewVector(vec));
 }
@@ -143,7 +143,7 @@ void Data::VariObject::SetItemUUID(const UTF8Char *name, Data::UUID *uuid)
 	this->SetItem(name, Data::VariItem::NewUUID(uuid));
 }
 
-void Data::VariObject::SetItemVectorDirect(const UTF8Char *name, Math::Geometry::Vector2D *vec)
+void Data::VariObject::SetItemVectorDirect(const UTF8Char *name, Optional<Math::Geometry::Vector2D> vec)
 {
 	this->SetItem(name, Data::VariItem::NewVectorDirect(vec));
 }

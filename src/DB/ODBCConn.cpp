@@ -1864,11 +1864,12 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;;
+
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				//Math::WKTWriter::GenerateWKT();
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 		return 0;
@@ -1927,7 +1928,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8>
 	case DB::DBUtil::CT_Vector:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
@@ -1994,7 +1995,7 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_Vector:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
@@ -2052,7 +2053,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 	case DB::DBUtil::CT_Vector:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
@@ -2291,7 +2292,7 @@ UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::ODBCReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
@@ -2304,7 +2305,7 @@ Math::Geometry::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 			UOSInt dataSize = (UOSInt)this->colDatas[colIndex].dataVal;
 			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
 			UInt32 srId;
-			return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
+			return Math::MSGeography::ParseBinary(buffPtr, dataSize, srId);
 		}
 		else
 		{
@@ -2384,7 +2385,7 @@ Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> ite
 			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
 			UInt32 srId;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId)))
+			if (Math::MSGeography::ParseBinary(buffPtr, dataSize, srId).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
 				return true;

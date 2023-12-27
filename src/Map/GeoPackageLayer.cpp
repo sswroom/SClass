@@ -83,7 +83,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::Geo
 			{
 				while (r->ReadNext())
 				{
-					this->vecList.Add(r->GetVector(this->geomCol));
+					this->vecList.Add(r->GetVector(this->geomCol).OrNull());
 				}
 				this->gpkg->CloseReader(r);
 			}

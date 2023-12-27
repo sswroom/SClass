@@ -145,13 +145,13 @@ void Map::MapScheduler::DrawPoint(NotNullPtr<Math::Geometry::Point> pt)
 			--(*this->objCnt);
 			objPtr -= 4;
 		}
-		objPtr->tl.x = pts.x - spotX;
-		objPtr->tl.y = pts.y - spotY;
-		objPtr->br.x = objPtr->tl.x + imgW;
-		objPtr->br.y = objPtr->tl.y + imgH;
-		if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
+		objPtr->min.x = pts.x - spotX;
+		objPtr->min.y = pts.y - spotY;
+		objPtr->max.x = objPtr->min.x + imgW;
+		objPtr->max.y = objPtr->min.y + imgH;
+		if (objPtr->min.x < scnW && objPtr->min.y < scnH && objPtr->max.x >= 0 && objPtr->max.y >= 0)
 		{
-			this->img->DrawImagePt(img, objPtr->tl);
+			this->img->DrawImagePt(img, objPtr->min);
 			objPtr += 1;
 			++*(this->objCnt);
 		}

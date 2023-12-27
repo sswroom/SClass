@@ -98,7 +98,7 @@ Bool Map::ESRI::ESRITileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	Math::RectAreaDbl bnd;
 	bounds.Set(bnd = this->esriMap->GetBounds());
-	return bnd.tl.x != 0 || bnd.tl.y != 0 || bnd.br.x != 0 || bnd.br.y != 0;
+	return bnd.min.x != 0 || bnd.min.y != 0 || bnd.max.x != 0 || bnd.max.y != 0;
 }
 
 NotNullPtr<Math::CoordinateSystem> Map::ESRI::ESRITileMap::GetCoordinateSystem() const
@@ -145,21 +145,21 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 	if (resol == 0)
 		return 0;
 	Math::RectAreaDbl bounds = this->esriMap->GetBounds();
-	rect.tl = rect.tl.Min(bounds.br).Max(bounds.tl);
-	rect.br = rect.br.Min(bounds.br).Max(bounds.tl);
+	rect.min = rect.min.Min(bounds.max).Max(bounds.min);
+	rect.max = rect.max.Min(bounds.max).Max(bounds.min);
 
-	if (rect.tl.x == rect.br.x)
+	if (rect.min.x == rect.max.x)
 		return 0;
-	if (rect.tl.y == rect.br.y)
+	if (rect.min.y == rect.max.y)
 		return 0;
 	this->dispBounds = rect;
 	UOSInt tileWidth = this->esriMap->TileGetWidth();
 	UOSInt tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
-	Int32 pixX1 = (Int32)((rect.tl.x - origin.x) / resol / UOSInt2Double(tileWidth));
-	Int32 pixX2 = (Int32)((rect.br.x - origin.x) / resol / UOSInt2Double(tileWidth));
-	Int32 pixY1 = (Int32)((origin.y - rect.tl.y) / resol / UOSInt2Double(tileHeight));
-	Int32 pixY2 = (Int32)((origin.y - rect.br.y) / resol / UOSInt2Double(tileHeight));
+	Int32 pixX1 = (Int32)((rect.min.x - origin.x) / resol / UOSInt2Double(tileWidth));
+	Int32 pixX2 = (Int32)((rect.max.x - origin.x) / resol / UOSInt2Double(tileWidth));
+	Int32 pixY1 = (Int32)((origin.y - rect.min.y) / resol / UOSInt2Double(tileHeight));
+	Int32 pixY2 = (Int32)((origin.y - rect.max.y) / resol / UOSInt2Double(tileHeight));
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;

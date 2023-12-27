@@ -282,18 +282,18 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 {
 	Int32 i;
 	Int32 j;
-	rect.tl = rect.tl.Max(this->min);
-	rect.br = rect.br.Min(this->max);
-	if (rect.tl.x >= rect.br.x)
+	rect.min = rect.min.Max(this->min);
+	rect.max = rect.max.Min(this->max);
+	if (rect.min.x >= rect.max.x)
 		return 0;
-	if (rect.tl.y >= rect.br.y)
+	if (rect.min.y >= rect.max.y)
 		return 0;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
-	Int32 pixX1 = Map::OSM::OSMTileMap::Lon2TileX(rect.tl.x, level);
-	Int32 pixX2 = Map::OSM::OSMTileMap::Lon2TileX(rect.br.x, level);
-	Int32 pixY1 = Map::OSM::OSMTileMap::Lat2TileY(rect.tl.y, level);
-	Int32 pixY2 = Map::OSM::OSMTileMap::Lat2TileY(rect.br.y, level);
+	Int32 pixX1 = Map::OSM::OSMTileMap::Lon2TileX(rect.min.x, level);
+	Int32 pixX2 = Map::OSM::OSMTileMap::Lon2TileX(rect.max.x, level);
+	Int32 pixY1 = Map::OSM::OSMTileMap::Lat2TileY(rect.min.y, level);
+	Int32 pixY2 = Map::OSM::OSMTileMap::Lat2TileY(rect.max.y, level);
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;

@@ -141,10 +141,10 @@ namespace Data
 		Data::Timestamp GetAsTimestamp() const;
 		Data::Date GetAsDate() const;
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr() const;
-		Math::Geometry::Vector2D *GetAsNewVector() const;
+		Optional<Math::Geometry::Vector2D> GetAsNewVector() const;
 		Data::UUID *GetAsNewUUID() const;
 		Data::ReadonlyArray<UInt8> *GetAndRemoveByteArr();
-		Math::Geometry::Vector2D *GetAndRemoveVector();
+		Optional<Math::Geometry::Vector2D> GetAndRemoveVector();
 		Data::UUID *GetAndRemoveUUID();
 		void *GetAsUnk() const;
 
@@ -199,9 +199,9 @@ namespace Data
 		static NotNullPtr<VariItem> NewBool(Bool val);
 		static NotNullPtr<VariItem> NewByteArr(const UInt8 *arr, UOSInt cnt);
 		static NotNullPtr<VariItem> NewByteArr(Data::ReadonlyArray<UInt8> *arr);
-		static NotNullPtr<VariItem> NewVector(Math::Geometry::Vector2D *vec);
+		static NotNullPtr<VariItem> NewVector(Optional<Math::Geometry::Vector2D> vec);
 		static NotNullPtr<VariItem> NewUUID(Data::UUID *uuid);
-		static NotNullPtr<VariItem> NewVectorDirect(Math::Geometry::Vector2D *vec);
+		static NotNullPtr<VariItem> NewVectorDirect(Optional<Math::Geometry::Vector2D> vec);
 		static NotNullPtr<VariItem> NewUUIDDirect(Data::UUID *uuid);
 		static NotNullPtr<VariItem> NewFromPtr(void *ptr, ItemType itemType);
 		

@@ -466,7 +466,7 @@ UOSInt Math::TSPReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *Math::TSPReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UOSInt colIndex)
 {
 	if (this->currRowPtr == 0)
 		return 0;
@@ -720,7 +720,7 @@ UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *Math::TSPHReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Math::TSPHReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

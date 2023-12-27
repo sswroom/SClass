@@ -111,7 +111,7 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NotNullPtr<Net::SocketFactory> sockf, Opti
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	DB::ReadingDB *db = rn2->GetDB();
 	if(db)
 	{
@@ -137,11 +137,12 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NotNullPtr<Net::SocketFactory> sockf, Opti
 			{
 				while (r->ReadNext())
 				{
-					vec = r->GetVector(shapeCol);
-					if (vec)
+					if (r->GetVector(shapeCol).SetTo(vec))
 					{
-						vec = this->vecMap.Put(r->GetInt32(idCol), vec);
-						SDEL_CLASS(vec);
+						if (vec.Set(this->vecMap.Put(r->GetInt32(idCol), vec.Ptr())))
+						{
+							vec.Delete();
+						}
 					}
 				}
 			}

@@ -104,8 +104,8 @@ namespace DB
 		static UOSInt SDBBoolLeng(Bool val, SQLType sqlType);
 		static UTF8Char *SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, SQLType sqlType);
 		static UOSInt SDBBinLeng(const UInt8 *buff, UOSInt size, SQLType sqlType);
-		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, SQLType sqlType, Bool axisAware);
-		static UOSInt SDBVectorLeng(Math::Geometry::Vector2D *vec, SQLType sqlType);
+		static UTF8Char *SDBVector(UTF8Char *sqlstr, Optional<Math::Geometry::Vector2D> vec, SQLType sqlType, Bool axisAware);
+		static UOSInt SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, SQLType sqlType);
 		static UTF8Char *SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, SQLType sqlType);
 		static UOSInt SDBColUTF8Leng(const UTF8Char *colName, SQLType sqlType);
 		static UTF8Char *SDBColW(UTF8Char *sqlstr, const WChar *colName, SQLType sqlType);

@@ -4,6 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
+#include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/Device/AXCAN.h"
 #include "IO/Device/BYDC9RHandler.h"
@@ -11,6 +12,9 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
+#include "Math/WKBReader.h"
+#include "Math/WKBWriter.h"
+#include "Math/WKTReader.h"
 #include "Net/HKOAPI.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -502,7 +506,34 @@ Int32 HKOTest()
 	return 0;
 }
 
+Int32 WKBTest()
+{
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	Math::WKTReader wkt(2326);
+	if (wkt.ParseWKT(CSTR("POLYGON((0 0,0 1,1 1,1 0))").v).SetTo(vec))
+	{
+		Math::WKBWriter wkbw(false);
+		printf("Parsed WKT\r\n");
+		IO::MemoryStream mstm;
+		if (wkbw.Write(mstm, vec))
+		{
+			printf("Write WKB\r\n");
+			Math::WKBReader wkbr(2326);
+			NotNullPtr<Math::Geometry::Vector2D> vec2;
+			if (wkbr.ParseWKB(mstm.GetBuff(), (UOSInt)mstm.GetLength(), 0).SetTo(vec2))
+			{
+				printf("Parsed WKB\r\n");
+				if (vec->Equals(vec2, true, false))
+					printf("Same as original\r\n");
+				vec2.Delete();
+			}
+		}
+		vec.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	return HKOTest();
+	return WKBTest();
 }

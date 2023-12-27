@@ -497,7 +497,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 	Int64 index = 0;
 	Int64 id;
 	Math::RectAreaDbl bounds;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	UInt32 vecSrid;
 	while (r->ReadNext())
 	{
@@ -512,27 +512,28 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 		}
 		if (this->vecCol != INVALID_INDEX)
 		{
-			vec = r->GetVector(this->vecCol);
-			if (vec != 0)
+			if (r->GetVector(this->vecCol).SetTo(vec))
 			{
 				bounds = vec->GetBounds();
 				if (this->vecMap.GetCount() == 0)
 				{
-					this->min = bounds.tl;
-					this->max = bounds.br;
+					this->min = bounds.min;
+					this->max = bounds.max;
 				}
 				else
 				{
-					this->min = this->min.Min(bounds.tl);
-					this->max = this->max.Max(bounds.br);
+					this->min = this->min.Min(bounds.min);
+					this->max = this->max.Max(bounds.max);
 				}
 				vecSrid = vec->GetSRID();
 				if (vecSrid != 0 && layerSrid != vecSrid)
 				{
 					layerSrid = vecSrid;
 				}
-				vec = this->vecMap.Put(id, vec);
-				SDEL_CLASS(vec);
+				if (vec.Set(this->vecMap.Put(id, vec.Ptr())))
+				{
+					vec.Delete();
+				}
 			}
 		}
 		else
@@ -550,14 +551,16 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 			}
 			if (zCol == INVALID_INDEX)
 			{
-				NEW_CLASS(vec, Math::Geometry::Point(layerSrid, pos));
+				NEW_CLASSNN(vec, Math::Geometry::Point(layerSrid, pos));
 			}
 			else
 			{
-				NEW_CLASS(vec, Math::Geometry::PointZ(layerSrid, pos.x, pos.y, r->GetDbl(zCol)));
+				NEW_CLASSNN(vec, Math::Geometry::PointZ(layerSrid, pos.x, pos.y, r->GetDbl(zCol)));
 			}
-			vec = this->vecMap.Put(id, vec);
-			SDEL_CLASS(vec);
+			if (vec.Set(this->vecMap.Put(id, vec.Ptr())))
+			{
+				vec.Delete();
+			}
 		}
 	}
 	this->db->CloseReader(r);

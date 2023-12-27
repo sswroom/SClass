@@ -110,13 +110,13 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		sb.AppendUTF8Char('?');
 		sb.AppendOpt(link->viewFormat);
 		Sync::MutexUsage dispMutUsage(this->dispMut);
-		sptr = Text::StrDouble(sbuff, this->dispRect.tl.x);
+		sptr = Text::StrDouble(sbuff, this->dispRect.min.x);
 		sb.ReplaceStr(UTF8STRC("[bboxWest]"), sbuff, (UOSInt)(sptr - sbuff));
-		sptr = Text::StrDouble(sbuff, this->dispRect.tl.y);
+		sptr = Text::StrDouble(sbuff, this->dispRect.min.y);
 		sb.ReplaceStr(UTF8STRC("[bboxSouth]"), sbuff, (UOSInt)(sptr - sbuff));
-		sptr = Text::StrDouble(sbuff, this->dispRect.br.x);
+		sptr = Text::StrDouble(sbuff, this->dispRect.max.x);
 		sb.ReplaceStr(UTF8STRC("[bboxEast]"), sbuff, (UOSInt)(sptr - sbuff));
-		sptr = Text::StrDouble(sbuff, this->dispRect.br.y);
+		sptr = Text::StrDouble(sbuff, this->dispRect.max.y);
 		sb.ReplaceStr(UTF8STRC("[bboxNorth]"), sbuff, (UOSInt)(sptr - sbuff));
 		sptr = Text::StrInt32(sbuff, Double2Int32(width));
 		sb.ReplaceStr(UTF8STRC("[horizPixels]"), sbuff, (UOSInt)(sptr - sbuff));

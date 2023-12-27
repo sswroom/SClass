@@ -789,7 +789,7 @@ UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
 		return 0;
@@ -846,8 +846,7 @@ Math::Geometry::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
 			sb.AppendUTF8Char(v);
 			ptr += 2;
 		}
-		Math::Geometry::Vector2D *vec = Math::MSGeography::ParseBinary(sb.ToString(), sb.GetLength(), 0);
-		return vec;
+		return Math::MSGeography::ParseBinary(sb.ToString(), sb.GetLength(), 0);
 	}
 	return 0;
 }

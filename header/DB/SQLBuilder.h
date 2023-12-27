@@ -41,7 +41,7 @@ namespace DB
 		void AppendDate(const Data::Date &val);
 		void AppendDbl(Double val);
 		void AppendBool(Bool val);
-		void AppendVector(Math::Geometry::Vector2D *vec);
+		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
 		void AppendBinary(const UInt8 *buff, UOSInt buffSize);
 
 		void AppendTableName(DB::TableDef *table);

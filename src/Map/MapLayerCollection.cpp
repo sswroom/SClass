@@ -342,8 +342,8 @@ Bool Map::MapLayerCollection::GetBounds(OutParam<Math::RectAreaDbl> bounds) cons
 		{
 			if (lyr->GetBounds(thisBounds))
 			{
-				minMax.tl = minMax.tl.Min(thisBounds.tl);
-				minMax.br = minMax.br.Max(thisBounds.br);
+				minMax.min = minMax.min.Min(thisBounds.min);
+				minMax.max = minMax.max.Max(thisBounds.max);
 			}
 		}
 	}

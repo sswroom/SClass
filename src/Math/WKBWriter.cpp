@@ -4,8 +4,9 @@
 
 #include <stdio.h>
 
-Math::WKBWriter::WKBWriter()
+Math::WKBWriter::WKBWriter(Bool isoMode)
 {
+	this->isoMode = isoMode;
 }
 
 Math::WKBWriter::~WKBWriter()
@@ -32,10 +33,21 @@ Bool Math::WKBWriter::Write(NotNullPtr<IO::Stream> stm, NotNullPtr<Math::Geometr
 			j = pg->GetCount();
 			if (vec->HasZ())
 			{
-				geomType |= 0x80000000;
-				if (vec->HasM())
+				if (this->isoMode)
 				{
-					geomType |= 0x40000000;
+					geomType += 1000;
+					if (vec->HasM())
+					{
+						geomType += 2000;
+					}
+				}
+				else
+				{
+					geomType |= 0x80000000;
+					if (vec->HasM())
+					{
+						geomType |= 0x40000000;
+					}
 				}
 			}
 			if (vec->GetSRID() != 0)

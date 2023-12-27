@@ -111,8 +111,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 					reader->ReadNodeText(sb);
 					if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 					{
-						layer->wgs84Bounds.tl.x = sarr[0].ToDouble();
-						layer->wgs84Bounds.tl.y = sarr[1].ToDouble();
+						layer->wgs84Bounds.min.x = sarr[0].ToDouble();
+						layer->wgs84Bounds.min.y = sarr[1].ToDouble();
 					}
 				}
 				else if (name->Equals(UTF8STRC("ows:UpperCorner")))
@@ -121,8 +121,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 					reader->ReadNodeText(sb);
 					if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 					{
-						layer->wgs84Bounds.br.x = sarr[0].ToDouble();
-						layer->wgs84Bounds.br.y = sarr[1].ToDouble();
+						layer->wgs84Bounds.max.x = sarr[0].ToDouble();
+						layer->wgs84Bounds.max.y = sarr[1].ToDouble();
 					}
 				}
 				else
@@ -169,8 +169,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 			TileMatrixSet *set = ReadTileMatrixSetLink(reader);
 			if (set)
 			{
-				set->bounds.tl = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.tl);
-				set->bounds.br = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.br);
+				set->bounds.min = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.min);
+				set->bounds.max = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.max);
 				layer->tileMatrixes.Add(set);
 			}
 		}
@@ -872,10 +872,10 @@ UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAre
 	
 	rect = rect.OverlapArea(this->currSet->bounds);
 	UOSInt ret = 0;
-	Int32 minX = (Int32)((rect.tl.x - tileMatrixDef->origin.x) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth)));
-	Int32 maxX = (Int32)((rect.br.x - tileMatrixDef->origin.x) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth)));
-	Int32 minY = (Int32)((tileMatrixDef->origin.y - rect.br.y) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight)));
-	Int32 maxY = (Int32)((tileMatrixDef->origin.y - rect.tl.y) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight)));
+	Int32 minX = (Int32)((rect.min.x - tileMatrixDef->origin.x) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth)));
+	Int32 maxX = (Int32)((rect.max.x - tileMatrixDef->origin.x) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth)));
+	Int32 minY = (Int32)((tileMatrixDef->origin.y - rect.max.y) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight)));
+	Int32 maxY = (Int32)((tileMatrixDef->origin.y - rect.min.y) / (tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight)));
 	Int32 i = minY;
 	Int32 j;
 	while (i <= maxY)

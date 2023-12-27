@@ -335,7 +335,7 @@ UOSInt DB::MongoDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *DB::MongoDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> DB::MongoDBReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

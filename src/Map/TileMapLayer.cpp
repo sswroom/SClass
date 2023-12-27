@@ -549,8 +549,8 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 	{
 		cimg = MemAllocA(CachedImage, 1);
 		cimg->imgId = id;
-		cimg->tl = bounds.tl;
-		cimg->br = bounds.br;
+		cimg->tl = bounds.min;
+		cimg->br = bounds.max;
 		cimg->level = level;
 		cimg->isFinish = true;
 		cimg->isCancel = false;
@@ -569,8 +569,8 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 	{
 		cimg = MemAllocA(CachedImage, 1);
 		cimg->imgId = id;
-		cimg->tl = bounds.tl;;
-		cimg->br = bounds.br;
+		cimg->tl = bounds.min;;
+		cimg->br = bounds.max;
 		cimg->level = level;
 		cimg->isFinish = false;
 		cimg->isCancel = false;

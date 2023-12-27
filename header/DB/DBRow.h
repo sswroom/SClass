@@ -53,7 +53,7 @@ namespace DB
 		Bool SetFieldInt64(Field *field, Int64 intValue);
 		Bool SetFieldDouble(Field *field, Double dblValue);
 		Bool SetFieldDate(Field *field, const Data::Timestamp &ts);
-		Bool SetFieldVector(Field *field, Math::Geometry::Vector2D *vec);
+		Bool SetFieldVector(Field *field, Optional<Math::Geometry::Vector2D> vec);
 		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
 
 		Bool IsFieldNull(Field *field) const;

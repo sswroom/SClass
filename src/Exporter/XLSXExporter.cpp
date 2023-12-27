@@ -317,9 +317,9 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 				{
 					sb.AppendC(UTF8STRC("<mergeCell ref=\""));
 					Math::RectArea<UOSInt> rect = mergeList.GetItem(k);
-					sptr = Text::XLSUtil::GetCellID(sbuff, rect.tl.x, rect.tl.y);
+					sptr = Text::XLSUtil::GetCellID(sbuff, rect.min.x, rect.min.y);
 					*sptr++ = ':';
-					sptr = Text::XLSUtil::GetCellID(sptr, rect.br.x - 1, rect.br.y - 1);
+					sptr = Text::XLSUtil::GetCellID(sptr, rect.max.x - 1, rect.max.y - 1);
 					sb.AppendP(sbuff, sptr);
 					sb.AppendC(UTF8STRC("\"/>"));
 					k++;

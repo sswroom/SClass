@@ -425,7 +425,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBu
 	case 7:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Math::WKTWriter writer;
 				Bool succ = writer.ToText(sb, vec);
@@ -499,7 +499,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	case 7:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter writer;
@@ -717,7 +717,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -1339,7 +1339,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 	case 7:
 		{
 			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->GetVector(colIndex)))
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
 				return true;
@@ -1434,11 +1434,11 @@ NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN 
 		return Data::VariItem::NewI32(this->objectId);
 	case 7:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				NotNullPtr<Data::VariItem> item = Data::VariItem::NewVector(vec);
-				DEL_CLASS(vec);
+				vec.Delete();
 				return item;
 			}
 			return Data::VariItem::NewNull();
