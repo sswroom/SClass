@@ -651,7 +651,7 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (this->recBuff.IsNull() || schemaName.leng != 0)
 	{

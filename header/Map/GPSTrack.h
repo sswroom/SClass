@@ -104,7 +104,7 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names); // no need to release
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names); // no need to release
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual ObjectClass GetObjectClass() const;

@@ -15,7 +15,7 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
-UOSInt DB::ReadingDB::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::ReadingDB::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names)
 {
 	return 0;
 }

@@ -97,7 +97,7 @@ NotNullPtr<Text::String> Map::GeoPackage::GetSourceNameObj()
 	return this->conn->GetSourceNameObj();
 }
 
-UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->allTables.Iterator();
 	while (it.HasNext())

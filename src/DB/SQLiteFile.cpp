@@ -223,7 +223,7 @@ void DB::SQLiteFile::Rollback(void *tran)
 	ExecuteNonQuery(CSTR("rollback"));
 }
 
-UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng > 0)
 		return 0;

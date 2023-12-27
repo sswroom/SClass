@@ -77,7 +77,7 @@ DB::DBFFile::~DBFFile()
 	this->stmData.Delete();
 }
 
-UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

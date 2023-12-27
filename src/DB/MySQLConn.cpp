@@ -292,7 +292,7 @@ void DB::MySQLConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

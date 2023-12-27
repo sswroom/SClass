@@ -95,6 +95,7 @@ namespace Net
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
 		virtual Bool ServerSetClientCA(Text::CStringNN clientCA) = 0;
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;
+		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile, Text::CString caFile);
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 

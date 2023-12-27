@@ -982,7 +982,7 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return r;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

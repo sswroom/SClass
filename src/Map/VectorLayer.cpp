@@ -628,7 +628,7 @@ void Map::VectorLayer::SetTableName(Text::String *tableName)
 	}
 }
 
-UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names)
+UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

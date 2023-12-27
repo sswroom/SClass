@@ -38,7 +38,7 @@ namespace DB
 		DBFFile(NotNullPtr<IO::StreamData> stmData, UInt32 codePage);
 		virtual ~DBFFile();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(NotNullPtr<DB::DBReader> r);

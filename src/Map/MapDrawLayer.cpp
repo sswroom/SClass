@@ -124,7 +124,7 @@ void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

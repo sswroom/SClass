@@ -110,15 +110,14 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(NotNullPtr<IO::
 
 IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 {
-	Data::ArrayListStrFastNN tableNames;
+	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
-	Text::StringComparatorFastNN comparator;
-	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &comparator);
-	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("gpkg_contents")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("gpkg_geometry_columns")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix_set")) < 0 ||
-		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0)
+	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &tableNames);
+	if (tableNames.SortedIndexOfC(CSTR("gpkg_spatial_ref_sys")) < 0 ||
+		tableNames.SortedIndexOfC(CSTR("gpkg_contents")) < 0 ||
+		tableNames.SortedIndexOfC(CSTR("gpkg_geometry_columns")) < 0 ||
+		tableNames.SortedIndexOfC(CSTR("gpkg_tile_matrix_set")) < 0 ||
+		tableNames.SortedIndexOfC(CSTR("gpkg_tile_matrix")) < 0)
 	{
 		tableNames.FreeAll();
 		return conn;

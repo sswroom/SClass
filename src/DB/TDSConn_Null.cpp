@@ -104,7 +104,7 @@ void DB::TDSConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	return 0;
 }

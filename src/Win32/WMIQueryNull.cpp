@@ -105,7 +105,7 @@ void Win32::WMIQuery::Rollback(void *tran)
 }
 
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (this->pService == 0)
 	{

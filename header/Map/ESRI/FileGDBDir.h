@@ -20,7 +20,7 @@ namespace Map
 		public:
 			virtual ~FileGDBDir();
 
-			virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
+			virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 			virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 			virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 			virtual void CloseReader(NotNullPtr<DB::DBReader> r);

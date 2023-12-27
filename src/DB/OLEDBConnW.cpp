@@ -464,7 +464,7 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

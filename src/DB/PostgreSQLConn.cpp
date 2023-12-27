@@ -937,7 +937,7 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> 
 	return names->GetCount() - initCnt;
 }
 		
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");

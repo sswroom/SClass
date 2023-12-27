@@ -28,7 +28,7 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
-UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->tables.GetCount();

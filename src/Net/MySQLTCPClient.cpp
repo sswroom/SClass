@@ -2407,7 +2407,7 @@ void Net::MySQLTCPClient::Rollback(void *tran)
 	this->ExecuteNonQuery(CSTR("ROLLBACK"));
 }
 
-UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

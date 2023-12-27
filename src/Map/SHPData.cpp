@@ -640,7 +640,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	}
 }
 
-UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	return this->dbf->QueryTableNames(schemaName, names);
 }

@@ -56,7 +56,7 @@ Math::TSPFile::~TSPFile()
 {
 }
 
-UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

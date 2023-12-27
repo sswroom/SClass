@@ -281,7 +281,7 @@ DB::TextDB::~TextDB()
 	}
 }
 
-UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	NotNullPtr<Data::ArrayList<Text::String*>> keys = this->dbMap.GetKeys();
 	UOSInt i = 0;

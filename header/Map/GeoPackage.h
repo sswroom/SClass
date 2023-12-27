@@ -33,7 +33,7 @@ namespace Map
 
 		NotNullPtr<Text::String> GetSourceNameObj();
 
-		UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		void CloseReader(NotNullPtr<DB::DBReader> r);

@@ -10,12 +10,16 @@
 #define ReadNUInt32(uint8Ptr) (*(UInt32*)uint8Ptr)
 #define ReadNInt64(uint8Ptr) (*(Int64*)uint8Ptr)
 #define ReadNUInt64(uint8Ptr) (*(UInt64*)uint8Ptr)
+#define ReadNFloat(uint8Ptr) (*(Single*)uint8Ptr)
+#define ReadNDouble(uint8Ptr) (*(Double*)uint8Ptr)
 #define WriteNInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (val)
 #define WriteNUInt16(uint8Ptr, val) *(UInt16*)(uint8Ptr) = (val)
 #define WriteNInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = (val)
 #define WriteNUInt32(uint8Ptr, val) *(UInt32*)(uint8Ptr) = (val)
 #define WriteNInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
 #define WriteNUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
+#define WriteNFloat(uint8Ptr, val) *(Single*)(uint8Ptr) = (val)
+#define WriteNDouble(uint8Ptr, val) *(Double*)(uint8Ptr) = (val)
 
 #define ReadInt64(uint8Ptr) (*(Int64*)(uint8Ptr))
 #define ReadUInt64(uint8Ptr) (*(UInt64*)(uint8Ptr))
@@ -482,6 +486,17 @@ FORCEINLINE void WriteMFloat(UInt8 *uint8Ptr, Single val)
 	uint8Ptr[3] = vPtr[0];
 }
 
+#if IS_BYTEORDER_LE == 0
+#define ReadNFloat(uint8Ptr) ReadMFloat(uint8Ptr)
+#define ReadNDouble(uint8Ptr) ReadMDouble(uint8Ptr)
+#define WriteNFloat(uint8Ptr, val) WriteMFloat(uint8Ptr, val)
+#define WriteNDouble(uint8Ptr, val) WriteMDouble(uint8Ptr, val)
+#else
+#define ReadNFloat(uint8Ptr) ReadFloat(uint8Ptr)
+#define ReadNDouble(uint8Ptr) ReadDouble(uint8Ptr)
+#define WriteNFloat(uint8Ptr, val) WriteFloat(uint8Ptr, val)
+#define WriteNDouble(uint8Ptr, val) WriteDouble(uint8Ptr, val)
+#endif
 #else
 #define ReadNInt16(uint8Ptr) (*(Int16*)uint8Ptr)
 #define ReadNInt32(uint8Ptr) (*(Int32*)uint8Ptr)

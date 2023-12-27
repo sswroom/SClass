@@ -356,7 +356,7 @@ Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *sessi
 	return 0;
 }
 
-UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (this->db == 0)
 	{

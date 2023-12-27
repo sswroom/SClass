@@ -251,7 +251,7 @@ DB::JSONDB::~JSONDB()
 	this->data->EndUse();
 }
 
-UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	names->Add(this->layerName->Clone());
 	return 1;
@@ -282,7 +282,7 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	Text::JSONBase *json = this->data->GetArrayValue(0);
 	if (json != 0 && json->GetType() == Text::JSONType::Object)
 	{
-		Data::ArrayListNN<Text::String> names;
+		Data::ArrayListStringNN names;
 		Text::JSONObject *obj = (Text::JSONObject*)json;
 		Text::JSONType type;
 		NotNullPtr<DB::ColDef> col;

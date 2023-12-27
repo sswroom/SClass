@@ -56,7 +56,7 @@ DB::MongoDB::~MongoDB()
 	}
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
 		return 0;

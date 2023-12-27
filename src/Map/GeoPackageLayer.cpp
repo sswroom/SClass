@@ -308,7 +308,7 @@ Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *
 	return 0;
 }
 
-UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	return this->gpkg->QueryTableNames(schemaName, names);
 }

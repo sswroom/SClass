@@ -86,7 +86,7 @@ namespace Map
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
 
 		void SetTableName(Text::String *tableName);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 
 		virtual ObjectClass GetObjectClass() const;
 		Bool VectorValid(NotNullPtr<Math::Geometry::Vector2D> vec);

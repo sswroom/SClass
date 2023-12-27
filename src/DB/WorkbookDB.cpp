@@ -232,7 +232,7 @@ DB::WorkbookDB::~WorkbookDB()
 	this->wb.Delete();
 }
 
-UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 	{

@@ -337,7 +337,7 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names)
+UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;

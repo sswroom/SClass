@@ -9,121 +9,109 @@
 
 UOSInt Net::SAMLUtil::DecryptEncryptedKey(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
-	Text::XMLNode::NodeType nodeType;
-	Text::String *nodeName;
+	NotNullPtr<Text::String> nodeName;
 	Crypto::Encrypt::RSACipher::Padding rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1;
 	Bool algFound = false;
 	Text::XMLAttrib *attr;
 	UOSInt keySize = 0;
-	while (reader->ReadNext())
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("e:EncryptionMethod")))
 		{
-			nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("e:EncryptionMethod")))
+			UOSInt i = reader->GetAttribCount();
+			while (i-- > 0)
 			{
-				UOSInt i = reader->GetAttribCount();
-				while (i-- > 0)
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("Algorithm")))
 				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("Algorithm")))
+					if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p")))
 					{
-						if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p")))
-						{
-							algFound = true;
-							rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP;
-							break;
-						}
+						algFound = true;
+						rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP;
+						break;
 					}
 				}
-				reader->SkipElement();
 			}
-			else if (nodeName->Equals(UTF8STRC("KeyInfo")))
-			{
-				reader->SkipElement();
-			}
-			else if (nodeName->Equals(UTF8STRC("e:CipherData")))
-			{
-				if (!algFound)
-				{
-					sbResult->AppendC(UTF8STRC("Algorithm not found in EncryptedKey"));
-					return 0;
-				}
-				Text::StringBuilderUTF8 sb;
-				reader->ReadNodeText(sb);
-				Text::TextBinEnc::Base64Enc b64;
-				UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
-				if (dataSize != 256)
-				{
-					sbResult->AppendC(UTF8STRC("Length of e:CipherData not valid in EncryptedKey"));
-					return 0;
-				}
-				UInt8 *data = MemAlloc(UInt8, dataSize);
-				b64.DecodeBin(sb.ToString(), sb.GetLength(), data);
-				keySize = ssl->Decrypt(key, keyBuff, data, dataSize, rsaPadding);
-				MemFree(data);
-				if (keySize == 0)
-				{
-					sbResult->AppendC(UTF8STRC("Error in decrypting the EncryptedKey"));
-					return 0;
-				}
-			}
-			else
-			{
-				reader->SkipElement();
-			}
+			reader->SkipElement();
 		}
-		else if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		else if (nodeName->Equals(UTF8STRC("KeyInfo")))
 		{
-			if (keySize == 0)
+			reader->SkipElement();
+		}
+		else if (nodeName->Equals(UTF8STRC("e:CipherData")))
+		{
+			if (!algFound)
 			{
-				sbResult->AppendC(UTF8STRC("e:CipherData not found in EncryptedKey"));
+				sbResult->AppendC(UTF8STRC("Algorithm not found in EncryptedKey"));
 				return 0;
 			}
-			return keySize;
+			Text::StringBuilderUTF8 sb;
+			reader->ReadNodeText(sb);
+			Text::TextBinEnc::Base64Enc b64;
+			UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
+			if (dataSize != 256)
+			{
+				sbResult->AppendC(UTF8STRC("Length of e:CipherData not valid in EncryptedKey"));
+				return 0;
+			}
+			UInt8 *data = MemAlloc(UInt8, dataSize);
+			b64.DecodeBin(sb.ToString(), sb.GetLength(), data);
+			keySize = ssl->Decrypt(key, keyBuff, data, dataSize, rsaPadding);
+			MemFree(data);
+			if (keySize == 0)
+			{
+				sbResult->AppendC(UTF8STRC("Error in decrypting the EncryptedKey"));
+				return 0;
+			}
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
-	sbResult->AppendC(UTF8STRC("End of EncryptedKey not found"));
-	return 0;
+	if (reader->GetErrorCode() != 0)
+	{
+		sbResult->AppendC(UTF8STRC("End of EncryptedKey not found"));
+		return 0;
+	}
+	if (keySize == 0)
+	{
+		sbResult->AppendC(UTF8STRC("e:CipherData not found in EncryptedKey"));
+		return 0;
+	}
+	return keySize;
 }
 
 UOSInt Net::SAMLUtil::ParseKeyInfo(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
-	Text::XMLNode::NodeType nodeType;
-	Text::String *nodeName;
+	NotNullPtr<Text::String> nodeName;
 	UOSInt keySize = 0;
-	while (reader->ReadNext())
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("e:EncryptedKey")))
 		{
-			nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("e:EncryptedKey")))
-			{
-				keySize = DecryptEncryptedKey(ssl, key, reader, sbResult, keyBuff);
-				if (keySize == 0)
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				reader->SkipElement();
-			}
-		}
-		else if (nodeType == Text::XMLNode::NodeType::ElementEnd)
-		{
+			keySize = DecryptEncryptedKey(ssl, key, reader, sbResult, keyBuff);
 			if (keySize == 0)
 			{
-				sbResult->AppendC(UTF8STRC("e:CipherData not found in EncryptedKey"));
 				return 0;
 			}
-			return keySize;
+		}
+		else
+		{
+			reader->SkipElement();
 		}
 	}
-	sbResult->AppendC(UTF8STRC("End of EncryptedKey not found"));
-	return 0;
+	if (reader->GetErrorCode() != 0)
+	{
+		sbResult->AppendC(UTF8STRC("End of EncryptedKey not found"));
+		return 0;
+	}
+	if (keySize == 0)
+	{
+		sbResult->AppendC(UTF8STRC("e:CipherData not found in EncryptedKey"));
+		return 0;
+	}
+	return keySize;
 }
 
 Bool Net::SAMLUtil::DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
@@ -135,205 +123,176 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNull
 	MemClear(keyBuff, sizeof(keyBuff));
 	Crypto::Encrypt::BlockCipher *cipher = 0;
 	Text::XMLAttrib *attr;
-	Text::XMLNode::NodeType nodeType;
-	Text::String *nodeName;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("xenc:EncryptionMethod")))
 		{
-			nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("xenc:EncryptionMethod")))
+			if (cipher != 0)
 			{
-				if (cipher != 0)
-				{
-					DEL_CLASS(cipher);
-					sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod already exists"));
-					return false;
-				}
-				UOSInt i = reader->GetAttribCount();
-				while (i-- > 0)
-				{
-					attr = reader->GetAttrib(i);
-					if (attr->name->Equals(UTF8STRC("Algorithm")))
-					{
-						if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#aes256-cbc")))
-						{
-							NEW_CLASS(cipher, Crypto::Encrypt::AES256(keyBuff));
-							cipher->SetChainMode(Crypto::Encrypt::ChainMode::CBC);
-							algKeySize = 32;
-							headingIV = true;
-						}
-						else
-						{
-							sbResult->AppendC(UTF8STRC("Algorithm not supported: "));
-							sbResult->Append(attr->value);
-							break;
-						}
-					}
-				}
-				if (cipher == 0)
-				{
-					sbResult->AppendC(UTF8STRC("Algorithm not found in xenc:EncryptionMethod"));
-					return false;
-				}
-				reader->SkipElement();
+				DEL_CLASS(cipher);
+				sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod already exists"));
+				return false;
 			}
-			else if (nodeName->Equals(UTF8STRC("KeyInfo")))
+			UOSInt i = reader->GetAttribCount();
+			while (i-- > 0)
 			{
-				keySize = ParseKeyInfo(ssl, key, reader, sbResult, keyBuff);
-				if (keySize == 0)
+				attr = reader->GetAttrib(i);
+				if (attr->name->Equals(UTF8STRC("Algorithm")))
 				{
-					SDEL_CLASS(cipher);
-					return false;
-				}
-			}
-			else if (nodeName->Equals(UTF8STRC("xenc:CipherData")))
-			{
-				if (cipher == 0)
-				{
-					sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod not found before xenc:CipherData"));
-					return false;
-				}
-				else if (keySize != algKeySize)
-				{
-					DEL_CLASS(cipher);
-					sbResult->AppendC(UTF8STRC("Key size invalid"));
-					return false;
-				}
-				((Crypto::Encrypt::AES256*)cipher)->SetKey(keyBuff);
-				while (reader->ReadNext())
-				{
-					nodeType = reader->GetNodeType();
-					if (nodeType == Text::XMLNode::NodeType::Element)
+					if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#aes256-cbc")))
 					{
-						nodeName = reader->GetNodeText();
-						if (nodeName->Equals(UTF8STRC("xenc:CipherValue")))
-						{
-							
-							Text::StringBuilderUTF8 sb;
-							reader->ReadNodeText(sb);
-							Text::TextBinEnc::Base64Enc b64;
-							UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
-							if (headingIV)
-							{
-								if (dataSize < cipher->GetDecBlockSize())
-								{
-									sbResult->AppendC(UTF8STRC("xenc:CipherValue is too short to decrypt"));
-									return false;
-								}
-							}
-							UOSInt blkSize = cipher->GetDecBlockSize();
-							UInt8 *data = MemAlloc(UInt8, dataSize);
-							UInt8 *decData = MemAlloc(UInt8, dataSize + blkSize);
-							UOSInt decSize;
-							b64.DecodeBin(sb.ToString(), sb.GetLength(), data);
-							if (headingIV)
-							{
-								cipher->SetIV(data);
-								decSize = cipher->Decrypt(data + blkSize, dataSize - blkSize, decData, 0);
-							}
-							else
-							{
-								decSize = cipher->Decrypt(data, dataSize, decData, 0);
-							}
-							if (decData[decSize - 1] <= blkSize)
-							{
-								decSize -= decData[decSize - 1];
-							}
-							sbResult->AppendC(decData, decSize);
-							MemFree(data);
-							MemFree(decData);
-							DEL_CLASS(cipher);
-							return true;
-						}
-						else
-						{
-							reader->SkipElement();
-						}
+						NEW_CLASS(cipher, Crypto::Encrypt::AES256(keyBuff));
+						cipher->SetChainMode(Crypto::Encrypt::ChainMode::CBC);
+						algKeySize = 32;
+						headingIV = true;
 					}
-					else if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+					else
 					{
+						sbResult->AppendC(UTF8STRC("Algorithm not supported: "));
+						sbResult->Append(attr->value);
 						break;
 					}
 				}
-				SDEL_CLASS(cipher);
-				sbResult->AppendC(UTF8STRC("xenc:CipherData not found in EncryptedData"));
+			}
+			if (cipher == 0)
+			{
+				sbResult->AppendC(UTF8STRC("Algorithm not found in xenc:EncryptionMethod"));
 				return false;
 			}
-			else
+			reader->SkipElement();
+		}
+		else if (nodeName->Equals(UTF8STRC("KeyInfo")))
+		{
+			keySize = ParseKeyInfo(ssl, key, reader, sbResult, keyBuff);
+			if (keySize == 0)
 			{
-				reader->SkipElement();
+				SDEL_CLASS(cipher);
+				return false;
 			}
 		}
-		else if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		else if (nodeName->Equals(UTF8STRC("xenc:CipherData")))
 		{
+			if (cipher == 0)
+			{
+				sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod not found before xenc:CipherData"));
+				return false;
+			}
+			else if (keySize != algKeySize)
+			{
+				DEL_CLASS(cipher);
+				sbResult->AppendC(UTF8STRC("Key size invalid"));
+				return false;
+			}
+			((Crypto::Encrypt::AES256*)cipher)->SetKey(keyBuff);
+			while (reader->NextElementName().SetTo(nodeName))
+			{
+				if (nodeName->Equals(UTF8STRC("xenc:CipherValue")))
+				{
+					
+					Text::StringBuilderUTF8 sb;
+					reader->ReadNodeText(sb);
+					Text::TextBinEnc::Base64Enc b64;
+					UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
+					if (headingIV)
+					{
+						if (dataSize < cipher->GetDecBlockSize())
+						{
+							sbResult->AppendC(UTF8STRC("xenc:CipherValue is too short to decrypt"));
+							return false;
+						}
+					}
+					UOSInt blkSize = cipher->GetDecBlockSize();
+					UInt8 *data = MemAlloc(UInt8, dataSize);
+					UInt8 *decData = MemAlloc(UInt8, dataSize + blkSize);
+					UOSInt decSize;
+					b64.DecodeBin(sb.ToString(), sb.GetLength(), data);
+					if (headingIV)
+					{
+						cipher->SetIV(data);
+						decSize = cipher->Decrypt(data + blkSize, dataSize - blkSize, decData, 0);
+					}
+					else
+					{
+						decSize = cipher->Decrypt(data, dataSize, decData, 0);
+					}
+					if (decData[decSize - 1] <= blkSize)
+					{
+						decSize -= decData[decSize - 1];
+					}
+					sbResult->AppendC(decData, decSize);
+					MemFree(data);
+					MemFree(decData);
+					DEL_CLASS(cipher);
+					return true;
+				}
+				else
+				{
+					reader->SkipElement();
+				}
+			}
 			SDEL_CLASS(cipher);
 			sbResult->AppendC(UTF8STRC("xenc:CipherData not found in EncryptedData"));
 			return false;
 		}
+		else
+		{
+			reader->SkipElement();
+		}
 	}
 	SDEL_CLASS(cipher);
-	sbResult->AppendC(UTF8STRC("End of EncryptedData not found"));
+	if (reader->GetErrorCode() != 0)
+	{
+		sbResult->AppendC(UTF8STRC("End of EncryptedData not found"));
+		return false;
+	}
+	sbResult->AppendC(UTF8STRC("xenc:CipherData not found in EncryptedData"));
 	return false;
-
 }
 
 Bool Net::SAMLUtil::DecryptAssertion(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
-	Text::XMLNode::NodeType nodeType;
-	Text::String *nodeName;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("xenc:EncryptedData")))
 		{
-			nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("xenc:EncryptedData")))
-			{
-				return DecryptEncryptedData(ssl, key, reader, sbResult);
-			}
-			else
-			{
-				reader->SkipElement();
-			}
+			return DecryptEncryptedData(ssl, key, reader, sbResult);
 		}
-		else if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		else
 		{
-			sbResult->AppendC(UTF8STRC("xenc:EncryptedData not found in EncryptedAssertion"));
-			return false;
+			reader->SkipElement();
 		}
 	}
-	sbResult->AppendC(UTF8STRC("End of EncryptedAssertion not found"));
+	if (reader->GetErrorCode() != 0)
+	{
+		sbResult->AppendC(UTF8STRC("End of EncryptedAssertion not found"));
+		return false;
+	}
+	sbResult->AppendC(UTF8STRC("xenc:EncryptedData not found in EncryptedAssertion"));
 	return false;
 }
 
 Bool Net::SAMLUtil::DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
 {
-	Text::XMLNode::NodeType nodeType;
-	Text::String *nodeName;
-	while (reader->ReadNext())
+	NotNullPtr<Text::String> nodeName;
+	while (reader->NextElementName().SetTo(nodeName))
 	{
-		nodeType = reader->GetNodeType();
-		if (nodeType == Text::XMLNode::NodeType::Element)
+		if (nodeName->Equals(UTF8STRC("EncryptedAssertion")))
 		{
-			nodeName = reader->GetNodeText();
-			if (nodeName->Equals(UTF8STRC("EncryptedAssertion")))
-			{
-				return DecryptAssertion(ssl, key, reader, sbResult);
-			}
-			else
-			{
-				reader->SkipElement();
-			}
+			return DecryptAssertion(ssl, key, reader, sbResult);
 		}
-		else if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+		else
 		{
-			sbResult->AppendC(UTF8STRC("Assertion not found in response"));
-			return false;
+			reader->SkipElement();
 		}
 	}
-	sbResult->AppendC(UTF8STRC("End of Response not found"));
+	if (reader->GetErrorCode() != 0)
+	{
+		sbResult->AppendC(UTF8STRC("End of Response not found"));
+		return false;
+	}
+	sbResult->AppendC(UTF8STRC("Assertion not found in response"));
 	return false;
 }
 
@@ -341,21 +300,17 @@ Bool Net::SAMLUtil::DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, Text::Encodi
 {
 	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
 	Text::XMLReader reader(encFact, mstm, Text::XMLReader::PM_XML);
-	Text::String *nodeText;
-	while (reader.ReadNext())
+	NotNullPtr<Text::String> nodeText;
+	if (reader.NextElementName().SetTo(nodeText))
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (nodeText->Equals(UTF8STRC("samlp:Response")))
 		{
-			nodeText = reader.GetNodeText();
-			if (nodeText->Equals(UTF8STRC("samlp:Response")))
-			{
-				return DecryptResponse(ssl, key, reader, sbResult);
-			}
-			else
-			{
-				sbResult->AppendC(UTF8STRC("Root node is not SAML Response"));
-				return false;
-			}
+			return DecryptResponse(ssl, key, reader, sbResult);
+		}
+		else
+		{
+			sbResult->AppendC(UTF8STRC("Root node is not SAML Response"));
+			return false;
 		}
 	}
 	sbResult->AppendC(UTF8STRC("File is not valid XML"));

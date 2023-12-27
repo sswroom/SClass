@@ -627,7 +627,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 	}
 }
 
-UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> arr)
+UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> arr)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{

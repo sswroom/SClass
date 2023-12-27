@@ -83,7 +83,7 @@ namespace DB
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
 		DBReader *GetTablesInfo(Text::CString schemaName);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:

@@ -335,7 +335,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 	}
 }
 
-UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
 {
 	return this->db->QueryTableNames(schemaName, names);
 }

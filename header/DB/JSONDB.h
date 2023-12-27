@@ -14,7 +14,7 @@ namespace DB
 		JSONDB(NotNullPtr<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data);
 		virtual ~JSONDB();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(NotNullPtr<DBReader> r);

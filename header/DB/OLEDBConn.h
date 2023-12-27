@@ -50,7 +50,7 @@ namespace DB
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DBReader *ExecuteReader(Text::CStringNN sql);
 //		virtual DBReader *ExecuteReader(const WChar *sql);

@@ -111,7 +111,7 @@ Net::SSLEngine::~SSLEngine()
 	}
 }
 
-Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile)
+Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile, Text::CString caFile)
 {
 	Parser::FileParser::X509Parser parser;
 	NotNullPtr<Crypto::Cert::X509File> certASN1;
@@ -170,23 +170,50 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 		if (!keyASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)))
 		{
 			certASN1.Delete();
-			i = cacerts.GetCount();
-			while (i-- > 0)
-			{
-				cacerts.GetItem(i).Delete();
-			}
+			cacerts.DeleteAll();
 			return false;
 		}
 	}
 	else
 	{
 		certASN1.Delete();
-		i = cacerts.GetCount();
-		while (i-- > 0)
-		{
-			cacerts.GetItem(i).Delete();
-		}
+		cacerts.DeleteAll();
 		return false;
+	}
+	if (caFile.leng > 0)
+	{
+		NotNullPtr<Crypto::Cert::X509File> cacertASN1;
+		if (!cacertASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(caFile.OrEmpty())))
+		{
+			return false;
+		}
+		if (cacertASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+		{
+			cacerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(cacertASN1));
+		}
+		else if (cacertASN1->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+		{
+			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)cacertASN1.Ptr();
+			NotNullPtr<Crypto::Cert::X509File> file;
+			i = 0;
+			j = fileList->GetFileCount();
+			while (i < j)
+			{
+				if (fileList->GetFile(i).SetTo(file) && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+				{
+					cacerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(file->Clone()));
+				}
+				i++;
+			}
+			DEL_CLASS(fileList);
+		}
+		else
+		{
+			cacertASN1.Delete();
+			certASN1.Delete();
+			cacerts.DeleteAll();
+			return false;
+		}
 	}
 	if (cacerts.GetCount() == 0)
 	{
@@ -199,12 +226,13 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	Bool ret = this->ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1), keyASN1, cacerts);
 	certASN1.Delete();
 	keyASN1.Delete();
-	i = cacerts.GetCount();
-	while (i-- > 0)
-	{
-		cacerts.GetItem(i).Delete();
-	}
+	cacerts.DeleteAll();
 	return ret;
+}
+
+Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile)
+{
+	return ServerSetCerts(certFile, keyFile, CSTR_NULL);
 }
 
 void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj)
