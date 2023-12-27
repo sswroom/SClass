@@ -26,6 +26,7 @@ namespace Data
 		virtual UOSInt Add(NotNullPtr<T> val);
 		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
 		UOSInt AddAll(NotNullPtr<const ArrayListNN<T>> list);
+		UOSInt AddAll(Data::ArrayIterator<NotNullPtr<T>> it);
 		virtual Bool Remove(NotNullPtr<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, NotNullPtr<T> val);
@@ -122,6 +123,17 @@ namespace Data
 		}
 		this->objCnt += cnt;
 		return cnt;
+	}
+
+	template <class T> UOSInt ArrayListNN<T>::AddAll(Data::ArrayIterator<NotNullPtr<T>> it)
+	{
+		UOSInt ret = 0;
+		while (it.HasNext())
+		{
+			this->Add(it.Next());
+			ret++;
+		}
+		return ret;
 	}
 
 	template <class T> UOSInt ArrayListNN<T>::AddRange(const NotNullPtr<T> *arr, UOSInt cnt)

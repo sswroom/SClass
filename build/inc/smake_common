@@ -3058,6 +3058,8 @@ Net/GoogleFCM.h:
 @GoogleFCM.o
 Net/GoogleQRCode.h:
 @GoogleQRCode.o
+Net/HKOAPI.h:
+@HKOAPI.o
 Net/HKOWeather.h:
 @HKOWeather.o
 Net/HKTrafficImage.h:

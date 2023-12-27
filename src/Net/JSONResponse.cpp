@@ -22,6 +22,16 @@ Text::CStringNN Net::JSONResponse::Field::GetName() const
 	return this->name;
 }
 
+Text::JSONType Net::JSONResponse::Field::GetFieldType() const
+{
+	return this->fieldType;
+}
+
+Bool Net::JSONResponse::Field::IsAllowNull() const
+{
+	return this->allowNull;
+}
+
 Net::JSONResponse::ObjectField::ObjectField(Text::CStringNN name, Text::JSONType fieldType, Bool optional, Bool allowNull, Optional<JSONResponse> obj) : Field(name, fieldType, optional, allowNull)
 {
 	this->obj = obj;
@@ -52,6 +62,7 @@ void Net::JSONResponse::FindMissingFields()
 		NotNullPtr<Text::String> name;
 		NotNullPtr<Text::String> s;
 		Bool hasObj = false;
+		Field *field;
 		Data::ArrayIterator<NotNullPtr<Text::String>> itName = nameList.Iterator();
 		while (itName.HasNext())
 		{
@@ -234,6 +245,21 @@ void Net::JSONResponse::FindMissingFields()
 				this->valid = false;
 			}
 		}
+		UOSInt i = 0;
+		UOSInt j = this->fieldMap.GetCount();
+		while (i < j)
+		{
+			field = this->fieldMap.GetItem(i);
+			if (field->IsAllowNull() || this->json->GetValue(field->GetName()) != 0)
+			{
+			}
+			else
+			{
+				printf("JSONResponse: %s.%s not found\r\n", this->clsName.v, field->GetName().v);
+				this->valid = false;
+			}
+			i++;
+		}
 		if (sbSuggest.leng > 0)
 		{
 			printf("Suggested content for %s:\r\n%s", this->clsName.v, sbSuggest.v);
@@ -249,6 +275,12 @@ void Net::JSONResponse::FindMissingFields()
 			printf("JSONRESP_SEC_GET(ClassName)\r\n");
 			printf("JSONRESP_END\r\n\r\n");
 		}
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		this->json->ToJSONString(sb);
+		printf("JSONResponse: data is not an object: %s\r\n", sb.ToString());
 	}
 }
 
@@ -327,8 +359,8 @@ void Net::JSONResponse::AddField(Text::CStringNN name, Text::JSONType fieldType,
 void Net::JSONResponse::AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool allowNull)
 {
 	Bool hasError = false;
-	ArrayField<Double> *field;
-	NEW_CLASS(field, ArrayField<Double>(name, optional, allowNull));
+	ArrayNativeField<Double> *field;
+	NEW_CLASS(field, ArrayNativeField<Double>(name, optional, allowNull, Text::JSONType::Number));
 	Text::JSONArray *arr = this->json->GetValueArray(name);
 	if (arr == 0)
 	{
@@ -437,4 +469,184 @@ Net::JSONResponse::~JSONResponse()
 Bool Net::JSONResponse::IsValid() const
 {
 	return this->valid;
+}
+
+void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const
+{
+	Text::StringBuilderUTF8 sbTmp;
+	NotNullPtr<Text::String> s;
+	Data::ArrayListStringNN keys;
+	Data::FastStringKeyIterator<Field*> it = this->fieldMap.KeyIterator();
+	while (it.HasNext())
+		keys.Add(it.Next());
+	Data::Sort::ArtificialQuickSort::Sort(&keys, &keys);
+	Field *field;
+	Data::ArrayIterator<NotNullPtr<Text::String>> itKey = keys.Iterator();
+	while (itKey.HasNext())
+	{
+		field = this->fieldMap.GetNN(itKey.Next());
+		if (field)
+		{
+			switch (field->GetFieldType())
+			{
+			case Text::JSONType::Object:
+				{
+					ObjectField *ofield = (ObjectField*)field;
+					NotNullPtr<Net::JSONResponse> subObj;
+					if (ofield->GetValue().SetTo(subObj))
+					{
+						sbTmp.ClearStr();
+						sbTmp.Append(linePrefix);
+						sbTmp.Append(field->GetName());
+						sbTmp.AppendUTF8Char('.');
+						subObj->ToString(sb, sbTmp.ToCString());
+					}
+					else
+					{
+						sb->Append(linePrefix);
+						sb->Append(field->GetName());
+						sb->Append(CSTR(" = null\r\n"));
+					}
+				}
+				break;
+			case Text::JSONType::Array:
+				{
+					ArrayField *afield = (ArrayField*)field;
+					if (afield->GetArrType() == Text::JSONType::Object)
+					{
+						ArrayNNField<Net::JSONResponse> *anfield = (ArrayNNField<Net::JSONResponse>*)afield;
+						NotNullPtr<const Data::ArrayListNN<Net::JSONResponse>> arr = anfield->GetValue();
+						NotNullPtr<Net::JSONResponse> subObj;
+						UOSInt i = 0;
+						UOSInt j = arr->GetCount();
+						while (i < j)
+						{
+							if (arr->GetItem(i).SetTo(subObj))
+							{
+								sbTmp.ClearStr();
+								sbTmp.Append(linePrefix);
+								sbTmp.Append(field->GetName());
+								sbTmp.AppendUTF8Char('[');
+								sbTmp.AppendUOSInt(i);
+								sbTmp.AppendUTF8Char(']');
+								sbTmp.AppendUTF8Char('.');
+								subObj->ToString(sb, sbTmp.ToCString());
+							}
+							i++;
+						}
+					}
+					else if (afield->GetArrType() == Text::JSONType::String)
+					{
+						ArrayStrField *anfield = (ArrayStrField*)afield;
+						NotNullPtr<const Data::ArrayListStringNN> arr = anfield->GetValue();
+						if (arr->GetCount() == 0)
+						{
+							sb->Append(linePrefix);
+							sb->Append(field->GetName());
+							sb->Append(CSTR(" = []\r\n"));
+						}
+						else
+						{
+							sb->Append(linePrefix);
+							sb->Append(field->GetName());
+							sb->Append(CSTR(" = [\r\n"));
+							Data::ArrayIterator<NotNullPtr<Text::String>> it = arr->Iterator();
+							while (it.HasNext())
+							{
+								sb->AppendUTF8Char('\t');
+								s = Text::JSText::ToNewJSTextDQuote(it.Next()->v);
+								sb->Append(s);
+								s->Release();
+							}
+							sb->Append(CSTR("]\r\n"));
+						}
+					}
+					else if (afield->GetArrType() == Text::JSONType::Number)
+					{
+						ArrayNativeField<Double> *anfield = (ArrayNativeField<Double>*)afield;
+						NotNullPtr<const Data::ArrayList<Double>> arr = anfield->GetValue();
+						UOSInt i = 0;
+						UOSInt j = arr->GetCount();
+						if (j < 10)
+						{
+							sb->Append(linePrefix);
+							sb->Append(field->GetName());
+							sb->Append(CSTR(" = ["));
+							while (i < j)
+							{
+								if (i > 0) sb->Append(CSTR(", "));
+								sb->AppendDouble(arr->GetItem(i));
+								i++;
+							}
+							sb->Append(CSTR("]\r\n"));
+						}
+						else
+						{
+							sb->Append(linePrefix);
+							sb->Append(field->GetName());
+							sb->Append(CSTR(" = ["));
+							while (i < j)
+							{
+								if (i > 0) sb->AppendUTF8Char(',');
+								sb->Append(CSTR("\r\n\t"));
+								sb->AppendDouble(arr->GetItem(i));
+								i++;
+							}
+							sb->Append(CSTR("\r\n]\r\n"));
+						}
+					}
+				}
+				break;
+			case Text::JSONType::Number:
+				sb->Append(linePrefix);
+				sb->Append(field->GetName());
+				sb->Append(CSTR(" = "));
+				sb->AppendDouble(this->json->GetValueAsDouble(field->GetName()));
+				sb->Append(CSTR("\r\n"));
+				break;
+			case Text::JSONType::String:
+				sb->Append(linePrefix);
+				sb->Append(field->GetName());
+				sb->Append(CSTR(" = "));
+				s = Text::JSText::ToNewJSTextDQuote(OPTSTR_CSTR(this->json->GetValueString(field->GetName())).v);
+				sb->Append(s);
+				s->Release();
+				sb->Append(CSTR("\r\n"));
+				break;
+			case Text::JSONType::BOOL:
+				sb->Append(linePrefix);
+				sb->Append(field->GetName());
+				sb->Append(CSTR(" = "));
+				sb->Append(this->json->GetValueAsBool(field->GetName())?CSTR("true"):CSTR("false"));
+				sb->Append(CSTR("\r\n"));
+				break;
+			case Text::JSONType::Null:
+				sb->Append(linePrefix);
+				sb->Append(field->GetName());
+				sb->Append(CSTR(" = null\r\n"));
+				break;
+			case Text::JSONType::INT32:
+				sb->Append(linePrefix);
+				sb->Append(field->GetName());
+				sb->Append(CSTR(" = "));
+				sb->AppendI32(this->json->GetValueAsInt32(field->GetName()));
+				sb->Append(CSTR("\r\n"));
+				break;
+			case Text::JSONType::INT64:
+				sb->Append(linePrefix);
+				sb->Append(field->GetName());
+				sb->Append(CSTR(" = "));
+				sb->AppendI64(this->json->GetValueAsInt64(field->GetName()));
+				sb->Append(CSTR("\r\n"));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+{
+	this->ToString(sb, CSTR(""));
 }

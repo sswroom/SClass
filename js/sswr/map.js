@@ -8,7 +8,13 @@ export const DataFormat = {
 	WKT: "wkt",
 	GeoJSON: "geojson"
 };
-	
+
+export const WebMapType = {
+	WMS: 0,
+	WFS: 1,
+	ArcGIS: 2
+};
+
 export function calcDistance(srid, geom, x, y)
 {
 	var pt = geom.calBoundaryPoint(x, y);

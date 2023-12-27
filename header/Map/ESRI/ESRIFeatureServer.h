@@ -120,7 +120,72 @@ namespace Map
 			JSONRESP_GETDOUBLE("startArchivingMoment",GetStartArchivingMoment,0.0)
 			JSONRESP_GETBOOL("supportsQueryWithHistoricMoment",IsSupportsQueryWithHistoricMoment)
 			JSONRESP_END
+		
+			JSONRESP_BEGIN(PrototypeAttribute)
+			JSONRESP_ALLOW_ALL
+			JSONRESP_SEC_GET(PrototypeAttribute)
+			JSONRESP_END
 
+			JSONRESP_BEGIN(Prototype)
+			JSONRESP_OBJ("attributes",false,false,PrototypeAttribute)
+			JSONRESP_SEC_GET(Prototype)
+			JSONRESP_GETOBJ("attributes",GetAttributes,PrototypeAttribute)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(Template)
+			JSONRESP_STR("description",false,false)
+			JSONRESP_STR("drawingTool",false,false)
+			JSONRESP_STR("name",false,false)
+			JSONRESP_OBJ("prototype",false,false,Prototype)
+			JSONRESP_SEC_GET(Template)
+			JSONRESP_GETSTR("description",GetDescription)
+			JSONRESP_GETSTR("drawingTool",GetDrawingTool)
+			JSONRESP_GETSTR("name",GetName)
+			JSONRESP_GETOBJ("prototype",GetPrototype,Prototype)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(Domain)
+			JSONRESP_STR("description",false,true)
+			JSONRESP_SEC_GET(Domain)
+			JSONRESP_GETSTROPT("description",GetDescription)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(TypeInfo)
+			JSONRESP_ARRAY_OBJ("domains",false,false,Domain)
+			JSONRESP_STR("id",false,false)
+			JSONRESP_STR("name",false,false)
+			JSONRESP_ARRAY_OBJ("templates",false,false,Template)
+			JSONRESP_SEC_GET(TypeInfo)
+			JSONRESP_GETARRAY_OBJ("domains",GetDomains,Domain)
+			JSONRESP_GETSTR("id",GetId)
+			JSONRESP_GETSTR("name",GetName)
+			JSONRESP_GETARRAY_OBJ("templates",GetTemplates,Template)
+			JSONRESP_END
+
+			JSONRESP_BEGIN(Relationship)
+			JSONRESP_DOUBLE("id",false,false)
+			JSONRESP_STR("name",false,false)
+			JSONRESP_DOUBLE("relatedTableId",false,false)
+			JSONRESP_STR("cardinality",false,false)
+			JSONRESP_STR("role",false,false)
+			JSONRESP_STR("keyField",false,false)
+			JSONRESP_BOOL("composite",false,false)
+			JSONRESP_STR("catalogID",false,false)
+			JSONRESP_DOUBLE("relationshipTableId",true,false)
+			JSONRESP_STR("keyFieldInRelationshipTable",true,false)
+			JSONRESP_SEC_GET(Relationship)
+			JSONRESP_GETDOUBLE("id",GetId, 0.0)
+			JSONRESP_GETSTR("name",GetName)
+			JSONRESP_GETDOUBLE("relatedTableId",GetRelatedTableId, 0.0)
+			JSONRESP_GETSTR("cardinality",GetCardinality)
+			JSONRESP_GETSTR("role",GetRole)
+			JSONRESP_GETSTR("keyField",GetKeyField)
+			JSONRESP_GETBOOL("composite",IsComposite)
+			JSONRESP_GETSTR("catalogID",GetCatalogID)
+			JSONRESP_GETDOUBLE("relationshipTableId",GetRelationshipTableId, 0.0)
+			JSONRESP_GETSTR("keyFieldInRelationshipTable",GetKeyFieldInRelationshipTable)
+			JSONRESP_END
+		
 			JSONRESP_BEGIN(SymbolOutline)
 			JSONRESP_ARRAY_DOUBLE("color",false,false)
 			JSONRESP_DOUBLE("width",false,false)
@@ -203,29 +268,6 @@ namespace Map
 			JSONRESP_GETSTR("name",GetName)
 			JSONRESP_END
 
-			JSONRESP_BEGIN(PrototypeAttribute)
-			JSONRESP_ALLOW_ALL
-			JSONRESP_SEC_GET(PrototypeAttribute)
-			JSONRESP_END
-
-			JSONRESP_BEGIN(TemplatePrototype)
-			JSONRESP_OBJ("attributes",false,false,PrototypeAttribute)
-			JSONRESP_SEC_GET(TemplatePrototype)
-			JSONRESP_GETOBJ("attributes",GetAttributes,PrototypeAttribute)
-			JSONRESP_END
-
-			JSONRESP_BEGIN(LayerTemplate)
-			JSONRESP_STR("description",false,false)
-			JSONRESP_STR("drawingTool",false,false)
-			JSONRESP_STR("name",false,false)
-			JSONRESP_OBJ("prototype",false,false,TemplatePrototype)
-			JSONRESP_SEC_GET(LayerTemplate)
-			JSONRESP_GETSTR("description",GetDescription)
-			JSONRESP_GETSTR("drawingTool",GetDrawingTool)
-			JSONRESP_GETSTR("name",GetName)
-			JSONRESP_GETOBJ("prototype",GetPrototype,TemplatePrototype)
-			JSONRESP_END
-
 			JSONRESP_BEGIN(FieldInfo)
 			JSONRESP_STR("alias",false,false)
 			JSONRESP_STR("defaultValue",false,true)
@@ -294,6 +336,7 @@ namespace Map
 			JSONRESP_STR("ownershipBasedAccessControlForFeatures",false,true)
 			JSONRESP_STR("parentLayer",false,true)
 			JSONRESP_STR("preferredTimeReference",false,true)
+			JSONRESP_ARRAY_OBJ("relationships",false,false,Relationship)
 			JSONRESP_STR("serviceItemId",false,false)
 			JSONRESP_OBJ("sourceSpatialReference",false,false,SpatialReference)
 			JSONRESP_DOUBLE("standardMaxRecordCount",false,false)
@@ -314,10 +357,11 @@ namespace Map
 			JSONRESP_BOOL("supportsStatistics",false,false)
 			JSONRESP_BOOL("supportsValidateSQL",false,false)
 			JSONRESP_BOOL("syncCanReturnChanges",false,false)
-			JSONRESP_ARRAY_OBJ("templates",false,false,LayerTemplate)
+			JSONRESP_ARRAY_OBJ("templates",false,false,Template)
 			JSONRESP_DOUBLE("tileMaxRecordCount",false,false)
 			JSONRESP_STR("type",false,false)
 			JSONRESP_STR("typeIdField",false,false)
+			JSONRESP_ARRAY_OBJ("types",false,false,TypeInfo)
 			JSONRESP_BOOL("useStandardizedQueries",false,false)
 			JSONRESP_SEC_GET(LayerInfo)
 			JSONRESP_GETOBJ("advancedEditingCapabilities",GetAdvancedEditingCapabilities,AdvancedEditingCapabilities)
@@ -365,6 +409,7 @@ namespace Map
 			JSONRESP_GETSTROPT("ownershipBasedAccessControlForFeatures",GetOwnershipBasedAccessControlForFeatures)
 			JSONRESP_GETSTROPT("parentLayer",GetParentLayer)
 			JSONRESP_GETSTROPT("preferredTimeReference",GetPreferredTimeReference)
+			JSONRESP_GETARRAY_OBJ("relationships",GetRelationships,Relationship)
 			JSONRESP_GETSTR("serviceItemId",GetServiceItemId)
 			JSONRESP_GETOBJ("sourceSpatialReference",GetSourceSpatialReference,SpatialReference)
 			JSONRESP_GETDOUBLE("standardMaxRecordCount",GetStandardMaxRecordCount,0.0)
@@ -385,10 +430,11 @@ namespace Map
 			JSONRESP_GETBOOL("supportsStatistics",IsSupportsStatistics)
 			JSONRESP_GETBOOL("supportsValidateSQL",IsSupportsValidateSQL)
 			JSONRESP_GETBOOL("syncCanReturnChanges",IsSyncCanReturnChanges)
-			JSONRESP_GETARRAY_OBJ("templates",GetTemplates,LayerTemplate)
+			JSONRESP_GETARRAY_OBJ("templates",GetTemplates,Template)
 			JSONRESP_GETDOUBLE("tileMaxRecordCount",GetTileMaxRecordCount,0.0)
 			JSONRESP_GETSTR("type",GetType)
 			JSONRESP_GETSTR("typeIdField",GetTypeIdField)
+			JSONRESP_GETARRAY_OBJ("types",GetTypes,TypeInfo)
 			JSONRESP_GETBOOL("useStandardizedQueries",UseStandardizedQueries)
 			JSONRESP_END
 

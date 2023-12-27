@@ -1310,6 +1310,7 @@ FTPConn.o: ../../src/Net/FTPConn.cpp
 GoogleFCM.o: ../../src/Net/GoogleFCM.cpp
 GoogleQRCode.o: ../../src/Net/GoogleQRCode.cpp
 HKTrafficImage.o: ../../src/Net/HKTrafficImage.cpp
+HKOAPI.o: ../../src/Net/HKOAPI.cpp
 HKOWeather.o: ../../src/Net/HKOWeather.cpp
 HTTPClient.o: ../../src/Net/HTTPClient.cpp
 HTTPData.o: ../../src/Net/HTTPData.cpp

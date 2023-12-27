@@ -23,6 +23,8 @@ namespace Net
 			virtual ~Field();
 
 			Text::CStringNN GetName() const;
+			Text::JSONType GetFieldType() const;
+			Bool IsAllowNull() const;
 		};
 
 		class ObjectField : public Field
@@ -36,36 +38,47 @@ namespace Net
 			Optional<JSONResponse> GetValue() const;
 		};
 
-		template <typename T> class ArrayField : public Field
+		class ArrayField : public Field
+		{
+		private:
+			Text::JSONType arrType;
+		public:
+			ArrayField(Text::CStringNN name, Bool optional, Bool allowNull, Text::JSONType arrType) : Field(name, Text::JSONType::Array, optional, allowNull) {this->arrType = arrType;};
+			virtual ~ArrayField() {};
+
+			Text::JSONType GetArrType() const { return this->arrType; }
+		};
+
+		template <typename T> class ArrayNativeField : public ArrayField
 		{
 		private:
 			Data::ArrayList<T> vals;
 		public:
-			ArrayField(Text::CStringNN name, Bool optional, Bool allowNull) : Field(name, Text::JSONType::Array, optional, allowNull) {};
-			virtual ~ArrayField() {};
+			ArrayNativeField(Text::CStringNN name, Bool optional, Bool allowNull, Text::JSONType arrType) : ArrayField(name, optional, allowNull, arrType) {};
+			virtual ~ArrayNativeField() {};
 
 			void AddValue(T val) { this->vals.Add(val);}
 			NotNullPtr<const Data::ArrayList<T>> GetValue() const { return this->vals; }
 		};
 
-		template <typename T> class ArrayNNField : public Field
+		template <typename T> class ArrayNNField : public ArrayField
 		{
 		private:
 			Data::ArrayListNN<T> vals;
 		public:
-			ArrayNNField(Text::CStringNN name, Bool optional, Bool allowNull) : Field(name, Text::JSONType::Array, optional, allowNull) {};
+			ArrayNNField(Text::CStringNN name, Bool optional, Bool allowNull) : ArrayField(name, optional, allowNull, Text::JSONType::Object) {};
 			virtual ~ArrayNNField() { this->vals.DeleteAll(); };
 
 			void AddValue(NotNullPtr<T> val) { this->vals.Add(val);}
 			NotNullPtr<const Data::ArrayListNN<T>> GetValue() const { return this->vals; }
 		};
 
-		class ArrayStrField : public Field
+		class ArrayStrField : public ArrayField
 		{
 		private:
 			Data::ArrayListStringNN vals;
 		public:
-			ArrayStrField(Text::CStringNN name, Bool optional, Bool allowNull) : Field(name, Text::JSONType::Array, optional, allowNull) {};
+			ArrayStrField(Text::CStringNN name, Bool optional, Bool allowNull) : ArrayField(name, optional, allowNull, Text::JSONType::String) {};
 			virtual ~ArrayStrField() { this->vals.FreeAll(); };
 
 			void AddValue(NotNullPtr<Text::String> val) { this->vals.Add(val);}
@@ -89,6 +102,8 @@ namespace Net
 		virtual ~JSONResponse();
 
 		Bool IsValid() const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const;
+		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 	};
 }
 
@@ -185,7 +200,7 @@ namespace Net
 #define JSONRESP_GETINT64(name, funcName, defVal) Int64 funcName() const { Int64 v; if (!this->json->GetValueAsInt64(CSTR(name), v)) return defVal; return v; }
 #define JSONRESP_GETBOOL(name, funcName) Bool funcName() const { return this->json->GetValueAsBool(CSTR(name)); }
 #define JSONRESP_GETOBJ(name, funcName, clsName) Optional<clsName> funcName() const { ObjectField *f = (ObjectField*)this->fieldMap.GetC(CSTR(name)); if (f) return Optional<clsName>::ConvertFrom(f->GetValue()); return 0; }
-#define JSONRESP_GETARRAY_DOUBLE(name, funcName) Optional<const Data::ArrayList<Double>> funcName() const { ArrayField<Double> *f = (ArrayField<Double>*)this->fieldMap.GetC(CSTR(name)); if (f) return f->GetValue(); return 0; }
+#define JSONRESP_GETARRAY_DOUBLE(name, funcName) Optional<const Data::ArrayList<Double>> funcName() const { ArrayNativeField<Double> *f = (ArrayNativeField<Double>*)this->fieldMap.GetC(CSTR(name)); if (f) return f->GetValue(); return 0; }
 #define JSONRESP_GETARRAY_STR(name, funcName) Optional<const Data::ArrayListStringNN> funcName() const { ArrayStrField *f = (ArrayStrField*)this->fieldMap.GetC(CSTR(name)); if (f) return f->GetValue(); return 0; }
 #define JSONRESP_GETARRAY_OBJ(name, funcName, clsName) Optional<const Data::ArrayListNN<clsName>> funcName() const { ArrayNNField<clsName> *f = (ArrayNNField<clsName>*)this->fieldMap.GetC(CSTR(name)); if (f) return f->GetValue(); return 0; }
 

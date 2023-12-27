@@ -146,6 +146,11 @@ namespace Data
 		{
 			return this->dateVal == DATE_NULL;
 		}
+
+		static Date Today()
+		{
+			return Data::Date((Data::DateTimeUtil::GetCurrTimeMillis() + Data::DateTimeUtil::GetLocalTzQhr() * 900000) / 86400000);
+		}
 	};
 }
 #endif

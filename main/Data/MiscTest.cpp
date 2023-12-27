@@ -11,6 +11,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
+#include "Net/HKOAPI.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Parser/FullParserList.h"
@@ -369,7 +370,139 @@ Int32 ESRIFeatureServerTest()
 	return 0;
 }
 
+Int32 HKOTest()
+{
+	Net::OSSocketFactory sockf(true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, false);
+	Text::StringBuilderUTF8 sb;
+	Net::HKOAPI::Language lang = Net::HKOAPI::Language::En;
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::LocalWeatherForecast> resp;
+		if (Net::HKOAPI::GetLocalWeatherForecast(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Local Weather Forecast:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::NineDayWeatherForecast> resp;
+		if (Net::HKOAPI::Get9DayWeatherForecast(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("9-Day Weather Forecast:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::CurrentWeatherReport> resp;
+		if (Net::HKOAPI::GetCurrentWeatherReport(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Current Weather Report:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::WeatherWarningSummary> resp;
+		if (Net::HKOAPI::GetWeatherWarningSummary(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Weather Warning Summary:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	/////////////////////////////
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::WeatherWarningInfo> resp;
+		if (Net::HKOAPI::GetWeatherWarningInfo(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Weather Warning Information:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::SpecialWeatherTips> resp;
+		if (Net::HKOAPI::GetSpecialWeatherTips(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Special Weather Tips:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::QuickEarthquakeMessages> resp;
+		if (Net::HKOAPI::GetQuickEarthquakeMessages(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Quick Earthquake Messages:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	//////////////////////////////
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::LocallyFeltEarthTremorReport> resp;
+		if (Net::HKOAPI::GetLocallyFeltEarthTremorReport(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Locally Felt Earth Tremor Report:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	if (false)
+	{
+		NotNullPtr<Net::HKOAPI::LunarDate> resp;
+		if (Net::HKOAPI::GetLunarDate(sockf, ssl, Data::Date::Today()).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Lunar Date:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	{
+		NotNullPtr<Net::HKOAPI::HourlyRainfall> resp;
+		if (Net::HKOAPI::GetHourlyRainfall(sockf, ssl, lang).SetTo(resp))
+		{
+			sb.ClearStr();
+			resp->ToString(sb);
+			printf("Rainfall in The Past Hour from Automatic Weather Station API:\r\n%s\r\n", sb.v);
+			resp.Delete();
+		}
+	}
+
+	ssl.Delete();
+	return 0;
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	return ESRIFeatureServerTest();
+	return HKOTest();
 }
