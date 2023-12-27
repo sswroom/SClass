@@ -572,22 +572,22 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 						bounds = img->GetBounds();
 						sb.AppendC(UTF8STRC("<overlayXY x=\""));
-						sb.AppendDouble(bounds.br.x);
+						sb.AppendDouble(bounds.max.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
-						sb.AppendDouble(bounds.br.y);
+						sb.AppendDouble(bounds.max.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 						sb.AppendC(UTF8STRC("<screenXY x=\""));
-						sb.AppendDouble(bounds.tl.x);
+						sb.AppendDouble(bounds.min.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
-						sb.AppendDouble(bounds.tl.y);
+						sb.AppendDouble(bounds.min.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
-						img->GetVectorSize(&bounds.tl.x, &bounds.tl.x);
+						img->GetVectorSize(&bounds.min.x, &bounds.min.x);
 						sb.AppendC(UTF8STRC("<size x=\""));
-						sb.AppendDouble(bounds.tl.x);
+						sb.AppendDouble(bounds.min.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
-						sb.AppendDouble(bounds.tl.y);
+						sb.AppendDouble(bounds.min.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 						sb.AppendC(UTF8STRC("</ScreenOverlay>"));
@@ -652,18 +652,18 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						bounds = img->GetBounds();
 						if (needConv)
 						{
-							bounds.tl = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(bounds.tl, defHeight)).GetXY();
-							bounds.br = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(bounds.br, defHeight)).GetXY();
+							bounds.min = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(bounds.min, defHeight)).GetXY();
+							bounds.max = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(bounds.max, defHeight)).GetXY();
 						}
 						sb.AppendC(UTF8STRC("<north>"));
-						sb.AppendDouble(bounds.br.y);
+						sb.AppendDouble(bounds.max.y);
 						sb.AppendC(UTF8STRC("</north><south>"));
-						sb.AppendDouble(bounds.tl.y);
+						sb.AppendDouble(bounds.min.y);
 						sb.AppendC(UTF8STRC("</south>"));
 						sb.AppendC(UTF8STRC("<east>"));
-						sb.AppendDouble(bounds.br.x);
+						sb.AppendDouble(bounds.max.x);
 						sb.AppendC(UTF8STRC("</east><west>"));
-						sb.AppendDouble(bounds.tl.x);
+						sb.AppendDouble(bounds.min.x);
 						sb.AppendC(UTF8STRC("</west>"));
 						sb.AppendC(UTF8STRC("</LatLonBox>"));
 						if (img->HasZ())

@@ -24,6 +24,13 @@ Double Math::Geometry::PointZ::GetZ() const
 	return this->z;
 }
 
+Bool Math::Geometry::PointZ::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	min.Set(this->z);
+	max.Set(this->z);
+	return true;
+}
+
 Math::Vector3 Math::Geometry::PointZ::GetPos3D() const
 {
 	return Math::Vector3(this->pos, this->z);

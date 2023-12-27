@@ -47,10 +47,10 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 			{
 				cont = MemAlloc(ContentInfo, 1);
 				cont->tableName = tableName->Clone();
-				cont->bounds.tl.x = r->GetDbl(2);
-				cont->bounds.tl.y = r->GetDbl(3);
-				cont->bounds.br.x = r->GetDbl(4);
-				cont->bounds.br.y = r->GetDbl(5);
+				cont->bounds.min.x = r->GetDbl(2);
+				cont->bounds.min.y = r->GetDbl(3);
+				cont->bounds.max.x = r->GetDbl(4);
+				cont->bounds.max.y = r->GetDbl(5);
 				cont->srsId = r->GetInt32(6);
 				cont->hasZ = false;
 				cont->hasM = false;

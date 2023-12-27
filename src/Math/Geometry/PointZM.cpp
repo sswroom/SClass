@@ -28,6 +28,13 @@ Bool Math::Geometry::PointZM::HasM() const
 	return true;
 }
 
+Bool Math::Geometry::PointZM::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	min.Set(this->m);
+	max.Set(this->m);
+	return true;
+}
+
 Bool Math::Geometry::PointZM::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
 	if (vec->GetSRID() != this->srid)

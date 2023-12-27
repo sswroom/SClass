@@ -269,6 +269,22 @@ Bool Math::Geometry::VectorImage::HasZ() const
 	return this->hasHeight;
 }
 
+Bool Math::Geometry::VectorImage::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	if (hasHeight)
+	{
+		min.Set(this->height);
+		max.Set(this->height);
+		return true;
+	}
+	return false;
+}
+
+Bool Math::Geometry::VectorImage::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
 void Math::Geometry::VectorImage::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	if (this->scnCoord)

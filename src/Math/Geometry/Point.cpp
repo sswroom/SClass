@@ -53,6 +53,16 @@ Bool Math::Geometry::Point::JoinVector(NotNullPtr<const Math::Geometry::Vector2D
 	return false;
 }
 
+Bool Math::Geometry::Point::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
+Bool Math::Geometry::Point::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
 void Math::Geometry::Point::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	this->pos = converter->Convert2D(this->pos);

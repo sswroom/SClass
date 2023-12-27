@@ -323,6 +323,44 @@ Bool Math::Geometry::LineString::HasM() const
 	return this->mArr != 0;
 }
 
+Bool Math::Geometry::LineString::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	if (this->zArr == 0)
+		return false;
+	Double minVal = this->zArr[0];
+	Double maxVal = minVal;
+	UOSInt i = this->nPoint;
+	while (i-- > 1)
+	{
+		if (this->zArr[i] < minVal)
+			minVal = this->zArr[i];
+		if (this->zArr[i] > maxVal)
+			maxVal = this->zArr[i];
+	}
+	min.Set(minVal);
+	max.Set(maxVal);
+	return true;
+}
+
+Bool Math::Geometry::LineString::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	if (this->mArr == 0)
+		return false;
+	Double minVal = this->mArr[0];
+	Double maxVal = minVal;
+	UOSInt i = this->nPoint;
+	while (i-- > 1)
+	{
+		if (this->mArr[i] < minVal)
+			minVal = this->mArr[i];
+		if (this->mArr[i] > maxVal)
+			maxVal = this->mArr[i];
+	}
+	min.Set(minVal);
+	max.Set(maxVal);
+	return true;
+}
+
 void Math::Geometry::LineString::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	if (this->zArr)

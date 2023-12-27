@@ -455,7 +455,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outA
 			if (this->vectorList.GetItem(i).SetTo(vec) && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
 				vBounds = vec->GetBounds();
-				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
+				if (rect.min.x <= vBounds.max.x && rect.min.y <= vBounds.max.y && rect.max.x >= vBounds.min.x && rect.max.y >= vBounds.min.y)
 				{
 					recCnt++;
 					outArr->Add((Int64)i);
@@ -473,7 +473,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outA
 			if (this->vectorList.GetItem(i).SetTo(vec))
 			{
 				vBounds = vec->GetBounds();
-				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
+				if (rect.min.x <= vBounds.max.x && rect.min.y <= vBounds.max.y && rect.max.x >= vBounds.min.x && rect.max.y >= vBounds.min.y)
 				{
 					recCnt++;
 					outArr->Add((Int64)i);
@@ -703,30 +703,30 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text:
 	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->min = bounds.tl;
-		this->max = bounds.br;
+		this->min = bounds.min;
+		this->max = bounds.max;
 		updated = true;
 	}
 	else
 	{
-		if (this->min.x > bounds.tl.x)
+		if (this->min.x > bounds.min.x)
 		{
-			this->min.x = bounds.tl.x;
+			this->min.x = bounds.min.x;
 			updated = true;
 		}
-		if (this->min.y > bounds.tl.y)
+		if (this->min.y > bounds.min.y)
 		{
-			this->min.y = bounds.tl.y;
+			this->min.y = bounds.min.y;
 			updated = true;
 		}
-		if (this->max.x < bounds.br.x)
+		if (this->max.x < bounds.max.x)
 		{
-			this->max.x = bounds.br.x;
+			this->max.x = bounds.max.x;
 			updated = true;
 		}
-		if (this->max.y < bounds.br.y)
+		if (this->max.y < bounds.max.y)
 		{
-			this->max.y = bounds.br.y;
+			this->max.y = bounds.max.y;
 			updated = true;
 		}
 	}
@@ -749,30 +749,30 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text:
 	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->min = bounds.tl;
-		this->max = bounds.br;
+		this->min = bounds.min;
+		this->max = bounds.max;
 		updated = true;
 	}
 	else
 	{
-		if (this->min.x > bounds.tl.x)
+		if (this->min.x > bounds.min.x)
 		{
-			this->min.x = bounds.tl.x;
+			this->min.x = bounds.min.x;
 			updated = true;
 		}
-		if (this->min.y > bounds.tl.y)
+		if (this->min.y > bounds.min.y)
 		{
-			this->min.y = bounds.tl.y;
+			this->min.y = bounds.min.y;
 			updated = true;
 		}
-		if (this->max.x < bounds.br.x)
+		if (this->max.x < bounds.max.x)
 		{
-			this->max.x = bounds.br.x;
+			this->max.x = bounds.max.x;
 			updated = true;
 		}
-		if (this->max.y < bounds.br.y)
+		if (this->max.y < bounds.max.y)
 		{
-			this->max.y = bounds.br.y;
+			this->max.y = bounds.max.y;
 			updated = true;
 		}
 	}
@@ -795,30 +795,30 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const
 	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->min = bounds.tl;
-		this->max = bounds.br;
+		this->min = bounds.min;
+		this->max = bounds.max;
 		updated = true;
 	}
 	else
 	{
-		if (this->min.x > bounds.tl.x)
+		if (this->min.x > bounds.min.x)
 		{
-			this->min.x = bounds.tl.x;
+			this->min.x = bounds.min.x;
 			updated = true;
 		}
-		if (this->min.y > bounds.tl.y)
+		if (this->min.y > bounds.min.y)
 		{
-			this->min.y = bounds.tl.y;
+			this->min.y = bounds.min.y;
 			updated = true;
 		}
-		if (this->max.x < bounds.br.x)
+		if (this->max.x < bounds.max.x)
 		{
-			this->max.x = bounds.br.x;
+			this->max.x = bounds.max.x;
 			updated = true;
 		}
-		if (this->max.y < bounds.br.y)
+		if (this->max.y < bounds.max.y)
 		{
-			this->max.y = bounds.br.y;
+			this->max.y = bounds.max.y;
 			updated = true;
 		}
 	}
@@ -841,30 +841,30 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNu
 	bounds = vec->GetBounds();
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->min = bounds.tl;
-		this->max = bounds.br;
+		this->min = bounds.min;
+		this->max = bounds.max;
 		updated = true;
 	}
 	else
 	{
-		if (this->min.x > bounds.tl.x)
+		if (this->min.x > bounds.min.x)
 		{
-			this->min.x = bounds.tl.x;
+			this->min.x = bounds.min.x;
 			updated = true;
 		}
-		if (this->min.y > bounds.tl.y)
+		if (this->min.y > bounds.min.y)
 		{
-			this->min.y = bounds.tl.y;
+			this->min.y = bounds.min.y;
 			updated = true;
 		}
-		if (this->max.x < bounds.br.x)
+		if (this->max.x < bounds.max.x)
 		{
-			this->max.x = bounds.br.x;
+			this->max.x = bounds.max.x;
 			updated = true;
 		}
-		if (this->max.y < bounds.br.y)
+		if (this->max.y < bounds.max.y)
 		{
-			this->max.y = bounds.br.y;
+			this->max.y = bounds.max.y;
 			updated = true;
 		}
 	}

@@ -982,8 +982,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				lyrCSys = lyr->layer->GetCoordinateSystem();
 				if (!envCSys->Equals(lyrCSys))
 				{
-					bounds.tl = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.tl);
-					bounds.br = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.br);
+					bounds.min = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.min);
+					bounds.max = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.max);
 				}
 				this->mapCtrl->ZoomToRect(bounds);
 			}

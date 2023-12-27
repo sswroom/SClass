@@ -404,7 +404,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> ou
 		if (stat->isScreen)
 		{
 		}
-		else if (stat->x1 < rect.br.x && stat->x2 > rect.tl.x && stat->y1 < rect.br.y && stat->y2 > rect.tl.y)
+		else if (stat->x1 < rect.max.x && stat->x2 > rect.min.x && stat->y1 < rect.max.y && stat->y2 > rect.min.y)
 		{
 		}
 		else

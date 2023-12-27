@@ -190,8 +190,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 						if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 						{
 							hasTL = true;
-							wgs84Bounds.tl.x = sarr[0].ToDouble();
-							wgs84Bounds.tl.y = sarr[1].ToDouble();
+							wgs84Bounds.min.x = sarr[0].ToDouble();
+							wgs84Bounds.min.y = sarr[1].ToDouble();
 						}
 					}
 				}
@@ -203,8 +203,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 						if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 						{
 							hasBR = true;
-							wgs84Bounds.br.x = sarr[0].ToDouble();
-							wgs84Bounds.br.y = sarr[1].ToDouble();
+							wgs84Bounds.max.x = sarr[0].ToDouble();
+							wgs84Bounds.max.y = sarr[1].ToDouble();
 						}
 					}
 				}
@@ -224,19 +224,19 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 				attr = reader->GetAttrib(i);
 				if (attr->name->Equals(UTF8STRC("minx")) && attr->value != 0)
 				{
-					hasTL = attr->value->ToDouble(wgs84Bounds.tl.x);
+					hasTL = attr->value->ToDouble(wgs84Bounds.min.x);
 				}
 				else if (attr->name->Equals(UTF8STRC("miny")) && attr->value != 0)
 				{
-					hasTL = attr->value->ToDouble(wgs84Bounds.tl.y);
+					hasTL = attr->value->ToDouble(wgs84Bounds.min.y);
 				}
 				else if (attr->name->Equals(UTF8STRC("maxx")) && attr->value != 0)
 				{
-					hasBR = attr->value->ToDouble(wgs84Bounds.br.x);
+					hasBR = attr->value->ToDouble(wgs84Bounds.max.x);
 				}
 				else if (attr->name->Equals(UTF8STRC("maxy")) && attr->value != 0)
 				{
-					hasBR = attr->value->ToDouble(wgs84Bounds.br.y);
+					hasBR = attr->value->ToDouble(wgs84Bounds.max.y);
 				}
 			}
 			reader->SkipElement();

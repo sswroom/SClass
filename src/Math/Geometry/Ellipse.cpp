@@ -56,6 +56,16 @@ Bool Math::Geometry::Ellipse::HasZ() const
 	return false;
 }
 
+Bool Math::Geometry::Ellipse::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
+Bool Math::Geometry::Ellipse::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
 void Math::Geometry::Ellipse::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	Math::Coord2DDbl br = converter->Convert2D(this->tl + this->size);

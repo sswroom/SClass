@@ -140,8 +140,8 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			{
 				orux->SetCurrLayer(i);
 				orux->GetBounds(bounds);
-				xAdd = Map::OSM::OSMTileMap::Lon2TileXR(bounds.tl.x, i);
-				yAdd = Map::OSM::OSMTileMap::Lat2TileYR(bounds.br.y, i);
+				xAdd = Map::OSM::OSMTileMap::Lon2TileXR(bounds.min.x, i);
+				yAdd = Map::OSM::OSMTileMap::Lat2TileYR(bounds.max.y, i);
 
 				objIds.Clear();
 				orux->GetAllObjectIds(objIds, &nameArr);

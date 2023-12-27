@@ -160,6 +160,66 @@ namespace Math
 				return false;
 			}
 
+			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+			{
+				NotNullPtr<T> geom;
+				Double thisMin;
+				Double thisMax;
+				Double allMin;
+				Double allMax;
+				if (!this->geometries.GetItem(0).SetTo(geom))
+					return false;
+				if (!geom->GetZBounds(allMin, allMax))
+					return false;
+
+				UOSInt i = 1;
+				UOSInt j = this->geometries.GetCount();
+				while (i < j)
+				{
+					if (this->geometries.GetItem(i).SetTo(geom) && geom->GetZBounds(thisMin, thisMax))
+					{
+						if (thisMin < allMin)
+							allMin = thisMin;
+						if (thisMax > allMax)
+							allMax = thisMax;
+					}
+					i++;
+				}
+				min.Set(allMin);
+				max.Set(allMax);
+				return true;
+			}
+
+			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+			{
+				NotNullPtr<T> geom;
+				Double thisMin;
+				Double thisMax;
+				Double allMin;
+				Double allMax;
+				if (!this->geometries.GetItem(0).SetTo(geom))
+					return false;
+				if (!geom->GetMBounds(allMin, allMax))
+					return false;
+
+				UOSInt i = 1;
+				UOSInt j = this->geometries.GetCount();
+				while (i < j)
+				{
+					if (this->geometries.GetItem(i).SetTo(geom) && geom->GetMBounds(thisMin, thisMax))
+					{
+						if (thisMin < allMin)
+							allMin = thisMin;
+						if (thisMax > allMax)
+							allMax = thisMax;
+					}
+					i++;
+				}
+				min.Set(allMin);
+				max.Set(allMax);
+				return true;
+			}
+
 			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter)
 			{
 				Data::ArrayIterator<NotNullPtr<T>> it = this->Iterator();
