@@ -93,13 +93,13 @@ public:
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->tl.x);
+		sptr = Text::StrDouble(sptr, bounds->min.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->tl.y);
+		sptr = Text::StrDouble(sptr, bounds->min.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->br.x);
+		sptr = Text::StrDouble(sptr, bounds->max.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->br.y);
+		sptr = Text::StrDouble(sptr, bounds->max.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, scaleW);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
@@ -123,7 +123,7 @@ public:
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		UOSInt i;
-		if (this->writer == 0 || bounds->br.x < -scnW || bounds->tl.x > scnW * 2 || bounds->br.y < -scnH || bounds->tl.y > scnH * 2)
+		if (this->writer == 0 || bounds->max.x < -scnW || bounds->min.x > scnW * 2 || bounds->max.y < -scnH || bounds->min.y > scnH * 2)
 		{
 			return;
 		}
@@ -135,13 +135,13 @@ public:
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, center.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->tl.x);
+		sptr = Text::StrDouble(sptr, bounds->min.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->tl.y);
+		sptr = Text::StrDouble(sptr, bounds->min.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->br.x);
+		sptr = Text::StrDouble(sptr, bounds->max.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds->br.y);
+		sptr = Text::StrDouble(sptr, bounds->max.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrUOSInt(sptr, nPoints);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
@@ -1105,8 +1105,8 @@ void Map::MapConfig2TGen::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CS
 		}
 		i++;
 	}
-	realBounds->tl = min;
-	realBounds->br = max;
+	realBounds->min = min;
+	realBounds->max = max;
 }
 
 void Map::MapConfig2TGen::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
@@ -2268,8 +2268,8 @@ void Map::MapConfig2TGen::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CSt
 		}
 		i++;
 	}
-	realBounds->tl = min;
-	realBounds->br = max;
+	realBounds->min = min;
+	realBounds->max = max;
 }
 
 void Map::MapConfig2TGen::GetCharsSize(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl *size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
@@ -2440,7 +2440,7 @@ void Map::MapConfig2TGen::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerS
 #endif
 	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(rect.tl - rect.GetSize(), rect.br + rect.GetSize()), true);
+	lyrs->lyr->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(rect.min - rect.GetSize(), rect.max + rect.GetSize()), true);
 	if (arri.GetCount() <= 0)
 	{
 		return;
@@ -2540,7 +2540,7 @@ void Map::MapConfig2TGen::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerS
 	Text::StringBuilderUTF8 sb;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
 	Double tmpSize = rect.GetWidth() * 1.5;
-	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, Math::RectAreaDbl(rect.tl - tmpSize, rect.br + tmpSize), false);
+	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, Math::RectAreaDbl(rect.min - tmpSize, rect.max + tmpSize), false);
 	session = lyrs->lyr->BeginGetObject();
 	i = arri.GetCount();
 	while (i-- > 0)
@@ -3475,40 +3475,40 @@ void Map::MapConfig2TGen::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels
 				j = 1;
 				if (labels[i].xOfst == 0)
 				{
-					rect.tl = scnPt - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x + 1 + (labels[i].xOfst * 0.5);
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x + 1 + (labels[i].xOfst * 0.5);
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x - szThis.x - 1 - (labels[i].xOfst * 0.5);
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - szThis.x - 1 - (labels[i].xOfst * 0.5);
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y - szThis.y - 1 - (labels[i].yOfst * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y - szThis.y - 1 - (labels[i].yOfst * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y + 1 + (labels[i].yOfst * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y + 1 + (labels[i].yOfst * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
@@ -3804,8 +3804,8 @@ void Map::MapConfig2TGen::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels
 
 				if ((tmpArr[1].x - tmpArr[0].x) < szThis.x && (tmpArr[0].y - tmpArr[1].y) < szThis.y)
 				{
-					rect.tl = tmpArr[2].ToDouble() - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = tmpArr[2].ToDouble() - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 					if (j == 0)
@@ -3829,8 +3829,8 @@ void Map::MapConfig2TGen::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels
 						Math::Coord2DDbl tmpD = view->MapXYToScnXY(dscnPt / labels[i].mapRate);
 						tmpArr[2].x = Double2Int32(tmpD.x);
 						tmpArr[2].y = Double2Int32(tmpD.y);
-						rect.tl = tmpArr[2].ToDouble() - (szThis * 0.5);
-						rect.br = rect.tl + szThis;
+						rect.min = tmpArr[2].ToDouble() - (szThis * 0.5);
+						rect.max = rect.min + szThis;
 
 						j = LabelOverlapped(objBounds, currPt, rect);
 						if (j == 0)
@@ -3942,12 +3942,12 @@ void Map::MapConfig2TGen::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels
 						{
 							n = 0;
 							tmpV = thisPts[--m];
-							if ((tmpV - LBLMINDIST) < rect.br.y && (tmpV + LBLMINDIST) > rect.tl.y)
+							if ((tmpV - LBLMINDIST) < rect.max.y && (tmpV + LBLMINDIST) > rect.min.y)
 							{
 								n++;
 							}
 							tmpV = thisPts[--m];
-							if ((tmpV - LBLMINDIST) < rect.br.x && (tmpV + LBLMINDIST) > rect.tl.x)
+							if ((tmpV - LBLMINDIST) < rect.max.x && (tmpV + LBLMINDIST) > rect.min.x)
 							{
 								n++;
 							}
@@ -4008,40 +4008,40 @@ void Map::MapConfig2TGen::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels
 				j = 1;
 				if (j)
 				{
-					rect.tl = scnPt  - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt  - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x + 1;
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x + 1;
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x - szThis.x - 1;
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - szThis.x - 1;
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y - szThis.y - 1;
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y - szThis.y - 1;
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y + 1;
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y + 1;
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 				}

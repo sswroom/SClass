@@ -811,7 +811,7 @@ UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return ret;
 }
 
-Math::Geometry::Vector2D *Win32::WMIReader::GetVector(UOSInt colIndex)
+Optional<Math::Geometry::Vector2D> Win32::WMIReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

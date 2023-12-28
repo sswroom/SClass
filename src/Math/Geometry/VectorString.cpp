@@ -67,6 +67,16 @@ Bool Math::Geometry::VectorString::HasZ() const
 	return false;
 }
 
+Bool Math::Geometry::VectorString::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
+Bool Math::Geometry::VectorString::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
 void Math::Geometry::VectorString::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	this->pos = converter->Convert2D(this->pos);

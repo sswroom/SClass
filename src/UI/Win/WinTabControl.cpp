@@ -47,20 +47,20 @@ OSInt __stdcall UI::Win::WinTabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt
 			rc.left = 0;
 			rc.top = 0;
 			rc.right = (LONG)sz.x;
-			rc.bottom = (LONG)tpRect.tl.y;
+			rc.bottom = (LONG)tpRect.min.y;
 			FillRect((HDC)wParam, &rc, me->hbrBackground);
 			rc.left = 0;
-			rc.top = (LONG)tpRect.tl.y;
-			rc.right = (LONG)tpRect.tl.x;
-			rc.bottom = (LONG)tpRect.br.y;
+			rc.top = (LONG)tpRect.min.y;
+			rc.right = (LONG)tpRect.min.x;
+			rc.bottom = (LONG)tpRect.max.y;
 			FillRect((HDC)wParam, &rc, me->hbrBackground);
-			rc.left = (LONG)tpRect.br.x;
-			rc.top = (LONG)tpRect.tl.y;
+			rc.left = (LONG)tpRect.max.x;
+			rc.top = (LONG)tpRect.min.y;
 			rc.right = (LONG)sz.x;
-			rc.bottom = (LONG)tpRect.br.y;
+			rc.bottom = (LONG)tpRect.max.y;
 			FillRect((HDC)wParam, &rc, me->hbrBackground);
 			rc.left = 0;
-			rc.top = (LONG)tpRect.br.y;
+			rc.top = (LONG)tpRect.max.y;
 			rc.right = (LONG)sz.x;
 			rc.bottom = (LONG)sz.y;
 			FillRect((HDC)wParam, &rc, me->hbrBackground);
@@ -116,7 +116,7 @@ NotNullPtr<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NotNullPtr<Text::S
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
 	Math::RectArea<OSInt> rect = GetTabPageRect();
-	page->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
+	page->SetAreaP(rect.min.x, rect.min.y, rect.max.x, rect.max.y, false);
 	if (this->tabPages.GetCount() > 1)
 	{
 		page->SetVisible(false);
@@ -139,7 +139,7 @@ NotNullPtr<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN ta
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
 	Math::RectArea<OSInt> rect = GetTabPageRect();
-	page->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
+	page->SetAreaP(rect.min.x, rect.min.y, rect.max.x, rect.max.y, false);
 	if (this->tabPages.GetCount() > 1)
 	{
 		page->SetVisible(false);
@@ -258,7 +258,7 @@ void UI::Win::WinTabControl::OnSizeChanged(Bool updateScn)
 	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
-		it.Next()->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
+		it.Next()->SetAreaP(rect.min.x, rect.min.y, rect.max.x, rect.max.y, false);
 //		this->tabPages->GetItem(i)->UpdateChildrenSize(false);
 	}
 }
@@ -287,6 +287,6 @@ void UI::Win::WinTabControl::SetDPI(Double hdpi, Double ddpi)
 	it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
-		it.Next()->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
+		it.Next()->SetAreaP(rect.min.x, rect.min.y, rect.max.x, rect.max.y, false);
 	}
 }

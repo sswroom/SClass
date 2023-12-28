@@ -969,8 +969,8 @@ void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CStrin
 		}
 		i++;
 	}
-	realBounds->tl = min;
-	realBounds->br = max;
+	realBounds->min = min;
+	realBounds->max = max;
 }
 
 void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
@@ -2132,8 +2132,8 @@ void Map::MapConfig2::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CString
 		}
 		i++;
 	}
-	realBounds->tl = min;
-	realBounds->br = max;
+	realBounds->min = min;
+	realBounds->max = max;
 }
 
 void Map::MapConfig2::GetCharsSize(NotNullPtr<Media::DrawImage> img, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
@@ -2673,10 +2673,10 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 	Int32 found;
 
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	Double left = rect.tl.x;
-	Double right = rect.br.x;
-	Double top = rect.tl.y;
-	Double bottom = rect.br.y;
+	Double left = rect.min.x;
+	Double right = rect.max.x;
+	Double top = rect.min.y;
+	Double bottom = rect.max.y;
 	Math::Coord2DDbl mapPos = view->GetCenter();
 
 	if (recType == 1) //Point
@@ -3314,40 +3314,40 @@ void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *l
 				Bool valid = true;
 				if (labels[i].xOfst == 0)
 				{
-					rect.tl = scnPt - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x + 1 + (labels[i].xOfst * 0.5);
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x + 1 + (labels[i].xOfst * 0.5);
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x - szThis.x - 1 - (labels[i].xOfst * 0.5);
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - szThis.x - 1 - (labels[i].xOfst * 0.5);
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y - szThis.y - 1 - (labels[i].yOfst * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y - szThis.y - 1 - (labels[i].yOfst * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y + 1 + (labels[i].yOfst * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y + 1 + (labels[i].yOfst * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
@@ -3613,8 +3613,8 @@ void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *l
 				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
 				{
-					rect.tl = scnPt - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					j = LabelOverlapped(objBounds, currPt, rect);
 					if (j == 0)
@@ -3633,8 +3633,8 @@ void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *l
 					j = 1;
 					while (j)
 					{
-						rect.tl = scnPt - (szThis * 0.5);
-						rect.br = rect.tl + szThis;
+						rect.min = scnPt - (szThis * 0.5);
+						rect.max = rect.min + szThis;
 
 						j = LabelOverlapped(objBounds, currPt, rect);
 						if (j == 0 || --tryCnt <= 0)
@@ -3754,12 +3754,12 @@ void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *l
 						{
 							n = 0;
 							tmpV = thisPts[--m];
-							if ((tmpV - LBLMINDIST) < rect.br.y && (tmpV + LBLMINDIST) > rect.tl.y)
+							if ((tmpV - LBLMINDIST) < rect.max.y && (tmpV + LBLMINDIST) > rect.min.y)
 							{
 								n++;
 							}
 							tmpV = thisPts[--m];
-							if ((tmpV - LBLMINDIST) < rect.br.x && (tmpV + LBLMINDIST) > rect.tl.x)
+							if ((tmpV - LBLMINDIST) < rect.max.x && (tmpV + LBLMINDIST) > rect.min.x)
 							{
 								n++;
 							}
@@ -3810,40 +3810,40 @@ void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *l
 				Bool valid = true;
 				if (valid)
 				{
-					rect.tl = scnPt - (szThis * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min = scnPt - (szThis * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x + 1;
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x + 1;
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x - szThis.x - 1;
-					rect.tl.y = scnPt.y - (szThis.y * 0.5);
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - szThis.x - 1;
+					rect.min.y = scnPt.y - (szThis.y * 0.5);
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y - szThis.y - 1;
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y - szThis.y - 1;
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (valid)
 				{
-					rect.tl.x = scnPt.x - (szThis.x * 0.5);
-					rect.tl.y = scnPt.y + 1;
-					rect.br = rect.tl + szThis;
+					rect.min.x = scnPt.x - (szThis.x * 0.5);
+					rect.min.y = scnPt.y + 1;
+					rect.max = rect.min + szThis;
 
 					valid = LabelOverlapped(objBounds, currPt, rect);
 				}

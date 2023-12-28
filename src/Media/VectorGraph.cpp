@@ -870,7 +870,7 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 			NotNullPtr<Media::StaticImage> simg;
 			if (simg.Set(vimg->GetImage(thisTimeMS)))
 			{
-				dimg->DrawImagePt2(simg, bounds.tl * scale);
+				dimg->DrawImagePt2(simg, bounds.min * scale);
 				if (imgTimeMS == 0)
 				{
 					imgTimeMS = thisTimeMS;
@@ -889,7 +889,7 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 			Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
 			Math::RectAreaDbl bounds = ellipse->GetBounds();
 			bounds = bounds * scale;
-			dimg->DrawEllipse(bounds.tl, bounds.GetSize(), dp, ob);
+			dimg->DrawEllipse(bounds.min, bounds.GetSize(), dp, ob);
 		}
 		else
 		{

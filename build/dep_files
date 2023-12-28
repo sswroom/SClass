@@ -20,3 +20,4 @@ libheif-dev
 libzxing-dev
 freetds-dev
 libpulse-dev
+libssh2-1-dev
