@@ -321,12 +321,12 @@ Int32 IO::Device::SIM7000SocketFactory::SocketGetLastError()
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
+Bool IO::Device::SIM7000SocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port)
 {
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
+Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port)
 {
 	return false;
 }

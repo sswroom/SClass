@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSelCANForm *me = (SSWR::AVIRead::AVIRSelCANForm*)userObj;
-	SSWR::AVIRead::AVIRSelStreamForm dlg(0, me->ui, me->core, false, me->ssl);
+	SSWR::AVIRead::AVIRSelStreamForm dlg(0, me->ui, me->core, false, me->ssl, me->core->GetLog());
 	if (dlg.ShowDialog(me) == DR_OK)
 	{
 		IO::Device::AXCAN *can;

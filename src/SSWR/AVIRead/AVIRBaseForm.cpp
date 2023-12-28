@@ -1042,7 +1042,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, true, this->ssl);
+			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, true, this->ssl, this->core->GetLog());
 			dlg.SetText(CSTR("Select GPS Tracker"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1563,7 +1563,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SNB_DONGLE:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl);
+			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl, this->core->GetLog());
 			dlg.SetText(CSTR("Select SNB Dongle"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1816,7 +1816,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VOICEMODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl);
+			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl, this->core->GetLog());
 			dlg.SetText(CSTR("Select Voice Modem"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{

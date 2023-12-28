@@ -50,6 +50,7 @@ namespace Net
 		Bool IsConnectError();
 
 		UOSInt GetRecvBuffSize();
+		Bool Wait(Data::Duration dur);
 
 		UInt64 GetCliId();
 		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;

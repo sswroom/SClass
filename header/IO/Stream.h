@@ -41,7 +41,8 @@ namespace IO
 		DataCapture,
 		WebSocket,
 		Null,
-		FileView
+		FileView,
+		SSHTCPChannel
 	};
 
 

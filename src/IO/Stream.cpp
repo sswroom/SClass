@@ -184,6 +184,8 @@ Text::CStringNN IO::StreamTypeGetName(StreamType st)
 		return CSTR("Null");
 	case StreamType::FileView:
 		return CSTR("FileView");
+	case StreamType::SSHTCPChannel:
+		return CSTR("SSHTCPChannel");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

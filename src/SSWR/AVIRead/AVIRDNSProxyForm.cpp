@@ -672,7 +672,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 	if (sb.GetLength() > 0)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(sb.ToCString(), addr))
+		if (Net::SocketUtil::SetAddrInfo(addr, sb.ToCString()))
 		{
 			me->proxy->SetWebProxyAutoDiscovery(&addr);
 		}

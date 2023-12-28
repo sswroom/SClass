@@ -71,6 +71,7 @@ namespace Net
 			Bool Start();
 			Bool IsError();
 			NotNullPtr<Text::String> GetServerName() const;
+			UInt16 GetListenPort();
 			void SetClientLog(Text::CStringNN logFile);
 			void SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);

@@ -139,7 +139,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		while (it.HasNext())
 		{
 			s = it.Next();
-			if (Net::SocketUtil::GetIPAddr(s->ToCString(), addr))
+			if (Net::SocketUtil::SetAddrInfo(addr, s->ToCString()))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
 				{
@@ -177,7 +177,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		while (i < j)
 		{
 			s = ext->issuerAltName->GetItem(i);
-			if (Net::SocketUtil::GetIPAddr(s->ToCString(), addr))
+			if (Net::SocketUtil::SetAddrInfo(addr, s->ToCString()))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
 				{

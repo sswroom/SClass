@@ -417,6 +417,11 @@ UOSInt Net::TCPClient::GetRecvBuffSize()
 	}
 }
 
+Bool Net::TCPClient::Wait(Data::Duration dur)
+{
+	return this->sockf->SocketWait(this->s, dur);
+}
+
 UInt64 Net::TCPClient::GetCliId()
 {
 	return this->cliId;

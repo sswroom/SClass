@@ -101,7 +101,7 @@ UOSInt Net::DNSClient::GetByType(NotNullPtr<Data::ArrayList<RequestAnswer*>> ans
 	if (reqType == 12)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(domain, addr))
+		if (Net::SocketUtil::SetAddrInfo(addr, domain))
 		{
 			if (addr.addrType == Net::AddrType::IPv4)
 			{

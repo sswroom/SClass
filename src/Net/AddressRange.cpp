@@ -22,7 +22,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 		else
 		{
 			Text::StrConcatC(sbuff, addr, i);
-			if (!Net::SocketUtil::GetIPAddr(Text::CStringNN(sbuff, i), this->addr1))
+			if (!Net::SocketUtil::SetAddrInfo(this->addr1, Text::CStringNN(sbuff, i)))
 			{
 				this->aType = AT_ERROR;
 			}
@@ -60,7 +60,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 		else
 		{
 			Text::StrConcatC(sbuff, addr, i);
-			if (!Net::SocketUtil::GetIPAddr(Text::CStringNN(sbuff, i), this->addr1))
+			if (!Net::SocketUtil::SetAddrInfo(this->addr1, Text::CStringNN(sbuff, i)))
 			{
 				this->aType = AT_ERROR;
 			}
@@ -89,7 +89,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 		}
 		return;
 	}
-	if (Net::SocketUtil::GetIPAddr(Text::CStringNN(addr, addrLen), this->addr1))
+	if (Net::SocketUtil::SetAddrInfo(this->addr1, Text::CStringNN(addr, addrLen)))
 	{
 		if (this->addr1.addrType == Net::AddrType::IPv4)
 		{

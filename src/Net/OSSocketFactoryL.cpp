@@ -252,7 +252,7 @@ Int32 Net::OSSocketFactory::SocketGetLastError()
 	return errno;
 }
 
-Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port)
 {
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
@@ -264,9 +264,9 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketU
 			addr->addrType = Net::AddrType::IPv4;
 			*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
 			MemClear(&addr->addr[4], 16);
-			if (port)
+			if (port.IsNotNull())
 			{
-				*port = ntohs(((sockaddr_in*)&addrBuff)->sin_port);
+				port.SetNoCheck(ntohs(((sockaddr_in*)&addrBuff)->sin_port));
 			}
 			return true;
 		}
@@ -274,9 +274,9 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketU
 		{
 			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &saddr->sa_data[6], 20);
-			if (port)
+			if (port.IsNotNull())
 			{
-				*port = ntohs(((sockaddr_in6*)&addrBuff)->sin6_port);
+				port.SetNoCheck(ntohs(((sockaddr_in6*)&addrBuff)->sin6_port));
 			}
 			return true;
 		}
@@ -293,7 +293,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketU
 	}
 }
 
-Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port)
 {
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
@@ -304,9 +304,9 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUt
 		{
 			addr->addrType = Net::AddrType::IPv4;
 			*(in_addr_t*)addr->addr = ((sockaddr_in*)&addrBuff)->sin_addr.s_addr;
-			if (port)
+			if (port.IsNotNull())
 			{
-				*port = ntohs(((sockaddr_in*)&addrBuff)->sin_port);
+				port.SetNoCheck(ntohs(((sockaddr_in*)&addrBuff)->sin_port));
 			}
 			return true;
 		}
@@ -314,9 +314,9 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUt
 		{
 			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &saddr->sa_data[6], 20);
-			if (port)
+			if (port.IsNotNull())
 			{
-				*port = ntohs(((sockaddr_in6*)&addrBuff)->sin6_port);
+				port.SetNoCheck(ntohs(((sockaddr_in6*)&addrBuff)->sin6_port));
 			}
 			return true;
 		}
@@ -338,6 +338,20 @@ Int32 Net::OSSocketFactory::SocketGetFD(Socket *socket)
 	return -1 + (int)(OSInt)socket;
 }
 
+Bool Net::OSSocketFactory::SocketWait(Socket *socket, Data::Duration dur)
+{
+	fd_set fds;
+	Int32 s = SocketGetFD(socket);
+	FD_ZERO(&fds);
+	FD_SET(s, &fds);
+	struct timeval tv;
+	tv.tv_sec = (time_t)dur.GetSeconds();
+	tv.tv_usec = (suseconds_t)(dur.GetNS() / 1000);
+	int rc = select((int)(s + 1), &fds, NULL, NULL, &tv);
+	if (rc == -1)
+		return false;
+	return rc != 0;
+}
 
 void Net::OSSocketFactory::SetDontLinger(Socket *socket, Bool val)
 {
@@ -981,7 +995,7 @@ Bool Net::OSSocketFactory::GetDefDNS(NotNullPtr<Net::SocketUtil::AddressInfo> ad
 			{
 				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].ToCString(), addr))
+					if (Net::SocketUtil::SetAddrInfo(addr, sarr[1].ToCString()))
 					{
 						ret = true;
 						break;
@@ -1022,7 +1036,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 			{
 				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].ToCString(), addr))
+					if (Net::SocketUtil::SetAddrInfo(addr, sarr[1].ToCString()))
 					{
 						if (addr.addrType == Net::AddrType::IPv4)
 						{
@@ -1060,7 +1074,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), addr))
+				if (Net::SocketUtil::SetAddrInfo(addr, sarr[0].ToCString()))
 				{
 					while (true)
 					{

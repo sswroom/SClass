@@ -302,7 +302,7 @@ Net::MODBUSTCPListener::MODBUSTCPListener(NotNullPtr<Net::SocketFactory> sockf, 
 	this->sockf = sockf;
 	this->delay = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(120, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, OnClientConn, this, CSTR("MODBUSTCP: "), autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, OnClientConn, this, CSTR("MODBUSTCP: "), autoStart));
 }
 
 Net::MODBUSTCPListener::~MODBUSTCPListener()

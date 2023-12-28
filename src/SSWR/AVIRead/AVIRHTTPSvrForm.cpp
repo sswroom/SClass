@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			return;
 		}
 	}
-	if (port > 0 && port < 65535)
+	if (port < 65535)
 	{
 		UInt64 cacheSize = 0;
 		if (me->chkCacheFile->IsChecked())
@@ -230,7 +230,21 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 				valid = false;
 				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Server"), me);
 			}
+			else
+			{
+				if (port == 0)
+				{
+					sb.ClearStr();
+					sb.AppendU16(me->svr->GetListenPort());
+					me->txtPort->SetText(sb.ToCString());
+				}
+			}
 		}
+	}
+	else
+	{
+		valid = false;
+		me->ui->ShowMsgOK(CSTR("Port number out of range"), CSTR("HTTP Server"), me);
 	}
 
 	if (valid)

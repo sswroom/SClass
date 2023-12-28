@@ -248,156 +248,92 @@ WChar *Net::SocketUtil::GetIPv4Name(WChar *buff, UInt32 ip, UInt16 port)
 	return ptr;
 }
 
-Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, NotNullPtr<AddressInfo> addr)
+UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
 {
-	WChar wbuff[51];
-	WChar *sarr[9];
-	WChar *wptr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	Int32 v;
-	wptr = Text::StrConcatS(wbuff,ipName, 51);
-	if ((wptr - wbuff) >= 50)
-	{
-		return false;
-	}
+	WChar wbuff[32];
+	WChar *sarr[4];
+	UInt8 ip[4];
+	if ((Text::StrConcatS(wbuff, ipName, 30) - wbuff) > 15)
+		return 0;
+	if (Text::StrSplit(sarr, 4, wbuff, '.') != 4)
+		return 0;
+	if (!Text::StrToUInt8(sarr[0], &ip[0]) || !Text::StrToUInt8(sarr[1], &ip[1]) || !Text::StrToUInt8(sarr[2], &ip[2]) || !Text::StrToUInt8(sarr[3], &ip[3]))
+		return 0;
+	return *(UInt32*)ip;
+}
 
-	i = Text::StrSplit(sarr, 9, wbuff, ':');
-	if (i >= 9)
+UInt32 Net::SocketUtil::GetIPAddr(Text::CStringNN ipName)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sarr[4];
+	UInt8 ip[4];
+	if (ipName.leng > 31)
 	{
-		return false;
+		return 0;
 	}
-	else if (i == 1)
+	ipName.ConcatTo(sbuff);
+	if (Text::StrSplit(sarr, 4, sbuff, '.') != 4)
+		return 0;
+	ip[0] = (UInt8)Text::StrToInt32(sarr[0]);
+	ip[1] = (UInt8)Text::StrToInt32(sarr[1]);
+	ip[2] = (UInt8)Text::StrToInt32(sarr[2]);
+	ip[3] = (UInt8)Text::StrToInt32(sarr[3]);
+	return *(UInt32*)ip;
+}
+
+UInt32 Net::SocketUtil::GetDefNetMaskv4(UInt32 ip)
+{
+	UInt8 ipBytes[4];
+	*(UInt32*)ipBytes = ip;
+	if ((ipBytes[0] & 0x80) == 0)
 	{
-		i = Text::StrSplit(sarr, 9, wbuff, '.');
-		if (i != 4)
-		{
-			return false;
-		}
-		if (!Text::StrToUInt8(sarr[0], &addr->addr[0]) || !Text::StrToUInt8(sarr[1], &addr->addr[1]) || !Text::StrToUInt8(sarr[2], &addr->addr[2]) || !Text::StrToUInt8(sarr[3], &addr->addr[3]))
-			return false;
-		addr->addrType = AddrType::IPv4;
-		return true;
+		ipBytes[0] = 0xff;
+		ipBytes[1] = 0;
+		ipBytes[2] = 0;
+		ipBytes[3] = 0;
+		return *(UInt32*)ipBytes;
 	}
-	j = Text::StrIndexOfChar(sarr[i - 1], '%');
-	if (j != INVALID_INDEX)
+	else if ((ipBytes[0] & 0xc0) == 0x80)
 	{
-		if (Text::StrToInt32(&sarr[i - 1][j + 1], &v))
-		{
-			*(Int32*)&addr->addr[16] = v;
-			sarr[i - 1][j] = 0;
-		}
-		else
-		{
-			return false;
-		}
+		ipBytes[0] = 0xff;
+		ipBytes[1] = 0xff;
+		ipBytes[2] = 0;
+		ipBytes[3] = 0;
+		return *(UInt32*)ipBytes;
+	}
+	else if ((ipBytes[0] & 0xe0) == 0xc0)
+	{
+		ipBytes[0] = 0xff;
+		ipBytes[1] = 0xff;
+		ipBytes[2] = 0xff;
+		ipBytes[3] = 0;
+		return *(UInt32*)ipBytes;
 	}
 	else
 	{
-		*(Int32*)&addr->addr[16] = 0;
+		ipBytes[0] = 0xff;
+		ipBytes[1] = 0xff;
+		ipBytes[2] = 0xff;
+		ipBytes[3] = 0xff;
+		return *(UInt32*)ipBytes;
 	}
-	if (sarr[0][0] == 0)
-	{
-		if (sarr[1][0] != 0)
-			return false;
-		if (i < 3)
-			return false;
-		if (i == 3 && sarr[2][0] == 0)
-		{
-			MemClear(addr->addr, 20);
-			addr->addrType = AddrType::IPv6;
-			return true;
-		}
-		j = 14;
-		while (i-- > 2)
-		{
-			v = Text::StrHex2Int32C(sarr[i]);
-			if (v > 65535)
-			{
-				return false;
-			}
-			if (v == 0)
-			{
-				if (sarr[i][0] != '0' || sarr[i][1] != 0)
-				{
-					return false;
-				}
-			}
-			WriteMInt16(&addr->addr[j], v);
-			j -= 2;
-		}
-		while (j >= 0)
-		{
-			WriteMInt16(&addr->addr[j], 0);
-			j-= 2;
-		}
-		addr->addrType = AddrType::IPv6;
-		return true;
-	}
-	j = 0;
-	while (j < i)
-	{
-		if (sarr[j][0] == 0)
-		{
-			if (j + 1 >= i)
-			{
-				return false;
-			}
-			j++;
-			k = 7;
-			while (i-- > j)
-			{
-				v = Text::StrHex2Int32C(sarr[i]);
-				if (v > 65535)
-				{
-					return false;
-				}
-				if (v == 0)
-				{
-					if (sarr[i][0] != '0' || sarr[i][1] != 0)
-					{
-						return false;
-					}
-				}
-				WriteMInt16(&addr->addr[k << 1], v);
-				k--;
-			}
-			while (k >= j - 1)
-			{
-				WriteMInt16(&addr->addr[k << 1], 0);
-				k--;
-			}
-			addr->addrType = AddrType::IPv6;
-			return true;
-		}
-		else
-		{
-			v = Text::StrHex2Int32C(sarr[j]);
-			if (v > 65535)
-			{
-				return false;
-			}
-			if (v == 0)
-			{
-				if (sarr[j][0] != '0' || sarr[j][1] != 0)
-				{
-					return false;
-				}
-			}
-			WriteMInt16(&addr->addr[j << 1], v);
-		}
-		j++;
-	}
-	if (i != 8)
-	{
-		return false;
-	}
-	addr->addrType = AddrType::IPv6;
-	return true;
 }
 
-Bool Net::SocketUtil::GetIPAddr(Text::CStringNN ipName, NotNullPtr<AddressInfo> addr)
+void Net::SocketUtil::SetAddrInfoV4(NotNullPtr<AddressInfo> addr, UInt32 ipv4)
+{
+	addr->addrType = AddrType::IPv4;
+	*(UInt32*)addr->addr = ipv4;
+}
+
+void Net::SocketUtil::SetAddrInfoV6(NotNullPtr<AddressInfo> addr, const UInt8 *ipv6, Int32 zid)
+{
+	addr->addrType = AddrType::IPv6;
+	MemCopyNO(addr->addr, ipv6, 16);
+	*(Int32*)&addr->addr[16] = zid;
+}
+
+
+Bool Net::SocketUtil::SetAddrInfo(NotNullPtr<AddressInfo> addr, Text::CStringNN ipName)
 {
 	UTF8Char sbuff[51];
 	UTF8Char *sarr[9];
@@ -545,91 +481,7 @@ Bool Net::SocketUtil::GetIPAddr(Text::CStringNN ipName, NotNullPtr<AddressInfo> 
 	return true;
 }
 
-UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
-{
-	WChar wbuff[32];
-	WChar *sarr[4];
-	UInt8 ip[4];
-	if ((Text::StrConcatS(wbuff, ipName, 30) - wbuff) > 15)
-		return 0;
-	if (Text::StrSplit(sarr, 4, wbuff, '.') != 4)
-		return 0;
-	if (!Text::StrToUInt8(sarr[0], &ip[0]) || !Text::StrToUInt8(sarr[1], &ip[1]) || !Text::StrToUInt8(sarr[2], &ip[2]) || !Text::StrToUInt8(sarr[3], &ip[3]))
-		return 0;
-	return *(UInt32*)ip;
-}
-
-UInt32 Net::SocketUtil::GetIPAddr(Text::CStringNN ipName)
-{
-	UTF8Char sbuff[32];
-	UTF8Char *sarr[4];
-	UInt8 ip[4];
-	if (ipName.leng > 31)
-	{
-		return 0;
-	}
-	ipName.ConcatTo(sbuff);
-	if (Text::StrSplit(sarr, 4, sbuff, '.') != 4)
-		return 0;
-	ip[0] = (UInt8)Text::StrToInt32(sarr[0]);
-	ip[1] = (UInt8)Text::StrToInt32(sarr[1]);
-	ip[2] = (UInt8)Text::StrToInt32(sarr[2]);
-	ip[3] = (UInt8)Text::StrToInt32(sarr[3]);
-	return *(UInt32*)ip;
-}
-
-UInt32 Net::SocketUtil::GetDefNetMaskv4(UInt32 ip)
-{
-	UInt8 ipBytes[4];
-	*(UInt32*)ipBytes = ip;
-	if ((ipBytes[0] & 0x80) == 0)
-	{
-		ipBytes[0] = 0xff;
-		ipBytes[1] = 0;
-		ipBytes[2] = 0;
-		ipBytes[3] = 0;
-		return *(UInt32*)ipBytes;
-	}
-	else if ((ipBytes[0] & 0xc0) == 0x80)
-	{
-		ipBytes[0] = 0xff;
-		ipBytes[1] = 0xff;
-		ipBytes[2] = 0;
-		ipBytes[3] = 0;
-		return *(UInt32*)ipBytes;
-	}
-	else if ((ipBytes[0] & 0xe0) == 0xc0)
-	{
-		ipBytes[0] = 0xff;
-		ipBytes[1] = 0xff;
-		ipBytes[2] = 0xff;
-		ipBytes[3] = 0;
-		return *(UInt32*)ipBytes;
-	}
-	else
-	{
-		ipBytes[0] = 0xff;
-		ipBytes[1] = 0xff;
-		ipBytes[2] = 0xff;
-		ipBytes[3] = 0xff;
-		return *(UInt32*)ipBytes;
-	}
-}
-
-void Net::SocketUtil::SetAddrInfoV4(NotNullPtr<AddressInfo> addr, UInt32 ipv4)
-{
-	addr->addrType = AddrType::IPv4;
-	*(UInt32*)addr->addr = ipv4;
-}
-
-void Net::SocketUtil::SetAddrInfoV6(NotNullPtr<AddressInfo> addr, const UInt8 *ipv6, Int32 zid)
-{
-	addr->addrType = AddrType::IPv6;
-	MemCopyNO(addr->addr, ipv6, 16);
-	*(Int32*)&addr->addr[16] = zid;
-}
-
-void Net::SocketUtil::SetAddrAnyV6(NotNullPtr<AddressInfo> addr)
+void Net::SocketUtil::SetAddrInfoAnyV6(NotNullPtr<AddressInfo> addr)
 {
 	addr->addrType = AddrType::IPv6;
 	MemClear(addr->addr, 20);

@@ -83,7 +83,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 		EmailInfo *email;
 		email = MemAlloc(EmailInfo, 1);
 		email->id = id;
-		Net::SocketUtil::GetIPAddr(remoteIP->ToCString(), email->remoteAddr);
+		Net::SocketUtil::SetAddrInfo(email->remoteAddr, remoteIP->ToCString());
 		email->fromAddr = fromAddr->Clone();
 		email->recvTime = recvTime.ToTicks();
 		email->isDeleted = false;

@@ -526,7 +526,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 		if (found)
 			sb.AppendUTF8Char(',');
 		sb.AppendC(UTF8STRC("{\"type\":\""));
-		if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), addr))
+		if (Net::SocketUtil::SetAddrInfo(addr, sarr[0].ToCString()))
 		{
 			sb.AppendC(UTF8STRC("ip"));
 		}

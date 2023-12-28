@@ -46,13 +46,14 @@ namespace Net
 		static UInt32 __stdcall WorkerThread(void *o);
 		void AcceptSocket(Socket *svrSoc);
 	public:
-		TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart);
+		TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart);
 		~TCPServer();
 
 		Bool Start();
 		void Close();
 		Bool IsV4Error();
 		Bool IsV6Error();
+		UInt16 GetListenPort() const;
 	};
 }
 #endif

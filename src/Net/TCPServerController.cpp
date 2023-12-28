@@ -74,7 +74,7 @@ Net::TCPServerController::TCPServerController(NotNullPtr<Net::SocketFactory> soc
 	this->maxBuffSize = maxBuffSize;
 	this->hdlr = hdlr;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSec, EventHdlr, DataHdlr, this, workerCnt, TimeoutHdlr));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHdlr, this, prefix, autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, 0, port, log, ConnHdlr, this, prefix, autoStart));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);

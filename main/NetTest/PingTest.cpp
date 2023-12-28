@@ -11,7 +11,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt32 respTime;
 	UInt32 ttl;
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1"), addr);
+	Net::SocketUtil::SetAddrInfo(addr, CSTR("127.0.0.1"));
 	while (true)
 	{
 		if (sockf.IcmpSendEcho2(addr, &respTime, &ttl))

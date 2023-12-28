@@ -173,9 +173,10 @@ namespace Net
 		virtual Bool SocketListen(Socket *socket) = 0;
 		virtual Socket *SocketAccept(Socket *socket) = 0;
 		virtual Int32 SocketGetLastError() = 0;
-		virtual Bool GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port) = 0;
-		virtual Bool GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port) = 0;
+		virtual Bool GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port) = 0;
+		virtual Bool GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port) = 0;
 		virtual Int32 SocketGetFD(Socket *socket) = 0;
+		virtual Bool SocketWait(Socket *socket, Data::Duration dur) = 0;
 
 		virtual void SetDontLinger(Socket *socket, Bool val) = 0;
 		virtual void SetLinger(Socket *socket, UInt32 ms) = 0;

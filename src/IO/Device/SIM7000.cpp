@@ -49,7 +49,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 			NotNullPtr<Net::SocketUtil::AddressInfo> dnsResp;
 			if (me->dnsReq.v && dnsResp.Set(me->dnsResp))
 			{
-				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::GetIPAddr(sarr[2].ToCString(), dnsResp))
+				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::SetAddrInfo(dnsResp, sarr[2].ToCString()))
 				{
 					me->dnsResult = true;
 					me->respEvt.Set();

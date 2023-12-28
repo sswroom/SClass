@@ -39,7 +39,7 @@ namespace Net
 		static void __stdcall OnClientConn(Socket *s, void *userObj);
 		
 	public:
-		MySQLServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, DB::DBMS *dbms, Bool autoStart);
+		MySQLServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart);
 		~MySQLServer();
 
 		Bool Start();

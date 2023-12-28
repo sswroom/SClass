@@ -1077,6 +1077,7 @@ WaveOutRenderer.o: ../../src/Media/WaveOutRenderer.cpp
 WIAManager.o: ../../src/Media/WIAManager.cpp
 WIAManagerNull.o: ../../src/Media/WIAManagerNull.cpp
 ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
+$@($(PKG-CONFIG) --atleast-version 2.0.0 zxing) -std=c++17
 !-lZXing
 ZXingWriter_Null.o: ../../src/Media/ZXingWriter_Null.cpp
 AlphaBlend8_8.o: ../../src/Media/ABlend/AlphaBlend8_8.cpp
@@ -1394,6 +1395,13 @@ SocketMonitor.o: ../../src/Net/SocketMonitor.cpp
 SocketUtil.o: ../../src/Net/SocketUtil.cpp
 SolarEdgeAPI.o: ../../src/Net/SolarEdgeAPI.cpp
 SSDPClient.o: ../../src/Net/SSDPClient.cpp
+SSHClient.o: ../../src/Net/SSHClient.cpp
+SSHForwarder.o: ../../src/Net/SSHForwarder.cpp
+SSHConn.o: ../../src/Net/SSHConn.cpp
+!-lssh2
+SSHManager.o: ../../src/Net/SSHManager.cpp
+!-lssh2
+SSHTCPChannel.o: ../../src/Net/SSHTCPChannel.cpp
 SSLClient.o: ../../src/Net/SSLClient.cpp
 SSLEngine.o: ../../src/Net/SSLEngine.cpp
 SSLEngineFactoryNull.o: ../../src/Net/SSLEngineFactoryNull.cpp

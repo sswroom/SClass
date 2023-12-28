@@ -32,7 +32,7 @@ Net::TCPServerStream::TCPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt
 	this->sockf = sockf;
 	this->log = log;
 	this->currCli = 0;
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHandler, this, CSTR("SStm: "), true));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, 0, port, log, ConnHandler, this, CSTR("SStm: "), true));
 	if (this->svr->IsV4Error())
 	{
 		SDEL_CLASS(this->svr);return;

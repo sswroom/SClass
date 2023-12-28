@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 		else
 		{
 			NEW_CLASS(me->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, me, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-			NEW_CLASS(me->svr, Net::TCPServer(me->core->GetSocketFactory(), port, me->log, OnClientConn, me, CSTR("TCP: "), true));
+			NEW_CLASS(me->svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR("TCP: "), true));
 			if (me->svr->IsV4Error())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);

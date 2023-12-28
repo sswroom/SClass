@@ -142,7 +142,7 @@ SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, Not
 		}
 	}
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, CSTR("Sync: "), autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, 0, port, log, OnClientConn, this, CSTR("Sync: "), autoStart));
 }
 
 SSWR::DataSync::SyncServer::~SyncServer()

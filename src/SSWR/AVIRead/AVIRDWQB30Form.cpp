@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 	}
 	else
 	{
-		SSWR::AVIRead::AVIRSelStreamForm frm(0, me->ui, me->core, false, 0);
+		SSWR::AVIRead::AVIRSelStreamForm frm(0, me->ui, me->core, false, 0, me->core->GetLog());
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			NotNullPtr<IO::Stream> stm = frm.GetStream();

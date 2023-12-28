@@ -129,7 +129,7 @@ void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
 	IO::Stream *retStm = 0;
-	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, *this, allowReadOnly, this->ssl);
+	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, *this, allowReadOnly, this->ssl, this->GetLog());
 	if (defBaudRate != 0)
 	{
 		frm.SetInitBaudRate(defBaudRate);

@@ -190,7 +190,7 @@ Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil:
 		if (this->sockf->SocketBindv4(this->socV4, 0, port))
 		{
 			Net::SocketUtil::AddressInfo addrAny;
-			Net::SocketUtil::SetAddrAnyV6(addrAny);
+			Net::SocketUtil::SetAddrInfoAnyV6(addrAny);
 			if (!this->sockf->SocketBind(this->socV6, &addrAny, port))
 			{
 				this->sockf->DestroySocket(this->socV6);
@@ -250,7 +250,7 @@ Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil:
 		if (port == 0)
 		{
 			Net::SocketUtil::AddressInfo addr;
-			this->sockf->GetLocalAddr(this->socV4, addr, &this->port);
+			this->sockf->GetLocalAddr(this->socV4, addr, this->port);
 		}
 		if (!this->logPrefix.IsNull())
 		{

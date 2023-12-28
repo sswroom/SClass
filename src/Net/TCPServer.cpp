@@ -310,8 +310,10 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }
-Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart)
+Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart)
 {
+	Net::SocketUtil::AddressInfo addrTmp;
+	NotNullPtr<Net::SocketUtil::AddressInfo> addr;
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	this->socf = socf;
@@ -327,8 +329,13 @@ Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, NotNullPt
 	this->userObj = userObj;
 	this->threadRunning = 0;
 
+	UInt32 bindIP = 0;
+	if (bindAddr.SetTo(addr) && addr->addrType == Net::AddrType::IPv4)
+	{
+		bindIP = *(UInt32*)addr->addr;
+	}
 	this->svrSocv4 = this->socf->CreateTCPSocketv4();
-	if (!this->socf->SocketBindv4(this->svrSocv4, 0, this->port))
+	if (!this->socf->SocketBindv4(this->svrSocv4, bindIP, this->port))
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v4 port: "));
 		str = Text::StrInt32(str, this->port);
@@ -346,27 +353,51 @@ Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, UInt16 port, NotNullPt
 		this->svrSocv4 = 0;
 		this->errorv4 = true;
 	}
-
-	this->svrSocv6 = this->socf->CreateTCPSocketv6();
-	Net::SocketUtil::AddressInfo addrAny;
-	Net::SocketUtil::SetAddrAnyV6(addrAny);
-	if (!this->socf->SocketBind(this->svrSocv6, &addrAny, this->port))
+	else if (this->port == 0)
 	{
-		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));
-		str = Text::StrInt32(str, this->port);
-		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
-		this->socf->DestroySocket(this->svrSocv6);
+		this->socf->GetLocalAddr(this->svrSocv4, addrTmp, this->port);
+	}
+
+	Net::SocketUtil::SetAddrInfoAnyV6(addrTmp);
+	Bool skipV6 = false;
+	if (bindAddr.SetTo(addr))
+	{
+		if (addr->addrType == Net::AddrType::IPv4)
+		{
+			skipV6 = true;
+		}
+		else if (addr->addrType == Net::AddrType::IPv6)
+		{
+			addr.SetVal(addrTmp);
+		}
+	}
+
+	if (skipV6)
+	{
 		this->svrSocv6 = 0;
 		this->errorv6 = true;
 	}
-	else if (!this->socf->SocketListen(this->svrSocv6))
+	else
 	{
-		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v6 port: "));
-		str = Text::StrInt32(str, this->port);
-		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
-		this->socf->DestroySocket(this->svrSocv6);
-		this->svrSocv6 = 0;
-		this->errorv6 = true;
+		this->svrSocv6 = this->socf->CreateTCPSocketv6();
+		if (!this->socf->SocketBind(this->svrSocv6, &addrTmp, this->port))
+		{
+			str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));
+			str = Text::StrInt32(str, this->port);
+			this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
+			this->socf->DestroySocket(this->svrSocv6);
+			this->svrSocv6 = 0;
+			this->errorv6 = true;
+		}
+		else if (!this->socf->SocketListen(this->svrSocv6))
+		{
+			str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v6 port: "));
+			str = Text::StrInt32(str, this->port);
+			this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
+			this->socf->DestroySocket(this->svrSocv6);
+			this->svrSocv6 = 0;
+			this->errorv6 = true;
+		}
 	}
 
 	if (autoStart)
@@ -441,4 +472,9 @@ Bool Net::TCPServer::IsV4Error()
 Bool Net::TCPServer::IsV6Error()
 {
 	return errorv6;
+}
+
+UInt16 Net::TCPServer::GetListenPort() const
+{
+	return this->port;
 }

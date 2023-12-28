@@ -1347,7 +1347,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			if (s->ToUInt16(port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
-				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, CSTR("CLI: "), false));
+				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, 0, port, this->log, OnServerConn, this, CSTR("CLI: "), false));
 				if (this->cliSvr->IsV4Error())
 				{
 					DEL_CLASS(this->cliSvr);

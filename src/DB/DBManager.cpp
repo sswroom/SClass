@@ -384,7 +384,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
 			{
-				Net::SocketUtil::GetIPAddr(sarr[0].ToCString().Substring(7), addr);
+				Net::SocketUtil::SetAddrInfo(addr, sarr[0].ToCString().Substring(7));
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
 			{

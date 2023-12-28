@@ -17,6 +17,7 @@
 #include "Math/WKTReader.h"
 #include "Net/HKOAPI.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSHManager.h"
 #include "Net/SSLEngineFactory.h"
 #include "Parser/FullParserList.h"
 #include "Text/CPPText.h"
@@ -533,7 +534,52 @@ Int32 WKBTest()
 	return 0;
 }
 
+Int32 SSHTest(NotNullPtr<Core::IProgControl> progCtrl)
+{
+	Net::OSSocketFactory sockf(false);
+	Net::SSHManager ssh(sockf);
+	NotNullPtr<Net::SSHClient> cli;
+	if (ssh.CreateClient(CSTR("192.168.0.15"), 22, CSTR("sswroom"), CSTR("testing")).SetTo(cli))
+	{
+		if (!cli->CreateForward(11111, CSTR("192.168.0.25"), 12345).IsNull())
+		{
+			progCtrl->WaitForExit(progCtrl);
+		}
+		cli.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
+	UOSInt testType = 10;
+	switch (testType)
+	{
+	case 0:
+		return Test0();
+	case 1:
+		return Test1();
+	case 2:
+		return InPolygonTest();
+	case 3:
+		return RenameFileTest();
+	case 4:
+		return AXCAN_BYDC9RTest();
+	case 5:
+		return ProcessExecTest();
+	case 6:
+		return CFBTimeTest();
+	case 7:
+		return ESRIFeatureServerTest();
+	case 8:
+		return HKOTest();
+	case 9:
+		return WKBTest();
+	case 10:
+		return SSHTest(progCtrl);
+	default:
+		return 0;
+	}
+	
 	return WKBTest();
 }

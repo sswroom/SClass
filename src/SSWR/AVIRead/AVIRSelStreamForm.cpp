@@ -340,6 +340,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	case IO::StreamType::DataCapture:
 	case IO::StreamType::Null:
 	case IO::StreamType::FileView:
+	case IO::StreamType::SSHTCPChannel:
 		break;
 	}
 }
@@ -402,7 +403,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 300, ui)
+SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
 	UOSInt i;
@@ -417,6 +418,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->siLabDriver = this->core->GetSiLabDriver();
 	this->ssl = ssl;
+	this->log = log;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlStreamType = ui->NewPanel(*this);

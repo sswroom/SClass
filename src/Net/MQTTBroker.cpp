@@ -1044,7 +1044,7 @@ Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Boo
 	listener->ssl = ssl;
 	listener->listener = 0;
 	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(listener->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
+	NEW_CLASS(listener->svr, Net::TCPServer(this->sockf, 0, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
 	if (listener->svr->IsV4Error())
 	{
 		DEL_CLASS(listener->svr);
