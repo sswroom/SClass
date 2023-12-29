@@ -331,7 +331,7 @@ Bool IO::Device::SIM7000SocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<N
 	return false;
 }
 
-Int32 IO::Device::SIM7000SocketFactory::SocketGetFD(Socket *socket)
+OSInt IO::Device::SIM7000SocketFactory::SocketGetFD(Socket *socket)
 {
 	return false;
 }

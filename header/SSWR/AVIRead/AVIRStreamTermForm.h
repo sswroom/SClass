@@ -42,8 +42,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSendOption;
 			NotNullPtr<UI::GUILabel> lblSendLBreak;
 			NotNullPtr<UI::GUIComboBox> cboSendLBreak;
-			UI::GUIRadioButton *radSendText;
-			UI::GUIRadioButton *radSendHex;
+			NotNullPtr<UI::GUIRadioButton> radSendText;
+			NotNullPtr<UI::GUIRadioButton> radSendHex;
 
 			IO::MemoryStream recvBuff;
 			IO::MemoryStream sendBuff;

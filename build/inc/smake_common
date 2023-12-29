@@ -4693,6 +4693,8 @@ UI/GUIPictureBoxDD.h:
 @GUIPictureBoxDD.o
 UI/GUIPictureList.h:
 @GUIPictureList.o
+UI/GUIRadioButton.h:
+@GUIRadioButton.o
 UI/GUIRealtimeLineChart.h:
 @GUIRealtimeLineChart.o
 UI/GUISudokuViewer.h:
@@ -4775,6 +4777,8 @@ UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
 UI/GTK/GTKPanelBase.h:
 @GTKPanelBase.o
+UI/GTK/GTKRadioButton.h:
+@GTKRadioButton.o
 UI/GTK/GTKRealtimeLineChart.h:
 @GTKRealtimeLineChart.o
 UI/GTK/GTKTabControl.h:
@@ -4813,6 +4817,8 @@ UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
 UI/Java/JavaPanelBase.h:
 @JavaPanelBase.o
+UI/Java/JavaRadioButton.h:
+@JavaRadioButton.o
 UI/Java/JavaRealtimeLineChart.h:
 @JavaRealtimeLineChart.o
 UI/Java/JavaTabControl.h:
@@ -4853,6 +4859,8 @@ UI/Win/WinMessageDialog.h:
 @WinMessageDialog.o
 UI/Win/WinPanelBase.h:
 @WinPanelBase.o
+UI/Win/WinRadioButton.h:
+@WinRadioButton.o
 UI/Win/WinRealtimeLineChart.h:
 @WinRealtimeLineChart.o
 UI/Win/WinTabControl.h:

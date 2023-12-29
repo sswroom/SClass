@@ -316,9 +316,9 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->cboSendLBreak->AddItem(CSTR("LF"), 0);
 	this->cboSendLBreak->AddItem(CSTR("<null>"), 0);
 	this->cboSendLBreak->SetSelectedIndex(1);
-	NEW_CLASS(this->radSendText, UI::GUIRadioButton(ui, this->pnlSendOption, CSTR("Text"), true));
+	this->radSendText = ui->NewRadioButton(this->pnlSendOption, CSTR("Text"), true);
 	this->radSendText->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radSendHex, UI::GUIRadioButton(ui, this->pnlSendOption, CSTR("Hex"), false));
+	this->radSendHex = ui->NewRadioButton(this->pnlSendOption, CSTR("Hex"), false);
 	this->radSendHex->SetRect(100, 0, 100, 23, false);
 	this->txtSendValue = ui->NewTextBox(this->pnlSend, CSTR(""));
 	this->txtSendValue->SetDockType(UI::GUIControl::DOCK_FILL);

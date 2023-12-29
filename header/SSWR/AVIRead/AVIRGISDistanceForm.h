@@ -18,12 +18,12 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIPanel> pnlType;
-			UI::GUIRadioButton *radTypeLine;
-			UI::GUIRadioButton *radTypePath;
+			NotNullPtr<UI::GUIRadioButton> radTypeLine;
+			NotNullPtr<UI::GUIRadioButton> radTypePath;
 			NotNullPtr<UI::GUILabel> lblAction;
 			NotNullPtr<UI::GUIPanel> pnlAction;
-			UI::GUIRadioButton *radActionPause;
-			UI::GUIRadioButton *radActionMeasure;
+			NotNullPtr<UI::GUIRadioButton> radActionPause;
+			NotNullPtr<UI::GUIRadioButton> radActionMeasure;
 			NotNullPtr<UI::GUILabel> lblDistance;
 			NotNullPtr<UI::GUITextBox> txtDistance;
 			NotNullPtr<UI::GUIComboBox> cboDistanceUnit;

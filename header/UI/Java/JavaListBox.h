@@ -1,29 +1,16 @@
-#ifndef _SM_UI_GTK_GTKLISTBOX
-#define _SM_UI_GTK_GTKLISTBOX
+#ifndef _SM_UI_JAVA_JAVALISTBOX
+#define _SM_UI_JAVA_JAVALISTBOX
 #include "UI/GUIListBox.h"
-#include <gtk/gtk.h>
 
 namespace UI
 {
-	namespace GTK
+	namespace Java
 	{
-		class GTKListBox : public UI::GUIListBox
+		class JavaListBox : public UI::GUIListBox
 		{
 		public:
-			struct ItemData;
-		private:
-			Data::ArrayList<ItemData *> items;
-			Bool mulSel;
-			GtkWidget *listbox;
-			Bool isShown;
-			Int64 showTime;
-
-			static void SignalSelChange(GtkListBox *listBox, GtkListBoxRow *row, gpointer data);
-			static gboolean SignalButtonPress(GtkWidget *widget, GdkEvent *event, gpointer data);
-			static void SignalShow(GtkWidget *widget, gpointer user_data);
-		public:
-			GTKListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect);
-			virtual ~GTKListBox();
+			JavaListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect);
+			virtual ~JavaListBox();
 
 			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
 			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);

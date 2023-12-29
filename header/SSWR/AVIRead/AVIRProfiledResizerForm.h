@@ -37,19 +37,19 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSuffix;
 
 			NotNullPtr<UI::GUIGroupBox> grpSize;
-			UI::GUIRadioButton *radSize;
+			NotNullPtr<UI::GUIRadioButton> radSize;
 			NotNullPtr<UI::GUITextBox> txtWidth;
 			NotNullPtr<UI::GUITextBox> txtHeight;
-			UI::GUIRadioButton *radDPI;
+			NotNullPtr<UI::GUIRadioButton> radDPI;
 			NotNullPtr<UI::GUITextBox> txtHDPI;
 			NotNullPtr<UI::GUITextBox> txtVDPI;
 
 			NotNullPtr<UI::GUITextBox> txtWatermark;
-			UI::GUIRadioButton *radTIFF;
-			UI::GUIRadioButton *radJPEGQ;
-			UI::GUIRadioButton *radJPEGSize;
-			UI::GUIRadioButton *radPNG;
-			UI::GUIRadioButton *radWEBPQ;
+			NotNullPtr<UI::GUIRadioButton> radTIFF;
+			NotNullPtr<UI::GUIRadioButton> radJPEGQ;
+			NotNullPtr<UI::GUIRadioButton> radJPEGSize;
+			NotNullPtr<UI::GUIRadioButton> radPNG;
+			NotNullPtr<UI::GUIRadioButton> radWEBPQ;
 			NotNullPtr<UI::GUITextBox> txtJPEGQuality;
 			NotNullPtr<UI::GUITextBox> txtJPEGSize;
 			NotNullPtr<UI::GUITextBox> txtWEBPQuality;

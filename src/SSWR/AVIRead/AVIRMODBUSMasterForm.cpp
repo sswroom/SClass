@@ -573,9 +573,9 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
-	NEW_CLASS(this->radMODBUSRTU, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS RTU"), true));
+	this->radMODBUSRTU = ui->NewRadioButton(this->grpStream, CSTR("MODBUS RTU"), true);
 	this->radMODBUSRTU->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->radMODBUSTCP, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS TCP"), false));
+	this->radMODBUSTCP = ui->NewRadioButton(this->grpStream, CSTR("MODBUS TCP"), false);
 	this->radMODBUSTCP->SetRect(204, 28, 100, 23, false);
 	this->lblTimeout = ui->NewLabel(this->grpStream, CSTR("Timeout(ms)"));
 	this->lblTimeout->SetRect(4, 52, 100, 23, false);

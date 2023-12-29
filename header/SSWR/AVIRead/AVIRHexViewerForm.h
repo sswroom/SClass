@@ -28,8 +28,8 @@ namespace SSWR
 			
 			NotNullPtr<UI::GUITabPage> tpValues;
 			NotNullPtr<UI::GUILabel> lblEndian;
-			UI::GUIRadioButton *radEndianLittle;
-			UI::GUIRadioButton *radEndianBig;
+			NotNullPtr<UI::GUIRadioButton> radEndianLittle;
+			NotNullPtr<UI::GUIRadioButton> radEndianBig;
 			NotNullPtr<UI::GUILabel> lblInt8;
 			NotNullPtr<UI::GUITextBox> txtInt8;
 			NotNullPtr<UI::GUILabel> lblInt16;

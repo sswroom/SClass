@@ -2177,6 +2177,7 @@ GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
 GUIPanel.o: ../../src/UI/GUIPanel.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp
 GUIPictureList.o: ../../src/UI/GUIPictureList.cpp
+GUIRadioButton.o: ../../src/UI/GUIRadioButton.cpp
 GUIRealtimeLineChart.o: ../../src/UI/GUIRealtimeLineChart.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
 GUITabControl.o: ../../src/UI/GUITabControl.cpp
@@ -2235,6 +2236,8 @@ GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKPanelBase.o: ../../src/UI/GTK/GTKPanelBase.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKRadioButton.o: ../../src/UI/GTK/GTKRadioButton.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKRealtimeLineChart.o: ../../src/UI/GTK/GTKRealtimeLineChart.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTabControl.o: ../../src/UI/GTK/GTKTabControl.cpp
@@ -2272,8 +2275,6 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPopupMenuGTK.o: ../../src/UI/GTK/GUIPopupMenuGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIProgressBarGTK.o: ../../src/UI/GTK/GUIProgressBarGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIRadioButtonGTK.o: ../../src/UI/GTK/GUIRadioButtonGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextViewGTK.o: ../../src/UI/GTK/GUITextViewGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2335,6 +2336,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaPanelBase.o: ../../src/UI/Java/JavaPanelBase.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaRadioButton.o: ../../src/UI/Java/JavaRadioButton.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaRealtimeLineChart.o: ../../src/UI/Java/JavaRealtimeLineChart.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2370,7 +2374,6 @@ GUIPictureBoxWin.o: ../../src/UI/Win/GUIPictureBoxWin.cpp
 GUIPopupMenuWin.o: ../../src/UI/Win/GUIPopupMenuWin.cpp
 GUIProgressBarWin.o: ../../src/UI/Win/GUIProgressBarWin.cpp
 !-lcomctl32
-GUIRadioButtonWin.o: ../../src/UI/Win/GUIRadioButtonWin.cpp
 GUITextViewWin.o: ../../src/UI/Win/GUITextViewWin.cpp
 GUITrackBarWin.o: ../../src/UI/Win/GUITrackBarWin.cpp
 !-lcomctl32
@@ -2393,6 +2396,7 @@ WinLabel.o: ../../src/UI/Win/WinLabel.cpp
 WinListBox.o: ../../src/UI/Win/WinListBox.cpp
 WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
 WinPanelBase.o: ../../src/UI/Win/WinPanelBase.cpp
+WinRadioButton.o: ../../src/UI/Win/WinRadioButton.cpp
 WinRealtimeLineChart.o: ../../src/UI/Win/WinRealtimeLineChart.cpp
 WinTabControl.o: ../../src/UI/Win/WinTabControl.cpp
 !-lcomctl32

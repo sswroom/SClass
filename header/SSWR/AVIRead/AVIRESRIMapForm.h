@@ -30,8 +30,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUIRadioButton *radPredefine;
-			UI::GUIRadioButton *radOther;
+			NotNullPtr<UI::GUIRadioButton> radPredefine;
+			NotNullPtr<UI::GUIRadioButton> radOther;
 			NotNullPtr<UI::GUIComboBox> cboPredefine;
 			NotNullPtr<UI::GUITextBox> txtOther;
 			NotNullPtr<UI::GUICheckBox> chkNoResource;

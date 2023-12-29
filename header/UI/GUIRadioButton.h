@@ -9,23 +9,20 @@ namespace UI
 	public:
 		typedef void (__stdcall *SelectedChangeHandler)(void *userObj, Bool newState);
 	private:
-		Bool selected;
 		Data::ArrayList<SelectedChangeHandler> selectedChangeHdlrs;
 		Data::ArrayList<void*> selectedChangeObjs;
 
 	public:
-		void ChangeSelected(Bool selVal);
-	public:
-		GUIRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
+		GUIRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIRadioButton();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-
-		Bool IsSelected();
-		void Select();
-
+		void EventSelectedChange(Bool newState);
 		void HandleSelectedChange(SelectedChangeHandler hdlr, void *userObj);
+
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual Bool IsSelected() = 0;
+		virtual void Select() = 0;
 	};
 }
 

@@ -2,17 +2,16 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Data/ArrayList.h"
-#include "UI/GUIRadioButton.h"
-#include <gtk/gtk.h>
+#include "UI/GTK/GTKRadioButton.h"
 
-void GUIRadioButton_SelChange(GtkRadioButton *btn, gpointer data)
+void UI::GTK::GTKRadioButton::SignalToggled(GtkRadioButton *btn, gpointer data)
 {
-	UI::GUIRadioButton *me = (UI::GUIRadioButton *)data;
+	UI::GTK::GTKRadioButton *me = (UI::GTK::GTKRadioButton *)data;
 	Bool sel = gtk_toggle_button_get_active((GtkToggleButton*)me->GetHandle());
 	me->ChangeSelected(sel);
 }
 
-void UI::GUIRadioButton::ChangeSelected(Bool selVal)
+void UI::GTK::GTKRadioButton::ChangeSelected(Bool selVal)
 {
 	if (this->selected == selVal)
 		return;
@@ -24,14 +23,10 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	{
 		this->selected = false;
 	}
-	UOSInt i = this->selectedChangeHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->selectedChangeHdlrs.GetItem(i)(this->selectedChangeObjs.GetItem(i), this->selected);
-	}
+	this->EventSelectedChange(selVal);
 }
 
-UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::GTK::GTKRadioButton::GTKRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIRadioButton(ui, parent)
 {
 	this->selected = selected;
 
@@ -62,38 +57,26 @@ UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 	parent->AddChild(*this);
 	this->Show();
 
-	g_signal_connect(this->hwnd, "toggled", G_CALLBACK(GUIRadioButton_SelChange), this);
+	g_signal_connect(this->hwnd, "toggled", G_CALLBACK(SignalToggled), this);
 	if (selected)
 		Select();
 }
 
-UI::GUIRadioButton::~GUIRadioButton()
+UI::GTK::GTKRadioButton::~GTKRadioButton()
 {
 }
 
-Text::CStringNN UI::GUIRadioButton::GetObjectClass() const
-{
-	return CSTR("RadioButton");
-}
-
-OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)
+OSInt UI::GTK::GTKRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-Bool UI::GUIRadioButton::IsSelected()
+Bool UI::GTK::GTKRadioButton::IsSelected()
 {
 	return this->selected;
 }
 
-void UI::GUIRadioButton::Select()
+void UI::GTK::GTKRadioButton::Select()
 {
 	gtk_toggle_button_set_active((GtkToggleButton*)this->hwnd, true);
 }
-
-void UI::GUIRadioButton::HandleSelectedChange(SelectedChangeHandler hdlr, void *userObj)
-{
-	this->selectedChangeHdlrs.Add(hdlr);
-	this->selectedChangeObjs.Add(userObj);
-}
-

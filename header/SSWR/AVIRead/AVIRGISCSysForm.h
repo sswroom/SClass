@@ -23,9 +23,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITextBox> txtCurrCSys;
 			NotNullPtr<UI::GUIPanel> pnlSel;
-			UI::GUIRadioButton *radGeo;
+			NotNullPtr<UI::GUIRadioButton> radGeo;
 			NotNullPtr<UI::GUIComboBox> cboGeo;
-			UI::GUIRadioButton *radProj;
+			NotNullPtr<UI::GUIRadioButton> radProj;
 			NotNullPtr<UI::GUIComboBox> cboProj;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

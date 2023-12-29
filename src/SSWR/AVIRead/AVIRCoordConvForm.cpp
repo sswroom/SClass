@@ -552,10 +552,10 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSrc = ui->NewLabel(this->pnlSrc, CSTR("Source Type"));
 	this->lblSrc->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radSrcGeo, UI::GUIRadioButton(ui, this->pnlSrc, CSTR("Geographic"), false));
+	this->radSrcGeo = ui->NewRadioButton(this->pnlSrc, CSTR("Geographic"), false);
 	this->radSrcGeo->SetRect(100, 0, 100, 23, false);
 	this->radSrcGeo->HandleSelectedChange(OnSrcRadChanged, this);
-	NEW_CLASS(this->radSrcProj, UI::GUIRadioButton(ui, this->pnlSrc, CSTR("Projected"), true));
+	this->radSrcProj = ui->NewRadioButton(this->pnlSrc, CSTR("Projected"), true);
 	this->radSrcProj->SetRect(200, 0, 100, 23, false);
 	this->cboSrc = ui->NewComboBox(this->pnlSrc, false);
 	this->cboSrc->SetRect(300, 0, 200, 23, false);
@@ -565,10 +565,10 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->pnlDest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDest = ui->NewLabel(this->pnlDest, CSTR("Dest Type"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radDestGeo, UI::GUIRadioButton(ui, this->pnlDest, CSTR("Geographic"), true));
+	this->radDestGeo = ui->NewRadioButton(this->pnlDest, CSTR("Geographic"), true);
 	this->radDestGeo->SetRect(100, 0, 100, 23, false);
 	this->radDestGeo->HandleSelectedChange(OnDestRadChanged, this);
-	NEW_CLASS(this->radDestProj, UI::GUIRadioButton(ui, this->pnlDest, CSTR("Projected"), false));
+	this->radDestProj = ui->NewRadioButton(this->pnlDest, CSTR("Projected"), false);
 	this->radDestProj->SetRect(200, 0, 100, 23, false);
 	this->cboDest = ui->NewComboBox(this->pnlDest, false);
 	this->cboDest->SetRect(300, 0, 200, 23, false);

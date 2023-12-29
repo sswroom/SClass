@@ -18,8 +18,8 @@ namespace SSWR
 		class SHPConvRangeFilterForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIRadioButton *radInRange;
-			UI::GUIRadioButton *radOutRange;
+			NotNullPtr<UI::GUIRadioButton> radInRange;
+			NotNullPtr<UI::GUIRadioButton> radOutRange;
 			NotNullPtr<UI::GUILabel> lblX1;
 			NotNullPtr<UI::GUITextBox> txtX1;
 			NotNullPtr<UI::GUILabel> lblY1;

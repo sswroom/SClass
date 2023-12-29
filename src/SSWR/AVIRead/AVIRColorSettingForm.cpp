@@ -615,22 +615,22 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblLuminanceUnit->SetRect(150, 176, 100, 23, false);
 	this->grpYUVDef = ui->NewGroupBox(this->tpSetting, CSTR("Default YUV Type"));
 	this->grpYUVDef->SetRect(0, 208, 280, 96, false);
-	NEW_CLASS(this->radYUVDefBT601, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("BT601"), false));
+	this->radYUVDefBT601 = ui->NewRadioButton(this->grpYUVDef, CSTR("BT601"), false);
 	this->radYUVDefBT601->SetRect(8, 0, 100, 23, false);
 	this->radYUVDefBT601->HandleSelectedChange(OnYUVDefBT601Chg, this);
-	NEW_CLASS(this->radYUVDefBT709, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("BT709"), false));
+	this->radYUVDefBT709 = ui->NewRadioButton(this->grpYUVDef, CSTR("BT709"), false);
 	this->radYUVDefBT709->SetRect(8, 24, 100, 23, false);
 	this->radYUVDefBT709->HandleSelectedChange(OnYUVDefBT709Chg, this);
-	NEW_CLASS(this->radYUVDefFCC, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("FCC"), false));
+	this->radYUVDefFCC = ui->NewRadioButton(this->grpYUVDef, CSTR("FCC"), false);
 	this->radYUVDefFCC->SetRect(8, 48, 100, 23, false);
 	this->radYUVDefFCC->HandleSelectedChange(OnYUVDefFCCChg, this);
-	NEW_CLASS(this->radYUVDefBT470BG, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("BT470BG"), false));
+	this->radYUVDefBT470BG = ui->NewRadioButton(this->grpYUVDef, CSTR("BT470BG"), false);
 	this->radYUVDefBT470BG->SetRect(144, 0, 100, 23, false);
 	this->radYUVDefBT470BG->HandleSelectedChange(OnYUVDefBT470BGChg, this);
-	NEW_CLASS(this->radYUVDefSMPTE170M, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("SMPTE 170M"), false));
+	this->radYUVDefSMPTE170M = ui->NewRadioButton(this->grpYUVDef, CSTR("SMPTE 170M"), false);
 	this->radYUVDefSMPTE170M->SetRect(144, 24, 100, 23, false);
 	this->radYUVDefSMPTE170M->HandleSelectedChange(OnYUVDefSMPTE170MChg, this);
-	NEW_CLASS(this->radYUVDefSMPTE240M, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("SMPTE 240M"), false));
+	this->radYUVDefSMPTE240M = ui->NewRadioButton(this->grpYUVDef, CSTR("SMPTE 240M"), false);
 	this->radYUVDefSMPTE240M->SetRect(144, 48, 100, 23, false);
 	this->radYUVDefSMPTE240M->HandleSelectedChange(OnYUVDefSMPTE240MChg, this);
 

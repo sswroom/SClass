@@ -59,8 +59,6 @@ UI/GUIPopupMenu.h:
 @GUIPopupMenuGTK.o
 UI/GUIProgressBar.h:
 @GUIProgressBarGTK.o
-UI/GUIRadioButton.h:
-@GUIRadioButtonGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
 UI/GUITrackBar.h:

@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Data/ArrayList.h"
-#include "UI/GUIRadioButton.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinRadioButton.h"
 
 #include <windows.h>
 
-void UI::GUIRadioButton::ChangeSelected(Bool selVal)
+void UI::Win::WinRadioButton::ChangeSelected(Bool selVal)
 {
 	if (selVal)
 	{
@@ -19,14 +19,10 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 		SendMessage((HWND)this->hwnd, BM_SETCHECK, BST_UNCHECKED, 0);
 		this->selected = false;
 	}
-	UOSInt i = this->selectedChangeHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->selectedChangeHdlrs.GetItem(i)(this->selectedChangeObjs.GetItem(i), this->selected);
-	}
+	this->EventSelectedChange(selVal);
 }
 
-UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::Win::WinRadioButton::WinRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIRadioButton(ui, parent)
 {
 	this->selected = false;
 
@@ -40,16 +36,11 @@ UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 		Select();
 }
 
-UI::GUIRadioButton::~GUIRadioButton()
+UI::Win::WinRadioButton::~WinRadioButton()
 {
 }
 
-Text::CStringNN UI::GUIRadioButton::GetObjectClass() const
-{
-	return CSTR("RadioButton");
-}
-
-OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinRadioButton::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -60,12 +51,12 @@ OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-Bool UI::GUIRadioButton::IsSelected()
+Bool UI::Win::WinRadioButton::IsSelected()
 {
 	return SendMessage((HWND)this->hwnd, BM_GETCHECK, 0, 0) == BST_CHECKED;
 }
 
-void UI::GUIRadioButton::Select()
+void UI::Win::WinRadioButton::Select()
 {
 	if (this->selected)
 		return;
@@ -81,16 +72,10 @@ void UI::GUIRadioButton::Select()
 			{
 				if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))
 				{
-					NotNullPtr<UI::GUIRadioButton>::ConvertFrom(ctrl)->ChangeSelected(false);
+					NotNullPtr<UI::Win::WinRadioButton>::ConvertFrom(ctrl)->ChangeSelected(false);
 				}
 			}
 		}
 	}
 	this->ChangeSelected(true);
-}
-
-void UI::GUIRadioButton::HandleSelectedChange(SelectedChangeHandler hdlr, void *userObj)
-{
-	this->selectedChangeHdlrs.Add(hdlr);
-	this->selectedChangeObjs.Add(userObj);
 }

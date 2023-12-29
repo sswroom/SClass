@@ -22,8 +22,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLossyFile;
 			NotNullPtr<UI::GUIButton> btnLossyFile;
 			NotNullPtr<UI::GUILabel> lblMode;
-			UI::GUIRadioButton *radMode16Bit;
-			UI::GUIRadioButton *radMode8Bit;
+			NotNullPtr<UI::GUIRadioButton> radMode16Bit;
+			NotNullPtr<UI::GUIRadioButton> radMode8Bit;
 			NotNullPtr<UI::GUIButton> btnCompare;
 			NotNullPtr<UI::GUILabel> lblPSNR;
 			NotNullPtr<UI::GUITextBox> txtPSNR;

@@ -81,9 +81,9 @@ SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(UI::GUIClientContr
 	this->deng = deng;
 	this->filter = 0;
 	
-	NEW_CLASS(this->radInRange, UI::GUIRadioButton(ui, *this, CSTR("In Range"), true));
+	this->radInRange = ui->NewRadioButton(*this, CSTR("In Range"), true);
 	this->radInRange->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->radOutRange, UI::GUIRadioButton(ui, *this, CSTR("Out Range"), false));
+	this->radOutRange = ui->NewRadioButton(*this, CSTR("Out Range"), false);
 	this->radOutRange->SetRect(112, 8, 100, 23, false);
 	this->lblX1 = ui->NewLabel(*this, CSTR("X"));
 	this->lblX1->SetRect(8, 32, 16, 23, false);

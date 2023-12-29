@@ -58,12 +58,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLuminance;
 			NotNullPtr<UI::GUILabel> lblLuminanceUnit;
 			NotNullPtr<UI::GUIGroupBox> grpYUVDef;
-			UI::GUIRadioButton *radYUVDefBT601;
-			UI::GUIRadioButton *radYUVDefBT709;
-			UI::GUIRadioButton *radYUVDefFCC;
-			UI::GUIRadioButton *radYUVDefBT470BG;
-			UI::GUIRadioButton *radYUVDefSMPTE170M;
-			UI::GUIRadioButton *radYUVDefSMPTE240M;
+			NotNullPtr<UI::GUIRadioButton> radYUVDefBT601;
+			NotNullPtr<UI::GUIRadioButton> radYUVDefBT709;
+			NotNullPtr<UI::GUIRadioButton> radYUVDefFCC;
+			NotNullPtr<UI::GUIRadioButton> radYUVDefBT470BG;
+			NotNullPtr<UI::GUIRadioButton> radYUVDefSMPTE170M;
+			NotNullPtr<UI::GUIRadioButton> radYUVDefSMPTE240M;
 
 			NotNullPtr<UI::GUITabPage> tpCal;
 			NotNullPtr<UI::GUIPanel> pnlCalRed;

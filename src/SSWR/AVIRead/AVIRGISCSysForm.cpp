@@ -66,12 +66,12 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, No
 	this->pnlSel = ui->NewPanel(*this);
 	this->pnlSel->SetRect(0, 0, 300, 23, false);
 	this->pnlSel->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->radGeo, UI::GUIRadioButton(ui, this->pnlSel, CSTR("Geographic CS"), true));
+	this->radGeo = ui->NewRadioButton(this->pnlSel, CSTR("Geographic CS"), true);
 	this->radGeo->SetRect(0, 4, 100, 23, false);
 	this->cboGeo = ui->NewComboBox(this->pnlSel, false);
 	this->cboGeo->SetRect(100, 4, 200, 23, false);
 	this->cboGeo->HandleSelectionChange(OnGeoSelChg, this);
-	NEW_CLASS(this->radProj, UI::GUIRadioButton(ui, this->pnlSel, CSTR("Projected CS"), false));
+	this->radProj = ui->NewRadioButton(this->pnlSel, CSTR("Projected CS"), false);
 	this->radProj->SetRect(0, 28, 100, 23, false);
 	this->cboProj = ui->NewComboBox(this->pnlSel, false);
 	this->cboProj->SetRect(100, 28, 200, 23, false);

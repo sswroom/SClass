@@ -41,12 +41,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcFilter;
 			NotNullPtr<UI::GUIPanel> pnlAudioSource;
 			NotNullPtr<UI::GUILabel> lblAudioSource;
-			UI::GUIRadioButton *radInputWaveIn;
-			UI::GUIRadioButton *radInputSilent;
+			NotNullPtr<UI::GUIRadioButton> radInputWaveIn;
+			NotNullPtr<UI::GUIRadioButton> radInputSilent;
 			NotNullPtr<UI::GUIPanel> pnlAudioOutput;
 			NotNullPtr<UI::GUILabel> lblAudioOutput;
-			UI::GUIRadioButton *radOutputDevice;
-			UI::GUIRadioButton *radOutputSilent;
+			NotNullPtr<UI::GUIRadioButton> radOutputDevice;
+			NotNullPtr<UI::GUIRadioButton> radOutputSilent;
 			NotNullPtr<UI::GUILabel> lblBuffSize;
 			NotNullPtr<UI::GUITextBox> txtBuffSize;
 			NotNullPtr<UI::GUILabel> lblFrequency;

@@ -58,15 +58,15 @@ namespace UtilUI
 		NotNullPtr<UI::GUITextBox> txtTrans;
 		NotNullPtr<UI::GUILabel> lblPrimaries;
 		NotNullPtr<UI::GUITextBox> txtPrimaries;
-		UI::GUIRadioButton *radR;
-		UI::GUIRadioButton *radG;
-		UI::GUIRadioButton *radB;
-		UI::GUIRadioButton *radYIQY;
-		UI::GUIRadioButton *radYIQI;
-		UI::GUIRadioButton *radYIQQ;
-		UI::GUIRadioButton *radHSVH;
-		UI::GUIRadioButton *radHSVS;
-		UI::GUIRadioButton *radHSVV;
+		NotNullPtr<UI::GUIRadioButton> radR;
+		NotNullPtr<UI::GUIRadioButton> radG;
+		NotNullPtr<UI::GUIRadioButton> radB;
+		NotNullPtr<UI::GUIRadioButton> radYIQY;
+		NotNullPtr<UI::GUIRadioButton> radYIQI;
+		NotNullPtr<UI::GUIRadioButton> radYIQQ;
+		NotNullPtr<UI::GUIRadioButton> radHSVH;
+		NotNullPtr<UI::GUIRadioButton> radHSVS;
+		NotNullPtr<UI::GUIRadioButton> radHSVV;
 
 		NotNullPtr<UI::GUITextBox> txtR;
 		NotNullPtr<UI::GUITextBox> txtG;

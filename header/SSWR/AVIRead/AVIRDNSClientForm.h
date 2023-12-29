@@ -28,8 +28,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblRequest;
 			NotNullPtr<UI::GUITextBox> txtRequest;
 			NotNullPtr<UI::GUIComboBox> cboRequest;
-//			UI::GUIRadioButton *radRequestNormal;
-//			UI::GUIRadioButton *radRequestMX;
+//			NotNullPtr<UI::GUIRadioButton> radRequestNormal;
+//			NotNullPtr<UI::GUIRadioButton> radRequestMX;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUILabel> lblRequestTime;
 			NotNullPtr<UI::GUITextBox> txtRequestTime;

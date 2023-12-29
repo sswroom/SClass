@@ -21,13 +21,13 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlSrc;
 			NotNullPtr<UI::GUILabel> lblSrc;
-			UI::GUIRadioButton *radSrcGeo;
-			UI::GUIRadioButton *radSrcProj;
+			NotNullPtr<UI::GUIRadioButton> radSrcGeo;
+			NotNullPtr<UI::GUIRadioButton> radSrcProj;
 			NotNullPtr<UI::GUIComboBox> cboSrc;
 			NotNullPtr<UI::GUIPanel> pnlDest;
 			NotNullPtr<UI::GUILabel> lblDest;
-			UI::GUIRadioButton *radDestGeo;
-			UI::GUIRadioButton *radDestProj;
+			NotNullPtr<UI::GUIRadioButton> radDestGeo;
+			NotNullPtr<UI::GUIRadioButton> radDestProj;
 			NotNullPtr<UI::GUIComboBox> cboDest;
 			NotNullPtr<UI::GUIButton> btnConvFile;
 			NotNullPtr<UI::GUIPanel> pnlCoord;

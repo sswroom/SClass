@@ -121,11 +121,11 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, No
 	this->esriMap = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, *this, CSTR("Predefine"), true));
+	this->radPredefine = ui->NewRadioButton(*this, CSTR("Predefine"), true);
 	this->radPredefine->SetRect(8, 8, 100, 23, false);
 	this->cboPredefine = ui->NewComboBox(*this, false);
 	this->cboPredefine->SetRect(108, 8, 150, 23, false);
-	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, *this, CSTR("Other"), false));
+	this->radOther = ui->NewRadioButton(*this, CSTR("Other"), false);
 	this->radOther->SetRect(8, 32, 100, 23, false);
 	this->txtOther = ui->NewTextBox(*this, CSTR(""));
 	this->txtOther->SetRect(108, 32, 500, 23, false);

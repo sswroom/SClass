@@ -372,9 +372,9 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->tpValues = this->tcMain->AddTabPage(CSTR("Values"));
 	this->lblEndian = ui->NewLabel(this->tpValues, CSTR("Endian"));
 	this->lblEndian->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->radEndianLittle, UI::GUIRadioButton(ui, this->tpValues, CSTR("Little Endian"), true));
+	this->radEndianLittle = ui->NewRadioButton(this->tpValues, CSTR("Little Endian"), true);
 	this->radEndianLittle->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->radEndianBig, UI::GUIRadioButton(ui, this->tpValues, CSTR("Big Endian"), false));
+	this->radEndianBig = ui->NewRadioButton(this->tpValues, CSTR("Big Endian"), false);
 	this->radEndianBig->SetRect(254, 4, 150, 23, false);
 	this->radEndianBig->HandleSelectedChange(OnEndianChg, this);
 	this->lblInt8 = ui->NewLabel(this->tpValues, CSTR("Int8"));

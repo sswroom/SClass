@@ -75,8 +75,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblStream;
 			NotNullPtr<UI::GUITextBox> txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
-			UI::GUIRadioButton *radMODBUSRTU;
-			UI::GUIRadioButton *radMODBUSTCP;
+			NotNullPtr<UI::GUIRadioButton> radMODBUSRTU;
+			NotNullPtr<UI::GUIRadioButton> radMODBUSTCP;
 			NotNullPtr<UI::GUILabel> lblTimeout;
 			NotNullPtr<UI::GUITextBox> txtTimeout;
 			NotNullPtr<UI::GUIButton> btnTimeout;

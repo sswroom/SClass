@@ -17,6 +17,7 @@
 #include "UI/Win/WinListBox.h"
 #include "UI/Win/WinMessageDialog.h"
 #include "UI/Win/WinPanelBase.h"
+#include "UI/Win/WinRadioButton.h"
 #include "UI/Win/WinRealtimeLineChart.h"
 #include "UI/Win/WinTabControl.h"
 #include "UI/Win/WinTextBox.h"
@@ -302,6 +303,13 @@ NotNullPtr<UI::GUIListBox> UI::Win::WinCore::NewListBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::Win::WinListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIRadioButton> UI::Win::WinCore::NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
+{
+	NotNullPtr<UI::Win::WinRadioButton> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinRadioButton(*this, parent, initText, selected));
 	return ctrl;
 }
 

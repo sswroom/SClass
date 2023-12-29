@@ -20,8 +20,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCol;
 			NotNullPtr<UI::GUIComboBox> cboCol;
 			NotNullPtr<UI::GUILabel> lblType;
-			UI::GUIRadioButton *radEqual;
-			UI::GUIRadioButton *radNotEq;
+			NotNullPtr<UI::GUIRadioButton> radEqual;
+			NotNullPtr<UI::GUIRadioButton> radNotEq;
 			NotNullPtr<UI::GUILabel> lblValue;
 			NotNullPtr<UI::GUITextBox> txtValue;
 			NotNullPtr<UI::GUIButton> btnOK;

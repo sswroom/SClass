@@ -18,6 +18,7 @@
 #include "UI/Java/JavaListBox.h"
 #include "UI/Java/JavaMessageDialog.h"
 #include "UI/Java/JavaPanelBase.h"
+#include "UI/Java/JavaRadioButton.h"
 #include "UI/Java/JavaRealtimeLineChart.h"
 #include "UI/Java/JavaTabControl.h"
 #include "UI/Java/JavaTextBox.h"
@@ -257,6 +258,13 @@ NotNullPtr<UI::GUIListBox> UI::Java::JavaCore::NewListBox(NotNullPtr<GUIClientCo
 {
 	NotNullPtr<UI::Java::JavaListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIRadioButton> UI::Java::JavaCore::NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
+{
+	NotNullPtr<UI::Java::JavaRadioButton> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaRadioButton(*this, parent, initText, selected));
 	return ctrl;
 }
 

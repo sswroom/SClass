@@ -301,9 +301,9 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	this->lblOutFormat = ui->NewLabel(*this, CSTR("Output Format"));
 	this->lblOutFormat->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->radFormatJPG, UI::GUIRadioButton(ui, *this, CSTR("JPEG"), true));
+	this->radFormatJPG = ui->NewRadioButton(*this, CSTR("JPEG"), true);
 	this->radFormatJPG->SetRect(100, 24, 100, 23, false);
-	NEW_CLASS(this->radFormatWebP, UI::GUIRadioButton(ui, *this, CSTR("WebP"), false));
+	this->radFormatWebP = ui->NewRadioButton(*this, CSTR("WebP"), false);
 	this->radFormatWebP->SetRect(100, 48, 100, 23, false);
 	this->lblQuality = ui->NewLabel(*this, CSTR("Quality"));
 	this->lblQuality->SetRect(0, 72, 100, 23, false);

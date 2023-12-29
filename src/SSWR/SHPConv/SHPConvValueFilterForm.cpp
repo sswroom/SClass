@@ -43,9 +43,9 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	this->cboCol->SetRect(72, 8, 121, 21, false);
 	this->lblType = ui->NewLabel(*this, CSTR("Type"));
 	this->lblType->SetRect(8, 32, 56, 23, false);
-	NEW_CLASS(this->radEqual, UI::GUIRadioButton(ui, *this, CSTR("Equal"), true));
+	this->radEqual = ui->NewRadioButton(*this, CSTR("Equal"), true);
 	this->radEqual->SetRect(72, 32, 64, 24, false);
-	NEW_CLASS(this->radNotEq, UI::GUIRadioButton(ui, *this, CSTR("Not Equal"), false));
+	this->radNotEq = ui->NewRadioButton(*this, CSTR("Not Equal"), false);
 	this->radNotEq->SetRect(136, 32, 96, 24, false);
 	this->lblValue = ui->NewLabel(*this, CSTR("Value"));
 	this->lblValue->SetRect(8, 56, 56, 23, false);

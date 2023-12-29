@@ -127,9 +127,9 @@ SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(UI::GUIClientControl *parent
 	this->btnLossyFile->HandleButtonClick(OnLossyFileClicked, this);
 	this->lblMode = ui->NewLabel(*this, CSTR("Mode"));
 	this->lblMode->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->radMode16Bit, UI::GUIRadioButton(ui, *this, CSTR("16Bit"), true));
+	this->radMode16Bit = ui->NewRadioButton(*this, CSTR("16Bit"), true);
 	this->radMode16Bit->SetRect(100, 48, 100, 23, false);
-	NEW_CLASS(this->radMode8Bit, UI::GUIRadioButton(ui, *this, CSTR("8Bit"), false));
+	this->radMode8Bit = ui->NewRadioButton(*this, CSTR("8Bit"), false);
 	this->radMode8Bit->SetRect(200, 48, 100, 23, false);
 	this->btnCompare = ui->NewButton(*this, CSTR("&Compare"));
 	this->btnCompare->SetRect(100, 72, 75, 23, false);

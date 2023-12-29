@@ -51,8 +51,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDir;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUILabel> lblOutFormat;
-			UI::GUIRadioButton *radFormatJPG;
-			UI::GUIRadioButton *radFormatWebP;
+			NotNullPtr<UI::GUIRadioButton> radFormatJPG;
+			NotNullPtr<UI::GUIRadioButton> radFormatWebP;
 			NotNullPtr<UI::GUILabel> lblQuality;
 			NotNullPtr<UI::GUITextBox> txtQuality;
 			NotNullPtr<UI::GUICheckBox> chkSubdir;
