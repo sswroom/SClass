@@ -3,11 +3,16 @@
 #include "DB/MSSQLConn.h"
 #include "DB/PostgreSQLConn.h"
 #include "DB/SQLiteFile.h"
+#include "Net/SSHManager.h"
 
 Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::ConfigFile> cfg, Text::CString cfgCategory, NotNullPtr<IO::LogTool> log)
 {
 	Text::CStringNN logPrefix = CSTR("DB: ");
 	Text::CStringNN category = cfgCategory.OrEmpty();
+	NotNullPtr<Text::String> sshHost;
+	UInt16 sshPort;
+	NotNullPtr<Text::String> sshUser;
+	NotNullPtr<Text::String> sshPassword;
 	NotNullPtr<Text::String> s;
 	if (!cfg->GetCateValue(category, CSTR("DBType")).SetTo(s))
 	{
@@ -105,7 +110,62 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 			log->LogMessage(CSTR("PSQLPwd is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!DB::PostgreSQLConn::CreateDBTool(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
+		if (cfg->GetCateValue(category, CSTR("DBSSHHost")).SetTo(sshHost) && sshHost->leng > 0)
+		{
+			sshPort = 22;
+			if (cfg->GetCateValue(category, CSTR("DBSSHPort")).SetTo(s) && !s->ToUInt16(sshPort))
+			{
+				log->LogMessage(CSTR("DBSSHPort is not valid"), IO::LogHandler::LogLevel::Error);
+				return 0;
+			}
+			if (!cfg->GetCateValue(category, CSTR("DBSSHUser")).SetTo(sshUser))
+			{
+				log->LogMessage(CSTR("DBSSHUser is missing"), IO::LogHandler::LogLevel::Error);
+				return 0;
+			}
+			if (cfg->GetCateValue(category, CSTR("DBSSHPassword")).SetTo(sshPassword))
+			{
+				NotNullPtr<Net::SSHManager> ssh;
+				NotNullPtr<Net::SSHClient> cli;
+				NotNullPtr<Net::SSHForwarder> fwd;
+				NEW_CLASSNN(ssh, Net::SSHManager(sockf));
+				if (ssh->IsError())
+				{
+					ssh.Delete();
+					log->LogMessage(CSTR("Error in initializing SSH Engine"), IO::LogHandler::LogLevel::Error);
+					return 0;
+				}
+				if (!ssh->CreateClient(sshHost->ToCString(), sshPort, sshUser->ToCString(), sshPassword->ToCString()).SetTo(cli))
+				{
+					ssh.Delete();
+					log->LogMessage(CSTR("Error in initializing SSH tunnel"), IO::LogHandler::LogLevel::Error);
+					return 0;
+				}
+				if (!cli->CreateForward(0, serverHost->ToCString(), port).SetTo(fwd))
+				{
+					cli.Delete();
+					ssh.Delete();
+					log->LogMessage(CSTR("Error in starting tunnel"), IO::LogHandler::LogLevel::Error);
+					return 0;
+				}
+				port = fwd->GetListenPort();
+				if (!DB::PostgreSQLConn::CreateDBTool(CSTR("127.0.0.1"), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
+				{
+					cli.Delete();
+					ssh.Delete();
+					log->LogMessage(CSTR("Error in connecting to database"), IO::LogHandler::LogLevel::Error);
+					return 0;
+				}
+				db->SetSSHTunnel(ssh, cli);
+				return db;
+			}
+			else
+			{
+				log->LogMessage(CSTR("DBSSHPassword is missing"), IO::LogHandler::LogLevel::Error);
+				return 0;
+			}
+		}
+		else if (!DB::PostgreSQLConn::CreateDBTool(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
 		{
 			log->LogMessage(CSTR("Error in connecting to PostgreSQL database"), IO::LogHandler::LogLevel::Error);
 			return 0;

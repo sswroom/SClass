@@ -15,11 +15,13 @@ namespace Net
 		NotNullPtr<ClassData> clsData;
 		Optional<Net::TCPClient> cli;
 		NotNullPtr<Net::SocketFactory> sockf;
+		Int32 lastError;
 	public:
 		SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
 		~SSHConn();
 
 		Bool IsError() const;
+		Int32 GetLastError() const;
 		NotNullPtr<Net::SocketFactory> GetSocketFactory() const;
 		Optional<Net::TCPClient> GetTCPClient() const;
 

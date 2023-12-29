@@ -22,12 +22,22 @@
 
 DB::DBTool::DBTool(NotNullPtr<DB::DBConn> conn, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
 {
+	this->ssh = 0;
+	this->sshCli = 0;
 	this->nqFail = 0;
 	this->tran = 0;
 }
 
 DB::DBTool::~DBTool()
 {
+	this->sshCli.Delete();
+	this->ssh.Delete();
+}
+
+void DB::DBTool::SetSSHTunnel(Optional<Net::SSHManager> ssh, Optional<Net::SSHClient> sshCli)
+{
+	this->ssh = ssh;
+	this->sshCli = sshCli;
 }
 
 OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)

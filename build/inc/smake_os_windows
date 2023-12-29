@@ -153,6 +153,10 @@ Net/HTTPOSClient.h:
 @HTTPOSClientW.o
 @WinSSLEngine.o
 @WinSSLClient.o
+Net/SSHConn.h:
+@SSHConnNull.o
+Net/SSHManager.h:
+@SSHManagerNull.o
 Net/SSLEngineFactory.h:
 @SSLEngineFactoryWin.o
 Net/WinSSLClient.h:

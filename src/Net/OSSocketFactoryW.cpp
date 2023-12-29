@@ -303,7 +303,7 @@ Int32 Net::OSSocketFactory::SocketGetLastError()
 	return WSAGetLastError();
 }
 
-Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port)
 {
 	UInt8 addrBuff[28];
 	int size = 28;
@@ -313,27 +313,21 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketU
 		{
 			addr->addrType = Net::AddrType::IPv4;
 			*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
-			if (port)
-			{
-				*port = ReadMUInt16(&addrBuff[2]);
-			}
+			port.Set(ReadMUInt16(&addrBuff[2]));
 			return true;
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
 			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &addrBuff[8], 20);
-			if (port)
-			{
-				*port = ReadMUInt16(&addrBuff[2]);
-			}
+			port.Set(ReadMUInt16(&addrBuff[2]));
 			return true;
 		}
 	}
 	return false;
 }
 
-Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, UInt16 *port)
+Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port)
 {
 	UInt8 addrBuff[28];
 	int size = 28;
@@ -343,20 +337,14 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUt
 		{
 			addr->addrType = Net::AddrType::IPv4;
 			*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
-			if (port)
-			{
-				*port = ReadMUInt16(&addrBuff[2]);
-			}
+			port.Set(ReadMUInt16(&addrBuff[2]));
 			return true;
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
 			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &addrBuff[8], 20);
-			if (port)
-			{
-				*port = ReadMUInt16(&addrBuff[2]);
-			}
+			port.Set(ReadMUInt16(&addrBuff[2]));
 			return true;
 		}
 	}
@@ -366,6 +354,21 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUt
 Int32 Net::OSSocketFactory::SocketGetFD(Socket *socket)
 {
 	return (Int32)(SOCKET)socket;
+}
+
+Bool Net::OSSocketFactory::SocketWait(Socket *socket, Data::Duration dur)
+{
+	fd_set fds;
+	Int32 s = SocketGetFD(socket);
+	FD_ZERO(&fds);
+	FD_SET(s, &fds);
+	struct timeval tv;
+	tv.tv_sec = (time_t)dur.GetSeconds();
+	tv.tv_usec = (long)(dur.GetNS() / 1000);
+	int rc = select((int)(s + 1), &fds, NULL, NULL, &tv);
+	if (rc == -1)
+		return false;
+	return rc != 0;
 }
 
 void Net::OSSocketFactory::SetDontLinger(Socket *socket, Bool val)
@@ -895,7 +898,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), addr))
+				if (Net::SocketUtil::SetAddrInfo(addr, sarr[0].ToCString()))
 				{
 					while (true)
 					{

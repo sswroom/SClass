@@ -3206,12 +3206,8 @@ Net/SSDPClient.h:
 @SSDPClient.o
 Net/SSHClient.h:
 @SSHClient.o
-Net/SSHConn.h:
-@SSHConn.o
 Net/SSHForwarder.h:
 @SSHForwarder.o
-Net/SSHManager.h:
-@SSHManager.o
 Net/SSHTCPChannel.h:
 @SSHTCPChannel.o
 Net/SSLClient.h:

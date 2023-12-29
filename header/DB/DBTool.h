@@ -2,6 +2,7 @@
 #define _SM_DB_DBTOOL
 #include "DB/DBConn.h"
 #include "DB/ReadingDBTool.h"
+#include "Net/SSHManager.h"
 
 namespace DB
 {
@@ -18,12 +19,15 @@ namespace DB
 		Int32 nqFail;
 
 		void *tran;
+		Optional<Net::SSHManager> ssh;
+		Optional<Net::SSHClient> sshCli;
 
 	public:
 		DBTool(NotNullPtr<DBConn> conn, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~DBTool();
 
 /*		static DBTool *NullSource(IO::LogTool *);*/
+		void SetSSHTunnel(Optional<Net::SSHManager> ssh, Optional<Net::SSHClient> sshCli);
 
 		OSInt ExecuteNonQuery(Text::CStringNN sqlCmd);
 		void BeginTrans();

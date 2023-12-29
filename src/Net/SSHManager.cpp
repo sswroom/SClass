@@ -1,21 +1,39 @@
 #include "Stdafx.h"
 #include "Net/SSHManager.h"
+#include "Sync/Interlocked.h"
 #include <libssh2.h>
+
+UInt32 Net::SSHManager::useCnt = 0;
 
 Net::SSHManager::SSHManager(NotNullPtr<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
-	this->error = libssh2_init(0);
+	if (Sync::Interlocked::IncrementU32(useCnt) == 1)
+	{
+		this->error = libssh2_init(0);
+	}
+	else
+	{
+		this->error = 0;
+	}
 }
 
 Net::SSHManager::~SSHManager()
 {
-	libssh2_exit();
+	if (Sync::Interlocked::DecrementU32(useCnt) == 0)
+	{
+		libssh2_exit();
+	}
 }
 
 Bool Net::SSHManager::IsError() const
 {
 	return this->error != 0;
+}
+
+Int32 Net::SSHManager::GetError() const
+{
+	return this->error;
 }
 
 Optional<Net::SSHClient> Net::SSHManager::CreateClient(Text::CStringNN host, UInt16 port, Text::CStringNN userName, Text::CStringNN password)

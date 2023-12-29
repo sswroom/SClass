@@ -13,7 +13,6 @@ void __stdcall Net::SSHClient::EventThread(NotNullPtr<Sync::Thread> thread)
 		{
 			if (me->HasChannels())
 			{
-				printf("Waiting\r\n");
 				if (cli->Wait(1000) && !thread->IsStopping())
 				{
 					Sync::MutexUsage mutUsage(me->mut);

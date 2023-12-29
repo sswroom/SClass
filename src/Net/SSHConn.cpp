@@ -5,7 +5,7 @@
 #include "Text/StringTool.h"
 #include <libssh2.h>
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -27,6 +27,7 @@ Net::SSHConn::SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host
 	this->clsData->authen = false;
 	this->clsData->blocking = true;
 	this->cli = 0;
+	this->lastError = 0;
 #if defined(VERBOSE)
 	printf("SSHConn: session create %s\r\n", this->clsData->session?"succeed":"failed");
 #endif
@@ -89,8 +90,9 @@ Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
 #endif
 		return true;
 	}
+	this->lastError = libssh2_session_last_errno(this->clsData->session);
 #if defined(VERBOSE)
-	printf("SSHConn: Error in getting Host key fingerprint\r\n");
+	printf("SSHConn: Error in getting Host key fingerprint: %d (%s)\r\n", this->lastError, Net::SSHManager::ErrorGetName(this->lastError).v);
 #endif
 	return false;
 }
@@ -106,19 +108,21 @@ Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::Arr
 		Text::StringTool::SplitAsNewString(Text::CStringNN::FromPtr((const UTF8Char*)userauthlist), ',', authMeth);
 		return true;
 	}
+	this->lastError = libssh2_session_last_errno(this->clsData->session);
 #if defined(VERBOSE)
-	printf("SSHConn: Error in getting Host key fingerprint\r\n");
+	printf("SSHConn: Error in getting Host key fingerprint: %d (%s)\r\n", this->lastError, Net::SSHManager::ErrorGetName(this->lastError).v);
 #endif
 	return false;
 }
 
 Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN password)
 {
-	int errNum = libssh2_userauth_password_ex(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng, (const Char*)password.v, (unsigned int)password.leng, 0);
+	int err = libssh2_userauth_password_ex(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng, (const Char*)password.v, (unsigned int)password.leng, 0);
+	this->lastError = err;
 #if defined(VERBOSE)
-	printf("SSHConn: User auth with password: %d (%s)\r\n", errNum, Net::SSHManager::ErrorGetName(errNum).v);
+	printf("SSHConn: User auth with password: %d (%s)\r\n", err, Net::SSHManager::ErrorGetName(err).v);
 #endif
-	if (errNum == 0)
+	if (err == 0)
 	{
 		this->clsData->authen = true;
 		return true;
@@ -150,7 +154,10 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text
 		printf("SSHConn: Remote failed connecting to %s:%d\r\n", remoteHost.v, remotePort);
 #endif
 	if (channel == 0)
+	{
+		this->lastError = libssh2_session_last_errno(this->clsData->session);
 		return 0;
+	}
 	if (this->clsData->blocking)
 	{
 		this->clsData->blocking = false;
@@ -174,6 +181,7 @@ Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UInt8 *buff, UOSInt
 #if defined(VERBOSE)
 		printf("SSHConn: Channel read error: %d (%s)\r\n", (int)sz, Net::SSHManager::ErrorGetName((Int32)sz).v);
 #endif
+		this->lastError = (Int32)sz;
 		size.Set(0);
 		return true;
 	}
@@ -197,6 +205,7 @@ UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, const UInt8 *buff, 
 #if defined(VERBOSE)
 	printf("SSHConn: Channel write error: %d (%s)\r\n", (int)sz, Net::SSHManager::ErrorGetName((Int32)sz).v);
 #endif
+	this->lastError = (Int32)sz;
 	return 0;
 }
 
@@ -210,6 +219,7 @@ void Net::SSHConn::ChannelClose(SSHChannelHandle *channel)
 #if defined(VERBOSE)
 	printf("SSHConn: Channel free response: %d (%s)\r\n", err, Net::SSHManager::ErrorGetName(err).v);
 #endif
+	this->lastError = err;
 }
 
 void Net::SSHConn::Close()

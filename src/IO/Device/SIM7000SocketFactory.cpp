@@ -336,6 +336,11 @@ Int32 IO::Device::SIM7000SocketFactory::SocketGetFD(Socket *socket)
 	return false;
 }
 
+Bool IO::Device::SIM7000SocketFactory::SocketWait(Socket *socket, Data::Duration dur)
+{
+	return false;
+}
+
 void IO::Device::SIM7000SocketFactory::SetDontLinger(Socket *socket, Bool val)
 {
 

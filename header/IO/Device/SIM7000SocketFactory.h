@@ -80,6 +80,7 @@ namespace IO
 			virtual Bool GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port); ////////////////////////
 			virtual Bool GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port); ////////////////////////
 			virtual Int32 SocketGetFD(Socket *socket);
+			virtual Bool SocketWait(Socket *socket, Data::Duration dur);
 
 			virtual void SetDontLinger(Socket *socket, Bool val); ////////////////////////
 			virtual void SetLinger(Socket *socket, UInt32 ms); ////////////////////////

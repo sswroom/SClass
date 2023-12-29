@@ -99,6 +99,10 @@ Media/OpenCV/OCVUtil.h:
 
 Net/HTTPOSClient.h:
 @HTTPOSClientL.o
+Net/SSHConn.h:
+@SSHConn.o
+Net/SSHManager.h:
+@SSHManager.o
 Net/SSLEngineFactory.h:
 @SSLEngineFactoryOpenSSL.o
 Net/WirelessLAN.h:

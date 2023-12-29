@@ -19,7 +19,15 @@ Bool Net::SSHTCPChannel::IsDown() const
 
 UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 {
-	return 0;
+	NotNullPtr<Net::TCPClient> cli;
+	UOSInt readSize = 0;
+	while (!this->conn->ChannelTryRead(this->channel, buff.Ptr(), buff.GetSize(), readSize))
+	{
+		if (!this->conn->GetTCPClient().SetTo(cli))
+			return 0;
+		cli->Wait(1000);
+	}
+	return readSize;
 }
 
 UOSInt Net::SSHTCPChannel::Write(const UInt8 *buff, UOSInt size)

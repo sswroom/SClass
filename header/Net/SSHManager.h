@@ -8,6 +8,7 @@ namespace Net
 	class SSHManager
 	{
 	private:
+		static UInt32 useCnt;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Int32 error;
 	public:
@@ -15,6 +16,7 @@ namespace Net
 		~SSHManager();
 
 		Bool IsError() const;
+		Int32 GetError() const;
 		Optional<Net::SSHClient> CreateClient(Text::CStringNN host, UInt16 port, Text::CStringNN userName, Text::CStringNN password);
 		Optional<Net::SSHConn> CreateConn(Text::CStringNN host, UInt16 port, Data::Duration timeout);
 

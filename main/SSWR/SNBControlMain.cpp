@@ -27,8 +27,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
 		SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
+		IO::LogTool log;
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, ui, core, false, 0);
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, ui, core, false, 0, log);
 			frm.SetText(CSTR("Select SNB Dongle"));
 			if (frm.ShowDialog(0) == UI::GUIForm::DR_OK)
 			{

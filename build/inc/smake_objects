@@ -1399,8 +1399,10 @@ SSHClient.o: ../../src/Net/SSHClient.cpp
 SSHForwarder.o: ../../src/Net/SSHForwarder.cpp
 SSHConn.o: ../../src/Net/SSHConn.cpp
 !-lssh2
+SSHConnNull.o: ../../src/Net/SSHConnNull.cpp
 SSHManager.o: ../../src/Net/SSHManager.cpp
 !-lssh2
+SSHManagerNull.o: ../../src/Net/SSHManagerNull.cpp
 SSHTCPChannel.o: ../../src/Net/SSHTCPChannel.cpp
 SSLClient.o: ../../src/Net/SSLClient.cpp
 SSLEngine.o: ../../src/Net/SSLEngine.cpp
