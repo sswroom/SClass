@@ -50,7 +50,9 @@ Net::SSHConn::SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host
 			this->cli = cli;
 			this->clsData->handshakeRet = libssh2_session_handshake(this->clsData->session, (libssh2_socket_t)this->sockf->SocketGetFD(cli->GetSocket()));
 #if defined(VERBOSE)
-			printf("SSHConn: Client %s:%d handshake result %d (%s)\r\n", host.v, port, this->clsData->handshakeRet, Net::SSHManager::ErrorGetName(this->clsData->handshakeRet).v);
+			char *errMsg = "Unknown";
+			libssh2_session_last_error(this->clsData->session, &errMsg, 0, 0);
+			printf("SSHConn: Client %s:%d handshake result %d (%s) %s\r\n", host.v, port, this->clsData->handshakeRet, Net::SSHManager::ErrorGetName(this->clsData->handshakeRet).v, errMsg);
 #endif
 		}
 	}

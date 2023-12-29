@@ -20,6 +20,7 @@
 #include "Net/SSHManager.h"
 #include "Net/SSLEngineFactory.h"
 #include "Parser/FullParserList.h"
+#include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
 #include "Text/UTF8Reader.h"

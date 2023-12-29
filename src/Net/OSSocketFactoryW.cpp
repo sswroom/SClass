@@ -351,18 +351,18 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUt
 	return false;
 }
 
-Int32 Net::OSSocketFactory::SocketGetFD(Socket *socket)
+OSInt Net::OSSocketFactory::SocketGetFD(Socket *socket)
 {
-	return (Int32)(SOCKET)socket;
+	return (SOCKET)socket;
 }
 
 Bool Net::OSSocketFactory::SocketWait(Socket *socket, Data::Duration dur)
 {
 	fd_set fds;
-	Int32 s = SocketGetFD(socket);
+	OSInt s = SocketGetFD(socket);
 	FD_ZERO(&fds);
 	FD_SET(s, &fds);
-	struct timeval tv;
+	timeval tv;
 	tv.tv_sec = (time_t)dur.GetSeconds();
 	tv.tv_usec = (long)(dur.GetNS() / 1000);
 	int rc = select((int)(s + 1), &fds, NULL, NULL, &tv);
