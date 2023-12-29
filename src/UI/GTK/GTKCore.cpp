@@ -20,6 +20,7 @@
 #include "UI/GTK/GTKRealtimeLineChart.h"
 #include "UI/GTK/GTKTabControl.h"
 #include "UI/GTK/GTKTextBox.h"
+#include "UI/GTK/GTKTrackBar.h"
 #include "UI/GTK/GTKVSplitter.h"
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
@@ -288,6 +289,13 @@ NotNullPtr<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::GTK::GTKTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKTextBox(*this, parent, initText, multiLine));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITrackBar> UI::GTK::GTKCore::NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+{
+	NotNullPtr<UI::GTK::GTKTrackBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKTrackBar(*this, parent, minVal, maxVal, currVal));
 	return ctrl;
 }
 

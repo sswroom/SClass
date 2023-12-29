@@ -2749,7 +2749,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->pnlMapStatus = ui->NewPanel(this->tpMap);
 	this->pnlMapStatus->SetRect(0, 0, 100, 24, false);
 	this->pnlMapStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->tbMapScale, UI::GUITrackBar(ui, this->pnlMapCtrl, 0, 18, 16));
+	this->tbMapScale = ui->NewTrackBar(this->pnlMapCtrl, 0, 18, 16);
 	this->tbMapScale->SetRect(0, 0, 100, 23, false);
 	this->tbMapScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->tbMapScale->HandleScrolled(OnMapScaleScroll, this);

@@ -110,7 +110,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpMap;
 			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
 			NotNullPtr<UI::GUIPanel> pnlMapStatus;
-			UI::GUITrackBar *tbMapScale;
+			NotNullPtr<UI::GUITrackBar> tbMapScale;
 			NotNullPtr<UI::GUITextBox> txtMapPos;
 			NotNullPtr<UI::GUITextBox> txtMapScale;
 			UI::GUIMapControl *mcMap;

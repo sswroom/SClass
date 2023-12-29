@@ -1,25 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "UI/GUITrackBar.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinTrackBar.h"
 
 #include <windows.h>
 #include <commctrl.h>
 
-void UI::GUITrackBar::EventScrolled()
-{
-	UOSInt i;
-	OSInt pos;
-	pos = SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
-	i = this->scrollHandlers.GetCount();
-	while (i-- > 0)
-	{
-		this->scrollHandlers.GetItem(i)(this->scrollHandlersObj.GetItem(i), (UOSInt)pos);
-	}
-}
-
-UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
+UI::Win::WinTrackBar::WinTrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -38,16 +26,11 @@ UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	SendMessage((HWND)this->hwnd, TBM_SETPOS, 0, (LPARAM)currVal);
 }
 
-UI::GUITrackBar::~GUITrackBar()
+UI::Win::WinTrackBar::~WinTrackBar()
 {
 }
 
-Text::CStringNN UI::GUITrackBar::GetObjectClass() const
-{
-	return CSTR("TrackBar");
-}
-
-OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinTrackBar::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -57,37 +40,31 @@ OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)
 	case NM_CUSTOMDRAW:
 		break;
 	case NM_RELEASEDCAPTURE:
-		EventScrolled();
+		EventScrolled(GetPos());
 		break;
 	case TB_PAGEUP:
 		break;
 	default:
-		EventScrolled();
+		EventScrolled(GetPos());
 		break;
 	}
 	return 0;
 }
 
-void UI::GUITrackBar::SetPos(UOSInt pos)
+void UI::Win::WinTrackBar::SetPos(UOSInt pos)
 {
 	SendMessage((HWND)this->hwnd, TBM_SETPOS, TRUE, (LPARAM)pos);
-	EventScrolled();
+	EventScrolled(GetPos());
 //	InvalidateRect((HWND)this->hwnd, 0, false);
 }
 
-void UI::GUITrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
+void UI::Win::WinTrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
 {
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
 }
 
-UOSInt UI::GUITrackBar::GetPos()
+UOSInt UI::Win::WinTrackBar::GetPos()
 {
 	return (UOSInt)SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
-}
-
-void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, void *userObj)
-{
-	this->scrollHandlers.Add(hdlr);
-	this->scrollHandlersObj.Add(userObj);
 }

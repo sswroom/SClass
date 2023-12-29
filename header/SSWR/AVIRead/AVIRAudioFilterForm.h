@@ -60,7 +60,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpVolBoost;
 			NotNullPtr<UI::GUICheckBox> chkVolBoost;
 			NotNullPtr<UI::GUILabel> lblVolBoostBG;
-			UI::GUITrackBar *tbVolBoostBG;
+			NotNullPtr<UI::GUITrackBar> tbVolBoostBG;
 			NotNullPtr<UI::GUILabel> lblVolBoostBGVol;
 
 			NotNullPtr<UI::GUITabPage> tpDTMF;
@@ -90,7 +90,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDTMFC;
 			NotNullPtr<UI::GUIButton> btnDTMFD;
 			NotNullPtr<UI::GUILabel> lblDTMFVol;
-			UI::GUITrackBar *tbDTMFVol;
+			NotNullPtr<UI::GUITrackBar> tbDTMFVol;
 			NotNullPtr<UI::GUILabel> lblDTMFVolV;
 			NotNullPtr<UI::GUITabPage> tpDTMFGen2;
 			NotNullPtr<UI::GUILabel> lblDTMFSignalTime;
@@ -100,7 +100,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDTMFBreakTime;
 			NotNullPtr<UI::GUILabel> lblDTMFBreakTimeMS;
 			NotNullPtr<UI::GUILabel> lblDTMFTonesVol;
-			UI::GUITrackBar *tbDTMFTonesVol;
+			NotNullPtr<UI::GUITrackBar> tbDTMFTonesVol;
 			NotNullPtr<UI::GUILabel> lblDTMFTones;
 			NotNullPtr<UI::GUITextBox> txtDTMFTones;
 			NotNullPtr<UI::GUIButton> btnDTMFTones;
@@ -128,7 +128,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpSweep;
 			NotNullPtr<UI::GUILabel> lblSweepVol;
-			UI::GUITrackBar *tbSweepVol;
+			NotNullPtr<UI::GUITrackBar> tbSweepVol;
 			NotNullPtr<UI::GUILabel> lblSweepVolV;
 			NotNullPtr<UI::GUILabel> lblSweepStartFreq;
 			NotNullPtr<UI::GUITextBox> txtSweepStartFreq;
@@ -140,7 +140,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpAmplifier;
 			NotNullPtr<UI::GUILabel> lblAmplifierVol;
-			UI::GUITrackBar *tbAmplifierVol;
+			NotNullPtr<UI::GUITrackBar> tbAmplifierVol;
 			NotNullPtr<UI::GUILabel> lblAmplifierVolV;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

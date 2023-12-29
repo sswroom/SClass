@@ -22,6 +22,7 @@
 #include "UI/Java/JavaRealtimeLineChart.h"
 #include "UI/Java/JavaTabControl.h"
 #include "UI/Java/JavaTextBox.h"
+#include "UI/Java/JavaTrackBar.h"
 #include "UI/Java/JavaVSplitter.h"
 #include <jni.h>
 #include <stdio.h>
@@ -293,6 +294,13 @@ NotNullPtr<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NotNullPtr<GUIClientCo
 {
 	NotNullPtr<UI::Java::JavaTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaTextBox(*this, parent, initText, multiLine));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITrackBar> UI::Java::JavaCore::NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+{
+	NotNullPtr<UI::Java::JavaTrackBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaTrackBar(*this, parent, minVal, maxVal, currVal));
 	return ctrl;
 }
 

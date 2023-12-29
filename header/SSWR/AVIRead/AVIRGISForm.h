@@ -40,14 +40,14 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLatLon;
 			NotNullPtr<UI::GUITextBox> txtUTMGrid;
 			NotNullPtr<UI::GUITextBox> txtTimeUsed;
-			UI::GUITrackBar *tbScale;
+			NotNullPtr<UI::GUITrackBar> tbScale;
 			UI::GUIMainMenu *mnuMain;
 			UI::GUIPopupMenu *mnuLayer;
 			UI::GUIPopupMenu *mnuGroup;
-			UI::GUITrackBar *tbTimeRange;
+			NotNullPtr<UI::GUITrackBar> tbTimeRange;
 			NotNullPtr<UI::GUICheckBox> chkTime;
 			NotNullPtr<UI::GUILabel> lblVAngle;
-			UI::GUITrackBar *tbVAngle;
+			NotNullPtr<UI::GUITrackBar> tbVAngle;
 			NotNullPtr<Map::MapEnv> env;
 			Map::DrawMapRenderer *envRenderer;
 			Bool scaleChanging;

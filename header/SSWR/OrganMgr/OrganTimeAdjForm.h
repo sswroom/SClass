@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbPictures;
 			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUITrackBar *tbMapScale;
+			NotNullPtr<UI::GUITrackBar> tbMapScale;
 			UI::GUIMapControl *mapMain;
 			NotNullPtr<UI::GUIComboBox> cboCamera;
 			NotNullPtr<UI::GUITextBox> txtTimeAdj;

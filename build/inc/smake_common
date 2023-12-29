@@ -4709,6 +4709,8 @@ UI/GUITextFileView.h:
 @GUITextFileView.o
 UI/GUITimer.h:
 @GUITimer.o
+UI/GUITrackBar.h:
+@GUITrackBar.o
 UI/GUIVideoBoxDD.h:
 @GUIVideoBoxDD.o
 UI/GUIVideoBoxDDLQ.h:
@@ -4787,6 +4789,8 @@ UI/GTK/GTKTextBox.h:
 @GTKTextBox.o
 UI/GTK/GTKTimer.h:
 @GTKTimer.o
+UI/GTK/GTKTrackBar.h:
+@GTKTrackBar.o
 UI/GTK/GTKVSplitter.h:
 @GTKVSplitter.o
 UI/Java/JavaButton.h:
@@ -4827,6 +4831,8 @@ UI/Java/JavaTextBox.h:
 @JavaTextBox.o
 UI/Java/JavaTimer.h:
 @JavaTimer.o
+UI/Java/JavaTrackBar.h:
+@JavaTrackBar.o
 UI/Java/JavaVSplitter.h:
 @JavaVSplitter.o
 UI/Win/WinButton.h:
@@ -4869,6 +4875,8 @@ UI/Win/WinTextBox.h:
 @WinTextBox.o
 UI/Win/WinTimer.h:
 @WinTimer.o
+UI/Win/WinTrackBar.h:
+@WinTrackBar.o
 UI/Win/WinVSplitter.h:
 @WinVSplitter.o
 

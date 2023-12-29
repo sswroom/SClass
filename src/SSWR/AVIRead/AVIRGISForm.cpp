@@ -673,11 +673,11 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->txtTimeUsed->SetReadOnly(true);
 	this->txtTimeUsed->SetDockType(UI::GUIControl::DOCK_RIGHT);
 
-	NEW_CLASS(this->tbScale, UI::GUITrackBar(ui, this->pnlControl, 0, 65535, 0));
+	this->tbScale = ui->NewTrackBar(this->pnlControl, 0, 65535, 0);
 	this->tbScale->SetRect(0, 0, 192, 24, false);
 	this->tbScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->tbScale->HandleScrolled(OnScaleScrolled, this);
-	NEW_CLASS(this->tbTimeRange, UI::GUITrackBar(ui, this->pnlControl, 0, 0, 0));
+	this->tbTimeRange = ui->NewTrackBar(this->pnlControl, 0, 0, 0);
 	this->tbTimeRange->SetRect(150, 0, 100, 24, false);
 	this->tbTimeRange->HandleScrolled(OnTimeScrolled, this);
 	this->chkTime = ui->NewCheckBox(this->pnlControl, CSTR("Unavailable"), false);
@@ -686,7 +686,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->chkTime->HandleCheckedChange(OnTimeChecked, this);
 	this->lblVAngle = ui->NewLabel(this->pnlControl, CSTR("VAngle"));
 	this->lblVAngle->SetRect(250, 0, 100, 23, false);
-	NEW_CLASS(this->tbVAngle, UI::GUITrackBar(ui, this->pnlControl, 0, 90, 0));
+	this->tbVAngle = ui->NewTrackBar(this->pnlControl, 0, 90, 0);
 	this->tbVAngle->SetRect(350, 0, 100, 23, false);
 	this->tbVAngle->HandleScrolled(OnVAngleScrolled, this);
 

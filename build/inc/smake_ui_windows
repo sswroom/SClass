@@ -62,8 +62,6 @@ UI/GUIProgressBar.h:
 @GUIProgressBarWin.o
 UI/GUITextView.h:
 @GUITextViewWin.o
-UI/GUITrackBar.h:
-@GUITrackBarWin.o
 UI/GUITreeView.h:
 @GUITreeViewWin.o
 

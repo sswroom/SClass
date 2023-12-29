@@ -21,6 +21,7 @@
 #include "UI/Win/WinRealtimeLineChart.h"
 #include "UI/Win/WinTabControl.h"
 #include "UI/Win/WinTextBox.h"
+#include "UI/Win/WinTrackBar.h"
 #include "UI/Win/WinVSplitter.h"
 #ifdef _WIN32_WCE
 #include "Sync/ThreadUtil.h"
@@ -338,6 +339,13 @@ NotNullPtr<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::Win::WinTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinTextBox(*this, parent, initText, multiLine));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITrackBar> UI::Win::WinCore::NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+{
+	NotNullPtr<UI::Win::WinTrackBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinTrackBar(*this, parent, minVal, maxVal, currVal));
 	return ctrl;
 }
 

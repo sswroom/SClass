@@ -2185,6 +2185,7 @@ GUITabPage.o: ../../src/UI/GUITabPage.cpp
 GUITextBox.o: ../../src/UI/GUITextBox.cpp
 GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
 GUITimer.o: ../../src/UI/GUITimer.cpp
+GUITrackBar.o: ../../src/UI/GUITrackBar.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
 GUIVSplitter.o: ../../src/UI/GUIVSplitter.cpp
@@ -2246,6 +2247,8 @@ GTKTextBox.o: ../../src/UI/GTK/GTKTextBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTimer.o: ../../src/UI/GTK/GTKTimer.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKTrackBar.o: ../../src/UI/GTK/GTKTrackBar.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKVSplitter.o: ../../src/UI/GTK/GTKVSplitter.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIClientControlGTK.o: ../../src/UI/GTK/GUIClientControlGTK.cpp
@@ -2277,8 +2280,6 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIProgressBarGTK.o: ../../src/UI/GTK/GUIProgressBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextViewGTK.o: ../../src/UI/GTK/GUITextViewGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUITrackBarGTK.o: ../../src/UI/GTK/GUITrackBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITreeViewGTK.o: ../../src/UI/GTK/GUITreeViewGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2351,6 +2352,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaTimer.o: ../../src/UI/Java/JavaTimer.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaTrackBar.o: ../../src/UI/Java/JavaTrackBar.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaVSplitter.o: ../../src/UI/Java/JavaVSplitter.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2375,8 +2379,6 @@ GUIPopupMenuWin.o: ../../src/UI/Win/GUIPopupMenuWin.cpp
 GUIProgressBarWin.o: ../../src/UI/Win/GUIProgressBarWin.cpp
 !-lcomctl32
 GUITextViewWin.o: ../../src/UI/Win/GUITextViewWin.cpp
-GUITrackBarWin.o: ../../src/UI/Win/GUITrackBarWin.cpp
-!-lcomctl32
 GUITreeViewWin.o: ../../src/UI/Win/GUITreeViewWin.cpp
 WinButton.o: ../../src/UI/Win/WinButton.cpp
 WinCheckBox.o: ../../src/UI/Win/WinCheckBox.cpp
@@ -2402,6 +2404,8 @@ WinTabControl.o: ../../src/UI/Win/WinTabControl.cpp
 !-lcomctl32
 WinTextBox.o: ../../src/UI/Win/WinTextBox.cpp
 WinTimer.o: ../../src/UI/Win/WinTimer.cpp
+WinTrackBar.o: ../../src/UI/Win/WinTrackBar.cpp
+!-lcomctl32
 WinVSplitter.o: ../../src/UI/Win/WinVSplitter.cpp
 
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp

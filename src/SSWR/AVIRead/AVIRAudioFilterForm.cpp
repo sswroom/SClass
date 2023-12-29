@@ -1138,7 +1138,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnDTMFD->HandleButtonUpDown(OnDTMFDUpDown, this);
 	this->lblDTMFVol = ui->NewLabel(this->tpDTMFGen, CSTR("Volume"));
 	this->lblDTMFVol->SetRect(4, 228, 100, 23, false);
-	NEW_CLASS(this->tbDTMFVol, UI::GUITrackBar(ui, this->tpDTMFGen, 0, 960, 960));
+	this->tbDTMFVol = ui->NewTrackBar(this->tpDTMFGen, 0, 960, 960);
 	this->tbDTMFVol->SetRect(104, 228, 400, 23, false);
 	this->tbDTMFVol->HandleScrolled(OnDTMFVolChg, this);
 	this->lblDTMFVolV = ui->NewLabel(this->tpDTMFGen, CSTR("0dB"));
@@ -1158,7 +1158,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->lblDTMFBreakTimeMS->SetRect(204, 28, 100, 23, false);
 	this->lblDTMFTonesVol = ui->NewLabel(this->tpDTMFGen2, CSTR("Volume"));
 	this->lblDTMFTonesVol->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->tbDTMFTonesVol, UI::GUITrackBar(ui, this->tpDTMFGen2, 0, 960, 960));
+	this->tbDTMFTonesVol = ui->NewTrackBar(this->tpDTMFGen2, 0, 960, 960);
 	this->tbDTMFTonesVol->SetRect(104, 52, 400, 23, false);
 	this->lblDTMFTones = ui->NewLabel(this->tpDTMFGen2, CSTR("Tones"));
 	this->lblDTMFTones->SetRect(4, 76, 100, 23, false);
@@ -1174,7 +1174,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->chkVolBoost->HandleCheckedChange(OnVolBoostChg, this);
 	this->lblVolBoostBG = ui->NewLabel(this->tpVolBoost, CSTR("BG Volume"));
 	this->lblVolBoostBG->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->tbVolBoostBG, UI::GUITrackBar(ui, this->tpVolBoost, 0, 192, 132));
+	this->tbVolBoostBG = ui->NewTrackBar(this->tpVolBoost, 0, 192, 132);
 	this->tbVolBoostBG->SetRect(104, 28, 300, 23, false);
 	this->tbVolBoostBG->HandleScrolled(OnVolBoostBGChg, this);
 	this->lblVolBoostBGVol = ui->NewLabel(this->tpVolBoost, CSTR("-60dB"));
@@ -1212,7 +1212,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->tpSweep = this->tcFilter->AddTabPage(CSTR("Sweep"));
 	this->lblSweepVol = ui->NewLabel(this->tpSweep, CSTR("Volume"));
 	this->lblSweepVol->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->tbSweepVol, UI::GUITrackBar(ui, this->tpSweep, 0, 960, 960));
+	this->tbSweepVol = ui->NewTrackBar(this->tpSweep, 0, 960, 960);
 	this->tbSweepVol->SetRect(104, 4, 400, 23, false);
 	this->tbSweepVol->HandleScrolled(OnSweepVolChg, this);
 	this->lblSweepVolV = ui->NewLabel(this->tpSweep, CSTR("0dB"));
@@ -1236,7 +1236,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->tpAmplifier = this->tcFilter->AddTabPage(CSTR("Amplifier"));
 	this->lblAmplifierVol = ui->NewLabel(this->tpAmplifier, CSTR("Volume"));
 	this->lblAmplifierVol->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->tbAmplifierVol, UI::GUITrackBar(ui, this->tpAmplifier, 0, 800, 100));
+	this->tbAmplifierVol = ui->NewTrackBar(this->tpAmplifier, 0, 800, 100);
 	this->tbAmplifierVol->SetRect(104, 4, 400, 23, false);
 	this->tbAmplifierVol->HandleScrolled(OnAmplifierVolChg, this);
 	this->lblAmplifierVolV = ui->NewLabel(this->tpAmplifier, CSTR("100%"));

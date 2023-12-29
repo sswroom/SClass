@@ -61,8 +61,6 @@ UI/GUIProgressBar.h:
 @GUIProgressBarGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
-UI/GUITrackBar.h:
-@GUITrackBarGTK.o
 UI/GUITreeView.h:
 @GUITreeViewGTK.o
 

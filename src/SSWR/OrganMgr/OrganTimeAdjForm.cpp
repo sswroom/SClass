@@ -302,7 +302,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->pnlMapCtrl = ui->NewPanel(*this);
 	this->pnlMapCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlMapCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->tbMapScale, UI::GUITrackBar(ui, this->pnlMapCtrl, 0, 18, 16));
+	this->tbMapScale = ui->NewTrackBar(this->pnlMapCtrl, 0, 18, 16);
 	this->tbMapScale->SetRect(0, 0, 100, 23, false);
 	this->tbMapScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->tbMapScale->HandleScrolled(OnMapScaleScroll, this);

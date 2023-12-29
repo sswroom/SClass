@@ -14,19 +14,18 @@ namespace UI
 		Data::ArrayList<void *> scrollHandlersObj;
 
 	public:
-		void EventScrolled();
-	public:
-		GUITrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
+		GUITrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUITrackBar();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-
-		void SetPos(UOSInt pos);
-		void SetRange(UOSInt minVal, UOSInt maxVal);
-		UOSInt GetPos();
-
+		void EventScrolled(UOSInt scrollPos);
 		void HandleScrolled(ScrollEvent hdlr, void *userObj);
+
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void SetPos(UOSInt pos) = 0;
+		virtual void SetRange(UOSInt minVal, UOSInt maxVal) = 0;
+		virtual UOSInt GetPos() = 0;
+
 	};
 }
 #endif
