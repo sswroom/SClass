@@ -32,7 +32,7 @@ namespace SSWR
 			Media::StaticImage *currImg;
 
 			NotNullPtr<UI::GUIPanel> pnlResult;
-			UI::GUIPictureBoxSimple *pbResult;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbResult;
 			NotNullPtr<UI::GUIListView> lvText;
 			NotNullPtr<UI::GUIHSplitter> hspText;
 			UI::GUIPictureBoxDD *pbImg;

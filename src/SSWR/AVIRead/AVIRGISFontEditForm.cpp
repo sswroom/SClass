@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->SetText(CSTR("Edit Font Style"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->pbFontPreview, UI::GUIPictureBox(ui, *this, eng, false, false));
+	this->pbFontPreview = ui->NewPictureBox(*this, eng, false, false);
 	this->pbFontPreview->SetRect(0, 0, 288, 64, false);
 	this->pbFontPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStyleName = ui->NewLabel(*this, CSTR("Style Name"));
@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->btnFontName->HandleButtonClick(FontNameClicked, this);
 	this->lblFontColor = ui->NewLabel(*this, CSTR("Color"));
 	this->lblFontColor->SetRect(0, 116, 100, 23, false);
-	NEW_CLASS(this->pbFontColor, UI::GUIPictureBox(ui, *this, eng, false, false));
+	this->pbFontColor = ui->NewPictureBox(*this, eng, false, false);
 	this->pbFontColor->SetRect(104, 116, 144, 23, false);
 	this->pbFontColor->HandleMouseDown(FontColorClicked, this);
 	this->lblBufferSize = ui->NewLabel(*this, CSTR("Buffer"));
@@ -232,7 +232,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->hsbBufferSize->HandlePosChanged(BufferSizeChanged, this);
 	this->lblBufferColor = ui->NewLabel(*this, CSTR("Buffer Color"));
 	this->lblBufferColor->SetRect(0, 164, 100, 23, false);
-	NEW_CLASS(this->pbBufferColor, UI::GUIPictureBox(ui, *this, eng, false, false));
+	this->pbBufferColor = ui->NewPictureBox(*this, eng, false, false);
 	this->pbBufferColor->SetRect(104, 164, 144, 23, false);
 	this->pbBufferColor->HandleMouseDown(BufferColorClicked, this);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));

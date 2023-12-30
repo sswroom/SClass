@@ -29,13 +29,13 @@ namespace SSWR
 			UInt32 fontColor;
 			Media::StaticImage *previewImage;
 
-			UI::GUIPictureBox *pbPreview;
+			NotNullPtr<UI::GUIPictureBox> pbPreview;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUILabel> lblFont;
 			NotNullPtr<UI::GUITextBox> txtFont;
 			NotNullPtr<UI::GUIButton> btnFont;
 			NotNullPtr<UI::GUILabel> lblColor;
-			UI::GUIPictureBox *pbColor;
+			NotNullPtr<UI::GUIPictureBox> pbColor;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

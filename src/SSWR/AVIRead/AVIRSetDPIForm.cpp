@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, NotN
 	this->pnlDPI = ui->NewPanel(*this);
 	this->pnlDPI->SetRect(0, 0, 100, UI::GUIHScrollBar::GetSystemSize() + 1, false);
 	this->pnlDPI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxSimple(ui, *this, core->GetDrawEngine(), false));
+	this->pbPreview = ui->NewPictureBoxSimple(*this, core->GetDrawEngine(), false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbPreview->HandleSizeChanged(OnPreviewChanged, this);
 	this->lblDPI = ui->NewLabel(this->pnlDPI, CSTR("Monitor DPI"));

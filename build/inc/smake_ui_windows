@@ -52,10 +52,6 @@ UI/GUIMainMenu.h:
 @GUIMainMenu.o
 UI/GUIMenu.h:
 @GUIMenuWin.o
-UI/GUIPictureBox.h:
-@GUIPictureBoxWin.o
-UI/GUIPictureBoxSimple.h:
-@GUIPictureBoxSimpleWin.o
 UI/GUIPopupMenu.h:
 @GUIPopupMenuWin.o
 UI/GUIProgressBar.h:

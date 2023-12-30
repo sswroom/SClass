@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspInfo;
 			NotNullPtr<UI::GUIListView> lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIPictureBoxSimple *pbPreview;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbPreview;
 			NotNullPtr<UI::GUIButton> btnDownload;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

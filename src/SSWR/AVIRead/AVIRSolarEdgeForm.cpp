@@ -524,7 +524,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->btnSiteEnergy = ui->NewButton(this->pnlSiteEnergy, CSTR("Query"));
 	this->btnSiteEnergy->SetRect(104, 76, 75, 23, false);
 	this->btnSiteEnergy->HandleButtonClick(OnSiteEnergyClicked, this);
-	NEW_CLASS(this->pbSiteEnergy, UI::GUIPictureBox(ui, this->tpSiteEnergy, this->core->GetDrawEngine(), true, false));
+	this->pbSiteEnergy = ui->NewPictureBox(this->tpSiteEnergy, this->core->GetDrawEngine(), true, false);
 	this->pbSiteEnergy->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbSiteEnergy->HandleSizeChanged(OnSiteEnergySizeChg, this);
 
@@ -550,7 +550,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->btnSitePower = ui->NewButton(this->pnlSitePower, CSTR("Query"));
 	this->btnSitePower->SetRect(104, 52, 75, 23, false);
 	this->btnSitePower->HandleButtonClick(OnSitePowerClicked, this);
-	NEW_CLASS(this->pbSitePower, UI::GUIPictureBox(ui, this->tpSitePower, this->core->GetDrawEngine(), true, false));
+	this->pbSitePower = ui->NewPictureBox(this->tpSitePower, this->core->GetDrawEngine(), true, false);
 	this->pbSitePower->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbSitePower->HandleSizeChanged(OnSitePowerSizeChg, this);
 }

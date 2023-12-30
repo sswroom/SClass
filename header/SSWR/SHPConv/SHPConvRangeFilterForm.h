@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtX1;
 			NotNullPtr<UI::GUILabel> lblY1;
 			NotNullPtr<UI::GUITextBox> txtY1;
-			UI::GUIPictureBoxSimple *pbBox;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbBox;
 			NotNullPtr<UI::GUILabel> lblX2;
 			NotNullPtr<UI::GUITextBox> txtX2;
 			NotNullPtr<UI::GUILabel> lblY2;

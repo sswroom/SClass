@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	this->btnOk = ui->NewButton(this->pnlControl, CSTR("Ok"));
 	this->btnOk->SetRect(100, 64, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->pbImage, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), false, true));
+	this->pbImage = ui->NewPictureBox(*this, this->core->GetDrawEngine(), false, true);
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UOSInt i = 0;

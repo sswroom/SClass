@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRSetDPIForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPictureBoxSimple *pbPreview;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbPreview;
 			NotNullPtr<UI::GUIPanel> pnlDPI;
 			NotNullPtr<UI::GUIPanel> pnlBtn;
 			NotNullPtr<UI::GUILabel> lblDPI;

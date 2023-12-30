@@ -450,7 +450,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 
 	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topics"));
-	NEW_CLASS(this->pbTopic, UI::GUIPictureBoxSimple(ui, this->tpTopic, this->core->GetDrawEngine(), false));
+	this->pbTopic = ui->NewPictureBoxSimple(this->tpTopic, this->core->GetDrawEngine(), false);
 	this->pbTopic->SetRect(0, 0, 100, 300, false);
 	this->pbTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspTopic = ui->NewVSplitter(this->tpTopic, 3, true);

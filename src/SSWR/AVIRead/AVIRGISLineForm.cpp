@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBox(ui, *this, this->eng, true, false));
+	this->pbPreview = ui->NewPictureBox(*this, this->eng, true, false);
 	this->pbPreview->SetRect(0, 0, 100, 60, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->pnlMain = ui->NewPanel(*this);
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	this->lblThickV->SetRect(254, 4, 100, 23, false);
 	this->lblColor = ui->NewLabel(this->pnlMain, CSTR("Color"));
 	this->lblColor->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlMain, this->eng, true, false));
+	this->pbColor = ui->NewPictureBox(this->pnlMain, this->eng, true, false);
 	this->pbColor->SetRect(104, 28, 100, 20, false);
 	this->pbColor->HandleMouseDown(OnColorDown, this);
 	this->pbColor->SetBGColor(this->colorConv->ConvRGB8(this->lineColor));

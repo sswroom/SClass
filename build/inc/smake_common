@@ -4689,8 +4689,12 @@ UI/GUIMapTreeView.h:
 UI/GUIPanel.h:
 @GUIPanel.o
 UI/GUIPanelBase.h:
+UI/GUIPictureBox.h:
+@GUIPictureBox.o
 UI/GUIPictureBoxDD.h:
 @GUIPictureBoxDD.o
+UI/GUIPictureBoxSimple.h:
+@GUIPictureBoxSimple.o
 UI/GUIPictureList.h:
 @GUIPictureList.o
 UI/GUIRadioButton.h:
@@ -4779,6 +4783,10 @@ UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
 UI/GTK/GTKPanelBase.h:
 @GTKPanelBase.o
+UI/GTK/GTKPictureBox.h:
+@GTKPictureBox.o
+UI/GTK/GTKPictureBoxSimple.h:
+@GTKPictureBoxSimple.o
 UI/GTK/GTKRadioButton.h:
 @GTKRadioButton.o
 UI/GTK/GTKRealtimeLineChart.h:
@@ -4821,6 +4829,10 @@ UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
 UI/Java/JavaPanelBase.h:
 @JavaPanelBase.o
+UI/Java/JavaPictureBox.h:
+@JavaPictureBox.o
+UI/Java/JavaPictureBoxSimple.h:
+@JavaPictureBoxSimple.o
 UI/Java/JavaRadioButton.h:
 @JavaRadioButton.o
 UI/Java/JavaRealtimeLineChart.h:
@@ -4865,6 +4877,10 @@ UI/Win/WinMessageDialog.h:
 @WinMessageDialog.o
 UI/Win/WinPanelBase.h:
 @WinPanelBase.o
+UI/Win/WinPictureBox.h:
+@WinPictureBox.o
+UI/Win/WinPictureBoxSimple.h:
+@WinPictureBoxSimple.o
 UI/Win/WinRadioButton.h:
 @WinRadioButton.o
 UI/Win/WinRealtimeLineChart.h:

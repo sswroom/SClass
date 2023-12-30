@@ -17,6 +17,8 @@
 #include "UI/Win/WinListBox.h"
 #include "UI/Win/WinMessageDialog.h"
 #include "UI/Win/WinPanelBase.h"
+#include "UI/Win/WinPictureBox.h"
+#include "UI/Win/WinPictureBoxSimple.h"
 #include "UI/Win/WinRadioButton.h"
 #include "UI/Win/WinRealtimeLineChart.h"
 #include "UI/Win/WinTabControl.h"
@@ -304,6 +306,20 @@ NotNullPtr<UI::GUIListBox> UI::Win::WinCore::NewListBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::Win::WinListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBox> UI::Win::WinCore::NewPictureBox(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
+{
+	NotNullPtr<UI::Win::WinPictureBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinPictureBox(*this, parent, eng, hasBorder, allowResize));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBoxSimple> UI::Win::WinCore::NewPictureBoxSimple(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder)
+{
+	NotNullPtr<UI::Win::WinPictureBoxSimple> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinPictureBoxSimple(*this, parent, eng, hasBorder));
 	return ctrl;
 }
 

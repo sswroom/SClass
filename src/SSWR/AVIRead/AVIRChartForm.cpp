@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRChartForm::AVIRChartForm(UI::GUIClientControl *parent, NotNul
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pbMain, UI::GUIPictureBoxSimple(ui, *this, core->GetDrawEngine(), false));
+	this->pbMain = ui->NewPictureBoxSimple(*this, core->GetDrawEngine(), false);
 	this->pbMain->SetNoBGColor(true);
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbMain->HandleSizeChanged(OnSizeChanged, this);

@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 	this->cboImage->SetRect(0, 0, 100, 23, false);
 	this->cboImage->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboImage->HandleSelectionChange(OnImageSelChg, this);
-	NEW_CLASS(this->pbImage, UI::GUIPictureBoxSimple(ui, this->tpImage, this->core->GetDrawEngine(), false));
+	this->pbImage = ui->NewPictureBoxSimple(this->tpImage, this->core->GetDrawEngine(), false);
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpText = this->tcMain->AddTabPage(CSTR("Items"));

@@ -2,17 +2,13 @@
 #define _SM_UI_GUIPICTUREBOXSIMPLE
 #include "Media/DrawEngine.h"
 #include "Media/StaticImage.h"
+#include "UI/GUIControl.h"
 
 namespace UI
 {
 	class GUIPictureBoxSimple : public GUIControl
 	{
-	private:
-		struct ClassData;
-		static Int32 useCnt;
-		ClassData *clsData;
-		Media::StaticImage *currImage;
-		Media::DrawImage *prevImageD;
+	protected:
 		Bool hasBorder;
 		Bool noBGColor;
 		NotNullPtr<Media::DrawEngine> eng;
@@ -23,25 +19,24 @@ namespace UI
 		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
 		Data::ArrayList<void *> mouseUpObjs;
 
-		static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-		void OnPaint();
-		void Init(void *hInst);
-		void Deinit(void *hInst);
-		void UpdatePreview();
 	public:
 		GUIPictureBoxSimple(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void SetImage(Media::StaticImage *currImage) = 0;
+		virtual void SetImageDImg(Media::DrawImage *img) = 0;
+
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		void SetNoBGColor(Bool noBGColor);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
 		void HandleMouseMove(MouseEventHandler hdlr, void *userObj);
 		void HandleMouseUp(MouseEventHandler hdlr, void *userObj);
 
-		void SetImage(Media::StaticImage *currImage);
-		void SetImageDImg(Media::DrawImage *img);
-		void SetNoBGColor(Bool noBGColor);
+		void EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn);
+		void EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn);
+		void EventMouseMove(Math::Coord2D<OSInt> pos);
 	};
 }
 #endif

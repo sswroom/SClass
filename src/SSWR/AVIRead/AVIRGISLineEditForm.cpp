@@ -305,7 +305,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->pnlLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	Math::Size2D<UOSInt> sz;
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBox(ui, this->pnlStyle, this->eng, false, false));
+	this->pbPreview = ui->NewPictureBox(this->pnlStyle, this->eng, false, false);
 	this->pbPreview->SetRect(0, 0, 100, 24, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	sz = this->pbPreview->GetSizeP();
@@ -334,7 +334,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->lblThick->SetRect(0, 56, 88, 23, false);
 	this->lblPattern = ui->NewLabel(this->pnlLayer, CSTR("Pattern"));
 	this->lblPattern->SetRect(0, 80, 88, 23, false);
-	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlLayer, this->eng, true, false));
+	this->pbColor = ui->NewPictureBox(this->pnlLayer, this->eng, true, false);
 	this->pbColor->SetRect(96, 8, 72, 24, false);
 	this->pbColor->SetBGColor(0);
 	this->pbColor->HandleMouseDown(ColorClicked, this);

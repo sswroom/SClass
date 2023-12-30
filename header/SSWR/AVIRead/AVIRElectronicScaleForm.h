@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIRealtimeLineChart> rlcHistory;
 
 			NotNullPtr<UI::GUITabPage> tpDisplay;
-			UI::GUIPictureBoxSimple *pbsDisplay;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbsDisplay;
 
 			IO::Stream *stm;
 			Bool threadRunning;

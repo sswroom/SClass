@@ -168,7 +168,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->pnlPlate = ui->NewPanel(*this);
 	this->pnlPlate->SetRect(0, 0, 250, 100, false);
 	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASS(this->pbPlate, UI::GUIPictureBoxSimple(ui, this->pnlPlate, this->core->GetDrawEngine(), false));
+	this->pbPlate = ui->NewPictureBoxSimple(this->pnlPlate, this->core->GetDrawEngine(), false);
 	this->pbPlate->SetRect(0, 0, 100, 80, false);
 	this->pbPlate->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvPlate = ui->NewListView(this->pnlPlate, UI::ListViewStyle::Table, 4);

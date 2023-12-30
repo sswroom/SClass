@@ -1009,7 +1009,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->pnlInput = ui->NewPanel(*this);
 	this->pnlInput->SetRect(0, 0, 100, 168, false);
 	this->pnlInput->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pbsFFT, UI::GUIPictureBoxSimple(ui, *this, this->eng, false));
+	this->pbsFFT = ui->NewPictureBoxSimple(*this, this->eng, false);
 	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbsFFT->SetNoBGColor(true);
 	this->vspSample = ui->NewVSplitter(*this, 3, true);
@@ -1058,12 +1058,12 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->rlcVolLevel->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->rlcVolLevel->SetUnit(CSTR("dB"));
 	this->vspVolLevel = ui->NewVSplitter(this->tpVolLevel, 3, false);
-	NEW_CLASS(this->pbsSample, UI::GUIPictureBoxSimple(ui, this->tpVolLevel, this->eng, false));
+	this->pbsSample = ui->NewPictureBoxSimple(this->tpVolLevel, this->eng, false);
 	this->pbsSample->SetRect(0, 0, 100, 200, false);
 	this->pbsSample->SetNoBGColor(true);
 	this->pbsSample->SetDockType(UI::GUIControl::DOCK_FILL);
 /*	NEW_CLASS(this->vspSample = ui->NewVSplitter(this->tpVolLevel, 3, false));
-	NEW_CLASS(this->pbsFFT, UI::GUIPictureBoxSimple(ui, this->tpVolLevel, this->eng, false));
+	NEW_CLASS(this->pbsFFT = ui->NewPictureBoxSimple(this->tpVolLevel, this->eng, false));
 	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbsFFT->SetNoBGColor(true);*/
 

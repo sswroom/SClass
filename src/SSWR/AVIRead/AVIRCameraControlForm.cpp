@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 160, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxSimple(ui, this->pnlControl, this->core->GetDrawEngine(), false));
+	this->pbPreview = ui->NewPictureBoxSimple(this->pnlControl, this->core->GetDrawEngine(), false);
 	this->pbPreview->SetRect(0, 0, 160, 160, false);
 	this->btnDownload = ui->NewButton(this->pnlControl, CSTR("Download"));
 	this->btnDownload->SetRect(164, 4, 75, 23, false);

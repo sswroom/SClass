@@ -51,10 +51,6 @@ UI/GUIMainMenu.h:
 @GUIMainMenu.o
 UI/GUIMenu.h:
 @GUIMenuGTK.o
-UI/GUIPictureBox.h:
-@GUIPictureBoxGTK.o
-UI/GUIPictureBoxSimple.h:
-@GUIPictureBoxSimpleGTK.o
 UI/GUIPopupMenu.h:
 @GUIPopupMenuGTK.o
 UI/GUIProgressBar.h:

@@ -3,21 +3,20 @@
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUIPictureBoxSimple.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinPictureBoxSimple.h"
 #include <windows.h>
 
 #define CLASSNAME L"PictureBoxSimle"
-Int32 UI::GUIPictureBoxSimple::useCnt = 0;
+Int32 UI::Win::WinPictureBoxSimple::useCnt = 0;
 
 #ifndef GWL_USERDATA
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+OSInt __stdcall UI::Win::WinPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIPictureBoxSimple *me = (UI::GUIPictureBoxSimple*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
-	UOSInt i;
+	UI::Win::WinPictureBoxSimple *me = (UI::Win::WinPictureBoxSimple*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
 	{
 	case WM_SIZE:
@@ -28,59 +27,31 @@ OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSIn
 		me->OnPaint();
 		return 0;
 	case WM_LBUTTONDOWN:
-		i = me->mouseDownHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
-		}
+		me->EventButtonDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_RBUTTONDOWN:
-		i = me->mouseDownHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
-		}
+		me->EventButtonDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_MBUTTONDOWN:
-		i = me->mouseDownHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
-		}
+		me->EventButtonDown(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_LBUTTONUP:
-		i = me->mouseUpHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
-		}
+		me->EventButtonUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		return 0;
 	case WM_RBUTTONUP:
-		i = me->mouseUpHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
-		}
+		me->EventButtonUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		return 0;
 	case WM_MBUTTONUP:
-		i = me->mouseUpHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
-		}
+		me->EventButtonUp(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		return 0;
 	case WM_MOUSEMOVE:
-		i = me->mouseMoveHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			me->mouseMoveHdlrs.GetItem(i)(me->mouseMoveObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
-		}
+		me->EventMouseMove(Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
 		return 0;
 	}
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIPictureBoxSimple::OnPaint()
+void UI::Win::WinPictureBoxSimple::OnPaint()
 {
 	HGDIOBJ lastObj;
 	PAINTSTRUCT ps;
@@ -145,11 +116,11 @@ void UI::GUIPictureBoxSimple::OnPaint()
 	EndPaint((HWND)this->hwnd, &ps);
 }
 
-void UI::GUIPictureBoxSimple::Init(void *hInst)
+void UI::Win::WinPictureBoxSimple::Init(void *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
-	wc.lpfnWndProc = (WNDPROC)UI::GUIPictureBoxSimple::PBWndProc; 
+	wc.lpfnWndProc = (WNDPROC)UI::Win::WinPictureBoxSimple::PBWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
     wc.hInstance = (HINSTANCE)hInst; 
@@ -163,12 +134,12 @@ void UI::GUIPictureBoxSimple::Init(void *hInst)
         return; 
 }
 
-void UI::GUIPictureBoxSimple::Deinit(void *hInst)
+void UI::Win::WinPictureBoxSimple::Deinit(void *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-void UI::GUIPictureBoxSimple::UpdatePreview()
+void UI::Win::WinPictureBoxSimple::UpdatePreview()
 {
 	NotNullPtr<Media::DrawImage> dimg;
 	if (dimg.Set(this->prevImageD))
@@ -185,13 +156,10 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIControl(ui, parent)
+UI::Win::WinPictureBoxSimple::WinPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
 {
-	this->hasBorder = hasBorder;
-	this->eng = eng;
 	this->currImage = 0;
 	this->prevImageD = 0;
-	this->noBGColor = false;
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -206,7 +174,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNull
 	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 }
 
-UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
+UI::Win::WinPictureBoxSimple::~WinPictureBoxSimple()
 {
 	NotNullPtr<Media::DrawImage> dimg;
 	if (dimg.Set(this->prevImageD))
@@ -220,41 +188,18 @@ UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 	}
 }
 
-Text::CStringNN UI::GUIPictureBoxSimple::GetObjectClass() const
-{
-	return CSTR("PictureBoxSimple");
-}
-
-OSInt UI::GUIPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GUIPictureBoxSimple::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
-{
-	this->mouseDownHdlrs.Add(hdlr);
-	this->mouseDownObjs.Add(userObj);
-}
-
-void UI::GUIPictureBoxSimple::HandleMouseMove(MouseEventHandler hdlr, void *userObj)
-{
-	this->mouseMoveHdlrs.Add(hdlr);
-	this->mouseMoveObjs.Add(userObj);
-}
-
-void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
-{
-	this->mouseUpHdlrs.Add(hdlr);
-	this->mouseUpObjs.Add(userObj);
-}
-
-void UI::GUIPictureBoxSimple::SetImage(Media::StaticImage *currImage)
+void UI::Win::WinPictureBoxSimple::SetImage(Media::StaticImage *currImage)
 {
 	this->currImage = currImage;
 	this->UpdatePreview();
 }
 
-void UI::GUIPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
+void UI::Win::WinPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 {
 	this->currImage = 0;
 	NotNullPtr<Media::DrawImage> dimg;
@@ -269,9 +214,4 @@ void UI::GUIPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 		this->prevImageD = ((Media::GDIEngine*)this->eng.Ptr())->CloneImage(gimg);
 	}
 	this->Redraw();
-}
-
-void UI::GUIPictureBoxSimple::SetNoBGColor(Bool noBGColor)
-{
-	this->noBGColor = noBGColor;
 }

@@ -18,6 +18,8 @@
 #include "UI/Java/JavaListBox.h"
 #include "UI/Java/JavaMessageDialog.h"
 #include "UI/Java/JavaPanelBase.h"
+#include "UI/Java/JavaPictureBox.h"
+#include "UI/Java/JavaPictureBoxSimple.h"
 #include "UI/Java/JavaRadioButton.h"
 #include "UI/Java/JavaRealtimeLineChart.h"
 #include "UI/Java/JavaTabControl.h"
@@ -259,6 +261,20 @@ NotNullPtr<UI::GUIListBox> UI::Java::JavaCore::NewListBox(NotNullPtr<GUIClientCo
 {
 	NotNullPtr<UI::Java::JavaListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBox> UI::Java::JavaCore::NewPictureBox(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
+{
+	NotNullPtr<UI::Java::JavaPictureBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaPictureBox(*this, parent, eng, hasBorder, allowResize));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBoxSimple> UI::Java::JavaCore::NewPictureBoxSimple(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder)
+{
+	NotNullPtr<UI::Java::JavaPictureBoxSimple> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaPictureBoxSimple(*this, parent, eng, hasBorder));
 	return ctrl;
 }
 

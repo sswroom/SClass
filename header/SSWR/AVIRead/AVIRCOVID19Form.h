@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUIButton> btnFile;
 			NotNullPtr<UI::GUIButton> btnDownload;
-			UI::GUIPictureBoxSimple *pbNewCases;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbNewCases;
 			NotNullPtr<UI::GUIVSplitter> vspNewCases;
 			NotNullPtr<UI::GUIListView> lvCountry;
 

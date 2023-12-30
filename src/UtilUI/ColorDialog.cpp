@@ -1449,19 +1449,19 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GU
 		this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	}
 
-	NEW_CLASS(this->pbMain, UI::GUIPictureBox(ui, *this, eng, true, false));
+	this->pbMain = ui->NewPictureBox(*this, eng, true, false);
 	this->pbMain->SetRect(16, 16, 514, 514, false);
 	this->pbMain->HandleMouseDown(OnMainDown, this);
 	this->pbMain->HandleMouseMove(OnMainMove, this);
 	this->pbMain->HandleMouseUp(OnMainUp, this);
 	this->pbMain->SetNoBGColor(true);
-	NEW_CLASS(this->pbSub, UI::GUIPictureBox(ui, *this, eng, true, false));
+	this->pbSub = ui->NewPictureBox(*this, eng, true, false);
 	this->pbSub->SetRect(546, 16, 34, 514, false);
 	this->pbSub->HandleMouseDown(OnSubDown, this);
 	this->pbSub->HandleMouseMove(OnSubMove, this);
 	this->pbSub->HandleMouseUp(OnSubUp, this);
 	this->pbSub->SetNoBGColor(true);
-	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, *this, eng, true, false));
+	this->pbColor = ui->NewPictureBox(*this, eng, true, false);
 	this->pbColor->SetRect(604, 16, 112, 112, false);
 
 	this->radR = ui->NewRadioButton(*this, CSTR("Red"), true);

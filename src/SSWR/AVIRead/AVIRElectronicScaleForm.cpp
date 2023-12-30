@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDisplay = this->tcMain->AddTabPage(CSTR("Display"));
-	NEW_CLASS(this->pbsDisplay, UI::GUIPictureBoxSimple(ui, this->tpDisplay, this->eng, false));
+	this->pbsDisplay = ui->NewPictureBoxSimple(this->tpDisplay, this->eng, false);
 	this->pbsDisplay->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpHistory = this->tcMain->AddTabPage(CSTR("History"));

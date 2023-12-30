@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlLayersButton;
 			NotNullPtr<UI::GUIPanel> pnlLayer;
 
-			UI::GUIPictureBox *pbPreview;
+			NotNullPtr<UI::GUIPictureBox> pbPreview;
 			NotNullPtr<UI::GUILabel> lblName;
 			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUIListBox> lbLayer;
@@ -58,7 +58,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAlpha;
 			NotNullPtr<UI::GUILabel> lblThick;
 			NotNullPtr<UI::GUILabel> lblPattern;
-			UI::GUIPictureBox *pbColor;
+			NotNullPtr<UI::GUIPictureBox> pbColor;
 			UI::GUIHScrollBar *hsbAlpha;
 			NotNullPtr<UI::GUITextBox> txtThick;
 			UI::GUIHScrollBar *hsbThick;

@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtChar;
 			NotNullPtr<UI::GUIButton> btnCharPrev;
 			NotNullPtr<UI::GUIButton> btnCharNext;
-			UI::GUIPictureBoxSimple *pbChar;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbChar;
 			NotNullPtr<UI::GUILabel> lblRelatedCurr;
 			NotNullPtr<UI::GUITextBox> txtRelatedCurr;
 			NotNullPtr<UI::GUILabel> lblRelatedAdd;

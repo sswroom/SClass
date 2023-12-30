@@ -291,7 +291,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->chkHide->SetRect(240, 8, 104, 24, false);
 	lbl = ui->NewLabel(*this, CSTR("Font Style"));
 	lbl->SetRect(8, 48, 100, 23, false);
-	NEW_CLASS(this->pbFontStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
+	this->pbFontStyle = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, false);
 	this->pbFontStyle->SetRect(112, 48, 160, 20, false);
 	this->btnFontModify = ui->NewButton(*this, CSTR("Modify"));
 	this->btnFontModify->SetRect(280, 48, 75, 20, false);
@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->btnFontStyle->SetRect(360, 48, 75, 20, false);
 	this->lblLineStyle = ui->NewLabel(*this, CSTR("Line Style"));
 	this->lblLineStyle->SetRect(8, 72, 100, 23, false);
-	NEW_CLASS(this->pbLineStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
+	this->pbLineStyle = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, false);
 	this->pbLineStyle->SetRect(112, 72, 160, 20, false);
 	this->btnLineModify = ui->NewButton(*this, CSTR("Modify"));
 	this->btnLineModify->SetRect(280, 72, 75, 20, false);
@@ -307,7 +307,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->btnLineStyle->SetRect(360, 72, 75, 20, false);
 	this->lblFillStyle = ui->NewLabel(*this, CSTR("Fill Style"));
 	this->lblFillStyle->SetRect(8, 96, 100, 23, false);
-	NEW_CLASS(this->pbFillStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
+	this->pbFillStyle = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, false);
 	this->pbFillStyle->SetRect(112, 96, 160, 20, false);
 	lbl = ui->NewLabel(*this, CSTR("Label Column"));
 	lbl->SetRect(8, 120, 100, 23, false);
@@ -321,7 +321,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->txtPriority->SetRect(112, 144, 100, 21, false);
 	this->lblIcon = ui->NewLabel(*this, CSTR("Point Icon"));
 	this->lblIcon->SetRect(8, 168, 72, 23, false);
-	NEW_CLASS(this->pbIcon, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, true));
+	this->pbIcon = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, true);
 	this->pbIcon->SetRect(112, 168, 200, 128, false);
 
 	this->grpLabel = ui->NewGroupBox(*this, CSTR("Label"));

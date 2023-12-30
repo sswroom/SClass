@@ -108,9 +108,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpVolLevel;
 			NotNullPtr<UI::GUIRealtimeLineChart> rlcVolLevel;
 			NotNullPtr<UI::GUIVSplitter> vspVolLevel;
-			UI::GUIPictureBoxSimple *pbsSample;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbsSample;
 			NotNullPtr<UI::GUIVSplitter> vspSample;
-			UI::GUIPictureBoxSimple *pbsFFT;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbsFFT;
 
 			NotNullPtr<UI::GUITabPage> tpFileMix;
 			NotNullPtr<UI::GUILabel> lblFileMix;

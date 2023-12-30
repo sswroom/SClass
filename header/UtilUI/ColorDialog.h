@@ -51,9 +51,9 @@ namespace UtilUI
 			CCT_PHOTO
 		} ColorCorrType;
 	private:
-		UI::GUIPictureBox *pbMain;
-		UI::GUIPictureBox *pbSub;
-		UI::GUIPictureBox *pbColor;
+		NotNullPtr<UI::GUIPictureBox> pbMain;
+		NotNullPtr<UI::GUIPictureBox> pbSub;
+		NotNullPtr<UI::GUIPictureBox> pbColor;
 		NotNullPtr<UI::GUILabel> lblTrans;
 		NotNullPtr<UI::GUITextBox> txtTrans;
 		NotNullPtr<UI::GUILabel> lblPrimaries;

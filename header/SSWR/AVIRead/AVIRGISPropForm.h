@@ -21,20 +21,20 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtMinScale;
 			NotNullPtr<UI::GUITextBox> txtMaxScale;
 			NotNullPtr<UI::GUICheckBox> chkHide;
-			UI::GUIPictureBox *pbFontStyle;
+			NotNullPtr<UI::GUIPictureBox> pbFontStyle;
 			NotNullPtr<UI::GUIButton> btnFontModify;
 			NotNullPtr<UI::GUIButton> btnFontStyle;
 			NotNullPtr<UI::GUILabel> lblLineStyle;
-			UI::GUIPictureBox *pbLineStyle;
+			NotNullPtr<UI::GUIPictureBox> pbLineStyle;
 			NotNullPtr<UI::GUIButton> btnLineModify;
 			NotNullPtr<UI::GUIButton> btnLineStyle;
 			NotNullPtr<UI::GUILabel> lblFillStyle;
-			UI::GUIPictureBox *pbFillStyle;
+			NotNullPtr<UI::GUIPictureBox> pbFillStyle;
 			NotNullPtr<UI::GUIComboBox> cboColName;
 			NotNullPtr<UI::GUICheckBox> chkShowLabel;
 			NotNullPtr<UI::GUITextBox> txtPriority;
 			NotNullPtr<UI::GUILabel> lblIcon;
-			UI::GUIPictureBox *pbIcon;
+			NotNullPtr<UI::GUIPictureBox> pbIcon;
 
 			NotNullPtr<UI::GUIGroupBox> grpLabel;
 			NotNullPtr<UI::GUICheckBox> chkSmart;

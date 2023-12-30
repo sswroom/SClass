@@ -28,7 +28,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpImage;
 			NotNullPtr<UI::GUIComboBox> cboImage;
-			UI::GUIPictureBoxSimple *pbImage;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbImage;
 
 			NotNullPtr<UI::GUITabPage> tpText;
 			NotNullPtr<UI::GUITextBox> txtText;

@@ -604,7 +604,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpRecv = this->tcDetail->AddTabPage(CSTR("Recv"));
-	NEW_CLASS(this->pbRecvTopic, UI::GUIPictureBoxSimple(ui, this->tpRecv, this->core->GetDrawEngine(), false));
+	this->pbRecvTopic = ui->NewPictureBoxSimple(this->tpRecv, this->core->GetDrawEngine(), false);
 	this->pbRecvTopic->SetRect(0, 0, 100, 300, false);
 	this->pbRecvTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspRecvTopic = ui->NewVSplitter(this->tpRecv, 3, true);

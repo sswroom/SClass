@@ -44,6 +44,8 @@ namespace UI
 			virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
 			virtual NotNullPtr<GUILabel> NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
 			virtual NotNullPtr<GUIListBox> NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect);
+			virtual NotNullPtr<GUIPictureBox> NewPictureBox(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
+			virtual NotNullPtr<GUIPictureBoxSimple> NewPictureBoxSimple(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
 			virtual NotNullPtr<GUIRadioButton> NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual NotNullPtr<GUIRealtimeLineChart> NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
 			virtual NotNullPtr<GUITabControl> NewTabControl(NotNullPtr<GUIClientControl> parent);

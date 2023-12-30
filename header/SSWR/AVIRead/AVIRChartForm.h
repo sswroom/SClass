@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRChartForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPictureBoxSimple *pbMain;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::Chart *chart;

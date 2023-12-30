@@ -16,6 +16,8 @@
 #include "UI/GTK/GTKListBox.h"
 #include "UI/GTK/GTKMessageDialog.h"
 #include "UI/GTK/GTKPanelBase.h"
+#include "UI/GTK/GTKPictureBox.h"
+#include "UI/GTK/GTKPictureBoxSimple.h"
 #include "UI/GTK/GTKRadioButton.h"
 #include "UI/GTK/GTKRealtimeLineChart.h"
 #include "UI/GTK/GTKTabControl.h"
@@ -254,6 +256,20 @@ NotNullPtr<UI::GUIListBox> UI::GTK::GTKCore::NewListBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::GTK::GTKListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBox> UI::GTK::GTKCore::NewPictureBox(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
+{
+	NotNullPtr<UI::GTK::GTKPictureBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKPictureBox(*this, parent, eng, hasBorder, allowResize));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBoxSimple> UI::GTK::GTKCore::NewPictureBoxSimple(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder)
+{
+	NotNullPtr<UI::GTK::GTKPictureBoxSimple> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKPictureBoxSimple(*this, parent, eng, hasBorder));
 	return ctrl;
 }
 

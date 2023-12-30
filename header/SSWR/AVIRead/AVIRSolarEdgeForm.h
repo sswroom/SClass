@@ -85,7 +85,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyMonth;
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyDay;
 			NotNullPtr<UI::GUIButton> btnSiteEnergy;
-			UI::GUIPictureBox *pbSiteEnergy;
+			NotNullPtr<UI::GUIPictureBox> pbSiteEnergy;
 
 			NotNullPtr<UI::GUITabPage> tpSitePower;
 			NotNullPtr<UI::GUIPanel> pnlSitePower;
@@ -96,7 +96,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboSitePowerMonth;
 			NotNullPtr<UI::GUIComboBox> cboSitePowerDay;
 			NotNullPtr<UI::GUIButton> btnSitePower;
-			UI::GUIPictureBox *pbSitePower;
+			NotNullPtr<UI::GUIPictureBox> pbSitePower;
 
 			static void __stdcall OnAPIKeyClicked(void *userObj);
 			static void __stdcall OnSiteListSelChg(void *userObj);

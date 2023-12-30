@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBox(ui, *this, eng, true, false));
+	this->pbPreview = ui->NewPictureBox(*this, eng, true, false);
 	this->pbPreview->SetRect(0, 0, 100, 60, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->pnlMain = ui->NewPanel(*this);
@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
 	this->lblColor = ui->NewLabel(this->pnlMain, CSTR("Color"));
 	this->lblColor->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlMain, eng, true, false));
+	this->pbColor = ui->NewPictureBox(this->pnlMain, eng, true, false);
 	this->pbColor->SetRect(104, 28, 200, 23, false);
 	this->pbColor->HandleMouseDown(OnColorClicked, this);
 	this->btnOK = ui->NewButton(this->pnlMain, CSTR("OK"));

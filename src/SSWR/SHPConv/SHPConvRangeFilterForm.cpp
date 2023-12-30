@@ -93,7 +93,7 @@ SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(UI::GUIClientContr
 	this->lblY1->SetRect(112, 32, 16, 23, false);
 	this->txtY1 = ui->NewTextBox(*this, CSTR("0"));
 	this->txtY1->SetRect(128, 32, 80, 20, false);
-	NEW_CLASS(this->pbBox, UI::GUIPictureBoxSimple(ui, *this, this->deng, true));
+	this->pbBox = ui->NewPictureBoxSimple(*this, this->deng, true);
 	this->pbBox->SetRect(56, 64, 216, 96, false);
 	this->lblX2 = ui->NewLabel(*this, CSTR("X"));
 	this->lblX2->SetRect(144, 176, 16, 23, false);

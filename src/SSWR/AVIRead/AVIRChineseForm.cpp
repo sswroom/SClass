@@ -433,7 +433,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 	this->btnRelatedGo = ui->NewButton(*this, CSTR("Show Related"));
 	this->btnRelatedGo->SetRect(128, 124, 95, 23, false);
 	this->btnRelatedGo->HandleButtonClick(OnRelatedGoClicked, this);
-	NEW_CLASS(this->pbChar, UI::GUIPictureBoxSimple(ui, *this, this->deng, true));
+	this->pbChar = ui->NewPictureBoxSimple(*this, this->deng, true);
 	this->pbChar->SetRect(240, 4, 256, 256, false);
 	this->pbChar->HandleMouseDown(OnCharMouseDown, this);
 

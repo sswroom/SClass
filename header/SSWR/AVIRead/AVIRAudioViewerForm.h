@@ -25,9 +25,9 @@ namespace SSWR
 			UI::GUIMainMenu *mnu;
 			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpSample;
-			UI::GUIPictureBoxSimple *pbsSample;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbsSample;
 			NotNullPtr<UI::GUITabPage> tpFreq;
-			UI::GUIPictureBoxSimple *pbsFreq;
+			NotNullPtr<UI::GUIPictureBoxSimple> pbsFreq;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::IAudioSource *audSrc;

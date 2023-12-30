@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;
-			UI::GUIPictureBox *pbImage;
+			NotNullPtr<UI::GUIPictureBox> pbImage;
 
 			static void __stdcall OnOkClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);

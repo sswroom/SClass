@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, No
 	this->btnDownload = ui->NewButton(this->pnlRequest, CSTR("&Load Internet"));
 	this->btnDownload->SetRect(84, 4, 75, 23, false);
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
-	NEW_CLASS(this->pbNewCases, UI::GUIPictureBoxSimple(ui, *this, this->core->GetDrawEngine(), false));
+	this->pbNewCases = ui->NewPictureBoxSimple(*this, this->core->GetDrawEngine(), false);
 	this->pbNewCases->SetRect(0, 0, 100, 150, false);
 	this->pbNewCases->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbNewCases->HandleSizeChanged(OnNewCasesSizeChanged, this);

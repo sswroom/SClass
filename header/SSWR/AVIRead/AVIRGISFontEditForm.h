@@ -34,18 +34,18 @@ namespace SSWR
 			Bool isBold;
 			Media::StaticImage *previewImage;
 
-			UI::GUIPictureBox *pbFontPreview;
+			NotNullPtr<UI::GUIPictureBox> pbFontPreview;
 			NotNullPtr<UI::GUILabel> lblStyleName;
 			NotNullPtr<UI::GUITextBox> txtStyleName;
 			NotNullPtr<UI::GUILabel> lblFontName;
 			NotNullPtr<UI::GUITextBox> txtFontName;
 			NotNullPtr<UI::GUIButton> btnFontName;
 			NotNullPtr<UI::GUILabel> lblFontColor;
-			UI::GUIPictureBox *pbFontColor;
+			NotNullPtr<UI::GUIPictureBox> pbFontColor;
 			NotNullPtr<UI::GUILabel> lblBufferSize;
 			UI::GUIHScrollBar *hsbBufferSize;
 			NotNullPtr<UI::GUILabel> lblBufferColor;
-			UI::GUIPictureBox *pbBufferColor;
+			NotNullPtr<UI::GUIPictureBox> pbBufferColor;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
