@@ -14,7 +14,7 @@ IO::SensorLightWin::~SensorLightWin()
 {
 }
 
-Bool IO::SensorLightWin::ReadLights(Double *lux, Double *colorTemp)
+Bool IO::SensorLightWin::ReadLights(OutParam<Double> lux, OutParam<Double> colorTemp)
 {
 	ISensorDataReport *pReport;
 	HRESULT hr;
@@ -27,7 +27,7 @@ Bool IO::SensorLightWin::ReadLights(Double *lux, Double *colorTemp)
 
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_LIGHT_LEVEL_LUX, &var)) && var.vt == VT_R4)
 		{
-			*lux = var.fltVal;
+			lux.Set(var.fltVal);
 		}
 		else
 		{
@@ -37,7 +37,7 @@ Bool IO::SensorLightWin::ReadLights(Double *lux, Double *colorTemp)
 
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_LIGHT_TEMPERATURE_KELVIN, &var)) && var.vt == VT_R4)
 		{
-			*colorTemp = var.fltVal;
+			colorTemp.Set(var.fltVal);
 		}
 		else
 		{
@@ -54,9 +54,9 @@ Bool IO::SensorLightWin::ReadLights(Double *lux, Double *colorTemp)
 	}
 }
 
-IO::SensorLight *IO::SensorLightWin::GetSensorLight()
+Optional<IO::SensorLight> IO::SensorLightWin::GetSensorLight()
 {
-	return this;
+	return *this;
 }
 
 IO::Sensor::SensorType IO::SensorLightWin::GetSensorType()

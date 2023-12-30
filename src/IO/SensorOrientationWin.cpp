@@ -16,7 +16,7 @@ IO::SensorOrientationWin::~SensorOrientationWin()
 {
 }
 
-Bool IO::SensorOrientationWin::ReadOrientation(Double *x, Double *y, Double *z)
+Bool IO::SensorOrientationWin::ReadOrientation(OutParam<Double> x, OutParam<Double> y, OutParam<Double> z)
 {
 	ISensorDataReport *pReport;
 	HRESULT hr;
@@ -30,11 +30,11 @@ Bool IO::SensorOrientationWin::ReadOrientation(Double *x, Double *y, Double *z)
 		{
 			if (var.vt == VT_R8)
 			{
-				*x = var.dblVal;
+				x.Set(var.dblVal);
 			}
 			else if (var.vt == VT_R4)
 			{
-				*x = var.fltVal;
+				x.Set(var.fltVal);
 			}
 		}
 		else
@@ -47,11 +47,11 @@ Bool IO::SensorOrientationWin::ReadOrientation(Double *x, Double *y, Double *z)
 		{
 			if (var.vt == VT_R8)
 			{
-				*y = var.dblVal;
+				y.Set(var.dblVal);
 			}
 			else if (var.vt == VT_R4)
 			{
-				*y = var.fltVal;
+				y.Set(var.fltVal);
 			}
 		}
 		else
@@ -64,11 +64,11 @@ Bool IO::SensorOrientationWin::ReadOrientation(Double *x, Double *y, Double *z)
 		{
 			if (var.vt == VT_R8)
 			{
-				*z = var.dblVal;
+				z.Set(var.dblVal);
 			}
 			else if (var.vt == VT_R4)
 			{
-				*z = var.fltVal;
+				z.Set(var.fltVal);
 			}
 		}
 		else
@@ -91,9 +91,9 @@ Bool IO::SensorOrientationWin::ReadOrientation(Double *x, Double *y, Double *z)
 	return Math::Unit::Acceleration::AU_STANDARD_GRAVITY;
 }*/
 
-IO::SensorOrientation *IO::SensorOrientationWin::GetSensorOrientation()
+Optional<IO::SensorOrientation> IO::SensorOrientationWin::GetSensorOrientation()
 {
-	return this;
+	return *this;
 }
 
 IO::Sensor::SensorType IO::SensorOrientationWin::GetSensorType()

@@ -6,37 +6,37 @@ IO::Sensor::~Sensor()
 {
 }
 
-IO::SensorAccelerometer *IO::Sensor::GetSensorAccelerator()
+Optional<IO::SensorAccelerometer> IO::Sensor::GetSensorAccelerator()
 {
 	return 0;
 }
 
-IO::SensorPressure *IO::Sensor::GetSensorPressure()
+Optional<IO::SensorPressure> IO::Sensor::GetSensorPressure()
 {
 	return 0;
 }
 
-IO::SensorMagnetometer *IO::Sensor::GetSensorMagnetometer()
+Optional<IO::SensorMagnetometer> IO::Sensor::GetSensorMagnetometer()
 {
 	return 0;
 }
 
-IO::SensorOrientation *IO::Sensor::GetSensorOrientation()
+Optional<IO::SensorOrientation> IO::Sensor::GetSensorOrientation()
 {
 	return 0;
 }
 
-IO::SensorLocation *IO::Sensor::GetSensorLocation()
+Optional<IO::SensorLocation> IO::Sensor::GetSensorLocation()
 {
 	return 0;
 }
 
-IO::SensorLight *IO::Sensor::GetSensorLight()
+Optional<IO::SensorLight> IO::Sensor::GetSensorLight()
 {
 	return 0;
 }
 
-Text::CString IO::Sensor::GetSensorTypeName(SensorType sensorType)
+Text::CStringNN IO::Sensor::GetSensorTypeName(SensorType sensorType)
 {
 	switch (sensorType)
 	{

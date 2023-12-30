@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<Map::MapEnv> env;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Media::ColorConv *colorConv;
+			NotNullPtr<Media::ColorConv> colorConv;
 			Map::MapEnv::GroupItem *group;
 			UOSInt index;
 			Int32 lineType;

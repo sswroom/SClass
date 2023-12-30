@@ -14,11 +14,11 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Media::ColorConv *colorConv;
+			NotNullPtr<Media::ColorConv> colorConv;
 			NotNullPtr<Map::MapEnv> env;
 			UOSInt currLineStyle;
 
-			UI::GUIPopupMenu *mnuLayers;
+			Optional<UI::GUIPopupMenu> mnuLayers;
 
 		private:
 			static void __stdcall OnResized(void *userObj);
@@ -33,7 +33,7 @@ namespace SSWR
 			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
-			void SetPopupMenu(UI::GUIPopupMenu *mnuLayers);
+			void SetPopupMenu(Optional<UI::GUIPopupMenu> mnuLayers);
 
 			void UpdateLineStyles();
 			UOSInt GetSelectedLineStyle();

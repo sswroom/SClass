@@ -77,8 +77,9 @@ namespace Media
 		PaperSize(PaperType pType);
 		~PaperSize();
 
-		Double GetWidthMM();
-		Double GetHeightMM();
+		Double GetWidthMM() const;
+		Double GetHeightMM() const;
+		Math::Size2DDbl GetSizeMM() const;
 
 		static Math::Size2DDbl PaperTypeGetSizeMM(PaperType paperType);
 	};

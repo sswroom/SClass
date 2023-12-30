@@ -16,7 +16,7 @@ namespace Media
 		Bool IsError();
 		virtual UTF32Char GetMinChar() const;
 		virtual UTF32Char GetMaxChar() const;
-		virtual Media::StaticImage *CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const;
+		virtual Optional<Media::StaticImage> CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const;
 	};
 }
 #endif

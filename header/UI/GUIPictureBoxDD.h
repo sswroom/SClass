@@ -34,7 +34,7 @@ namespace UI
 
 		Media::CS::CSConverter *csconv;
 		NotNullPtr<Media::ColorManagerSess> colorSess;
-		Media::Image *currImage;
+		Optional<Media::Image> currImage;
 		Math::Size2D<UOSInt> currImageSize;
 		Media::IImgResizer *resizer;
 		UInt8 *imgBuff;
@@ -76,7 +76,7 @@ namespace UI
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void EnableLRGBLimit(Bool enable);
-		void SetImage(Media::Image *currImage, Bool sameImg);
+		void SetImage(Optional<Media::Image> currImage, Bool sameImg);
 
 		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
 		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);

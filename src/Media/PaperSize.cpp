@@ -15,14 +15,19 @@ Media::PaperSize::~PaperSize()
 {
 }
 
-Double Media::PaperSize::GetWidthMM()
+Double Media::PaperSize::GetWidthMM() const
 {
 	return this->sizeMM.GetWidth();
 }
 
-Double Media::PaperSize::GetHeightMM()
+Double Media::PaperSize::GetHeightMM() const
 {
 	return this->sizeMM.GetHeight();
+}
+
+Math::Size2DDbl Media::PaperSize::GetSizeMM() const
+{
+	return this->sizeMM;
 }
 
 Math::Size2DDbl Media::PaperSize::PaperTypeGetSizeMM(PaperType paperType)

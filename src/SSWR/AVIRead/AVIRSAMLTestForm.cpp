@@ -222,7 +222,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		cfg.ssoPath = sbSSOPath.ToCString();
 
 		NotNullPtr<Net::WebServer::SAMLHandler> samlHdlr;
-		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, 0));
+		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl, 0));
 		if (samlHdlr->GetInitError() != Net::WebServer::SAMLError::None)
 		{
 			sb.ClearStr();

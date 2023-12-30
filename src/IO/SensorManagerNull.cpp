@@ -21,7 +21,7 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 	return IO::Sensor::SensorType::Unknown;
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
+Optional<IO::Sensor> IO::SensorManager::CreateSensor(UOSInt index)
 {
 	return 0;
 }
@@ -31,7 +31,7 @@ UOSInt IO::SensorManager::GetAccelerometerCnt()
 	return 0;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
+Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UOSInt index)
 {
 	return 0;
 }

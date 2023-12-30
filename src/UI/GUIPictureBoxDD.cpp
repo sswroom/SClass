@@ -13,7 +13,7 @@
 
 void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
-	if (this->imgBuff && this->currImage && this->IsSurfaceReady())
+	if (this->imgBuff && !this->currImage.IsNull() && this->IsSurfaceReady())
 	{
 		UOSInt bpl;
 		if (this->drawHdlrs.GetCount() > 0)
@@ -188,7 +188,8 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 
 void UI::GUIPictureBoxDD::CalDispRect(NotNullPtr<Math::RectAreaDbl> srcRect, NotNullPtr<Math::RectArea<OSInt>> destRect)
 {
-	if (this->currImage == 0)
+	NotNullPtr<Media::Image> img;
+	if (!this->currImage.SetTo(img))
 	{
 		srcRect->min = Math::Coord2DDbl(0, 0);
 		srcRect->max = Math::Coord2DDbl(0, 0);
@@ -250,27 +251,31 @@ void UI::GUIPictureBoxDD::UpdateZoomRange()
 
 void UI::GUIPictureBoxDD::UpdateMinScale()
 {
-	Double outZoomScale;
-	Double outW;
-//	Double outH;
-	Double srcW = UOSInt2Double(this->currImageSize.x);
-	Double srcH = UOSInt2Double(this->currImageSize.y);
-	if (srcW * this->currImage->info.par2 * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * srcH)
+	NotNullPtr<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
-		outW = UOSInt2Double(this->bkBuffSize.x);
-//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
+		Double outZoomScale;
+		Double outW;
+	//	Double outH;
+		Double srcW = UOSInt2Double(this->currImageSize.x);
+		Double srcH = UOSInt2Double(this->currImageSize.y);
+		if (srcW * img->info.par2 * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * srcH)
+		{
+			outW = UOSInt2Double(this->bkBuffSize.x);
+	//		outH = this->surfaceSize.x / this->currImage->info.par2 * srcH / srcW;
+		}
+		else
+		{
+			outW = UOSInt2Double(this->bkBuffSize.y) * img->info.par2 * srcW / srcH;
+	//		outH = OSInt2Double(this->surfaceSize.y);
+		}
+		outZoomScale = outW / srcW;
+		if (outZoomScale > 1.0)
+		{
+			outZoomScale = 1.0;
+		}
+		this->zoomMinScale = outZoomScale;
 	}
-	else
-	{
-		outW = UOSInt2Double(this->bkBuffSize.y) * this->currImage->info.par2 * srcW / srcH;
-//		outH = OSInt2Double(this->surfaceSize.y);
-	}
-	outZoomScale = outW / srcW;
-	if (outZoomScale > 1.0)
-	{
-		outZoomScale = 1.0;
-	}
-	this->zoomMinScale = outZoomScale;
 }
 
 void UI::GUIPictureBoxDD::CreateResizer()
@@ -279,9 +284,10 @@ void UI::GUIPictureBoxDD::CreateResizer()
 
 	SDEL_CLASS(this->resizer);
 	Double refLuminance = 0;
-	if (this->currImage)
+	NotNullPtr<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
-		refLuminance = Media::CS::TransferFunc::GetRefLuminance(this->currImage->info.color.rtransfer);
+		refLuminance = Media::CS::TransferFunc::GetRefLuminance(img->info.color.rtransfer);
 	}
 	if (this->curr10Bit)
 	{
@@ -303,7 +309,7 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(void *userObj)
 	{
 		new10Bit = me->colorSess->Get10BitColor();
 	}
-	if (me->currImage)
+	if (!me->currImage.IsNull())
 	{
 		me->UpdateMinScale();
 		me->UpdateZoomRange();
@@ -463,7 +469,7 @@ void UI::GUIPictureBoxDD::EnableLRGBLimit(Bool enable)
 	}
 }
 
-void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
+void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameImg)
 {
 	Math::Size2D<UOSInt> oriSize = this->currImageSize;
 	this->currImage = currImage;
@@ -477,24 +483,25 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 		DEL_CLASS(this->csconv);
 		this->csconv = 0;
 	}
-	if (this->currImage)
+	NotNullPtr<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		NotNullPtr<Media::EXIFData> exif;
-		this->currImageSize = this->currImage->info.dispSize;
-		if (this->currImage->exif.SetTo(exif))
+		this->currImageSize = img->info.dispSize;
+		if (img->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
 			if (rotType == Media::RotateType::CW_90)
 			{
-				this->currImageSize = this->currImage->info.dispSize.SwapXY();
+				this->currImageSize = img->info.dispSize.SwapXY();
 			}
 			else if (rotType == Media::RotateType::CW_180)
 			{
 			}
 			else if (rotType == Media::RotateType::CW_270)
 			{
-				this->currImageSize = this->currImage->info.dispSize.SwapXY();
+				this->currImageSize = img->info.dispSize.SwapXY();
 			}
 		}
 		if (!sameImg || oriSize != this->currImageSize)
@@ -505,28 +512,28 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			this->UpdateZoomRange();
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info.fourcc, this->currImage->info.storeBPP, this->currImage->info.pf, this->currImage->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, this->currImage->info.yuvType, this->colorSess.Ptr());
+		this->csconv = Media::CS::CSConverter::NewConverter(img->info.fourcc, img->info.storeBPP, img->info.pf, img->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, img->info.yuvType, this->colorSess.Ptr());
 		if (this->csconv)
 		{
-			if (this->currImage->pal)
+			if (img->pal)
 			{
-				this->csconv->SetPalette(this->currImage->pal);
+				this->csconv->SetPalette(img->pal);
 			}
 			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-			if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
+			if (img->GetImageType() == Media::Image::ImageType::Static)
 			{
-				this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, this->currImage->info.storeSize.x, this->currImage->info.storeSize.y, (OSInt)this->currImage->info.dispSize.x << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
+				this->csconv->ConvertV2(&NotNullPtr<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			}
 			else
 			{
-				UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.storeSize.y);
-				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeSize.x, this->currImage->info.dispSize.y, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown(), this->currImage->info.rotateType);
-				this->csconv->ConvertV2(&imgData, this->imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, this->currImage->info.storeSize.x, this->currImage->info.storeSize.y, (OSInt)this->currImage->info.dispSize.x << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
+				UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.storeSize.y);
+				img->GetImageData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
+				this->csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 				MemFreeA(imgData);
 			}
 			if (this->enableLRGBLimit)
 			{
-				LRGBLimiter_LimitImageLRGB(this->imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y);
+				LRGBLimiter_LimitImageLRGB(this->imgBuff, img->info.dispSize.x, img->info.dispSize.y);
 			}
 
 			if (rotType == Media::RotateType::CW_90)
@@ -562,12 +569,13 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 
 void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
-	if (this->currImage && this->csconv)
+	NotNullPtr<Media::Image> img;
+	if (this->currImage.SetTo(img) && this->csconv)
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		NotNullPtr<Media::EXIFData> exif;
 		UInt8 *imgBuff;
-		if (this->currImage->exif.SetTo(exif))
+		if (img->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
 		}
@@ -579,20 +587,20 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler:
 		{
 			imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 		}
-		if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
+		if (img->GetImageType() == Media::Image::ImageType::Static)
 		{
-			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, this->currImage->info.storeSize.x, this->currImage->info.storeSize.y, (OSInt)this->currImage->info.dispSize.x << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
+			this->csconv->ConvertV2(&NotNullPtr<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
-			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.storeSize.y);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeSize.x, this->currImage->info.dispSize.y, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown(), this->currImage->info.rotateType);
-			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, this->currImage->info.storeSize.x, this->currImage->info.storeSize.y, (OSInt)this->currImage->info.dispSize.x << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
+			UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.storeSize.y);
+			img->GetImageData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
+			this->csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			MemFreeA(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
-			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y);
+			LRGBLimiter_LimitImageLRGB(imgBuff, img->info.dispSize.x, img->info.dispSize.y);
 		}
 		if (rotType == Media::RotateType::CW_90)
 		{
@@ -616,12 +624,13 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler:
 
 void UI::GUIPictureBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
-	if (this->currImage && this->csconv)
+	NotNullPtr<Media::Image> img;
+	if (this->currImage.SetTo(img) && this->csconv)
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		UInt8 *imgBuff;
 		NotNullPtr<Media::EXIFData> exif;
-		if (this->currImage->exif.SetTo(exif))
+		if (img->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
 		}
@@ -633,20 +642,20 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler:
 		{
 			imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 		}
-		if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
+		if (img->GetImageType() == Media::Image::ImageType::Static)
 		{
-			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, this->currImage->info.storeSize.x, this->currImage->info.storeSize.y, (OSInt)this->currImage->info.dispSize.x << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
+			this->csconv->ConvertV2(&NotNullPtr<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
-			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.dispSize.y);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeSize.x, this->currImage->info.dispSize.y, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown(), this->currImage->info.rotateType);
-			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, this->currImage->info.storeSize.x, this->currImage->info.storeSize.y, (OSInt)this->currImage->info.dispSize.x << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
+			UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.dispSize.y);
+			img->GetImageData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
+			this->csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			MemFreeA(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
-			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y);
+			LRGBLimiter_LimitImageLRGB(imgBuff, img->info.dispSize.x, img->info.dispSize.y);
 		}
 		if (rotType == Media::RotateType::CW_90)
 		{
@@ -690,7 +699,7 @@ void UI::GUIPictureBoxDD::OnMouseWheel(Math::Coord2D<OSInt> pos, Int32 amount)
 	Math::RectAreaDbl srcRect;
 	Math::RectArea<OSInt> destRect;
 
-	if (this->currImage == 0)
+	if (this->currImage.IsNull())
 		return;
 	if (amount > 0)
 	{
@@ -1107,7 +1116,7 @@ void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, void *userObj)
 
 Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
 {
-	if (this->currImage == 0)
+	if (this->currImage.IsNull())
 		return Math::Coord2DDbl(0, 0);
 	Math::RectAreaDbl srcRect;
 	Math::RectArea<OSInt> destRect;
@@ -1165,25 +1174,29 @@ Math::Coord2DDbl UI::GUIPictureBoxDD::Image2ScnPos(Math::Coord2DDbl imgPos)
 
 void UI::GUIPictureBoxDD::ZoomToFit()
 {
-	this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
-	Double outZoomScale;
-	Double outW;
-//	Double outH;
-	Math::Size2DDbl srcSize = this->currImageSize.ToDouble();
-	if (srcSize.x * this->currImage->info.par2 * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * srcSize.y)
+	NotNullPtr<Media::Image> img;
+	if (this->currImage.SetTo(img))
 	{
-		outW = UOSInt2Double(this->bkBuffSize.x);
-//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
+		this->zoomCenter = this->currImageSize.ToDouble() * 0.5;
+		Double outZoomScale;
+		Double outW;
+	//	Double outH;
+		Math::Size2DDbl srcSize = this->currImageSize.ToDouble();
+		if (srcSize.x * img->info.par2 * UOSInt2Double(this->bkBuffSize.y) > UOSInt2Double(this->bkBuffSize.x) * srcSize.y)
+		{
+			outW = UOSInt2Double(this->bkBuffSize.x);
+	//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
+		}
+		else
+		{
+			outW = UOSInt2Double(this->bkBuffSize.y) * img->info.par2 * srcSize.x / srcSize.y;
+	//		outH = OSInt2Double(this->surfaceH);
+		}
+		outZoomScale = outW / srcSize.x;
+		this->zoomScale = outZoomScale;
+		this->UpdateSubSurface();
+		DrawToScreen();
 	}
-	else
-	{
-		outW = UOSInt2Double(this->bkBuffSize.y) * this->currImage->info.par2 * srcSize.x / srcSize.y;
-//		outH = OSInt2Double(this->surfaceH);
-	}
-	outZoomScale = outW / srcSize.x;
-	this->zoomScale = outZoomScale;
-	this->UpdateSubSurface();
-	DrawToScreen();
 }
 
 void UI::GUIPictureBoxDD::UpdateBufferImage()

@@ -20,6 +20,6 @@ namespace IO
 		virtual Bool EnableSensor();
 		virtual Bool DisableSensor();
 	};
-};
+}
 
 #endif

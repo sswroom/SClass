@@ -9,9 +9,9 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Math::Vector3 acc;
-	if (me->motion->UpdateStatus())
+	if (me->motion.UpdateStatus())
 	{
-		acc = me->motion->GetValues();
+		acc = me->motion.GetValues();
 
 		sptr = Text::StrDouble(sbuff, acc.val[0]);
 		me->txtX->SetText(CSTRP(sbuff, sptr));
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 		sptr = Text::StrDouble(sbuff, acc.val[2]);
 		me->txtZ->SetText(CSTRP(sbuff, sptr));
 
-		if (me->currMoving != me->motion->IsMovving())
+		if (me->currMoving != me->motion.IsMovving())
 		{
 			me->currMoving = !me->currMoving;
 			if (me->currMoving)
@@ -42,14 +42,13 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SensorAccelerometer *acc) : UI::GUIForm(parent, 240, 160, ui)
+SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SensorAccelerometer> acc) : UI::GUIForm(parent, 240, 160, ui), motion(acc, true)
 {
 	this->SetText(CSTR("Accelerometer"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
 	this->core = core;
-	NEW_CLASS(this->motion, IO::MotionDetectorAccelerometer(acc, true));
 	this->currMoving = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -77,7 +76,6 @@ SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(UI::GUIClientControl
 
 SSWR::AVIRead::AVIRAccelerometerForm::~AVIRAccelerometerForm()
 {
-	DEL_CLASS(this->motion);
 }
 
 void SSWR::AVIRead::AVIRAccelerometerForm::OnMonitorChanged()

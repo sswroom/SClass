@@ -9,13 +9,13 @@ namespace Data
 		class InflateStream : public IO::Stream
 		{
 		private:
-			IO::Stream *outStm;
+			NotNullPtr<IO::Stream> outStm;
 			void *cmpInfo;
 			UInt8 *writeBuff;
 			UOSInt headerSize;
 		public:
-			InflateStream(IO::Stream *outStm, UOSInt headerSize, Bool zlibHeader);
-			InflateStream(IO::Stream *outStm, Bool zlibHeader);
+			InflateStream(NotNullPtr<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader);
+			InflateStream(NotNullPtr<IO::Stream> outStm, Bool zlibHeader);
 			virtual ~InflateStream();
 
 			virtual Bool IsDown() const;

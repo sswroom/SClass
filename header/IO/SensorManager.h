@@ -16,10 +16,10 @@ namespace IO
 
 		UOSInt GetSensorCnt();
 		IO::Sensor::SensorType GetSensorType(UOSInt index);
-		Sensor *CreateSensor(UOSInt index);
+		Optional<Sensor> CreateSensor(UOSInt index);
 
 		UOSInt GetAccelerometerCnt();
-		SensorAccelerometer *CreateAccelerometer(UOSInt index);
+		Optional<SensorAccelerometer> CreateAccelerometer(UOSInt index);
 	};
 }
 #endif

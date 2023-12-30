@@ -27,9 +27,9 @@ Math::Unit::Acceleration::AccelerationUnit IO::SensorAccelerometerAndroid::GetAc
 	return Math::Unit::Acceleration::AccelerationUnit::MeterPerSecondSquared;
 }
 
-IO::SensorAccelerometer *IO::SensorAccelerometerAndroid::GetSensorAccelerator()
+Optional<IO::SensorAccelerometer> IO::SensorAccelerometerAndroid::GetSensorAccelerator()
 {
-	return this;
+	return *this;
 }
 
 IO::Sensor::SensorType IO::SensorAccelerometerAndroid::GetSensorType()

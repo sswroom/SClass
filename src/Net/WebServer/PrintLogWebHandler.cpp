@@ -3,7 +3,7 @@
 #include "Net/WebServer/PrintLogWebResponse.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(Net::WebServer::IWebHandler *hdlr, NotNullPtr<IO::Writer> writer)
+Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(NotNullPtr<Net::WebServer::IWebHandler> hdlr, NotNullPtr<IO::Writer> writer)
 {
 	this->hdlr = hdlr;
 	this->writer = writer;
@@ -11,7 +11,7 @@ Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(Net::WebServer::IWebHandl
 
 Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
 {
-	DEL_CLASS(this->hdlr);
+	this->hdlr.Delete();
 }
 
 void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp)

@@ -332,7 +332,7 @@ SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, No
 	this->mnuLayers = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
+	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
 	this->colorSess->AddHandler(*this);
 
 	this->UpdateFontStyles();
@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, No
 
 SSWR::AVIRead::AVIRFontSelector::~AVIRFontSelector()
 {
-	DEL_CLASS(this->colorConv);
+	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 }
 

@@ -1082,7 +1082,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		IO::SensorManager sensorMgr;
 		Text::CString cstr;
-		IO::Sensor *sensor;
+		NotNullPtr<IO::Sensor> sensor;
 		console->WriteLine();
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("Sensors:"));
@@ -1095,8 +1095,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i = 0;
 		while (i < j)
 		{
-			sensor = sensorMgr.CreateSensor(i);
-			if (sensor)
+			if (sensorMgr.CreateSensor(i).SetTo(sensor))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sensor "));
@@ -1118,15 +1117,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
+				NotNullPtr<IO::SensorAccelerometer> sensorAcc;
+				NotNullPtr<IO::SensorPressure> sensorPres;
+				NotNullPtr<IO::SensorMagnetometer> sensorMag;
+				NotNullPtr<IO::SensorLight> sensorLight;
 				switch (sensor->GetSensorType())
 				{
 				case IO::Sensor::SensorType::Accelerometer:
-					if (sensor->EnableSensor())
+					if (sensor->EnableSensor() && sensor->GetSensorAccelerator().SetTo(sensorAcc))
 					{
 						Math::Vector3 acc;
-						if (sensor->GetSensorAccelerator()->ReadAcceleration(acc))
+						if (sensorAcc->ReadAcceleration(acc))
 						{
-							Math::Unit::Acceleration::AccelerationUnit aunit = sensor->GetSensorAccelerator()->GetAccelerationUnit();
+							Math::Unit::Acceleration::AccelerationUnit aunit = sensorAcc->GetAccelerationUnit();
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Accelerometer x = "));
@@ -1145,15 +1148,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					}
 					break;
 				case IO::Sensor::SensorType::Pressure:
-					if (sensor->EnableSensor())
+					if (sensor->EnableSensor() && sensor->GetSensorPressure().SetTo(sensorPres))
 					{
 						Double pressure;
-						if (sensor->GetSensorPressure()->ReadPressure(pressure))
+						if (sensorPres->ReadPressure(pressure))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Pressure = "));
 							sb.AppendDouble(pressure);
-							sb.Append(Math::Unit::Pressure::GetUnitShortName(sensor->GetSensorPressure()->GetPressureUnit()));
+							sb.Append(Math::Unit::Pressure::GetUnitShortName(sensorPres->GetPressureUnit()));
 							console->WriteLineC(sb.ToString(), sb.GetLength());
 							writer->WriteLineC(sb.ToString(), sb.GetLength());
 						}
@@ -1161,12 +1164,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					}
 					break;
 				case IO::Sensor::SensorType::Magnetometer:
-					if (sensor->EnableSensor())
+					if (sensor->EnableSensor() && sensor->GetSensorMagnetometer().SetTo(sensorMag))
 					{
 						Math::Vector3 mag;
-						if (sensor->GetSensorMagnetometer()->ReadMagneticField(mag))
+						if (sensorMag->ReadMagneticField(mag))
 						{
-							Math::Unit::MagneticField::MagneticFieldUnit mfunit = sensor->GetSensorMagnetometer()->GetMagneticFieldUnit();
+							Math::Unit::MagneticField::MagneticFieldUnit mfunit = sensorMag->GetMagneticFieldUnit();
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Magnetometer x = "));
@@ -1185,11 +1188,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					}
 					break;
 				case IO::Sensor::SensorType::Light:
-					if (sensor->EnableSensor())
+					if (sensor->EnableSensor() && sensor->GetSensorLight().SetTo(sensorLight))
 					{
 						Double lux;
 						Double colorTemp;
-						if (sensor->GetSensorLight()->ReadLights(&lux, &colorTemp))
+						if (sensorLight->ReadLights(lux, colorTemp))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Light: lux = "));
@@ -1208,7 +1211,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				default:
 					break;
 				}
-				DEL_CLASS(sensor);
+				sensor.Delete();
 			}
 			i++;
 		}

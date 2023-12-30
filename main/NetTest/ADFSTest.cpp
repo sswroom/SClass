@@ -115,7 +115,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (initSucc)
 	{
 		MyADFSService *svcHdlr;
-		Net::WebServer::SAMLHandler *samlHdlr;
+		NotNullPtr<Net::WebServer::SAMLHandler> samlHdlr;
 		Net::WebServer::SAMLConfig cfg;
 		cfg.serverHost = CSTRP(sbuff5, sptr5);
 		cfg.metadataPath = CSTR("/saml/metadata");
@@ -124,7 +124,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		cfg.signCertPath = CSTRP(sbuff3, sptr3);
 		cfg.signKeyPath = CSTRP(sbuff4, sptr4);
 		NEW_CLASS(svcHdlr, MyADFSService());
-		NEW_CLASS(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, svcHdlr));
+		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl, svcHdlr));
 		NEW_CLASSNN(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, console));
 		Net::WebServer::WebListener listener(sockf, ssl, logHdlr, PORTNUM, 120, 1, 4, CSTR("ADFSTest/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (listener.IsError())

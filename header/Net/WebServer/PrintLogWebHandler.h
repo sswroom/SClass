@@ -10,11 +10,11 @@ namespace Net
 		class PrintLogWebHandler : public Net::WebServer::IWebHandler
 		{
 		private:
-			Net::WebServer::IWebHandler *hdlr;
+			NotNullPtr<Net::WebServer::IWebHandler> hdlr;
 			NotNullPtr<IO::Writer> writer;
 
 		public:
-			PrintLogWebHandler(Net::WebServer::IWebHandler *hdlr, NotNullPtr<IO::Writer> writer);
+			PrintLogWebHandler(NotNullPtr<Net::WebServer::IWebHandler> hdlr, NotNullPtr<IO::Writer> writer);
 			virtual ~PrintLogWebHandler();
 
 			virtual void WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp);

@@ -14,7 +14,7 @@ IO::SensorLocationWin::~SensorLocationWin()
 {
 }
 
-Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord3 *loc)
+Bool IO::SensorLocationWin::ReadLocation(NotNullPtr<Map::GPSTrack::GPSRecord3> loc)
 {
 	ISensorDataReport *pReport;
 	HRESULT hr;
@@ -123,9 +123,9 @@ Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord3 *loc)
 	}
 }
 
-IO::SensorLocation *IO::SensorLocationWin::GetSensorLocation()
+Optional<IO::SensorLocation> IO::SensorLocationWin::GetSensorLocation()
 {
-	return this;
+	return *this;
 }
 
 IO::Sensor::SensorType IO::SensorLocationWin::GetSensorType()

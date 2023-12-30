@@ -47,13 +47,13 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, NotNullPtr
 	UTF8Char *sptr;
 	if (boundary.GetArea() >= 1000)
 	{
-		ResultInfo *res = MemAlloc(ResultInfo, 1);
+		NotNullPtr<ResultInfo> res = MemAllocNN(ResultInfo, 1);
 		res->result = txt->Clone();
 		res->confidence = confidence;
 		res->area = boundary;
 		res->resImg = me->currImg->CreateSubImage(boundary);
 		me->results.Add(res);
-		UOSInt i = me->lvText->AddItem(res->result, res);
+		UOSInt i = me->lvText->AddItem(res->result, res.Ptr());
 		sptr = Text::StrOSInt(sbuff, boundary.GetArea());
 		me->lvText->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, res->resImg->CalcColorRate());
@@ -65,14 +65,14 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, NotNullPtr
 
 void SSWR::AVIRead::AVIROCRForm::ClearResults()
 {
-	ResultInfo *res;
-	UOSInt i = this->results.GetCount();
-	while (i-- > 0)
+	NotNullPtr<ResultInfo> res;
+	Data::ArrayIterator<NotNullPtr<ResultInfo>> it = this->results.Iterator();
+	while (it.HasNext())
 	{
-		res = this->results.GetItem(i);
+		res = it.Next();
 		res->result->Release();
 		res->resImg.Delete();
-		MemFree(res);
+		MemFreeNN(res);
 	}
 	this->results.Clear();
 }

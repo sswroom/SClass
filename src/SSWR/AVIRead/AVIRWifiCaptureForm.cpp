@@ -800,10 +800,11 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	{
 		if (this->sensorMgr.GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
 		{
-			IO::Sensor *sensor = this->sensorMgr.CreateSensor(0);
-			if (sensor)
+			NotNullPtr<IO::Sensor> sensor;
+			NotNullPtr<IO::SensorAccelerometer> acc;
+			if (this->sensorMgr.CreateSensor(i).SetTo(sensor) && sensor->GetSensorAccelerator().SetTo(acc))
 			{
-				NEW_CLASS(this->motion, IO::MotionDetectorAccelerometer(sensor->GetSensorAccelerator(), true));
+				NEW_CLASS(this->motion, IO::MotionDetectorAccelerometer(acc, true));
 				break;
 			}
 		}

@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Media::ColorConv *colorConv;
+			NotNullPtr<Media::ColorConv> colorConv;
 			Bool changed;
 			NotNullPtr<Media::DrawEngine> eng;
 

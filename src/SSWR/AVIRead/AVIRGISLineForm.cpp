@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	this->colorSess->AddHandler(*this);
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcColor, destColor, this->colorSess.Ptr()));
+	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcColor, destColor, this->colorSess.Ptr()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Line Modify"));
@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 SSWR::AVIRead::AVIRGISLineForm::~AVIRGISLineForm()
 {
 	SDEL_CLASS(this->prevImg);
-	DEL_CLASS(this->colorConv);
+	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);

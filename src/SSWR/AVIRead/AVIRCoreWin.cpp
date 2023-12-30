@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NotNullPtr<IO::ParsedObject> pobj)
 	case IO::ParserType::FontRenderer:
 		{
 			SSWR::AVIRead::AVIRFontRendererForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRFontRendererForm(0, this->ui, *this, (Media::FontRenderer*)pobj.Ptr()));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRFontRendererForm(0, this->ui, *this, NotNullPtr<Media::FontRenderer>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

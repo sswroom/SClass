@@ -16,7 +16,7 @@ namespace Media
 		virtual IO::ParserType GetParserType() const;
 		virtual UTF32Char GetMinChar() const = 0;
 		virtual UTF32Char GetMaxChar() const = 0;
-		virtual Media::StaticImage *CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const = 0;
+		virtual Optional<Media::StaticImage> CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const = 0;
 	};
 }
 #endif

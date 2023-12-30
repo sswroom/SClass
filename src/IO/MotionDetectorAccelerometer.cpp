@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/MotionDetectorAccelerometer.h"
 
-IO::MotionDetectorAccelerometer::MotionDetectorAccelerometer(IO::SensorAccelerometer *acc, Bool toRelease)
+IO::MotionDetectorAccelerometer::MotionDetectorAccelerometer(NotNullPtr<IO::SensorAccelerometer> acc, Bool toRelease)
 {
 	this->acc = acc;
 	this->toRelease = toRelease;
@@ -14,7 +14,7 @@ IO::MotionDetectorAccelerometer::~MotionDetectorAccelerometer()
 {
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->acc);
+		this->acc.Delete();
 	}
 }
 

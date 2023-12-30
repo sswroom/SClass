@@ -13,7 +13,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Media::ColorConv *colorConv;
+			NotNullPtr<Media::ColorConv> colorConv;
 			NotNullPtr<Map::MapEnv> env;
 			UOSInt currFontStyle;
 

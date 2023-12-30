@@ -9,7 +9,7 @@ namespace IO
 	public:
 		virtual ~SensorOrientation() {};
 
-		virtual Bool ReadOrientation(Double *x, Double *y, Double *z) = 0;
+		virtual Bool ReadOrientation(OutParam<Double> x, OutParam<Double> y, OutParam<Double> z) = 0;
 //		virtual Math::Unit::Pressure::PressureUnit GetPressureUnit() = 0;
 	};
 };

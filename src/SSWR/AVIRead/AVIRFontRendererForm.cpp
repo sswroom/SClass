@@ -5,14 +5,14 @@ void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRFontRendererForm *me = (SSWR::AVIRead::AVIRFontRendererForm*)userObj;
 	Math::Size2D<UOSInt> sz = me->pbChar->GetSizeP();
-	Media::StaticImage *newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem(), sz);
+	Optional<Media::StaticImage> newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem(), sz);
 	me->pbChar->SetImage(newImg, false);
 	me->pbChar->ZoomToFit();
-	SDEL_CLASS(me->currImg);
+	me->currImg.Delete();
 	me->currImg = newImg;
 }
 
-SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::FontRenderer *font) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -48,8 +48,8 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 
 SSWR::AVIRead::AVIRFontRendererForm::~AVIRFontRendererForm()
 {
-	DEL_CLASS(this->font);
-	SDEL_CLASS(this->currImg);
+	this->font.Delete();
+	this->currImg.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

@@ -99,9 +99,9 @@ Math::Unit::Acceleration::AccelerationUnit IO::SensorAccelerometerW::GetAccelera
 	return Math::Unit::Acceleration::AccelerationUnit::StandardGravity;
 }
 
-IO::SensorAccelerometer *IO::SensorAccelerometerW::GetSensorAccelerator()
+Optional<IO::SensorAccelerometer> IO::SensorAccelerometerW::GetSensorAccelerator()
 {
-	return this;
+	return *this;
 }
 
 IO::Sensor::SensorType IO::SensorAccelerometerW::GetSensorType()

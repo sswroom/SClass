@@ -11,8 +11,8 @@ namespace IO
 		SensorLightWin(void *sensor);
 		virtual ~SensorLightWin();
 
-		virtual Bool ReadLights(Double *lux, Double *colorTemp);
-		virtual SensorLight *GetSensorLight();
+		virtual Bool ReadLights(OutParam<Double> lux, OutParam<Double> colorTemp);
+		virtual Optional<SensorLight> GetSensorLight();
 		virtual IO::Sensor::SensorType GetSensorType();
 	};
 }

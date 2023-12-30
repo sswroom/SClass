@@ -21,8 +21,8 @@ void Media::PhotoInfo::ParseXMF(NotNullPtr<Text::XMLDocument> xmf)
 	}
 	if ((node = xmf->SearchFirstNode(CSTR("//@aux:Lens"))) != 0)
 	{
-		SDEL_STRING(this->lens);
-		this->lens = node->value->Clone().Ptr();
+		OPTSTR_DEL(this->lens);
+		this->lens = node->value->Clone();
 	}
 	if ((node = xmf->SearchFirstNode(CSTR("//@exif:FocalLength"))) != 0)
 	{
@@ -169,9 +169,9 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 
 Media::PhotoInfo::~PhotoInfo()
 {
-	SDEL_STRING(this->make);
-	SDEL_STRING(this->model);
-	SDEL_STRING(this->lens);
+	OPTSTR_DEL(this->make);
+	OPTSTR_DEL(this->model);
+	OPTSTR_DEL(this->lens);
 	if (this->photoDate)
 		DEL_CLASS(this->photoDate);
 }
@@ -207,32 +207,33 @@ void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> make;
-	if (!make.Set(this->make))
+	NotNullPtr<Text::String> model;
+	if (!this->make.SetTo(make))
 	{
-		if (this->model == 0)
+		if (!this->model.SetTo(model))
 		{
 			sb->AppendC(UTF8STRC("Unknown camera"));
 		}
 		else
 		{
-			sb->Append(this->model);
+			sb->Append(model);
 		}
 	}
 	else
 	{
-		if (this->model == 0)
+		if (!this->model.SetTo(model))
 		{
 			sb->Append(make);
 		}
-		else if (this->model->StartsWith(make))
+		else if (model->StartsWith(make))
 		{
-			sb->Append(this->model);
+			sb->Append(model);
 		}
 		else
 		{
 			sb->Append(make);
 			sb->AppendC(UTF8STRC(" "));
-			sb->Append(this->model);
+			sb->Append(model);
 		}
 	}
 
@@ -287,10 +288,10 @@ void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		sb->AppendU32(this->isoRating);
 	}
 
-	if (this->lens)
+	if (this->lens.SetTo(model))
 	{
 		sb->AppendC(UTF8STRC(" Lens "));
-		sb->Append(this->lens);
+		sb->Append(model);
 	}
 
 	if (this->focalLength != 0)

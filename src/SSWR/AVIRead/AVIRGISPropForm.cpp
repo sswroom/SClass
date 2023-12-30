@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
+	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
 	this->colorSess->AddHandler(*this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -529,7 +529,7 @@ SSWR::AVIRead::AVIRGISPropForm::~AVIRGISPropForm()
 		this->imgFont = 0;
 	}
 	SDEL_STRING(this->fontName);
-	DEL_CLASS(this->colorConv);
+	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);

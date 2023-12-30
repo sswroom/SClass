@@ -9,11 +9,11 @@
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	Net::WebServer::OAuth2Handler *oauth2Hdlr;
+	NotNullPtr<Net::WebServer::OAuth2Handler> oauth2Hdlr;
 	NotNullPtr<Net::WebServer::PrintLogWebHandler> hdlr;
 	Net::WebServer::WebListener *listener;
 	Net::OSSocketFactory sockf(false);
-	NEW_CLASS(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));
+	NEW_CLASSNN(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));
 	NEW_CLASSNN(hdlr, Net::WebServer::PrintLogWebHandler(oauth2Hdlr, console));
 	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, hdlr, 8889, 30, 1, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!listener->IsError())

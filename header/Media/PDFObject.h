@@ -32,7 +32,7 @@ namespace Media
 		UOSInt GetHeight() const;
 		IO::StreamData *GetData() const;
 		Bool SaveFile(Text::CStringNN fileName);
-		Bool SaveStream(IO::Stream *stm);
+		Bool SaveStream(NotNullPtr<IO::Stream> stm);
 	};
 }
 #endif

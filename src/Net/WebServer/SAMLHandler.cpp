@@ -153,7 +153,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 	return false;
 }
 
-Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
+Net::WebServer::SAMLHandler::SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
 {
 	this->defHdlr = defHdlr;
 	this->ssl = ssl;
@@ -167,11 +167,6 @@ Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Optional<Net::SSLEngin
 	this->rawRespObj = 0;
 	this->loginHdlr = 0;
 	this->loginObj = 0;
-	if (cfg == 0)
-	{
-		this->initErr = SAMLError::ConfigNotFound;
-		return;
-	}
 	if (cfg->serverHost.leng == 0)
 	{
 		this->initErr = SAMLError::ServerHost;
@@ -279,8 +274,6 @@ Text::CString Net::WebServer::SAMLErrorGetName(SAMLError err)
 	{
 	case SAMLError::None:
 		return CSTR("None");
-	case SAMLError::ConfigNotFound:
-		return CSTR("Config Not Found");
 	case SAMLError::ServerHost:
 		return CSTR("Server Host error");
 	case SAMLError::MetadataPath:

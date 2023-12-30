@@ -10,14 +10,14 @@ namespace Media
 	{
 	private:
 		Bool succ;
-		Text::String *make;
-		Text::String *model;
+		Optional<Text::String> make;
+		Optional<Text::String> model;
 		UInt32 width;
 		UInt32 height;
 		Double fNumber;
 		Double expTime;
 		UInt32 isoRating;
-		Text::String *lens;
+		Optional<Text::String> lens;
 		Double focalLength;
 		Data::DateTime *photoDate;
 

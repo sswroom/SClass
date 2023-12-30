@@ -7,18 +7,18 @@ namespace IO
 	class MotionDetectorAccelerometer
 	{
 	private:
-		IO::SensorAccelerometer *acc;
+		NotNullPtr<IO::SensorAccelerometer> acc;
 		Bool toRelease;
 		Math::Vector3 currAcc;
 		Bool currMoving;
 	public:
-		MotionDetectorAccelerometer(IO::SensorAccelerometer *acc, Bool toRelease);
+		MotionDetectorAccelerometer(NotNullPtr<IO::SensorAccelerometer> acc, Bool toRelease);
 		~MotionDetectorAccelerometer();
 
 		Bool UpdateStatus();
 		Math::Vector3 GetValues() const;
 		Bool IsMovving();
 	};
-};
+}
 
 #endif

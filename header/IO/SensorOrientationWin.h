@@ -11,9 +11,9 @@ namespace IO
 		SensorOrientationWin(void *sensor);
 		virtual ~SensorOrientationWin();
 
-		virtual Bool ReadOrientation(Double *x, Double *y, Double *z);
+		virtual Bool ReadOrientation(OutParam<Double> x, OutParam<Double> y, OutParam<Double> z);
 //		virtual Math::Unit::Acceleration::AccelerationUnit GetAccelerationUnit();
-		virtual SensorOrientation *GetSensorOrientation();
+		virtual Optional<SensorOrientation> GetSensorOrientation();
 		virtual IO::Sensor::SensorType GetSensorType();
 	};
 };

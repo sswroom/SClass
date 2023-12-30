@@ -52,7 +52,7 @@ UTF32Char Media::MSFontRenderer::GetMaxChar() const
 	return this->fontBuff[96];
 }
 
-Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const
+Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCode, Math::Size2D<UOSInt> targetSize) const
 {
 	UInt32 ver = ReadUInt16(&this->fontBuff[0]);
 	UOSInt i;
@@ -81,9 +81,9 @@ Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, Math:
 		return 0;
 	}
 	UOSInt imgSize = fntH * ((fntW + 7) >> 3);
-	Media::StaticImage *simg;
+	NotNullPtr<Media::StaticImage> simg;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(fntW, fntH), 0, 1, Media::PF_PAL_W1, imgSize, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_PREMUL_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(fntW, fntH), 0, 1, Media::PF_PAL_W1, imgSize, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_PREMUL_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	simg->info.hdpi = ReadUInt16(&this->fontBuff[72]);
 	simg->info.vdpi = ReadUInt16(&this->fontBuff[70]);
 	simg->pal[0] = 0;

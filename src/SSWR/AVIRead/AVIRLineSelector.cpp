@@ -123,10 +123,11 @@ void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 			this->EventSelChg();
 			this->Redraw();
 		}
-		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers)
+		NotNullPtr<UI::GUIPopupMenu> mnu;
+		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers.SetTo(mnu))
 		{
 			Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
-			this->mnuLayers->ShowMenu(*this, scnPos + pos);
+			mnu->ShowMenu(*this, scnPos + pos);
 		}
 	}
 }
@@ -144,7 +145,7 @@ SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NotNullPtr<UI::GUICore> ui, No
 	this->mnuLayers = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
+	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
 	this->colorSess->AddHandler(*this);
 
 	this->HandleSizeChanged(OnResized, this);
@@ -154,7 +155,7 @@ SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NotNullPtr<UI::GUICore> ui, No
 
 SSWR::AVIRead::AVIRLineSelector::~AVIRLineSelector()
 {
-	DEL_CLASS(this->colorConv);
+	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 }
 
@@ -168,7 +169,7 @@ void SSWR::AVIRead::AVIRLineSelector::RGBParamChanged(NotNullPtr<const Media::IC
 	this->Redraw();
 }
 
-void SSWR::AVIRead::AVIRLineSelector::SetPopupMenu(UI::GUIPopupMenu *mnuLayers)
+void SSWR::AVIRead::AVIRLineSelector::SetPopupMenu(Optional<UI::GUIPopupMenu> mnuLayers)
 {
 	this->mnuLayers = mnuLayers;
 }

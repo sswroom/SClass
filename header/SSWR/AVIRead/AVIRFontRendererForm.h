@@ -27,16 +27,16 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Media::FontRenderer *font;
-			Media::StaticImage *currImg;
+			NotNullPtr<Media::FontRenderer> font;
+			Optional<Media::StaticImage> currImg;
 
 			static void __stdcall OnCharSelChg(void *userObj);
 		public:
-			AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::FontRenderer *font);
+			AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font);
 			virtual ~AVIRFontRendererForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -149,7 +149,7 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 	return sensorType;
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
+Optional<IO::Sensor> IO::SensorManager::CreateSensor(UOSInt index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0 || index < 0)
@@ -244,7 +244,7 @@ UOSInt IO::SensorManager::GetAccelerometerCnt()
 	return ret;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
+Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UOSInt index)
 {
 	IO::SensorAccelerometer *ret = 0;
 	ClassData *me = (ClassData*)this->clsData;

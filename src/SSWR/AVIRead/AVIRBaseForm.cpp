@@ -1672,8 +1672,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt cnt = sensors.GetAccelerometerCnt();
 			if (cnt > 0)
 			{
-				IO::SensorAccelerometer *acc = sensors.CreateAccelerometer(0);
-				if (acc)
+				NotNullPtr<IO::SensorAccelerometer> acc;
+				if (sensors.CreateAccelerometer(0).SetTo(acc))
 				{
 					SSWR::AVIRead::AVIRAccelerometerForm *frm;
 					NEW_CLASS(frm, SSWR::AVIRead::AVIRAccelerometerForm(0, this->ui, this->core, acc));

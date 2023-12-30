@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::OCREngine ocr;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Data::ArrayList<ResultInfo*> results;
+			Data::ArrayListNN<ResultInfo> results;
 			Media::StaticImage *currImg;
 
 			NotNullPtr<UI::GUIPanel> pnlResult;

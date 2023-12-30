@@ -28,7 +28,6 @@ namespace Net
 		enum class SAMLError
 		{
 			None,
-			ConfigNotFound,
 			ServerHost,
 			MetadataPath,
 			LogoutPath,
@@ -60,7 +59,7 @@ namespace Net
 		protected:
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
-			SAMLHandler(SAMLConfig *cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr);
+			SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr);
 			virtual ~SAMLHandler();
 
 			SAMLError GetInitError();

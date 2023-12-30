@@ -144,12 +144,12 @@ Bool Media::PDFObject::SaveFile(Text::CStringNN fileName)
 	if (this->fd)
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		return this->SaveStream(&fs);
+		return this->SaveStream(fs);
 	}
 	return false;
 }
 
-Bool Media::PDFObject::SaveStream(IO::Stream *stm)
+Bool Media::PDFObject::SaveStream(NotNullPtr<IO::Stream> stm)
 {
 	NotNullPtr<IO::StreamData> fd;
 	if (fd.Set(this->fd))

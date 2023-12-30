@@ -31,14 +31,14 @@ namespace IO
 		virtual SensorType GetSensorType() = 0;
 		virtual Bool EnableSensor() = 0;
 		virtual Bool DisableSensor() = 0;
-		virtual IO::SensorAccelerometer *GetSensorAccelerator();
-		virtual IO::SensorLight *GetSensorLight();
-		virtual IO::SensorPressure *GetSensorPressure();
-		virtual IO::SensorMagnetometer *GetSensorMagnetometer();
-		virtual IO::SensorOrientation *GetSensorOrientation();
-		virtual IO::SensorLocation *GetSensorLocation();
+		virtual Optional<IO::SensorAccelerometer> GetSensorAccelerator();
+		virtual Optional<IO::SensorLight> GetSensorLight();
+		virtual Optional<IO::SensorPressure> GetSensorPressure();
+		virtual Optional<IO::SensorMagnetometer> GetSensorMagnetometer();
+		virtual Optional<IO::SensorOrientation> GetSensorOrientation();
+		virtual Optional<IO::SensorLocation> GetSensorLocation();
 
-		static Text::CString GetSensorTypeName(SensorType sensorType);
+		static Text::CStringNN GetSensorTypeName(SensorType sensorType);
 	};
 }
 

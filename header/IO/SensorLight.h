@@ -8,7 +8,7 @@ namespace IO
 	public:
 		virtual ~SensorLight() {};
 
-		virtual Bool ReadLights(Double *lux, Double *colorTemp) = 0;
+		virtual Bool ReadLights(OutParam<Double> lux, OutParam<Double> colorTemp) = 0;
 	};
 }
 #endif
