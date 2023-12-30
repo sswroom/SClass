@@ -6,6 +6,7 @@
 #include "UI/GTK/GTKCheckBox.h"
 #include "UI/GTK/GTKCheckedListBox.h"
 #include "UI/GTK/GTKComboBox.h"
+#include "UI/GTK/GTKDateTimePicker.h"
 #include "UI/GTK/GTKCore.h"
 #include "UI/GTK/GTKFileDialog.h"
 #include "UI/GTK/GTKFolderDialog.h"
@@ -19,6 +20,7 @@
 #include "UI/GTK/GTKPanelBase.h"
 #include "UI/GTK/GTKPictureBox.h"
 #include "UI/GTK/GTKPictureBoxSimple.h"
+#include "UI/GTK/GTKProgressBar.h"
 #include "UI/GTK/GTKRadioButton.h"
 #include "UI/GTK/GTKRealtimeLineChart.h"
 #include "UI/GTK/GTKTabControl.h"
@@ -244,6 +246,13 @@ NotNullPtr<UI::GUIComboBox> UI::GTK::GTKCore::NewComboBox(NotNullPtr<GUIClientCo
 	return ctrl;
 }
 
+NotNullPtr<UI::GUIDateTimePicker> UI::GTK::GTKCore::NewDateTimePicker(NotNullPtr<GUIClientControl> parent, Bool calendarSelect)
+{
+	NotNullPtr<UI::GTK::GTKDateTimePicker> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKDateTimePicker(*this, parent));
+	return ctrl;
+}
+
 NotNullPtr<UI::GUIGroupBox> UI::GTK::GTKCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::GTK::GTKGroupBox> ctrl;
@@ -283,6 +292,13 @@ NotNullPtr<UI::GUIPictureBoxSimple> UI::GTK::GTKCore::NewPictureBoxSimple(NotNul
 {
 	NotNullPtr<UI::GTK::GTKPictureBoxSimple> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKPictureBoxSimple(*this, parent, eng, hasBorder));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIProgressBar> UI::GTK::GTKCore::NewProgressBar(NotNullPtr<GUIClientControl> parent, UInt64 totalCnt)
+{
+	NotNullPtr<UI::GTK::GTKProgressBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKProgressBar(*this, parent, totalCnt));
 	return ctrl;
 }
 

@@ -40,7 +40,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	this->sockf->SetRecvTimeout(s, 2000);
 	this->sockf->SetNoDelay(s, true);
-	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
+	SSL_set_fd(ssl, (int)this->sockf->SocketGetFD(s));
 	int ret;
 	if ((ret = SSL_accept(ssl)) <= 0)
 	{
@@ -66,7 +66,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 	SSL *ssl = (SSL*)sslObj;
 	this->sockf->SetNoDelay(s, true);
 	this->sockf->SetRecvTimeout(s, 2000);
-	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
+	SSL_set_fd(ssl, (int)this->sockf->SocketGetFD(s));
 	SSL_set_tlsext_host_name(ssl, hostName.v);
 	int ret;
 	if ((ret = SSL_connect(ssl)) <= 0)

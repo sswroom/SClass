@@ -25,8 +25,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnFolder;
 			NotNullPtr<UI::GUILabel> lblFolder;
-			UI::GUIProgressBar *prgMain;
-			SSWR::AVIRead::AVIRImageControl *icMain;
+			NotNullPtr<UI::GUIProgressBar> prgMain;
+			NotNullPtr<SSWR::AVIRead::AVIRImageControl> icMain;
 			NotNullPtr<UI::GUIHSplitter> hspLeft;
 			NotNullPtr<UI::GUIPanel> pnlImage;
 			NotNullPtr<UI::GUIPictureBoxDD> pbMain;

@@ -514,7 +514,7 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	if (this->analyse.SetTo(analyse))
 	{
-		if (!this->frame.SetTo(frame) == 0 || ofst < frame->GetOffset() || ofst >= frame->GetOffset() + frame->GetSize())
+		if (!this->frame.SetTo(frame) || ofst < frame->GetOffset() || ofst >= frame->GetOffset() + frame->GetSize())
 		{
 			this->frame.Delete();
 			UOSInt i = analyse->GetFrameIndex(ofst);

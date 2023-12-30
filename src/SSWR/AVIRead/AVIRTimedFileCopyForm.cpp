@@ -235,12 +235,12 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 	this->txtFileDir->SetRect(104, 4, 400, 23, false);
 	this->lblStartTime = ui->NewLabel(*this, CSTR("Start Time"));
 	this->lblStartTime->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->dtpStartTime, UI::GUIDateTimePicker(ui, *this, UI::GUIDateTimePicker::ST_UPDOWN));
+	this->dtpStartTime = ui->NewDateTimePicker(*this, false);
 	this->dtpStartTime->SetFormat("yyyy-MM-dd");
 	this->dtpStartTime->SetRect(104, 28, 100, 23, false);
 	this->lblEndTime = ui->NewLabel(*this, CSTR("End Time"));
 	this->lblEndTime->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->dtpEndTime, UI::GUIDateTimePicker(ui, *this, UI::GUIDateTimePicker::ST_UPDOWN));
+	this->dtpEndTime = ui->NewDateTimePicker(*this, false);
 	this->dtpEndTime->SetFormat("yyyy-MM-dd");
 	this->dtpEndTime->SetRect(104, 52, 100, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));

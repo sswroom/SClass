@@ -11,32 +11,24 @@ namespace UI
 	{
 	public:
 		typedef void (__stdcall *DateChangedHandler)(void *userObj, NotNullPtr<Data::DateTime> newDate);
-		typedef enum
-		{
-			ST_UPDOWN,
-			ST_CALENDAR
-		} SelectType;
 	private:
-		static Int32 useCnt;
-		Bool showWeeknum;
-		void *clsData;
-
 		Data::ArrayList<DateChangedHandler> dateChangedHdlrs;
 		Data::ArrayList<void*> dateChangedObjs;
 
 	public:
-		GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, SelectType st);
+		GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIDateTimePicker();
 
-		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void SetValue(NotNullPtr<Data::DateTime> dt) = 0;
+		virtual void SetValue(const Data::Timestamp &dt) = 0;
+		virtual void GetSelectedTime(NotNullPtr<Data::DateTime> dt) = 0;
+		virtual Data::Timestamp GetSelectedTime() = 0;
+		virtual void SetFormat(const Char *format) = 0;
+		virtual void SetCalShowWeeknum(Bool showWeeknum) = 0;
 
-		void SetValue(NotNullPtr<Data::DateTime> dt);
-		void SetValue(const Data::Timestamp &dt);
-		void GetSelectedTime(NotNullPtr<Data::DateTime> dt);
-		Data::Timestamp GetSelectedTime();
-		void SetFormat(const Char *format);
-		void SetCalShowWeeknum(Bool showWeeknum);
+		virtual Text::CStringNN GetObjectClass() const;
+		void EventDateChange(NotNullPtr<Data::DateTime> newDate);
 		void HandleDateChange(DateChangedHandler hdlr, void *obj);
 	};
 }

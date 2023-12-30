@@ -57,7 +57,7 @@ namespace SSWR
 			};
 		private:
 			NotNullPtr<UI::GUITabControl> tcMain;
-			UI::GUIProgressBar *prgStatus;
+			NotNullPtr<UI::GUIProgressBar> prgStatus;
 
 			NotNullPtr<UI::GUITabPage> tpFiles;
 			NotNullPtr<UI::GUIListView> lvFiles;

@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "UI/GUIProgressBar.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinProgressBar.h"
 
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
+UI::Win::WinProgressBar::WinProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIProgressBar(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -26,27 +26,22 @@ UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);
 }
 
-UI::GUIProgressBar::~GUIProgressBar()
+UI::Win::WinProgressBar::~WinProgressBar()
 {
 }
 
-Text::CStringNN UI::GUIProgressBar::GetObjectClass() const
-{
-	return CSTR("ProgressBar");
-}
-
-OSInt UI::GUIProgressBar::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinProgressBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GUIProgressBar::ProgressStart(Text::CString name, UInt64 count)
+void UI::Win::WinProgressBar::ProgressStart(Text::CString name, UInt64 count)
 {
 	this->totalCnt = count;
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);
 }
 
-void UI::GUIProgressBar::ProgressUpdate(UInt64 currCount, UInt64 newCount)
+void UI::Win::WinProgressBar::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
 	UOSInt pos;
 	if (totalCnt == 0)
@@ -60,7 +55,7 @@ void UI::GUIProgressBar::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, pos, 0);
 }
 
-void UI::GUIProgressBar::ProgressEnd()
+void UI::Win::WinProgressBar::ProgressEnd()
 {
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);
 }

@@ -306,7 +306,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNu
 	this->btnBookPaste->HandleButtonClick(OnBookPasteClicked, this);
 	this->lblBookPublish = ui->NewLabel(this->pnlBookDet, this->env->GetLang(CSTR("BookFormBookPublish")));
 	this->lblBookPublish->SetRect(0, 0, 70, 23, false);
-	NEW_CLASS(this->dtpBookPublish, UI::GUIDateTimePicker(ui, this->pnlBookDet, UI::GUIDateTimePicker::ST_CALENDAR));
+	this->dtpBookPublish = ui->NewDateTimePicker(this->pnlBookDet, true);
 	this->dtpBookPublish->SetRect(0, 24, 88, 19, false);
 	this->dtpBookPublish->SetFormat("yyyy/MM/dd");
 	this->dtpBookPublish->HandleDateChange(OnBookPublishChg, this);

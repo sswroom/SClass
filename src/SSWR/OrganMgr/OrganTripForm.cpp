@@ -203,11 +203,11 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblFrom = ui->NewLabel(this->pnlDetail, this->env->GetLang(CSTR("TripFormFrom")));
 	this->lblFrom->SetRect(0, 24, 72, 23, false);
-	NEW_CLASS(this->dtpFrom, UI::GUIDateTimePicker(ui, this->pnlDetail, UI::GUIDateTimePicker::ST_UPDOWN));
+	this->dtpFrom = ui->NewDateTimePicker(this->pnlDetail, false);
 	this->dtpFrom->SetRect(72, 24, 176, 23, false);
 	this->lblTo = ui->NewLabel(this->pnlDetail, this->env->GetLang(CSTR("TripFormTo")));
 	this->lblTo->SetRect(0, 56, 72, 23, false);
-	NEW_CLASS(this->dtpTo, UI::GUIDateTimePicker(ui, this->pnlDetail, UI::GUIDateTimePicker::ST_UPDOWN));
+	this->dtpTo = ui->NewDateTimePicker(this->pnlDetail, false);
 	this->dtpTo->SetRect(72, 56, 176, 23, false);
 	this->btnDate1Hr = ui->NewButton(this->pnlDetail, this->env->GetLang(CSTR("TripForm1Hr")));
 	this->btnDate1Hr->SetRect(248, 56, 75, 23, false);

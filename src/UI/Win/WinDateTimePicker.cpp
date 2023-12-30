@@ -3,14 +3,14 @@
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUIDateTimePicker.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinDateTimePicker.h"
 #include <windows.h>
 #include <commctrl.h>
 
-Int32 UI::GUIDateTimePicker::useCnt = 0;
+Int32 UI::Win::WinDateTimePicker::useCnt = 0;
 
-UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, SelectType st) : UI::GUIControl(ui, parent)
+UI::Win::WinDateTimePicker::WinDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool calendarSel) : UI::GUIDateTimePicker(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -22,7 +22,7 @@ UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::
 	this->showWeeknum = false;
 
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD;
-	if (st == ST_UPDOWN)
+	if (!calendarSel)
 	{
 		style = style | DTS_UPDOWN;
 	}
@@ -34,22 +34,16 @@ UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::
 	this->SetFormat("yyyy-MM-dd HH:mm:ss");
 }
 
-UI::GUIDateTimePicker::~GUIDateTimePicker()
+UI::Win::WinDateTimePicker::~WinDateTimePicker()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 	}
 }
 
-Text::CStringNN UI::GUIDateTimePicker::GetObjectClass() const
-{
-	return CSTR("DateTimePicker");
-}
-
-OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinDateTimePicker::OnNotify(UInt32 code, void *lParam)
 {
 	Data::DateTime dt;
-	UOSInt i;
 	LPNMDATETIMECHANGE chg;
 
 	switch (code)
@@ -57,11 +51,7 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	case DTN_DATETIMECHANGE:
 		chg = (LPNMDATETIMECHANGE)lParam;
 		dt.SetValueSYSTEMTIME(&chg->st);
-		i = this->dateChangedHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			this->dateChangedHdlrs.GetItem(i)(this->dateChangedObjs.GetItem(i), dt);
-		}
+		this->EventDateChange(dt);
 		break;
 	case DTN_DROPDOWN:
 		{
@@ -84,7 +74,7 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
+void UI::Win::WinDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	Int8 tz = dt->GetTimeZoneQHR();
@@ -94,14 +84,14 @@ void UI::GUIDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
 	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
-void UI::GUIDateTimePicker::SetValue(const Data::Timestamp &ts)
+void UI::Win::WinDateTimePicker::SetValue(const Data::Timestamp &ts)
 {
 	SYSTEMTIME t;
 	ts.ToSYSTEMTIME(&t);
 	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
-void UI::GUIDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
+void UI::Win::WinDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
@@ -111,27 +101,22 @@ void UI::GUIDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
 	dt->SetTimeZoneQHR(tz);
 }
 
-Data::Timestamp UI::GUIDateTimePicker::GetSelectedTime()
+Data::Timestamp UI::Win::WinDateTimePicker::GetSelectedTime()
 {
 	SYSTEMTIME t;
 	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
 	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&t), 0);
 }
 
-void UI::GUIDateTimePicker::SetFormat(const Char *format)
+void UI::Win::WinDateTimePicker::SetFormat(const Char *format)
 {
 	const WChar *wptr = Text::StrToWCharNew((const UTF8Char*)format);
 	SendMessage((HWND)this->hwnd, DTM_SETFORMATW, 0, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 }
 
-void UI::GUIDateTimePicker::SetCalShowWeeknum(Bool showWeeknum)
+void UI::Win::WinDateTimePicker::SetCalShowWeeknum(Bool showWeeknum)
 {
 	this->showWeeknum = showWeeknum;
 }
 
-void UI::GUIDateTimePicker::HandleDateChange(DateChangedHandler hdlr, void *obj)
-{
-	this->dateChangedHdlrs.Add(hdlr);
-	this->dateChangedObjs.Add(obj);
-}

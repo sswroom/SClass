@@ -7,19 +7,11 @@ namespace UI
 {
 	class GUIProgressBar : public GUIControl, public IO::ProgressHandler
 	{
-	private:
-		void *clsData;
-		UInt64 totalCnt;
 	public:
-		GUIProgressBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt);
+		GUIProgressBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIProgressBar();
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-
-		virtual void ProgressStart(Text::CString name, UInt64 count);
-		virtual void ProgressUpdate(UInt64 currCount, UInt64 newTotalCount);
-		virtual void ProgressEnd();
 	};
 }
 #endif

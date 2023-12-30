@@ -8,6 +8,7 @@
 #include "UI/Win/WinCheckedListBox.h"
 #include "UI/Win/WinComboBox.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinDateTimePicker.h"
 #include "UI/Win/WinFileDialog.h"
 #include "UI/Win/WinFolderDialog.h"
 #include "UI/Win/WinFontDialog.h"
@@ -20,6 +21,7 @@
 #include "UI/Win/WinPanelBase.h"
 #include "UI/Win/WinPictureBox.h"
 #include "UI/Win/WinPictureBoxSimple.h"
+#include "UI/Win/WinProgressBar.h"
 #include "UI/Win/WinRadioButton.h"
 #include "UI/Win/WinRealtimeLineChart.h"
 #include "UI/Win/WinTabControl.h"
@@ -294,6 +296,13 @@ NotNullPtr<UI::GUIComboBox> UI::Win::WinCore::NewComboBox(NotNullPtr<GUIClientCo
 	return ctrl;
 }
 
+NotNullPtr<UI::GUIDateTimePicker> UI::Win::WinCore::NewDateTimePicker(NotNullPtr<GUIClientControl> parent, Bool calendarSelect)
+{
+	NotNullPtr<UI::Win::WinDateTimePicker> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinDateTimePicker(*this, parent, calendarSelect));
+	return ctrl;
+}
+
 NotNullPtr<UI::GUIGroupBox> UI::Win::WinCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Win::WinGroupBox> ctrl;
@@ -333,6 +342,13 @@ NotNullPtr<UI::GUIPictureBoxSimple> UI::Win::WinCore::NewPictureBoxSimple(NotNul
 {
 	NotNullPtr<UI::Win::WinPictureBoxSimple> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinPictureBoxSimple(*this, parent, eng, hasBorder));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIProgressBar> UI::Win::WinCore::NewProgressBar(NotNullPtr<GUIClientControl> parent, UInt64 totalCnt)
+{
+	NotNullPtr<UI::Win::WinProgressBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinProgressBar(*this, parent, totalCnt));
 	return ctrl;
 }
 

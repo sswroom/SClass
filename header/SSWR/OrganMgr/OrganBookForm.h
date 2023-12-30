@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspBook;
 			NotNullPtr<UI::GUIButton> btnBookPaste;
 			NotNullPtr<UI::GUILabel> lblBookPublish;
-			UI::GUIDateTimePicker *dtpBookPublish;
+			NotNullPtr<UI::GUIDateTimePicker> dtpBookPublish;
 			NotNullPtr<UI::GUILabel> lblBookAuthor;
 			NotNullPtr<UI::GUITextBox> txtBookAuthor;
 			NotNullPtr<UI::GUILabel> lblBookTitle;

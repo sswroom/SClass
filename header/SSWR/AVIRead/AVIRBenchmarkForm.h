@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnQuick;
 			NotNullPtr<UI::GUIButton> btnSave;
-			UI::GUIProgressBar *pbMain;
+			NotNullPtr<UI::GUIProgressBar> pbMain;
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpCopy;

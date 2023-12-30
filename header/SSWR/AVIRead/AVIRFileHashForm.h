@@ -45,7 +45,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSpeed;
 			NotNullPtr<UI::GUILabel> lblTotalSize;
 			NotNullPtr<UI::GUITextBox> txtTotalSize;
-			UI::GUIProgressBar *prgFile;
+			NotNullPtr<UI::GUIProgressBar> prgFile;
 			NotNullPtr<UI::GUIRealtimeLineChart> rlcSpeed;
 
 			NotNullPtr<UI::GUIPanel> pnlTasks;

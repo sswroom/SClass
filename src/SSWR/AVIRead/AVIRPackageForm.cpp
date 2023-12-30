@@ -880,7 +880,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 /*	NEW_CLASSNN(this->pnlCtrl = ui->NewPanel(*this));
 	this->pnlCtrl->SetRect(0, 0, 100, 28, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);*/
-	NEW_CLASS(this->prgStatus, UI::GUIProgressBar(ui, *this, 1));
+	this->prgStatus = ui->NewProgressBar(*this, 1);
 	this->prgStatus->SetRect(0, 0, 100, 23, false);
 	this->prgStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->tcMain = ui->NewTabControl(*this);

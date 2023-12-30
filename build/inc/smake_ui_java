@@ -35,7 +35,6 @@ UI/GUICustomDraw.h:
 @GUICustomDrawGTK.o
 UI/GUICustomDrawVScroll.h:
 @GUICustomDrawVScrollGTK.o
-UI/GUIDateTimePicker.h:
 UI/GUIDDrawControl.h:
 @GUIDDrawControlGtk.o
 UI/GUIDragDrop.h:
@@ -49,8 +48,6 @@ UI/GUIMenu.h:
 @GUIMenuJava.o
 UI/GUIPopupMenu.h:
 @GUIPopupMenuGTK.o
-UI/GUIProgressBar.h:
-@GUIProgressBarGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
 UI/GUITreeView.h:

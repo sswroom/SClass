@@ -9,6 +9,7 @@
 #include "UI/Java/JavaCheckedListBox.h"
 #include "UI/Java/JavaComboBox.h"
 #include "UI/Java/JavaCore.h"
+#include "UI/Java/JavaDateTimePicker.h"
 #include "UI/Java/JavaFileDialog.h"
 #include "UI/Java/JavaFolderDialog.h"
 #include "UI/Java/JavaFontDialog.h"
@@ -21,6 +22,7 @@
 #include "UI/Java/JavaPanelBase.h"
 #include "UI/Java/JavaPictureBox.h"
 #include "UI/Java/JavaPictureBoxSimple.h"
+#include "UI/Java/JavaProgressBar.h"
 #include "UI/Java/JavaRadioButton.h"
 #include "UI/Java/JavaRealtimeLineChart.h"
 #include "UI/Java/JavaTabControl.h"
@@ -249,6 +251,13 @@ NotNullPtr<UI::GUIComboBox> UI::Java::JavaCore::NewComboBox(NotNullPtr<GUIClient
 	return ctrl;
 }
 
+NotNullPtr<UI::GUIDateTimePicker> UI::Java::JavaCore::NewDateTimePicker(NotNullPtr<GUIClientControl> parent, Bool calendarSelect)
+{
+	NotNullPtr<UI::Java::JavaDateTimePicker> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaDateTimePicker(*this, parent));
+	return ctrl;
+}
+
 NotNullPtr<UI::GUIGroupBox> UI::Java::JavaCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
@@ -288,6 +297,13 @@ NotNullPtr<UI::GUIPictureBoxSimple> UI::Java::JavaCore::NewPictureBoxSimple(NotN
 {
 	NotNullPtr<UI::Java::JavaPictureBoxSimple> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaPictureBoxSimple(*this, parent, eng, hasBorder));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIProgressBar> UI::Java::JavaCore::NewProgressBar(NotNullPtr<GUIClientControl> parent, UInt64 totalCnt)
+{
+	NotNullPtr<UI::Java::JavaProgressBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaProgressBar(*this, parent, totalCnt));
 	return ctrl;
 }
 

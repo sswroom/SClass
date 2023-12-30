@@ -4664,6 +4664,8 @@ UI/GUIComboBoxUtil.h:
 @GUIComboBoxUtil.o
 UI/GUICore.h:
 @GUICore.o
+UI/GUIDateTimePicker.h:
+@GUIDateTimePicker.o
 UI/GUIDObjArea.h:
 @GUIDObjArea.o
 UI/GUIFileDialog.h:
@@ -4699,6 +4701,8 @@ UI/GUIPictureBoxSimple.h:
 @GUIPictureBoxSimple.o
 UI/GUIPictureList.h:
 @GUIPictureList.o
+UI/GUIProgressBar.h:
+@GUIProgressBar.o
 UI/GUIRadioButton.h:
 @GUIRadioButton.o
 UI/GUIRealtimeLineChart.h:
@@ -4765,6 +4769,8 @@ UI/GTK/GTKComboBox.h:
 @GTKComboBox.o
 UI/GTK/GTKCore.h:
 @GTKCore.o
+UI/GTK/GTKDateTimePicker.h:
+@GTKDateTimePicker.o
 UI/GTK/GTKDragDrop.h:
 @GTKDragDrop.o
 UI/GTK/GTKFileDialog.h:
@@ -4791,6 +4797,8 @@ UI/GTK/GTKPictureBox.h:
 @GTKPictureBox.o
 UI/GTK/GTKPictureBoxSimple.h:
 @GTKPictureBoxSimple.o
+UI/GTK/GTKProgressBar.h:
+@GTKProgressBar.o
 UI/GTK/GTKRadioButton.h:
 @GTKRadioButton.o
 UI/GTK/GTKRealtimeLineChart.h:
@@ -4815,6 +4823,8 @@ UI/Java/JavaComboBox.h:
 JavaComboBox.o
 UI/Java/JavaCore.h:
 @JavaCore.o
+UI/Java/JavaDateTimePicker.h:
+@JavaDateTimePicker.o
 UI/Java/JavaFileDialog.h:
 @JavaFileDialog.o
 UI/Java/JavaFolderDialog.h:
@@ -4839,6 +4849,8 @@ UI/Java/JavaPictureBox.h:
 @JavaPictureBox.o
 UI/Java/JavaPictureBoxSimple.h:
 @JavaPictureBoxSimple.o
+UI/Java/JavaProgressBar.h:
+@JavaProgressBar.o
 UI/Java/JavaRadioButton.h:
 @JavaRadioButton.o
 UI/Java/JavaRealtimeLineChart.h:
@@ -4863,6 +4875,8 @@ UI/Win/WinComboBox.h:
 @WinComboBox.o
 UI/Win/WinCore.h:
 @WinCore.o
+UI/Win/WinDateTimePicker.h:
+@WinDateTimePicker.o
 UI/Win/WinDragDrop.h:
 @WinDragDrop.o
 UI/Win/WinFileDialog.h:
@@ -4889,6 +4903,8 @@ UI/Win/WinPictureBox.h:
 @WinPictureBox.o
 UI/Win/WinPictureBoxSimple.h:
 @WinPictureBoxSimple.o
+UI/Win/WinProgressBar.h:
+@WinProgressBar.o
 UI/Win/WinRadioButton.h:
 @WinRadioButton.o
 UI/Win/WinRealtimeLineChart.h:

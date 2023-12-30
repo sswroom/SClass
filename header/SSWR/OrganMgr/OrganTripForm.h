@@ -21,8 +21,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFrom;
 			NotNullPtr<UI::GUILabel> lblTo;
 			NotNullPtr<UI::GUILabel> lblLocation;
-			UI::GUIDateTimePicker *dtpFrom;
-			UI::GUIDateTimePicker *dtpTo;
+			NotNullPtr<UI::GUIDateTimePicker> dtpFrom;
+			NotNullPtr<UI::GUIDateTimePicker> dtpTo;
 			NotNullPtr<UI::GUIButton> btnDate1Hr;
 			NotNullPtr<UI::GUITextBox> txtLocation;
 			NotNullPtr<UI::GUIButton> btnLocation;

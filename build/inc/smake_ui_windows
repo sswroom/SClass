@@ -34,8 +34,6 @@ UI/GUICustomDraw.h:
 @GUICustomDrawWin.o
 UI/GUICustomDrawVScroll.h:
 @GUICustomDrawVScrollWin.o
-UI/GUIDateTimePicker.h:
-@GUIDateTimePickerWin.o
 UI/GUIDDrawControl.h:
 @GUIDDrawControlWin.o
 UI/GUIDragDrop.h:
@@ -52,8 +50,6 @@ UI/GUIMenu.h:
 @GUIMenuWin.o
 UI/GUIPopupMenu.h:
 @GUIPopupMenuWin.o
-UI/GUIProgressBar.h:
-@GUIProgressBarWin.o
 UI/GUITextView.h:
 @GUITextViewWin.o
 UI/GUITreeView.h:

@@ -2162,6 +2162,7 @@ GUICheckedListBox.o: ../../src/UI/GUICheckedListBox.cpp
 GUIComboBox.o: ../../src/UI/GUIComboBox.cpp
 GUIComboBoxUtil.o: ../../src/UI/GUIComboBoxUtil.cpp
 GUICore.o: ../../src/UI/GUICore.cpp
+GUIDateTimePicker.o: ../../src/UI/GUIDateTimePicker.cpp
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
 GUIFileDialog.o: ../../src/UI/GUIFileDialog.cpp
 GUIFolderDialog.o: ../../src/UI/GUIFolderDialog.cpp
@@ -2180,6 +2181,7 @@ GUIPictureBox.o: ../../src/UI/GUIPictureBox.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp
 GUIPictureBoxSimple.o: ../../src/UI/GUIPictureBoxSimple.cpp
 GUIPictureList.o: ../../src/UI/GUIPictureList.cpp
+GUIProgressBar.o: ../../src/UI/GUIProgressBar.cpp
 GUIRadioButton.o: ../../src/UI/GUIRadioButton.cpp
 GUIRealtimeLineChart.o: ../../src/UI/GUIRealtimeLineChart.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
@@ -2220,6 +2222,8 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKCore.o: ../../src/UI/GTK/GTKCore.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 !-lX11
+GTKDateTimePicker.o: ../../src/UI/GTK/GTKDateTimePicker.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKFileDialog.o: ../../src/UI/GTK/GTKFileDialog.cpp
@@ -2246,6 +2250,8 @@ GTKPictureBox.o: ../../src/UI/GTK/GTKPictureBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKPictureBoxSimple.o: ../../src/UI/GTK/GTKPictureBoxSimple.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKProgressBar.o: ../../src/UI/GTK/GTKProgressBar.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKRadioButton.o: ../../src/UI/GTK/GTKRadioButton.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKRealtimeLineChart.o: ../../src/UI/GTK/GTKRealtimeLineChart.cpp
@@ -2268,8 +2274,6 @@ GUICustomDrawGTK.o: ../../src/UI/GTK/GUICustomDrawGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICustomDrawVScrollGTK.o: ../../src/UI/GTK/GUICustomDrawVScrollGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIDateTimePickerGTK.o: ../../src/UI/GTK/GUIDateTimePickerGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDDrawControlGtk.o: ../../src/UI/GTK/GUIDDrawControlGtk.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormGTK.o: ../../src/UI/GTK/GUIFormGTK.cpp
@@ -2279,8 +2283,6 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIMenuGTK.o: ../../src/UI/GTK/GUIMenuGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPopupMenuGTK.o: ../../src/UI/GTK/GUIPopupMenuGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIProgressBarGTK.o: ../../src/UI/GTK/GUIProgressBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextViewGTK.o: ../../src/UI/GTK/GUITextViewGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2316,6 +2318,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaCore.o: ../../src/UI/Java/JavaCore.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaDateTimePicker.o: ../../src/UI/Java/JavaDateTimePicker.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaFileDialog.o: ../../src/UI/Java/JavaFileDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2349,6 +2354,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaPictureBoxSimple.o: ../../src/UI/Java/JavaPictureBoxSimple.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaProgressBar.o: ../../src/UI/Java/JavaProgressBar.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaRadioButton.o: ../../src/UI/Java/JavaRadioButton.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2376,7 +2384,6 @@ GUIControlWin.o: ../../src/UI/Win/GUIControlWin.cpp
 GUICustomDrawVScrollWin.o: ../../src/UI/Win/GUICustomDrawVScrollWin.cpp
 GUICustomDrawWin.o: ../../src/UI/Win/GUICustomDrawWin.cpp
 !-lwinmm
-GUIDateTimePickerWin.o: ../../src/UI/Win/GUIDateTimePickerWin.cpp
 GUIDDrawControlWin.o: ../../src/UI/Win/GUIDDrawControlWin.cpp
 !-lwinmm
 GUIFormWin.o: ../../src/UI/Win/GUIFormWin.cpp
@@ -2385,8 +2392,6 @@ GUIListViewWin.o: ../../src/UI/Win/GUIListViewWin.cpp
 !-lcomctl32
 GUIMenuWin.o: ../../src/UI/Win/GUIMenuWin.cpp
 GUIPopupMenuWin.o: ../../src/UI/Win/GUIPopupMenuWin.cpp
-GUIProgressBarWin.o: ../../src/UI/Win/GUIProgressBarWin.cpp
-!-lcomctl32
 GUITextViewWin.o: ../../src/UI/Win/GUITextViewWin.cpp
 GUITreeViewWin.o: ../../src/UI/Win/GUITreeViewWin.cpp
 WinButton.o: ../../src/UI/Win/WinButton.cpp
@@ -2394,6 +2399,7 @@ WinCheckBox.o: ../../src/UI/Win/WinCheckBox.cpp
 WinCheckedListBox.o: ../../src/UI/Win/WinCheckedListBox.cpp
 WinComboBox.o: ../../src/UI/Win/WinComboBox.cpp
 WinCore.o: ../../src/UI/Win/WinCore.cpp
+WinDateTimePicker.o: ../../src/UI/Win/WinDateTimePicker.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinFileDialog.o: ../../src/UI/Win/WinFileDialog.cpp
 !-lcomdlg32
@@ -2410,6 +2416,8 @@ WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
 WinPanelBase.o: ../../src/UI/Win/WinPanelBase.cpp
 WinPictureBox.o: ../../src/UI/Win/WinPictureBox.cpp
 WinPictureBoxSimple.o: ../../src/UI/Win/WinPictureBoxSimple.cpp
+WinProgressBar.o: ../../src/UI/Win/WinProgressBar.cpp
+!-lcomctl32
 WinRadioButton.o: ../../src/UI/Win/WinRadioButton.cpp
 WinRealtimeLineChart.o: ../../src/UI/Win/WinRealtimeLineChart.cpp
 WinTabControl.o: ../../src/UI/Win/WinTabControl.cpp

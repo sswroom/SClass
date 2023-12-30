@@ -17,6 +17,7 @@ namespace UI
 	class GUIClientControl;
 	class GUIComboBox;
 	class GUIControl;
+	class GUIDateTimePicker;
 	class GUIFileDialog;
 	class GUIFolderDialog;
 	class GUIFontDialog;
@@ -31,6 +32,7 @@ namespace UI
 	class GUIPictureBox;
 	class GUIPictureBoxDD;
 	class GUIPictureBoxSimple;
+	class GUIProgressBar;
 	class GUIRadioButton;
 	class GUIRealtimeLineChart;
 	class GUITabControl;
@@ -84,12 +86,14 @@ namespace UI
 		virtual NotNullPtr<GUICheckBox> NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked) = 0;
 		virtual NotNullPtr<GUICheckedListBox> NewCheckedListBox(NotNullPtr<GUIClientControl> parent) = 0;
 		virtual NotNullPtr<GUIComboBox> NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit) = 0;
+		virtual NotNullPtr<GUIDateTimePicker> NewDateTimePicker(NotNullPtr<UI::GUIClientControl> parent, Bool calendarSelect) = 0;
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 		virtual NotNullPtr<GUIHScrollBar> NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width) = 0;
 		virtual NotNullPtr<GUILabel> NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 		virtual NotNullPtr<GUIListBox> NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect) = 0;
 		virtual NotNullPtr<GUIPictureBox> NewPictureBox(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) = 0;
 		virtual NotNullPtr<GUIPictureBoxSimple> NewPictureBoxSimple(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) = 0;
+		virtual NotNullPtr<GUIProgressBar> NewProgressBar(NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) = 0;
 		virtual NotNullPtr<GUIRadioButton> NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected) = 0;
 		virtual NotNullPtr<GUIRealtimeLineChart> NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS) = 0;
 		virtual NotNullPtr<GUITabControl> NewTabControl(NotNullPtr<GUIClientControl> parent) = 0;

@@ -326,7 +326,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->txtTotalSize = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtTotalSize->SetRect(272, 24, 100, 23, false);
 	this->txtTotalSize->SetReadOnly(true);
-	NEW_CLASS(this->prgFile, UI::GUIProgressBar(ui, this->pnlStatus, 0));
+	this->prgFile = ui->NewProgressBar(this->pnlStatus, 0);
 	this->prgFile->SetRect(0, 0, 100, 24, false);
 	this->prgFile->SetDockType(UI::GUIControl::DOCK_BOTTOM);
  	this->rlcSpeed = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 350, 500);

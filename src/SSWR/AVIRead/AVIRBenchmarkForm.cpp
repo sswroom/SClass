@@ -358,7 +358,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->btnSave = ui->NewButton(this->pnlCtrl, CSTR("Save"));
 	this->btnSave->SetRect(164, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
-	NEW_CLASS(this->pbMain, UI::GUIProgressBar(ui, *this, 100));
+	this->pbMain = ui->NewProgressBar(*this, 100);
 	this->pbMain->SetRect(0, 0, 100, 24, false);
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->tcMain = ui->NewTabControl(*this);

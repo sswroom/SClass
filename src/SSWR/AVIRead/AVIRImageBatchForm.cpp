@@ -265,10 +265,10 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->lblFolder = ui->NewLabel(this->pnlCtrl, CSTR(""));
 	this->lblFolder->SetRect(0, 0, 480, 23, false);
 	this->lblFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->prgMain, UI::GUIProgressBar(ui, this->pnlCtrl, 1));
+	this->prgMain = ui->NewProgressBar(this->pnlCtrl, 1);
 	this->prgMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->icMain, SSWR::AVIRead::AVIRImageControl(ui, *this, this->core, this, this->colorSess));
+	NEW_CLASSNN(this->icMain, SSWR::AVIRead::AVIRImageControl(ui, *this, this->core, this, this->colorSess));
 	this->icMain->SetRect(0, 0, 200, 100, false);
 	this->icMain->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->icMain->SetDispImageHandler(OnImageChanged, this);

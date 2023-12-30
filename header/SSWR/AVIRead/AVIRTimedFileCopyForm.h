@@ -19,9 +19,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFileDir;
 			NotNullPtr<UI::GUITextBox> txtFileDir;
 			NotNullPtr<UI::GUILabel> lblStartTime;
-			UI::GUIDateTimePicker *dtpStartTime;
+			NotNullPtr<UI::GUIDateTimePicker> dtpStartTime;
 			NotNullPtr<UI::GUILabel> lblEndTime;
-			UI::GUIDateTimePicker *dtpEndTime;
+			NotNullPtr<UI::GUIDateTimePicker> dtpEndTime;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClicked(void *userObj);
