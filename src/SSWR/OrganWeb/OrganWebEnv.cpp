@@ -2218,11 +2218,11 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				Media::Image *img = imgList->GetImage(0, 0);
 				if (img)
 				{
-					Media::EXIFData *exif = img->exif;
-					if (exif)
+					NotNullPtr<Media::EXIFData> exif;
+					if (img->exif.SetTo(exif))
 					{
 						valid = true;
-						exif->GetPhotoDate(&fileTime);
+						exif->GetPhotoDate(fileTime);
 						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 						{

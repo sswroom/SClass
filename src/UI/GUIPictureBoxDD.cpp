@@ -480,10 +480,11 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 	if (this->currImage)
 	{
 		Media::RotateType rotType = Media::RotateType::None;
+		NotNullPtr<Media::EXIFData> exif;
 		this->currImageSize = this->currImage->info.dispSize;
-		if (this->currImage->exif)
+		if (this->currImage->exif.SetTo(exif))
 		{
-			rotType = this->currImage->exif->GetRotateType();
+			rotType = exif->GetRotateType();
 			if (rotType == Media::RotateType::CW_90)
 			{
 				this->currImageSize = this->currImage->info.dispSize.SwapXY();
@@ -564,10 +565,11 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler:
 	if (this->currImage && this->csconv)
 	{
 		Media::RotateType rotType = Media::RotateType::None;
+		NotNullPtr<Media::EXIFData> exif;
 		UInt8 *imgBuff;
-		if (this->currImage->exif)
+		if (this->currImage->exif.SetTo(exif))
 		{
-			rotType = this->currImage->exif->GetRotateType();
+			rotType = exif->GetRotateType();
 		}
 		if (rotType == Media::RotateType::None)
 		{
@@ -618,9 +620,10 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler:
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		UInt8 *imgBuff;
-		if (this->currImage->exif)
+		NotNullPtr<Media::EXIFData> exif;
+		if (this->currImage->exif.SetTo(exif))
 		{
-			rotType = this->currImage->exif->GetRotateType();
+			rotType = exif->GetRotateType();
 		}
 		if (rotType == Media::RotateType::None)
 		{

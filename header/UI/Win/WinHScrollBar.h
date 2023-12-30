@@ -25,13 +25,11 @@ namespace UI
 			WinHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width);
 			virtual ~WinHScrollBar();
 
-			void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);
-			void SetPos(UOSInt pos);
-			UOSInt GetPos();
-
+			virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);
+			virtual void SetPos(UOSInt pos);
+			virtual UOSInt GetPos();
 			virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 			virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
-			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 			virtual void UpdatePos(Bool redraw);
 		};

@@ -29,7 +29,7 @@ namespace IO
 			Sync::Thread thread;
 
 			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb);
-			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
+			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame);
 			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			FLVFileAnalyse(NotNullPtr<IO::StreamData> fd);
@@ -40,7 +40,7 @@ namespace IO
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual FrameDetail *GetFrameDetail(UOSInt index);
+			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

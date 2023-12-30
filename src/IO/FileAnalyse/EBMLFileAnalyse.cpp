@@ -727,15 +727,15 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UInt64 ofst)
 	}
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
 	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 
-	IO::FileAnalyse::FrameDetail *frame;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	UInt64 eleId;
 	UInt32 intSize;
 	ReadInt(pack->packType, &eleId, &intSize);

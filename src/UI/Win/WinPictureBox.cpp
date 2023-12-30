@@ -146,7 +146,7 @@ void UI::Win::WinPictureBox::UpdatePreview()
 		this->prevImageD = 0;
 	}
 
-	if (simg.Set(this->currImage))
+	if (this->currImage.SetTo(simg))
 	{
 		if (this->allowResize)
 		{

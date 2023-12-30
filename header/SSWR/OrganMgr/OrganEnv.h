@@ -327,8 +327,8 @@ namespace SSWR
 		protected:
 			virtual void LoadGroupTypes() = 0;
 			void FreeCategory(Category *cate);
-			Media::EXIFData *ParseJPGExif(Text::CStringNN fileName);
-			Media::EXIFData *ParseTIFExif(Text::CStringNN fileName);
+			Optional<Media::EXIFData> ParseJPGExif(Text::CStringNN fileName);
+			Optional<Media::EXIFData> ParseTIFExif(Text::CStringNN fileName);
 
 		public:
 			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);

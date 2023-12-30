@@ -85,11 +85,11 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 	if (flags & ICCP_FLAG)
 	{
  		WebPDemuxGetChunk(demux, "ICCP", 1, &chunk_iter);
-		Media::ICCProfile *profile = Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size));
-		if (profile)
+		NotNullPtr<Media::ICCProfile> profile;
+		if (Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size)).SetTo(profile))
 		{
 			profile->SetToColorProfile(simg->info.color);
-			DEL_CLASS(profile);
+			profile.Delete();
 		}
 		WebPDemuxReleaseChunkIterator(&chunk_iter);
 	}
@@ -98,14 +98,14 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 		WebPDemuxGetChunk(demux, "EXIF", 1, &chunk_iter);
 		const UInt8 *buff = chunk_iter.chunk.bytes;
 		Bool succ = true;
-		Data::ByteOrder *bo = 0;
+		NotNullPtr<Data::ByteOrder> bo;
 		if (*(Int16*)&buff[0] == *(Int16*)"II")
 		{
-			NEW_CLASS(bo, Data::ByteOrderLSB());
+			NEW_CLASSNN(bo, Data::ByteOrderLSB());
 		}
 		else if (*(Int16*)&buff[0] == *(Int16*)"MM")
 		{
-			NEW_CLASS(bo, Data::ByteOrderMSB());
+			NEW_CLASSNN(bo, Data::ByteOrderMSB());
 		}
 		else
 		{
@@ -121,17 +121,14 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 			{
 				succ = false;
 			}
-		}
-		if (succ)
-		{
-			if (simg->exif)
+			if (succ)
 			{
-				DEL_CLASS(simg->exif);
+				simg->exif.Delete();
+				UInt64 nextOfst;
+				simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
 			}
-			UInt64 nextOfst;
-			simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
+			bo.Delete();
 		}
-		SDEL_CLASS(bo);
 		WebPDemuxReleaseChunkIterator(&chunk_iter);
 	}
 	if (flags & XMP_FLAG)
@@ -141,10 +138,11 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 	}
 	WebPDemuxDelete(demux);
 	
-	if (simg->exif)
+	NotNullPtr<Media::EXIFData> exif;
+	if (simg->exif.SetTo(exif))
 	{
-		Double hdpi = simg->exif->GetHDPI();
-		Double vdpi = simg->exif->GetVDPI();
+		Double hdpi = exif->GetHDPI();
+		Double vdpi = exif->GetVDPI();
 		if (hdpi != 0 && vdpi != 0)
 		{
 			simg->info.hdpi = hdpi;

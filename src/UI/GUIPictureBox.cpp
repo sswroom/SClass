@@ -35,7 +35,7 @@ void UI::GUIPictureBox::OnSizeChanged(Bool updateScn)
 		this->UpdatePreview();
 	}
 }
-void UI::GUIPictureBox::SetImage(Media::StaticImage *currImage)
+void UI::GUIPictureBox::SetImage(Optional<Media::StaticImage> currImage)
 {
 	this->currImage = currImage;
 	this->UpdatePreview();

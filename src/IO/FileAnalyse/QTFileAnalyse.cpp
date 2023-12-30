@@ -866,9 +866,9 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UInt64 ofst)
 	}
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -880,7 +880,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	frame->AddStrS(0, 4, CSTR("Type"), (const UTF8Char*)&pack->packType);
 	if (pack->packSize >= 0x100000000)
 	{

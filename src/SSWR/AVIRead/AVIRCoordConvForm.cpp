@@ -394,7 +394,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNu
 		if (imgList)
 		{
 			Media::Image *img = imgList->GetImage(0, 0);
-			if (img && img->exif && img->exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
+			NotNullPtr<Media::EXIFData> exif;
+			if (img && img->exif.SetTo(exif) && exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
 			{
 				sb.ClearStr();
 				sb.Append(imgList->GetSourceNameObj());

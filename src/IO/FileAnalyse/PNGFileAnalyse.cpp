@@ -241,12 +241,12 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 			IO::MemoryStream mstm;
 			if (!comp.Decompress(&mstm, stmData))
 			{
-				Media::ICCProfile *icc = Media::ICCProfile::Parse(mstm.GetArray());
-				if (icc)
+				NotNullPtr<Media::ICCProfile> icc;
+				if (Media::ICCProfile::Parse(mstm.GetArray()).SetTo(icc))
 				{
 					sb->AppendC(UTF8STRC("\r\n\r\n"));
 					icc->ToString(sb);
-					DEL_CLASS(icc);
+					icc.Delete();
 				}
 			}
 			stmData.Delete();
@@ -307,16 +307,16 @@ UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr2;
 	UTF8Char *sptr;
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	frame->AddUInt(0, 4, CSTR("Size"), tag->size - 12);

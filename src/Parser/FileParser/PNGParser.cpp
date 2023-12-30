@@ -2730,16 +2730,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
 					{
 						Data::ByteArray iccBuff = mstm.GetArray();
-						Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff);
-						if (icc)
+						NotNullPtr<Media::ICCProfile> icc;
+						if (Media::ICCProfile::Parse(iccBuff).SetTo(icc))
 						{
-							icc->GetColorPrimaries(info.color.primaries);
-							icc->GetRedTransferParam(info.color.rtransfer);
-							icc->GetGreenTransferParam(info.color.gtransfer);
-							icc->GetBlueTransferParam(info.color.btransfer);
-							info.color.SetRAWICC(iccBuff.Ptr());
-							DEL_CLASS(icc);
-
+							icc->SetToColorProfile(info.color);
+							icc.Delete();
 							iccpFound = true;
 						}
 					}

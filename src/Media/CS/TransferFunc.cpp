@@ -107,7 +107,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UOSInt
 	MemCopyNO(this->params, params, sizeof(Double) * paramCnt);
 }
 
-void Media::CS::TransferParam::Set(Media::LUT *lut)
+void Media::CS::TransferParam::Set(NotNullPtr<Media::LUT> lut)
 {
 	SDEL_CLASS(this->lut);
 	if (this->params)

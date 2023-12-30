@@ -200,16 +200,14 @@ const UInt8 Media::ICCProfile::srgbICC[] = {
 	0xFF, 0xFF, 0xFB, 0xA1, 0xFF, 0xFF, 0xFD, 0xA2, 0x00, 0x00, 0x03, 0xDB, 0x00, 0x00, 0xC0, 0x75
 };
 
-Media::ICCProfile::ICCProfile(const UInt8 *iccBuff)
+Media::ICCProfile::ICCProfile(const UInt8 *iccBuff) : iccBuff(ReadMUInt32(iccBuff))
 {
 	UOSInt leng = ReadMUInt32(iccBuff);
-	this->iccBuff = MemAlloc(UInt8, leng);
-	MemCopyNO(this->iccBuff, iccBuff, leng);
+	this->iccBuff.CopyFrom(Data::ByteArrayR(iccBuff, leng));
 }
 
 Media::ICCProfile::~ICCProfile()
 {
-	MemFree(this->iccBuff);
 }
 
 Int32 Media::ICCProfile::GetCMMType() const
@@ -217,11 +215,11 @@ Int32 Media::ICCProfile::GetCMMType() const
 	return ReadMInt32(&this->iccBuff[4]);
 }
 
-void Media::ICCProfile::GetProfileVer(UInt8 *majorVer, UInt8 *minorVer, UInt8 *bugFixVer) const
+void Media::ICCProfile::GetProfileVer(OutParam<UInt8> majorVer, OutParam<UInt8> minorVer, OutParam<UInt8> bugFixVer) const
 {
-	*majorVer = this->iccBuff[8];
-	*minorVer = (UInt8)(this->iccBuff[9] >> 4);
-	*bugFixVer = this->iccBuff[9] & 0xf;
+	majorVer.Set(this->iccBuff[8]);
+	minorVer.Set((UInt8)(this->iccBuff[9] >> 4));
+	bugFixVer.Set(this->iccBuff[9] & 0xf);
 }
 
 Int32 Media::ICCProfile::GetProfileClass() const
@@ -294,7 +292,7 @@ Int32 Media::ICCProfile::GetTagCount() const
 	return ReadMInt32(&this->iccBuff[128]);
 }
 
-Media::LUT *Media::ICCProfile::CreateRLUT() const
+Optional<Media::LUT> Media::ICCProfile::CreateRLUT() const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -344,7 +342,7 @@ Media::LUT *Media::ICCProfile::CreateRLUT() const
 	return 0;
 }
 
-Media::LUT *Media::ICCProfile::CreateGLUT() const
+Optional<Media::LUT> Media::ICCProfile::CreateGLUT() const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -394,7 +392,7 @@ Media::LUT *Media::ICCProfile::CreateGLUT() const
 	return 0;
 }
 
-Media::LUT *Media::ICCProfile::CreateBLUT() const
+Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
 {
 	UInt32 cnt = ReadMUInt32(&this->iccBuff[128]);
 	UInt32 i = 0;
@@ -475,9 +473,12 @@ Bool Media::ICCProfile::GetRedTransferParam(NotNullPtr<Media::CS::TransferParam>
 				}
 				else
 				{
-					Media::LUT *lut = this->CreateRLUT();
-					param->Set(lut);
-					DEL_CLASS(lut);
+					NotNullPtr<Media::LUT> lut;
+					if (this->CreateRLUT().SetTo(lut))
+					{
+						param->Set(lut);
+						lut.Delete();
+					}
 				}
 
 /*				Double gamma;
@@ -561,9 +562,12 @@ Bool Media::ICCProfile::GetGreenTransferParam(NotNullPtr<Media::CS::TransferPara
 				}
 				else
 				{
-					Media::LUT *lut = this->CreateGLUT();
-					param->Set(lut);
-					DEL_CLASS(lut);
+					NotNullPtr<Media::LUT> lut;
+					if (this->CreateGLUT().SetTo(lut))
+					{
+						param->Set(lut);
+						lut.Delete();
+					}
 				}
 
 /*				Double gamma;
@@ -647,9 +651,12 @@ Bool Media::ICCProfile::GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam
 				}
 				else
 				{
-					Media::LUT *lut = this->CreateBLUT();
-					param->Set(lut);
-					DEL_CLASS(lut);
+					NotNullPtr<Media::LUT> lut;
+					if (this->CreateBLUT().SetTo(lut))
+					{
+						param->Set(lut);
+						lut.Delete();
+					}
 				}
 
 /*				Double gamma;
@@ -826,7 +833,7 @@ Bool Media::ICCProfile::SetToColorProfile(NotNullPtr<Media::ColorProfile> colorP
 		this->GetBlueTransferParam(colorProfile->GetBTranParam()) &&
 		this->GetColorPrimaries(colorProfile->GetPrimaries()))
 	{
-		colorProfile->SetRAWICC(this->iccBuff);
+		colorProfile->SetRAWICC(this->iccBuff.Ptr());
 		return true;	
 	}
 	return false;
@@ -843,7 +850,7 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("Preferred CMM Type = "));
 	sb->Append(GetNameCMMType(this->GetCMMType()));
 
-	this->GetProfileVer(&majorVer, &minorVer, &bugFixVer);
+	this->GetProfileVer(majorVer, minorVer, bugFixVer);
 	sb->AppendC(UTF8STRC("\r\nProfile version number = "));
 	sb->AppendU16(majorVer);
 	sb->AppendC(UTF8STRC("."));
@@ -916,20 +923,20 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Media::ICCProfile *Media::ICCProfile::Parse(Data::ByteArrayR buff)
+Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 {
-	Media::ICCProfile *profile;
+	NotNullPtr<Media::ICCProfile> profile;
 	if (buff.ReadMU32(0) != buff.GetSize())
 		return 0;
 	if (buff.ReadMI32(36) != 0x61637370)
 		return 0;
 	
-	NEW_CLASS(profile, Media::ICCProfile(buff.GetPtr()));
+	NEW_CLASSNN(profile, Media::ICCProfile(buff.GetPtr()));
 
 	return profile;
 }
 
-Bool Media::ICCProfile::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize)
+Bool Media::ICCProfile::ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1489,7 +1496,7 @@ void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, U
 			sb->AppendC(UTF8STRC(" entries, "));
 			sb->AppendC(UTF8STRC("Closed to "));
 		}
-		tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], &gamma);
+		tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], gamma);
 		sb->Append(Media::CS::TransferTypeGetName(tt));
 		if (tt == Media::CS::TRANT_GAMMA)
 		{
@@ -1628,18 +1635,18 @@ void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, U
 	}
 }
 
-Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma)
+Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, UInt16 *curveColors, OutParam<Double> gamma)
 {
 	Media::CS::TransferType trans[] = {Media::CS::TRANT_sRGB, Media::CS::TRANT_BT709, Media::CS::TRANT_GAMMA, Media::CS::TRANT_LINEAR, Media::CS::TRANT_SMPTE240};
 	UOSInt tranCnt = sizeof(trans) / sizeof(trans[0]);
 	if (colorCount == 0)
 	{
-		*gamma = 1.0;
+		gamma.Set(1.0);
 		return Media::CS::TRANT_LINEAR;
 	}
 	else if (colorCount == 1)
 	{
-		*gamma = ReadU8Fixed8Number((UInt8*)curveColors);
+		gamma.Set(ReadU8Fixed8Number((UInt8*)curveColors));
 		return Media::CS::TRANT_GAMMA;
 	}
 
@@ -1685,7 +1692,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 
 	MemFree(funcs);
 	MemFree(diffSqrSum);
-	*gamma = 2.2;
+	gamma.Set(2.2);
 	return minType;
 }
 
@@ -1699,7 +1706,7 @@ UTF8Char *Media::ICCProfile::GetProfilePath(UTF8Char *sbuff)
 	return sptr;
 }
 
-Media::ICCProfile *Media::ICCProfile::NewSRGBProfile()
+Optional<Media::ICCProfile> Media::ICCProfile::NewSRGBProfile()
 {
 	return Parse(Data::ByteArrayR(srgbICC, sizeof(srgbICC)));
 }
@@ -1709,7 +1716,7 @@ const UInt8 *Media::ICCProfile::GetSRGBICCData()
 	return srgbICC;
 }
 
-void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff)
+void Media::ICCProfile::FrameAddXYZNumber(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff)
 {
 	Text::StringBuilderUTF8 sb;
 	GetDispCIEXYZ(sb, ReadXYZNumber(xyzBuff));
@@ -1717,7 +1724,7 @@ void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *f
 }
 
 
-void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::FrameDispTagType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng)
 {
 	UInt32 typ = ReadMUInt32(buff);
 	Int32 nCh;
@@ -1843,7 +1850,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				sb.AppendC(UTF8STRC(" entries, "));
 				sb.AppendC(UTF8STRC("Closed to "));
 			}
-			tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], &gamma);
+			tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], gamma);
 			sb.Append(Media::CS::TransferTypeGetName(tt));
 			if (tt == Media::CS::TRANT_GAMMA)
 			{

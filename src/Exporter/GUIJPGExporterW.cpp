@@ -104,11 +104,12 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		srcImg = imgList->GetImage(0, 0);
 	}
 	jpgBuff = mstm.GetBuff(jpgSize);
-	if (srcImg != 0 && srcImg->exif != 0 && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	NotNullPtr<Media::EXIFData> exif;
+	if (srcImg != 0 && srcImg->exif.SetTo(exif) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
-		Media::EXIFData *exif = srcImg->exif->Clone();
+		exif = exif->Clone();
 		exif->Remove(254); //NewSubfileType
 		exif->Remove(256); //Width
 		exif->Remove(257); //Height
@@ -192,7 +193,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 				i += j;
 			}
 		}
-		DEL_CLASS(exif);
+		exif.Delete();
 	}
 	else
 	{

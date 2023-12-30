@@ -8,7 +8,7 @@
 
 //https://en.wikipedia.org/wiki/Extended_Display_Identification_Data
 
-void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const UInt8 *buff, UOSInt ofst)
+void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NotNullPtr<FrameDetail> frame, const UInt8 *buff, UOSInt ofst)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -275,9 +275,9 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return blockId;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail* frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	if (index >= this->blockCnt)
 	{
 		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())
@@ -288,7 +288,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 			{
 				return 0;
 			}
-			NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(index << 7, blockSize));
+			NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, blockSize));
 			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock.GetPtr(), true);
 			return frame;
 		}
@@ -303,7 +303,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 	UTF8Char *sptr;
 	if (this->fd->GetRealData(index << 7, 128, BYTEARR(buff)) != 128)
 		return 0;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));
 	if (index == 0)
 	{
 		frame->AddHex64(0, CSTR("Sync Word"), ReadNUInt64(buff));

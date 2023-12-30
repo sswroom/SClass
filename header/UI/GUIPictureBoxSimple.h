@@ -24,7 +24,7 @@ namespace UI
 		virtual ~GUIPictureBoxSimple();
 
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
-		virtual void SetImage(Media::StaticImage *currImage) = 0;
+		virtual void SetImage(Optional<Media::StaticImage> currImage) = 0;
 		virtual void SetImageDImg(Media::DrawImage *img) = 0;
 
 		virtual Text::CStringNN GetObjectClass() const;

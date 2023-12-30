@@ -212,9 +212,9 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -222,7 +222,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	if (pack->packType == PT_HEADER)
 	{
 		frame->AddText(0, CSTR("Type=File header"));
@@ -348,7 +348,7 @@ Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, IO::FileAnalyse::FrameDetail *frame)
+void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetail> frame)
 {
 	UOSInt ofst = 0;
 	while (dirSize - ofst >= 26)

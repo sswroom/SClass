@@ -298,9 +298,9 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 			else
 			{
 				NotNullPtr<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
-				rTran->Set(defProfile->GetRTranParam());
-				gTran->Set(defProfile->GetGTranParam());
-				bTran->Set(defProfile->GetBTranParam());
+				rTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
+				gTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
+				bTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
 			}
 		}
 		else

@@ -643,13 +643,13 @@ void SSWR::OrganMgr::OrganEnv::FreeCategory(Category *cate)
 	MemFree(cate);
 }
 
-Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseJPGExif(Text::CStringNN fileName)
+Optional<Media::EXIFData> SSWR::OrganMgr::OrganEnv::ParseJPGExif(Text::CStringNN fileName)
 {
 	IO::StmData::FileData fd(fileName, false);
 	return Media::JPEGFile::ParseJPEGExif(fd);
 }
 
-Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseTIFExif(Text::CStringNN fileName)
+Optional<Media::EXIFData> SSWR::OrganMgr::OrganEnv::ParseTIFExif(Text::CStringNN fileName)
 {
 	return 0;
 	//////////////////////////////////

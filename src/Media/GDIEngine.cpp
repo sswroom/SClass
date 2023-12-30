@@ -807,7 +807,7 @@ UOSInt Media::GDIImage::GetImgBpl() const
 	return this->GetDataBpl();
 }
 
-Media::EXIFData *Media::GDIImage::GetEXIF() const
+Optional<Media::EXIFData> Media::GDIImage::GetEXIF() const
 {
 	return this->exif;
 }

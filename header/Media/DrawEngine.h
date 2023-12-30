@@ -100,7 +100,7 @@ namespace Media
 		virtual UInt8 *GetImgBits(OutParam<Bool> revOrder) = 0;
 		virtual void GetImgBitsEnd(Bool modified) = 0;
 		virtual UOSInt GetImgBpl() const = 0;
-		virtual Media::EXIFData *GetEXIF() const = 0;
+		virtual Optional<Media::EXIFData> GetEXIF() const = 0;
 		virtual Media::PixelFormat GetPixelFormat() const = 0;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p) = 0;

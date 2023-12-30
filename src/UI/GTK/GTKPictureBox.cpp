@@ -91,8 +91,8 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 		DEL_CLASS(this->tmpImage);
 		this->tmpImage = 0;
 	}
-	NotNullPtr<Media::Image> img;
-	if (img.Set(this->currImage))
+	NotNullPtr<Media::StaticImage> img;
+	if (this->currImage.SetTo(img))
 	{
 		if (this->allowResize)
 		{
@@ -113,7 +113,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 		}
 		else
 		{
-			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(OSInt)img->info.dispSize.x, (int)(OSInt)img->info.dispSize.y, (int)(OSInt)img->info.storeSize.x << 2, 0, 0);
+			GdkPixbuf *buf = gdk_pixbuf_new_from_data(img->data, GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(OSInt)img->info.dispSize.x, (int)(OSInt)img->info.dispSize.y, (int)(OSInt)img->info.storeSize.x << 2, 0, 0);
 			guchar *pixels = gdk_pixbuf_get_pixels(buf);
 			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
 			if (img->info.atype != Media::AT_ALPHA)

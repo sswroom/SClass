@@ -12,7 +12,7 @@ namespace UI
 		private:
 			GdkPixbuf *pixbuf;
 			Media::StaticImage *tmpImage;
-			Media::StaticImage *currImage;
+			Optional<Media::StaticImage> currImage;
 			Media::DrawImage *prevImageD;
 
 			void UpdatePreview();
@@ -21,7 +21,7 @@ namespace UI
 			virtual ~GTKPictureBoxSimple();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			virtual void SetImage(Media::StaticImage *currImage);
+			virtual void SetImage(Optional<Media::StaticImage> currImage);
 			virtual void SetImageDImg(Media::DrawImage *img);
 		};
 	}

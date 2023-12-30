@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
+void Media::PhotoInfo::ParseXMF(NotNullPtr<Text::XMLDocument> xmf)
 {
 	Text::XMLNode *node;
 	if ((node = xmf->SearchFirstNode(CSTR("//@exif:ExposureTime"))) != 0)
@@ -60,9 +60,11 @@ Double Media::PhotoInfo::ParseFraction(Text::String *s)
 
 Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 {
-	Media::EXIFData *exif;
-	Text::XMLDocument *xmf;
-	Media::ICCProfile *icc;
+	Optional<Media::EXIFData> exif;
+	Optional<Text::XMLDocument> xmf;
+	Optional<Media::ICCProfile> icc;
+	NotNullPtr<Media::EXIFData> nnexif;
+	NotNullPtr<Text::XMLDocument> nnxmf;
 	UInt32 width;
 	UInt32 height;
 	this->make = 0;
@@ -77,36 +79,36 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 	this->lens = 0;
 	this->succ = false;
 
-	if (Media::JPEGFile::ParseJPEGHeaders(fd, &exif, &xmf, &icc, &width, &height) || Parser::FileParser::HEIFParser::ParseHeaders(fd, &exif, &xmf, &icc, &width, &height))
+	if (Media::JPEGFile::ParseJPEGHeaders(fd, exif, xmf, icc, width, height) || Parser::FileParser::HEIFParser::ParseHeaders(fd, exif, xmf, icc, width, height))
 	{	
 		Text::CString ctxt;
 		Data::DateTime dt;
 		this->succ = true;
 
-		if (exif)
+		if (exif.SetTo(nnexif))
 		{
-			ctxt = exif->GetPhotoMake();
+			ctxt = nnexif->GetPhotoMake();
 			if (ctxt.v)
 			{
 				this->make = Text::String::New(ctxt).Ptr();
 			}
-			ctxt = exif->GetPhotoModel();
+			ctxt = nnexif->GetPhotoModel();
 			if (ctxt.v)
 			{
 				this->model = Text::String::New(ctxt).Ptr();
 			}
-			this->fNumber = exif->GetPhotoFNumber();
-			this->expTime = exif->GetPhotoExpTime();
-			this->isoRating = exif->GetPhotoISO();
-			this->focalLength = exif->GetPhotoFocalLength();
+			this->fNumber = nnexif->GetPhotoFNumber();
+			this->expTime = nnexif->GetPhotoExpTime();
+			this->isoRating = nnexif->GetPhotoISO();
+			this->focalLength = nnexif->GetPhotoFocalLength();
 
-			if (exif->GetPhotoDate(&dt))
+			if (nnexif->GetPhotoDate(dt))
 			{
 				NEW_CLASS(this->photoDate, Data::DateTime(dt));
 			}
 
 			Media::EXIFData::EXIFItem *item;
-			if ((item = exif->GetExifItem(34665)) != 0)
+			if ((item = nnexif->GetExifItem(34665)) != 0)
 			{
 				if (item->type == Media::EXIFData::ET_SUBEXIF)
 				{
@@ -122,8 +124,8 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 						{
 							valBuff = (UInt8*)item->dataBuff;
 						}
-						Media::EXIFData *innerExif = exif->ParseMakerNote(valBuff, item->cnt);
-						if (innerExif)
+						NotNullPtr<Media::EXIFData> innerExif;
+						if (nnexif->ParseMakerNote(valBuff, item->cnt).SetTo(innerExif))
 						{
 							if (innerExif->GetPhotoExpTime())
 								this->expTime = innerExif->GetPhotoExpTime();
@@ -138,33 +140,28 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 								this->focalLength = innerExif->GetPhotoFocalLength();
 							if (innerExif->GetPhotoISO())
 								this->isoRating = innerExif->GetPhotoISO();
-							DEL_CLASS(innerExif);
+							innerExif.Delete();
 						}
 					}
 				}
 			}
-			else if ((item = exif->GetExifItem(700)) != 0)
+			else if ((item = nnexif->GetExifItem(700)) != 0)
 			{
-				Text::XMLDocument *doc;
+				Text::XMLDocument doc;
 				Text::EncodingFactory encFact;
-				NEW_CLASS(doc, Text::XMLDocument());
-				if (doc->ParseBuff(&encFact, (const UInt8*)item->dataBuff, item->cnt))
+				if (doc.ParseBuff(&encFact, (const UInt8*)item->dataBuff, item->cnt))
 				{
 					ParseXMF(doc);
 				}
-				DEL_CLASS(doc);
 			}
-			DEL_CLASS(exif);
+			nnexif.Delete();
 		}
-		if (xmf)
+		if (xmf.SetTo(nnxmf))
 		{
-			ParseXMF(xmf);
-			DEL_CLASS(xmf);
+			ParseXMF(nnxmf);
+			nnxmf.Delete();
 		}
-		if (icc)
-		{
-			DEL_CLASS(icc);
-		}
+		icc.Delete();
 		this->width = width;
 		this->height = height;
 	}
@@ -184,7 +181,7 @@ Bool Media::PhotoInfo::HasInfo() const
 	return this->succ;
 }
 
-Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt) const
+Bool Media::PhotoInfo::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
 {
 	NotNullPtr<Data::DateTime> photoDate;
 	if (photoDate.Set(this->photoDate))

@@ -838,9 +838,9 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
@@ -849,7 +849,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 		return 0;
 	}
 	block = this->blockList.GetItem(index);
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(block->ofst, block->blockLength));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(block->ofst, block->blockLength));
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	if (this->isBE)
 	{

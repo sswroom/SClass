@@ -252,7 +252,7 @@ void Media::VectorGraph::GetImgBitsEnd(Bool modified)
 {
 }
 
-Media::EXIFData *Media::VectorGraph::GetEXIF() const
+Optional<Media::EXIFData> Media::VectorGraph::GetEXIF() const
 {
 	return 0;
 }

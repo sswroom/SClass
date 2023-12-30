@@ -149,7 +149,7 @@ void UI::Win::WinPictureBoxSimple::UpdatePreview()
 	}
 
 	NotNullPtr<Media::StaticImage> simg;
-	if (simg.Set(this->currImage))
+	if (this->currImage.SetTo(simg))
 	{
 		this->prevImageD = this->eng->ConvImage(simg);
 	}
@@ -193,7 +193,7 @@ OSInt UI::Win::WinPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Win::WinPictureBoxSimple::SetImage(Media::StaticImage *currImage)
+void UI::Win::WinPictureBoxSimple::SetImage(Optional<Media::StaticImage> currImage)
 {
 	this->currImage = currImage;
 	this->UpdatePreview();

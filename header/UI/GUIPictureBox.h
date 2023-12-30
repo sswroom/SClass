@@ -11,7 +11,7 @@ namespace UI
 	{
 	protected:
 		Media::IImgResizer *resizer;
-		Media::StaticImage *currImage;
+		Optional<Media::StaticImage> currImage;
 		Bool hasBorder;
 		Bool allowResize;
 		Bool noBGColor;
@@ -32,7 +32,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual void OnSizeChanged(Bool updateScn);
-		void SetImage(Media::StaticImage *currImage);
+		void SetImage(Optional<Media::StaticImage> currImage);
 		void SetNoBGColor(Bool noBGColor);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);

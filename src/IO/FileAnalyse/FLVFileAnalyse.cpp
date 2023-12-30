@@ -104,7 +104,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 	}
 }
 
-void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbVal;
@@ -285,7 +285,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		IO::FileAnalyse::SBFrameDetail frame(sb);
-		ParseScriptData(tagData.Ptr(), 11, tag->size, 0, &frame);
+		ParseScriptData(tagData.Ptr(), 11, tag->size, 0, frame);
 	}
 	return true;
 }
@@ -320,16 +320,16 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::CString vName;
 	if (index == 0)
 	{
-		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, this->hdrSize));
+		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, this->hdrSize));
 		this->fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
 		sptr = Text::StrConcatC(sbuff, buff, 3);
 		frame->AddField(0, 3, CSTR("Magic"), CSTRP(sbuff, sptr));
@@ -353,7 +353,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	if (tag == 0)
 		return 0;
 	
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 

@@ -272,14 +272,14 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			continue;
 
 
-		Media::EXIFData *newExif;
-		if (img->exif)
+		NotNullPtr<Media::EXIFData> newExif;
+		if (img->exif.SetTo(newExif))
 		{
-			newExif = img->exif->Clone();
+			newExif = newExif->Clone();
 		}
 		else
 		{
-			NEW_CLASS(newExif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
+			NEW_CLASSNN(newExif, Media::EXIFData(Media::EXIFData::EM_STANDARD));
 		}
 		UInt32 ibuff[4];
 		UInt16 sibuff[4];
@@ -643,7 +643,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		}
 		else
 		{
-			DEL_CLASS(newExif);
+			newExif.Delete();
 			continue;
 		}
 		ibuff[0] = (UInt32)img->info.dispSize.x;
@@ -998,7 +998,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		stm->Write(ifd, l * 12 + 6);
 		lastOfst = ifdOfst + l * 12 + 2;
 
-		DEL_CLASS(newExif);
+		newExif.Delete();
 		MemFree(ifd);
 	}
 	stm->SeekFromBeginning(lastOfst);

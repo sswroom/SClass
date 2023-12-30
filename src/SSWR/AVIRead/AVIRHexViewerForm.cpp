@@ -516,7 +516,7 @@ void SSWR::AVIRead::AVIRHexViewerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRHexViewerForm::SetData(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+void SSWR::AVIRead::AVIRHexViewerForm::SetData(NotNullPtr<IO::StreamData> fd, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
 {
 	if (this->hexView->LoadData(fd->GetPartialData(0, fd->GetDataSize()), fileAnalyse))
 	{

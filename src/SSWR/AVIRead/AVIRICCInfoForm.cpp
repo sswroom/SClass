@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNull
 		else
 		{
 			NotNullPtr<Media::ICCProfile> icc;
-			if (icc.Set(Media::ICCProfile::Parse(buff.WithSize(fileSize))))
+			if (Media::ICCProfile::Parse(buff.WithSize(fileSize)).SetTo(icc))
 			{
 				me->SetICCProfile(icc, files[i]->ToCString());
 				break;
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(void *userObj)
 	if (me->icc)
 	{
 		NotNullPtr<Media::LUT> lut;
-		if (lut.Set(me->icc->CreateRLUT()))
+		if (me->icc->CreateRLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(void *userObj)
 	if (me->icc)
 	{
 		NotNullPtr<Media::LUT> lut;
-		if (lut.Set(me->icc->CreateGLUT()))
+		if (me->icc->CreateGLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(void *userObj)
 	if (me->icc)
 	{
 		NotNullPtr<Media::LUT> lut;
-		if (lut.Set(me->icc->CreateBLUT()))
+		if (me->icc->CreateBLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
 		}

@@ -168,16 +168,16 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
 	
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 

@@ -12,7 +12,7 @@ namespace UI
 			struct ClassData;
 			static Int32 useCnt;
 			ClassData *clsData;
-			Media::StaticImage *currImage;
+			Optional<Media::StaticImage> currImage;
 			Media::DrawImage *prevImageD;
 
 			static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
@@ -25,7 +25,7 @@ namespace UI
 			virtual ~WinPictureBoxSimple();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			virtual void SetImage(Media::StaticImage *currImage);
+			virtual void SetImage(Optional<Media::StaticImage> currImage);
 			virtual void SetImageDImg(Media::DrawImage *img);
 		};
 	}

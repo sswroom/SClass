@@ -22,13 +22,13 @@ namespace IO
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst) = 0;
-			virtual FrameDetail *GetFrameDetail(UOSInt index) = 0;
+			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index) = 0;
 
 			virtual Bool IsError() = 0;
 			virtual Bool IsParsing() = 0;
 			virtual Bool TrimPadding(Text::CStringNN outputFile) = 0;
 
-			static IFileAnalyse *AnalyseFile(NotNullPtr<IO::StreamData> fd);
+			static Optional<IFileAnalyse> AnalyseFile(NotNullPtr<IO::StreamData> fd);
 			static void AddFilters(NotNullPtr<IO::FileSelector> selector);
 		};
 	}

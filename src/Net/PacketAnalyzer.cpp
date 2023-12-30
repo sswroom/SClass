@@ -26,10 +26,10 @@ Bool Net::PacketAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet
 void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
-	PacketDataGetDetail(linkType, packet, packetSize, 0, &frame);
+	PacketDataGetDetail(linkType, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	switch (linkType)
 	{

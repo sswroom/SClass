@@ -157,22 +157,18 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 
 Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CStringNN fileName)
 {
-	IO::FileAnalyse::IFileAnalyse *file;
-	{
-		IO::StmData::FileData fd(fileName, false);
-		file = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
-	}
-	if (file)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> file;
+	IO::StmData::FileData fd(fileName, false);
+	if (IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd).SetTo(file))
 	{
 		SDEL_CLASS(this->file);
-		this->file = file;
+		this->file = file.Ptr();
 		this->txtFile->SetText(fileName);
 		this->lastPackCount = 0;
 		this->lbPackList->ClearItems();
 		this->lbPackItems->ClearItems();
 		return true;
 	}
-	DEL_CLASS(file);
 	return false;
 }
 

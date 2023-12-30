@@ -128,9 +128,9 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return index;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[256];
@@ -142,7 +142,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, BYTEARR(packBuff));
 	frame->AddHex16(0, CSTR("Frame Type"), ReadUInt16(&packBuff[0]));
 	frame->AddUInt(2, 2, CSTR("Free Space"), ReadUInt16(&packBuff[2]));

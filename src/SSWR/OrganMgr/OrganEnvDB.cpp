@@ -764,20 +764,21 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 				}
 				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".JPG")))
 				{
-					Media::EXIFData *exif = ParseJPGExif(CSTRP(sbuff, sptr2));
+					Optional<Media::EXIFData> exif = ParseJPGExif(CSTRP(sbuff, sptr2));
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(CSTRP(sptr, sptr2));
 					imgItem->SetIsCoverPhoto(isCoverPhoto);
 					imgItem->SetFullName(CSTRP(sbuff, sptr2));
-					if (exif)
+					NotNullPtr<Media::EXIFData> nnexif;
+					if (exif.SetTo(nnexif))
 					{
 						Data::DateTime dt;
 						dt.ToLocalTime();
-						if (exif->GetPhotoDate(&dt))
+						if (nnexif->GetPhotoDate(dt))
 						{
 							imgItem->SetPhotoDate(Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()));
 						}
-						DEL_CLASS(exif);
+						nnexif.Delete();
 					}
 					imgItem->SetRotateType(OrganImageItem::RotateType::None);
 					imgItem->SetFileType(OrganImageItem::FileType::JPEG);
@@ -792,19 +793,20 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 				}
 				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".TIF")))
 				{
-					Media::EXIFData *exif = ParseTIFExif(CSTRP(sbuff, sptr2));
+					Optional<Media::EXIFData> exif = ParseTIFExif(CSTRP(sbuff, sptr2));
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(CSTRP(sptr, sptr2));
 					imgItem->SetIsCoverPhoto(isCoverPhoto);
 					imgItem->SetFullName(CSTRP(sbuff, sptr2));
-					if (exif)
+					NotNullPtr<Media::EXIFData> nnexif;
+					if (exif.SetTo(nnexif))
 					{
 						Data::DateTime dt;
-						if (exif->GetPhotoDate(&dt))
+						if (nnexif->GetPhotoDate(dt))
 						{
 							imgItem->SetPhotoDate(Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()));
 						}
-						DEL_CLASS(exif);
+						nnexif.Delete();
 					}
 					imgItem->SetRotateType(OrganImageItem::RotateType::None);
 					imgItem->SetFileType(OrganImageItem::FileType::TIFF);
@@ -1553,10 +1555,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				Media::Image *img = imgList->GetImage(0, 0);
 				if (img)
 				{
-					Media::EXIFData *exif = img->exif;
-					if (exif)
+					NotNullPtr<Media::EXIFData> exif;
+					if (img->exif.SetTo(exif))
 					{
-						exif->GetPhotoDate(&fileTime);
+						exif->GetPhotoDate(fileTime);
 						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 						{

@@ -21,7 +21,7 @@ namespace SSWR
 				Math::RectArea<OSInt> area;
 				NotNullPtr<Text::String> result;
 				Double confidence;
-				Media::StaticImage *resImg;
+				NotNullPtr<Media::StaticImage> resImg;
 			} ResultInfo;
 			
 		private:

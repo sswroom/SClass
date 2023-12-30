@@ -3044,7 +3044,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 							info.ToString(sb);
 							writer.WriteStrC(sb.ToString(), sb.GetLength());
 							writer.WriteStrC(UTF8STRC("<br/>"));
-							if (info.GetPhotoDate(&dt))
+							if (info.GetPhotoDate(dt))
 							{
 								writer.WriteStrC(UTF8STRC("<b>"));
 								writer.WriteStr(LangGetValue(lang, CSTR("PhotoDate")));

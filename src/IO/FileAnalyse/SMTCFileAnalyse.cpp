@@ -159,15 +159,15 @@ UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMTCFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	Text::StringBuilderUTF8 sb;
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (index == 0)
 	{
-		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, 4));
+		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, 4));
 		fd->GetRealData(0, 4, this->packetBuff);
 		frame->AddHexBuff(0, CSTR("File Header"), this->packetBuff.WithSize(4), false);
 		return frame;
@@ -180,7 +180,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMTCFileAnalyse::GetFrameDetail(U
 	Sync::MutexUsage mutUsage(this->dataMut);
 	data = this->dataList.GetItem(index - 1);
 	mutUsage.EndUse();
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(data->ofst, data->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(data->ofst, data->size));
 	fd->GetRealData(data->ofst, (UOSInt)data->size, this->packetBuff);
 	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(this->packetBuff.ReadI64(0), this->packetBuff.ReadU32(8)), Data::DateTimeUtil::GetLocalTzQhr());
 	sptr = ts.ToStringNoZone(sbuff);

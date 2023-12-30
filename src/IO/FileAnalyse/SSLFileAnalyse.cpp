@@ -137,7 +137,7 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	PackInfo *pack;
@@ -245,7 +245,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UO
 		}
 		break;
 	}
-	return frame.Ptr();
+	return frame;
 }
 
 Bool IO::FileAnalyse::SSLFileAnalyse::IsError()

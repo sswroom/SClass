@@ -30,7 +30,7 @@ namespace Media
 
 		Bool SetParsingImage(Media::StaticImage *img);
 		Bool SetOCVFrame(Media::OpenCV::OCVFrame *frame);
-		Text::String *ParseInsideImage(Math::RectArea<UOSInt> area, UOSInt *confidence);
+		Optional<Text::String> ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence);
 		
 		void HandleOCRResult(OCRResultFunc hdlr, void *userObj);
 		Bool ParseAllInImage();

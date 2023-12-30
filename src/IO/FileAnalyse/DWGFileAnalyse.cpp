@@ -195,7 +195,7 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[64];
@@ -205,11 +205,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 		return 0;
 
 	Data::UUID uuid;
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UOSInt nSection;
 	UOSInt ofst;
 	UOSInt i;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	sptr = PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddText(0, CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);

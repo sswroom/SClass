@@ -151,21 +151,22 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			data.size = (size_t)ReadMUInt32(icc);
 			WebPMuxSetChunk(mux, "ICCP", &data, 0);
 		}
-		if (img->exif)
+		NotNullPtr<Media::EXIFData> exif;
+		if (img->exif.SetTo(exif))
 		{
 			UInt64 exifSize;
 			UInt64 endOfst;
 			UInt32 k;
 			UInt32 l;
 			UInt8 *exifBuff;
-			img->exif->GetExifBuffSize(&exifSize, &endOfst);
+			exif->GetExifBuffSize(&exifSize, &endOfst);
 			exifBuff = MemAlloc(UInt8, (UOSInt)exifSize + 8);
 			WriteInt16(&exifBuff[0], ReadInt16((const UInt8*)"II"));
 			WriteInt16(&exifBuff[2], 42);
 			WriteInt32(&exifBuff[4], 8);
 			k = 8;
 			l = (UInt32)endOfst + 8;
-			img->exif->ToExifBuff(exifBuff, &k, &l);
+			exif->ToExifBuff(exifBuff, &k, &l);
 
 			data.bytes = exifBuff;
 			data.size = (size_t)exifSize + 8;

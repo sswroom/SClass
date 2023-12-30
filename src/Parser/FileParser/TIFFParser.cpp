@@ -64,18 +64,18 @@ IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	Data::ByteOrder *bo;
+	NotNullPtr<Data::ByteOrder> bo;
 
 	UInt64 nextOfst;
 	UOSInt i;
 
 	if (*(Int16*)&hdr[0] == *(Int16*)"MM")
 	{
-		NEW_CLASS(bo, Data::ByteOrderMSB());
+		NEW_CLASSNN(bo, Data::ByteOrderMSB());
 	}
 	else if (*(Int16*)&hdr[0] == *(Int16*)"II")
 	{
-		NEW_CLASS(bo, Data::ByteOrderLSB());
+		NEW_CLASSNN(bo, Data::ByteOrderLSB());
 	}
 	else
 	{
@@ -83,7 +83,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 	}
 	Media::ImageList *imgList;
 	Media::StaticImage *img;
-	Media::EXIFData *exif;
+	Optional<Media::EXIFData> exif;
+	NotNullPtr<Media::EXIFData> nnexif;
 	UInt16 fmt = bo->GetUInt16(&hdr[2]);
 	if (fmt == 42)
 	{
@@ -95,7 +96,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 	}
 	else
 	{
-		DEL_CLASS(bo);
+		bo.Delete();
 		return 0;
 	}
 	
@@ -111,10 +112,10 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		{
 			exif = Media::EXIFData::ParseIFD64(fd, nextOfst, bo, &nextOfst, 0);;
 		}
-		if (exif == 0)
+		if (!exif.SetTo(nnexif))
 		{
 			DEL_CLASS(imgList);
-			DEL_CLASS(bo);
+			bo.Delete();
 			return 0;
 		}
 
@@ -122,11 +123,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		Bool processed = false;
 		UOSInt j;
 		UOSInt k;
-		UOSInt nChannels;
 		UInt32 compression = 0;
 		UInt32 imgWidth = 0;
 		UInt32 imgHeight = 0;
 		UInt32 bpp = 0;
+		UOSInt nChannels = 0;
 		UInt32 photometricInterpretation = 0;
 		UInt32 planarConfiguration = 1;
 		UInt32 sampleFormat = 1;
@@ -138,24 +139,24 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		UInt32 storeBPP;
 		UInt32 predictor;
 		UInt32 rowsPerStrip;
-		if ((imgWidth = GetUInt(exif, 0x100)) == 0)
+		if ((imgWidth = GetUInt(nnexif, 0x100)) == 0)
 			valid = false;
-		if ((imgHeight = GetUInt(exif, 0x101)) == 0)
+		if ((imgHeight = GetUInt(nnexif, 0x101)) == 0)
 			valid = false;
-		if ((bpp = GetUIntSum(exif, 0x102, &nChannels)) == 0)
+		if ((bpp = GetUIntSum(nnexif, 0x102, nChannels)) == 0)
 			valid = false;
-		sampleFormat = GetUInt0(exif, 0x153);
+		sampleFormat = GetUInt0(nnexif, 0x153);
 		if (sampleFormat == 0)
 			sampleFormat = 1;
-		predictor = GetUInt(exif, 0x13d);
+		predictor = GetUInt(nnexif, 0x13d);
 		if (predictor == 0)
 			predictor = 1;
-		compression = GetUInt(exif, 0x103);
-		photometricInterpretation = GetUInt(exif, 0x106);
-		planarConfiguration = GetUInt(exif, 284);
-		rowsPerStrip = GetUInt(exif, 278);
+		compression = GetUInt(nnexif, 0x103);
+		photometricInterpretation = GetUInt(nnexif, 0x106);
+		planarConfiguration = GetUInt(nnexif, 284);
+		rowsPerStrip = GetUInt(nnexif, 278);
 		storeBPP = bpp;
-		Media::EXIFData::EXIFItem *item = exif->GetExifItem(0x111);
+		Media::EXIFData::EXIFItem *item = nnexif->GetExifItem(0x111);
 		Media::PixelFormat pf = Media::PixelFormatGetDef(0, bpp);
 		if (item == 0)
 		{
@@ -180,7 +181,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		{
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
-				UInt16 *val = exif->GetExifUInt16(0x111);
+				UInt16 *val = nnexif->GetExifUInt16(0x111);
 				stripOfsts = MemAlloc(UInt32, item->cnt);
 				j = item->cnt;
 				while (j-- > 0)
@@ -191,14 +192,14 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
 				stripOfsts = MemAlloc(UInt32, item->cnt);
-				MemCopyNO(stripOfsts, exif->GetExifUInt32(0x111), item->cnt * sizeof(UInt32));
+				MemCopyNO(stripOfsts, nnexif->GetExifUInt32(0x111), item->cnt * sizeof(UInt32));
 			}
 			else
 			{
 				valid = false;
 			}
 		}
-		item = exif->GetExifItem(0x117);
+		item = nnexif->GetExifItem(0x117);
 		if (item == 0)
 		{
 			valid = false;
@@ -224,7 +225,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			nStrip = item->cnt;
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
-				UInt16 *val = exif->GetExifUInt16(0x111);
+				UInt16 *val = nnexif->GetExifUInt16(0x111);
 				stripLengs = MemAlloc(UInt32, item->cnt);
 				j = item->cnt;
 				while (j-- > 0)
@@ -235,7 +236,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
 				stripLengs = MemAlloc(UInt32, item->cnt);
-				MemCopyNO(stripLengs, exif->GetExifUInt32(0x117), item->cnt * sizeof(UInt32));
+				MemCopyNO(stripLengs, nnexif->GetExifUInt32(0x117), item->cnt * sizeof(UInt32));
 			}
 			else
 			{
@@ -274,20 +275,16 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 					{
 						innerImg = innerImgList->GetImage(i, imgDelay);
 						innerSImg = innerImg->CreateStaticImage();
-						if (exif)
+						if (exif.SetTo(nnexif))
 						{
-							innerSImg->SetEXIFData(exif);
+							innerSImg->SetEXIFData(nnexif).Delete();
 							exif = 0;
 						}
 						innerSImg.Delete();
 						i++;
 					}
 					DEL_CLASS(innerImgList);
-					if (exif)
-					{
-						DEL_CLASS(exif);
-						exif = 0;
-					}
+					exif.Delete();
 					if (stripOfsts)
 					{
 						MemFree(stripOfsts);
@@ -382,7 +379,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 
 		if (!valid)
 		{
-			DEL_CLASS(exif);
+			exif.Delete();
 			if (stripOfsts)
 			{
 				MemFree(stripOfsts);
@@ -393,13 +390,13 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			}
 			if (imgList->GetCount() > 0)
 			{
-				DEL_CLASS(bo);
+				bo.Delete();
 				return imgList;
 			}
 			else
 			{
 				DEL_CLASS(imgList);
-				DEL_CLASS(bo);
+				bo.Delete();
 				return 0;
 			}
 		}
@@ -409,19 +406,18 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		else
 		{
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-			item = exif->GetExifItem(34675);
+			item = nnexif->GetExifItem(34675);
 			if (item)
 			{
-				Media::ICCProfile *icc;
-				icc = Media::ICCProfile::Parse(Data::ByteArrayR((UInt8*)item->dataBuff, item->cnt));
-				if (icc)
+				NotNullPtr<Media::ICCProfile> icc;
+				if (Media::ICCProfile::Parse(Data::ByteArrayR((UInt8*)item->dataBuff, item->cnt)).SetTo(icc))
 				{
 					icc->GetRedTransferParam(color.GetRTranParam());
 					icc->GetGreenTransferParam(color.GetGTranParam());
 					icc->GetBlueTransferParam(color.GetBTranParam());
 					icc->GetColorPrimaries(color.GetPrimaries());
 					color.SetRAWICC((UInt8*)item->dataBuff);
-					DEL_CLASS(icc);
+					icc.Delete();
 				}
 			}
 
@@ -1094,7 +1090,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				UOSInt j;
 				if (photometricInterpretation == 3)
 				{
-					UInt16 *pal = exif->GetExifUInt16(0x140);
+					UInt16 *pal = nnexif->GetExifUInt16(0x140);
 					j = (UOSInt)1 << bpp;
 					i = 0;
 					while (i < j)
@@ -1492,11 +1488,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 
 			img->SetEXIFData(exif);
 			Double dpi;
-			if ((dpi = exif->GetHDPI()) != 0)
+			if ((dpi = nnexif->GetHDPI()) != 0)
 			{
 				img->info.hdpi = dpi;
 			}
-			if ((dpi = exif->GetVDPI()) != 0)
+			if ((dpi = nnexif->GetVDPI()) != 0)
 			{
 				img->info.vdpi = dpi;
 			}
@@ -1524,7 +1520,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		Double maxX;
 		Double maxY;
 		UInt32 srid;
-		if (img->exif->GetGeoBounds(img->info.dispSize, &srid, &minX, &minY, &maxX, &maxY))
+		if (img->exif.SetTo(nnexif) && nnexif->GetGeoBounds(img->info.dispSize, &srid, &minX, &minY, &maxX, &maxY))
 		{
 			Map::VectorLayer *lyr;
 			NotNullPtr<Math::Geometry::VectorImage> vimg;
@@ -1546,7 +1542,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			lyr->AddVector(vimg, (const UTF8Char**)0);
 			DEL_CLASS(simg);
 			
-			DEL_CLASS(bo);
+			bo.Delete();
 			return lyr;
 		}
 
@@ -1615,17 +1611,17 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 					lyr->AddVector(vimg, (const UTF8Char**)0);
 					DEL_CLASS(simg);
 					
-					DEL_CLASS(bo);
+					bo.Delete();
 					return lyr;
 				}
 			}
 		}
 	}
-	DEL_CLASS(bo);
+	bo.Delete();
 	return imgList;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUInt(Media::EXIFData *exif, UInt32 id)
+UInt32 Parser::FileParser::TIFFParser::GetUInt(NotNullPtr<Media::EXIFData> exif, UInt32 id)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
@@ -1639,7 +1635,7 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt(Media::EXIFData *exif, UInt32 id)
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUInt0(Media::EXIFData *exif, UInt32 id)
+UInt32 Parser::FileParser::TIFFParser::GetUInt0(NotNullPtr<Media::EXIFData> exif, UInt32 id)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
@@ -1651,17 +1647,14 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(Media::EXIFData *exif, UInt32 id
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUIntSum(Media::EXIFData *exif, UInt32 id, UOSInt *nChannels)
+UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NotNullPtr<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
 		return 0;
 	UInt32 sum = 0;
 	UOSInt i = item->cnt;
-	if (nChannels)
-	{
-		*nChannels = i;
-	}
+	nChannels.Set(i);
 	if (item->type == Media::EXIFData::ET_UINT16)
 	{
 		UInt16 *val = exif->GetExifUInt16(id);

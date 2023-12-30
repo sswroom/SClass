@@ -24,7 +24,7 @@ Bool Media::OCREngine::SetOCVFrame(Media::OpenCV::OCVFrame *frame)
 	return false;
 }
 
-Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UOSInt *confidence)
+Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence)
 {
 	return 0;
 }

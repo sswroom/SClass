@@ -1320,9 +1320,9 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(No
 	destInfo.color.GetPrimaries()->Set(srcImage->info.color.GetPrimariesRead());
 	if (this->destColor.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destColor.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
-		destInfo.color.GetRTranParam()->Set(this->destColor.GetRTranParam());
-		destInfo.color.GetGTranParam()->Set(this->destColor.GetGTranParam());
-		destInfo.color.GetBTranParam()->Set(this->destColor.GetBTranParam());
+		destInfo.color.GetRTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destColor.GetRTranParam()));
+		destInfo.color.GetGTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destColor.GetGTranParam()));
+		destInfo.color.GetBTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destColor.GetBTranParam()));
 	}
 //	this->srcAlphaType = srcImage->info.atype;
 	NEW_CLASS(img, Media::StaticImage(destInfo));

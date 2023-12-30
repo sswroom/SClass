@@ -42,7 +42,7 @@ UOSInt IO::FileAnalyse::ASN1FileAnalyse::GetFrameIndex(UInt64 ofst)
 		return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ASN1FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ASN1FileAnalyse::GetFrameDetail(UOSInt index)
 {
 	if (index != 0)
 		return 0;
@@ -51,7 +51,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ASN1FileAnalyse::GetFrameDetail(U
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, buff.GetSize()));
 	Net::ASN1Util::PDUAnalyse(frame, buff, 0, buff.GetSize(), this->names);
-	return frame.Ptr();
+	return frame;
 }
 
 Bool IO::FileAnalyse::ASN1FileAnalyse::IsError()

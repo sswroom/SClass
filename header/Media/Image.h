@@ -21,7 +21,7 @@ namespace Media
 
 	public:
 		Media::FrameInfo info;
-		Media::EXIFData *exif;
+		Optional<Media::EXIFData> exif;
 		Bool hasHotSpot;
 		OSInt hotSpotX;
 		OSInt hotSpotY;
@@ -44,8 +44,8 @@ namespace Media
 		OSInt GetHotSpotY() const;
 
 		NotNullPtr<Media::StaticImage> CreateStaticImage() const;
-		Media::StaticImage *CreateSubImage(Math::RectArea<OSInt> area) const;
-		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
+		NotNullPtr<Media::StaticImage> CreateSubImage(Math::RectArea<OSInt> area) const;
+		Optional<Media::EXIFData> SetEXIFData(Optional<Media::EXIFData> exif);
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		Bool IsDispSize(Math::Size2D<UOSInt> dispSize);

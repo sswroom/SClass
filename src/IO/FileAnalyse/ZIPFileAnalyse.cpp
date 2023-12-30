@@ -469,7 +469,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(IO::FileAnalyse::FrameDetail *frame,Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
+void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NotNullPtr<IO::FileAnalyse::FrameDetail> frame,Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
 {
 	if (tagSize < extraStart + extraLen)
 	{
@@ -625,16 +625,16 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
 	
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 

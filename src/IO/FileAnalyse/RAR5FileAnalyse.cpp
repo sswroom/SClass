@@ -44,7 +44,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::ReadVInt(Data::ByteArray buffP
 	return buffPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -52,7 +52,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDet
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -61,7 +61,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDet
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -69,7 +69,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::Frame
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -78,7 +78,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::Frame
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -87,7 +87,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDet
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -540,9 +540,9 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
 	UInt64 iVal;
 	UInt64 headerFlags;
@@ -557,7 +557,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (pack->headerSize + pack->dataSize)));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (pack->headerSize + pack->dataSize)));
 	Data::ByteBuffer packBuff(pack->headerSize);
 	this->fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
 	frame->AddHex32(0, CSTR("Block CRC"), ReadUInt32(&packBuff[0]));

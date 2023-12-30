@@ -33,7 +33,7 @@ namespace IO
 			UOSInt ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
-			static void ParseExtraTag(IO::FileAnalyse::FrameDetail *frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);
+			static void ParseExtraTag(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);
 		public:
 			ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~ZIPFileAnalyse();
@@ -42,7 +42,7 @@ namespace IO
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual FrameDetail *GetFrameDetail(UOSInt index);
+			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

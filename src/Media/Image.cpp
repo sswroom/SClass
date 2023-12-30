@@ -143,10 +143,7 @@ Media::Image::~Image()
 	{
 		MemFree(pal);
 	}
-	if (this->exif)
-	{
-		DEL_CLASS(this->exif);
-	}
+	this->exif.Delete();
 }
 
 void Media::Image::InitGrayPal()
@@ -262,10 +259,11 @@ OSInt Media::Image::GetHotSpotY() const
 NotNullPtr<Media::StaticImage> Media::Image::CreateStaticImage() const
 {
 	NotNullPtr<Media::StaticImage> outImg;
+	NotNullPtr<Media::EXIFData> exif;
 	NEW_CLASSNN(outImg, Media::StaticImage(this->info));
-	if (this->exif)
+	if (this->exif.SetTo(exif))
 	{
-		outImg->exif = this->exif->Clone();
+		outImg->exif = exif->Clone();
 	}
 	this->GetImageData(outImg->data, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
@@ -284,18 +282,19 @@ NotNullPtr<Media::StaticImage> Media::Image::CreateStaticImage() const
 	return outImg;
 }
 
-Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) const
+NotNullPtr<Media::StaticImage> Media::Image::CreateSubImage(Math::RectArea<OSInt> area) const
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(this->info);
 	frameInfo.dispSize = Math::Size2D<UOSInt>((UOSInt)area.GetWidth(), (UOSInt)area.GetHeight());
 	frameInfo.storeSize = frameInfo.dispSize;
 	frameInfo.byteSize = frameInfo.storeSize.CalcArea() * (frameInfo.storeBPP >> 3);
-	Media::StaticImage *outImg;
-	NEW_CLASS(outImg, Media::StaticImage(frameInfo));
-	if (this->exif)
+	NotNullPtr<Media::StaticImage> outImg;
+	NotNullPtr<Media::EXIFData> exif;
+	NEW_CLASSNN(outImg, Media::StaticImage(frameInfo));
+	if (this->exif.SetTo(exif))
 	{
-		outImg->exif = this->exif->Clone();
+		outImg->exif = exif->Clone();
 	}
 	this->GetImageData(outImg->data, area.min.x, area.min.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
@@ -314,9 +313,9 @@ Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) con
 	return outImg;
 }
 
-Media::EXIFData *Media::Image::SetEXIFData(Media::EXIFData *exif)
+Optional<Media::EXIFData> Media::Image::SetEXIFData(Optional<Media::EXIFData> exif)
 {
-	Media::EXIFData *oldExif = this->exif;
+	Optional<Media::EXIFData> oldExif = this->exif;
 	this->exif = exif;
 	return oldExif;
 }
@@ -333,10 +332,11 @@ void Media::Image::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		sb->AppendC(UTF8STRC(")"));
 	}
 
-	if (this->exif)
+	NotNullPtr<Media::EXIFData> exif;
+	if (this->exif.SetTo(exif))
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		this->exif->ToString(sb, CSTR_NULL);
+		exif->ToString(sb, CSTR_NULL);
 	}
 }
 

@@ -190,16 +190,16 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail* frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
 	UTF8Char* sptr;
 	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddHeader(CSTRP(sbuff, sptr));
 

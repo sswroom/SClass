@@ -273,16 +273,16 @@ UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return (UOSInt)(ofst / this->packSize);
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
 		return 0;
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(fileOfst, this->packSize));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(fileOfst, this->packSize));
 	UInt8 buff[192];
 	fd->GetRealData(fileOfst, this->packSize, BYTEARR(buff));
 

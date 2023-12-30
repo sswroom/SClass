@@ -1011,7 +1011,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(NotNullPtr<Media::StaticImage
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<Media::EXIFData> exif;
-	if (exif.Set(srcImg->exif) && this->GetCameraName(sb, exif))
+	if (srcImg->exif.SetTo(exif) && this->GetCameraName(sb, exif))
 	{
 		gammaParam = this->GetCameraGamma(sb.ToCString(), gammaCnt);
 	}
@@ -1047,8 +1047,8 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	Double *gammaParam;
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Media::EXIFData> exif;;
-	if (exif.Set(srcImg->GetEXIF()) && this->GetCameraName(sb, exif))
+	NotNullPtr<Media::EXIFData> exif;
+	if (srcImg->GetEXIF().SetTo(exif) && this->GetCameraName(sb, exif))
 	{
 		gammaParam = this->GetCameraGamma(sb.ToCString(), gammaCnt);
 	}

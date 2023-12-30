@@ -38,7 +38,7 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 		croppedFrame->Normalize();
 		status->me->ocr.SetOCVFrame(croppedFrame);
 		NotNullPtr<Text::String> s;
-		if (s.Set(status->me->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), &confidence)))
+		if (status->me->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), confidence).SetTo(s))
 		{
 			s->RemoveWS();
 			if (s->leng == 0 || s->leng > 10)
@@ -168,8 +168,8 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 		this->ocr.SetOCVFrame(filteredFrame);
 		if (false)//psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::DoubleRow)
 		{
-			NotNullPtr<Text::String> s1 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y >> 1), &confidence));
-			NotNullPtr<Text::String> s2 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispSize.y >> 1, plainImg->info.dispSize.x, (plainImg->info.dispSize.y >> 1) + (plainImg->info.dispSize.y & 1)), &confidence));
+			NotNullPtr<Text::String> s1 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y >> 1), confidence));
+			NotNullPtr<Text::String> s2 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispSize.y >> 1, plainImg->info.dispSize.x, (plainImg->info.dispSize.y >> 1) + (plainImg->info.dispSize.y & 1)), confidence));
 			s1->RemoveWS();
 			s2->RemoveWS();
 			if ((s1->leng + s2->leng) == 0 || (s1->leng + s2->leng) > 10)
@@ -201,7 +201,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 		else
 		{
 			NotNullPtr<Text::String> s;
-			if (s.Set(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), &confidence)))
+			if (this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), confidence).SetTo(s))
 			{
 				s->RemoveWS();
 				if (s->leng == 0 || s->leng > 10)

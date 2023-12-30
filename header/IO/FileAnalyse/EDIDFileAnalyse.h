@@ -13,7 +13,7 @@ namespace IO
 			UOSInt blockCnt;
 			IO::StreamData *fd;
 
-			static void ParseDescriptor(FrameDetail *frame, const UInt8 *buff, UOSInt ofst);
+			static void ParseDescriptor(NotNullPtr<FrameDetail> frame, const UInt8 *buff, UOSInt ofst);
 			static void RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd);
 		public:
 			EDIDFileAnalyse(NotNullPtr<IO::StreamData> fd);
@@ -23,7 +23,7 @@ namespace IO
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual FrameDetail *GetFrameDetail(UOSInt index);
+			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();

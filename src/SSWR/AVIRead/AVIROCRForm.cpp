@@ -71,7 +71,7 @@ void SSWR::AVIRead::AVIROCRForm::ClearResults()
 	{
 		res = this->results.GetItem(i);
 		res->result->Release();
-		DEL_CLASS(res->resImg);
+		res->resImg.Delete();
 		MemFree(res);
 	}
 	this->results.Clear();

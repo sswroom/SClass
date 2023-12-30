@@ -53,14 +53,14 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				Data::ByteOrder *bo = 0;
+				NotNullPtr<Data::ByteOrder> bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
-					NEW_CLASS(bo, Data::ByteOrderLSB());
+					NEW_CLASSNN(bo, Data::ByteOrderLSB());
 				}
 				else if (*(Int16*)&buff[6] == *(Int16*)"MM")
 				{
-					NEW_CLASS(bo, Data::ByteOrderMSB());
+					NEW_CLASSNN(bo, Data::ByteOrderMSB());
 				}
 				else
 				{
@@ -70,21 +70,18 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 				if (bo->GetUInt16(&buff[8]) != 42)
 				{
 					ret = false;
-					DEL_CLASS(bo);
+					bo.Delete();
 					break;
 				}
 				if (bo->GetUInt32(&buff[10]) != 8)
 				{
 					ret = false;
-					DEL_CLASS(bo);
+					bo.Delete();
 					break;
 				}
-				if (img->exif)
-				{
-					DEL_CLASS(img->exif);
-				}
+				img->exif.Delete();
 				img->exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
-				DEL_CLASS(bo);
+				bo.Delete();
 				ofst += j + 4;
 			}
 			else if (*(Int32*)buff == *(Int32*)"FLIR")
@@ -121,11 +118,11 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 			fd->GetRealData(ofst + 4, j, tagBuff);
 			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")))
 			{
-				Media::ICCProfile *icc = Media::ICCProfile::Parse(tagBuff.SubArray(14, j - 14));
-				if (icc)
+				NotNullPtr<Media::ICCProfile> icc;
+				if (Media::ICCProfile::Parse(tagBuff.SubArray(14, j - 14)).SetTo(icc))
 				{
 					icc->SetToColorProfile(img->info.color);
-					DEL_CLASS(icc);
+					icc.Delete();
 				}
 			}
 			ofst += j + 4;
@@ -236,7 +233,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 	return ret;
 }
 
-Media::EXIFData *Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
+Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -262,14 +259,14 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
 			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				Data::ByteOrder *bo;
+				NotNullPtr<Data::ByteOrder> bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
-					NEW_CLASS(bo, Data::ByteOrderLSB());
+					NEW_CLASSNN(bo, Data::ByteOrderLSB());
 				}
 				else if (*(Int16*)&buff[6] == *(Int16*)"MM")
 				{
-					NEW_CLASS(bo, Data::ByteOrderMSB());
+					NEW_CLASSNN(bo, Data::ByteOrderMSB());
 				}
 				else
 				{
@@ -277,17 +274,17 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
 				}
 				if (bo->GetUInt16(&buff[8]) != 42)
 				{
-					DEL_CLASS(bo);
+					bo.Delete();
 					return 0;
 				}
 				if (bo->GetUInt32(&buff[10]) != 8)
 				{
-					DEL_CLASS(bo);
+					bo.Delete();
 					return 0;
 				}
-				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
-				DEL_CLASS(bo);
-				if (exif)
+				Optional<Media::EXIFData> exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
+				bo.Delete();
+				if (!exif.IsNull())
 					return exif;
 				ofst += j + 4;
 			}
@@ -303,7 +300,7 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
 	}
 }
 
-Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<Optional<Media::EXIFData>> exif, OutParam<Optional<Text::XMLDocument>> xmf, OutParam<Optional<Media::ICCProfile>> icc, OutParam<UInt32> width, OutParam<UInt32> height)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -314,16 +311,11 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 		return false;
 
-	if (exif)
-		*exif = 0;
-	if (xmf)
-		*xmf = 0;
-	if (icc)
-		*icc = 0;
-	if (width)
-		*width = 0;
-	if (height)
-		*height = 0;
+	exif.Set(0);
+	xmf.Set(0);
+	icc.Set(0);
+	width.Set(0);
+	height.Set(0);
 
 	ofst = 2;
 	while (ofst < fd->GetDataSize())
@@ -340,14 +332,14 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 			fd->GetRealData(ofst + 4, 30, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				Data::ByteOrder *bo;
+				NotNullPtr<Data::ByteOrder> bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
-					NEW_CLASS(bo, Data::ByteOrderLSB());
+					NEW_CLASSNN(bo, Data::ByteOrderLSB());
 				}
 				else if (*(Int16*)&buff[6] == *(Int16*)"MM")
 				{
-					NEW_CLASS(bo, Data::ByteOrderMSB());
+					NEW_CLASSNN(bo, Data::ByteOrderMSB());
 				}
 				else
 				{
@@ -355,44 +347,32 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 				}
 				if (bo->GetUInt16(&buff[8]) != 42)
 				{
-					DEL_CLASS(bo);
+					bo.Delete();
 					return false;
 				}
 				if (bo->GetUInt32(&buff[10]) != 8)
 				{
-					DEL_CLASS(bo);
+					bo.Delete();
 					return false;
 				}
-				if (exif)
-				{
-					if (*exif)
-					{
-						DEL_CLASS(*exif);
-						*exif = 0;
-					}
-					*exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
-				}	
-				DEL_CLASS(bo);
+				exif.Set(Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10));
+				bo.Delete();
 				ofst += j + 4;
 			}
 			else if (buff[28] == 0 && Text::StrEquals((Char*)buff, "http://ns.adobe.com/xap/1.0/"))
 			{
-				if (xmf)
+				Text::EncodingFactory encFact;
+				Data::ByteBuffer tagBuff(j - 29);
+				fd->GetRealData(ofst + 33, j - 29, tagBuff);
+				NotNullPtr<Text::XMLDocument> doc;
+				NEW_CLASSNN(doc, Text::XMLDocument());
+				if (doc->ParseBuff(&encFact, tagBuff.Ptr(), j - 29))
 				{
-					Text::EncodingFactory encFact;
-					if (*xmf)
-						DEL_CLASS(*xmf);
-					Data::ByteBuffer tagBuff(j - 29);
-					fd->GetRealData(ofst + 33, j - 29, tagBuff);
-					NEW_CLASS(*xmf, Text::XMLDocument());
-                    if ((*xmf)->ParseBuff(&encFact, tagBuff.Ptr(), j - 29))
-					{
-					}
-					else
-					{
-						DEL_CLASS(*xmf);
-						*xmf = 0;
-					}
+					xmf.Set(doc);
+				}
+				else
+				{
+					doc.Delete();
 				}
 				ofst += j + 4;
 			}
@@ -407,17 +387,10 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 			fd->GetRealData(ofst + 4, j, tagBuff);
 			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")) == 0)
 			{
-				if (icc)
+				NotNullPtr<Media::ICCProfile> newIcc;
+				if (Media::ICCProfile::Parse(Data::ByteArrayR(&tagBuff[14], j - 14)).SetTo(newIcc))
 				{
-					Media::ICCProfile *newIcc = Media::ICCProfile::Parse(Data::ByteArrayR(&tagBuff[14], j - 14));
-					if (newIcc)
-					{
-						if (*icc)
-						{
-							DEL_CLASS(*icc);
-						}
-						*icc = newIcc;
-					}
+					icc.Set(newIcc);
 				}
 			}
 			ofst += j + 4;
@@ -446,10 +419,8 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 		case 0xc2:
 		case 0xc3:
 			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
-			if (height)
-				*height = ReadMUInt16(&buff[1]);
-			if (width)
-				*width = ReadMUInt16(&buff[3]);
+			height.Set(ReadMUInt16(&buff[1]));
+			width.Set(ReadMUInt16(&buff[3]));
 			ofst += j + 4;
 			return true;
 		default:
@@ -461,7 +432,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, Media::EXI
 
 void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
 {
-	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	if (oriImg != 0 && (!oriImg->exif.IsNull() || oriImg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -494,10 +465,11 @@ void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jp
 					stm->Write(iccHdr, 18);
 					stm->Write(iccBuff, iccLeng);
 				}
-				if (oriImg->exif)
+				NotNullPtr<Media::EXIFData> exif;
+				if (oriImg->exif.SetTo(exif))
 				{
 					/////////////////////////////////////
-					Media::EXIFData *exif = oriImg->exif->Clone();
+					exif = exif->Clone();
 					exif->Remove(254); //NewSubfileType
 					exif->Remove(256); //Width
 					exif->Remove(257); //Height
@@ -534,7 +506,7 @@ void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jp
 					exif->ToExifBuff(&exifBuff[10], &k, &l);
 					stm->Write(exifBuff, exifSize + 18);
 					MemFree(exifBuff);
-					DEL_CLASS(exif);
+					exif.Delete();
 				}
 
 				stm->Write(&jpgBuff[i], buffSize - i);

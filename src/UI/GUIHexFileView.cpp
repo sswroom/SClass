@@ -31,8 +31,8 @@ UI::GUIHexFileView::~GUIHexFileView()
 {
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
-	SDEL_CLASS(this->analyse);
-	SDEL_CLASS(this->frame);
+	this->analyse.Delete();
+	this->frame.Delete();
 }
 
 void UI::GUIHexFileView::EventLineUp()
@@ -203,10 +203,11 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		UOSInt textSkip;
 		UInt64 drawOfst;
 		const IO::FileAnalyse::FrameDetail::FieldInfo *fieldInfo = 0;
-		if (this->frame)
+		NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+		if (this->frame.SetTo(frame))
 		{
 			Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
-			this->frame->GetFieldInfos(this->currOfst, fieldList);
+			frame->GetFieldInfos(this->currOfst, fieldList);
 			if (fieldList.GetCount() > 0)
 			{
 				fieldInfo = fieldList.GetItem(0);
@@ -263,9 +264,9 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 			while (j < k)
 			{
 				drawOfst = currOfst + j;
-				if (this->frame && (drawOfst >= this->frame->GetOffset()) && (drawOfst < this->frame->GetOffset() + this->frame->GetSize()))
+				if (this->frame.SetTo(frame) && (drawOfst >= frame->GetOffset()) && (drawOfst < frame->GetOffset() + frame->GetSize()))
 				{
-					if (j + 1 == k || (drawOfst + 1 == this->frame->GetOffset() + this->frame->GetSize()))
+					if (j + 1 == k || (drawOfst + 1 == frame->GetOffset() + frame->GetSize()))
 					{
 						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, frameBrush);
 					}
@@ -273,9 +274,9 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 					{
 						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight * 1.5, this->pageLineHeight), 0, frameBrush);
 					}
-					if (fieldInfo && drawOfst >= this->frame->GetOffset() + fieldInfo->ofst && drawOfst < this->frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
+					if (fieldInfo && drawOfst >= frame->GetOffset() + fieldInfo->ofst && drawOfst < frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
 					{
-						if (j + 1 == k || drawOfst + 1 == this->frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
+						if (j + 1 == k || drawOfst + 1 == frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
 						{
 							dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, fieldBrush);
 						}
@@ -400,10 +401,10 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 			DEL_CLASS(fs);
 			return false;
 		}
-		SDEL_CLASS(this->analyse);
+		this->analyse.Delete();
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
-		SDEL_CLASS(this->frame);
+		this->frame.Delete();
 		this->fs = fs;
 		this->fileSize = 0;
 		this->currOfst = 0;
@@ -417,10 +418,10 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 			fd.Delete();
 			return false;
 		}
-		SDEL_CLASS(this->analyse);
+		this->analyse.Delete();
 		SDEL_CLASS(this->fs);
 		SDEL_CLASS(this->fd);
-		SDEL_CLASS(this->frame);
+		this->frame.Delete();
 		this->fd = fd.Ptr();
 		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
 		this->fileSize = this->fd->GetDataSize();
@@ -432,16 +433,17 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 	return true;
 }
 
-Bool UI::GUIHexFileView::LoadData(NotNullPtr<IO::StreamData> data, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+Bool UI::GUIHexFileView::LoadData(NotNullPtr<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
 {
-	SDEL_CLASS(this->analyse);
+	this->analyse.Delete();
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
-	SDEL_CLASS(this->frame);
+	this->frame.Delete();
 	this->fd = data.Ptr();
-	if (fileAnalyse)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> nnfileAnalyse;
+	if (fileAnalyse.SetTo(nnfileAnalyse))
 	{
-		this->analyse = fileAnalyse;
+		this->analyse = nnfileAnalyse;
 	}
 	else
 	{
@@ -508,15 +510,17 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	{
 		return;
 	}
-	if (this->analyse)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	if (this->analyse.SetTo(analyse))
 	{
-		if (this->frame == 0 || ofst < this->frame->GetOffset() || ofst >= this->frame->GetOffset() + this->frame->GetSize())
+		if (!this->frame.SetTo(frame) == 0 || ofst < frame->GetOffset() || ofst >= frame->GetOffset() + frame->GetSize())
 		{
-			SDEL_CLASS(this->frame);
-			UOSInt i = this->analyse->GetFrameIndex(ofst);
+			this->frame.Delete();
+			UOSInt i = analyse->GetFrameIndex(ofst);
 			if (i != INVALID_INDEX)
 			{
-				this->frame = this->analyse->GetFrameDetail(i);
+				this->frame = analyse->GetFrameDetail(i);
 			}
 		}
 	}
@@ -575,32 +579,36 @@ void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)
 
 Text::CString UI::GUIHexFileView::GetAnalyzerName()
 {
-	if (this->analyse)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	if (this->analyse.SetTo(analyse))
 	{
-		return this->analyse->GetFormatName();
+		return analyse->GetFormatName();
 	}
 	return CSTR_NULL;
 }
 
 Bool UI::GUIHexFileView::GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	if (this->analyse == 0)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	if (!this->analyse.SetTo(analyse))
 	{
 		return false;
 	}
-	UOSInt index = this->analyse->GetFrameIndex(this->currOfst);
+	UOSInt index = analyse->GetFrameIndex(this->currOfst);
 	if (index == INVALID_INDEX)
 	{
 		return false;
 	}
-	return this->analyse->GetFrameName(index, sb);
+	return analyse->GetFrameName(index, sb);
 }
 
 UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> fieldList)
 {
-	if (this->frame)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	if (this->frame.SetTo(frame) && this->analyse.SetTo(analyse))
 	{
-		UOSInt i = this->frame->GetFieldInfos(this->currOfst, fieldList);
+		UOSInt i = frame->GetFieldInfos(this->currOfst, fieldList);
 		if (i > 0)
 		{
 			const IO::FileAnalyse::FrameDetail::FieldInfo *field;
@@ -611,15 +619,18 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::Fi
 				field = fieldList->GetItem(j);
 				if (field->fieldType == IO::FileAnalyse::FrameDetail::FT_SUBFRAME)
 				{
-					j = this->analyse->GetFrameIndex(this->currOfst);
+					j = analyse->GetFrameIndex(this->currOfst);
 					if (j == INVALID_INDEX)
 					{
 						return i;
 					}
-					DEL_CLASS(this->frame);
-					this->frame = this->analyse->GetFrameDetail(j);
+					this->frame.Delete();
+					this->frame = analyse->GetFrameDetail(j);
 					fieldList->RemoveRange(k - i, i);
-					return this->frame->GetFieldInfos(this->currOfst, fieldList);
+					if (this->frame.SetTo(frame))
+						return frame->GetFieldInfos(this->currOfst, fieldList);
+					else
+						return i;
 				}
 				j++;
 			}
@@ -631,29 +642,31 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::Fi
 
 UOSInt UI::GUIHexFileView::GetAreaInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> areaList)
 {
-	if (this->frame)
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	if (this->frame.SetTo(frame))
 	{
-		return this->frame->GetAreaInfos(this->currOfst, areaList);
+		return frame->GetAreaInfos(this->currOfst, areaList);
 	}
 	return 0;
 }
 
 Bool UI::GUIHexFileView::GoToNextUnkField()
 {
-	if (this->analyse == 0)
+	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	if (!this->analyse.SetTo(analyse))
 	{
 		return false;
 	}
 	UInt64 currOfst = this->currOfst;
-	UOSInt index = this->analyse->GetFrameIndex(currOfst);
+	UOSInt index = analyse->GetFrameIndex(currOfst);
 	if (index == INVALID_INDEX)
 	{
 		return true;
 	}
-	IO::FileAnalyse::FrameDetail *frame = this->analyse->GetFrameDetail(index);
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
 	const IO::FileAnalyse::FrameDetail::FieldInfo *field;
-	if (frame == 0)
+	if (!analyse->GetFrameDetail(index).SetTo(frame))
 	{
 		return true;
 	}
@@ -661,15 +674,14 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 	{
 		if (currOfst >= frame->GetOffset() + frame->GetSize())
 		{
-			DEL_CLASS(frame);
-			index = this->analyse->GetFrameIndex(currOfst);
+			frame.Delete();
+			index = analyse->GetFrameIndex(currOfst);
 			if (index == INVALID_INDEX)
 			{
 				this->GoToOffset(currOfst);
 				return true;
 			}
-			frame = this->analyse->GetFrameDetail(index);
-			if (frame == 0)
+			if (!analyse->GetFrameDetail(index).SetTo(frame))
 			{
 				this->GoToOffset(currOfst);
 				return true;
@@ -677,7 +689,7 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 			if (currOfst < frame->GetOffset() || currOfst >= frame->GetOffset() + frame->GetSize())
 			{
 				this->GoToOffset(currOfst);
-				DEL_CLASS(frame);
+				frame.Delete();
 				return true;
 			}
 		}
@@ -685,12 +697,12 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 		if (frame->GetFieldInfos(currOfst, fieldList) == 0)
 		{
 			this->GoToOffset(currOfst);
-			DEL_CLASS(frame);
+			frame.Delete();
 			return true;
 		}
 		field = fieldList.GetItem(0);
 		currOfst = frame->GetOffset() + field->ofst + field->size;
 	}
-	DEL_CLASS(frame);
+	frame.Delete();
 	return false;
 }

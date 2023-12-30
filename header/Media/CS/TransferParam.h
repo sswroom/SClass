@@ -56,7 +56,7 @@ namespace Media
 
 			void Set(TransferType tranType, Double gamma);
 			void Set(TransferType tranType, Double *params, UOSInt paramCnt);
-			void Set(Media::LUT *lut);
+			void Set(NotNullPtr<Media::LUT> lut);
 			void Set(NotNullPtr<const TransferParam> tran);
 			TransferType GetTranType() const { return this->tranType; }
 			Double GetGamma() const { return this->gamma; }

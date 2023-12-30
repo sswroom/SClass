@@ -146,7 +146,7 @@ UOSInt IO::FileAnalyse::TXTFileAnalyse::GetFrameIndex(UInt64 ofst)
 		return (UOSInt)i;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineOfsts.GetCount();
@@ -163,8 +163,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UO
 		size = (UOSInt)(this->lineOfsts.GetItem(index + 1) - lineOfst);
 	}
 	mutUsage.EndUse();
-	IO::FileAnalyse::FrameDetail *frame;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(lineOfst, size));
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(lineOfst, size));
 	UInt8 buff[4096];
 	if (size <= sizeof(buff))
 	{

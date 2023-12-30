@@ -619,12 +619,11 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fil
 	UInt64 fileSize = fs.GetLength();
 	if (fileSize > 0 && fileSize < 1048576)
 	{
-		Media::ICCProfile *profile;
+		NotNullPtr<Media::ICCProfile> profile;
 		Data::ByteBuffer fileBuff((UOSInt)fileSize);
 		if (fs.Read(fileBuff) == fileSize)
 		{
-			profile = Media::ICCProfile::Parse(fileBuff);
-			if (profile)
+			if (Media::ICCProfile::Parse(fileBuff).SetTo(profile))
 			{
 				Media::ColorProfile cp;
 				if (profile->GetColorPrimaries(cp.GetPrimaries()) && profile->GetRedTransferParam(cp.GetRTranParam()) && profile->GetGreenTransferParam(cp.GetGTranParam()) && profile->GetBlueTransferParam(cp.GetBTranParam()))
@@ -633,7 +632,7 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fil
 					this->rgb.monProfile.Set(cp);
 					this->rgb.monProfile.SetRAWICC(fileBuff.GetPtr());
 				}
-				DEL_CLASS(profile);
+				profile.Delete();
 			}
 		}
 	}

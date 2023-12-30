@@ -44,9 +44,9 @@ void Media::RGBLUTGen::SetSrcTrans(NotNullPtr<Media::CS::TransferParam> rTran, N
 		else
 		{
 			NotNullPtr<Media::ColorProfile> defProfile = this->colorSess->GetDefVProfile();
-			rTran->Set(defProfile->GetRTranParam());
-			gTran->Set(defProfile->GetGTranParam());
-			bTran->Set(defProfile->GetBTranParam());
+			rTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
+			gTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
+			bTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
 		}
 	}
 	else if (tranType == Media::CS::TRANT_PUNKNOWN)
@@ -60,9 +60,9 @@ void Media::RGBLUTGen::SetSrcTrans(NotNullPtr<Media::CS::TransferParam> rTran, N
 		else
 		{
 			NotNullPtr<Media::ColorProfile> defProfile = this->colorSess->GetDefPProfile();
-			rTran->Set(defProfile->GetRTranParam());
-			gTran->Set(defProfile->GetGTranParam());
-			bTran->Set(defProfile->GetBTranParam());
+			rTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
+			gTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
+			bTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
 		}
 	}
 	else
@@ -102,9 +102,9 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NotNullPtr<Media::CS::Tra
 		else
 		{
 			NotNullPtr<Media::ColorProfile> defProfile = this->colorSess->GetDefVProfile();
-			rTran->Set(defProfile->GetRTranParam());
-			gTran->Set(defProfile->GetGTranParam());
-			bTran->Set(defProfile->GetBTranParam());
+			rTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
+			gTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
+			bTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
 		}
 	}
 	else if (tranType == Media::CS::TRANT_PUNKNOWN)
@@ -118,9 +118,9 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NotNullPtr<Media::CS::Tra
 		else
 		{
 			NotNullPtr<Media::ColorProfile> defProfile = this->colorSess->GetDefPProfile();
-			rTran->Set(defProfile->GetRTranParam());
-			gTran->Set(defProfile->GetGTranParam());
-			bTran->Set(defProfile->GetBTranParam());
+			rTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
+			gTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
+			bTran->Set(NotNullPtr<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
 		}
 	}
 	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)

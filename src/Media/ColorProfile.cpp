@@ -826,13 +826,13 @@ void Media::ColorProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 
 	if (this->rawICC)
 	{
-		Media::ICCProfile *icc = Media::ICCProfile::Parse(Data::ByteArrayR(rawICC, ReadMUInt32(this->rawICC)));
-		if (icc)
+		NotNullPtr<Media::ICCProfile> icc;
+		if (Media::ICCProfile::Parse(Data::ByteArrayR(rawICC, ReadMUInt32(this->rawICC))).SetTo(icc))
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("ICC Profile:\r\n"));
 			icc->ToString(sb);
-			DEL_CLASS(icc);
+			icc.Delete();
 		}
 	}
 }

@@ -19,17 +19,18 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 		DEL_CLASS(this->tmpImage);
 		this->tmpImage = 0;
 	}
-	if (this->currImage)
+	NotNullPtr<Media::StaticImage> simg;
+	if (this->currImage.SetTo(simg))
 	{
 		GdkPixbuf *buf;
-		this->tmpImage = (Media::StaticImage*)this->currImage->Clone();
+		this->tmpImage = (Media::StaticImage*)simg->Clone();
 		this->tmpImage->To32bpp();
 		ImageUtil_SwapRGB(this->tmpImage->data, this->tmpImage->info.storeSize.x * this->tmpImage->info.storeSize.y, this->tmpImage->info.storeBPP);
 		if (this->tmpImage->info.atype == Media::AT_ALPHA)
 		{
 			buf = gdk_pixbuf_new_from_data(this->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
-		else if (this->currImage->info.atype == Media::AT_PREMUL_ALPHA)
+		else if (simg->info.atype == Media::AT_PREMUL_ALPHA)
 		{
 			buf = gdk_pixbuf_new_from_data(this->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
@@ -85,7 +86,7 @@ OSInt UI::GTK::GTKPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GTK::GTKPictureBoxSimple::SetImage(Media::StaticImage *currImage)
+void UI::GTK::GTKPictureBoxSimple::SetImage(Optional<Media::StaticImage> currImage)
 {
 	this->currImage = currImage;
 	this->UpdatePreview();

@@ -246,10 +246,10 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	Text::StringBuilderUTF8 sb;
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (index == 0)
@@ -260,7 +260,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 		UInt32 sigfigs;
 		UInt32 snaplen;
 		UInt32 network;
-		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, 24));
+		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, 24));
 		frame->AddHeader(CSTR("PCAP Header"));
 		fd->GetRealData(0, 24, this->packetBuff);
 		if (this->isBE)
@@ -303,7 +303,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(ofst, size));
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
 	frame->AddHeader(CSTRP(sbuff, sptr));

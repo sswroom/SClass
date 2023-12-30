@@ -338,12 +338,11 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr());
 			if (error.code == heif_error_Ok)
 			{
-				Media::ICCProfile *icc = Media::ICCProfile::Parse(buff);
-				if (icc)
+				NotNullPtr<Media::ICCProfile> icc;
+				if (Media::ICCProfile::Parse(buff).SetTo(icc))
 				{
 					icc->SetToColorProfile(simg->info.color);
-					simg->info.color.SetRAWICC(buff.Ptr());
-					DEL_CLASS(icc);
+					icc.Delete();
 				}
 			}
 			break;
@@ -372,15 +371,14 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
 				if (error.code == heif_error_Ok)
 				{
-					Media::EXIFData *exif = Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize);
-					if (exif)
+					NotNullPtr<Media::EXIFData> exif;
+					if (Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize).SetTo(exif))
 					{
 						if (removeRotate)
 						{
 							exif->SetRotateType(Media::RotateType::None);
 						}
-						exif = simg->SetEXIFData(exif);
-						SDEL_CLASS(exif);
+						simg->SetEXIFData(exif).Delete();
 					}
 				}
 				MemFree(exifData);
@@ -463,7 +461,7 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NotNullPtr<IO::St
 	return imgList;
 }
 
-Bool Parser::FileParser::HEIFParser::ParseHeaders(NotNullPtr<IO::StreamData> fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height)
+Bool Parser::FileParser::HEIFParser::ParseHeaders(NotNullPtr<IO::StreamData> fd, OutParam<Optional<Media::EXIFData>> exif, OutParam<Optional<Text::XMLDocument>> xmf, OutParam<Optional<Media::ICCProfile>> icc, OutParam<UInt32> width, OutParam<UInt32> height)
 {
 	UInt8 hdr[12];
 	if (fd->GetRealData(0, 12, BYTEARR(hdr)) != 12)
@@ -493,11 +491,11 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NotNullPtr<IO::StreamData> fd,
 		if (nImages == 1)
 		{
 			heif_context_get_primary_image_handle(ctx, &imgHdlr);
-			*xmf = 0;
-			*icc = 0;
-			*exif = 0;
-			*width = (UInt32)heif_image_handle_get_ispe_width(imgHdlr);
-			*height = (UInt32)heif_image_handle_get_ispe_height(imgHdlr);
+			xmf.Set(0);
+			icc.Set(0);
+			exif.Set(0);
+			width.Set((UInt32)heif_image_handle_get_ispe_width(imgHdlr));
+			height.Set((UInt32)heif_image_handle_get_ispe_height(imgHdlr));
 
 			heif_color_profile_type cpType = heif_image_handle_get_color_profile_type(imgHdlr);
 			switch (cpType)
@@ -512,7 +510,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NotNullPtr<IO::StreamData> fd,
 				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr());
 				if (error.code == heif_error_Ok)
 				{
-					*icc = Media::ICCProfile::Parse(buff);
+					icc.Set(Media::ICCProfile::Parse(buff));
 				}
 				break;
 			}
@@ -536,7 +534,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NotNullPtr<IO::StreamData> fd,
 						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
 						if (error.code == heif_error_Ok)
 						{
-							*exif = Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize);
+							exif.Set(Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize));
 						}
 						MemFree(exifData);
 					}

@@ -149,8 +149,8 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 		Data::ByteBuffer buff((UOSInt)len);
 		if (fs.Read(buff) == len)
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff);
-			if (icc)
+			NotNullPtr<Media::ICCProfile> icc;
+			if (Media::ICCProfile::Parse(buff).SetTo(icc))
 			{
 				Media::CS::TransferParam param;
 				if (icc->GetRedTransferParam(param))
@@ -164,7 +164,7 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 					this->player->GetVideoRenderer()->SetSrcPrimaries(primaries);
 					changed = true;
 				}
-				DEL_CLASS(icc);
+				icc.Delete();
 				succ = true;
 			}
 		}

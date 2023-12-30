@@ -553,7 +553,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 		if (iccBuff)
 		{
 			NotNullPtr<Media::ICCProfile> icc;
-			if (icc.Set(Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff)))))
+			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff))).SetTo(icc))
 			{
 				SSWR::AVIRead::AVIRICCInfoForm *frm;
 				NEW_CLASS(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));

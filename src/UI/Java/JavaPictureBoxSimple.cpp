@@ -19,7 +19,7 @@ OSInt UI::Java::JavaPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Java::JavaPictureBoxSimple::SetImage(Media::StaticImage *currImage)
+void UI::Java::JavaPictureBoxSimple::SetImage(Optional<Media::StaticImage> currImage)
 {
 }
 

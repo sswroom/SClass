@@ -10,7 +10,7 @@ namespace Net
 	public:
 		static Bool PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb);
-		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
+		static void PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame);
 	};
 }
 #endif

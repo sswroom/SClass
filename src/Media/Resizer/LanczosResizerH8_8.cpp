@@ -1175,17 +1175,18 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NotN
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(destInfo));
-	if (srcImage->exif)
+	NotNullPtr<Media::EXIFData> exif;
+	if (srcImage->exif.SetTo(exif))
 	{
-		img->exif = srcImage->exif->Clone();
+		img->exif = exif->Clone();
 	}
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data, (OSInt)img->GetDataBpl(), img->info.dispSize.x, img->info.dispSize.y);
-	if (img->exif)
+	if (img->exif.SetTo(exif))
 	{
-		img->exif->SetWidth((UInt32)img->info.dispSize.x);
-		img->exif->SetHeight((UInt32)img->info.dispSize.y);
+		exif->SetWidth((UInt32)img->info.dispSize.x);
+		exif->SetHeight((UInt32)img->info.dispSize.y);
 	}
 	return img;
 }

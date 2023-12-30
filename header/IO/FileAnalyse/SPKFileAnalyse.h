@@ -46,13 +46,13 @@ namespace IO
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
-			virtual FrameDetail *GetFrameDetail(UOSInt index);
+			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, IO::FileAnalyse::FrameDetail *frame);
+			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetail> frame);
 		};
 	}
 }

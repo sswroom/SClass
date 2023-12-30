@@ -107,22 +107,22 @@ Bool Media::OCREngine::SetOCVFrame(Media::OpenCV::OCVFrame *frame)
 	return true;
 }
 
-Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UOSInt *confidence)
+Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence)
 {
 	if (this->clsData->currImg == 0)
 	{
 		return 0;
 	}
-	Text::String *s = 0;
+	Optional<Text::String> s = 0;
 	this->clsData->api.SetRectangle((int)area.min.x, (int)area.min.y, (int)area.GetWidth(), (int)area.GetHeight());
 	char *resultText = this->clsData->api.GetUTF8Text();
 	if (resultText)
 	{
-		if (confidence)
+		if (confidence.IsNotNull())
 		{
-			*confidence = (UOSInt)this->clsData->api.MeanTextConf();
+			confidence.SetNoCheck((UOSInt)this->clsData->api.MeanTextConf());
 		}
-		s = Text::String::NewNotNullSlow((const UTF8Char*)resultText).Ptr();
+		s = Text::String::NewNotNullSlow((const UTF8Char*)resultText);
 		delete [] resultText;
 	}
 	return s;

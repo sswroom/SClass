@@ -400,7 +400,7 @@ UOSInt Media::GTKDrawImage::GetImgBpl() const
 	return (this->info.storeSize.x * this->info.storeBPP) >> 3;
 }
 
-Media::EXIFData *Media::GTKDrawImage::GetEXIF() const
+Optional<Media::EXIFData> Media::GTKDrawImage::GetEXIF() const
 {
 	return this->exif;
 }

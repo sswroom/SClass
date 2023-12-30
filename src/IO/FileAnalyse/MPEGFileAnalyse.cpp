@@ -757,9 +757,9 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -767,7 +767,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 
 	Data::ByteBuffer packBuff(pack->packSize);
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);

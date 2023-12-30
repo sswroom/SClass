@@ -1143,7 +1143,7 @@ IO::DeviceDB::VendorInfo Net::PacketAnalyzerBluetooth::vendorList[] = {
 	{0xFFFF, CSTR("SPECIAL USE/DEFAULT")},
 };
 
-void Net::PacketAnalyzerBluetooth::AddDirection(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 dir)
+void Net::PacketAnalyzerBluetooth::AddDirection(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt32 dir)
 {
 	switch (dir)
 	{
@@ -1165,22 +1165,22 @@ void Net::PacketAnalyzerBluetooth::AddDirection(IO::FileAnalyse::FrameDetailHand
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::AddHCIPacketType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 packetType)
+void Net::PacketAnalyzerBluetooth::AddHCIPacketType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 packetType)
 {
 	frame->AddHex8Name(frameOfst, CSTR("HCI Packet Type"), packetType, HCIPacketTypeGetName(packetType));
 }
 
-void Net::PacketAnalyzerBluetooth::AddParamLen(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 len)
+void Net::PacketAnalyzerBluetooth::AddParamLen(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 len)
 {
 	frame->AddUInt(frameOfst, 1, CSTR("Parameter Total Length"), len);
 }
 
-void Net::PacketAnalyzerBluetooth::AddCmdOpcode(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 cmd)
+void Net::PacketAnalyzerBluetooth::AddCmdOpcode(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 cmd)
 {
 	frame->AddHex16Name(frameOfst, CSTR("Command Opcode"), cmd, CmdGetName(cmd));
 }
 
-void Net::PacketAnalyzerBluetooth::AddBDAddr(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CStringNN name, const UInt8 *mac, Bool randomAddr)
+void Net::PacketAnalyzerBluetooth::AddBDAddr(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, const UInt8 *mac, Bool randomAddr)
 {
 	UInt8 macBuff[6];
 	macBuff[0] = mac[5];
@@ -1192,7 +1192,7 @@ void Net::PacketAnalyzerBluetooth::AddBDAddr(IO::FileAnalyse::FrameDetailHandler
 	frame->AddMACAddr(frameOfst, name, macBuff, !randomAddr);
 }
 
-void Net::PacketAnalyzerBluetooth::AddScanType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 scanType)
+void Net::PacketAnalyzerBluetooth::AddScanType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 scanType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (scanType)
@@ -1204,7 +1204,7 @@ void Net::PacketAnalyzerBluetooth::AddScanType(IO::FileAnalyse::FrameDetailHandl
 	frame->AddHex8Name(frameOfst, CSTR("Scan Type"), scanType, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddScanFilterPolicy(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 scanType)
+void Net::PacketAnalyzerBluetooth::AddScanFilterPolicy(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 scanType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (scanType)
@@ -1216,7 +1216,7 @@ void Net::PacketAnalyzerBluetooth::AddScanFilterPolicy(IO::FileAnalyse::FrameDet
 	frame->AddHex8Name(frameOfst, CSTR("Scan Filter Policy"), scanType, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddScanInterval(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 scanInt)
+void Net::PacketAnalyzerBluetooth::AddScanInterval(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 scanInt)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU16(scanInt);
@@ -1226,7 +1226,7 @@ void Net::PacketAnalyzerBluetooth::AddScanInterval(IO::FileAnalyse::FrameDetailH
 	frame->AddField(frameOfst, 2, CSTR("Scan Interval"), sb.ToCString());
 }
 
-void Net::PacketAnalyzerBluetooth::AddScanWindow(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 scanWind)
+void Net::PacketAnalyzerBluetooth::AddScanWindow(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 scanWind)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU16(scanWind);
@@ -1236,7 +1236,7 @@ void Net::PacketAnalyzerBluetooth::AddScanWindow(IO::FileAnalyse::FrameDetailHan
 	frame->AddField(frameOfst, 2, CSTR("Scan Window"), sb.ToCString());
 }
 
-void Net::PacketAnalyzerBluetooth::AddAddrType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CStringNN name, UInt8 addrType)
+void Net::PacketAnalyzerBluetooth::AddAddrType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, UInt8 addrType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (addrType)
@@ -1251,17 +1251,17 @@ void Net::PacketAnalyzerBluetooth::AddAddrType(IO::FileAnalyse::FrameDetailHandl
 	frame->AddHex8Name(frameOfst, name, addrType, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddHCIEvent(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 evt)
+void Net::PacketAnalyzerBluetooth::AddHCIEvent(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 evt)
 {
 	frame->AddHex8Name(frameOfst, CSTR("Event Code"), evt, HCIEventGetName(evt));
 }
 
-void Net::PacketAnalyzerBluetooth::AddLESubEvent(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 subEvt)
+void Net::PacketAnalyzerBluetooth::AddLESubEvent(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 subEvt)
 {
 	frame->AddHex8Name(frameOfst, CSTR("Sub Event"), subEvt, LESubEventGetName(subEvt));
 }
 
-void Net::PacketAnalyzerBluetooth::AddAdvEvtType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 evtType)
+void Net::PacketAnalyzerBluetooth::AddAdvEvtType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 evtType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (evtType)
@@ -1279,7 +1279,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvEvtType(IO::FileAnalyse::FrameDetailHan
 	frame->AddHex8Name(frameOfst, CSTR("Event Type"), evtType, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddRSSI(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Int8 rssi)
+void Net::PacketAnalyzerBluetooth::AddRSSI(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Int8 rssi)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -1287,7 +1287,7 @@ void Net::PacketAnalyzerBluetooth::AddRSSI(IO::FileAnalyse::FrameDetailHandler *
 	frame->AddField(frameOfst, 1, CSTR("RSSI"), CSTRP(sbuff, sptr));
 }
 
-void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddAdvData(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
 {
 	Text::CString vName;
 	Text::StringBuilderUTF8 sb;
@@ -1797,12 +1797,12 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::AddLAP(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 lap)
+void Net::PacketAnalyzerBluetooth::AddLAP(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt32 lap)
 {
 	frame->AddHex24(frameOfst, CSTR("LAP"), lap);
 }
 
-void Net::PacketAnalyzerBluetooth::AddInquiryLen(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 len)
+void Net::PacketAnalyzerBluetooth::AddInquiryLen(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 len)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (len)
@@ -1814,7 +1814,7 @@ void Net::PacketAnalyzerBluetooth::AddInquiryLen(IO::FileAnalyse::FrameDetailHan
 	frame->AddUIntName(frameOfst, 1, CSTR("Inquiry Length"), len, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddPageScanMode(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 mode)
+void Net::PacketAnalyzerBluetooth::AddPageScanMode(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 mode)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (mode)
@@ -1826,7 +1826,7 @@ void Net::PacketAnalyzerBluetooth::AddPageScanMode(IO::FileAnalyse::FrameDetailH
 	frame->AddHex8Name(frameOfst, CSTR("Page Scan Repetition Mode"), mode, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddClassOfDevice(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 cls)
+void Net::PacketAnalyzerBluetooth::AddClassOfDevice(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt32 cls)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
@@ -1885,12 +1885,12 @@ void Net::PacketAnalyzerBluetooth::AddClassOfDevice(IO::FileAnalyse::FrameDetail
 	frame->AddField(frameOfst, 3, CSTR("Class Of Device"), sb.ToCString());
 }
 
-void Net::PacketAnalyzerBluetooth::AddClockOffset(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 ofst)
+void Net::PacketAnalyzerBluetooth::AddClockOffset(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 ofst)
 {
 	frame->AddHex16(frameOfst, CSTR("Clock Offset"), ofst);
 }
 
-void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 evtType)
+void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 evtType)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
@@ -1929,7 +1929,7 @@ void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(IO::FileAnalyse::FrameDetailH
 	frame->AddField(frameOfst, 2, CSTR("Event Type"), sb.ToCString());
 }
 
-void Net::PacketAnalyzerBluetooth::AddPHYType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CStringNN name, UInt8 phyType)
+void Net::PacketAnalyzerBluetooth::AddPHYType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, UInt8 phyType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (phyType)
@@ -1944,7 +1944,7 @@ void Net::PacketAnalyzerBluetooth::AddPHYType(IO::FileAnalyse::FrameDetailHandle
 	frame->AddHex8Name(frameOfst, name, phyType, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddAdvSID(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 sid)
+void Net::PacketAnalyzerBluetooth::AddAdvSID(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 sid)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (sid)
@@ -1956,7 +1956,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvSID(IO::FileAnalyse::FrameDetailHandler
 	frame->AddHex8Name(frameOfst, CSTR("Advertising SID"), sid, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddTxPower(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Int8 txPower)
+void Net::PacketAnalyzerBluetooth::AddTxPower(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Int8 txPower)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -1964,7 +1964,7 @@ void Net::PacketAnalyzerBluetooth::AddTxPower(IO::FileAnalyse::FrameDetailHandle
 	frame->AddField(frameOfst, 1, CSTR("TxPower"), CSTRP(sbuff, sptr));
 }
 
-void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 interval)
+void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 interval)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (interval)
@@ -1976,7 +1976,7 @@ void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(IO::FileAnalyse::FrameDetailHa
 	frame->AddHex16Name(frameOfst, CSTR("Periodic Advertising Interval"), interval, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddUnknown(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddUnknown(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
 {
 	frame->AddHexBuff(frameOfst, (UInt32)packetSize, CSTR("Unknown"), packet, true);
 }
@@ -2095,10 +2095,10 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
-	PacketGetDetail(packet, packetSize, 0, &frame);
+	PacketGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UInt32 i;

@@ -1205,9 +1205,9 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(NotN
 	this->SetSrcAlphaType(srcImage->info.atype);
 	if (this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
-		destInfo.color.GetRTranParam()->Set(this->destProfile.GetRTranParam());
-		destInfo.color.GetGTranParam()->Set(this->destProfile.GetGTranParam());
-		destInfo.color.GetBTranParam()->Set(this->destProfile.GetBTranParam());
+		destInfo.color.GetRTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destProfile.GetRTranParam()));
+		destInfo.color.GetGTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destProfile.GetGTranParam()));
+		destInfo.color.GetBTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destProfile.GetBTranParam()));
 	}
 	destInfo.color.GetPrimaries()->Set(this->destProfile.GetPrimaries());
 	destInfo.atype = this->GetDestAlphaType();

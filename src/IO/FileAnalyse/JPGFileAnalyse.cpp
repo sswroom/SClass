@@ -464,12 +464,12 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
-			Media::EXIFData *exif = Media::EXIFData::ParseExif(tagData.Ptr(), tag->size);
-			if (exif)
+			NotNullPtr<Media::EXIFData> exif;
+			if (Media::EXIFData::ParseExif(tagData.Ptr(), tag->size).SetTo(exif))
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
 				exif->ToString(sb, CSTR_NULL);
-				DEL_CLASS(exif);
+				exif.Delete();
 			}
 		}
 		else if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("http://ns.adobe.com/xap/1.0/")))
@@ -486,12 +486,12 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (Text::StrStartsWithC(&tagData[4], tag->size, UTF8STRC("ICC_PROFILE")))
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(tagData.SubArray(18, tag->size - 18));
-			if (icc)
+			NotNullPtr<Media::ICCProfile> icc;
+			if (Media::ICCProfile::Parse(tagData.SubArray(18, tag->size - 18)).SetTo(icc))
 			{
 				sb->AppendC(UTF8STRC("\r\n\r\n"));
 				icc->ToString(sb);
-				DEL_CLASS(icc);
+				icc.Delete();
 			}
 		}
 	}
@@ -538,9 +538,9 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::FrameDetail *frame;
+	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -552,7 +552,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	if (tag == 0 || !fd.Set(this->fd))
 		return 0;
 	
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	if (tag->tagType != 0)

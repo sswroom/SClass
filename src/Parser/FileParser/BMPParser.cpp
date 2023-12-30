@@ -403,15 +403,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 				fd->GetRealData(imgDataSize + 14, iccSize, iccBuff);
 				if (iccSize == ReadMUInt32(&iccBuff[0]))
 				{
-					Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff.WithSize(iccSize));
-					if (icc)
+					NotNullPtr<Media::ICCProfile> icc;
+					if (Media::ICCProfile::Parse(iccBuff.WithSize(iccSize)).SetTo(icc))
 					{
-						icc->GetRedTransferParam(outImg->info.color.GetRTranParam());
-						icc->GetGreenTransferParam(outImg->info.color.GetGTranParam());
-						icc->GetBlueTransferParam(outImg->info.color.GetBTranParam());
-						icc->GetColorPrimaries(outImg->info.color.GetPrimaries());
-						outImg->info.color.SetRAWICC(iccBuff.Ptr());
-						DEL_CLASS(icc);
+						icc->SetToColorProfile(outImg->info.color);
+						icc.Delete();
 					}
 				}
 			}
