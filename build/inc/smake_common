@@ -4676,6 +4676,8 @@ UI/GUIGroupBox.h:
 @GUIGroupBox.o
 UI/GUIHexFileView.h:
 @GUIHexFileView.o
+UI/GUIHScrollBar.h:
+@GUIHScrollBar.o
 UI/GUIHSplitter.h:
 @GUIHSplitter.o
 UI/GUILabel.h:
@@ -4773,6 +4775,8 @@ UI/GTK/GTKFontDialog.h:
 @GTKFontDialog.o
 UI/GTK/GTKGroupBox.h:
 @GTKGroupBox.o
+UI/GTK/GTKHScrollBar.h:
+@GTKHScrollBar.o
 UI/GTK/GTKHSplitter.h:
 @GTKHSplitter.o
 UI/GTK/GTKLabel.h:
@@ -4819,6 +4823,8 @@ UI/Java/JavaFontDialog.h:
 @JavaFontDialog.o
 UI/Java/JavaGroupBox.h:
 JavaGroupBox.o
+UI/Java/JavaHScrollBar.h:
+@JavaHScrollBar.o
 UI/Java/JavaHSplitter.h:
 @JavaHSplitter.o
 UI/Java/JavaLabel.h:
@@ -4867,6 +4873,8 @@ UI/Win/WinFontDialog.h:
 @WinFontDialog.o
 UI/Win/WinGroupBox.h:
 @WinGroupBox.o
+UI/Win/WinHScrollBar.h:
+@WinHScrollBar.o
 UI/Win/WinHSplitter.h:
 @WinHSplitter.o
 UI/Win/WinLabel.h:

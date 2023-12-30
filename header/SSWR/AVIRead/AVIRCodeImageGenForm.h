@@ -23,7 +23,7 @@ namespace SSWR
 			Media::CodeImageGen::CodeImageGen *codeImgGen;
 			Media::StaticImage *simg;
 
-			UI::GUIPictureBoxDD *pbMain;
+			NotNullPtr<UI::GUIPictureBoxDD> pbMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUILabel> lblCodeType;
 			NotNullPtr<UI::GUIComboBox> cboCodeType;

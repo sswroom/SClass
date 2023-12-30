@@ -11,6 +11,7 @@
 #include "UI/GTK/GTKFolderDialog.h"
 #include "UI/GTK/GTKFontDialog.h"
 #include "UI/GTK/GTKGroupBox.h"
+#include "UI/GTK/GTKHScrollBar.h"
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKLabel.h"
 #include "UI/GTK/GTKListBox.h"
@@ -200,6 +201,11 @@ Bool UI::GTK::GTKCore::IsForwarded()
 	return getenv("SSH_CLIENT") != 0;
 }
 
+Int32 UI::GTK::GTKCore::GetScrollBarSize()
+{
+	return 16;
+}
+
 void UI::GTK::GTKCore::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	UI::GTK::GTKMessageDialog::ShowOK(message, title, ctrl);
@@ -242,6 +248,13 @@ NotNullPtr<UI::GUIGroupBox> UI::GTK::GTKCore::NewGroupBox(NotNullPtr<GUIClientCo
 {
 	NotNullPtr<UI::GTK::GTKGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIHScrollBar> UI::GTK::GTKCore::NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width)
+{
+	NotNullPtr<UI::GTK::GTKHScrollBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKHScrollBar(*this, parent, width));
 	return ctrl;
 }
 

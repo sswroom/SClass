@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRImageViewerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPictureBoxDD *pbImage;
+			NotNullPtr<UI::GUIPictureBoxDD> pbImage;
 			UI::GUIMainMenu *mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

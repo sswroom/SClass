@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPictureBoxSimple> pbResult;
 			NotNullPtr<UI::GUIListView> lvText;
 			NotNullPtr<UI::GUIHSplitter> hspText;
-			UI::GUIPictureBoxDD *pbImg;
+			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
 
 			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnTextSelChg(void *userObj);

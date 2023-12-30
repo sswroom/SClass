@@ -2,6 +2,7 @@
 #define _SM_UI_GUICORE
 #include "Math/Coord2D.h"
 #include "Math/Size2D.h"
+#include "Media/ColorManager.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorMgr.h"
 
@@ -20,6 +21,7 @@ namespace UI
 	class GUIFolderDialog;
 	class GUIFontDialog;
 	class GUIGroupBox;
+	class GUIHScrollBar;
 	class GUIHSplitter;
 	class GUILabel;
 	class GUIListBox;
@@ -27,6 +29,7 @@ namespace UI
 	class GUIPanel;
 	class GUIPanelBase;
 	class GUIPictureBox;
+	class GUIPictureBoxDD;
 	class GUIPictureBoxSimple;
 	class GUIRadioButton;
 	class GUIRealtimeLineChart;
@@ -73,6 +76,7 @@ namespace UI
 		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr) = 0;
 		virtual Media::MonitorMgr *GetMonitorMgr() = 0;
 		virtual Bool IsForwarded() = 0;
+		virtual Int32 GetScrollBarSize() = 0;
 
 		virtual void ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
 		virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
@@ -81,6 +85,7 @@ namespace UI
 		virtual NotNullPtr<GUICheckedListBox> NewCheckedListBox(NotNullPtr<GUIClientControl> parent) = 0;
 		virtual NotNullPtr<GUIComboBox> NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit) = 0;
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
+		virtual NotNullPtr<GUIHScrollBar> NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width) = 0;
 		virtual NotNullPtr<GUILabel> NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 		virtual NotNullPtr<GUIListBox> NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect) = 0;
 		virtual NotNullPtr<GUIPictureBox> NewPictureBox(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) = 0;
@@ -103,6 +108,7 @@ namespace UI
 
 		NotNullPtr<GUIListView> NewListView(NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
 		NotNullPtr<GUIPanel> NewPanel(NotNullPtr<UI::GUIClientControl> parent);
+		NotNullPtr<GUIPictureBoxDD> NewPictureBoxDD(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
 	};
 }
 #endif

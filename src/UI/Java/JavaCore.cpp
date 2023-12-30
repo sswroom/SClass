@@ -13,6 +13,7 @@
 #include "UI/Java/JavaFolderDialog.h"
 #include "UI/Java/JavaFontDialog.h"
 #include "UI/Java/JavaGroupBox.h"
+#include "UI/Java/JavaHScrollBar.h"
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
 #include "UI/Java/JavaListBox.h"
@@ -205,6 +206,11 @@ Bool UI::Java::JavaCore::IsForwarded()
 	return getenv("SSH_CLIENT") != 0;
 }
 
+Int32 UI::Java::JavaCore::GetScrollBarSize()
+{
+	return 16;
+}
+
 void UI::Java::JavaCore::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	UI::Java::JavaMessageDialog::ShowOK((JNIEnv*)jniEnv, message, title, ctrl);
@@ -247,6 +253,13 @@ NotNullPtr<UI::GUIGroupBox> UI::Java::JavaCore::NewGroupBox(NotNullPtr<GUIClient
 {
 	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIHScrollBar> UI::Java::JavaCore::NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width)
+{
+	NotNullPtr<UI::Java::JavaHScrollBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaHScrollBar(*this, parent, width));
 	return ctrl;
 }
 

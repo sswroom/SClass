@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcImage;
 
 			NotNullPtr<UI::GUITabPage> tpImage;
-			UI::GUIPictureBoxDD *pbImage;
+			NotNullPtr<UI::GUIPictureBoxDD> pbImage;
 			NotNullPtr<UI::GUITextBox> txtImageStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;

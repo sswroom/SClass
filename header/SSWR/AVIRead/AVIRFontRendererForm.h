@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpChar;
 			NotNullPtr<UI::GUIListBox> lbChar;
 			NotNullPtr<UI::GUIHSplitter> hspChar;
-			UI::GUIPictureBoxDD *pbChar;
+			NotNullPtr<UI::GUIPictureBoxDD> pbChar;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

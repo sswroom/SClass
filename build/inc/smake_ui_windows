@@ -42,8 +42,6 @@ UI/GUIDragDrop.h:
 @GUIDragDropWin.o
 UI/GUIForm.h:
 @GUIFormWin.o
-UI/GUIHScrollBar.h:
-@GUIHScrollBarWin.o
 UI/GUIIcon.h:
 @GUIIconWin.o
 UI/GUIListView.h:

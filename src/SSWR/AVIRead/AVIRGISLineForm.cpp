@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblThick = ui->NewLabel(this->pnlMain, CSTR("Thick"));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlMain, 16));
+	this->hsbThick = ui->NewHScrollBar(this->pnlMain, 16);
 	this->hsbThick->InitScrollBar(0, 600, (UOSInt)Double2OSInt(this->lineThick * 10), 10);
 	this->hsbThick->SetRect(104, 4, 150, 20, false);
 	this->hsbThick->HandlePosChanged(OnThickChanged, this);

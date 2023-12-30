@@ -3,20 +3,20 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUIHScrollBar.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinHScrollBar.h"
 #include <windows.h>
 
 #define CLASSNAME L"SSWRSBAR"
-Int32 UI::GUIHScrollBar::useCnt = 0;
+Int32 UI::Win::WinHScrollBar::useCnt = 0;
 
 #ifndef GWL_USERDATA
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::GUIHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+OSInt __stdcall UI::Win::WinHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIHScrollBar *me = (UI::GUIHScrollBar*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::Win::WinHScrollBar *me = (UI::Win::WinHScrollBar*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	SCROLLINFO si;
 	Bool noChg = false;
 	switch (msg)
@@ -53,7 +53,7 @@ OSInt __stdcall UI::GUIHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 
 		if (!noChg)
 		{
-			me->EventPosChanged();
+			me->EventPosChanged(me->GetPos());
 		}
 		return 0;
 
@@ -63,11 +63,11 @@ OSInt __stdcall UI::GUIHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 	return 0;
 }
 
-void UI::GUIHScrollBar::Init(void *hInst)
+void UI::Win::WinHScrollBar::Init(void *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
-	wc.lpfnWndProc = (WNDPROC)UI::GUIHScrollBar::FormWndProc; 
+	wc.lpfnWndProc = (WNDPROC)UI::Win::WinHScrollBar::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
     wc.hInstance = (HINSTANCE)hInst; 
@@ -81,12 +81,12 @@ void UI::GUIHScrollBar::Init(void *hInst)
         return; 
 }
 
-void UI::GUIHScrollBar::Deinit(void *hInst)
+void UI::Win::WinHScrollBar::Deinit(void *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width) : UI::GUIControl(ui, parent)
+UI::Win::WinHScrollBar::WinHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width) : UI::GUIHScrollBar(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -101,7 +101,7 @@ UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
 }
 
-UI::GUIHScrollBar::~GUIHScrollBar()
+UI::Win::WinHScrollBar::~WinHScrollBar()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
@@ -109,7 +109,7 @@ UI::GUIHScrollBar::~GUIHScrollBar()
 	}
 }
 
-void UI::GUIHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
+void UI::Win::WinHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
 {
 	SCROLLINFO info;
 	info.cbSize = sizeof(SCROLLINFO);
@@ -119,21 +119,21 @@ void UI::GUIHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currV
 	info.nPage = (UINT)largeChg;
 	info.nPos = (int)(UInt32)currVal;
 	SetScrollInfo((HWND)this->hwnd, SB_HORZ, &info, TRUE);
-	this->EventPosChanged();
+	this->EventPosChanged(this->GetPos());
 }
 
-void UI::GUIHScrollBar::SetPos(UOSInt pos)
+void UI::Win::WinHScrollBar::SetPos(UOSInt pos)
 {
 	SetScrollPos((HWND)this->hwnd, SB_HORZ, (int)(OSInt)pos, TRUE);
-	this->EventPosChanged();
+	this->EventPosChanged(this->GetPos());
 }
 
-UOSInt UI::GUIHScrollBar::GetPos()
+UOSInt UI::Win::WinHScrollBar::GetPos()
 {
 	return (UOSInt)(OSInt)GetScrollPos((HWND)this->hwnd, SB_HORZ);
 }
 
-void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
+void UI::Win::WinHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
@@ -159,7 +159,7 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	this->OnSizeChanged(updateScn);
 }
 
-void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
+void UI::Win::WinHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
 	NotNullPtr<UI::GUIClientControl> nnparent;
@@ -183,12 +183,7 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	this->OnSizeChanged(updateScn);
 }
 
-Text::CStringNN UI::GUIHScrollBar::GetObjectClass() const
-{
-	return CSTR("HScrollBar");
-}
-
-OSInt UI::GUIHScrollBar::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinHScrollBar::OnNotify(UInt32 code, void *lParam)
 {
 	if (code == WM_HSCROLL)
 	{
@@ -196,7 +191,7 @@ OSInt UI::GUIHScrollBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIHScrollBar::UpdatePos(Bool redraw)
+void UI::Win::WinHScrollBar::UpdatePos(Bool redraw)
 {
 	WINDOWINFO wi;
 	wi.cbSize = sizeof(WINDOWINFO);
@@ -242,26 +237,4 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 			newSize = minSize;
 		MoveWindow((HWND)this->hwnd, Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), newSize, redraw?TRUE:FALSE);
 	}
-}
-
-void UI::GUIHScrollBar::EventPosChanged()
-{
-	UOSInt newPos = this->GetPos();
-	UOSInt i;
-	i = this->posChgHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->posChgHdlrs.GetItem(i)(this->posChgObjs.GetItem(i), newPos);
-	}
-}
-
-void UI::GUIHScrollBar::HandlePosChanged(PosChgEvent hdlr, void *userObj)
-{
-	this->posChgHdlrs.Add(hdlr);
-	this->posChgObjs.Add(userObj);
-}
-
-Int32 UI::GUIHScrollBar::GetSystemSize()
-{
-	return GetSystemMetrics(SM_CYHSCROLL);
 }

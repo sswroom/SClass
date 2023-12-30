@@ -2733,7 +2733,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lbImage->HandleRightClicked(OnImgRClicked, this);
 	this->lbImage->HandleDoubleClicked(OnImgDblClicked, this);
 	this->vsbImg = ui->NewVSplitter(this->tpImage, 2, true);
-	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this->tpImage, this->colorSess, true, false));
+	this->pbImg = ui->NewPictureBoxDD(this->tpImage, this->colorSess, true, false);
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImg->HandleMouseDown(OnImgMouseDown, this);
 	this->pbImg->HandleMouseUp(OnImgMouseUp, this);

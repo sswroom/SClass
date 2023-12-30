@@ -642,7 +642,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalRedB = ui->NewLabel(this->pnlCalRed, CSTR("Brightness"));
 	this->lblCalRedB->SetRect(8, 8, 120, 16, false);
 	this->lblCalRedB->SetBGColor(0xffffc0c0);
-	NEW_CLASS(this->hsbCalRedB, UI::GUIHScrollBar(ui, this->pnlCalRed, 16));
+	this->hsbCalRedB = ui->NewHScrollBar(this->pnlCalRed, 16);
 	this->hsbCalRedB->SetRect(128, 8, 392, 17, false);
 	this->hsbCalRedB->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalRedB->HandlePosChanged(OnCalRedBChg, this);
@@ -650,7 +650,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalRedBV->SetRect(520, 8, 64, 16, false);
 	this->lblCalRedC = ui->NewLabel(this->pnlCalRed, CSTR("Contrast"));
 	this->lblCalRedC->SetRect(8, 32, 120, 16, false);
-	NEW_CLASS(this->hsbCalRedC, UI::GUIHScrollBar(ui, this->pnlCalRed, 16));
+	this->hsbCalRedC = ui->NewHScrollBar(this->pnlCalRed, 16);
 	this->hsbCalRedC->SetRect(128, 32, 392, 17, false);
 	this->hsbCalRedC->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalRedC->HandlePosChanged(OnCalRedCChg, this);
@@ -658,7 +658,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalRedCV->SetRect(520, 32, 64, 16, false);
 	this->lblCalRedG = ui->NewLabel(this->pnlCalRed, CSTR("Gamma"));
 	this->lblCalRedG->SetRect(8, 56, 120, 16, false);
-	NEW_CLASS(this->hsbCalRedG, UI::GUIHScrollBar(ui, this->pnlCalRed, 16));
+	this->hsbCalRedG = ui->NewHScrollBar(this->pnlCalRed, 16);
 	this->hsbCalRedG->SetRect(128, 56, 392, 17, false);
 	this->hsbCalRedG->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalRedG->HandlePosChanged(OnCalRedGChg, this);
@@ -670,7 +670,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->pnlCalGreen->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCalGreenB = ui->NewLabel(this->pnlCalGreen, CSTR("Brightness"));
 	this->lblCalGreenB->SetRect(8, 8, 120, 16, false);
-	NEW_CLASS(this->hsbCalGreenB, UI::GUIHScrollBar(ui, this->pnlCalGreen, 16));
+	this->hsbCalGreenB = ui->NewHScrollBar(this->pnlCalGreen, 16);
 	this->hsbCalGreenB->SetRect(128, 8, 392, 17, false);
 	this->hsbCalGreenB->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalGreenB->HandlePosChanged(OnCalGreenBChg, this);
@@ -678,7 +678,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalGreenBV->SetRect(520, 8, 64, 16, false);
 	this->lblCalGreenC = ui->NewLabel(this->pnlCalGreen, CSTR("Contrast"));
 	this->lblCalGreenC->SetRect(8, 32, 120, 16, false);
-	NEW_CLASS(this->hsbCalGreenC, UI::GUIHScrollBar(ui, this->pnlCalGreen, 16));
+	this->hsbCalGreenC = ui->NewHScrollBar(this->pnlCalGreen, 16);
 	this->hsbCalGreenC->SetRect(128, 32, 392, 17, false);
 	this->hsbCalGreenC->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalGreenC->HandlePosChanged(OnCalGreenCChg, this);
@@ -686,7 +686,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalGreenCV->SetRect(520, 32, 64, 16, false);
 	this->lblCalGreenG = ui->NewLabel(this->pnlCalGreen, CSTR("Gamma"));
 	this->lblCalGreenG->SetRect(8, 56, 120, 16, false);
-	NEW_CLASS(this->hsbCalGreenG, UI::GUIHScrollBar(ui, this->pnlCalGreen, 16));
+	this->hsbCalGreenG = ui->NewHScrollBar(this->pnlCalGreen, 16);
 	this->hsbCalGreenG->SetRect(128, 56, 392, 17, false);
 	this->hsbCalGreenG->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalGreenG->HandlePosChanged(OnCalGreenGChg, this);
@@ -698,7 +698,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->pnlCalBlue->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCalBlueB = ui->NewLabel(this->pnlCalBlue, CSTR("Brightness"));
 	this->lblCalBlueB->SetRect(8, 8, 120, 16, false);
-	NEW_CLASS(this->hsbCalBlueB, UI::GUIHScrollBar(ui, this->pnlCalBlue, 16));
+	this->hsbCalBlueB = ui->NewHScrollBar(this->pnlCalBlue, 16);
 	this->hsbCalBlueB->SetRect(128, 8, 392, 17, false);
 	this->hsbCalBlueB->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalBlueB->HandlePosChanged(OnCalBlueBChg, this);
@@ -706,7 +706,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalBlueBV->SetRect(520, 8, 64, 16, false);
 	this->lblCalBlueC = ui->NewLabel(this->pnlCalBlue, CSTR("Contrast"));
 	this->lblCalBlueC->SetRect(8, 32, 120, 16, false);
-	NEW_CLASS(this->hsbCalBlueC, UI::GUIHScrollBar(ui, this->pnlCalBlue, 16));
+	this->hsbCalBlueC = ui->NewHScrollBar(this->pnlCalBlue, 16);
 	this->hsbCalBlueC->SetRect(128, 32, 392, 17, false);
 	this->hsbCalBlueC->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalBlueC->HandlePosChanged(OnCalBlueCChg, this);
@@ -714,7 +714,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblCalBlueCV->SetRect(520, 32, 64, 16, false);
 	this->lblCalBlueG = ui->NewLabel(this->pnlCalBlue, CSTR("Gamma"));
 	this->lblCalBlueG->SetRect(8, 56, 120, 16, false);
-	NEW_CLASS(this->hsbCalBlueG, UI::GUIHScrollBar(ui, this->pnlCalBlue, 16));
+	this->hsbCalBlueG = ui->NewHScrollBar(this->pnlCalBlue, 16);
 	this->hsbCalBlueG->SetRect(128, 56, 392, 17, false);
 	this->hsbCalBlueG->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbCalBlueG->HandlePosChanged(OnCalBlueGChg, this);
@@ -724,7 +724,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->tpRGB = this->tcMain->AddTabPage(CSTR("RGB"));
 	this->lblMonVBrig = ui->NewLabel(this->tpRGB, CSTR("Monitor Video Brightness"));
 	this->lblMonVBrig->SetRect(8, 8, 128, 16, false);
-	NEW_CLASS(this->hsbMonVBrig, UI::GUIHScrollBar(ui, this->tpRGB, 16));
+	this->hsbMonVBrig = ui->NewHScrollBar(this->tpRGB, 16);
 	this->hsbMonVBrig->SetRect(136, 8, 392, 17, false);
 	this->hsbMonVBrig->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbMonVBrig->HandlePosChanged(OnMonVBrigChg, this);
@@ -732,7 +732,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblMonVBrigV->SetRect(528, 8, 64, 16, false);
 	this->lblMonPBrig = ui->NewLabel(this->tpRGB, CSTR("Monitor Photo Brightness"));
 	this->lblMonPBrig->SetRect(8, 32, 128, 16, false);
-	NEW_CLASS(this->hsbMonPBrig, UI::GUIHScrollBar(ui, this->tpRGB, 16));
+	this->hsbMonPBrig = ui->NewHScrollBar(this->tpRGB, 16);
 	this->hsbMonPBrig->SetRect(136, 32, 392, 17, false);
 	this->hsbMonPBrig->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbMonPBrig->HandlePosChanged(OnMonPBrigChg, this);
@@ -741,7 +741,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblMonRBrig = ui->NewLabel(this->tpRGB, CSTR("Monitor R Brightness"));
 	this->lblMonRBrig->SetRect(8, 56, 128, 16, false);
 	this->lblMonRBrig->SetBGColor(0xffffc0c0);
-	NEW_CLASS(this->hsbMonRBrig, UI::GUIHScrollBar(ui, this->tpRGB, 16));
+	this->hsbMonRBrig = ui->NewHScrollBar(this->tpRGB, 16);
 	this->hsbMonRBrig->SetRect(136, 56, 392, 17, false);
 	this->hsbMonRBrig->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbMonRBrig->HandlePosChanged(OnMonRBrigChg, this);
@@ -750,7 +750,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblMonGBrig = ui->NewLabel(this->tpRGB, CSTR("Monitor G Brightness"));
 	this->lblMonGBrig->SetRect(8, 80, 128, 16, false);
 	this->lblMonGBrig->SetBGColor(0xffc0ffc0);
-	NEW_CLASS(this->hsbMonGBrig, UI::GUIHScrollBar(ui, this->tpRGB, 16));
+	this->hsbMonGBrig = ui->NewHScrollBar(this->tpRGB, 16);
 	this->hsbMonGBrig->SetRect(136, 80, 392, 17, false);
 	this->hsbMonGBrig->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbMonGBrig->HandlePosChanged(OnMonGBrigChg, this);
@@ -759,7 +759,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblMonBBrig = ui->NewLabel(this->tpRGB, CSTR("Monitor B Brightness"));
 	this->lblMonBBrig->SetRect(8, 104, 128, 16, false);
 	this->lblMonBBrig->SetBGColor(0xffc0c0ff);
-	NEW_CLASS(this->hsbMonBBrig, UI::GUIHScrollBar(ui, this->tpRGB, 16));
+	this->hsbMonBBrig = ui->NewHScrollBar(this->tpRGB, 16);
 	this->hsbMonBBrig->SetRect(136, 104, 392, 17, false);
 	this->hsbMonBBrig->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbMonBBrig->HandlePosChanged(OnMonBBrigChg, this);
@@ -769,7 +769,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->tpYUV = this->tcMain->AddTabPage(CSTR("YUV"));
 	this->lblYUVBrig = ui->NewLabel(this->tpYUV, CSTR("Brightness"));
 	this->lblYUVBrig->SetRect(8, 8, 120, 16, false);
-	NEW_CLASS(this->hsbYUVBrig, UI::GUIHScrollBar(ui, this->tpYUV, 16));
+	this->hsbYUVBrig = ui->NewHScrollBar(this->tpYUV, 16);
 	this->hsbYUVBrig->SetRect(128, 8, 392, 17, false);
 	this->hsbYUVBrig->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbYUVBrig->HandlePosChanged(OnYUVBrigChg, this);
@@ -777,7 +777,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblYUVBrigV->SetRect(520, 8, 64, 16, false);
 	this->lblYUVCont = ui->NewLabel(this->tpYUV, CSTR("Contrast"));
 	this->lblYUVCont->SetRect(8, 32, 120, 16, false);
-	NEW_CLASS(this->hsbYUVCont, UI::GUIHScrollBar(ui, this->tpYUV, 16));
+	this->hsbYUVCont = ui->NewHScrollBar(this->tpYUV, 16);
 	this->hsbYUVCont->SetRect(128, 32, 392, 17, false);
 	this->hsbYUVCont->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbYUVCont->HandlePosChanged(OnYUVContChg, this);
@@ -785,7 +785,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblYUVContV->SetRect(520, 32, 64, 16, false);
 	this->lblYUVSat = ui->NewLabel(this->tpYUV, CSTR("Saturation"));
 	this->lblYUVSat->SetRect(8, 56, 120, 16, false);
-	NEW_CLASS(this->hsbYUVSat, UI::GUIHScrollBar(ui, this->tpYUV, 16));
+	this->hsbYUVSat = ui->NewHScrollBar(this->tpYUV, 16);
 	this->hsbYUVSat->SetRect(128, 56, 392, 17, false);
 	this->hsbYUVSat->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbYUVSat->HandlePosChanged(OnYUVSatChg, this);
@@ -793,7 +793,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblYUVSatV->SetRect(520, 56, 64, 16, false);
 	this->lblYUVYGamma = ui->NewLabel(this->tpYUV, CSTR("Y-Gamma"));
 	this->lblYUVYGamma->SetRect(8, 80, 120, 16, false);
-	NEW_CLASS(this->hsbYUVYGamma, UI::GUIHScrollBar(ui, this->tpYUV, 16));
+	this->hsbYUVYGamma = ui->NewHScrollBar(this->tpYUV, 16);
 	this->hsbYUVYGamma->SetRect(128, 80, 392, 17, false);
 	this->hsbYUVYGamma->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbYUVYGamma->HandlePosChanged(OnYUVYGammaChg, this);
@@ -801,7 +801,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->lblYUVYGammaV->SetRect(520, 80, 64, 16, false);
 	this->lblYUVCGamma = ui->NewLabel(this->tpYUV, CSTR("C-Gamma"));
 	this->lblYUVCGamma->SetRect(8, 104, 120, 16, false);
-	NEW_CLASS(this->hsbYUVCGamma, UI::GUIHScrollBar(ui, this->tpYUV, 16));
+	this->hsbYUVCGamma = ui->NewHScrollBar(this->tpYUV, 16);
 	this->hsbYUVCGamma->SetRect(128, 104, 392, 17, false);
 	this->hsbYUVCGamma->InitScrollBar(0, 4099, 1000, 100);
 	this->hsbYUVCGamma->HandlePosChanged(OnYUVCGammaChg, this);

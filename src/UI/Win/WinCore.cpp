@@ -12,6 +12,7 @@
 #include "UI/Win/WinFolderDialog.h"
 #include "UI/Win/WinFontDialog.h"
 #include "UI/Win/WinGroupBox.h"
+#include "UI/Win/WinHScrollBar.h"
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
 #include "UI/Win/WinListBox.h"
@@ -250,6 +251,11 @@ Media::MonitorMgr *UI::Win::WinCore::GetMonitorMgr()
 	return this->monMgr;
 }
 
+Int32 UI::Win::WinCore::GetScrollBarSize()
+{
+	return GetSystemMetrics(SM_CYHSCROLL);
+}
+
 void UI::Win::WinCore::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	UI::Win::WinMessageDialog::ShowOK(message, title, ctrl);
@@ -292,6 +298,13 @@ NotNullPtr<UI::GUIGroupBox> UI::Win::WinCore::NewGroupBox(NotNullPtr<GUIClientCo
 {
 	NotNullPtr<UI::Win::WinGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIHScrollBar> UI::Win::WinCore::NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width)
+{
+	NotNullPtr<UI::Win::WinHScrollBar> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinHScrollBar(*this, parent, width));
 	return ctrl;
 }
 

@@ -3,64 +3,48 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUIHScrollBar.h"
-#include <gtk/gtk.h>
+#include "UI/GTK/GTKHScrollBar.h"
 
-Int32 UI::GUIHScrollBar::useCnt = 0;
-
-gboolean GUIHScrollBar_ValueChanged(void *window, void *userObj)
+gboolean UI::GTK::GTKHScrollBar::SignalValueChanged(void *window, void *userObj)
 {
 	UI::GUIHScrollBar *me = (UI::GUIHScrollBar*)userObj;
-	me->EventPosChanged();
+	me->EventPosChanged(me->GetPos());
 	return FALSE;
 }
 
-OSInt __stdcall UI::GUIHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
-{
-	return 0;
-}
-
-void UI::GUIHScrollBar::Init(void *hInst)
-{
-}
-
-void UI::GUIHScrollBar::Deinit(void *hInst)
-{
-}
-
-UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width) : UI::GUIControl(ui, parent)
+UI::GTK::GTKHScrollBar::GTKHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Double width) : UI::GUIHScrollBar(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	g_signal_connect((GtkButton*)this->hwnd, "value-changed", G_CALLBACK(GUIHScrollBar_ValueChanged), this);
+	g_signal_connect((GtkButton*)this->hwnd, "value-changed", G_CALLBACK(SignalValueChanged), this);
 	parent->AddChild(*this);
 	this->Show();
 }
 
-UI::GUIHScrollBar::~GUIHScrollBar()
+UI::GTK::GTKHScrollBar::~GTKHScrollBar()
 {
 }
 
-void UI::GUIHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
+void UI::GTK::GTKHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
 	gtk_adjustment_configure(adj, UOSInt2Double(currVal), UOSInt2Double(minVal), UOSInt2Double(maxVal), 1, UOSInt2Double(largeChg), UOSInt2Double(largeChg));
-	this->EventPosChanged();
+	this->EventPosChanged(this->GetPos());
 }
 
-void UI::GUIHScrollBar::SetPos(UOSInt pos)
+void UI::GTK::GTKHScrollBar::SetPos(UOSInt pos)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
 	gtk_adjustment_set_value(adj, UOSInt2Double(pos));
-	this->EventPosChanged();
+	this->EventPosChanged(this->GetPos());
 }
 
-UOSInt UI::GUIHScrollBar::GetPos()
+UOSInt UI::GTK::GTKHScrollBar::GetPos()
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
 	return (UOSInt)Double2OSInt(gtk_adjustment_get_value(adj));
 }
 
-void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
+void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
@@ -112,7 +96,7 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	this->OnSizeChanged(updateScn);
 }
 
-void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
+void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
 	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
@@ -164,17 +148,12 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	this->OnSizeChanged(updateScn);
 }
 
-Text::CStringNN UI::GUIHScrollBar::GetObjectClass() const
-{
-	return CSTR("HScrollBar");
-}
-
-OSInt UI::GUIHScrollBar::OnNotify(UInt32 code, void *lParam)
+OSInt UI::GTK::GTKHScrollBar::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GUIHScrollBar::UpdatePos(Bool redraw)
+void UI::GTK::GTKHScrollBar::UpdatePos(Bool redraw)
 {
 /*	WINDOWINFO wi;
 	wi.cbSize = sizeof(WINDOWINFO);
@@ -220,26 +199,4 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 			newSize = minSize;
 		MoveWindow((HWND)this->hwnd, Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), newSize, redraw?TRUE:FALSE);
 	}*/
-}
-
-void UI::GUIHScrollBar::EventPosChanged()
-{
-	UOSInt newPos = this->GetPos();
-	UOSInt i;
-	i = this->posChgHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->posChgHdlrs.GetItem(i)(this->posChgObjs.GetItem(i), newPos);
-	}
-}
-
-void UI::GUIHScrollBar::HandlePosChanged(PosChgEvent hdlr, void *userObj)
-{
-	this->posChgHdlrs.Add(hdlr);
-	this->posChgObjs.Add(userObj);
-}
-
-Int32 UI::GUIHScrollBar::GetSystemSize()
-{
-	return 16;
 }

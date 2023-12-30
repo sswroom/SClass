@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<Media::StaticImage> destImg;
 			NotNullPtr<Media::StaticImage> srcPrevImg;
 			NotNullPtr<Media::StaticImage> destPrevImg;
-			UI::GUIPictureBoxDD *previewCtrl;
+			NotNullPtr<UI::GUIPictureBoxDD> previewCtrl;
 			Media::GRFilter *grFilter;
 			UOSInt currLayer;
 			Bool modifying;
@@ -37,13 +37,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspLayers;
 			NotNullPtr<UI::GUIPanel> pnlSetting;
 			NotNullPtr<UI::GUILabel> lblHOfst;
-			UI::GUIHScrollBar *hsbHOfst;
+			NotNullPtr<UI::GUIHScrollBar> hsbHOfst;
 			NotNullPtr<UI::GUITextBox> txtHOfst;
 			NotNullPtr<UI::GUILabel> lblVOfst;
-			UI::GUIHScrollBar *hsbVOfst;
+			NotNullPtr<UI::GUIHScrollBar> hsbVOfst;
 			NotNullPtr<UI::GUITextBox> txtVOfst;
 			NotNullPtr<UI::GUILabel> lblLevel;
-			UI::GUIHScrollBar *hsbLevel;
+			NotNullPtr<UI::GUIHScrollBar> hsbLevel;
 			NotNullPtr<UI::GUITextBox> txtLevel;
 			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
@@ -67,7 +67,7 @@ namespace SSWR
 			void UpdatePreview();
 			void UpdateLayers();
 		public:
-			AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl);
+			AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl);
 			virtual ~AVIRImageGRForm();
 
 			virtual void OnMonitorChanged();

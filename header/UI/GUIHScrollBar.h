@@ -13,30 +13,21 @@ namespace UI
 		Data::ArrayList<PosChgEvent> posChgHdlrs;
 		Data::ArrayList<void *> posChgObjs;
 
-	private:
-		static Int32 useCnt;
-
-		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-		static void Init(void *hInst);
-		static void Deinit(void *hInst);
 	public:
-		GUIHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width);
+		GUIHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIHScrollBar();
 
-		void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);
-		void SetPos(UOSInt pos);
-		UOSInt GetPos();
-
-		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
-		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
+		virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg) = 0;
+		virtual void SetPos(UOSInt pos) = 0;
+		virtual UOSInt GetPos() = 0;
+		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn) = 0;
+		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn) = 0;
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void UpdatePos(Bool redraw) = 0;
+		
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		virtual void UpdatePos(Bool redraw);
-		virtual void EventPosChanged();
-
-		virtual void HandlePosChanged(PosChgEvent hdlr, void *userObj);
-
-		static Int32 GetSystemSize();
+		void EventPosChanged(UOSInt newPos);
+		void HandlePosChanged(PosChgEvent hdlr, void *userObj);
 	};
 }
 #endif

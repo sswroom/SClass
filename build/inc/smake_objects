@@ -2168,6 +2168,7 @@ GUIFolderDialog.o: ../../src/UI/GUIFolderDialog.cpp
 GUIFontDialog.o: ../../src/UI/GUIFontDialog.cpp
 GUIGroupBox.o: ../../src/UI/GUIGroupBox.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
+GUIHScrollBar.o: ../../src/UI/GUIHScrollBar.cpp
 GUIHSplitter.o: ../../src/UI/GUIHSplitter.cpp
 GUILabel.o: ../../src/UI/GUILabel.cpp
 GUIListBox.o: ../../src/UI/GUIListBox.cpp
@@ -2229,6 +2230,8 @@ GTKFontDialog.o: ../../src/UI/GTK/GTKFontDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKHScrollBar.o: ../../src/UI/GTK/GTKHScrollBar.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKHSplitter.o: ../../src/UI/GTK/GTKHSplitter.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKLabel.o: ../../src/UI/GTK/GTKLabel.cpp
@@ -2270,8 +2273,6 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDDrawControlGtk.o: ../../src/UI/GTK/GUIDDrawControlGtk.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormGTK.o: ../../src/UI/GTK/GUIFormGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIHScrollBarGTK.o: ../../src/UI/GTK/GUIHScrollBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIListViewGTK.o: ../../src/UI/GTK/GUIListViewGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2322,6 +2323,9 @@ JavaFolderDialog.o: ../../src/UI/Java/JavaFolderDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaFontDialog.o: ../../src/UI/Java/JavaFontDialog.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaHScrollBar.o: ../../src/UI/Java/JavaHScrollBar.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaHSplitter.o: ../../src/UI/Java/JavaHSplitter.cpp
@@ -2376,7 +2380,6 @@ GUIDateTimePickerWin.o: ../../src/UI/Win/GUIDateTimePickerWin.cpp
 GUIDDrawControlWin.o: ../../src/UI/Win/GUIDDrawControlWin.cpp
 !-lwinmm
 GUIFormWin.o: ../../src/UI/Win/GUIFormWin.cpp
-GUIHScrollBarWin.o: ../../src/UI/Win/GUIHScrollBarWin.cpp
 GUIIconWin.o: ../../src/UI/Win/GUIIconWin.cpp
 GUIListViewWin.o: ../../src/UI/Win/GUIListViewWin.cpp
 !-lcomctl32
@@ -2399,6 +2402,7 @@ WinFolderDialog.o: ../../src/UI/Win/WinFolderDialog.cpp
 WinFontDialog.o: ../../src/UI/Win/WinFontDialog.cpp
 !-lcomdlg32
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
+WinHScrollBar.o: ../../src/UI/Win/WinHScrollBar.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp
 WinLabel.o: ../../src/UI/Win/WinLabel.cpp
 WinListBox.o: ../../src/UI/Win/WinListBox.cpp

@@ -278,12 +278,12 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->pnlImage = ui->NewPanel(*this);
 	this->pnlImage->SetRect(0, 0, 200, 100, false);
 	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pbMain, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));
+	this->pbMain = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->lblBright = ui->NewLabel(this->pnlImage, CSTR("Brightness"));
 	this->lblBright->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->hsbBright, UI::GUIHScrollBar(ui, this->pnlImage, 16));
+	this->hsbBright = ui->NewHScrollBar(this->pnlImage, 16);
 	this->hsbBright->SetRect(100, 0, 400, 23, false);
 	this->hsbBright->InitScrollBar(0, 10009, 1, 10);
 	this->hsbBright->SetPos(1000);
@@ -295,7 +295,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->btnBrightReset->HandleButtonClick(OnBrightResetClicked, this);
 	this->lblContr = ui->NewLabel(this->pnlImage, CSTR("Contrast"));
 	this->lblContr->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->hsbContr, UI::GUIHScrollBar(ui, this->pnlImage, 16));
+	this->hsbContr = ui->NewHScrollBar(this->pnlImage, 16);
 	this->hsbContr->SetRect(100, 24, 400, 23, false);
 	this->hsbContr->InitScrollBar(0, 1609, 1, 10);
 	this->hsbContr->SetPos(100);
@@ -304,7 +304,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->lblContrV->SetRect(500, 24,100, 23, false);
 	this->lblGamma = ui->NewLabel(this->pnlImage, CSTR("Gamma"));
 	this->lblGamma->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->hsbGamma, UI::GUIHScrollBar(ui, this->pnlImage, 16));
+	this->hsbGamma = ui->NewHScrollBar(this->pnlImage, 16);
 	this->hsbGamma->SetRect(100, 48, 400, 23, false);
 	this->hsbGamma->InitScrollBar(0, 1009, 1, 10);
 	this->hsbGamma->SetPos(100);
@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->btnGammaReset->HandleButtonClick(OnGammaResetClicked, this);
 	this->lblHDRLev = ui->NewLabel(this->pnlImage, CSTR("HDR Lev"));
 	this->lblHDRLev->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->hsbHDRLev, UI::GUIHScrollBar(ui, this->pnlImage, 16));
+	this->hsbHDRLev = ui->NewHScrollBar(this->pnlImage, 16);
 	this->hsbHDRLev->SetRect(100, 72, 400, 23, false);
 	this->hsbHDRLev->InitScrollBar(0, 15, 1, 1);
 	this->hsbHDRLev->SetPos(0);

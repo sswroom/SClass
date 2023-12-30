@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPictureBox> pbPreview;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUILabel> lblThick;
-			UI::GUIHScrollBar *hsbThick;
+			NotNullPtr<UI::GUIHScrollBar> hsbThick;
 			NotNullPtr<UI::GUILabel> lblThickV;
 			NotNullPtr<UI::GUILabel> lblColor;
 			NotNullPtr<UI::GUIPictureBox> pbColor;

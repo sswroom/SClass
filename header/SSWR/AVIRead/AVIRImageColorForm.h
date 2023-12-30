@@ -21,20 +21,20 @@ namespace SSWR
 			NotNullPtr<Media::StaticImage> destImg;
 			NotNullPtr<Media::StaticImage> srcPrevImg;
 			NotNullPtr<Media::StaticImage> destPrevImg;
-			UI::GUIPictureBoxDD *previewCtrl;
+			NotNullPtr<UI::GUIPictureBoxDD> previewCtrl;
 			Media::RGBColorFilter *rgbFilter;
 			Double currBVal;
 			Double currCVal;
 			Double currGVal;
 
 			NotNullPtr<UI::GUILabel> lblBright;
-			UI::GUIHScrollBar *hsbBright;
+			NotNullPtr<UI::GUIHScrollBar> hsbBright;
 			NotNullPtr<UI::GUILabel> lblBrightV;
 			NotNullPtr<UI::GUILabel> lblContr;
-			UI::GUIHScrollBar *hsbContr;
+			NotNullPtr<UI::GUIHScrollBar> hsbContr;
 			NotNullPtr<UI::GUILabel> lblContrV;
 			NotNullPtr<UI::GUILabel> lblGamma;
-			UI::GUIHScrollBar *hsbGamma;
+			NotNullPtr<UI::GUIHScrollBar> hsbGamma;
 			NotNullPtr<UI::GUILabel> lblGammaV;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnLastValueClick(void *userObj);
 		public:
-			AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl);
+			AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl);
 			virtual ~AVIRImageColorForm();
 
 			virtual void OnMonitorChanged();

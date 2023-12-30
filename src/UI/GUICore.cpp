@@ -2,6 +2,7 @@
 #include "UI/GUICore.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
+#include "UI/GUIPictureBoxDD.h"
 
 UI::GUICore::~GUICore()
 {
@@ -18,5 +19,12 @@ NotNullPtr<UI::GUIPanel> UI::GUICore::NewPanel(NotNullPtr<UI::GUIClientControl> 
 {
 	NotNullPtr<UI::GUIPanel> ctrl;
 	NEW_CLASSNN(ctrl, UI::GUIPanel(*this, parent));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPictureBoxDD> UI::GUICore::NewPictureBoxDD(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode)
+{
+	NotNullPtr<UI::GUIPictureBoxDD> ctrl;
+	NEW_CLASSNN(ctrl, UI::GUIPictureBoxDD(*this, parent, colorSess, allowEnlarge, directMode));
 	return ctrl;
 }

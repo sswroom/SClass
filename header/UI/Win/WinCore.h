@@ -38,6 +38,7 @@ namespace UI
 			virtual void SetMonitorMgr(Media::MonitorMgr *monMgr);
 			virtual Media::MonitorMgr *GetMonitorMgr();
 			virtual Bool IsForwarded();
+			virtual Int32 GetScrollBarSize();
 
 			virtual void ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl);
 			virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl);
@@ -46,6 +47,7 @@ namespace UI
 			virtual NotNullPtr<GUICheckedListBox> NewCheckedListBox(NotNullPtr<GUIClientControl> parent);
 			virtual NotNullPtr<GUIComboBox> NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit);
 			virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
+			virtual NotNullPtr<GUIHScrollBar> NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width);
 			virtual NotNullPtr<GUILabel> NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
 			virtual NotNullPtr<GUIListBox> NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect);
 			virtual NotNullPtr<GUIPictureBox> NewPictureBox(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);

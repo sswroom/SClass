@@ -156,7 +156,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, NotN
 	this->pnlBtn->SetRect(0, 0, 100, 56, false);
 	this->pnlBtn->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pnlDPI = ui->NewPanel(*this);
-	this->pnlDPI->SetRect(0, 0, 100, UI::GUIHScrollBar::GetSystemSize() + 1, false);
+	this->pnlDPI->SetRect(0, 0, 100, ui->GetScrollBarSize() + 1, false);
 	this->pnlDPI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbPreview = ui->NewPictureBoxSimple(*this, core->GetDrawEngine(), false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, NotN
 	this->lblDPIV = ui->NewLabel(this->pnlDPI, CSTR(""));
 	this->lblDPIV->SetRect(0, 0, 60, 23, false);
 	this->lblDPIV->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASS(this->hsbDPI, UI::GUIHScrollBar(ui, this->pnlDPI, UI::GUIHScrollBar::GetSystemSize()));
+	this->hsbDPI = ui->NewHScrollBar(this->pnlDPI, ui->GetScrollBarSize());
 	this->hsbDPI->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hsbDPI->InitScrollBar(100, 3010, (UOSInt)Double2OSInt(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
 	this->hsbDPI->HandlePosChanged(OnDPIChanged, this);

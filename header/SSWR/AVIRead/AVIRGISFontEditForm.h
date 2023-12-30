@@ -43,7 +43,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFontColor;
 			NotNullPtr<UI::GUIPictureBox> pbFontColor;
 			NotNullPtr<UI::GUILabel> lblBufferSize;
-			UI::GUIHScrollBar *hsbBufferSize;
+			NotNullPtr<UI::GUIHScrollBar> hsbBufferSize;
 			NotNullPtr<UI::GUILabel> lblBufferColor;
 			NotNullPtr<UI::GUIPictureBox> pbBufferColor;
 			NotNullPtr<UI::GUIButton> btnOK;

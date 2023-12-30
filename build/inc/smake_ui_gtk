@@ -43,8 +43,6 @@ UI/GUIDragDrop.h:
 @GTKDragDrop.o
 UI/GUIForm.h:
 @GUIFormGTK.o
-UI/GUIHScrollBar.h:
-@GUIHScrollBarGTK.o
 UI/GUIListView.h:
 @GUIListViewGTK.o
 UI/GUIMainMenu.h:

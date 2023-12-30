@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	this->lbChar->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbChar->HandleSelectionChange(OnCharSelChg, this);
 	this->hspChar = ui->NewHSplitter(this->tpChar, 3, false);
-	NEW_CLASS(this->pbChar, UI::GUIPictureBoxDD(ui, this->tpChar, this->colorSess, true, false));
+	this->pbChar = ui->NewPictureBoxDD(this->tpChar, this->colorSess, true, false);
 	this->pbChar->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UTF32Char i = font->GetMinChar();

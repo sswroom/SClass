@@ -29,21 +29,21 @@ namespace SSWR
 			SSWR::AVIRead::AVIRImageControl *icMain;
 			NotNullPtr<UI::GUIHSplitter> hspLeft;
 			NotNullPtr<UI::GUIPanel> pnlImage;
-			UI::GUIPictureBoxDD *pbMain;
+			NotNullPtr<UI::GUIPictureBoxDD> pbMain;
 
 			NotNullPtr<UI::GUILabel> lblBright;
-			UI::GUIHScrollBar *hsbBright;
+			NotNullPtr<UI::GUIHScrollBar> hsbBright;
 			NotNullPtr<UI::GUILabel> lblBrightV;
 			NotNullPtr<UI::GUIButton> btnBrightReset;
 			NotNullPtr<UI::GUILabel> lblContr;
-			UI::GUIHScrollBar *hsbContr;
+			NotNullPtr<UI::GUIHScrollBar> hsbContr;
 			NotNullPtr<UI::GUILabel> lblContrV;
 			NotNullPtr<UI::GUILabel> lblGamma;
-			UI::GUIHScrollBar *hsbGamma;
+			NotNullPtr<UI::GUIHScrollBar> hsbGamma;
 			NotNullPtr<UI::GUILabel> lblGammaV;
 			NotNullPtr<UI::GUIButton> btnGammaReset;
 			NotNullPtr<UI::GUILabel> lblHDRLev;
-			UI::GUIHScrollBar *hsbHDRLev;
+			NotNullPtr<UI::GUIHScrollBar> hsbHDRLev;
 			NotNullPtr<UI::GUILabel> lblHDRLevV;
 			
 			NotNullPtr<Media::ColorManagerSess> colorSess;

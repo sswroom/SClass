@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj
 	}
 }
 
-SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
+SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image Color"));
@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 	
 	this->lblBright = ui->NewLabel(*this, CSTR("Brightness"));
 	this->lblBright->SetRect(0, 0, 100, 24, false);
-	NEW_CLASS(this->hsbBright, UI::GUIHScrollBar(ui, *this, 16));
+	this->hsbBright = ui->NewHScrollBar(*this, 16);
 	this->hsbBright->SetRect(100, 0, 450, 17, false);
 	this->hsbBright->InitScrollBar(0, 10009, 1, 10);
 	this->hsbBright->SetPos(1000);
@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 	this->lblBrightV->SetRect(550, 0, 50, 24, false);
 	this->lblContr = ui->NewLabel(*this, CSTR("Contrast"));
 	this->lblContr->SetRect(0, 24, 100, 24, false);
-	NEW_CLASS(this->hsbContr, UI::GUIHScrollBar(ui, *this, 16));
+	this->hsbContr = ui->NewHScrollBar(*this, 16);
 	this->hsbContr->SetRect(100, 24, 450, 17, false);
 	this->hsbContr->InitScrollBar(0, 1609, 1, 10);
 	this->hsbContr->SetPos(100);
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 	this->lblContrV->SetRect(550, 24, 50, 24, false);
 	this->lblGamma = ui->NewLabel(*this, CSTR("Gamma"));
 	this->lblGamma->SetRect(0, 48, 100, 24, false);
-	NEW_CLASS(this->hsbGamma, UI::GUIHScrollBar(ui, *this, 16));
+	this->hsbGamma = ui->NewHScrollBar(*this, 16);
 	this->hsbGamma->SetRect(100, 48, 450, 17, false);
 	this->hsbGamma->InitScrollBar(0, 1009, 1, 10);
 	this->hsbGamma->SetPos(100);

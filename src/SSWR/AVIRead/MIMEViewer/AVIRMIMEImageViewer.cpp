@@ -13,7 +13,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NotNullPtr<S
 		this->imgList = (Media::ImageList*)core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList);
 	}
 
-	NEW_CLASSNN(this->pbContent, UI::GUIPictureBoxDD(ui, ctrl, sess, true, false));
+	this->pbContent = ui->NewPictureBoxDD(ctrl, sess, true, false);
 	this->pbContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	if (this->imgList)
 	{

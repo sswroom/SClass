@@ -93,7 +93,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvSpBook;
 
 			NotNullPtr<UI::GUITabPage> tpImage;
-			UI::GUIPictureBoxDD *pbImg;
+			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
 			NotNullPtr<UI::GUIVSplitter> vsbImg;
 			NotNullPtr<UI::GUIListBox> lbImage;
 			NotNullPtr<UI::GUIPanel> pnlImage;

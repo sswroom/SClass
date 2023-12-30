@@ -621,7 +621,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	this->txtImageStatus->SetRect(0, 0, 100, 23, false);
 	this->txtImageStatus->SetReadOnly(true);
 	this->txtImageStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pbImage, UI::GUIPictureBoxDD(ui, this->tpImage, this->colorSess, this->allowEnlarge, false));
+	this->pbImage = ui->NewPictureBoxDD(this->tpImage, this->colorSess, this->allowEnlarge, false);
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImage->HandleMouseMove(OnImageMouseMove, this);
 

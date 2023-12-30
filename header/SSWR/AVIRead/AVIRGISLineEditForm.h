@@ -59,9 +59,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblThick;
 			NotNullPtr<UI::GUILabel> lblPattern;
 			NotNullPtr<UI::GUIPictureBox> pbColor;
-			UI::GUIHScrollBar *hsbAlpha;
+			NotNullPtr<UI::GUIHScrollBar> hsbAlpha;
 			NotNullPtr<UI::GUITextBox> txtThick;
-			UI::GUIHScrollBar *hsbThick;
+			NotNullPtr<UI::GUIHScrollBar> hsbThick;
 			NotNullPtr<UI::GUITextBox> txtPattern;
 
 			NotNullPtr<UI::GUIButton> btnOK;

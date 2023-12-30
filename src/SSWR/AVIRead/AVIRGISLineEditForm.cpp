@@ -338,13 +338,13 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->pbColor->SetRect(96, 8, 72, 24, false);
 	this->pbColor->SetBGColor(0);
 	this->pbColor->HandleMouseDown(ColorClicked, this);
-	NEW_CLASS(this->hsbAlpha, UI::GUIHScrollBar(ui, this->pnlLayer, 144));
+	this->hsbAlpha = ui->NewHScrollBar(this->pnlLayer, 144);
 	this->hsbAlpha->SetPosition(96, 32);
 	this->hsbAlpha->InitScrollBar(0, 255, 255, 1);
 	this->txtThick = ui->NewTextBox(this->pnlLayer, CSTR("1"));
 	this->txtThick->SetRect(96, 56, 40, 23, false);
 	this->txtThick->HandleTextChanged(ThickChanged, this);
-	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlLayer, 120));
+	this->hsbThick = ui->NewHScrollBar(this->pnlLayer, 120);
 	this->hsbThick->SetPosition(136, 56);
 	this->hsbThick->InitScrollBar(0, 210, 10, 10);
 	this->hsbThick->HandlePosChanged(OnThickScrolled, this);

@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->pbFontColor->HandleMouseDown(FontColorClicked, this);
 	this->lblBufferSize = ui->NewLabel(*this, CSTR("Buffer"));
 	this->lblBufferSize->SetRect(0, 140, 100, 23, false);
-	NEW_CLASS(this->hsbBufferSize, UI::GUIHScrollBar(ui, *this, 152));
+	this->hsbBufferSize = ui->NewHScrollBar(*this, 152);
 	this->hsbBufferSize->SetRect(104, 140, 200, 23, false);
 	this->hsbBufferSize->InitScrollBar(0, 17, 0, 1);
 	this->hsbBufferSize->HandlePosChanged(BufferSizeChanged, this);

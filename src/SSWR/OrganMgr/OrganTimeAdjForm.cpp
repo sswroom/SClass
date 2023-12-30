@@ -285,7 +285,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->pnlLeft = ui->NewPanel(*this);
 	this->pnlLeft->SetRect(0, 0, 300, 23, false);
 	this->pnlLeft->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxDD(ui, this->pnlLeft, this->colorSess, true, false));
+	this->pbPreview = ui->NewPictureBoxDD(this->pnlLeft, this->colorSess, true, false);
 	this->pbPreview->SetRect(0, 0, 300, 240, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lbTrack = ui->NewListBox(this->pnlLeft, false);

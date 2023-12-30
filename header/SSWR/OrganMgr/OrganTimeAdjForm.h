@@ -41,7 +41,7 @@ namespace SSWR
 			Data::Timestamp selImgTime;
 
 			NotNullPtr<UI::GUIPanel> pnlLeft;
-			UI::GUIPictureBoxDD *pbPreview;
+			NotNullPtr<UI::GUIPictureBoxDD> pbPreview;
 			NotNullPtr<UI::GUIListBox> lbTrack;
 			NotNullPtr<UI::GUIComboBox> cboSpecies;
 			NotNullPtr<UI::GUIListBox> lbPictures;

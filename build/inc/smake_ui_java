@@ -41,8 +41,6 @@ UI/GUIDDrawControl.h:
 UI/GUIDragDrop.h:
 UI/GUIForm.h:
 @GUIFormJava.o
-UI/GUIHScrollBar.h:
-@GUIHScrollBarGTK.o
 UI/GUIListView.h:
 @GUIListViewGTK.o
 UI/GUIMainMenu.h:

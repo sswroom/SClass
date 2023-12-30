@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	}
 }
 
-SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GR Filter"));
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->btnRemoveLayer->HandleButtonClick(OnRemoveLayerClicked, this);
 	this->lblHOfst = ui->NewLabel(this->pnlSetting, CSTR("H Offset"));
 	this->lblHOfst->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->hsbHOfst, UI::GUIHScrollBar(ui, this->pnlSetting, 16));
+	this->hsbHOfst = ui->NewHScrollBar(this->pnlSetting, 16);
 	this->hsbHOfst->SetRect(104, 28, 300, 23, false);
 	this->hsbHOfst->InitScrollBar(0, 210, 100, 10);
 	this->hsbHOfst->HandlePosChanged(OnHOfstChanged, this);
@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->txtHOfst->SetReadOnly(true);
 	this->lblVOfst = ui->NewLabel(this->pnlSetting, CSTR("V Offset"));
 	this->lblVOfst->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->hsbVOfst, UI::GUIHScrollBar(ui, this->pnlSetting, 16));
+	this->hsbVOfst = ui->NewHScrollBar(this->pnlSetting, 16);
 	this->hsbVOfst->SetRect(104, 52, 300, 23, false);
 	this->hsbVOfst->InitScrollBar(0, 210, 100, 10);
 	this->hsbVOfst->HandlePosChanged(OnVOfstChanged, this);
@@ -253,7 +253,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->txtVOfst->SetReadOnly(true);
 	this->lblLevel = ui->NewLabel(this->pnlSetting, CSTR("Level"));
 	this->lblLevel->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->hsbLevel, UI::GUIHScrollBar(ui, this->pnlSetting, 16));
+	this->hsbLevel = ui->NewHScrollBar(this->pnlSetting, 16);
 	this->hsbLevel->SetRect(104, 76, 300, 23, false);
 	this->hsbLevel->InitScrollBar(0, 210, 100, 10);
 	this->hsbLevel->HandlePosChanged(OnLevelChanged, this);
