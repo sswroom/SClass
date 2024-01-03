@@ -33,7 +33,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
+Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -48,6 +48,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 of
 	MemClear(this->fieldNull, fieldCnt);
 	MemClear(this->fieldOfst, fieldCnt * 4);
 	this->dataOfst = dataOfst;
+	this->maxRowSize = maxRowSize;
 	this->maxCnt = maxCnt;
 	if (this->maxCnt == 0)
 	{
@@ -156,6 +157,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 	{
 		while (true)
 		{
+			Bool lastIsFree = false;
 			while (true)
 			{
 				if (this->fd->GetRealData(this->currOfst, 4, BYTEARR(sizeBuff)) != 4)
@@ -166,6 +168,11 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				if (size < 0)
 				{
 					this->currOfst += 4 + (UInt32)(-size);
+					lastIsFree = true;
+				}
+				else if ((UInt32)size > this->maxRowSize && lastIsFree)
+				{
+					this->currOfst += 4;
 				}
 				else
 				{

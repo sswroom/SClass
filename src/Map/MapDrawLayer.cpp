@@ -788,28 +788,29 @@ Map::DrawLayerType Map::MapDrawLayer::VectorType2LayerType(Math::Geometry::Vecto
 	switch (vtype)
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 		return Map::DRAW_LAYER_POINT;
 	case Math::Geometry::Vector2D::VectorType::Polygon:
-		return Map::DRAW_LAYER_POLYGON;
-	case Math::Geometry::Vector2D::VectorType::Polyline:
-		return Map::DRAW_LAYER_POLYLINE;
-	case Math::Geometry::Vector2D::VectorType::Image:
-		return Map::DRAW_LAYER_IMAGE;
-	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
+		return Map::DRAW_LAYER_POLYGON;
+	case Math::Geometry::Vector2D::VectorType::Polyline:
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 	case Math::Geometry::Vector2D::VectorType::LineString:
+		return Map::DRAW_LAYER_POLYLINE;
+	case Math::Geometry::Vector2D::VectorType::Image:
+		return Map::DRAW_LAYER_IMAGE;
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 	case Math::Geometry::Vector2D::VectorType::MultiCurve:
-	case Math::Geometry::Vector2D::VectorType::MultiSurface:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+		return Map::DRAW_LAYER_MIXED;
 	case Math::Geometry::Vector2D::VectorType::Tin:
 	case Math::Geometry::Vector2D::VectorType::Triangle:
-	case Math::Geometry::Vector2D::VectorType::LinearRing:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
 	case Math::Geometry::Vector2D::VectorType::PieArea:

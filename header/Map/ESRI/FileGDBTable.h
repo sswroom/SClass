@@ -16,7 +16,8 @@ namespace Map
 			IO::StreamData *gdbtablxFD;
 			UOSInt indexCnt;
 			UInt64 dataOfst;
-			FileGDBTableInfo *tableInfo;
+			UInt32 maxRowSize;
+			Optional<FileGDBTableInfo> tableInfo;
 			NotNullPtr<Math::ArcGISPRJParser> prjParser;
 		public:
 			FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NotNullPtr<Math::ArcGISPRJParser> prjParser);

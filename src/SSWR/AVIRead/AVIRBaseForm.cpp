@@ -1159,7 +1159,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						NotNullPtr<IO::DirectoryPackage> dp;
 						NEW_CLASSNN(dp, IO::DirectoryPackage(fname));
 						NotNullPtr<IO::ParsedObject> pobj;
-						if (dlg.GetParserType() == IO::ParserType::PackageFile && pobj.Set(this->core->GetParserList()->ParseObjectType(dp, dlg.GetParserType())))
+						if (dlg.GetParserType() != IO::ParserType::PackageFile && pobj.Set(this->core->GetParserList()->ParseObjectType(dp, dlg.GetParserType())))
 						{
 							dp.Delete();
 							this->core->OpenObject(pobj);	

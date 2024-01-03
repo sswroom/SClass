@@ -11,13 +11,13 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, NotNullPtr<Math::ArcGISPRJParser> prjParser)
+Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, NotNullPtr<Math::ArcGISPRJParser> prjParser)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	FileGDBFieldInfo *field;
-	FileGDBTableInfo *table = MemAlloc(FileGDBTableInfo, 1);
-	MemClear(table, sizeof(FileGDBTableInfo));
+	NotNullPtr<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo, 1);
+	MemClear(table.Ptr(), sizeof(FileGDBTableInfo));
 	NEW_CLASS(table->fields, Data::ArrayList<FileGDBFieldInfo*>());
 	UInt32 descSize = ReadUInt32(&fieldDesc[0]);
 	fieldDesc += 4;
@@ -203,12 +203,12 @@ void Map::ESRI::FileGDBUtil::FreeFieldInfo(FileGDBFieldInfo *fieldInfo)
 	MemFree(fieldInfo);
 }
 
-void Map::ESRI::FileGDBUtil::FreeTableInfo(FileGDBTableInfo *tableInfo)
+void Map::ESRI::FileGDBUtil::FreeTableInfo(NotNullPtr<FileGDBTableInfo> tableInfo)
 {
 	LIST_FREE_FUNC(tableInfo->fields, FreeFieldInfo);
 	DEL_CLASS(tableInfo->fields);
 	SDEL_CLASS(tableInfo->csys);
-	MemFree(tableInfo);
+	MemFreeNN(tableInfo);
 }
 
 Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBFieldInfo *field)
@@ -236,10 +236,10 @@ Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBField
 	return newField;
 }
 
-Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::TableInfoClone(FileGDBTableInfo *tableInfo)
+NotNullPtr<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NotNullPtr<FileGDBTableInfo> tableInfo)
 {
-	FileGDBTableInfo *newTable = MemAlloc(FileGDBTableInfo, 1);
-	MemCopyNO(newTable, tableInfo, sizeof(FileGDBTableInfo));
+	NotNullPtr<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo, 1);
+	MemCopyNO(newTable.Ptr(), tableInfo.Ptr(), sizeof(FileGDBTableInfo));
 	if (tableInfo->csys)
 	{
 		newTable->csys = tableInfo->csys->Clone().Ptr();

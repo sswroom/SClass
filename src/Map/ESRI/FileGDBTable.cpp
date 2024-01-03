@@ -12,6 +12,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, NotNullPtr<IO::St
 	this->indexCnt = 0;
 	this->tableInfo = 0;
 	this->dataOfst = 0;
+	this->maxRowSize = 0;
 	this->prjParser = prjParser;
 
 	UInt8 hdrBuff[44];
@@ -34,6 +35,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, NotNullPtr<IO::St
 	{
 		return;
 	}
+	this->maxRowSize = ReadUInt32(&hdrBuff[8]);
 	UInt64 fieldDescOfst = ReadUInt64(&hdrBuff[32]);
 	UInt64 fileLength = this->gdbtableFD->GetDataSize();
 	if (fieldDescOfst == 40)
@@ -63,16 +65,17 @@ Map::ESRI::FileGDBTable::~FileGDBTable()
 	this->gdbtableFD.Delete();
 	SDEL_CLASS(this->gdbtablxFD);
 	this->tableName->Release();
-	if (this->tableInfo)
+	NotNullPtr<FileGDBTableInfo> tableInfo;
+	if (this->tableInfo.SetTo(tableInfo))
 	{
-		Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
+		Map::ESRI::FileGDBUtil::FreeTableInfo(tableInfo);
 		this->tableInfo = 0;
 	}
 }
 
 Bool Map::ESRI::FileGDBTable::IsError()
 {
-	return this->tableInfo == 0;
+	return this->tableInfo.IsNull();
 }
 
 NotNullPtr<Text::String> Map::ESRI::FileGDBTable::GetName() const
@@ -82,12 +85,13 @@ NotNullPtr<Text::String> Map::ESRI::FileGDBTable::GetName() const
 
 DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
 {
-	if (this->tableInfo == 0)
+	NotNullPtr<FileGDBTableInfo> tableInfo;
+	if (!this->tableInfo.SetTo(tableInfo))
 	{
 		return 0;
 	}
 	Map::ESRI::FileGDBReader *reader;
-	NEW_CLASS(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, this->tableInfo, columnNames, dataOfst, maxCnt, conditions));
+	NEW_CLASS(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize));
 	NotNullPtr<IO::StreamData> fd;
 	if (fd.Set(this->gdbtablxFD))
 	{

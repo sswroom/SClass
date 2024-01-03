@@ -390,6 +390,7 @@ void Math::Geometry::Polygon::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, 
 	UOSInt i = 0;
 	UOSInt j;
 	UOSInt k;
+	UOSInt tmp;
 	Math::Coord2DDbl *ptArr;
 	Double *zArr;
 	Double *mArr;
@@ -400,10 +401,10 @@ void Math::Geometry::Polygon::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, 
 			k = nPoint;
 		else
 			k = ptOfstList[i + 1];
-		NEW_CLASSNN(linearRing, LinearRing(this->srid, k, zList != 0, mList != 0));
-		ptArr = linearRing->GetPointList(j);
-		zArr = linearRing->GetZList(j);
-		mArr = linearRing->GetMList(j);
+		NEW_CLASSNN(linearRing, LinearRing(this->srid, k - j, zList != 0, mList != 0));
+		ptArr = linearRing->GetPointList(tmp);
+		zArr = linearRing->GetZList(tmp);
+		mArr = linearRing->GetMList(tmp);
 		MemCopyNO(ptArr, &pointList[j], (k - j) * sizeof(Math::Coord2DDbl));
 		if (zList)
 		{

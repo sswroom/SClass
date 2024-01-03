@@ -33,8 +33,9 @@ namespace IO
 		private:
 			IO::StreamData *fd;
 			Data::SyncArrayList<TagInfo*> tags;
-			Map::ESRI::FileGDBTableInfo *tableInfo;
+			Optional<Map::ESRI::FileGDBTableInfo> tableInfo;
 			Math::ArcGISPRJParser prjParser;
+			UInt32 maxRowSize;
 
 			Bool pauseParsing;
 			Sync::Thread thread;

@@ -15,6 +15,7 @@
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
+#include "Media/PaperSize.h"
 #include "Net/HKOAPI.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSHManager.h"
@@ -551,9 +552,17 @@ Int32 SSHTest(NotNullPtr<Core::IProgControl> progCtrl)
 	return 0;
 }
 
+Int32 PaperSize()
+{
+	Media::PaperSize paperSize(Media::PaperSize::PT_A3);
+	Math::Size2DDbl size = paperSize.GetSizeMM();
+	printf("A3 pixel size = %lf x %lf\r\n", Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, size.GetWidth()), Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, size.GetHeight()));
+	return 0;
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 10;
+	UOSInt testType = 11;
 	switch (testType)
 	{
 	case 0:
@@ -578,6 +587,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		return WKBTest();
 	case 10:
 		return SSHTest(progCtrl);
+	case 11:
+		return PaperSize();
 	default:
 		return 0;
 	}

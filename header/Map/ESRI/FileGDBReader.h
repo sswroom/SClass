@@ -15,7 +15,7 @@ namespace Map
 		private:
 			NotNullPtr<IO::StreamData> fd;
 			UInt64 currOfst;
-			FileGDBTableInfo *tableInfo;
+			NotNullPtr<FileGDBTableInfo> tableInfo;
 			UOSInt rowSize;
 			Data::ByteBuffer rowData;
 			Int32 objectId;
@@ -24,6 +24,7 @@ namespace Map
 			Data::ArrayList<UOSInt> *columnIndices;
 			UOSInt dataOfst;
 			UOSInt maxCnt;
+			UInt32 maxRowSize;
 			Data::QueryConditions *conditions;
 
 			UOSInt indexCnt;
@@ -32,7 +33,7 @@ namespace Map
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
+			FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();
