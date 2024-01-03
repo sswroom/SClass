@@ -87,6 +87,22 @@ Bool Math::Geometry::LinearRing::InsideOrTouch(Math::Coord2DDbl coord) const
 	return (leftCnt & 1) != 0;
 }
 
+Double Math::Geometry::LinearRing::CalArea() const
+{
+	Math::Coord2DDbl lastPt = this->pointArr[0];
+	Double total = 0;
+	UOSInt i = this->nPoint;
+	while (i-- > 0)
+	{
+		total = total + (lastPt.x * this->pointArr[i].y - lastPt.y * this->pointArr[i].x);
+		lastPt = this->pointArr[i];
+	}
+	if (total < 0)
+		return total * -0.5;
+	else
+		return total * 0.5;
+}
+
 Bool Math::Geometry::LinearRing::IsOpen() const
 {
 	return this->pointArr[0] != this->pointArr[this->nPoint - 1];

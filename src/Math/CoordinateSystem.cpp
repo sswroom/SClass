@@ -3,6 +3,13 @@
 #include "Math/Math.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Math/ProjectedCoordinateSystem.h"
+#include "Math/Geometry/CircularString.h"
+#include "Math/Geometry/CompoundCurve.h"
+#include "Math/Geometry/CurvePolygon.h"
+#include "Math/Geometry/GeometryCollection.h"
+#include "Math/Geometry/LinearRing.h"
+#include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 
@@ -23,34 +30,95 @@ Math::CoordinateSystem::~CoordinateSystem()
 	this->csysName->Release();
 }
 
-Double Math::CoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> vec, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
-	NotNullPtr<Math::Geometry::LineString> lineString;
-	UOSInt i = pl->GetCount();
-	Double totalDist = 0;
-	while (i-- > 0)
+	Double totalDist;
+	switch (vec->GetVectorType())
 	{
-		if (pl->GetItem(i).SetTo(lineString))
-		{
-			totalDist += CalLineStringDistance(lineString, unit);
-		}
-	}
-	return totalDist;
-}
-
-Double Math::CoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
-{
-	NotNullPtr<Math::Geometry::LineString> lineString;
-	UOSInt i = pl->GetCount();
-	Double totalDist = 0;
-	while (i-- > 0)
+	case Math::Geometry::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+		return 0;
+	case Math::Geometry::Vector2D::VectorType::LineString:
+		return CalLineStringDistance(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec), include3D, unit);
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
+		return CalLineStringDistance(NotNullPtr<Math::Geometry::LinearRing>::ConvertFrom(vec), include3D, unit);
+	case Math::Geometry::Vector2D::VectorType::Polygon:
 	{
-		if (pl->GetItem(i).SetTo(lineString))
+		totalDist = 0;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec)->Iterator();
+		while (it.HasNext())
 		{
-			totalDist += CalLineStringDistance3D(lineString, unit);
+			totalDist += CalLineStringDistance(it.Next(), include3D, unit);
 		}
+		return totalDist;
 	}
-	return totalDist;
+	case Math::Geometry::Vector2D::VectorType::Polyline:
+	{
+		totalDist = 0;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec)->Iterator();
+		while (it.HasNext())
+		{
+			totalDist += CalLineStringDistance(it.Next(), include3D, unit);
+		}
+		return totalDist;
+	}
+	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+	{
+		totalDist = 0;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> it = NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec)->Iterator();
+		while (it.HasNext())
+		{
+			totalDist += CalDistance(it.Next(), include3D, unit);
+		}
+		return totalDist;
+	}
+	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+	{
+		totalDist = 0;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = NotNullPtr<Math::Geometry::GeometryCollection>::ConvertFrom(vec)->Iterator();
+		while (it.HasNext())
+		{
+			totalDist += CalDistance(it.Next(), include3D, unit);
+		}
+		return totalDist;
+	}
+	case Math::Geometry::Vector2D::VectorType::CircularString:
+		return CalLineStringDistance(NotNullPtr<Math::Geometry::CircularString>::ConvertFrom(vec), include3D, unit);
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+	{
+		totalDist = 0;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->Iterator();
+		while (it.HasNext())
+		{
+			totalDist += CalLineStringDistance(it.Next(), include3D, unit);
+		}
+		return totalDist;
+	}
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+	{
+		totalDist = 0;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec)->Iterator();
+		while (it.HasNext())
+		{
+			totalDist += CalDistance(it.Next(), include3D, unit);
+		}
+		return totalDist;
+	}
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+	case Math::Geometry::Vector2D::VectorType::Curve:
+	case Math::Geometry::Vector2D::VectorType::Surface:
+	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+	case Math::Geometry::Vector2D::VectorType::Tin:
+	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	case Math::Geometry::Vector2D::VectorType::Unknown:
+	default:
+	case Math::Geometry::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::String:
+		return 0;
+	}
 }
 
 IO::ParserType Math::CoordinateSystem::GetParserType() const

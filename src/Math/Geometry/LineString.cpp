@@ -246,6 +246,11 @@ Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, O
 	return dist;
 }
 
+Double Math::Geometry::LineString::CalArea() const
+{
+	return 0;
+}
+
 Bool Math::Geometry::LineString::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::LineString || this->HasZ() != vec->HasZ() || this->HasM() != vec->HasM())

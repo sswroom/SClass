@@ -21,6 +21,7 @@ namespace Math
 			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
 			virtual Math::RectAreaDbl GetBounds() const;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
+			virtual Double CalArea() const;
 			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
 			virtual Bool HasZ() const;
 			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const;

@@ -30,6 +30,10 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpShape;
 			NotNullPtr<UI::GUIPanel> pnlShape;
+			NotNullPtr<UI::GUILabel> lblShapeLength;
+			NotNullPtr<UI::GUITextBox> txtShapeLength;
+			NotNullPtr<UI::GUILabel> lblShapeArea;
+			NotNullPtr<UI::GUITextBox> txtShapeArea;
 			NotNullPtr<UI::GUILabel> lblShapeFmt;
 			NotNullPtr<UI::GUIComboBox> cboShapeFmt;
 			NotNullPtr<UI::GUITextBox> txtShape;
@@ -59,6 +63,7 @@ namespace SSWR
 			Bool layerNames;
 
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
+			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
 			Data::ArrayList<UOSInt> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayList<Text::String*> queryValueList;

@@ -409,14 +409,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		if (pl.Set((Math::Geometry::LineString*)this->track->GetNewVectorById(0, (Int64)this->currTrackId)))
 		{
 			NotNullPtr<Math::Geometry::Polyline> pl2 = pl->CreatePolyline();
-			if (pl->HasZ())
-			{
-				dist = coord->CalPLDistance3D(pl2, Math::Unit::Distance::DU_METER);
-			}
-			else
-			{
-				dist = coord->CalPLDistance(pl2, Math::Unit::Distance::DU_METER);
-			}
+			dist = coord->CalDistance(pl2, pl->HasZ(), Math::Unit::Distance::DU_METER);
 			pl2.Delete();
 			pl.Delete();
 		}

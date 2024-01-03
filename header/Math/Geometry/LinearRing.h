@@ -16,6 +16,7 @@ namespace Math
 			virtual VectorType GetVectorType() const;
 			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
+			virtual Double CalArea() const;
 			Bool IsOpen() const;
 			Bool IsClose() const;
 		};

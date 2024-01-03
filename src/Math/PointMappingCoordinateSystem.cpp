@@ -109,7 +109,7 @@ Double Math::PointMappingCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl p
 	return this->baseCSys->CalSurfaceDistance(ptList[0], ptList[1], unit);
 }
 
-Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	NotNullPtr<Math::Geometry::LineString> tmpLS = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
 	Double ret = 0;
@@ -119,22 +119,7 @@ Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);
 	}
-	ret = this->baseCSys->CalLineStringDistance(tmpLS, unit);
-	tmpLS.Delete();
-	return ret;
-}
-
-Double Math::PointMappingCoordinateSystem::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
-{
-	NotNullPtr<Math::Geometry::LineString> tmpLS = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
-	Double ret = 0;
-	UOSInt i;
-	Math::Coord2DDbl *ptList = tmpLS->GetPointList(i);
-	while (i-- > 0)
-	{
-		ptList[i] = CalcBaseXY(ptList[i]);
-	}
-	ret = this->baseCSys->CalLineStringDistance3D(tmpLS, unit);
+	ret = this->baseCSys->CalLineStringDistance(tmpLS, include3D, unit);
 	tmpLS.Delete();
 	return ret;
 }

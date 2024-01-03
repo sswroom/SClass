@@ -46,6 +46,11 @@ Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutP
 	return ang * 180 / Math::PI;
 }
 
+Double Math::Geometry::Ellipse::CalArea() const
+{
+	return this->size.CalcArea() * Math::PI * 0.25;
+}
+
 Bool Math::Geometry::Ellipse::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;

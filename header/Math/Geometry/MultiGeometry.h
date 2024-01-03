@@ -129,6 +129,17 @@ namespace Math
 				return minDist;
 			}
 
+			virtual Double CalArea() const
+			{
+				Double totalArea = 0;
+				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				while (it.HasNext())
+				{
+					totalArea += it.Next()->CalArea();
+				}
+				return totalArea;
+			}
+
 			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 			{
 				if (this->GetVectorType() != vec->GetVectorType())

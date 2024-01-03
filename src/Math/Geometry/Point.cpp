@@ -48,6 +48,11 @@ Double Math::Geometry::Point::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutPar
 	return diff.x + diff.y;
 }
 
+Double Math::Geometry::Point::CalArea() const
+{
+	return 0;
+}
+
 Bool Math::Geometry::Point::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;

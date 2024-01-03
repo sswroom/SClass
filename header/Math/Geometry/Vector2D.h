@@ -53,6 +53,7 @@ namespace Math
 			virtual Math::RectAreaDbl GetBounds() const = 0;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const = 0;
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
+			virtual Double CalArea() const = 0;
 			virtual Bool JoinVector(NotNullPtr<const Vector2D> vec) = 0;
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };

@@ -259,6 +259,11 @@ Double Math::Geometry::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, OutParam
 	return near.x + near.y;
 }
 
+Double Math::Geometry::VectorImage::CalArea() const
+{
+	return 0;
+}
+
 Bool Math::Geometry::VectorImage::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;

@@ -26,6 +26,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		NotNullPtr<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+		NotNullPtr<Math::Geometry::Vector2D> vec;
 		if (!csys->Equals(lyrCSys))
 		{
 			mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
@@ -35,7 +36,6 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		{
 			if (me->lyr->QueryInfos(mapPt, me->queryVecList, &me->queryValueOfstList, &me->queryNameList, &me->queryValueList) && me->queryVecList.GetCount() > 0)
 			{
-				NotNullPtr<Math::Geometry::Vector2D> vec;
 				me->cboObj->ClearItems();
 				i = 0;
 				j = me->queryVecList.GetCount();
@@ -55,7 +55,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					i = me->queryVecList.GetCount();
 					while (i-- > 0)
 					{
-						me->queryVecList.GetItemNoCheck(i)->Convert(converter);
+						vec = me->queryVecList.GetItemNoCheck(i);
+						me->queryVecOriList.Add(vec->Clone());
+						vec->Convert(converter);
 					}
 				}
 
@@ -107,6 +109,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					if (!csys->Equals(lyrCSys))
 					{
 						Math::CoordinateSystemConverter converter(lyrCSys, csys);
+						me->queryVecOriList.Add(vec->Clone());
 						vec->Convert(converter);
 					}
 					sb.ClearStr();
@@ -218,12 +221,8 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 {
 	Text::String *value;
-	UOSInt i = this->queryNameList.GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(this->queryNameList.GetItem(i));
-	}
-	i = this->queryValueList.GetCount();
+	this->queryNameList.FreeAll();
+	UOSInt i = this->queryValueList.GetCount();
 	while (i-- > 0)
 	{
 		value = this->queryValueList.GetItem(i);
@@ -233,6 +232,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 	this->queryValueList.Clear();
 	this->queryValueOfstList.Clear();
 	this->queryVecList.Clear();
+	this->queryVecOriList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
@@ -240,7 +240,10 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	NotNullPtr<Math::Geometry::Vector2D> vec;
 	if (!this->queryVecList.GetItem(index).SetTo(vec))
 		return;
-	vec = vec->Clone();
+	SDEL_CLASS(this->currVec);
+	this->currVec = vec->Clone().Ptr();
+
+	this->queryVecOriList.GetItem(index).SetTo(vec);
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -286,6 +289,20 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	Text::StringBuilderUTF8 sb;
 	writer->ToText(sb, vec);
 	this->txtShape->SetText(sb.ToCString());
+	NotNullPtr<Math::CoordinateSystem> csys = this->lyr->GetCoordinateSystem();
+	sb.ClearStr();
+	sb.AppendDouble(csys->CalDistance(vec, false, Math::Unit::Distance::DU_METER));
+	this->txtShapeLength->SetText(sb.ToCString());
+	sb.ClearStr();
+	if (csys->IsProjected())
+	{
+		sb.AppendDouble(vec->CalArea());
+	}
+	else
+	{
+		sb.AppendDouble(vec->CalArea() / 0.0174532925199433 / 0.0174532925199433);
+	}
+	this->txtShapeArea->SetText(sb.ToCString());
 
 	sptr = Text::StrDouble(sbuff, bounds.min.x);
 	this->txtMinX->SetText(CSTRP(sbuff, sptr));
@@ -295,9 +312,6 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->txtMaxX->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrDouble(sbuff, bounds.max.y);
 	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
-
-	SDEL_CLASS(this->currVec);
-	this->currVec = vec.Ptr();
 }
 
 SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapDrawLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
@@ -333,12 +347,20 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 
 	this->tpShape = this->tcMain->AddTabPage(CSTR("Shape"));
 	this->pnlShape = ui->NewPanel(this->tpShape);
-	this->pnlShape->SetRect(0, 0, 100, 31, false);
+	this->pnlShape->SetRect(0, 0, 100, 79, false);
 	this->pnlShape->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblShapeLength = ui->NewLabel(this->pnlShape, CSTR("Length"));
+	this->lblShapeLength->SetRect(4, 4, 100, 23, false);
+	this->txtShapeLength = ui->NewTextBox(this->pnlShape, CSTR(""));
+	this->txtShapeLength->SetRect(104, 4, 150, 23, false);
+	this->lblShapeArea = ui->NewLabel(this->pnlShape, CSTR("Area"));
+	this->lblShapeArea->SetRect(4, 28, 100, 23, false);
+	this->txtShapeArea = ui->NewTextBox(this->pnlShape, CSTR(""));
+	this->txtShapeArea->SetRect(104, 28, 150, 23, false);
 	this->lblShapeFmt = ui->NewLabel(this->pnlShape, CSTR("Format"));
-	this->lblShapeFmt->SetRect(4, 4, 100, 23, false);
+	this->lblShapeFmt->SetRect(4, 52, 100, 23, false);
 	this->cboShapeFmt = ui->NewComboBox(this->pnlShape, false);
-	this->cboShapeFmt->SetRect(104, 4, 200, 23, false);
+	this->cboShapeFmt->SetRect(104, 52, 200, 23, false);
 	this->cboShapeFmt->HandleSelectionChange(OnShapeFmtChanged, this);
 	this->txtShape = ui->NewTextBox(this->tpShape, CSTR(""), true);
 	this->txtShape->SetDockType(UI::GUIControl::DOCK_FILL);

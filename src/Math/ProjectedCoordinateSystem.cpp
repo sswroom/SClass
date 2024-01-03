@@ -47,56 +47,61 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
-{
-	UOSInt nPoint;
-	Math::Coord2DDbl *points;
-	points = lineString->GetPointList(nPoint);
-	UOSInt j = nPoint;
-	Double totalDist = 0;
-	Bool hasLast;
-	Math::Coord2DDbl lastPt;
-	hasLast = false;
-	while (j-- > 0)
-	{
-		if (hasLast)
-		{
-			totalDist += CalSurfaceDistance(lastPt, points[j], unit);
-		}
-		hasLast = true;
-		lastPt = points[j];
-	}
-	return totalDist;
-}
-
-Double Math::ProjectedCoordinateSystem::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nAlts;
 	Math::Coord2DDbl *points;
 	Double *alts;
 	points = lineString->GetPointList(nPoint);
-	alts = lineString->GetZList(nAlts);
 	UOSInt j = nPoint;
-	Double dist;
 	Double totalDist = 0;
-	Bool hasLast;
+	Double dist;
 	Math::Coord2DDbl lastPt;
 	Double lastH;
-	hasLast = false;
-	while (j-- > 0)
+	if (j == 0)
+		return 0;
+	if (include3D && (alts = lineString->GetZList(nAlts)) != 0)
 	{
-		if (hasLast)
+		if (lineString->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
+		{
+			lastPt = points[0];
+			lastH = alts[0];
+		}
+		else
+		{
+			j--;
+			lastPt = points[j];
+			lastH = alts[j];
+		}
+		while (j-- > 0)
 		{
 			dist = CalSurfaceDistance(lastPt, points[j], unit);
 			dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 			totalDist += dist;
+			lastPt = points[j];
+			lastH = alts[j];
 		}
-		hasLast = true;
-		lastPt = points[j];
-		lastH = alts[j];
+		return totalDist;
 	}
-	return totalDist;
+	else
+	{
+		if (lineString->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
+		{
+			lastPt = points[0];
+		}
+		else
+		{
+			j--;
+			lastPt = points[j];
+		}
+		while (j-- > 0)
+		{
+			totalDist += CalSurfaceDistance(lastPt, points[j], unit);
+			lastPt = points[j];
+		}
+		return totalDist;
+	}
 }
 
 Bool Math::ProjectedCoordinateSystem::IsProjected() const

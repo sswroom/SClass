@@ -113,55 +113,61 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	return d;
 }
 
-Double Math::EarthEllipsoid::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
-{
-	UOSInt nPoint;
-	Math::Coord2DDbl *points;
-	points = lineString->GetPointList(nPoint);
-	UOSInt j = nPoint;
-	Double totalDist = 0;
-	Math::Coord2DDbl lastPt;
-	if (j-- > 0)
-	{
-		lastPt = points[j];
-		while (j-- > 0)
-		{
-			totalDist += CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
-			lastPt = points[j];
-		}
-	}
-	return totalDist;
-}
-
-Double Math::EarthEllipsoid::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nAlts;
 	Math::Coord2DDbl *points;
 	Double *alts;
 	points = lineString->GetPointList(nPoint);
-	alts = lineString->GetZList(nAlts);
 	UOSInt j = nPoint;
-	Double dist;
 	Double totalDist = 0;
+	Double dist;
 	Math::Coord2DDbl lastPt;
 	Double lastH;
-	Double altDiff;
-	if (j-- > 0)
+	if (j == 0)
+		return 0;
+	if (include3D && (alts = lineString->GetZList(nAlts)) != 0)
 	{
-		lastPt = points[j];
-		lastH = alts[j];
+		if (lineString->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
+		{
+			lastPt = points[0];
+			lastH = alts[0];
+		}
+		else
+		{
+			j--;
+			lastPt = points[j];
+			lastH = alts[j];
+		}
 		while (j-- > 0)
 		{
-			dist = CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
-			altDiff = (alts[j] - lastH);
-			dist = Math_Sqrt(dist * dist + altDiff * altDiff);
+			dist = CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);;
+			dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 			totalDist += dist;
 			lastPt = points[j];
 			lastH = alts[j];
 		}
+		return totalDist;
 	}
-	return totalDist;
+	else
+	{
+		if (lineString->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
+		{
+			lastPt = points[0];
+		}
+		else
+		{
+			j--;
+			lastPt = points[j];
+		}
+		while (j-- > 0)
+		{
+			totalDist += CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
+			lastPt = points[j];
+		}
+		return totalDist;
+	}
 }
 
 Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
@@ -173,7 +179,7 @@ Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> 
 	{
 		if (pl->GetItem(i).SetTo(lineString))
 		{
-			totalDist += CalLineStringDistance(lineString, unit);
+			totalDist += CalLineStringDistance(lineString, false, unit);
 		}
 	}
 	return totalDist;
@@ -188,7 +194,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline
 	{
 		if (pl->GetItem(i).SetTo(lineString))
 		{
-			totalDist += CalLineStringDistance3D(lineString, unit);
+			totalDist += CalLineStringDistance(lineString, true, unit);
 		}
 	}
 	return totalDist;
