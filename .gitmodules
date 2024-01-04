@@ -4,3 +4,6 @@
 [submodule "js/leaflet-easyPrint"]
 	path = js/leaflet-easyPrint
 	url = https://github.com/sswroom/leaflet-easyPrint.git
+[submodule "js/leaflet-drawText"]
+	path = js/leaflet-drawText
+	url = https://github.com/sswroom/leaflet-drawText.git

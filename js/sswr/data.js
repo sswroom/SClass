@@ -236,6 +236,19 @@ export function sort(arr, compareFunc, firstIndex, lastIndex)
 	}
 }
 
+export function mergeOptions(options, defOptions)
+{
+	if (options == null)
+		options = {};
+	var i;
+	for (i in defOptions)
+	{
+		if (options[i] == null)
+			options[i] = defOptions[i];
+	}
+	return options;
+}
+
 export class DateValue
 {
 	constructor()

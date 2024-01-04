@@ -4,6 +4,7 @@ export function toObjectString(o: any, lev: number): string;
 export function arrayBuffer2Base64(buff: any): string;
 export function compare(a: any, b: any): number;
 export function sort(arr: object[], compareFunc?: (val1: object, val2: object) => number, firstIndex?: number, lastIndex?: number): void;
+export function mergeOptions(options: object | null, defOptions: object): object;
 
 export class DateValue
 {
