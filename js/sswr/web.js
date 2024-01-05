@@ -43,7 +43,6 @@ export class Dialog
 {
 	constructor(content, options)
 	{
-		this.showing = false;
 		this.content = content;
 		this.options = data.mergeOptions(options, {
 			width: 200,
@@ -51,14 +50,14 @@ export class Dialog
 			zIndex: 100,
 			buttonClass: "dialog-button",
 			contentClass: "dialog-content",
-			buttons: [Dialog.closeButton()]
+			buttons: [this.closeButton()]
 			});
 		this.darkColor = null;
 	}
 
 	show()
 	{
-		if (this.showing)
+		if (this.darkColor)
 			return;
 		var darkColor = document.createElement("div");
 		darkColor.style.position = "absolute";
@@ -76,39 +75,53 @@ export class Dialog
 		this.darkColor = darkColor;
 		var dialog = document.createElement("div");
 		dialog.style.backgroundColor = "#ffffff";
-		dialog.style.width = "200px";
-		dialog.style.height = "200px";
+		var width;
+		var height;
+		if (typeof this.options.width == "number")
+			width = this.options.width + "px";
+		else
+			width = this.options.width;
+		if (typeof this.options.height == "number")
+			height = this.options.height + "px";
+		else
+			height = this.options.height;
+		dialog.style.width = width;
+		dialog.style.height = height;
 		this.darkColor.appendChild(dialog);
 
 		var content = document.createElement("table");
 		content.setAttribute("border", "0");
-		content.setAttribute("width", "100%");
-		content.setAttribute("height", "100%");
+		content.style.width = width;
+		content.style.height = height;
 		var row = document.createElement("tr");
-		var col = document.createElement("td");
-		col.setAttribute("colspan", this.options.buttons.length);
-		col.className = this.options.contentClass;
+		var contentCell = document.createElement("td");
+		contentCell.setAttribute("colspan", this.options.buttons.length);
+		contentCell.className = this.options.contentClass;
+		contentCell.style.overflowY = "auto";
 		if (this.content instanceof HTMLElement)
-			col.appendChild(this.content);
+			contentCell.appendChild(this.content);
 		else
-			col.innerHTML = this.content;
-		row.appendChild(col);
+			contentCell.innerHTML = this.content;
+		row.appendChild(contentCell);
 		content.appendChild(row);
 		row = document.createElement("tr");
 		row.setAttribute("height", "20");
 		var i;
+		var col;
 		for (i in this.options.buttons)
 		{
 			col = document.createElement("td");
 			col.style.textAlign = "center";
 			col.style.verticalAlign = "middle";
 			col.className = this.options.buttonClass;
-			col.onclick = this.options.buttons[i].onclick;
+			col.addEventListener("click", this.options.buttons[i].onclick, this);
 			col.innerText = this.options.buttons[i].name;
 			row.append(col);
 		}
 		content.appendChild(row);
 		dialog.appendChild(content);
+		contentCell.style.display = "inline-block";
+		contentCell.style.height = (dialog.offsetHeight - row.offsetHeight)+"px";
 	}
 
 	close()
@@ -120,7 +133,17 @@ export class Dialog
 		}
 	}
 
-	static closeButton(name)
+	setContent(content)
+	{
+		this.content = content;
+	}
+
+	updateOption(name, value)
+	{
+		this.options[name] = value;
+	}
+
+	closeButton(name)
 	{
 		if (name == null) name = "Close";
 		return {name: name, onclick: ()=>{this.close();}};

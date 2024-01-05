@@ -20,7 +20,6 @@ declare class DialogOptions
 
 export class Dialog
 {
-	showing: boolean;
 	content: string | HTMLElement;
 	options: DialogOptions;
 	darkColor?: HTMLElement;
@@ -28,6 +27,7 @@ export class Dialog
 	constructor(content: string | HTMLElement, options?: DialogOptions);
 	show(): void;
 	close(): void;
-	
-	static closeButton(name?: string): void;
+	setContent(content: string): void;
+	updateOption(name: string, value: any): void;
+	closeButton(name?: string): void;
 }
