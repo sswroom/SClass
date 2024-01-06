@@ -1,10 +1,11 @@
-import { AngleUnit, DistanceUnit } from "./unit";
+import * as geometry from "./geometry";
+import * as unit from "./unit";
 
 export function roundToFloat(n: number, decimalPoints: number): number;
 export function roundToStr(n: number, decimalPoints: number): string;
 export class GeoJSON
 {
-	static parseGeometry(srid: null, geom: object): Vector2D | null;
+	static parseGeometry(srid: null, geom: object): geometry.Vector2D | null;
 };
 
 export class Coord2D
@@ -66,7 +67,7 @@ export class EarthEllipsoid
 	eet: EarthEllipsoidType;
 	eccentricity: number;
 	constructor(semiMajorAxis: number, inverseFlattening: number, eet: EarthEllipsoidType);
-	calSurfaceDistance(dLat1: number, dLon1: number, dLat2: number, dLon2: number, distUnit: DistanceUnit): number;
+	calSurfaceDistance(dLat1: number, dLon1: number, dLat2: number, dLon2: number, distUnit: unit.DistanceUnit): number;
 	getSemiMajorAxis(): number;
 	getSemiMinorAxis(): number;
 	getInverseFlattening(): number;
@@ -103,9 +104,9 @@ export class DatumData
 	yAngle: number;
 	zAngle: number;
 	scale: number;
-	aunit: AngleUnit;
+	aunit: unit.AngleUnit;
 
-	constructor(srid: number, spheroid: Spheroid, name: string, x0: number, y0: number, z0: number, cX: number, cY: number, cZ: number, xAngle: number, yAngle: number, zAngle: number, scale: number, aunit: AngleUnit);
+	constructor(srid: number, spheroid: Spheroid, name: string, x0: number, y0: number, z0: number, cX: number, cY: number, cZ: number, xAngle: number, yAngle: number, zAngle: number, scale: number, aunit: unit.AngleUnit);
 }
 
 export enum CoordinateSystemType
@@ -123,7 +124,7 @@ export abstract class CoordinateSystem
 	csysName: string;
 
 	constructor(srid: number, csysName: string);
-	abstract calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, distUnit: DistanceUnit) : number;
+	abstract calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, distUnit: unit.DistanceUnit) : number;
 	abstract getCoordSysType(): CoordinateSystemType;
 	abstract isProjected(): boolean;
 
@@ -140,7 +141,7 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 	datum: DatumData;
 	
 	constructor(srid: number, csysName: string, datumData: DatumData);
-	calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, unit: DistanceUnit): number;
+	calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, unit: unit.DistanceUnit): number;
 	getCoordSysType(): CoordinateSystemType;
 	isProjected(): boolean;
 
@@ -161,7 +162,7 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 	scaleFactor: number;
 	gcs: GeographicCoordinateSystem;
 	constructor(srid: number, csysName: string, falseEasting: number, falseNorthing: number, dcentralMeridian: number, dlatitudeOfOrigin: number, scaleFactor: number, gcs: GeographicCoordinateSystem);
-	calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, distUnit: DistanceUnit): number;
+	calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, distUnit: unit.DistanceUnit): number;
 	isProjected(): boolean;
 
 	getGeographicCoordinateSystem(): GeographicCoordinateSystem;

@@ -4,3 +4,4 @@ build/*/smake.exe
 build/*/DBConn.dat
 
 doc/
+node_modules/

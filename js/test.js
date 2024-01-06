@@ -1,4 +1,3 @@
-import * as sswr from "./sswr/sswr.js";
 import * as math from "./sswr/math.js";
 import * as map from "./sswr/map.js";
 import * as web from "./sswr/web.js";
@@ -9,7 +8,7 @@ function burialSiteReceived(result)
 	var pg = math.GeoJSON.parseGeometry(4326, result.features[0].geometry);
 	var x = 114.22122894202;
 	var y = 22.362089455590;
-	console.log("Distance = "+map.calcDistance(4326, pg, x, y) + ", "+pg.insideVector(x, y));
+	console.log("Distance = "+map.calcDistance(4326, pg, x, y) + ", "+pg.insideOrTouch(new math.Coord2D(x, y)));
 }
 
 function geomDistTest()

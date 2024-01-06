@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sswroom",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "cesium": "^1.113.0",
+    "leaflet": "^1.9.4"
+  }
 }

@@ -1,3 +1,5 @@
+import * as math from "./math";
+
 declare class BoundaryPointResult
 {
 	x: number;
@@ -5,37 +7,79 @@ declare class BoundaryPointResult
 	dist: number;
 };
 
+export enum VectorType
+{
+	Unknown,
+	Point,
+	LineString,
+	Polygon,
+	MultiPoint,
+	Polyline, //MultiLineString
+	MultiPolygon,
+	GeometryCollection,
+	CircularString,
+	CompoundCurve,
+	CurvePolygon,
+	MultiCurve,
+	MultiSurface,
+	Curve,
+	Surface,
+	PolyhedralSurface,
+	Tin,
+	Triangle,
+	LinearRing,
+
+	Image,
+	String,
+	Ellipse,
+	PieArea
+}
+
 export class Vector2D {
-	type: string;
+	type: VectorType;
 	constructor(srid: number);
-	insideVector(x: number, y: number): boolean;
+	insideOrTouch(coord: math.Coord2D): boolean;
 };
+
+export class Point extends Vector2D
+{
+	coordinates: number[];
+	constructor(srid: number, coordinates: number[] | math.Coord2D | math.Vector3);
+	insideOrTouch(coord: math.Coord2D): boolean;
+}
+
 
 export class LineString extends Vector2D
 {
 	coordinates: number[][];
 	constructor(srid: number, coordinates: number[][]);
-	calBoundaryPoint(x: number, y: number): BoundaryPointResult;
+	calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
+	insideOrTouch(coord: math.Coord2D): boolean;
 }
 
-export class MultiGeometry extends Vector2D
+export class LinearRing extends LineString
 {
-	coordinates: Vector2D[];
+	constructor(srid: number, coordinates: number[][]);
+	insideOrTouch(coord: math.Coord2D): boolean;
+	isOpen(): boolean;
+	isClose(): boolean;
+}
+
+export class MultiGeometry<VecType> extends Vector2D
+{
+	geometries: VecType[];
 
 	constructor(srid: number);
-	calBoundaryPoint(x: number, y: number): BoundaryPointResult;
-	insideVector(x: number, y: number): boolean;
+	calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
+	insideOrTouch(coord: math.Coord2D): boolean;
 }
 
-export class MultiPolygon extends MultiGeometry
+export class Polygon extends MultiGeometry<LinearRing>
+{
+	constructor(srid: number, coordinates: number[][][]);
+}
+
+export class MultiPolygon extends MultiGeometry<Polygon>
 {
 	constructor(srid: number, coordinates: number[][][][]);
-}
-
-export class Polygon extends Vector2D
-{
-	coordinates: number[][][];
-	constructor(srid: number, coordinates: number[][][]);
-	calBoundaryPoint(x: number, y: number): BoundaryPointResult;
-	insideVector(x: number, y: number): boolean;
 }

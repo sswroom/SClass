@@ -17,7 +17,7 @@ export const WebMapType = {
 
 export function calcDistance(srid, geom, x, y)
 {
-	var pt = geom.calBoundaryPoint(x, y);
+	var pt = geom.calBoundaryPoint(new math.Coord2D(x, y));
 	var csys = math.CoordinateSystemManager.srCreateCsys(srid);
 	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, DistanceUnit.METER);
 }
