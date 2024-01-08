@@ -189,9 +189,9 @@ Text::CStringNN Net::SSHManager::ErrorGetName(Int32 errorCode)
 		return CSTR("Keyfile Auth Failed");
 	case LIBSSH2_ERROR_RANDGEN:
 		return CSTR("Randgen");
-	case LIBSSH2_ERROR_MISSING_USERAUTH_BANNER:
+	case -50: //LIBSSH2_ERROR_MISSING_USERAUTH_BANNER:
 		return CSTR("Missing Userauth Banner");
-	case LIBSSH2_ERROR_ALGO_UNSUPPORTED:
+	case -51: //LIBSSH2_ERROR_ALGO_UNSUPPORTED:
 		return CSTR("Algo Unsupported");
 	default:
 		return CSTR("Unknown");
