@@ -16,6 +16,7 @@ declare class DialogOptions
 	buttonClass?: string;
 	contentClass?: string;
 	buttons?: DialogButton[];
+	margin?: number;
 }
 
 export class Dialog

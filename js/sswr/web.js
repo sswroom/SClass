@@ -50,7 +50,8 @@ export class Dialog
 			zIndex: 100,
 			buttonClass: "dialog-button",
 			contentClass: "dialog-content",
-			buttons: [this.closeButton()]
+			buttons: [this.closeButton()],
+			margin: 0
 			});
 		this.darkColor = null;
 	}
@@ -98,6 +99,12 @@ export class Dialog
 		contentCell.setAttribute("colspan", this.options.buttons.length);
 		contentCell.className = this.options.contentClass;
 		contentCell.style.overflowY = "auto";
+		if (this.options.margin)
+		{
+			contentCell.style.marginLeft = this.options.margin+"px";
+			contentCell.style.marginTop = this.options.margin+"px";
+			contentCell.style.marginRight = this.options.margin+"px";
+		}
 		if (this.content instanceof HTMLElement)
 			contentCell.appendChild(this.content);
 		else
@@ -113,6 +120,10 @@ export class Dialog
 			col = document.createElement("td");
 			col.style.textAlign = "center";
 			col.style.verticalAlign = "middle";
+			if (i == 0 && this.options.margin)
+			{
+				col.style.marginLeft = this.options.margin+"px";
+			}
 			col.className = this.options.buttonClass;
 			col.addEventListener("click", this.options.buttons[i].onclick, this);
 			col.innerText = this.options.buttons[i].name;
@@ -121,7 +132,16 @@ export class Dialog
 		content.appendChild(row);
 		dialog.appendChild(content);
 		contentCell.style.display = "inline-block";
-		contentCell.style.height = (dialog.offsetHeight - row.offsetHeight)+"px";
+		if (this.options.margin)
+		{
+			var minHeight = row.offsetHeight;
+			row.setAttribute("height", this.options.margin + minHeight);
+			contentCell.style.height = (dialog.offsetHeight - minHeight - this.options.margin - this.options.margin)+"px";
+		}
+		else
+		{
+			contentCell.style.height = (dialog.offsetHeight - row.offsetHeight)+"px";
+		}
 	}
 
 	close()
