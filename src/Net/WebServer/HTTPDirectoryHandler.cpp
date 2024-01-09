@@ -529,13 +529,27 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	Text::CStringNN mime;
 	NotNullPtr<Sync::RWMutex> packageMut;
 	UOSInt i;
+	Bool dirPath;
 	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
 	}
 	if (subReq.leng == 0)
 	{
-		subReq = CSTR("/");
+		sb.ClearStr();
+		sb.Append(req->GetRequestURI());
+		i = sb.IndexOf('?');
+		if (i != INVALID_INDEX)
+		{
+			sb.TrimToLength(i);
+			sb.AppendUTF8Char('/');
+			sb.Append(req->GetRequestURI()->ToCString().Substring(i));
+		}
+		else
+		{
+			sb.AppendUTF8Char('/');
+		}
+		return resp->RedirectURL(req, sb.ToCString(), 0);
 	}
 	if (!this->FileValid(subReq))
 	{
@@ -553,6 +567,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 		{
 			sb.Append(subReq);
 		}
+		dirPath = sb.EndsWith('/');
 		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
 		Text::CStringNN dirName = sb.ToCString();
 		if (i != INVALID_INDEX)
@@ -583,23 +598,47 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				NotNullPtr<IO::VirtualPackageFile> vpackageFile = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(packageFile);
 				if (i == INVALID_INDEX || sptr[0] == 0)
 				{
-					NotNullPtr<const IO::PackFileItem> pitem2;
-					if (vpackageFile->GetPackFileItem((const UTF8Char*)"index.html").SetTo(pitem2) && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
+					if (dirPath)
 					{
-						if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
+						NotNullPtr<const IO::PackFileItem> pitem2;
+						if (vpackageFile->GetPackFileItem((const UTF8Char*)"index.html").SetTo(pitem2) && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
+						{
+							if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
+							{
+								ResponsePackageFile(req, resp, subReq, vpackageFile);
+							}
+						}
+						else
 						{
 							ResponsePackageFile(req, resp, subReq, vpackageFile);
 						}
+						if (needRelease)
+						{
+							vpackageFile.Delete();
+						}
+						return true;
 					}
 					else
 					{
-						ResponsePackageFile(req, resp, subReq, vpackageFile);
+						if (needRelease)
+						{
+							vpackageFile.Delete();
+						}
+						sb.ClearStr();
+						sb.Append(req->GetRequestURI());
+						i = sb.IndexOf('?');
+						if (i != INVALID_INDEX)
+						{
+							sb.TrimToLength(i);
+							sb.AppendUTF8Char('/');
+							sb.Append(req->GetRequestURI()->ToCString().Substring(i));
+						}
+						else
+						{
+							sb.AppendUTF8Char('/');
+						}
+						return resp->RedirectURL(req, sb.ToCString(), 0);
 					}
-					if (needRelease)
-					{
-						vpackageFile.Delete();
-					}
-					return true;
 				}
 				NotNullPtr<const IO::PackFileItem> pitem;
 				if (vpackageFile->GetPackFileItem(sptr).SetTo(pitem))
@@ -622,42 +661,70 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 						NotNullPtr<IO::PackageFile> innerPF;
 						if (vpackageFile->GetPItemPack(pitem, innerNeedRelease).SetTo(innerPF))
 						{
-							UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
-							if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
+							if (dirPath)
 							{
-								NotNullPtr<IO::StreamData> stmData;
-								if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
+								UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
+								if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
 								{
-									UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-									Data::ByteBuffer dataBuff(dataLen);
-									stmData->GetRealData(0, dataLen, dataBuff);
-									stmData.Delete();
-									mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
+									NotNullPtr<IO::StreamData> stmData;
+									if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
+									{
+										UOSInt dataLen = (UOSInt)stmData->GetDataSize();
+										Data::ByteBuffer dataBuff(dataLen);
+										stmData->GetRealData(0, dataLen, dataBuff);
+										stmData.Delete();
+										mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
 
-									resp->EnableWriteBuffer();
-									this->AddResponseHeaders(req, resp);
-									resp->AddLastModified(innerPF->GetItemModTime(index2));
-									resp->AddContentType(mime);
-									Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
+										resp->EnableWriteBuffer();
+										this->AddResponseHeaders(req, resp);
+										resp->AddLastModified(innerPF->GetItemModTime(index2));
+										resp->AddContentType(mime);
+										Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
+									}
+									else
+									{
+										ResponsePackageFile(req, resp, subReq, innerPF);
+									}
 								}
 								else
 								{
 									ResponsePackageFile(req, resp, subReq, innerPF);
 								}
+								if (innerNeedRelease)
+								{
+									innerPF.Delete();
+								}
+								if (needRelease)
+								{
+									packageFile.Delete();
+								}
+								return true;
 							}
 							else
 							{
-								ResponsePackageFile(req, resp, subReq, innerPF);
+								if (innerNeedRelease)
+								{
+									innerPF.Delete();
+								}
+								if (needRelease)
+								{
+									vpackageFile.Delete();
+								}
+								sb.ClearStr();
+								sb.Append(req->GetRequestURI());
+								i = sb.IndexOf('?');
+								if (i != INVALID_INDEX)
+								{
+									sb.TrimToLength(i);
+									sb.AppendUTF8Char('/');
+									sb.Append(req->GetRequestURI()->ToCString().Substring(i));
+								}
+								else
+								{
+									sb.AppendUTF8Char('/');
+								}
+								return resp->RedirectURL(req, sb.ToCString(), 0);
 							}
-							if (innerNeedRelease)
-							{
-								innerPF.Delete();
-							}
-							if (needRelease)
-							{
-								packageFile.Delete();
-							}
-							return true;
 						}
 					}
 				}
@@ -761,6 +828,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 		sptr2[-1] = 0;
 		sptrLen = i;
 	}
+	dirPath = sptr[sptrLen - 1] == '/';
 	if (IO::Path::PATH_SEPERATOR != '/')
 	{
 		Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
@@ -773,6 +841,23 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
+		if (!dirPath)
+		{
+			sb.ClearStr();
+			sb.Append(req->GetRequestURI());
+			i = sb.IndexOf('?');
+			if (i != INVALID_INDEX)
+			{
+				sb.TrimToLength(i);
+				sb.AppendUTF8Char('/');
+				sb.Append(req->GetRequestURI()->ToCString().Substring(i));
+			}
+			else
+			{
+				sb.AppendUTF8Char('/');
+			}
+			return resp->RedirectURL(req, sb.ToCString(), 0);
+		}
 		Text::StringBuilderUTF8 sb2;
 		sb2.AppendC(sb.ToString(), sb.GetLength());
 		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
