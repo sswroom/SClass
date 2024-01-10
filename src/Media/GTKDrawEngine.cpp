@@ -72,7 +72,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 	}
 
 	Media::DrawImage *dimg = 0;
-	NotNullPtr<Media::Image> img;
+	NotNullPtr<Media::RasterImage> img;
 	if (img.Set(imgList->GetImage(0, 0)))
 	{
 		dimg = this->ConvImage(img);
@@ -86,7 +86,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(NotNullPtr<IO::SeekableS
 	return 0;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::Image> img)
+Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::RasterImage> img)
 {
 	if (img->info.fourcc != 0)
 	{
@@ -98,7 +98,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::Image> img)
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
 	gimg->info.color.Set(img->info.color);
-	if (img->GetImageType() == Media::Image::ImageType::Static)
+	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
 		NotNullPtr<Media::StaticImage> simg = NotNullPtr<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
@@ -301,7 +301,7 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(NotNullPtr<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::Image(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(NotNullPtr<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;
@@ -1273,19 +1273,19 @@ UOSInt Media::GTKDrawImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-NotNullPtr<Media::Image> Media::GTKDrawImage::Clone() const
+NotNullPtr<Media::RasterImage> Media::GTKDrawImage::Clone() const
 {
 	NotNullPtr<Media::GTKDrawImage> dimg;
 	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype));
 	return dimg;
 }
 
-Media::Image::ImageType Media::GTKDrawImage::GetImageType() const
+Media::RasterImage::ImageType Media::GTKDrawImage::GetImageType() const
 {
-	return Media::Image::ImageType::GUIImage;
+	return Media::RasterImage::ImageType::GUIImage;
 }
 
-void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::GTKDrawImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	this->CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }

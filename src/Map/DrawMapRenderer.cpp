@@ -1404,7 +1404,7 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{
-							Media::Image *pimg = 0;
+							Media::RasterImage *pimg = 0;
 							Double spotX;
 							Double spotY;
 							if (layer.layer->HasIconStyle())
@@ -1665,8 +1665,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 	Double spotY;
 	UOSInt maxLabel = denv->env->GetNString();
 
-	Media::Image *img = 0;
-	NotNullPtr<Media::Image> nnimg;
+	Media::RasterImage *img = 0;
+	NotNullPtr<Media::RasterImage> nnimg;
 	UInt32 imgTimeMS = 0;
 	if (layer->HasIconStyle())
 	{

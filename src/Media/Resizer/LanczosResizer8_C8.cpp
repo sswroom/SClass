@@ -1183,11 +1183,11 @@ Bool Media::Resizer::LanczosResizer8_C8::IsSupported(NotNullPtr<const Media::Fra
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
+	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
 	{
 		return 0;
 	}

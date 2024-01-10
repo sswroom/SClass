@@ -162,7 +162,7 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Math::Coord2D<OSInt> pos)
 	}
 }
 
-void UI::GUIPictureList::Add(Media::Image *img)
+void UI::GUIPictureList::Add(Media::RasterImage *img)
 {
 	NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 	NotNullPtr<Media::StaticImage> nsimg;

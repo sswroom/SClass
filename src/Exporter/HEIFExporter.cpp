@@ -63,7 +63,7 @@ heif_error HEIFExporter_Write(struct heif_context* ctx, const void* data, size_t
 	}
 }
 
-heif_image *HEIFExporter_CreateImage(Media::Image *img)
+heif_image *HEIFExporter_CreateImage(Media::RasterImage *img)
 {
 	heif_chroma chroma;
 	switch (img->info.pf)
@@ -145,7 +145,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 
 		simg = img->CreateStaticImage();
 		simg->To32bpp();
-		simg->GetImageData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		simg.Delete();
 		break;
@@ -153,35 +153,35 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		break;
 	case Media::PF_R8G8B8A8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_B8G8R8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 24);
 		break;
 	case Media::PF_R8G8B8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		break;
 
 	case Media::PF_LE_B16G16R16:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 48);
 		break;
 
@@ -197,7 +197,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 
 		simg = img->CreateStaticImage();
 		simg->To64bpp();
-		simg->GetImageData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, simg->info.rotateType);
+		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, simg->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		simg.Delete();
 		break;
@@ -205,7 +205,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
-		img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		break;
 	default:

@@ -13,7 +13,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::RasterImage *img, Media::ImageList *imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -158,7 +158,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 					if (tagBuff[blkOfst] == 3) // JPG
 					{
 						Media::ImageList *innerImgList;
-						Media::Image *innerImg;
+						Media::RasterImage *innerImg;
 						{
 							IO::StmData::MemoryDataRef mfd(tagBuff.SubArray(blkOfst + 13, blkSize - 32));
 							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
@@ -187,7 +187,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47)
 						{
 							Media::ImageList *innerImgList;
-							Media::Image *innerImg;
+							Media::RasterImage *innerImg;
 							NotNullPtr<Media::StaticImage> stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
@@ -430,7 +430,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 	return true;
 }
 
-void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
+void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::RasterImage *oriImg)
 {
 	if (oriImg != 0 && (!oriImg->exif.IsNull() || oriImg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{

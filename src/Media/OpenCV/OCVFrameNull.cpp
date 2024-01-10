@@ -73,9 +73,11 @@ void Media::OpenCV::OCVFrame::Normalize()
 
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace)
+NotNullPtr<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace)
 {
-	return 0;
+	NotNullPtr<Media::OpenCV::OCVFrame> fr;
+	NEW_CLASSNN(fr, OCVFrame(this->frame));
+	return fr;
 }
 
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
@@ -83,7 +85,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, 
 	return 0;		
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(Media::StaticImage *simg)
+Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(NotNullPtr<Media::StaticImage> simg)
 {
-	return 0;		
+	return 0;
 }

@@ -1552,7 +1552,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				valid = true;
 
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
-				Media::Image *img = imgList->GetImage(0, 0);
+				Media::RasterImage *img = imgList->GetImage(0, 0);
 				if (img)
 				{
 					NotNullPtr<Media::EXIFData> exif;

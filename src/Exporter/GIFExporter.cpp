@@ -27,7 +27,7 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NotNullPt
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
@@ -80,7 +80,7 @@ Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		return false;
 	UInt8 buff[256];
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	UOSInt transparentIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;
@@ -163,7 +163,7 @@ Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			imgSize = 4096;
 		IO::MemoryStream mstm(imgSize);
 		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(&mstm, true, 8, 12, 0));
-		img->GetImageData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, img->info.dispSize.x, false, Media::RotateType::None);
+		img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, img->info.dispSize.x, false, Media::RotateType::None);
 		lzw->Write(imgData, img->info.dispSize.CalcArea());
 		MemFree(imgData);
 		DEL_CLASS(lzw);

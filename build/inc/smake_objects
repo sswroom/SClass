@@ -965,7 +965,6 @@ IAudioSource.o: ../../src/Media/IAudioSource.cpp
 ICCProfile.o: ../../src/Media/ICCProfile.cpp
 IDeintResizer.o: ../../src/Media/IDeintResizer.cpp
 IImgResizer.o: ../../src/Media/IImgResizer.cpp
-Image.o: ../../src/Media/Image.cpp
 ImageAlphaBlend.o: ../../src/Media/ImageAlphaBlend.cpp
 ImageCopy.o: ../../src/Media/ImageCopy.cpp
 ImageGenerator.o: ../../src/Media/ImageGenerator.cpp
@@ -1039,6 +1038,7 @@ PrinterW.o: ../../src/Media/PrinterW.cpp
 !-lgdi32
 !-lcomdlg32
 ProfiledResizer.o: ../../src/Media/ProfiledResizer.cpp
+RasterImage.o: ../../src/Media/RasterImage.cpp
 RefClock.o: ../../src/Media/RefClock.cpp
 RGBColorFilter.o: ../../src/Media/RGBColorFilter.cpp
 RGBLUTGen.o: ../../src/Media/RGBLUTGen.cpp

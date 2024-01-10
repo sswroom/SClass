@@ -184,7 +184,7 @@ IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(NotNullP
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img && img->info.fourcc == 0)
 	{
 		if (img->info.pf == Media::PF_PAL_W1)
@@ -264,7 +264,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	i = 0;
 	while (i < j)
 	{
-		Media::Image *img = imgList->GetImage(i, 0);
+		Media::RasterImage *img = imgList->GetImage(i, 0);
 		UInt32 stripCnt = 1;
 		i++;
 
@@ -922,7 +922,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		UOSInt imgSize = img->info.dispSize.y * ((img->info.dispSize.x * img->info.storeBPP + 7) >> 3);
 		UInt8 *imgData;
 		imgData = MemAlloc(UInt8, imgSize);
-		img->GetImageData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (img->info.dispSize.x * img->info.storeBPP + 7) >> 3, false, Media::RotateType::None);
+		img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (img->info.dispSize.x * img->info.storeBPP + 7) >> 3, false, Media::RotateType::None);
 		switch (img->info.pf)
 		{
 		case Media::PF_B8G8R8A8:

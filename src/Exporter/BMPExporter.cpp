@@ -26,7 +26,7 @@ IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(NotNullPt
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_LE_A2B10G10R10)
@@ -78,7 +78,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 
 	UInt8 buff[138];
 	UOSInt hdrSize = 54;
@@ -256,7 +256,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 
 	UInt8 *imgData = MemAlloc(UInt8, lineSize * img->info.dispSize.y);
-	img->GetImageData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, lineSize, true, Media::RotateType::None);
+	img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, lineSize, true, Media::RotateType::None);
 	stm->Write(imgData, lineSize * img->info.dispSize.y);
 
 	if (iccSize > 0)

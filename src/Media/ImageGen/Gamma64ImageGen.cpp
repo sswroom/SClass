@@ -18,7 +18,7 @@ Text::CStringNN Media::ImageGen::Gamma64ImageGen::GetName() const
 	return CSTR("Gamma Test 64-bit");
 }
 
-Media::Image *Media::ImageGen::Gamma64ImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Media::RasterImage *Media::ImageGen::Gamma64ImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	UInt16 *imgPtr;

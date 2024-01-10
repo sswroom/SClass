@@ -32,7 +32,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(NotNullPtr<Media::ImageList> i
 	Int32 currIndex;
 	UInt64 currSize;
 	UInt64 targetSize;
-	Media::Image *img;
+	Media::RasterImage *img;
 
 	sptr = fileId.ConcatTo(sbuff);
 	sptr = Text::StrConcatC(targetId.ConcatTo(sptr), UTF8STRC(".jpg"));

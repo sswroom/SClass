@@ -1,5 +1,5 @@
-#ifndef _SM_MEDIA_IMAGE
-#define _SM_MEDIA_IMAGE
+#ifndef _SM_MEDIA_RASTERIMAGE
+#define _SM_MEDIA_RASTERIMAGE
 #include "Math/RectArea.h"
 #include "Media/FrameInfo.h"
 #include "Media/EXIFData.h"
@@ -9,7 +9,7 @@ namespace Media
 {
 	class StaticImage;
 
-	class Image
+	class RasterImage
 	{
 	public:
 		enum class ImageType
@@ -28,13 +28,13 @@ namespace Media
 		UInt8 *pal;
 		
 	public:
-		Image(Math::Size2D<UOSInt> dispSize);
-		Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
-		virtual ~Image();
+		RasterImage(Math::Size2D<UOSInt> dispSize);
+		RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		virtual ~RasterImage();
 
-		virtual NotNullPtr<Media::Image> Clone() const = 0;
-		virtual Media::Image::ImageType GetImageType() const = 0;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const = 0;
+		virtual NotNullPtr<Media::RasterImage> Clone() const = 0;
+		virtual Media::RasterImage::ImageType GetImageType() const = 0;
+		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const = 0;
 		void InitGrayPal();
 		UOSInt GetDataBpl() const;
 		Bool IsUpsideDown() const;

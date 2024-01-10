@@ -59,12 +59,12 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	}
 	UInt8 *vp8 = 0;
 	size_t vp8len;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img->info.pf == Media::PF_B8G8R8)
 	{
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
-		img->GetImageData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
+		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (quality < 0)
 		{
 			vp8len = WebPEncodeLosslessBGR(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
@@ -79,7 +79,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	{
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
-		img->GetImageData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
+		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (quality < 0)
 		{
 			vp8len = WebPEncodeLosslessRGB(buff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)bpl, &vp8);
@@ -94,7 +94,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	{
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
-		img->GetImageData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
+		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
 		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
 			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispSize.CalcArea() * 3);

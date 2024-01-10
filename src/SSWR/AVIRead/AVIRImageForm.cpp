@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	UOSInt selInd = me->lbImages->GetSelectedIndex();
-	Media::Image *img = me->imgList->GetImage(selInd, me->currImgDelay);
+	Media::RasterImage *img = me->imgList->GetImage(selInd, me->currImgDelay);
 	me->pbImage->SetImage(img, false);
 	me->currImg = img;
 	me->UpdateInfo();
@@ -56,7 +56,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 			yPos = 0;
 		else if ((UOSInt)yPos >= me->currImg->info.dispSize.y)
 			yPos = (OSInt)me->currImg->info.dispSize.y - 1;
-		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16, false, Media::RotateType::None);
+		me->currImg->GetRasterData(pixel, xPos, yPos, 1, 1, 16, false, Media::RotateType::None);
 		sb.AppendC(UTF8STRC("(x, y) = ("));
 		sb.AppendOSInt(xPos);
 		sb.AppendC(UTF8STRC(", "));
@@ -700,7 +700,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_COLOR:
 		{
 			UOSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
 				NotNullPtr<Media::StaticImage> buffImg = img->CreateStaticImage();
@@ -730,7 +730,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_GR:
 		{
 			UOSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
 				Bool valid = false;
@@ -771,7 +771,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_RESIZE:
 		{
 			UOSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
 				Bool valid = false;
@@ -801,7 +801,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_32BIT:
 		{
 			UOSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
 				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
@@ -819,7 +819,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_64BIT:
 		{
 			UOSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
 				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
@@ -837,7 +837,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILTER_PAL8:
 		{
 			UOSInt selInd = this->lbImages->GetSelectedIndex();
-			Media::Image *img = this->imgList->GetImage(selInd, 0);
+			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
 				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();

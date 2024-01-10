@@ -65,7 +65,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		else
 		{
 			imgList->ToStaticImage(0);
-			Media::Image *img = imgList->GetImage(0, 0);
+			Media::RasterImage *img = imgList->GetImage(0, 0);
 			Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
 			resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
 			NotNullPtr<Media::StaticImage> simg;

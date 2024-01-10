@@ -1366,7 +1366,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 						}
 						if (style->img)
 						{
-							Media::Image *img = style->img->GetImage(0);
+							Media::RasterImage *img = style->img->GetImage(0);
 							if (style->iconSpotX == -1 || style->iconSpotY == -1)
 							{
 								lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));

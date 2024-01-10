@@ -32,7 +32,7 @@ namespace Media
 		DrawImage *CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
-		virtual DrawImage *ConvImage(NotNullPtr<Media::Image> img);
+		virtual DrawImage *ConvImage(NotNullPtr<Media::RasterImage> img);
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
 		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
 		void *GetBlackPen();
@@ -92,7 +92,7 @@ namespace Media
 		Int32 GetCodePage();
 	};
 
-	class GDIImage : public DrawImage, public Image
+	class GDIImage : public DrawImage, public RasterImage
 	{
 	private:
 		GDIEngine *eng;
@@ -182,9 +182,9 @@ namespace Media
 		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm);
 		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm);
 
-		virtual Media::Image *Clone() const;
-		virtual Media::Image::ImageType GetImageType() const;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual NotNullPtr<Media::RasterImage> Clone() const;
+		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		static void PolylineAccel(void *hdc, const Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height);
 		static void PolygonAccel(void *hdc, const Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth);

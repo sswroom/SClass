@@ -188,7 +188,7 @@ Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(NotNullP
 		return 0;
 	}
 	fr = new cv::Mat((int)simg->info.dispSize.y, (int)simg->info.dispSize.x, CV_8UC1);
-	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.dispSize.x, false, Media::RotateType::None);
+	simg->GetRasterData(fr->ptr(0), 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.dispSize.x, false, Media::RotateType::None);
 
 	NotNullPtr<Media::OpenCV::OCVFrame> frame;
 	NEW_CLASSNN(frame, Media::OpenCV::OCVFrame(fr));

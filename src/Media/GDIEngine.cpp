@@ -465,7 +465,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 	return img;
 }
 
-Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::Image> img)
+Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::RasterImage> img)
 {
 	if (img->info.fourcc != 0)
 	{
@@ -476,7 +476,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::Image> img)
 		return 0;
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
-	if (img->GetImageType() == Media::Image::ImageType::Static)
+	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
 		NotNullPtr<Media::StaticImage> simg = NotNullPtr<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
@@ -706,7 +706,7 @@ Int32 Media::GDIFont::GetCodePage()
 	return this->codePage;
 }
 
-Media::GDIImage::GDIImage(GDIEngine *eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype) : Media::Image(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GDIImage::GDIImage(GDIEngine *eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->tl = tl;
@@ -2003,7 +2003,7 @@ Bool Media::GDIImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl
 
 Bool Media::GDIImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
-	if (this->IsOffScreen() && img->GetImageType() == Media::Image::ImageType::Static)
+	if (this->IsOffScreen() && img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
 		Media::StaticImage *simg = img.Ptr();
 		simg->To32bpp();
@@ -2814,17 +2814,17 @@ UOSInt Media::GDIImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-Media::Image *Media::GDIImage::Clone() const
+NotNullPtr<Media::RasterImage> Media::GDIImage::Clone() const
 {
-	return CreateStaticImage().Ptr();
+	return CreateStaticImage();
 }
 
-Media::Image::ImageType Media::GDIImage::GetImageType() const
+Media::RasterImage::ImageType Media::GDIImage::GetImageType() const
 {
-	return Media::Image::ImageType::GUIImage;
+	return Media::RasterImage::ImageType::GUIImage;
 }
 
-void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::GDIImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }

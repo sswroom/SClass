@@ -1158,11 +1158,11 @@ Bool Media::Resizer::LanczosResizerH8_8::IsSupported(NotNullPtr<const Media::Fra
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
+	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
 		return 0;
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)

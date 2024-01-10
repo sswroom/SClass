@@ -73,17 +73,19 @@ Media::DDrawSurface::~DDrawSurface()
 	MemFree(this->clsData);
 }
 
-Media::Image *Media::DDrawSurface::Clone() const
+NotNullPtr<Media::RasterImage> Media::DDrawSurface::Clone() const
 {
-	return 0;
+	NotNullPtr<DDrawSurface> ret;
+	NEW_CLASSNN(ret, Media::DDrawSurface(this->clsData->mgr, this->clsData->lpDD, this->clsData->surface, this->clsData->hMon, false, this->info.rotateType));
+	return ret;
 }
 
-Media::Image::ImageType Media::DDrawSurface::GetImageType() const
+Media::RasterImage::ImageType Media::DDrawSurface::GetImageType() const
 {
-	return Media::Image::ImageType::MonitorSurface;
+	return Media::RasterImage::ImageType::MonitorSurface;
 }
 
-void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::DDrawSurface::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	HRESULT res;
 	DDSURFACEDESC2 ddsd;
@@ -278,7 +280,7 @@ Bool Media::DDrawSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surf
 			}
 			if ((OSInt)buffSize.x > 0 && (OSInt)buffSize.y > 0)
 			{
-				surface->GetImageData((UInt8*)ddsd.lpSurface + (rc.top + destTL.y) * ddsd.lPitch + (rc.left + destTL.x) * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, buffSize.x, buffSize.y, (UInt32)ddsd.lPitch, false, this->info.rotateType);
+				surface->GetRasterData((UInt8*)ddsd.lpSurface + (rc.top + destTL.y) * ddsd.lPitch + (rc.left + destTL.x) * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, buffSize.x, buffSize.y, (UInt32)ddsd.lPitch, false, this->info.rotateType);
 				if (clearScn)
 				{
 					if (destTL.y > 0)

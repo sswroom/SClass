@@ -18,7 +18,7 @@ Text::CStringNN Media::ImageGen::RingsImageGen::GetName() const
 	return CSTR("Rings Image");
 }
 
-Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Media::RasterImage *Media::ImageGen::RingsImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;

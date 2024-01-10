@@ -19,9 +19,9 @@ namespace Media
 
 		Bool IsError() const;
 		
-		virtual NotNullPtr<Media::Image> Clone() const;
-		virtual Media::Image::ImageType GetImageType() const;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual NotNullPtr<Media::RasterImage> Clone() const;
+		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();

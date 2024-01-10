@@ -2215,7 +2215,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				valid = !mustHaveCamera;
 
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
-				Media::Image *img = imgList->GetImage(0, 0);
+				Media::RasterImage *img = imgList->GetImage(0, 0);
 				if (img)
 				{
 					NotNullPtr<Media::EXIFData> exif;

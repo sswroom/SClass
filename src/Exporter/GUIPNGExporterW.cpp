@@ -97,7 +97,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		return false;
 	}
 
-	Media::Image *srcImg = 0;
+	Media::RasterImage *srcImg = 0;
 	NotNullPtr<Media::ImageList> imgList;
 	UInt8 *pngBuff;
 	UOSInt pngSize;

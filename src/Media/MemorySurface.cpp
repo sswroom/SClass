@@ -41,19 +41,19 @@ Bool Media::MemorySurface::IsError() const
 	return this->buffPtr == 0;
 }
 
-NotNullPtr<Media::Image> Media::MemorySurface::Clone() const
+NotNullPtr<Media::RasterImage> Media::MemorySurface::Clone() const
 {
 	NotNullPtr<Media::MemorySurface> surface;
 	NEW_CLASSNN(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, &this->info.color, this->info.hdpi));
 	return surface;
 }
 
-Media::Image::ImageType Media::MemorySurface::GetImageType() const
+Media::RasterImage::ImageType Media::MemorySurface::GetImageType() const
 {
-	return Media::Image::ImageType::MonitorSurface;
+	return Media::RasterImage::ImageType::MonitorSurface;
 }
 
-void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::MemorySurface::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;
@@ -175,14 +175,14 @@ Bool Media::MemorySurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> sur
 				else
 				{
 					UOSInt bpl = this->GetDataBpl();
-					surface->GetImageData((UInt8*)this->buffPtr + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+					surface->GetRasterData((UInt8*)this->buffPtr + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, bpl, false, this->info.rotateType);
 					ImageUtil_ConvR8G8B8N8_ARGB32((UInt8*)this->buffPtr + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), (UInt8*)this->buffPtr + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), dispSize.x, dispSize.y, (OSInt)bpl, (OSInt)bpl);
 				}
 			}
 			else
 			{
-				surface->GetImageData((UInt8*)this->buffPtr + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+				surface->GetRasterData((UInt8*)this->buffPtr + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 					drawX, drawY, buffSize.x, buffSize.y, this->GetDataBpl(), false, this->info.rotateType);
 			}
 

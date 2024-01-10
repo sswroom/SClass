@@ -29,7 +29,7 @@ namespace UI
 		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 
 		UOSInt IndexFromPoint(Math::Coord2D<OSInt> pos);
-		void Add(Media::Image *img);
+		void Add(Media::RasterImage *img);
 		UOSInt GetCount();
 		void RemoveAt(UOSInt index);
 		void Clear();

@@ -5,7 +5,7 @@
 #include "IO/StreamData.h"
 #include "Media/IImgResizer.h"
 #include "Media/FrameInfo.h"
-#include "Media/Image.h"
+#include "Media/RasterImage.h"
 #include "Parser/ParserList.h"
 
 Parser::ParserList::ParserList()

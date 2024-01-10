@@ -393,7 +393,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNu
 		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		if (imgList)
 		{
-			Media::Image *img = imgList->GetImage(0, 0);
+			Media::RasterImage *img = imgList->GetImage(0, 0);
 			NotNullPtr<Media::EXIFData> exif;
 			if (img && img->exif.SetTo(exif) && exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
 			{

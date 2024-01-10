@@ -61,7 +61,7 @@ Bool Media::OCREngine::SetParsingImage(NotNullPtr<Media::StaticImage> img)
 	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.hdpi * img->info.par2));
 	UOSInt wpl = (UOSInt)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
-	img->GetImageData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, wpl * 4, false, Media::RotateType::None);
+	img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, wpl * 4, false, Media::RotateType::None);
 	if (img->info.pf == Media::PF_PAL_W8)
 	{
 		UOSInt wordCnt = wpl * img->info.dispSize.y;

@@ -27,7 +27,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NotNullPt
 		return IO::FileExporter::SupportType::NotSupported;
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	UInt32 imgTime;
-	Media::Image *img;
+	Media::RasterImage *img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{

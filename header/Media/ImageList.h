@@ -4,7 +4,7 @@
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListUInt32.h"
 #include "IO/ParsedObject.h"
-#include "Media/Image.h"
+#include "Media/RasterImage.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -43,7 +43,7 @@ namespace Media
 			TT_FLIR
 		} ThermoType;
 	public:
-		Data::ArrayList<Media::Image*> imgList;
+		Data::ArrayList<Media::RasterImage*> imgList;
 		Data::ArrayList<ImageType> imgTypeList;
 		Data::ArrayListUInt32 imgTimes;
 		const UTF8Char *author;
@@ -69,13 +69,13 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
-		UOSInt AddImage(NotNullPtr<Media::Image> img, UInt32 imageDelay);
-		UOSInt AddImage(Media::Image *img, UInt32 imageDelay);
-		void ReplaceImage(UOSInt index, NotNullPtr<Media::Image> img);
-		void ReplaceImage(UOSInt index, Media::Image *img);
+		UOSInt AddImage(NotNullPtr<Media::RasterImage> img, UInt32 imageDelay);
+		UOSInt AddImage(Media::RasterImage *img, UInt32 imageDelay);
+		void ReplaceImage(UOSInt index, NotNullPtr<Media::RasterImage> img);
+		void ReplaceImage(UOSInt index, Media::RasterImage *img);
 		Bool RemoveImage(UOSInt index, Bool toRelease);
 		UOSInt GetCount() const;
-		Media::Image *GetImage(UOSInt index, OptOut<UInt32> imageDelay) const;
+		Media::RasterImage *GetImage(UOSInt index, OptOut<UInt32> imageDelay) const;
 		UInt32 GetImageDelay(UOSInt index) const;
 		ImageType GetImageType(UOSInt index) const;
 		void SetImageType(UOSInt index, ImageType imgType);

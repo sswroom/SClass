@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			NotNullPtr<Media::ImageList> imgList;
 			Bool allowEnlarge;
-			Media::Image *currImg;
+			Media::RasterImage *currImg;
 			UInt32 currImgDelay;
 
 			static void __stdcall ImagesSelChg(void *userObj);

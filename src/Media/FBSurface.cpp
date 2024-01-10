@@ -119,19 +119,19 @@ Bool Media::FBSurface::IsError() const
 	return this->clsData->fd < 0;
 }
 
-NotNullPtr<Media::Image> Media::FBSurface::Clone() const
+NotNullPtr<Media::RasterImage> Media::FBSurface::Clone() const
 {
 	NotNullPtr<Media::FBSurface> surface;
 	NEW_CLASSNN(surface, Media::FBSurface(this->clsData->hMon, &this->info.color, this->info.hdpi, this->info.rotateType));
 	return surface;
 }
 
-Media::Image::ImageType Media::FBSurface::GetImageType() const
+Media::RasterImage::ImageType Media::FBSurface::GetImageType() const
 {
-	return Media::Image::ImageType::MonitorSurface;
+	return Media::RasterImage::ImageType::MonitorSurface;
 }
 
-void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::FBSurface::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;
@@ -188,7 +188,7 @@ Bool Media::FBSurface::DrawFromBuff()
 		RotateType rt = Media::RotateTypeCalc(this->clsData->buffSurface->info.rotateType, this->info.rotateType);
 		if (rt == Media::RotateType::None)
 		{
-			this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->finfo.line_length, false, rt);
+			this->clsData->buffSurface->GetRasterData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->finfo.line_length, false, rt);
 		}
 		else
 		{
@@ -298,7 +298,7 @@ Bool Media::FBSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface
 		{
 			if (this->info.rotateType == Media::RotateType::None || this->info.rotateType == Media::RotateType::HFLIP)
 			{
-				surface->GetImageData(this->clsData->dataPtr + destTL.y * (Int32)this->clsData->finfo.line_length + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+				surface->GetRasterData(this->clsData->dataPtr + destTL.y * (Int32)this->clsData->finfo.line_length + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 					drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
 			}
 			else
@@ -309,7 +309,7 @@ Bool Media::FBSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface
 				UOSInt oldH = buffSize.y;
 				if (this->info.rotateType == Media::RotateType::CW_90 || this->info.rotateType == Media::RotateType::HFLIP_CW_90)
 				{
-					surface->GetImageData(this->clsData->dataPtr + destTL.x * (Int32)this->clsData->finfo.line_length + destTL.y * ((OSInt)this->info.storeBPP >> 3),
+					surface->GetRasterData(this->clsData->dataPtr + destTL.x * (Int32)this->clsData->finfo.line_length + destTL.y * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
 					OSInt tmpV = destWidth;
 					destWidth = destHeight;
@@ -321,14 +321,14 @@ Bool Media::FBSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface
 				}
 				else if (this->info.rotateType == Media::RotateType::CW_180 || this->info.rotateType == Media::RotateType::HFLIP_CW_180)
 				{
-					surface->GetImageData(this->clsData->dataPtr + destTL.y * (Int32)this->clsData->finfo.line_length + destTL.x * ((OSInt)this->info.storeBPP >> 3),
+					surface->GetRasterData(this->clsData->dataPtr + destTL.y * (Int32)this->clsData->finfo.line_length + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
 					destTL.x = destWidth - oldX - (OSInt)oldW;
 					destTL.y = destHeight - oldY - (OSInt)oldH;
 				}
 				else if (this->info.rotateType == Media::RotateType::CW_270 || this->info.rotateType == Media::RotateType::HFLIP_CW_270)
 				{
-					surface->GetImageData(this->clsData->dataPtr + destTL.x * (Int32)this->clsData->finfo.line_length + destTL.y * ((OSInt)this->info.storeBPP >> 3),
+					surface->GetRasterData(this->clsData->dataPtr + destTL.x * (Int32)this->clsData->finfo.line_length + destTL.y * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, this->clsData->finfo.line_length, false, this->info.rotateType);
 					OSInt tmpV = destWidth;
 					destWidth = destHeight;

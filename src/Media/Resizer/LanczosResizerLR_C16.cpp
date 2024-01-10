@@ -554,11 +554,11 @@ Bool Media::Resizer::LanczosResizerLR_C16::IsSupported(NotNullPtr<const Media::F
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
+	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
 		return 0;
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)

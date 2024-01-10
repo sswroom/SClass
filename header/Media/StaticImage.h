@@ -4,15 +4,15 @@
 #include "Math/RectArea.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
-#include "Media/Image.h"
 #include "Media/ImageAlphaBlend.h"
+#include "Media/RasterImage.h"
 #include "Parser/ParserList.h"
 
 namespace Media
 {
 	class IImgResizer;
 
-	class StaticImage : public Image
+	class StaticImage : public RasterImage
 	{
 	public:
 		enum class RotateType
@@ -29,9 +29,9 @@ namespace Media
 		StaticImage(NotNullPtr<const Media::FrameInfo> imgInfo);
 		virtual ~StaticImage();
 
-		virtual NotNullPtr<Media::Image> Clone() const;
-		virtual Media::Image::ImageType GetImageType() const;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual NotNullPtr<Media::RasterImage> Clone() const;
+		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
 		Bool To32bpp();
 		Bool To64bpp();

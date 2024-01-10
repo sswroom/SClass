@@ -88,7 +88,7 @@ namespace Media
 			virtual Bool Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg);
 
 			virtual Bool IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
+			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 
 			Double GetHAvgTime();
 			Double GetVAvgTime();

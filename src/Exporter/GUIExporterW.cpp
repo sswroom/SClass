@@ -61,7 +61,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NotNullPt
 	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	switch (img->info.pf)
@@ -116,7 +116,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return 0;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return 0;
 	Gdiplus::Bitmap *gimg;
@@ -132,7 +132,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppRGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 				gimg->UnlockBits(&bd);
 			}
 		}
@@ -140,7 +140,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+				img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 				gimg->UnlockBits(&bd);
 			}
 		}
@@ -150,7 +150,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat24bppRGB, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
@@ -159,7 +159,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat16bppRGB565, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
@@ -168,7 +168,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat8bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
@@ -186,7 +186,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat4bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 
@@ -204,7 +204,7 @@ void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat1bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
+			img->GetRasterData((UInt8*)bd.Scan0, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 

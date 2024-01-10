@@ -14,12 +14,12 @@ void Media::OCREngine::SetCharWhiteList(const Char *whiteList)
 {
 }
 
-Bool Media::OCREngine::SetParsingImage(Media::StaticImage *img)
+Bool Media::OCREngine::SetParsingImage(NotNullPtr<Media::StaticImage> img)
 {
 	return false;
 }
 
-Bool Media::OCREngine::SetOCVFrame(Media::OpenCV::OCVFrame *frame)
+Bool Media::OCREngine::SetOCVFrame(NotNullPtr<Media::OpenCV::OCVFrame> frame)
 {
 	return false;
 }

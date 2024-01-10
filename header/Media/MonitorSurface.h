@@ -1,13 +1,13 @@
 #ifndef _SM_MEDIA_MONITORSURFACE
 #define _SM_MEDIA_MONITORSURFACE
-#include "Media/Image.h"
+#include "Media/RasterImage.h"
 
 namespace Media
 {
-	class MonitorSurface : public Media::Image
+	class MonitorSurface : public Media::RasterImage
 	{
 	public:
-		MonitorSurface() : Media::Image(Math::Size2D<UOSInt>(0, 0)) {};
+		MonitorSurface() : Media::RasterImage(Math::Size2D<UOSInt>(0, 0)) {};
 		virtual ~MonitorSurface() {};
 
 		virtual void WaitForVBlank() = 0;

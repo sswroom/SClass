@@ -1,6 +1,5 @@
 #ifndef _SM_MEDIA_IMAGEGEN_IMAGEGENMGR
 #define _SM_MEDIA_IMAGEGEN_IMAGEGENMGR
-#include "Media/Image.h"
 #include "Media/ImageGenerator.h"
 #include "Data/ArrayList.h"
 

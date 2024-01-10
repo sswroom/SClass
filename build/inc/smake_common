@@ -2556,8 +2556,6 @@ Media/IDeintResizer.h:
 Media/IImgFilter.h:
 Media/IImgResizer.h:
 @IImgResizer.o
-Media/Image.h:
-@Image.o
 Media/ImageAlphaBlend.h:
 @ImageAlphaBlend.o
 Media/ImageCopy.h:
@@ -2644,6 +2642,8 @@ Media/Playlist.h:
 @Playlist.o
 Media/ProfiledResizer.h:
 @ProfiledResizer.o
+Media/RasterImage.h:
+@RasterImage.o
 Media/RefClock.h:
 @RefClock.o
 Media/RGBColorFilter.h:

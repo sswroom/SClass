@@ -20,7 +20,7 @@ namespace Media
 		NotNullPtr<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
-		virtual DrawImage *ConvImage(NotNullPtr<Media::Image> img);
+		virtual DrawImage *ConvImage(NotNullPtr<Media::RasterImage> img);
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
 		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
 	};
@@ -81,7 +81,7 @@ namespace Media
 		UInt32 GetOriColor();
 	};
 
-	class GTKDrawImage : public DrawImage, public Image
+	class GTKDrawImage : public DrawImage, public RasterImage
 	{
 	private:
 		NotNullPtr<GTKDrawEngine> eng;
@@ -152,9 +152,9 @@ namespace Media
 		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm); ////////////////////////////////////
 		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm);
 
-		virtual NotNullPtr<Media::Image> Clone() const; ////////////////////////////////////
-		virtual Media::Image::ImageType GetImageType() const;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual NotNullPtr<Media::RasterImage> Clone() const; ////////////////////////////////////
+		virtual Media::RasterImage::ImageType GetImageType() const;
+		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 		virtual Int32 GetPixel32(OSInt x, OSInt y) const; ////////////////////////////////////
 
 		void *GetSurface() const;

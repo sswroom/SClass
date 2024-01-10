@@ -186,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 				Map::VectorLayer *lyr;
 				Media::SharedImage *simg;
 				NotNullPtr<Math::Geometry::VectorImage> vimg;
-				Media::Image *stimg;
+				Media::RasterImage *stimg;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
 				Double calcImgW;

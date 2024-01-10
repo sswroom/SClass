@@ -7,7 +7,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-Bool Exporter::CURExporter::ImageSupported(Media::Image *img)
+Bool Exporter::CURExporter::ImageSupported(Media::RasterImage *img)
 {
 	if (img->info.dispSize.x <= 0 || img->info.dispSize.x > 256 || img->info.dispSize.y <= 0 || img->info.dispSize.y > 256)
 	{
@@ -46,7 +46,7 @@ UOSInt Exporter::CURExporter::CalcBuffSize(NotNullPtr<Media::ImageList> imgList)
 	UOSInt j;
 	UOSInt imgSize;
 	UOSInt maskSize;
-	Media::Image *img;
+	Media::RasterImage *img;
 	UOSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
@@ -686,7 +686,7 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NotNullPt
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
-	Media::Image *img;
+	Media::RasterImage *img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{

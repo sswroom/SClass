@@ -2,10 +2,10 @@
 #include "MyMemory.h"
 #include "Media/IImgResizer.h"
 #include "Media/FrameInfo.h"
-#include "Media/Image.h"
+#include "Media/RasterImage.h"
 #include "Media/StaticImage.h"
 
-Media::Image::Image(Math::Size2D<UOSInt> dispSize)
+Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize)
 {
 	this->exif = 0;
 	this->hasHotSpot = false;
@@ -29,7 +29,7 @@ Media::Image::Image(Math::Size2D<UOSInt> dispSize)
 	this->pal = 0;
 }
 
-Media::Image::Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
+Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
 	this->exif = 0;
 	this->hasHotSpot = false;
@@ -137,7 +137,7 @@ Media::Image::Image(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSiz
 	}
 }
 
-Media::Image::~Image()
+Media::RasterImage::~RasterImage()
 {
 	if (this->pal)
 	{
@@ -146,7 +146,7 @@ Media::Image::~Image()
 	this->exif.Delete();
 }
 
-void Media::Image::InitGrayPal()
+void Media::RasterImage::InitGrayPal()
 {
 	if (this->pal)
 	{
@@ -197,7 +197,7 @@ void Media::Image::InitGrayPal()
 	}
 }
 
-UOSInt Media::Image::GetDataBpl() const
+UOSInt Media::RasterImage::GetDataBpl() const
 {
 	if (this->info.fourcc == *(UInt32*)"LRGB")
 	{
@@ -229,34 +229,34 @@ UOSInt Media::Image::GetDataBpl() const
 		return ((this->info.storeSize.x * this->info.storeBPP) >> 3);
 }
 
-Bool Media::Image::IsUpsideDown() const
+Bool Media::RasterImage::IsUpsideDown() const
 {
 	return false;
 }
 
-void Media::Image::SetHotSpot(OSInt hotSpotX, OSInt hotSpotY)
+void Media::RasterImage::SetHotSpot(OSInt hotSpotX, OSInt hotSpotY)
 {
 	this->hotSpotX = hotSpotX;
 	this->hotSpotY = hotSpotY;
 	this->hasHotSpot = true;
 }
 
-Bool Media::Image::HasHotSpot() const
+Bool Media::RasterImage::HasHotSpot() const
 {
 	return this->hasHotSpot;
 }
 
-OSInt Media::Image::GetHotSpotX() const
+OSInt Media::RasterImage::GetHotSpotX() const
 {
 	return this->hotSpotX;
 }
 
-OSInt Media::Image::GetHotSpotY() const
+OSInt Media::RasterImage::GetHotSpotY() const
 {
 	return this->hotSpotY;
 }
 
-NotNullPtr<Media::StaticImage> Media::Image::CreateStaticImage() const
+NotNullPtr<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
 {
 	NotNullPtr<Media::StaticImage> outImg;
 	NotNullPtr<Media::EXIFData> exif;
@@ -265,7 +265,7 @@ NotNullPtr<Media::StaticImage> Media::Image::CreateStaticImage() const
 	{
 		outImg->exif = exif->Clone();
 	}
-	this->GetImageData(outImg->data, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), false, outImg->info.rotateType);
+	this->GetRasterData(outImg->data, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;
@@ -282,7 +282,7 @@ NotNullPtr<Media::StaticImage> Media::Image::CreateStaticImage() const
 	return outImg;
 }
 
-NotNullPtr<Media::StaticImage> Media::Image::CreateSubImage(Math::RectArea<OSInt> area) const
+NotNullPtr<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> area) const
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(this->info);
@@ -296,7 +296,7 @@ NotNullPtr<Media::StaticImage> Media::Image::CreateSubImage(Math::RectArea<OSInt
 	{
 		outImg->exif = exif->Clone();
 	}
-	this->GetImageData(outImg->data, area.min.x, area.min.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
+	this->GetRasterData(outImg->data, area.min.x, area.min.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;
@@ -313,14 +313,14 @@ NotNullPtr<Media::StaticImage> Media::Image::CreateSubImage(Math::RectArea<OSInt
 	return outImg;
 }
 
-Optional<Media::EXIFData> Media::Image::SetEXIFData(Optional<Media::EXIFData> exif)
+Optional<Media::EXIFData> Media::RasterImage::SetEXIFData(Optional<Media::EXIFData> exif)
 {
 	Optional<Media::EXIFData> oldExif = this->exif;
 	this->exif = exif;
 	return oldExif;
 }
 
-void Media::Image::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::RasterImage::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	this->info.ToString(sb);
 	if (this->HasHotSpot())
@@ -340,7 +340,7 @@ void Media::Image::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Bool Media::Image::IsDispSize(Math::Size2D<UOSInt> dispSize)
+Bool Media::RasterImage::IsDispSize(Math::Size2D<UOSInt> dispSize)
 {
 	return this->info.dispSize == dispSize;
 }

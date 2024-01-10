@@ -101,7 +101,7 @@ namespace Media
 			void SetDestProfile(NotNullPtr<const Media::ColorProfile> destProfile);
 			Media::AlphaType GetDestAlphaType();
 			virtual Bool IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
+			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};
 	}
 }

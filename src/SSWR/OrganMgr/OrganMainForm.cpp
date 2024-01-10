@@ -504,7 +504,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, Math::
 		{
 			pt1 = me->pbImg->Scn2ImagePos(rect[0]);
 			pt2 = me->pbImg->Scn2ImagePos(rect[1]);
-			Media::Image *img = me->dispImage->GetImage(0, 0);
+			Media::RasterImage *img = me->dispImage->GetImage(0, 0);
 			if (me->dispImageUF)
 			{
 				me->env->UpdateUserFileCrop(me->dispImageUF, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
@@ -545,7 +545,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 		{
 			if (me->dispImageUF->cropLeft != 0 || me->dispImageUF->cropTop != 0 || me->dispImageUF->cropRight != 0 || me->dispImageUF->cropBottom)
 			{
-				Media::Image *img = me->dispImage->GetImage(0, 0);
+				Media::RasterImage *img = me->dispImage->GetImage(0, 0);
 				pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(me->dispImageUF->cropLeft, me->dispImageUF->cropTop));
 				pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - me->dispImageUF->cropRight, UOSInt2Double(img->info.dispSize.y) - me->dispImageUF->cropBottom));
 				if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
@@ -569,7 +569,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 		{
 			if (me->dispImageWF->cropLeft != 0 || me->dispImageWF->cropTop != 0 || me->dispImageWF->cropRight != 0 || me->dispImageWF->cropBottom)
 			{
-				Media::Image *img = me->dispImage->GetImage(0, 0);
+				Media::RasterImage *img = me->dispImage->GetImage(0, 0);
 				pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(me->dispImageWF->cropLeft, me->dispImageWF->cropTop));
 				pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - me->dispImageWF->cropRight, UOSInt2Double(img->info.dispSize.y) - me->dispImageWF->cropBottom));
 				if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
@@ -1718,7 +1718,7 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(Math::Coord2D<OSInt> *rect)
 		return false;
 	}
 
-	Media::Image *img = this->dispImage->GetImage(0, 0);
+	Media::RasterImage *img = this->dispImage->GetImage(0, 0);
 	if ((OSInt)img->info.dispSize.x * drawHeight > (OSInt)img->info.dispSize.y * drawWidth)
 	{
 		drawHeight = MulDivOS(drawWidth, (OSInt)img->info.dispSize.y, (OSInt)img->info.dispSize.x);

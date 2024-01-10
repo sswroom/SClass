@@ -31,7 +31,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NotNullPt
 	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, 0);
+	Media::RasterImage *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	switch (img->info.pf)

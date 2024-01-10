@@ -266,7 +266,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				jpgFd.Delete();
 				if (innerImgList)
 				{
-					Media::Image *innerImg;
+					Media::RasterImage *innerImg;
 					NotNullPtr<Media::StaticImage> innerSImg;
 					UInt32 imgDelay;
 					i = 0;

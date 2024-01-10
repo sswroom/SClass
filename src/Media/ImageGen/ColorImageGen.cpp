@@ -18,7 +18,7 @@ Text::CStringNN Media::ImageGen::ColorImageGen::GetName() const
 	return CSTR("Color Test");
 }
 
-Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Media::RasterImage *Media::ImageGen::ColorImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;

@@ -4,7 +4,7 @@
 #include "Math/Coord2DDbl.h"
 #include "Math/Size2D.h"
 #include "Math/Size2DDbl.h"
-#include "Media/Image.h"
+#include "Media/RasterImage.h"
 #include "Text/CString.h"
 #include "Text/String.h"
 #include "Text/TextCommon.h"
@@ -70,13 +70,13 @@ namespace Media
 		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype) = 0;
 		virtual DrawImage *LoadImage(Text::CStringNN fileName) = 0;
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm) = 0;
-		virtual DrawImage *ConvImage(NotNullPtr<Media::Image> img) = 0;
+		virtual DrawImage *ConvImage(NotNullPtr<Media::RasterImage> img) = 0;
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img) = 0;
 		virtual Bool DeleteImage(NotNullPtr<DrawImage> img) = 0;
 
-		DrawImage *ConvImageOrNull(Media::Image *img)
+		DrawImage *ConvImageOrNull(Media::RasterImage *img)
 		{
-			NotNullPtr<Media::Image> nnimg;
+			NotNullPtr<Media::RasterImage> nnimg;
 			if (nnimg.Set(img)) return ConvImage(nnimg);
 			return 0;
 		}
