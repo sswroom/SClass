@@ -262,7 +262,7 @@ IO::MTFileLog::MTFileLog(NotNullPtr<Text::String> fileName, LogType style, LogGr
 	this->Init(style, groupStyle, dateFormat);
 }
 
-IO::MTFileLog::MTFileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::MTFileLog::MTFileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	this->fileName = Text::String::New(fileName);
 	this->Init(style, groupStyle, dateFormat);

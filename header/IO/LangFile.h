@@ -4,18 +4,17 @@
 
 namespace IO
 {
-	class LangFile : public ConfigFile
+	class LangFile
 	{
 	private:
 		IO::ConfigFile *cfg;
 
 	public:
-		LangFile(const UTF8Char *fileName, Int32 codePage);
+		LangFile(Text::CStringNN fileName, Int32 codePage);
 		virtual ~LangFile();
 
-		virtual Text::String *GetValue(const UTF8Char *name);
-		virtual Text::String *GetValue(Text::String *category, Text::String *name);
-		virtual Text::String *GetValue(const UTF8Char *category, const UTF8Char *name);
+		Text::CStringNN GetValue(Text::CStringNN name);
+		Text::CStringNN GetValue(Text::CStringNN category, Text::CStringNN name);
 	};
 }
 #endif

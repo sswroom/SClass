@@ -4039,7 +4039,7 @@ UOSInt Text::StrCountChar(UTF32Char *str1, UTF32Char c)
 	return cnt;
 }
 
-UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv)
+UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
 	const UInt8 *oriBytes = bytes;
 	UTF32Char code;
@@ -4144,10 +4144,7 @@ UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt b
 			break;
 		}
 	}
-	if (byteConv)
-	{
-		*byteConv = (UOSInt)(bytes - oriBytes);
-	}
+	byteConv.Set((UOSInt)(bytes - oriBytes));
 	*buff = 0;
 	return buff;
 }
@@ -4197,7 +4194,7 @@ UOSInt Text::StrUTF8_UTF16CntC(const UTF8Char *bytes, UOSInt byteSize)
 	return charCnt;
 }
 
-UTF32Char *Text::StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv)
+UTF32Char *Text::StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
 	const UInt8 *oriBytes = bytes;
 	UTF32Char code;
@@ -4273,10 +4270,7 @@ UTF32Char *Text::StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt b
 			break;
 		}
 	}
-	if (byteConv)
-	{
-		*byteConv = (UOSInt)(bytes - oriBytes);
-	}
+	byteConv.Set((UOSInt)(bytes - oriBytes));
 	*buff = 0;
 	return buff;
 }
@@ -4327,7 +4321,7 @@ UOSInt Text::StrUTF8_UTF32CntC(const UTF8Char *bytes, UOSInt byteSize)
 }
 
 
-UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *byteConv)
+UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv)
 {
 	const UInt8 *oriBytes = bytes;
 	UTF32Char code;
@@ -4405,10 +4399,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 			bytes++;
 		}
 	}
-	if (byteConv)
-	{
-		*byteConv = (UOSInt)(bytes - oriBytes + 1);
-	}
+	byteConv.Set((UOSInt)(bytes - oriBytes + 1));
 	*buff = 0;
 	return buff;
 }
@@ -4457,7 +4448,7 @@ UOSInt Text::StrUTF8_UTF16Cnt(const UTF8Char *bytes)
 	return charCnt;
 }
 
-UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *byteConv)
+UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv)
 {
 	const UInt8 *oriBytes = bytes;
 	UTF32Char code;
@@ -4501,10 +4492,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *b
 			break;
 		}
 	}
-	if (byteConv)
-	{
-		*byteConv = (UOSInt)(bytes - oriBytes);
-	}
+	byteConv.Set((UOSInt)(bytes - oriBytes));
 	*buff = 0;
 	return buff;
 }

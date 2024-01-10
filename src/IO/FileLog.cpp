@@ -133,7 +133,7 @@ IO::FileLog::FileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup 
 	this->Init(style, groupStyle, dateFormat);
 }
 
-IO::FileLog::FileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::FileLog::FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	this->fileName = Text::String::New(fileName);
 	this->Init(style, groupStyle, dateFormat);

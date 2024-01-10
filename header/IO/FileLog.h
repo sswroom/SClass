@@ -25,7 +25,7 @@ namespace IO
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
 		FileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
-		FileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~FileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

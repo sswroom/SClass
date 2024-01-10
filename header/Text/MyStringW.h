@@ -246,15 +246,15 @@ namespace Text
 	UOSInt StrCountChar(UTF16Char *str1, UTF16Char c);
 	UOSInt StrCountChar(UTF32Char *str1, UTF32Char c);
 
-	UTF16Char *StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv);
+	UTF16Char *StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
 	UOSInt StrUTF8_UTF16CntC(const UTF8Char *bytes, UOSInt byteSize);
-	UTF32Char *StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt byteSize, UOSInt *byteConv);
+	UTF32Char *StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt>  byteConv);
 	UOSInt StrUTF8_UTF32CntC(const UTF8Char *bytes, UOSInt byteSize);
 
 	//byteConv includes NULL
-	UTF16Char *StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *byteConv);
+	UTF16Char *StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv);
 	UOSInt StrUTF8_UTF16Cnt(const UTF8Char *bytes);
-	UTF32Char *StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *byteConv);
+	UTF32Char *StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv);
 	UOSInt StrUTF8_UTF32Cnt(const UTF8Char *bytes);
 
 	UTF8Char *StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr);
