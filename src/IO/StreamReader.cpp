@@ -55,7 +55,7 @@ void IO::StreamReader::FillBuffer()
 		convSize = buffSize;
 	if (convSize)
 	{
-		dest = this->enc.UTF8FromBytes(&cbuff[cSize], buff, convSize, &i);
+		dest = this->enc.UTF8FromBytes(&cbuff[cSize], buff, convSize, i);
 		if (dest)
 		{
 			cSize = (UOSInt)(dest - cbuff);

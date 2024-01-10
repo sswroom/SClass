@@ -71,12 +71,9 @@ UOSInt Text::Encoding::CountWChars(const UInt8 *bytes, UOSInt byteSize)
 	}
 }
 
-WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSize, UOSInt *byteConv)
+WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
-	UOSInt tmp;
 	UOSInt size = byteSize * 2 + 2;
-	if (byteConv == 0)
-		byteConv = &tmp;
 
 	if (this->codePage == 65001)
 	{
@@ -96,13 +93,13 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 			{
 				bytes += 2;
 			}
-			*byteConv = (UOSInt)(buff - oriBuff) * 2;
+			byteConv.Set((UOSInt)(buff - oriBuff) * 2);
 			return buff - 1;
 		}
 		else
 		{
 			size = byteSize >> 1;
-			*byteConv = size << 1;
+			byteConv.Set(size << 1);
 			while (size-- > 0)
 			{
 				*buff++ = ReadUInt16(bytes);
@@ -121,13 +118,13 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 			{
 				bytes += 2;
 			}
-			*byteConv = (UOSInt)(buff - oriBuff) * 2;
+			byteConv.Set((UOSInt)(buff - oriBuff) * 2);
 			return buff - 1;
 		}
 		else
 		{
 			size = byteSize >> 1;
-			*byteConv = size << 1;
+			byteConv.Set(size << 1);
 			while (size-- > 0)
 			{
 				*buff++ = ReadMUInt16(bytes);
@@ -204,17 +201,14 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 				*buff = 0;
 			}
 		}
-		if (byteConv)
-		{
-			*byteConv = (UOSInt)(bytes - oriBytes);
-		}
+		byteConv.Set((UOSInt)(bytes - oriBytes));
 		return buff;
 	}
 #endif
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		if (byteConv && byteConv != &tmp)
+		if (byteConv.IsNotNull())
 		{
 			UOSInt convSize = byteSize;
 			Int32 iRet = 0;
@@ -242,7 +236,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 
 			buff[iRet] = 0;
 			buff = &buff[Text::StrCharCnt(buff)];
-			*byteConv = convSize;
+			byteConv.SetNoCheck(convSize);
 			return buff;
 		}
 		else
@@ -258,8 +252,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 			}
 		}
 #else
-		if (byteConv)
-			*byteConv = 0;
+		byteConv.Set(0);
 		return 0;
 #endif
 	}
@@ -380,12 +373,11 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 	}
 }
 
-UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSInt byteSize, UOSInt *byteConv)
+UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
 	if (this->codePage == 65001)
 	{
-		if (byteConv)
-			*byteConv = byteSize;
+		byteConv.Set(byteSize);
 		return Text::StrConcatC(buff, bytes, byteSize);
 	}
 	else if (this->codePage == 1200)
@@ -456,10 +448,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 			}
 		}
 		*dest = 0;
-		if (byteConv)
-		{
-			*byteConv = retSize;
-		}
+		byteConv.Set(retSize);
 		return dest;
 	}
 	else if (this->codePage == 1201)
@@ -530,10 +519,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 			}
 		}
 		*dest = 0;
-		if (byteConv)
-		{
-			*byteConv = retSize;
-		}
+		byteConv.Set(retSize);
 		return dest;
 	}
 	else
@@ -545,14 +531,10 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		wbuff[charCnt] = 0;
 		UTF8Char *dest = Text::StrWChar_UTF8(buff, wbuff);
 		MemFree(wbuff);
-		if (byteConv)
-		{
-			*byteConv = (UOSInt)(dest - buff);
-		}
+		byteConv.Set((UOSInt)(dest - buff));
 		return dest;
 #else
-		if (byteConv)
-			*byteConv = byteSize;
+		byteConv.Set(byteSize);
 		return Text::StrConcatC(buff, bytes, byteSize);
 #endif
 	}

@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 			if (me->chkLog->IsChecked())
 			{
 				NEW_CLASS(me->fwdLog, IO::LogTool());
-				Text::CString logPath;
+				Text::CStringNN logPath;
 				if (IO::Path::PATH_SEPERATOR == '/')
 					logPath = CSTR("log/fwd");
 				else

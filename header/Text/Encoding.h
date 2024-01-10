@@ -20,10 +20,10 @@ namespace Text
 
 		// bug if _WCHAR_SIZE != 2
 		UOSInt CountWChars(const UInt8 *bytes, UOSInt byteSize);
-		WChar *WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSize, UOSInt *byteConv);
+		WChar *WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
 
 		UOSInt CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize);
-		UTF8Char *UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSInt byteSize, UOSInt *byteConv);
+		UTF8Char *UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
 
 		// bug if _WCHAR_SIZE != 2
 		UOSInt WCountBytes(const WChar *str); // Optimized, retSize include null byte

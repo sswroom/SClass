@@ -103,7 +103,7 @@ UOSInt Text::XMLReader::FillBuffer()
 		{
 			rawReadSize = this->rawBuffSize;
 		}
-		UTF8Char *sptr = this->enc->UTF8FromBytes(&this->readBuff[this->buffSize], this->rawBuff, rawReadSize, &rawReadSize);
+		UTF8Char *sptr = this->enc->UTF8FromBytes(&this->readBuff[this->buffSize], this->rawBuff, rawReadSize, rawReadSize);
 		if (rawReadSize == this->rawBuffSize)
 		{
 			this->rawBuffSize = 0;
