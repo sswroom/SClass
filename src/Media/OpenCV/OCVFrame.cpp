@@ -139,11 +139,13 @@ void Media::OpenCV::OCVFrame::Normalize()
 	cv::normalize(*fr, *fr, 1.0, 255.0, cv::NORM_MINMAX);
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace)
+NotNullPtr<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace)
 {
 	cv::Mat *newFr = new cv::Mat();
 	cv::bilateralFilter(*(cv::Mat*)this->frame, *newFr, d, sigmaColor, sigmaSpace);
-	return NEW_CLASS_D(Media::OpenCV::OCVFrame(newFr));
+	NotNullPtr<Media::OpenCV::OCVFrame> ret;
+	NEW_CLASSNN(ret, Media::OpenCV::OCVFrame(newFr));
+	return ret;
 }
 
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
@@ -178,7 +180,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, 
 	}
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(Media::StaticImage *simg)
+Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(NotNullPtr<Media::StaticImage> simg)
 {
 	cv::Mat *fr;
 	if (!simg->ToW8())
@@ -188,7 +190,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(Media::StaticImag
 	fr = new cv::Mat((int)simg->info.dispSize.y, (int)simg->info.dispSize.x, CV_8UC1);
 	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.dispSize.x, false, Media::RotateType::None);
 
-	Media::OpenCV::OCVFrame *frame;
-	NEW_CLASS(frame, Media::OpenCV::OCVFrame(fr));
+	NotNullPtr<Media::OpenCV::OCVFrame> frame;
+	NEW_CLASSNN(frame, Media::OpenCV::OCVFrame(fr));
 	return frame;
 }

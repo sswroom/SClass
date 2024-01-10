@@ -12,7 +12,7 @@
 struct ParseStatus
 {
 	Media::ANPR *me;
-	Media::StaticImage *simg;
+	NotNullPtr<Media::StaticImage> simg;
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
@@ -31,9 +31,9 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 			return;
 		}
 	}
-	Media::StaticImage *plainImg = CreatePlainImage(filteredFrame->GetDataPtr(), filteredFrame->GetSize(), (UOSInt)filteredFrame->GetBpl(), rect, psize);
-	Media::OpenCV::OCVFrame *croppedFrame = Media::OpenCV::OCVFrame::CreateYFrame(plainImg);
-	if (croppedFrame)
+	NotNullPtr<Media::StaticImage> plainImg = CreatePlainImage(filteredFrame->GetDataPtr(), filteredFrame->GetSize(), (UOSInt)filteredFrame->GetBpl(), rect, psize);
+	NotNullPtr<Media::OpenCV::OCVFrame> croppedFrame;
+	if (Media::OpenCV::OCVFrame::CreateYFrame(plainImg).SetTo(croppedFrame))
 	{
 		croppedFrame->Normalize();
 		status->me->ocr.SetOCVFrame(croppedFrame);
@@ -49,7 +49,7 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 				s->Replace('I', '1');
 				if (status->me->hdlr)
 				{
-					status->me->hdlr(status->me->hdlrObj, status->simg, &area, s, maxTiltAngle, pxArea, confidence, plainImg);
+					status->me->hdlr(status->me->hdlrObj, status->simg, area, s, maxTiltAngle, pxArea, confidence, plainImg);
 				}
 				
 /*				printf("OCR result: %s\r\n", s->v);
@@ -73,17 +73,17 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 		{
 			printf("OCR parsing error\r\n");
 		}
-		DEL_CLASS(croppedFrame);
+		croppedFrame.Delete();
 	}
-	DEL_CLASS(plainImg);
+	plainImg.Delete();
 }
 
-Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NotNullPtr<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	return CreatePlainImage(sptr, sSize, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
 }
 
-Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NotNullPtr<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	Math::Size2D<UOSInt> imgSize;
 
@@ -120,14 +120,14 @@ void Media::ANPR::SetResultHandler(NumPlateResult hdlr, void *userObj)
 	this->hdlrObj = userObj;
 }
 
-Bool Media::ANPR::ParseImage(Media::StaticImage *simg)
+Bool Media::ANPR::ParseImage(NotNullPtr<Media::StaticImage> simg)
 {
-	Media::StaticImage *bwImg = (Media::StaticImage*)simg->Clone();
+	NotNullPtr<Media::StaticImage> bwImg = NotNullPtr<Media::StaticImage>::ConvertFrom(simg->Clone());
 	Bool found = false;
 	bwImg->ToW8();
 	this->ocr.SetParsingImage(bwImg);
-	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(bwImg);
-	if (frame)
+	NotNullPtr<Media::OpenCV::OCVFrame> frame;
+	if (Media::OpenCV::OCVFrame::CreateYFrame(bwImg).SetTo(frame))
 	{
 		Data::ArrayList<UOSInt> pastPos;
 		ParseStatus status;
@@ -135,18 +135,18 @@ Bool Media::ANPR::ParseImage(Media::StaticImage *simg)
 		status.simg = simg;
 		status.pastPos = &pastPos;
 		this->finder.Find(frame, NumPlateArea, &status);
-		DEL_CLASS(frame);
+		frame.Delete();
 		found = pastPos.GetCount() > 0;
 	}
-	DEL_CLASS(bwImg);
+	bwImg.Delete();
 	return found;
 }
 
-Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral quad)
+Bool Media::ANPR::ParseImageQuad(NotNullPtr<Media::StaticImage> simg, Math::Quadrilateral quad)
 {
 	Bool found = false;
 	UOSInt confidence;
-	Media::StaticImage *bwImg = (Media::StaticImage*)simg->Clone();
+	NotNullPtr<Media::StaticImage> bwImg = NotNullPtr<Media::StaticImage>::ConvertFrom(simg->Clone());
 	bwImg->ToW8();
 	Media::OpenCV::OCVNumPlateFinder::PlateSize psize;
 	Double ratio = quad.CalcLenTop() / quad.CalcLenLeft();
@@ -159,11 +159,11 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 		psize = Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow;
 	}
 
-	Media::StaticImage *plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispSize, bwImg->GetDataBpl(), quad, psize);
-	Media::OpenCV::OCVFrame *croppedFrame = Media::OpenCV::OCVFrame::CreateYFrame(plainImg);
-	if (croppedFrame)
+	NotNullPtr<Media::StaticImage> plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispSize, bwImg->GetDataBpl(), quad, psize);
+	NotNullPtr<Media::OpenCV::OCVFrame> croppedFrame;
+	if (Media::OpenCV::OCVFrame::CreateYFrame(plainImg).SetTo(croppedFrame))
 	{
-		Media::OpenCV::OCVFrame *filteredFrame = croppedFrame->BilateralFilter(11, 17, 17);
+		NotNullPtr<Media::OpenCV::OCVFrame> filteredFrame = croppedFrame->BilateralFilter(11, 17, 17);
 		filteredFrame->Normalize();
 		this->ocr.SetOCVFrame(filteredFrame);
 		if (false)//psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::DoubleRow)
@@ -189,7 +189,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 				{
 					Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
 					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.min.x), (UOSInt)Double2OSInt(dblArea.min.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
-					this->hdlr(this->hdlrObj, simg, &area, s1, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
+					this->hdlr(this->hdlrObj, simg, area, s1, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 				}
 				found = true;
 				
@@ -214,7 +214,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 					{
 						Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
 						Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.min.x), (UOSInt)Double2OSInt(dblArea.min.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
-						this->hdlr(this->hdlrObj, simg, &area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
+						this->hdlr(this->hdlrObj, simg, area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 					}
 					found = true;
 					
@@ -227,15 +227,15 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 				printf("OCR parsing error\r\n");
 			}
 		}
-		DEL_CLASS(filteredFrame);
-		DEL_CLASS(croppedFrame);
+		filteredFrame.Delete();
+		croppedFrame.Delete();
 	}
-	DEL_CLASS(plainImg);
-	DEL_CLASS(bwImg);
+	plainImg.Delete();
+	bwImg.Delete();
 	return found;
 }
 
-Bool Media::ANPR::ParseImagePlatePoint(Media::StaticImage *simg, Math::Coord2D<UOSInt> coord)
+Bool Media::ANPR::ParseImagePlatePoint(NotNullPtr<Media::StaticImage> simg, Math::Coord2D<UOSInt> coord)
 {
 	Int32 rate = 16;
 	Math::RectArea<UOSInt> rect;

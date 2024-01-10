@@ -26,7 +26,7 @@ namespace Media
 			
 			void SetMaxTiltAngle(Double maxTiltAngleDegree);
 			void SetAreaRange(Double minArea, Double maxArea);
-			void Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj);
+			void Find(NotNullPtr<Media::OpenCV::OCVFrame> frame, PossibleAreaFunc func, void *userObj);
 		};
 	}
 }

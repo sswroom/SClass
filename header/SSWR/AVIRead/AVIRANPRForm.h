@@ -33,7 +33,7 @@ namespace SSWR
 				Double maxTileAngle;
 				Double pxArea;
 				UOSInt confidence;
-				Media::StaticImage *plateImg;
+				NotNullPtr<Media::StaticImage> plateImg;
 			} ResultInfo;
 			
 		private:
@@ -60,7 +60,7 @@ namespace SSWR
 			static void __stdcall OnSelPlateClicked(void *userObj);
 			static void __stdcall OnSelCornersClicked(void *userObj);
 			static Bool __stdcall OnImgDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg);
+			static void __stdcall OnANPRResult(void *userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg);
 			void ClearResults();
 		public:
 			AVIRANPRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

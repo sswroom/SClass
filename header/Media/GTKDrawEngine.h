@@ -152,7 +152,7 @@ namespace Media
 		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm); ////////////////////////////////////
 		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm);
 
-		virtual Media::Image *Clone() const; ////////////////////////////////////
+		virtual NotNullPtr<Media::Image> Clone() const; ////////////////////////////////////
 		virtual Media::Image::ImageType GetImageType() const;
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 		virtual Int32 GetPixel32(OSInt x, OSInt y) const; ////////////////////////////////////

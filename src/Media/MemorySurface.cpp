@@ -41,10 +41,10 @@ Bool Media::MemorySurface::IsError() const
 	return this->buffPtr == 0;
 }
 
-Media::Image *Media::MemorySurface::Clone() const
+NotNullPtr<Media::Image> Media::MemorySurface::Clone() const
 {
-	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, &this->info.color, this->info.hdpi));
+	NotNullPtr<Media::MemorySurface> surface;
+	NEW_CLASSNN(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, &this->info.color, this->info.hdpi));
 	return surface;
 }
 

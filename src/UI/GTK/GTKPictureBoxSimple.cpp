@@ -23,7 +23,7 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 	if (this->currImage.SetTo(simg))
 	{
 		GdkPixbuf *buf;
-		this->tmpImage = (Media::StaticImage*)simg->Clone();
+		this->tmpImage = (Media::StaticImage*)simg->Clone().Ptr();
 		this->tmpImage->To32bpp();
 		ImageUtil_SwapRGB(this->tmpImage->data, this->tmpImage->info.storeSize.x * this->tmpImage->info.storeSize.y, this->tmpImage->info.storeBPP);
 		if (this->tmpImage->info.atype == Media::AT_ALPHA)

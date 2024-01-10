@@ -29,10 +29,10 @@ Media::StaticImage::~StaticImage()
 	MemFreeA(data);
 }
 
-Media::Image *Media::StaticImage::Clone() const
+NotNullPtr<Media::Image> Media::StaticImage::Clone() const
 {
-	Media::StaticImage *img;
-	NEW_CLASS(img, Media::StaticImage(this->info));
+	NotNullPtr<Media::StaticImage> img;
+	NEW_CLASSNN(img, Media::StaticImage(this->info));
 	MemCopyANC(img->data, this->data, this->info.byteSize + 4);
 	if (this->info.fourcc == 0)
 	{

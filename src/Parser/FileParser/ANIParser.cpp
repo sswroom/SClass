@@ -103,7 +103,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NotNullPtr<IO::Str
 				{
 					if (currImage)
 					{
-						Media::Image *img = currImage->GetImage(0, 0)->Clone();
+						NotNullPtr<Media::Image> img = currImage->GetImage(0, 0)->Clone();
 						imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
 						DEL_CLASS(currImage);
 					}
@@ -121,7 +121,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NotNullPtr<IO::Str
 
 			if (currImage)
 			{
-				Media::Image *img = currImage->GetImage(0, 0)->Clone();
+				NotNullPtr<Media::Image> img = currImage->GetImage(0, 0)->Clone();
 				imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
 				DEL_CLASS(currImage);
 				currImage = 0;

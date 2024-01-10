@@ -92,7 +92,7 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 	}
 }*/
 
-void __stdcall OnNumberPlate(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg)
+void __stdcall OnNumberPlate(void *userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg)
 {
 	printf("Parsed Number Plate: %s\r\n", result->v);
 }
@@ -106,7 +106,9 @@ void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *
 	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	if (imgList)
 	{
-		apnr->ParseImage((Media::StaticImage*)imgList->GetImage(0, 0));
+		NotNullPtr<Media::StaticImage> img;
+		if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+			apnr->ParseImage(img);
 		DEL_CLASS(imgList);
 	}
 }

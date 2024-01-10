@@ -1273,9 +1273,11 @@ UOSInt Media::GTKDrawImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-Media::Image *Media::GTKDrawImage::Clone() const
+NotNullPtr<Media::Image> Media::GTKDrawImage::Clone() const
 {
-	return 0;
+	NotNullPtr<Media::GTKDrawImage> dimg;
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype));
+	return dimg;
 }
 
 Media::Image::ImageType Media::GTKDrawImage::GetImageType() const

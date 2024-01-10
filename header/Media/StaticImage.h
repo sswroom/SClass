@@ -29,7 +29,7 @@ namespace Media
 		StaticImage(NotNullPtr<const Media::FrameInfo> imgInfo);
 		virtual ~StaticImage();
 
-		virtual Media::Image *Clone() const;
+		virtual NotNullPtr<Media::Image> Clone() const;
 		virtual Media::Image::ImageType GetImageType() const;
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 

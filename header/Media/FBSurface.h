@@ -19,7 +19,7 @@ namespace Media
 
 		Bool IsError() const;
 		
-		virtual Media::Image *Clone() const;
+		virtual NotNullPtr<Media::Image> Clone() const;
 		virtual Media::Image::ImageType GetImageType() const;
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 

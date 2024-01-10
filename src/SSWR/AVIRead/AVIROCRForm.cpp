@@ -14,17 +14,21 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(void *userObj, NotNullP
 		if (imgList)
 		{
 			imgList->ToStaticImage(0);
-			SDEL_CLASS(me->currImg);
-			me->currImg = (Media::StaticImage*)imgList->GetImage(0, 0);
-			imgList->RemoveImage(0, false);
-			DEL_CLASS(imgList);
-			me->pbImg->SetImage(me->currImg, false);
+			NotNullPtr<Media::StaticImage> img;
+			if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+			{
+				SDEL_CLASS(me->currImg);
+				me->currImg = img.Ptr();
+				imgList->RemoveImage(0, false);
+				DEL_CLASS(imgList);
+				me->pbImg->SetImage(img, false);
 
-			me->lvText->ClearItems();
-			me->ClearResults();
-			me->ocr.SetParsingImage(me->currImg);
-			me->ocr.ParseAllInImage();
-			break;
+				me->lvText->ClearItems();
+				me->ClearResults();
+				me->ocr.SetParsingImage(img);
+				me->ocr.ParseAllInImage();
+				break;
+			}
 		}
 		i++;
 	}

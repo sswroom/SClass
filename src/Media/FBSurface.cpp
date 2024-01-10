@@ -119,10 +119,10 @@ Bool Media::FBSurface::IsError() const
 	return this->clsData->fd < 0;
 }
 
-Media::Image *Media::FBSurface::Clone() const
+NotNullPtr<Media::Image> Media::FBSurface::Clone() const
 {
-	Media::FBSurface *surface;
-	NEW_CLASS(surface, Media::FBSurface(this->clsData->hMon, &this->info.color, this->info.hdpi, this->info.rotateType));
+	NotNullPtr<Media::FBSurface> surface;
+	NEW_CLASSNN(surface, Media::FBSurface(this->clsData->hMon, &this->info.color, this->info.hdpi, this->info.rotateType));
 	return surface;
 }
 

@@ -16,16 +16,24 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, NotNull
 		if (imgList)
 		{
 			imgList->ToStaticImage(0);
-			SDEL_CLASS(me->currImg);
-			me->currImg = (Media::StaticImage*)imgList->GetImage(0, 0);
-			imgList->RemoveImage(0, false);
-			DEL_CLASS(imgList);
-			me->pbImg->SetImage(me->currImg, false);
+			NotNullPtr<Media::StaticImage> img;
+			if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+			{
+				SDEL_CLASS(me->currImg);
+				me->currImg = img.Ptr();
+				imgList->RemoveImage(0, false);
+				DEL_CLASS(imgList);
+				me->pbImg->SetImage(img, false);
 
-			me->lvPlate->ClearItems();
-			me->ClearResults();
-			me->anpr.ParseImage(me->currImg);
-			break;
+				me->lvPlate->ClearItems();
+				me->ClearResults();
+				me->anpr.ParseImage(img);
+				break;
+			}
+			else
+			{
+				DEL_CLASS(imgList);
+			}
 		}
 		i++;
 	}
@@ -76,6 +84,9 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelCornersClicked(void *userObj)
 Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
+	NotNullPtr<Media::StaticImage> img;
+	if (!img.Set(me->currImg))
+		return false;
 	if (me->selectMode == ActionType::Corners)
 	{
 		UTF8Char sbuff[128];
@@ -85,7 +96,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord
 		{
 			me->selectMode = ActionType::None;
 			me->lblSelStatus->SetText(CSTR(""));
-			me->anpr.ParseImageQuad(me->currImg, Math::Quadrilateral::FromPolygon(me->points.Ptr()));
+			me->anpr.ParseImageQuad(img, Math::Quadrilateral::FromPolygon(me->points.Ptr()));
 		}
 		else
 		{
@@ -97,14 +108,14 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord
 	else if (me->selectMode == ActionType::Plate)
 	{
 		Math::Coord2DDbl coord = me->pbImg->Scn2ImagePos(scnPos);
-		me->anpr.ParseImagePlatePoint(me->currImg, Math::Coord2D<UOSInt>((UOSInt)Double2OSInt(coord.x), (UOSInt)Double2OSInt(coord.y)));
+		me->anpr.ParseImagePlatePoint(img, Math::Coord2D<UOSInt>((UOSInt)Double2OSInt(coord.x), (UOSInt)Double2OSInt(coord.y)));
 		me->selectMode = ActionType::None;
 		me->lblSelStatus->SetText(CSTR(""));
 	}
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
 	ResultInfo *res;
@@ -112,12 +123,12 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::S
 	UTF8Char *sptr;
 	UOSInt i;
 	res = MemAlloc(ResultInfo, 1);
-	res->area = *area;
+	res->area = area;
 	res->result = result->Clone();
 	res->maxTileAngle = maxTileAngle;
 	res->pxArea = pxArea;
 	res->confidence = confidence;
-	res->plateImg = (Media::StaticImage*)plateImg->Clone();
+	res->plateImg = NotNullPtr<Media::StaticImage>::ConvertFrom(plateImg->Clone());
 	me->results.Add(res);
 	i = me->lvPlate->AddItem(res->result, res);
 	sptr = Text::StrDouble(sbuff, maxTileAngle);
@@ -136,7 +147,7 @@ void SSWR::AVIRead::AVIRANPRForm::ClearResults()
 	{
 		res = this->results.GetItem(i);
 		res->result->Release();
-		DEL_CLASS(res->plateImg);
+		res->plateImg.Delete();
 		MemFree(res);
 	}
 	this->results.Clear();

@@ -28,10 +28,10 @@ namespace Media
 			Media::StaticImage *CreateStaticImage();
 			void ToBlackAndWhite(UInt8 middleV);
 			void Normalize();
-			Media::OpenCV::OCVFrame *BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);
+			NotNullPtr<Media::OpenCV::OCVFrame> BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);
 
 			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
-			static OCVFrame *CreateYFrame(Media::StaticImage *simg);
+			static Optional<OCVFrame> CreateYFrame(NotNullPtr<Media::StaticImage> simg);
 		};
 	}
 }

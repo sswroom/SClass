@@ -21,7 +21,7 @@ public:
 		this->p = &p;
 	}
 
-	Optional(NotNullPtr<T> p)
+	template <typename V> Optional(NotNullPtr<V> p)
 	{
 		this->p = p.Ptr();
 	}

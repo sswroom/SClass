@@ -2077,7 +2077,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			if (lineAdd > 0)
 			{
 				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
+				simg = (Media::StaticImage*)simg->Clone().Ptr();
 			}
 			else
 			{
@@ -2122,7 +2122,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			if (lineAdd > 0)
 			{
 				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
+				simg = (Media::StaticImage*)simg->Clone().Ptr();
 			}
 			else
 			{
@@ -2164,7 +2164,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			if (lineAdd > 0)
 			{
 				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
+				simg = (Media::StaticImage*)simg->Clone().Ptr();
 			}
 			else
 			{
@@ -2360,7 +2360,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				if (lineAdd > 0)
 				{
 					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone();
+					simg = (Media::StaticImage*)simg->Clone().Ptr();
 					simg->FillColor(0);
 				}
 				else
@@ -2407,7 +2407,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				if (lineAdd > 0)
 				{
 					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone();
+					simg = (Media::StaticImage*)simg->Clone().Ptr();
 					simg->FillColor(0);
 				}
 				else
@@ -2459,7 +2459,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				if (lineAdd > 0)
 				{
 					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone();
+					simg = (Media::StaticImage*)simg->Clone().Ptr();
 					simg->FillColor(0);
 				}
 				else
@@ -2506,7 +2506,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				if (lineAdd > 0)
 				{
 					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone();
+					simg = (Media::StaticImage*)simg->Clone().Ptr();
 					simg->FillColor(0);
 				}
 				else

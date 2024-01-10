@@ -344,18 +344,3 @@ Bool Media::Image::IsDispSize(Math::Size2D<UOSInt> dispSize)
 {
 	return this->info.dispSize == dispSize;
 }
-
-Text::CString Media::Image::AlphaTypeGetName(AlphaType atype)
-{
-	switch (atype)
-	{
-	case AT_NO_ALPHA:
-		return CSTR("No Alpha");
-	case AT_ALPHA:
-		return CSTR("Standard Alpha");
-	case AT_PREMUL_ALPHA:
-		return CSTR("Premul Alpha");
-	default:
-		return CSTR("Unknown");
-	}
-}

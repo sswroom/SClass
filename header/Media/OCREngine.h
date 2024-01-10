@@ -28,8 +28,8 @@ namespace Media
 
 		void SetCharWhiteList(const Char *whiteList);
 
-		Bool SetParsingImage(Media::StaticImage *img);
-		Bool SetOCVFrame(Media::OpenCV::OCVFrame *frame);
+		Bool SetParsingImage(NotNullPtr<Media::StaticImage> img);
+		Bool SetOCVFrame(NotNullPtr<Media::OpenCV::OCVFrame> frame);
 		Optional<Text::String> ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence);
 		
 		void HandleOCRResult(OCRResultFunc hdlr, void *userObj);
