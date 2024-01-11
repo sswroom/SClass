@@ -228,7 +228,7 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 		}
 		if (narr->currId != id)
 		{
-			DB::DBReader *r;
+			Optional<DB::DBReader> r;
 			NotNullPtr<DB::DBReader> nnr;
 			if (this->idCol != INVALID_INDEX)
 			{
@@ -248,7 +248,7 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 			{
 				r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), OPTSTR_CSTR(this->table), 0, (UOSInt)(id - 1), 1, 0, 0);
 			}
-			if (nnr.Set(r))
+			if (r.SetTo(nnr))
 			{
 				if (nnr->ReadNext())
 				{
@@ -365,7 +365,7 @@ UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Dat
 	return this->db->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->db)
 	{
@@ -490,7 +490,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 	}
 
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
+	if (!this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		return false;
 	}

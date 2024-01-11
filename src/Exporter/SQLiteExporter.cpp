@@ -56,7 +56,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	IO::LogTool log;
 	NotNullPtr<DB::ReadingDB> sDB;
 	DB::ReadingDBTool *srcDB;
-	DB::DBReader *r;
+	Optional<DB::DBReader> r;
 	NotNullPtr<DB::DBReader> nnr;
 	DB::TableDef *tabDef;
 	NotNullPtr<DB::TableDef> nntabDef;
@@ -88,7 +88,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 			if (tabDef)
 			{
 				r = srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-				if (r == 0)
+				if (r.IsNull())
 				{
 					DEL_CLASS(tabDef);
 					tabDef = 0;
@@ -104,16 +104,16 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		else
 		{
 			r = sDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-			if (r)
+			if (r.SetTo(nnr))
 			{
-				tabDef = r->GenTableDef(CSTR_NULL, tabName->ToCString());
+				tabDef = nnr->GenTableDef(CSTR_NULL, tabName->ToCString());
 			}
 			else
 			{
 				tabDef = 0;
 			}
 		}
-		if (nnr.Set(r))
+		if (r.SetTo(nnr))
 		{
 			if (!nntabDef.Set(tabDef))
 			{

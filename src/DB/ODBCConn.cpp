@@ -113,7 +113,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()"))))
+		if (this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()")).SetTo(r))
 		{
 			r->ReadNext();
 			Data::Timestamp ts1 = r->GetTimestamp(0);
@@ -125,7 +125,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	else if (this->sqlType == DB::SQLType::MySQL)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(this->ExecuteReader(CSTR("SELECT VERSION()"))))
+		if (this->ExecuteReader(CSTR("SELECT VERSION()")).SetTo(r))
 		{
 			r->ReadNext();
 			NotNullPtr<Text::String> s;
@@ -631,7 +631,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 	return rowCnt;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->connHand == 0)
 	{
@@ -680,8 +680,8 @@ DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	}
 	this->lastDataError = DE_NO_ERROR;
 
-	DB::ODBCReader *r;
-	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
+	NotNullPtr<DB::ODBCReader> r;
+	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
 }
 
@@ -946,7 +946,7 @@ UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
 }
 
-DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
+Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
 	if (this->connHand == 0)
 	{
@@ -977,8 +977,8 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	}
 	this->lastDataError = DE_NO_ERROR;
 
-	DB::ODBCReader *r;
-	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
+	NotNullPtr<DB::ODBCReader> r;
+	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
 }
 
@@ -990,7 +990,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> rdr;
-	if (rdr.Set(this->GetTablesInfo(schemaName)))
+	if (this->GetTablesInfo(schemaName).SetTo(rdr))
 	{
 		sbuff[0] = 0;
 		while (rdr->ReadNext())
@@ -1014,7 +1014,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

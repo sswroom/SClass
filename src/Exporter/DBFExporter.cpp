@@ -74,7 +74,7 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(conn->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+	if (!conn->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		tableName->Release();
 		return false;

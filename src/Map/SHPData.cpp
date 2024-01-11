@@ -645,7 +645,7 @@ UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::
 	return this->dbf->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::SHPData::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
 }

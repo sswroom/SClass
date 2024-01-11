@@ -37,16 +37,16 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	case DB::SQLType::MySQL:
 	{
 		OSInt i = 4;
-		DB::DBReader *tmpr = 0;
+		Optional<DB::DBReader> tmpr = 0;
 		NotNullPtr<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
 		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 
-		while (i-- > 0 && tmpr == 0)
+		while (i-- > 0 && tmpr.IsNull())
 		{
 			tmpr = this->ExecuteReader(CSTRP(buff, ptr));
 		}
-		if (!r.Set(tmpr))
+		if (!tmpr.SetTo(r))
 			return 0;
 
 		DB::TableDef *tab;
@@ -88,7 +88,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		NotNullPtr<DB::ColDef> col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
 		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::SQLType::MySQL);
-		if (r.Set(this->ExecuteReader(CSTRP(buff, ptr))))
+		if (this->ExecuteReader(CSTRP(buff, ptr)).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
@@ -154,7 +154,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	case DB::SQLType::MSSQL:
 	{
 		Int32 i = 4;
-		DB::DBReader *tmpr = 0;
+		Optional<DB::DBReader> tmpr = 0;
 		NotNullPtr<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
 		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MSSQL);
@@ -163,11 +163,11 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", "));
 			ptr = DB::DBUtil::SDBStrUTF8(ptr, schemaName.v, DB::SQLType::MSSQL);
 		}
-		while (i-- > 0 && tmpr == 0)
+		while (i-- > 0 && tmpr.IsNull())
 		{
 			tmpr = this->ExecuteReader(CSTRP(buff, ptr));
 		}
-		if (!r.Set(tmpr))
+		if (!tmpr.SetTo(r))
 			return 0;
 
 		DB::TableDef *tab;
@@ -224,11 +224,11 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		sb.AppendC(UTF8STRC("')"));
 		tmpr = 0;
 		i = 4;
-		while (i-- > 0 && tmpr == 0)
+		while (i-- > 0 && tmpr.IsNull())
 		{
 			tmpr = this->ExecuteReader(sb.ToCString());
 		}
-		if (!r.Set(tmpr))
+		if (!tmpr.SetTo(r))
 			return tab;
 
 		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
@@ -260,7 +260,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
 		sql.AppendStrC(tableName);
 		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(this->ExecuteReader(sql.ToCString())))
+		if (!this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			return 0;
 		}
@@ -299,7 +299,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		}
 		sql.AppendCmdC(CSTR(" order by ordinal_position"));
 		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(this->ExecuteReader(sql.ToCString())))
+		if (!this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			return 0;
 		}
@@ -585,7 +585,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			sql.AppendStrC(tableName);
 		}
 		sql.AppendCmdC(CSTR("::regclass AND i.indisprimary"));
-		if (r.Set(this->ExecuteReader(sql.ToCString())))
+		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
@@ -617,7 +617,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			{
 				sql.AppendStrC(schemaName);
 			}
-			if (r.Set(this->ExecuteReader(sql.ToCString())))
+			if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 			{
 				while (r->ReadNext())
 				{

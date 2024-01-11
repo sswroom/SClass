@@ -74,13 +74,13 @@ OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
 	return -2;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
+Optional<DB::DBReader> Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
+Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
@@ -114,7 +114,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Dat
 	return 0;
 }
 
-DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);

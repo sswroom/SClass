@@ -780,7 +780,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Data::NamedClass<LamppostData> *cls = LamppostData().CreateClass();
 			LamppostData *data;
 			NotNullPtr<DB::DBReader> r;
-			if (r.Set(db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, CSTR_NULL, 0)))
+			if (db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				{
 					DB::DBClassReader<LamppostData> reader(r, cls);

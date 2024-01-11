@@ -383,7 +383,7 @@ void TextReadAll(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(db->QueryTableData(CSTR_NULL, CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0)))
+	if (db->QueryTableData(CSTR_NULL, CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
 		{
@@ -413,7 +413,7 @@ void TestBinaryRead(DB::DBTool *db)
 	Data::ArrayList<Userfile*> dataList;
 	NotNullPtr<Net::MySQLTCPClient> conn = NotNullPtr<Net::MySQLTCPClient>::ConvertFrom(db->GetDBConn());
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(conn->ExecuteReaderBinary(CSTR("select * from userfile"))))
+	if (conn->ExecuteReaderBinary(CSTR("select * from userfile")).SetTo(r))
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
 		{
@@ -464,7 +464,7 @@ void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 	if (db)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(db->ExecuteReader(CSTR("select id, time1, time2 from test"))))
+		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
 		{
 			UTF8Char sbuff[64];
 			UTF8Char *sptr;

@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 		return;
 	}
 	NotNullPtr<DB::DBReader> reader;
-	if (reader.Set(me->cli->ExecuteReader(sb.ToCString())))
+	if (me->cli->ExecuteReader(sb.ToCString()).SetTo(reader))
 	{
 		me->UpdateResult(reader);
 		me->cli->CloseReader(reader);

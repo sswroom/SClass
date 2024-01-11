@@ -26,7 +26,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	sql.AppendCmdC(CSTR("select count(*) from "));
 	sql.AppendTableName(def);
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->db->ExecuteReader(sql.ToCString())))
+	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		if (r->ReadNext())
 		{
@@ -105,7 +105,7 @@ UOSInt DB::DBCache::QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outR
 	DB::SQLBuilder sql(this->db);
 	DB::SQLGenerator::PageStatus status = DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, page);
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->db->ExecuteReader(sql.ToCString())))
+	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		NotNullPtr<DB::DBRow> row;
 		UOSInt pageSkip = 0;
@@ -186,7 +186,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	sql.AppendCmdC(CSTR(" = "));
 	sql.AppendInt64(pk);
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->db->ExecuteReader(sql.ToCString())))
+	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		if (r->ReadNext())
 		{

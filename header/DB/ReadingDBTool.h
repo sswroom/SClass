@@ -37,7 +37,7 @@ namespace DB
 	protected:
 		NotNullPtr<DB::DBConn> db;
 		NotNullPtr<IO::LogTool> log;
-		DB::DBReader *lastReader;
+		Optional<DB::DBReader> lastReader;
 		UInt32 readerCnt;
 		UInt32 readerFail;
 //		UTF8Char *connStr;
@@ -71,7 +71,7 @@ namespace DB
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);
-		DB::DBReader *ExecuteReader(Text::CStringNN sqlCmd);
+		Optional<DB::DBReader> ExecuteReader(Text::CStringNN sqlCmd);
 		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
@@ -98,7 +98,7 @@ namespace DB
 
 		UInt32 GetDataCnt();
 
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> arr);
 		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> arr);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);

@@ -10,7 +10,7 @@ namespace Map
 	private:
 		struct StringSession
 		{
-			DB::DBReader *r;
+			Optional<DB::DBReader> r;
 			UOSInt thisId;
 		};
 
@@ -47,7 +47,7 @@ namespace Map
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);

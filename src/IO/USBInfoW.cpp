@@ -87,7 +87,7 @@ UOSInt IO::USBInfo::GetUSBList(NotNullPtr<Data::ArrayList<USBInfo*>> usbList)
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(qry.QueryTableData(CSTR_NULL, CSTR("CIM_LogicalDevice"), 0, 0, 0, CSTR_NULL, 0)))
+	if (qry.QueryTableData(CSTR_NULL, CSTR("CIM_LogicalDevice"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt descCol = INVALID_INDEX;
 		UOSInt devIdCol = INVALID_INDEX;

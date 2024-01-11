@@ -85,12 +85,12 @@ UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 1;
 }
 
-DB::DBReader *DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (cols)
 	{
-		DB::DBFReader *r;
-		NEW_CLASS(r, DB::DBFReader(this, this->colCnt, this->cols, this->rowSize, &this->enc));
+		NotNullPtr<DB::DBFReader> r;
+		NEW_CLASSNN(r, DB::DBFReader(this, this->colCnt, this->cols, this->rowSize, &this->enc));
 		return r;
 	}
 	else

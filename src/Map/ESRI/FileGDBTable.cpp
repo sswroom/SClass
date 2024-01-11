@@ -83,15 +83,15 @@ NotNullPtr<Text::String> Map::ESRI::FileGDBTable::GetName() const
 	return this->tableName;
 }
 
-DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
+Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
 {
 	NotNullPtr<FileGDBTableInfo> tableInfo;
 	if (!this->tableInfo.SetTo(tableInfo))
 	{
 		return 0;
 	}
-	Map::ESRI::FileGDBReader *reader;
-	NEW_CLASS(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize));
+	NotNullPtr<Map::ESRI::FileGDBReader> reader;
+	NEW_CLASSNN(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize));
 	NotNullPtr<IO::StreamData> fd;
 	if (fd.Set(this->gdbtablxFD))
 	{

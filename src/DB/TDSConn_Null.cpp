@@ -69,7 +69,7 @@ OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 	return -2;
 }
 
-DB::DBReader *DB::TDSConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 {
 	return 0;
 }
@@ -109,7 +109,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 0;
 }
 
-DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }

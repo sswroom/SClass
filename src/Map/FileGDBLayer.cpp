@@ -10,7 +10,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0)))
+	if (this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
@@ -73,7 +73,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0)))
+	if (this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -344,7 +344,7 @@ UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<D
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
@@ -352,7 +352,7 @@ DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::
 	this->currDB = currDB.Ptr();
 	this->lastDB = this->currDB;
 	NotNullPtr<DB::DBReader> rdr;
-	if (rdr.Set(this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition)))
+	if (this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
 	{
 		Map::FileGDBLReader *r;
 		NEW_CLASS(r, Map::FileGDBLReader(currDB, rdr, mutUsage));
@@ -373,10 +373,10 @@ DB::TableDef *Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CSt
 	return tab;
 }
 
-void Map::FileGDBLayer::CloseReader(DB::DBReader *r)
+void Map::FileGDBLayer::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	Map::FileGDBLReader *rdr = (Map::FileGDBLReader*)r;
-	DEL_CLASS(rdr);
+	NotNullPtr<Map::FileGDBLReader> rdr = NotNullPtr<Map::FileGDBLReader>::ConvertFrom(r);
+	rdr.Delete();
 	this->currDB = 0;
 }
 

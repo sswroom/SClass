@@ -51,9 +51,9 @@ namespace Map
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(DB::DBReader *r);
+		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 

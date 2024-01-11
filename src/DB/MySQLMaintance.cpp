@@ -42,7 +42,7 @@ void DB::MySQLMaintance::RepairTable(NotNullPtr<Text::String> tableName, NotNull
 	sql.AppendCmdC(CSTR("check table "));
 	sql.AppendCol(tableName->v);
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->cli->ExecuteReader(sql.ToCString())))
+	if (this->cli->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j = r->ColCount();

@@ -67,7 +67,7 @@ namespace DB
 		virtual void Close();
 		void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
-		virtual DB::DBReader *ExecuteReader(Text::CStringNN sql);
+		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
 		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
@@ -82,9 +82,9 @@ namespace DB
 		void SetTraceFile(const WChar *fileName);
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
-		DBReader *GetTablesInfo(Text::CString schemaName);
+		Optional<DBReader> GetTablesInfo(Text::CString schemaName);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);

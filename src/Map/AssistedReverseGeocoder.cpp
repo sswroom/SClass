@@ -41,7 +41,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	sql.AppendInt32(keyx);
 	sql.AppendCmdC(CSTR(" and keyy = "));
 	sql.AppendInt32(keyy);
-	if (r.Set(this->conn->ExecuteReader(sql.ToCString())))
+	if (this->conn->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		if (r->ReadNext())
 		{
@@ -106,7 +106,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	sql.AppendInt32(keyx);
 	sql.AppendCmdC(CSTR(" and keyy = "));
 	sql.AppendInt32(keyy);
-	if (r.Set(this->conn->ExecuteReader(sql.ToCString())))
+	if (this->conn->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		if (r->ReadNext())
 		{

@@ -14,7 +14,7 @@ SSWR::SHPConv::RangeFilter::~RangeFilter()
 {
 }
 
-Bool SSWR::SHPConv::RangeFilter::IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) const
+Bool SSWR::SHPConv::RangeFilter::IsValid(Double left, Double top, Double right, Double bottom, NotNullPtr<DB::DBReader> dbf) const
 {
 	if (this->right > left && this->left < right && this->bottom > top && this->top < bottom)
 	{

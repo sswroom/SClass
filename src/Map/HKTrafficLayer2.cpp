@@ -116,7 +116,7 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NotNullPtr<Net::SocketFactory> sockf, Opti
 	if(db)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(db->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0)))
+		if (db->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt shapeCol = INVALID_INDEX;
 			UOSInt idCol = INVALID_INDEX;

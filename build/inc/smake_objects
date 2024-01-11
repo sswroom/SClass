@@ -429,6 +429,7 @@ IOPinCapture.o: ../../src/IO/IOPinCapture.cpp
 IOTool.o: ../../src/IO/IOTool.cpp
 JavaClass.o: ../../src/IO/JavaClass.cpp
 JavaProperties.o: ../../src/IO/JavaProperties.cpp
+LangFile.o: ../../src/IO/LangFile.cpp
 LibraryL.o: ../../src/IO/LibraryL.cpp
 !-ldl
 LibraryW.o: ../../src/IO/LibraryW.cpp

@@ -38,7 +38,7 @@ void DB::MySQLConn::Connect()
 		mysql_set_character_set((MYSQL*)this->mysql, "utf8");
 
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(this->ExecuteReader(CSTR("SELECT VERSION()"))))
+		if (this->ExecuteReader(CSTR("SELECT VERSION()")).SetTo(r))
 		{
 			r->ReadNext();
 			NotNullPtr<Text::String> s;
@@ -224,7 +224,7 @@ OSInt DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 	}
 }*/
 
-DB::DBReader *DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->mysql == 0)
 	{
@@ -238,9 +238,9 @@ DB::DBReader *DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		result = mysql_use_result((MYSQL*)this->mysql);
 		if (result)
 		{
-			DB::DBReader *r;
+			NotNullPtr<DB::DBReader> r;
 			this->lastDataError = DE_NO_ERROR;
-			NEW_CLASS(r, DB::MySQLReader((OSInt)mysql_affected_rows((MYSQL*)this->mysql), result));
+			NEW_CLASSNN(r, DB::MySQLReader((OSInt)mysql_affected_rows((MYSQL*)this->mysql), result));
 			return r;
 		}
 		else
@@ -301,7 +301,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> rdr;
-	if (rdr.Set(this->ExecuteReader(CSTR("show tables"))))
+	if (this->ExecuteReader(CSTR("show tables")).SetTo(rdr))
 	{
 		while (rdr->ReadNext())
 		{
@@ -314,7 +314,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -501,16 +501,16 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 	return 2;
 }
 
-DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
 	{
-		NEW_CLASS(r, Map::GPSDataReader(*this));
+		NEW_CLASSNN(r, Map::GPSDataReader(*this));
 	}
 	else
 	{
-		NEW_CLASS(r, Map::GPSTrackReader(*this));
+		NEW_CLASSNN(r, Map::GPSTrackReader(*this));
 	}
 	return r;
 }

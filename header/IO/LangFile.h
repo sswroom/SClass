@@ -10,7 +10,7 @@ namespace IO
 		IO::ConfigFile *cfg;
 
 	public:
-		LangFile(Text::CStringNN fileName, Int32 codePage);
+		LangFile(Text::CStringNN fileName, UInt32 codePage);
 		virtual ~LangFile();
 
 		Text::CStringNN GetValue(Text::CStringNN name);

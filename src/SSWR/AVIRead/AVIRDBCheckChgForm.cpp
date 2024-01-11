@@ -210,7 +210,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		NEW_CLASS(csv, DB::CSVFile(fileName, 65001))
 		if (noHeader) csv->SetNoHeader(true);
 		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
+		if (!csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			DEL_CLASS(csv);
 			this->ui->ShowMsgOK(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
@@ -357,7 +357,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	NotNullPtr<DB::ColDef> col;
 	Bool found;
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, dataDBCond)))
+	if (!this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, dataDBCond).SetTo(r))
 	{
 		SDEL_CLASS(srcDBCond);
 		SDEL_CLASS(dataDBCond);
@@ -569,7 +569,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 
 	if (succ && keyCol != INVALID_INDEX)
 	{
-		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond)))
+		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond).SetTo(r))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 			succ = false;
@@ -940,7 +940,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Data::FastStringMap<Text::String**> csvData;
 	Text::String** rowData;
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+	if (!this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		DEL_CLASS(table);
 		SDEL_CLASS(srcDBCond);
@@ -1202,7 +1202,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 	if (keyCol != INVALID_INDEX)
 	{
-		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond)))
+		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond).SetTo(r))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}

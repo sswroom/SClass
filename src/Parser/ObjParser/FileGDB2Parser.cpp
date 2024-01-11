@@ -67,7 +67,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0)))
+		if (fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			Data::ArrayListStringNN layers;
 			NotNullPtr<Text::String> layerName;

@@ -2,7 +2,7 @@
 #include "IO/IniFile.h"
 #include "IO/LangFile.h"
 
-IO::LangFile::LangFile(Text::CStringNN fileName, Int32 codePage)
+IO::LangFile::LangFile(Text::CStringNN fileName, UInt32 codePage)
 {
 	this->cfg = IO::IniFile::Parse(fileName, codePage);
 }

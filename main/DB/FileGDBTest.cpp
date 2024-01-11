@@ -972,7 +972,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
 
-		if (r.Set(fileGDB->QueryTableData(CSTR_NULL, CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0)))
+		if (fileGDB->QueryTableData(CSTR_NULL, CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			Lamppost *lamppost;
 			UOSInt i;
@@ -1002,7 +1002,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
-			if (r.Set(csv->QueryTableData(CSTR_NULL, CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0)))
+			if (csv->QueryTableData(CSTR_NULL, CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				clk.Start();
 				{

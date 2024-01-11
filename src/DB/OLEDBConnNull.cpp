@@ -178,14 +178,14 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 	return 0;
 }
 
-DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
 	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
 	return ExecuteReader(CSTRP(tmpBuff, sptr));
 }
 
-DB::DBReader *DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;

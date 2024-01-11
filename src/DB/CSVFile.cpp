@@ -71,26 +71,26 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 1;
 }
 
-DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<IO::Stream> stm;
 	if (stm.Set(this->stm))
 	{
-		IO::Reader *rdr;
+		NotNullPtr<IO::Reader> rdr;
 		DB::CSVReader *r;
 		this->stm->SeekFromBeginning(0);
 		if (codePage == 65001)
 		{
-			NEW_CLASS(rdr, Text::UTF8Reader(stm));
+			NEW_CLASSNN(rdr, Text::UTF8Reader(stm));
 		}
 		else
 		{
-			NEW_CLASS(rdr, IO::StreamReader(stm, codePage));
+			NEW_CLASSNN(rdr, IO::StreamReader(stm, codePage));
 		}
 		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty, condition));
 		return r;
 	}
-	IO::Reader *rdr;
+	NotNullPtr<IO::Reader> rdr;
 	DB::CSVReader *r;
 	NotNullPtr<IO::FileStream> fs;
 	NEW_CLASSNN(fs, IO::FileStream(this->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
@@ -98,13 +98,13 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 	{
 		if (codePage == 65001)
 		{
-			NEW_CLASS(rdr, Text::UTF8Reader(fs));
+			NEW_CLASSNN(rdr, Text::UTF8Reader(fs));
 		}
 		else
 		{
-			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
+			NEW_CLASSNN(rdr, IO::StreamReader(fs, codePage));
 		}
-		NEW_CLASS(r, DB::CSVReader(fs.Ptr(), rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty, condition));
 		return r;
 	}
 	else
@@ -116,8 +116,8 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 
 DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	DB::DBReader *r = this->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (this->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		DB::TableDef *tab;
 		NotNullPtr<DB::ColDef> col;
@@ -160,7 +160,7 @@ void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
 	this->nullIfEmpty = nullIfEmpty;
 }
 
-DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition)
+DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NotNullPtr<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition)
 {
 	this->stm = stm;
 	this->rdr = rdr;
@@ -255,8 +255,8 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 
 DB::CSVReader::~CSVReader()
 {
-	DEL_CLASS(this->rdr);
-	SDEL_CLASS(this->stm);
+	this->rdr.Delete();
+	this->stm.Delete();
 	MemFree(this->row);
 	MemFree(this->cols);
 	MemFree(this->colSize);
@@ -273,11 +273,6 @@ Bool DB::CSVReader::ReadNext()
 	Int32 quote = 0;
 
 	UOSInt nCol;
-	if (this->rdr == 0)
-	{
-		this->nCol = 0;
-		return false;
-	}
 	if (this->noHeader)
 	{
 		this->noHeader = false;

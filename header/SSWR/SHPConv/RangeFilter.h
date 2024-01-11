@@ -19,10 +19,10 @@ namespace SSWR
 			RangeFilter(Double left, Double top, Double right, Double bottom, Int32 compareType);
 			virtual ~RangeFilter();
 
-			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) const;
+			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NotNullPtr<DB::DBReader> dbf) const;
 			virtual UTF8Char *ToString(UTF8Char *buff) const;
 			virtual MapFilter *Clone() const;
 		};
-	};
-};
+	}
+}
 #endif

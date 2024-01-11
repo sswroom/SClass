@@ -1798,6 +1798,8 @@ IO/JavaClass.h:
 @JavaClass.o
 IO/JavaProperties.h:
 @JavaProperties.o
+IO/LangFile.h:
+@LangFile.o
 IO/LNKFile.h:
 @LNKFile.o
 IO/LogFile.h:

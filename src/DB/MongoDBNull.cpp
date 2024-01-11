@@ -17,7 +17,7 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 0;
 }
 
-DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }

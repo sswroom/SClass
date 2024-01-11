@@ -363,7 +363,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 			if (sb.GetLength() > 0)
 			{
 				NotNullPtr<DB::DBReader> r;
-				if (r.Set(((DB::ReadingDBTool*)me->currDB)->ExecuteReader(sb.ToCString())))
+				if (((DB::ReadingDBTool*)me->currDB)->ExecuteReader(sb.ToCString()).SetTo(r))
 				{
 					if (r->ColCount() == 0)
 					{
@@ -607,7 +607,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	NotNullPtr<DB::DBReader> r;
 	tabDef = this->currDB->GetTableDef(schemaName, nntableName->ToCString());
 
-	if (r.Set(this->currDB->QueryTableData(schemaName, nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0)))
+	if (this->currDB->QueryTableData(schemaName, nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0).SetTo(r))
 	{
 		UpdateResult(r, this->lvTableResult);
 
@@ -826,7 +826,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNull
 		while (reader.NextSQL(sb))
 		{
 			NotNullPtr<DB::DBReader> r;
-			if (r.Set(db->ExecuteReader(sb.ToCString())))
+			if (db->ExecuteReader(sb.ToCString()).SetTo(r))
 			{
 				if (r->ColCount() == 0)
 				{

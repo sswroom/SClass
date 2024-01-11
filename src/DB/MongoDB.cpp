@@ -85,15 +85,15 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->database && this->client)
 	{
 		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v, (const Char*)tableName.v);
 		if (coll)
 		{
-			DB::MongoDBReader *reader;
-			NEW_CLASS(reader, DB::MongoDBReader(this, coll));
+			NotNullPtr<DB::MongoDBReader> reader;
+			NEW_CLASSNN(reader, DB::MongoDBReader(this, coll));
 			return reader;
 		}
 	}

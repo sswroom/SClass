@@ -601,7 +601,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, log, CSTR("DB: ")).SetTo(db))
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0)))
+		if (db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			Manage::HiResClock clk;
 			Data::NamedClass<FlightHoldingsPeriod> *cls;

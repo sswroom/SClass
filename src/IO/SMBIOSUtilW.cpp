@@ -42,7 +42,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 	Win32::WMIQuery *db;
 	NotNullPtr<DB::DBReader> r;
 	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\WMI"));
-	if (r.Set(db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables")))
+	if (db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables").SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;

@@ -27,7 +27,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
+		if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			return;
 		}
@@ -89,7 +89,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			}
 		}
 		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, CSTR_NULL, 0)))
+		if (!db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			return;
 		}

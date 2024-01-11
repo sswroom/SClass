@@ -121,15 +121,15 @@ OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
 	return -2;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
+Optional<DB::DBReader> Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 {
 	const WChar *wptr = Text::StrToWCharNew(sqlCmd.v);
-	DB::DBReader *r = this->ExecuteReaderW(wptr);
+	Optional<DB::DBReader> r = this->ExecuteReaderW(wptr);
 	Text::StrDelNew(wptr);
 	return r;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
+Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
 {
 	HRESULT hr;
 	BSTR query = SysAllocString(sqlCmd);
@@ -141,8 +141,8 @@ DB::DBReader *Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
 	if (SUCCEEDED(hr))
 	{
 		this->lastDataError = DE_NO_ERROR;
-		Win32::WMIReader *reader;
-		NEW_CLASS(reader, Win32::WMIReader(pEnum));
+		NotNullPtr<Win32::WMIReader> reader;
+		NEW_CLASSNN(reader, Win32::WMIReader(pEnum));
 		return reader;
 	}
 	else
@@ -213,7 +213,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Dat
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);
@@ -252,7 +252,7 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 	NEW_CLASS(query, Win32::WMIQuery(L"ROOT"));
 	if (!query->IsError())
 	{
-		if (reader.Set((Win32::WMIReader*)query->ExecuteReaderW(L"select * from __NAMESPACE")))
+		if (Optional<Win32::WMIReader>::ConvertFrom(query->ExecuteReaderW(L"select * from __NAMESPACE")).SetTo(reader))
 		{
 			while (reader->ReadNext())
 			{

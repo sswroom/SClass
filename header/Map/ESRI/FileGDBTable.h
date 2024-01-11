@@ -25,7 +25,7 @@ namespace Map
 
 			Bool IsError();
 			NotNullPtr<Text::String> GetName() const;
-			DB::DBReader *OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions);	
+			Optional<DB::DBReader> OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions);	
 		};
 	}
 }

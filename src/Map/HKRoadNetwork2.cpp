@@ -70,7 +70,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0)))
+	if (this->fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;

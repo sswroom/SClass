@@ -257,17 +257,17 @@ UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::Ar
 	return 1;
 }
 
-DB::DBReader *DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (tableName.Equals(this->layerName->ToCString()))
 	{
-		JSONDBReader *r;
+		NotNullPtr<JSONDBReader> r;
 		UOSInt endOfst;
 		if (maxCnt == 0)
 			endOfst = this->data->GetArrayLength();
 		else
 			endOfst = ofst + maxCnt;
-		NEW_CLASS(r, JSONDBReader(this->GetTableDef(schemaName, tableName), this->data, ofst, endOfst));
+		NEW_CLASSNN(r, JSONDBReader(this->GetTableDef(schemaName, tableName), this->data, ofst, endOfst));
 		return r;
 	}
 	return 0;

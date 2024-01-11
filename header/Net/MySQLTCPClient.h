@@ -82,9 +82,9 @@ namespace Net
 		virtual void Close();
 		virtual void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
-		virtual DB::DBReader *ExecuteReader(Text::CStringNN sql);
-		DB::DBReader *ExecuteReaderText(Text::CStringNN sql);
-		DB::DBReader *ExecuteReaderBinary(Text::CStringNN sql);
+		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
+		Optional<DB::DBReader> ExecuteReaderText(Text::CStringNN sql);
+		Optional<DB::DBReader> ExecuteReaderBinary(Text::CStringNN sql);
 		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
@@ -95,7 +95,7 @@ namespace Net
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		Bool ChangeSchema(const UTF8Char *schemaName);
 
 		Bool IsError();

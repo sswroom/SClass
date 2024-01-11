@@ -121,7 +121,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 	if (fgdb)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(fgdb->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0)))
+		if (fgdb->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt objIdCol = INVALID_INDEX;
 			UOSInt routeIdCol = INVALID_INDEX;
@@ -168,7 +168,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 		}
 		if (this->routeMap.GetCount() > 0)
 		{
-			if (r.Set(fgdb->QueryTableData(CSTR_NULL, CSTR("SPEED_LIMIT"), 0, 0, 0, CSTR_NULL, 0)))
+			if (fgdb->QueryTableData(CSTR_NULL, CSTR("SPEED_LIMIT"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				UOSInt routeIdCol = INVALID_INDEX;
 				UOSInt spdLimitCol = INVALID_INDEX;

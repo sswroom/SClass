@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 			}
 		}
 		NotNullPtr<DB::DBReader> reader;
-		if (!reader.Set(db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
+		if (!db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 		{
 			me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
 			DEL_CLASS(db);
@@ -247,8 +247,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	const UTF8Char **sarr;
 	sarr = MemAlloc(const UTF8Char *, colCnt + 2);
 	i = 0;
-	DB::DBReader *reader = db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-	if (reader == 0)
+	NotNullPtr<DB::DBReader> reader;
+	if (!db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 		MemFree(sarr);
 		DEL_CLASS(db);
@@ -341,6 +341,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		sb.AppendCSV(sarr, colCnt + 2);
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 	}
+	db->CloseReader(reader);
 
 	MemFree(strBuff);
 	MemFree(sarr);

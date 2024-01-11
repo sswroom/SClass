@@ -6,8 +6,9 @@
 Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
 {
 	StringSession *sess = MemAlloc(StringSession, 1);
+	NotNullPtr<DB::DBReader> r;
 	sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-	if (sess->r && sess->r->ReadNext())
+	if (sess->r.SetTo(r) && r->ReadNext())
 	{
 		sess->thisId = 0;
 	}
@@ -20,17 +21,17 @@ Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
 
 Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 {
+	NotNullPtr<DB::DBReader> r;
 	if (sess->thisId == index)
 	{
 		return true;
 	}
 	else if (sess->thisId > index)
 	{
-		NotNullPtr<DB::DBReader> r;
-		if (r.Set(sess->r))
+		if (sess->r.SetTo(r))
 			this->gpkg->CloseReader(r);
 		sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, index, 0, CSTR_NULL, 0);
-		if (sess->r && sess->r->ReadNext())
+		if (sess->r.SetTo(r) && r->ReadNext())
 		{
 			sess->thisId = index;
 			return true;
@@ -43,11 +44,14 @@ Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 	}
 	else
 	{
-		while (sess->r->ReadNext())
+		if (sess->r.SetTo(r))
 		{
-			sess->thisId++;
-			if (sess->thisId == index)
-				return true;
+			while (r->ReadNext())
+			{
+				sess->thisId++;
+				if (sess->thisId == index)
+					return true;
+			}
 		}
 		return false;
 	}
@@ -79,7 +83,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::Geo
 		if (this->geomCol != INVALID_INDEX)
 		{
 			NotNullPtr<DB::DBReader> r;
-			if (r.Set(this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+			if (this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -225,7 +229,7 @@ void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
 	if (sess)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(sess->r)) this->gpkg->CloseReader(r);
+		if (sess->r.SetTo(r)) this->gpkg->CloseReader(r);
 		MemFree(sess);
 	}
 }
@@ -233,11 +237,12 @@ void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
 Bool Map::GeoPackageLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	StringSession *sess = (StringSession*)nameArr;
-	if (sess && sess->r)
+	NotNullPtr<DB::DBReader> r;
+	if (sess && sess->r.SetTo(r))
 	{
 		if (!StringSessGoRow(sess, (UOSInt)id))
 			return false;
-		return sess->r->GetStr(strIndex, sb);
+		return r->GetStr(strIndex, sb);
 	}
 	return false;
 }
@@ -313,7 +318,7 @@ UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NotNullPt
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

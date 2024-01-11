@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	).SetTo(conn))
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(conn->ExecuteReader(CSTR("select * from table"))))
+		if (conn->ExecuteReader(CSTR("select * from table")).SetTo(r))
 		{
 			while (r->ReadNext())
 			{

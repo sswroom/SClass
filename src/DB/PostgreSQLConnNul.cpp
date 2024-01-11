@@ -86,7 +86,7 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 	return -2;
 }
 
-DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 {
 	return 0;
 }
@@ -144,7 +144,7 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> 
 {
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"))))
+	if (this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -164,7 +164,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<
 	sql.AppendStrC(schemaName);
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->ExecuteReader(sql.ToCString())))
+	if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -177,7 +177,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

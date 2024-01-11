@@ -13,7 +13,7 @@ SSWR::SHPConv::ValueFilter::~ValueFilter()
 	this->value->Release();
 }
 
-Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) const
+Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, Double bottom, NotNullPtr<DB::DBReader> dbf) const
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

@@ -294,7 +294,7 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::Ar
 	return j;
 }
 
-DB::DBReader *DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
 	if (tableName.v == 0)
@@ -316,8 +316,8 @@ DB::DBReader *DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString
 	{
 		return 0;
 	}
-	DB::DBReader *reader;
-	NEW_CLASS(reader, TextDBReader(data));
+	NotNullPtr<DB::DBReader> reader;
+	NEW_CLASSNN(reader, TextDBReader(data));
 	return reader;
 }
 

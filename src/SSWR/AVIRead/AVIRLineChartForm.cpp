@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	UOSInt colCount;
 	ColInfo *colInfos;
 	NotNullPtr<DB::DBReader> reader;
-	if (!reader.Set(me->db->QueryTableData(OPTSTR_CSTR(me->schemaName), me->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+	if (!me->db->QueryTableData(OPTSTR_CSTR(me->schemaName), me->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in getting database data"), CSTR("Error"), me);
 		return;
@@ -343,7 +343,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->lbYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NotNullPtr<DB::DBReader> reader;
-	if (!reader.Set(this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), tableName, 0, 0, 0, CSTR_NULL, 0)))
+	if (!this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 	}
 	else

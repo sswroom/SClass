@@ -2172,7 +2172,7 @@ void Net::MySQLTCPClient::Dispose()
 OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CStringNN sql)
 {
 	NotNullPtr<DB::DBReader> reader;
-	if (!reader.Set(ExecuteReaderText(sql)))
+	if (!ExecuteReaderText(sql).SetTo(reader))
 	{
 		return -2;
 	}
@@ -2184,7 +2184,7 @@ OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CStringNN sql)
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReader(Text::CStringNN sql)
 {
 	if (sql.StartsWith(UTF8STRC("check table ")))
 	{
@@ -2200,7 +2200,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CStringNN sql)
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
+Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -2215,11 +2215,11 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
 		}
 		Sync::SimpleThread::Sleep(10);
 	}
-	MySQLTCPReader *reader;
-	NEW_CLASS(reader, MySQLTCPReader(this->cmdMut));
+	NotNullPtr<MySQLTCPReader> reader;
+	NEW_CLASSNN(reader, MySQLTCPReader(this->cmdMut));
 	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
-	this->cmdTCPReader = reader;
+	this->cmdTCPReader = reader.Ptr();
 	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
 	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 3;
@@ -2227,7 +2227,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
 	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
 	{
 		this->cmdTCPReader = 0;
-		DEL_CLASS(reader);
+		reader.Delete();
 		MemFree(buff);
 		this->lastDataError = DE_CONN_ERROR;
 		return 0;
@@ -2246,7 +2246,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
 	{
 		this->cmdTCPReader = 0;
 		reader->EndData();
-		DEL_CLASS(reader);
+		reader.Delete();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
 		return 0;
 	}
@@ -2254,7 +2254,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
 	return reader;
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN sql)
+Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN sql)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -2269,11 +2269,11 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN sql)
 		}
 		Sync::SimpleThread::Sleep(10);
 	}
-	MySQLTCPBinaryReader *reader;
-	NEW_CLASS(reader, MySQLTCPBinaryReader(this->cmdMut));
+	NotNullPtr<MySQLTCPBinaryReader> reader;
+	NEW_CLASSNN(reader, MySQLTCPBinaryReader(this->cmdMut));
 	this->cmdResultType = CmdResultType::ProcessingBinary;
 	this->cmdSeqNum = 1;
-	this->cmdBinReader = reader;
+	this->cmdBinReader = reader.Ptr();
 	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
 	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 22;
@@ -2281,7 +2281,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN sql)
 	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
 	{
 		this->cmdBinReader = 0;
-		DEL_CLASS(reader);
+		reader.Delete();
 		MemFree(buff);
 		this->lastDataError = DE_CONN_ERROR;
 		return 0;
@@ -2300,7 +2300,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN sql)
 	{
 		this->cmdBinReader = 0;
 		reader->EndData();
-		DEL_CLASS(reader);
+		reader.Delete();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
 		return 0;
 	}
@@ -2416,7 +2416,7 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> rdr;
-	if (rdr.Set(this->ExecuteReader(CSTR("show tables"))))
+	if (this->ExecuteReader(CSTR("show tables")).SetTo(rdr))
 	{
 		while (rdr->ReadNext())
 		{
@@ -2429,7 +2429,7 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

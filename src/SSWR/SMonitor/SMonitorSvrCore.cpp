@@ -898,7 +898,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 	UTF8Char *sarr[2];
 	UOSInt i;
 	UOSInt j;
-	if (r.Set(db->ExecuteReader(CSTR("select id, userName, pwd, userType from webuser order by id"))))
+	if (db->ExecuteReader(CSTR("select id, userName, pwd, userType from webuser order by id")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -920,7 +920,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 	}
 
 	DeviceInfo *dev;
-	if (r.Set(db->ExecuteReader(CSTR("select id, cpuName, platformName, lastKATime, flags, readingTime, nreading, dsensors, ndigital, reading1Status, reading1, reading2Status, reading2, reading3Status, reading3, reading4Status, reading4, reading5Status, reading5, reading6Status, reading6, reading7Status, reading7, reading8Status, reading8, devName, readingNames, digitalNames, reading9Status, reading9, reading10Status, reading10, reading11Status, reading11, reading12Status, reading12, reading13Status, reading13, reading14Status, reading14, reading15Status, reading15, reading16Status, reading16, reading17Status, reading17, reading18Status, reading18, reading19Status, reading19, reading20Status, reading20, reading21Status, reading21, reading22Status, reading22, reading23Status, reading23, reading24Status, reading24, nOutput, reading25Status, reading25, reading26Status, reading26, reading27Status, reading27, reading28Status, reading28, reading29Status, reading29, reading30Status, reading30, reading31Status, reading31, reading32Status, reading32, reading33Status, reading33, reading34Status, reading34, reading35Status, reading35, reading36Status, reading36, reading37Status, reading37, reading38Status, reading38, reading39Status, reading39, reading40Status, reading40, version from device order by id"))))
+	if (db->ExecuteReader(CSTR("select id, cpuName, platformName, lastKATime, flags, readingTime, nreading, dsensors, ndigital, reading1Status, reading1, reading2Status, reading2, reading3Status, reading3, reading4Status, reading4, reading5Status, reading5, reading6Status, reading6, reading7Status, reading7, reading8Status, reading8, devName, readingNames, digitalNames, reading9Status, reading9, reading10Status, reading10, reading11Status, reading11, reading12Status, reading12, reading13Status, reading13, reading14Status, reading14, reading15Status, reading15, reading16Status, reading16, reading17Status, reading17, reading18Status, reading18, reading19Status, reading19, reading20Status, reading20, reading21Status, reading21, reading22Status, reading22, reading23Status, reading23, reading24Status, reading24, nOutput, reading25Status, reading25, reading26Status, reading26, reading27Status, reading27, reading28Status, reading28, reading29Status, reading29, reading30Status, reading30, reading31Status, reading31, reading32Status, reading32, reading33Status, reading33, reading34Status, reading34, reading35Status, reading35, reading36Status, reading36, reading37Status, reading37, reading38Status, reading38, reading39Status, reading39, reading40Status, reading40, version from device order by id")).SetTo(r))
 	{
 		Data::ArrayList<DevRecord2*> recList;
 		DevRecord2 *rec;
@@ -1102,7 +1102,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 		db->CloseReader(r);
 	}
 
-	if (r.Set(db->ExecuteReader(CSTR("select webuser_id, device_id from webuser_device order by webuser_id"))))
+	if (db->ExecuteReader(CSTR("select webuser_id, device_id from webuser_device order by webuser_id")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{

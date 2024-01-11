@@ -294,7 +294,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(this->db->ExecuteReader(sql.ToCString())))
+	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return 0;
 	Media::ImageList *imgList = 0;
 	if (r->ReadNext())
@@ -340,7 +340,7 @@ UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Da
 	return this->db->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
@@ -387,7 +387,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(this->db->ExecuteReader(sql.ToCString())))
+	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return false;
 	Bool succ = false;
 	if (r->ReadNext())

@@ -127,7 +127,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 	{
 		Int32 id = 0;
 		NotNullPtr<DB::DBReader> reader;
-		if (reader.Set(this->ExecuteReader(CSTR("select @@identity"))))
+		if (this->ExecuteReader(CSTR("select @@identity")).SetTo(reader))
 		{
 			if (reader->ReadNext())
 			{
@@ -149,7 +149,7 @@ Int64 DB::DBTool::GetLastIdentity64()
 	{
 		Int64 id = 0;
 		NotNullPtr<DB::DBReader> reader;
-		if (reader.Set(this->ExecuteReader(CSTR("select @@identity"))))
+		if (this->ExecuteReader(CSTR("select @@identity")).SetTo(reader))
 		{
 			if (reader->ReadNext())
 			{
@@ -302,7 +302,7 @@ Bool DB::DBTool::KillConnection(Int32 id)
 		sql.AppendInt32(id);
 		sql.AppendCmdC(CSTR(")"));
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(this->ExecuteReader(sql.ToCString())))
+		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			if (r->ReadNext())
 			{

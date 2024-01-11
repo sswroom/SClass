@@ -31,7 +31,7 @@ namespace DB
 		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
-		virtual DBReader *ExecuteReader(Text::CStringNN sql);
+		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 		virtual void CloseReader(NotNullPtr<DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
@@ -42,7 +42,7 @@ namespace DB
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();

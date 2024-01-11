@@ -108,7 +108,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->db->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0)))
+	if (this->db->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;

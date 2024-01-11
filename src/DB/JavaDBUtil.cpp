@@ -349,8 +349,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 	}
 	else
 	{
-		DB::DBReader *r = db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			DB::ColDef colDef(CSTR(""));
 			UOSInt j = 0;
@@ -371,6 +371,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 				}
 				j++;
 			}
+			db->CloseReader(r);
 		}
 	}
 	DEL_CLASS(tableDef);

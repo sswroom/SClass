@@ -69,7 +69,8 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	
 
 	DB::TableDef *tabDef = 0;
-	DB::DBReader *tmpr;
+	Optional<DB::DBReader> tmpr;
+	NotNullPtr<DB::DBReader> r;
 	if (me->dbt)
 	{
 		tabDef = me->dbt->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
@@ -81,14 +82,13 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		tabDef = me->db->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
 		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
-		if (tmpr && tabDef == 0)
+		if (tmpr.SetTo(r) && tabDef == 0)
 		{
-			tabDef = tmpr->GenTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			tabDef = r->GenTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 		}
 	}
 	OPTSTR_DEL(schemaName);
-	NotNullPtr<DB::DBReader> r;
-	if (r.Set(tmpr))
+	if (tmpr.SetTo(r))
 	{
 		me->UpdateResult(r);
 
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
 	if (sb.GetLength() > 0)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(me->dbt->ExecuteReader(sb.ToCString())))
+		if (me->dbt->ExecuteReader(sb.ToCString()).SetTo(r))
 		{
 			me->UpdateResult(r);
 			me->dbt->CloseReader(r);

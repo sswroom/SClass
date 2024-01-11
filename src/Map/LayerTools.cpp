@@ -42,7 +42,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Ma
 	i = 0;
 	while (i < layerCnt)
 	{
-		if (layers->GetItem(i).SetTo(lyr) && r.Set(lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
+		if (layers->GetItem(i).SetTo(lyr) && lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			k = r->ColCount();
 			j = 0;

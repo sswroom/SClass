@@ -22,7 +22,7 @@ namespace DB
 
 		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names) = 0; //Need Release
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName) = 0;
 		virtual void CloseReader(NotNullPtr<DBReader> r) = 0;
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str) = 0;

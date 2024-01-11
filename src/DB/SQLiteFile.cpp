@@ -143,7 +143,7 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 	}
 }
 
-DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->db)
 	{
@@ -152,8 +152,8 @@ DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v, (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			this->lastDataError = DE_NO_ERROR;
-			DB::SQLiteReader *r;
-			NEW_CLASS(r, DB::SQLiteReader(this, stmt));
+			NotNullPtr<DB::SQLiteReader> r;
+			NEW_CLASSNN(r, DB::SQLiteReader(this, stmt));
 			return r;
 		}
 		else
@@ -229,7 +229,7 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 		return 0;
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"))))
+	if (ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'")).SetTo(r))
 	{
 		Text::StringBuilderUTF8 sb;
 		NotNullPtr<Text::String> name;
@@ -243,7 +243,7 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];

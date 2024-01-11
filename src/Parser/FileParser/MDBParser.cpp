@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
 				hasSpRef = true;
-			if (rdr.Set(mdb->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+			if (mdb->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
 				{
@@ -147,7 +147,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		if (hasSpRef)
 		{
 			NotNullPtr<DB::DBReader> rdr;
-			if (rdr.Set(mdb->QueryTableData(CSTR_NULL, CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0)))
+			if (mdb->QueryTableData(CSTR_NULL, CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
 				{

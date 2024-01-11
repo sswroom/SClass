@@ -811,7 +811,7 @@ DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text
 	if (this->clsData->dbproc != 0)
 	{
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()"))))
+		if (this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()")).SetTo(r))
 		{
 			if (r->ReadNext())
 			{
@@ -905,14 +905,14 @@ void DB::TDSConn::Close()
 OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	NotNullPtr<DBReader> r;
-	if (!r.Set(this->ExecuteReader(sql)))
+	if (!this->ExecuteReader(sql).SetTo(r))
 		return -2;
 	OSInt rows = r->GetRowChanged();
 	this->CloseReader(r);
 	return rows;
 }
 
-DB::DBReader *DB::TDSConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->clsData->dbproc == 0)
 		return 0;
@@ -930,8 +930,8 @@ DB::DBReader *DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 #endif
 		return 0;
 	}
-	TDSConnReader *r;
-	NEW_CLASS(r, TDSConnReader(this->clsData->dbproc, this->clsData->tzQhr));
+	NotNullPtr<TDSConnReader> r;
+	NEW_CLASSNN(r, TDSConnReader(this->clsData->dbproc, this->clsData->tzQhr));
 	return r;
 }
 
@@ -1025,7 +1025,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 			sql.AppendStrC(schemaName);
 		}
 		NotNullPtr<DB::DBReader> r;
-		if (r.Set(this->ExecuteReader(sql.ToCString())))
+		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
@@ -1044,7 +1044,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 0;
 }
 
-DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -40,9 +40,7 @@ namespace DB
 		virtual void Close();
 		virtual void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
-//		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual DBReader *ExecuteReader(Text::CStringNN sql);
-//		virtual DBReader *ExecuteReader(const WChar *sql);
+		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
@@ -53,7 +51,7 @@ namespace DB
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
 		NotNullPtr<Text::String> GetConnServer();

@@ -246,14 +246,14 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 	return this->wb->GetCount();
 }
 
-DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
 		return 0;
 	}
-	WorkbookReader *r;
+	NotNullPtr<WorkbookReader> r;
 	UOSInt endOfst;
 	if (maxCnt == 0)
 	{
@@ -267,7 +267,7 @@ DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CSt
 			endOfst = sheet->GetCount();
 		}
 	}
-	NEW_CLASS(r, WorkbookReader(sheet, GetTableDef(schemaName, tableName), dataOfst, endOfst));
+	NEW_CLASSNN(r, WorkbookReader(sheet, GetTableDef(schemaName, tableName), dataOfst, endOfst));
 	return r;
 }
 

@@ -267,7 +267,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		if (succ && copyData)
 		{
 			UOSInt rowCopied = 0;
-			if (r.Set(me->dataConn->QueryTableData(STR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0)))
+			if (me->dataConn->QueryTableData(STR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
 			{
 				Text::StringBuilderUTF8 sbInsert;
 				UOSInt nInsert = 0;

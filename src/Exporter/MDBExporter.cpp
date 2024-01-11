@@ -83,7 +83,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	while (it.HasNext())
 	{
 		tabName = it.Next();
-		if (r.Set(srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+		if (srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			DB::TableDef tabDef(CSTR_NULL, tabName->ToCString());
 			k = 0;

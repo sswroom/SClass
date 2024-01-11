@@ -27,7 +27,7 @@ namespace DB
 		virtual ~CSVFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(NotNullPtr<DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
@@ -39,8 +39,8 @@ namespace DB
 	class CSVReader : public DB::DBReader, public Data::ObjectGetter
 	{
 	private:
-		IO::Stream *stm;
-		IO::Reader *rdr;
+		Optional<IO::Stream> stm;
+		NotNullPtr<IO::Reader> rdr;
 		UOSInt nCol;
 		UOSInt nHdr;
 		UTF8Char *row;
@@ -54,7 +54,7 @@ namespace DB
 		Data::QueryConditions *condition;
 
 	public:
-		CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition);
+		CSVReader(Optional<IO::Stream> stm, NotNullPtr<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition);
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();

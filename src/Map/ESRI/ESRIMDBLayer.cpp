@@ -12,7 +12,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+	if (this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
@@ -79,7 +79,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
 	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0)))
+	if (this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -375,7 +375,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NotNul
 	return 1;
 }
 
-DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
@@ -383,10 +383,10 @@ DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, 
 	this->currDB = currDB.Ptr();
 	this->lastDB = this->currDB;
 	NotNullPtr<DB::DBReader> rdr;
-	if (rdr.Set(this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition)))
+	if (this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
 	{
-		Map::ESRI::ESRIMDBReader *r;
-		NEW_CLASS(r, Map::ESRI::ESRIMDBReader(currDB, rdr, mutUsage));
+		NotNullPtr<Map::ESRI::ESRIMDBReader> r;
+		NEW_CLASSNN(r, Map::ESRI::ESRIMDBReader(currDB, rdr, mutUsage));
 		return r;
 	}
 	mutUsage.Delete();

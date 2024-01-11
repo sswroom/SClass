@@ -40,7 +40,7 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NotNullP
 	return j;
 }
 
-DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
@@ -67,7 +67,7 @@ DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text:
 	DB::TableDef *tab;
 	NotNullPtr<DB::DBReader> r;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	if (r.Set(table->OpenReader(0, 0, 0, CSTR_NULL, 0)))
+	if (table->OpenReader(0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		tab->ColFromReader(r);
 		this->CloseReader(r);
@@ -116,8 +116,8 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile
 		DEL_CLASS(table);
 		return 0;
 	}
-	FileGDBReader *reader = (FileGDBReader*)table->OpenReader(0, 0, 0, CSTR_NULL, 0);
-	if (reader == 0)
+	NotNullPtr<FileGDBReader> reader;
+	if (!Optional<FileGDBReader>::ConvertFrom(table->OpenReader(0, 0, 0, CSTR_NULL, 0)).SetTo(reader))
 	{
 		DEL_CLASS(table);
 		return 0;
@@ -158,6 +158,6 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile
 			SDEL_CLASS(indexFD);
 		}
 	}
-	DEL_CLASS(reader);
+	reader.Delete();
 	return dir;
 }

@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 			i++;
 		}
 		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, CSTR_NULL, 0)))
+		if (!me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("Export Table Data"), me);
 			dlg.Delete();

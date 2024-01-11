@@ -665,18 +665,18 @@ UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Da
 	}
 }
 
-DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
-		HTRecReader *reader;
-		NEW_CLASS(reader, HTRecReader(this, true));
+		NotNullPtr<HTRecReader> reader;
+		NEW_CLASSNN(reader, HTRecReader(this, true));
 		return reader;
 	}
 	else if (tableName.Equals(UTF8STRC("Records")))
 	{
-		HTRecReader *reader;
-		NEW_CLASS(reader, HTRecReader(this, false));
+		NotNullPtr<HTRecReader> reader;
+		NEW_CLASSNN(reader, HTRecReader(this, false));
 		return reader;
 	}
 	return 0;

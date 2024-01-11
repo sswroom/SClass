@@ -262,7 +262,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
 		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
-		if (r.Set(dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
+		if (dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
@@ -327,7 +327,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 	OSInt sl;
 	OSInt sm;
 	UInt32 cipPos;
-	DB::DBReader *dbfr;
+	Optional<DB::DBReader> dbfr;
+	NotNullPtr<DB::DBReader> r;
 	Data::ArrayList<Block*> blks;
 	Int32 currRec;
 	UInt32 nRecords;
@@ -434,9 +435,9 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				if (recSize == 2 && ReadInt32(&buff[8]) == 0)
 				{
 //					tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
-					if (dbfr)
+					if (dbfr.SetTo(r))
 					{
-						dbfr->ReadNext();
+						r->ReadNext();
 					}
 					chkVal = false;
 				}
@@ -444,9 +445,9 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				{
 					fs.SeekFromCurrent(recSize * 2 - 4);
 //					tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
-					if (dbfr)
+					if (dbfr.SetTo(r))
 					{
-						dbfr->ReadNext();
+						r->ReadNext();
 					}
 					chkVal = false;
 				}
@@ -459,23 +460,23 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					yMax = ReadDouble(&buff[36]);
 					if (Math::IsNAN(xMin))
 					{
-						if (dbfr)
+						if (dbfr.SetTo(r))
 						{
-							dbfr->ReadNext();
+							r->ReadNext();
 						}
 						chkVal = false;
 					}
 
 					MapFilter *f;
-					if (chkVal && dbfr)
+					if (chkVal && dbfr.SetTo(r))
 					{
-						if (dbfr->ReadNext())
+						if (r->ReadNext())
 						{
 							i = filters->GetCount();
 							while (i-- > 0)
 							{
 								f = filters->GetItem(i);
-								chkVal = chkVal && f->IsValid(xMin, yMin, xMax, yMax, dbfr);
+								chkVal = chkVal && f->IsValid(xMin, yMin, xMax, yMax, r);
 							}
 						}
 						else
@@ -634,7 +635,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 								{
 									strRec = MemAlloc(StrRecord, 1);
 									strRec->recId = currRec;
-									if (dbfr)
+									if (!dbfr.IsNull())
 									{
 										strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 									}
@@ -656,7 +657,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 
 								strRec = MemAlloc(StrRecord, 1);
 								strRec->recId = currRec;
-								if (dbfr)
+								if (!dbfr.IsNull())
 								{
 									strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 								}
@@ -774,8 +775,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			}
 
 //			tmpWriter.Close()
-			NotNullPtr<DB::DBReader> r;
-			if (r.Set(dbfr))
+			if (dbfr.SetTo(r))
 			{
 				dbf.CloseReader(r);
 			}
@@ -842,9 +842,9 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				Bool chkVal = true;
 				if (recSize == 2 && ReadInt32(&buff[8]) == 0)
 				{
-					if (dbfr)
+					if (dbfr.SetTo(r))
 					{
-						dbfr->ReadNext();
+						r->ReadNext();
 					}
 					chkVal = false;
 				}
@@ -868,15 +868,15 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					}
 
 					MapFilter *f;
-					if (dbfr)
+					if (dbfr.SetTo(r))
 					{
-						if (dbfr->ReadNext())
+						if (r->ReadNext())
 						{
 							i = filters->GetCount();
 							while (i-- > 0)
 							{
 								f = filters->GetItem(i);
-								chkVal = chkVal && f->IsValid(currX, currY, currX, currY, dbfr);
+								chkVal = chkVal && f->IsValid(currX, currY, currX, currY, r);
 							}
 						}
 						else
@@ -956,7 +956,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 									found = true;
 									strRec = MemAlloc(StrRecord, 1);
 									strRec->recId = currRec;
-									if (dbfr)
+									if (!dbfr.IsNull())
 									{
 										strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 									}
@@ -977,7 +977,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 
 								strRec = MemAlloc(StrRecord, 1);
 								strRec->recId = currRec;
-								if (dbfr)
+								if (!dbfr.IsNull())
 								{
 									strRec->str = GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
 								}
@@ -1095,8 +1095,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				i++;
 			}
 
-			NotNullPtr<DB::DBReader> r;
-			if (r.Set(dbfr))
+			if (dbfr.SetTo(r))
 			{
 				dbf.CloseReader(r);
 			}
