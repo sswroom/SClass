@@ -4,7 +4,7 @@
 #include "IO/FileVersion.h"
 #include "IO/Path.h"
 #include "IO/ServiceManager.h"
-#include "Media/GDIEngineC.h"
+#include "Media/GDIEngine.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Win32/ServiceControl.h"
@@ -18,7 +18,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
 
 SERVICE_STATUS          gSvcStatus; 
 SERVICE_STATUS_HANDLE   gSvcStatusHandle; 
-Win32::ServiceControl *progCtrl = 0;
+NotNullPtr<Win32::ServiceControl> progCtrl;
 WChar svcName[256];
 
 void SvcReportEvent(const WChar *svcName, const WChar *szFunction) 
@@ -54,7 +54,7 @@ VOID ReportSvcStatus( DWORD dwCurrentState,
 void SvcUninstall(const WChar *svcName)
 {
 	IO::ServiceManager svcMgr;
-	Text::String *s = Text::String::NewNotNull(svcName);
+	NotNullPtr<Text::String> s = Text::String::NewNotNull(svcName);
 	if (svcMgr.ServiceDelete(s->ToCString()))
 	{
 		printf("Service deleted successfully\n");
@@ -71,8 +71,8 @@ void SvcInstall(const WChar *svcName, const WChar *svcDesc)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ServiceManager svcMgr;
-	Text::String* s = Text::String::NewNotNull(svcName);
-	Text::String* sDesc = Text::String::NewNotNull(svcDesc);
+	NotNullPtr<Text::String> s = Text::String::NewNotNull(svcName);
+	NotNullPtr<Text::String> sDesc = Text::String::NewNotNull(svcDesc);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	if (svcMgr.ServiceCreate(s->ToCString(), sDesc->ToCString(), CSTRP(sbuff, sptr), IO::ServiceInfo::ServiceState::Active))
 	{
@@ -136,7 +136,7 @@ VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 VOID WINAPI SvcMain( DWORD dwArgc, LPWSTR *lpszArgv )
 {
 	Core::CoreStart();
-	progCtrl = MemAlloc(Win32::ServiceControl, 1);
+	progCtrl = MemAllocNN(Win32::ServiceControl, 1);
 	Win32::ServiceControl_Create(progCtrl);
 
 	gSvcStatusHandle = RegisterServiceCtrlHandlerW( svcName, SvcCtrlHandler);
@@ -156,7 +156,7 @@ VOID WINAPI SvcMain( DWORD dwArgc, LPWSTR *lpszArgv )
 	}
 
 	Win32::ServiceControl_Destroy(progCtrl);
-	MemFree(progCtrl);
+	MemFreeNN(progCtrl);
 	Core::CoreEnd();
 }
 
@@ -203,11 +203,11 @@ int main(int argc, char *argv[])
 	else if (argc == 2 && Text::StrEquals(argv[1], "run"))
 	{
 		Core::CoreStart();
-		progCtrl = MemAlloc(Win32::ServiceControl, 1);
+		progCtrl = MemAllocNN(Win32::ServiceControl, 1);
 		Win32::ServiceControl_Create(progCtrl);
 		Int32 ret = MyMain(progCtrl);
 		Win32::ServiceControl_Destroy(progCtrl);
-		MemFree(progCtrl);
+		MemFreeNN(progCtrl);
 		Core::CoreEnd();
 		return ret;
 	}
@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
 	return 0;
 } 
 
-UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }

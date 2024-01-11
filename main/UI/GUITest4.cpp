@@ -53,7 +53,7 @@ void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> core;
-	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
 		UI::GUIMainMenu *mainMenu;
 		UI::GUIForm *frm;

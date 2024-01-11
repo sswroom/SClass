@@ -523,6 +523,7 @@ SiLabDriver.o: ../../src/IO/SiLabDriver.cpp
 SiLabSerialPort.o: ../../src/IO/SiLabSerialPort.cpp
 SimpleFileWriterL.o: ../../src/IO/SimpleFileWriterL.cpp
 SimpleFileWriterW.o: ../../src/IO/SimpleFileWriterW.cpp
+SizeRotateFileLog.o: ../../src/IO/SizeRotateFileLog.cpp
 SMake.o: ../../src/IO/SMake.cpp
 SMBIOS.o: ../../src/IO/SMBIOS.cpp
 SMBIOSUtilL.o: ../../src/IO/SMBIOSUtilL.cpp

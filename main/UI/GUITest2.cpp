@@ -7,7 +7,7 @@
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> core;
-	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
 		UI::GUIForm *frm;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));

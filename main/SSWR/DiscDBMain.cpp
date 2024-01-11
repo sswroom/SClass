@@ -14,7 +14,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	MemSetLogFile(UTF8STRC("Memory.log"));
 
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
-	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::DiscDB::DiscDBEnv env;
 

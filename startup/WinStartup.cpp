@@ -165,7 +165,7 @@ void WinProgControl_Destroy(NotNullPtr<WinProgControl> ctrl)
 	}
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	UI::Win::WinCore *ui;

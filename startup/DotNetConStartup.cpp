@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Core/ConsoleControl.h"
 #include "Core/Core.h"
-#include "Media/GDIEngineC.h"
+#include "Media/GDIEngine.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -45,7 +45,7 @@ Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 
 void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	while (!ctrl->exited)
 	{
 		ctrl->evt->Wait();
@@ -54,14 +54,14 @@ void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtr
 
 void __stdcall ConsoleControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	ctrl->exited = true;
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	if (ctrl->argv == 0)
 	{
 		Int32 argc;
@@ -76,7 +76,7 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgContro
 		}
 		LocalFree(argv);
 	}
-	*cmdCnt = ctrl->argc;
+	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 
@@ -119,7 +119,7 @@ void ConsoleControl_Destroy(Core::ConsoleControl *ctrl)
 	}
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }

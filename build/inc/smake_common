@@ -1883,6 +1883,8 @@ IO/SiLabDriver.h:
 @SiLabDriver.o
 IO/SiLabSerialPort.h:
 @SiLabSerialPort.o
+IO/SizeRotateFileLog.h:
+@SizeRotateFileLog.o
 IO/SMake.h:
 @SMake.o
 IO/SMBIOS.h:

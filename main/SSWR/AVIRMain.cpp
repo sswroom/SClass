@@ -57,7 +57,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("log"));
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE);
-	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
+	if (Core::IProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));

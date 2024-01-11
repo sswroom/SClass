@@ -19,7 +19,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	else
 	{
 		NotNullPtr<UI::GUICore> ui;
-		if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+		if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 		{
 			SSWR::OrganMgr::OrganEnvDB env;
 

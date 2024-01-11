@@ -8,14 +8,14 @@ void __stdcall BootControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
 {
 }
 
-UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall BootControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall BootControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	*cmdCnt = 1;
+	cmdCnt.Set(1);
 	return (UTF8Char**)&"Boot";
 }
 
@@ -38,7 +38,7 @@ int main()
 	BootControl_Create(&conCtrl);
 	while (true)
 	{
-		MyMain(&conCtrl);
+		MyMain(conCtrl);
 	}
 	BootControl_Destroy(&conCtrl);
 	Core::CoreEnd();

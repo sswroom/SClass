@@ -30,15 +30,15 @@ void __stdcall LinuxProgControl_SignalExit(NotNullPtr<Core::IProgControl> progCt
 	raise(SIGINT);
 }
 
-UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl;
-	*cmdCnt = ctrl->argc;
+	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl.Ptr();
+	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 
@@ -67,7 +67,7 @@ Int32 main(int argc, char *argv[])
 
 	Core::CoreStart();
 	LinuxProgControl_Create(&conCtrl, argc, argv);
-	ret = MyMain(&conCtrl);
+	ret = MyMain(conCtrl);
 	LinuxProgControl_Destroy(&conCtrl);
 	Core::CoreEnd();
 	return ret;

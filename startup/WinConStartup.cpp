@@ -114,7 +114,7 @@ void ConsoleControl_Destroy(NotNullPtr<Core::ConsoleControl> ctrl)
 #endif
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }

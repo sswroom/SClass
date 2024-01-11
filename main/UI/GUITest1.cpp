@@ -6,7 +6,7 @@
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> ui;
-	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		ui->ShowMsgOK(CSTR("Message Dialog Test"), CSTR("Message Dialog"), 0);
 	}

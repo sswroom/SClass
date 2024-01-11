@@ -39,10 +39,10 @@ void GtkProgControl_Destroy(NotNullPtr<GtkProgControl> ctrl)
 {
 }
 
-UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GTK::GTKCore *ui;
-	NEW_CLASS(ui, UI::GTK::GTKCore());
+	NotNullPtr<UI::GTK::GTKCore> ui;
+	NEW_CLASSNN(ui, UI::GTK::GTKCore());
 	return ui;
 }
 

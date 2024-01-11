@@ -20,7 +20,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #endif
 
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.log"), Manage::ExceptionRecorder::EA_CLOSE);
-	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));

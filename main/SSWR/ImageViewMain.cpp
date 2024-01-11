@@ -15,7 +15,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Bool succ;
 	UOSInt argc;
 	UInt32 i;
-	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, ui, core));

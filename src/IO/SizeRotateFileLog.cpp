@@ -25,7 +25,7 @@ void IO::SizeRotateFileLog::SwapFiles()
 	}
 }
 
-IO::SizeRotateFileLog::SizeRotateFileLog(Text::CString fileName, UOSInt nFiles, Int64 fileSize)
+IO::SizeRotateFileLog::SizeRotateFileLog(Text::CStringNN fileName, UOSInt nFiles, Int64 fileSize)
 {
 	this->nFiles = nFiles;
 	this->fileSize = fileSize;
@@ -38,8 +38,8 @@ IO::SizeRotateFileLog::SizeRotateFileLog(Text::CString fileName, UOSInt nFiles, 
 	this->extName = 0;
 
 	sptr = Text::StrConcatC(fileName.ConcatTo(buff), UTF8STRC("0.log"));
-	NEW_CLASS(this->fileStm, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(this->log, Text::UTF8Writer(fileStm));
+	NEW_CLASSNN(this->fileStm, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(this->log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 
 	Data::DateTime dt;
@@ -69,35 +69,33 @@ IO::SizeRotateFileLog::SizeRotateFileLog(Text::CString fileName, UOSInt nFiles, 
 IO::SizeRotateFileLog::~SizeRotateFileLog()
 {
 	fileName->Release();
-	fileName = 0;
 	if (this->extName)
 	{
 		Text::StrDelNew(this->extName);
 		this->extName = 0;
 	}
 
-	SDEL_CLASS(log);
-	SDEL_CLASS(fileStm);
-	fileStm = 0;
+	log.Delete();
+	fileStm.Delete();
 }
 
 void IO::SizeRotateFileLog::LogClosed()
 {
 	if (!closed)
 	{
-		Sync::MutexUsage(&this->mut);
+		Sync::MutexUsage(this->mut);
 		log->Close();
 		closed = true;
 	}
 }
-void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
+void IO::SizeRotateFileLog::LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileStm == 0 || this->fileStm->GetLength() > this->fileSize)
+	if (this->fileStm->GetLength() > this->fileSize)
 	{
 		newFile = true;
 	}
@@ -105,24 +103,24 @@ void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg,
 	if (newFile)
 	{
 		log->Close();
-		DEL_CLASS(log);
-		DEL_CLASS(fileStm);
+		log.Delete();
+		fileStm.Delete();
 
 		SwapFiles();
 		sptr = Text::StrConcatC(fileName->ConcatTo(buff), UTF8STRC("0.log"));
 
-		NEW_CLASS(this->fileStm, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(this->log, Text::UTF8Writer(this->fileStm));
+		NEW_CLASSNN(this->fileStm, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(this->log, Text::UTF8Writer(this->fileStm));
 		log->WriteSignature();
 
-		sptr = Text::StrConcatC(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
+		sptr = Text::StrConcatC(logTime.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
 		log->WriteLineC(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}
 
 	if (!this->closed)
 	{
-		sptr = time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
+		sptr = logTime.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(logMsg);

@@ -20,7 +20,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRC("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
-	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
+	if (Core::IProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, ui, core));

@@ -10,7 +10,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #endif
 
 	NotNullPtr<UI::GUICore> ui;
-	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::DownloadMonitor::DownMonCore *core;
 		NEW_CLASS(core, SSWR::DownloadMonitor::DownMonCore());

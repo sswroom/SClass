@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBControl.log"));
 #endif
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE);
-	if (ui.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
 		SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;

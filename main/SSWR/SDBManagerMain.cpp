@@ -15,7 +15,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	MemSetLogFile(UTF8STRC("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDBManager.log"), Manage::ExceptionRecorder::EA_RESTART));
-	if (ui.Set(Core::IProgControl::CreateGUICore(progCtrl)))
+	if (Core::IProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRDBManagerForm(0, ui, core));

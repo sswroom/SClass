@@ -8,26 +8,26 @@
 
 namespace IO
 {
-	class SizeRotateFileLog : public ILogHandler
+	class SizeRotateFileLog : public LogHandler
 	{
 	private:
 		Sync::Mutex mut;
 		IO::LogHandler::LogType logStyle;
 		UOSInt nFiles;
 		Int32 lastVal;
-		Text::UTF8Writer *log;
-		IO::FileStream *fileStm;
-		Text::String *fileName;
+		NotNullPtr<Text::UTF8Writer> log;
+		NotNullPtr<IO::FileStream> fileStm;
+		NotNullPtr<Text::String> fileName;
 		const UTF8Char *extName;
 		Int64 fileSize;
 		Bool closed;
 
 		void SwapFiles();
 	public:
-		SizeRotateFileLog(Text::CString fileName, UOSInt nFiles, Int64 fileSize);
+		SizeRotateFileLog(Text::CStringNN fileName, UOSInt nFiles, Int64 fileSize);
 		virtual ~SizeRotateFileLog();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
+		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);
 	};
 }
 #endif

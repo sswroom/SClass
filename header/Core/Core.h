@@ -24,7 +24,7 @@ namespace Core
 		WaitForExitFunc SignalRestart;
 		GetCommandLinesFunc GetCommandLines;
 
-		static UI::GUICore *CreateGUICore(NotNullPtr<IProgControl> progCtrl);
+		static Optional<UI::GUICore> CreateGUICore(NotNullPtr<IProgControl> progCtrl);
 	};
 	typedef Media::IVideoSource *(__stdcall *DecodeVideoFunc)(NotNullPtr<Media::IVideoSource> video);
 	typedef Media::IAudioSource *(__stdcall *DecodeAudioFunc)(NotNullPtr<Media::IAudioSource> audio);

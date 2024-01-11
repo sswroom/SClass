@@ -25,7 +25,7 @@ void __stdcall OnLBDblClick(void *userObj)
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	NotNullPtr<UI::GUICore> core;
-	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
+	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
 		NotNullPtr<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));

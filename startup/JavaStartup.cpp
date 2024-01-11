@@ -33,10 +33,10 @@ void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progC
 //	getchar();
 }
 
-UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::Java::JavaCore *ui;
-	NEW_CLASS(ui, UI::Java::JavaCore());
+	NotNullPtr<UI::Java::JavaCore> ui;
+	NEW_CLASSNN(ui, UI::Java::JavaCore());
 	return ui;
 }
 

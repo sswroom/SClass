@@ -41,7 +41,7 @@ void __stdcall LinuxProgControl_SignalExit(NotNullPtr<Core::IProgControl> progCt
 	raise(SIGINT);
 }
 
-UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	return 0;
 }
