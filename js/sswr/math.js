@@ -77,6 +77,80 @@ export class Coord2D
 	}
 }
 
+export class RectArea
+{
+	constructor(x1, y1, x2, y2)
+	{
+		var minX;
+		var maxX;
+		if (x1 > x2)
+		{
+			maxX = x1;
+			minX = x2;
+		}
+		else
+		{
+			maxX = x2;
+			minX = x1;
+		}
+		if (y1 > y2)
+		{
+			this.min = new Coord2D(minX, y2);
+			this.max = new Coord2D(maxX, y1);
+		}
+		else
+		{
+			this.min = new Coord2D(minX, y1);
+			this.max = new Coord2D(maxX, y2);
+		}
+	}
+
+	get minX()
+	{
+		return this.min.x;
+	}
+
+	get minY()
+	{
+		return this.min.y;
+	}
+
+	get maxX()
+	{
+		return this.max.x;
+	}
+
+	get maxY()
+	{
+		return this.max.y;
+	}
+
+	containPt(x, y)
+	{
+		return (x >= this.min.x && x <= this.max.x && y >= this.min.y && y <= this.max.y);
+	}
+
+	getCenter()
+	{
+		return new Coord2D((this.min.x + this.max.x) * 0.5, (this.min.y + this.max.y) * 0.5);
+	}
+
+	getWidth()
+	{
+		return this.max.x - this.min.x;
+	}
+
+	getHeight()
+	{
+		return this.max.y - this.min.y;
+	}
+
+	getArea()
+	{
+		return this.getWidth() * this.getHeight();
+	}
+};
+
 export class Vector3 extends Coord2D
 {
 	constructor(x, y, z)

@@ -1,4 +1,5 @@
 import * as data from "./data.js";
+import * as text from "./text.js";
 
 export function getRequestURLBase()
 {
@@ -37,6 +38,68 @@ export function loadJSON(url, onResultFunc)
 	};
 	xmlhttp.open("GET", url, true);
 	xmlhttp.send();
+}
+
+export function buildTable(o)
+{
+	var name;
+	var ret = new Array();
+	ret.push("<table>");
+	if (data.isArray(o))
+	{
+		if (o.length > 0)
+		{
+			ret.push("<tr>");
+			for (name in o[0])
+			{
+				ret.push("<th>"+text.toHTMLText(name)+"</th>");
+			}
+			ret.push("</tr>");
+		}
+		var i = 0;
+		var j = o.length;
+		var obj;
+		while (i < j)
+		{
+			obj = o[i];
+			ret.push("<tr>");
+			for (name in o[0])
+			{
+				ret.push("<td>"+text.toHTMLText(""+obj[name])+"</td>");
+			}
+			ret.push("</tr>");
+			i++;
+		}
+	}
+	else if (data.isObject(o))
+	{
+		for (name in o)
+		{
+			ret.push("<tr>");
+			ret.push("<td>"+text.toHTMLText(name)+"</td>");
+			ret.push("<td>"+text.toHTMLText(""+o[name])+"</td>");
+			ret.push("</tr>");
+		}
+	}
+	ret.push("</table>");
+	return ret.join("");
+}
+
+export function openData(data, contentType, fileName)
+{
+	if (typeof data == "string")
+	{
+		var ele = document.createElement("a");
+		ele.setAttribute('href', 'data:'+encodeURIComponent(contentType)+";charset=utf-8," + encodeURIComponent(data));
+		if (fileName)
+			ele.setAttribute('download', fileName);
+		ele.style.display = 'none';
+
+		document.body.appendChild(ele);
+		ele.click();
+		document.body.removeChild(ele);
+	}
+	return;
 }
 
 export class Dialog

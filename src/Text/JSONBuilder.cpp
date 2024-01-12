@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/MultiPolygon.h"
@@ -259,6 +260,15 @@ void Text::JSONBuilder::AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec)
 		}
 		this->sb.AppendUTF8Char(']');
 		this->sb.AppendUTF8Char('}');
+	}
+	else if (vecType == Math::Geometry::Vector2D::VectorType::CurvePolygon)
+	{
+		NotNullPtr<Math::Geometry::CurvePolygon> cpg = NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec);
+		NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(cpg->CurveToLine());
+		this->sb.AppendC(UTF8STRC("{\"type\":\"Polygon\",\"coordinates\":"));
+		this->AppendCoordPG(pg);
+		this->sb.AppendUTF8Char('}');
+		pg.Delete();
 	}
 	else
 	{

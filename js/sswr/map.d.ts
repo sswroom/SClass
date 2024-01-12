@@ -1,4 +1,4 @@
-import { Vector3 } from "./math";
+import { CoordinateSystem, Vector3 } from "./math";
 import { LineString, Vector2D } from "./geometry";
 import { Timestamp } from "./data";
 
@@ -17,6 +17,23 @@ export enum WebMapType
 	OSMTile
 };
 
+export enum GeoJSONType
+{
+	Feature,
+	FeatureCollection
+};
+
+export enum GeometryType
+{
+	Point,
+	MultiPoint,
+	LineString,
+	MultiLineString,
+	Polygon,
+	MultiPolygon,
+	GeometryCollection
+};
+
 declare class LayerInfo
 {
 	name: string;
@@ -24,6 +41,33 @@ declare class LayerInfo
 	type: WebMapType;
 	layers?: string;
 	format?: string;
+	minZoom?: number;
+	maxZoom?: number;
+};
+
+declare class GeoJSON
+{
+	type: GeoJSONType;
+	bbox?: number[];
+};
+
+declare class Geometry
+{
+	type: GeometryType;
+	coordinates?: any[];
+	geometries?: Geometry[];
+};
+
+declare class GeoJSONFeature<PropType> extends GeoJSON
+{
+	id?: string | number;
+	geometry: Geometry;
+	properties?: PropType;
+};
+
+declare class GeoJSONFeatureCollection extends GeoJSON
+{
+	features: GeoJSONFeature[];
 };
 
 export function calcDistance(srid: number, geom: Vector2D, x: number, y: number): number;
@@ -40,7 +84,7 @@ declare class GPSRecord
 	d: number;
 	v: boolean;
 	sate: number;
-}
+};
 
 export class GPSTrack
 {
@@ -49,4 +93,15 @@ export class GPSTrack
 	createLineString(): LineString;
 	getPosByTime(ts: Timestamp): Vector3;
 	getPosByTicks(ticks: number): Vector3;
-}
+};
+
+export class GeolocationFilter
+{
+	lastPos?: GeolocationPosition;
+	csys: CoordinateSystem;
+	minSecs: number;
+	minDistMeter: number;
+
+	constructor(minSecs: number, minDistMeter: number);
+	isValid(pos: GeolocationPosition): boolean;
+};

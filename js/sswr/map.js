@@ -16,6 +16,21 @@ export const WebMapType = {
 	OSMTile: 3
 };
 
+export const GeoJSONType = {
+	Feature: "Feature",
+	FeatureCollection: "FeatureCollection"
+};
+
+export const GeometryType = {
+	Point: "Point",
+	MultiPoint: "MultiPoint",
+	LineString: "LineString",
+	MultiLineString: "MultiLineString",
+	Polygon: "Polygon",
+	MultiPolygon: "MultiPolygon",
+	GeometryCollection: "GeometryCollection"
+};
+
 export function calcDistance(srid, geom, x, y)
 {
 	var pt = geom.calBoundaryPoint(new math.Coord2D(x, y));
@@ -93,5 +108,37 @@ export class GPSTrack
 				(rec1.a * (rec2.t - ticks) + rec2.a * (ticks - rec1.t)) / tDiff);
 		}
 		return new math.Vector3(0, 0, 0);
+	}
+}
+
+export class GeolocationFilter
+{
+	constructor(minSecs, minDistMeter)
+	{
+		this.csys = math.CoordinateSystemManager.srCreateCsys(4326);
+		this.minSecs = minSecs;
+		this.minDistMeter = minDistMeter;
+	}
+
+	isValid(pos)
+	{
+		if (this.lastPos == null)
+		{
+			this.lastPos = pos;
+			return true;
+		}
+		if (this.minSecs)
+		{
+			if ((pos.timestamp - this.lastPos.timestamp) / 1000.0 < this.minSecs)
+				return false;
+		}
+		if (this.minDistMeter)
+		{
+			if (this.csys.calcSurfaceDistance(pos.coords.longitude, pos.coords.latitude, this.lastPos.longitude, this.lastPos.latitude, DistanceUnit.METER) < this.minDistMeter)
+				return false;
+		}
+
+		this.lastPos = pos;
+		return true;
 	}
 }

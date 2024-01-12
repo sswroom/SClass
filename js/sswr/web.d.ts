@@ -1,6 +1,8 @@
 export function getRequestURLBase(): string;
 export function getParameterByName(name: string): string | null;
 export function loadJSON(url: string, onResultFunc: Function): void;
+export function buildTable(o: object | object[]): string;
+export function openData(data: string, contentType: string, fileName?: string): void;
 
 declare class DialogButton
 {

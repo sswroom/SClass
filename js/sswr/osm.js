@@ -52,3 +52,55 @@ export function tileUrls(osmUrl, minCoord, maxCoord, minLev, maxLev)
 	}
 	return ret;
 }
+
+export function removeTileUrls(urls, osmUrl, minLev, maxLev, areaList)
+{
+	if (areaList == null || areaList.length == 0)
+		return;
+	var urlMap = {};
+	var i;
+	for (i in urls)
+	{
+		urlMap[urls[i]] = true;
+	}
+
+	var tileSize = 256;
+	var minX;
+	var minY;
+	var maxX;
+	var maxY;
+	var i;
+	var j;
+	var k;
+	var rect;
+	var url;
+	while (minLev <= maxLev)
+	{
+		for (k in areaList)
+		{
+			rect = areaList[k];
+			minX = Math.floor(lon2PixelX(rect.min.x, minLev, tileSize) / tileSize);
+			minY = Math.floor(lat2PixelY(rect.max.y, minLev, tileSize) / tileSize);
+			maxX = Math.floor(lon2PixelX(rect.max.x, minLev, tileSize) / tileSize);
+			maxY = Math.floor(lat2PixelY(rect.min.y, minLev, tileSize) / tileSize);
+			j = minY;
+			while (j <= maxY)
+			{
+				i = minX;
+				while (i <= maxX)
+				{
+					url = osmUrl.replace("{x}", i).replace("{y}", j).replace("{z}", minLev);
+					delete urlMap[url];
+					i++;
+				}
+				j++;
+			}
+		}
+		minLev++;
+	}
+	urls.length = 0;
+	for (i in urlMap)
+	{
+		urls.push(i);
+	}
+}

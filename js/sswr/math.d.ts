@@ -17,7 +17,24 @@ export class Coord2D
 	get lon(): number;
 
 	mul(val: number): Coord2D;
-}
+};
+
+export class RectArea
+{
+	min: Coord2D;
+	max: Coord2D;
+	constructor(x1: number, y1: number, x2: number, y2: number);
+	get minX(): number;
+	get minY(): number;
+	get maxX(): number;
+	get maxY(): number;
+
+	containPt(x: number, y: number): boolean;
+	getCenter(): Coord2D;
+	getWidth(): number;
+	getHeight(): number;
+	getArea(): number;
+};
 
 export class Vector3 extends Coord2D
 {
