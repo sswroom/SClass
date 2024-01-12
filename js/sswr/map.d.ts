@@ -13,7 +13,17 @@ export enum WebMapType
 {
 	WMS,
 	WFS,
-	ArcGIS
+	ArcGIS,
+	OSMTile
+};
+
+declare class LayerInfo
+{
+	name: string;
+	url: string;
+	type: WebMapType;
+	layers?: string;
+	format?: string;
 };
 
 export function calcDistance(srid: number, geom: Vector2D, x: number, y: number): number;

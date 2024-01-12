@@ -1,5 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Geometry/LineString.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Text/JSONBuilder.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -128,6 +131,139 @@ void Text::JSONBuilder::AppendTSStr(Data::Timestamp ts)
 	{
 		sptr = ts.ToString(sbuff);
 		this->AppendStr(CSTRP(sbuff, sptr));
+	}
+}
+
+void Text::JSONBuilder::AppendCoord2D(Math::Coord2DDbl coord)
+{
+	this->sb.AppendUTF8Char('[');
+	this->sb.AppendDouble(coord.x);
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(coord.y);
+	this->sb.AppendUTF8Char(']');
+}
+
+void Text::JSONBuilder::AppendCoord2DArray(const Math::Coord2DDbl *coordList, UOSInt nPoints)
+{
+	this->sb.AppendUTF8Char('[');
+	if (nPoints > 0)
+	{
+		this->AppendCoord2D(coordList[0]);
+		UOSInt i = 1;
+		while (i < nPoints)
+		{
+			this->sb.AppendUTF8Char(',');
+			this->AppendCoord2D(coordList[i]);
+			i++;
+		}
+	}
+	this->sb.AppendUTF8Char(']');
+}
+
+void Text::JSONBuilder::AppendCoordPL(NotNullPtr<Math::Geometry::Polyline> pl)
+{
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+	this->sb.AppendUTF8Char('[');
+	NotNullPtr<Math::Geometry::LineString> ls;
+	if (it.HasNext())
+	{
+		ls = it.Next();
+		UOSInt nPoints;
+		const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
+		this->AppendCoord2DArray(ptList, nPoints);
+		while (it.HasNext())
+		{
+			ls = it.Next();
+			UOSInt nPoints;
+			const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
+			this->sb.AppendUTF8Char(',');
+			this->AppendCoord2DArray(ptList, nPoints);
+		}
+	}
+	this->sb.AppendUTF8Char(']');
+}
+
+void Text::JSONBuilder::AppendCoordPG(NotNullPtr<Math::Geometry::Polygon> pg)
+{
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+	this->sb.AppendUTF8Char('[');
+	NotNullPtr<Math::Geometry::LinearRing> lr;
+	if (it.HasNext())
+	{
+		lr = it.Next();
+		UOSInt nPoints;
+		const Math::Coord2DDbl *ptList = lr->GetPointListRead(nPoints);
+		this->AppendCoord2DArray(ptList, nPoints);
+		while (it.HasNext())
+		{
+			lr = it.Next();
+			UOSInt nPoints;
+			const Math::Coord2DDbl *ptList = lr->GetPointListRead(nPoints);
+			this->sb.AppendUTF8Char(',');
+			this->AppendCoord2DArray(ptList, nPoints);
+		}
+	}
+	this->sb.AppendUTF8Char(']');
+}
+
+void Text::JSONBuilder::AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec)
+{
+	Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
+	if (vecType == Math::Geometry::Vector2D::VectorType::Point)
+	{
+		NotNullPtr<Math::Geometry::Point> pt = NotNullPtr<Math::Geometry::Point>::ConvertFrom(vec);
+		this->sb.AppendC(UTF8STRC("{\"type\":\"Point\",\"coordinates\":"));
+		this->AppendCoord2D(pt->GetCenter());
+		this->sb.AppendUTF8Char('}');
+	}
+	else if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
+	{
+		NotNullPtr<Math::Geometry::LineString> ls = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec);
+		this->sb.AppendC(UTF8STRC("{\"type\":\"LineString\",\"coordinates\":"));
+		UOSInt nPoints;
+		const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
+		this->AppendCoord2DArray(ptList, nPoints);
+		this->sb.AppendUTF8Char('}');
+	}
+	else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
+	{
+		NotNullPtr<Math::Geometry::Polyline> pl = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec);
+		this->sb.AppendC(UTF8STRC("{\"type\":\"MultiLineString\",\"coordinates\":"));
+		this->AppendCoordPL(pl);
+		this->sb.AppendUTF8Char('}');
+	}
+	else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
+	{
+		NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec);
+		this->sb.AppendC(UTF8STRC("{\"type\":\"Polygon\",\"coordinates\":"));
+		this->AppendCoordPG(pg);
+		this->sb.AppendUTF8Char('}');
+	}
+	else if (vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
+	{
+		NotNullPtr<Math::Geometry::MultiPolygon> mpg = NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec);
+		this->sb.AppendC(UTF8STRC("{\"type\":\"MultiPolygon\",\"coordinates\":"));
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> it = mpg->Iterator();
+		this->sb.AppendUTF8Char('[');
+		NotNullPtr<Math::Geometry::Polygon> pg;
+		if (it.HasNext())
+		{
+			pg = it.Next();
+			this->AppendCoordPG(pg);
+			while (it.HasNext())
+			{
+				pg = it.Next();
+				this->sb.AppendUTF8Char(',');
+				this->AppendCoordPG(pg);
+			}
+		}
+		this->sb.AppendUTF8Char(']');
+		this->sb.AppendUTF8Char('}');
+	}
+	else
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+		printf("JSONBuilder: Unsupport Geometry Type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vecType).v);
 	}
 }
 
@@ -720,11 +856,8 @@ Bool Text::JSONBuilder::ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl 
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->AppendStr(name);
-	this->sb.AppendC(UTF8STRC(":["));
-	this->sb.AppendDouble(coord.x);
-	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(coord.y);
-	this->sb.AppendUTF8Char(']');
+	this->sb.AppendUTF8Char(':');
+	this->AppendCoord2D(coord);
 	return true;
 }
 
@@ -754,11 +887,7 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayL
 			coord = coordArr->GetItem(i);
 			if (i > 0)
 				sb.AppendUTF8Char(',');
-			this->sb.AppendUTF8Char('[');
-			this->sb.AppendDouble(coord.x);
-			this->sb.AppendUTF8Char(',');
-			this->sb.AppendDouble(coord.y);
-			this->sb.AppendUTF8Char(']');
+			this->AppendCoord2D(coord);
 			i++;
 		}
 		this->sb.AppendUTF8Char(']');
@@ -784,6 +913,46 @@ Bool Text::JSONBuilder::ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec
 	this->sb.AppendUTF8Char(',');
 	this->sb.AppendDouble(vec3.GetZ());
 	this->sb.AppendUTF8Char(']');
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddGeometry(Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendUTF8Char(':');
+	this->AppendGeometry(vec);
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math::Geometry::Vector2D> vec)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendUTF8Char(':');
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (vec.SetTo(nnvec))
+	{
+		this->AppendGeometry(nnvec);
+	}
+	else
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
 	return true;
 }
 

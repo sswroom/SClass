@@ -4,6 +4,9 @@
 #include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Vector3.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Text/JSON.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -28,6 +31,11 @@ namespace Text
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 		void AppendTSStr(Data::Timestamp ts);
+		void AppendCoord2D(Math::Coord2DDbl coord);
+		void AppendCoord2DArray(const Math::Coord2DDbl *coordList, UOSInt nPoints);
+		void AppendCoordPL(NotNullPtr<Math::Geometry::Polyline> pl);
+		void AppendCoordPG(NotNullPtr<Math::Geometry::Polygon> pg);
+		void AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec);
 	public:
 		JSONBuilder(ObjectType rootType);
 		~JSONBuilder();
@@ -65,6 +73,8 @@ namespace Text
 		Bool ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord);
 		Bool ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayListA<Math::Coord2DDbl> *coordArr);
 		Bool ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3);
+		Bool ObjectAddGeometry(Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec);
+		Bool ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math::Geometry::Vector2D> vec);
 		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
 		Bool ObjectBeginArray(Text::CStringNN name);
 		Bool ObjectBeginObject(Text::CStringNN name);

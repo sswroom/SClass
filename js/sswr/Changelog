@@ -1,3 +1,6 @@
+1.3.1
+-Added leaflet.createLayer
+
 1.3.0
 -Update geometry types
 -Support Dialog margin

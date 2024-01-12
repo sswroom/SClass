@@ -12,7 +12,8 @@ export const DataFormat = {
 export const WebMapType = {
 	WMS: 0,
 	WFS: 1,
-	ArcGIS: 2
+	ArcGIS: 2,
+	OSMTile: 3
 };
 
 export function calcDistance(srid, geom, x, y)
