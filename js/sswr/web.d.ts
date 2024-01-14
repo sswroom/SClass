@@ -1,8 +1,17 @@
+declare class Color
+{
+	a: number; //0.0-1.0
+	r: number; //0.0-1.0
+	g: number; //0.0-1.0
+	b: number; //0.0-1.0
+}
+
 export function getRequestURLBase(): string;
 export function getParameterByName(name: string): string | null;
 export function loadJSON(url: string, onResultFunc: Function): void;
 export function buildTable(o: object | object[]): string;
 export function openData(data: string, contentType: string, fileName?: string): void;
+export function parseCSSColor(c: string): Color;
 
 declare class DialogButton
 {
@@ -20,6 +29,7 @@ declare class DialogOptions
 	buttons?: DialogButton[];
 	margin?: number;
 }
+
 
 export class Dialog
 {

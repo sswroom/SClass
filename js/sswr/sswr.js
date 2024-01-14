@@ -1,6 +1,8 @@
 export * as data from "./data.js";
 export * as cesium from "./cesium.js";
 export * as geometry from "./geometry.js";
+export * as hkoapi from "./hkoapi.js";
+export * as kml from "./kml.js";
 export * as leaflet from "./leaflet.js";
 export * as map from "./map.js";
 export * as math from "./math.js";

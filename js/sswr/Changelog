@@ -3,10 +3,12 @@
 -Added web.buildTable
 -Added map.GeolocationFilter
 -Added math.RectArea
--Adding KML handling
+-Added KML handling
 -Added web.openData
 -Added leaflet.createKMLLookAt
--Adding leaflet.toKMLFeature
+-Added leaflet.toKMLFeature
+-Added leaflet.toKMLString
+-Added web.parseCSSColor
 
 1.3.0
 -Update geometry types

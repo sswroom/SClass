@@ -102,6 +102,64 @@ export function openData(data, contentType, fileName)
 	return;
 }
 
+function hexColor(c)
+{
+	var b = c % 256;
+	var g = (c >> 8) % 256;
+	var r = (c >> 16) % 256;
+	return {a: 1.0, r: r / 255, g: g / 255, b: b / 255};
+}
+
+export function parseCSSColor(c)
+{
+	if (c.startsWith("#"))
+	{
+		if (c.length == 7)
+		{
+			return hexColor(parseInt(c.substring(1), 16));
+		}
+	}
+	else
+	{
+		switch (c)
+		{
+		case "black":
+			return hexColor(0x000000);
+		case "silver":
+			return hexColor(0xc0c0c0);
+		case "gray":
+			return hexColor(0x808080);
+		case "white":
+			return hexColor(0xffffff);
+		case "maroon":
+			return hexColor(0x800000);
+		case "red":
+			return hexColor(0xff0000);
+		case "purple":
+			return hexColor(0x800080);
+		case "fuchsia":
+			return hexColor(0xff00ff);
+		case "green":
+			return hexColor(0x008000);
+		case "lime":
+			return hexColor(0x00ff00);
+		case "olive":
+			return hexColor(0x808000);
+		case "yellow":
+			return hexColor(0xffff00);
+		case "navy":
+			return hexColor(0x000080);
+		case "blue":
+			return hexColor(0x0000ff);
+		case "teal":
+			return hexColor(0x008080);
+		case "aqua":
+			return hexColor(0x00ffff);
+		}
+	}
+	return {a: 0.0, r: 0.0, g: 0.0, b: 0.0};
+}
+
 export class Dialog
 {
 	constructor(content, options)

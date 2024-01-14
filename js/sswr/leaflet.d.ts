@@ -6,4 +6,5 @@ import { LayerInfo } from "./map";
 export function fromLatLon(latLon: L.LatLng): Coord2D;
 export function createLayer(layer: LayerInfo, options: object): L.Layer;
 export function createKMLLookAt(map: L.Map): kml.LookAt;
-export function toKMLFeature(layer: L.Layer): kml.Feature | null;
+export function toKMLFeature(layer: L.Layer, doc?: kml.Document): kml.Feature | null;
+export function toKMLString(layer: L.Layer): string | null;
