@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/GeometryTool.h"
 #include "Math/Geometry/CompoundCurve.h"
 
 Math::Geometry::CompoundCurve::CompoundCurve(UInt32 srid) : Math::Geometry::MultiGeometry<Math::Geometry::LineString>(srid)
@@ -51,15 +52,31 @@ UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NotNullPtr<Data::ArrayListA<
 	{
 		ls = it.Next();
 		ptArr = ls->GetPointListRead(nPoint);
-		if (ret == 0 || ptList->GetItem(ptList->GetCount() - 1) != ptArr[0])
+		if (nPoint > 2 && (nPoint & 1) != 0 && ls->GetVectorType() == Math::Geometry::Vector2D::VectorType::CircularString)
 		{
-			ret += nPoint;
-			ptList->AddRange(ptArr, nPoint);
+			UOSInt i = 2;
+			while (i < nPoint)
+			{
+				if (ret > 0)
+				{
+					ptList->RemoveAt(ptList->GetCount() - 1);
+					ret--;
+				}
+				ret += Math::GeometryTool::ArcToLine(ptArr[i - 2], ptArr[i - 1], ptArr[i], 2.5, ptList);
+			}
 		}
 		else
 		{
-			ret += nPoint - 1;
-			ptList->AddRange(&ptArr[1], nPoint - 1);
+			if (ret == 0 || ptList->GetItem(ptList->GetCount() - 1) != ptArr[0])
+			{
+				ret += nPoint;
+				ptList->AddRange(ptArr, nPoint);
+			}
+			else
+			{
+				ret += nPoint - 1;
+				ptList->AddRange(&ptArr[1], nPoint - 1);
+			}
 		}
 	}
 	return ret;

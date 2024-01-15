@@ -1057,3 +1057,92 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 	}
 	return pg;
 }
+
+Double GeometryTool_SqrtFix(Double sqrtVal, Double addVal, Double targetVal)
+{
+	Double o1 = targetVal - (addVal + sqrtVal);
+	Double o2 = targetVal - (addVal - sqrtVal);
+	if (o1 < 0)
+		o1 = -o1;
+	if (o2 < 0)
+		o2 = -o2;
+	if (o1 < o2)
+		return addVal + sqrtVal;
+	else
+		return addVal - sqrtVal;
+}
+
+Math::Coord2DDbl GeometryTool_ArcNearest(Double x, Double y, Double h, Double k, Double r, UOSInt cnt)
+{
+	Double r2 = r * r;
+	Double thisX = x;
+	Double thisY = y;
+	Double tmpX;
+	Double tmpY;
+	Double angle;
+	while (cnt-- > 0)
+	{
+		tmpY = GeometryTool_SqrtFix(Math_Sqrt(r2 - (thisX - h) * (thisX - h)), k, y);
+		tmpX = GeometryTool_SqrtFix(Math_Sqrt(r2 - (thisY - k) * (thisY - k)), h, x);
+		angle = Math_ArcTan2(tmpX, tmpY);
+		thisX += Math_Sin(angle) * (tmpY - thisY);
+		thisY += Math_Cos(angle) * (tmpX - thisX);
+	}
+	return Math::Coord2DDbl(thisX, thisY);
+}
+
+UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+{
+	//(x – h)^2 + (y – k)^2 = r^2
+	//2h(x1 - x2) + 2k(y1 - y2) = x1^2 - x2^2 + y1^2 - y2^2
+	//2k = (x1^2 - x2^2 + y1^2 - y2^2 - 2h(x1 - x2)) / (y1 - y2)
+	//(x1^2 - x3^2 + y1^2 - y3^2 - 2h(x1 - x3)) / (y1 - y3) = (x1^2 - x2^2 + y1^2 - y2^2 - 2h(x1 - x2)) / (y1 - y2)
+	//(x1^2 - x3^2 + y1^2 - y3^2 - 2h(x1 - x3)) * (y1 - y2) = (x1^2 - x2^2 + y1^2 - y2^2 - 2h(x1 - x2)) * (y1 - y3)
+	//(x1^2 - x3^2 + y1^2 - y3^2) * (y1 - y2) - 2h(x1 - x3) * (y1 - y2) = (x1^2 - x2^2 + y1^2 - y2^2) * (y1 - y3) - 2h(x1 - x2) * (y1 - y3)
+	//(x1^2 - x3^2 + y1^2 - y3^2) * (y1 - y2) - (x1^2 - x2^2 + y1^2 - y2^2) * (y1 - y3) = 2h(x1 - x3) * (y1 - y2) - 2h(x1 - x2) * (y1 - y3)
+	//(x1^2 - x3^2 + y1^2 - y3^2) * (y1 - y2) - (x1^2 - x2^2 + y1^2 - y2^2) * (y1 - y3) / (2 * (x1 - x3) * (y1 - y2) - 2 * (x1 - x2) * (y1 - y3)) = h
+	Math::Coord2DDbl d13 = pt1 - pt3;
+	Math::Coord2DDbl d12 = pt1 - pt2;
+	Double c1 = (pt1.x * pt1.x - pt3.x * pt3.x + pt1.y * pt1.y - pt3.y * pt3.y) * d12.y;
+	Double c2 = (pt1.x * pt1.x - pt2.x * pt2.x + pt1.y * pt1.y - pt2.y * pt2.y);
+	Double c2b = c2 * d13.y;
+	Double c3 = 2 * ((d13.x * d12.y) - (d12.x * d13.y));
+	Double h = c1 - c2b / c3;
+	Double k = (c2 - 2 * h * d12.x) / d12.y / 2;
+	Double r = Math_Sqrt((pt1.x - h) * (pt1.x - h) + (pt1.y - k) * (pt1.y - k));
+	Math::Coord2DDbl d23 = pt2 - pt3;
+
+	UOSInt initCnt = ptOut->GetCount();
+	ptOut->Add(pt1);
+	Double leng = Math_Sqrt(d12.x * d12.x + d12.y * d12.y);
+	UOSInt ptCnt = (UOSInt)Math_Fix(leng / minDist);
+	UOSInt i = 1;
+	Double di;
+	Double dcnt = UOSInt2Double(ptCnt);
+	while (i < ptCnt)
+	{
+		di = UOSInt2Double(i);
+		ptOut->Add(GeometryTool_ArcNearest(pt1.x + (pt2.x - pt1.x) * di / dcnt, pt1.y + (pt2.y - pt1.y) * di / dcnt, h, k, r, 5));
+		i++;
+	}
+	ptOut->Add(pt2);
+	leng = Math_Sqrt(d23.x * d23.x + d23.y * d23.y);
+	ptCnt = (UOSInt)Math_Fix(leng / minDist);
+	dcnt = UOSInt2Double(ptCnt);
+	while (i < ptCnt)
+	{
+		di = UOSInt2Double(i);
+		ptOut->Add(GeometryTool_ArcNearest(pt2.x + (pt3.x - pt2.x) * di / dcnt, pt2.y + (pt3.y - pt2.y) * di / dcnt, h, k, r, 5));
+		i++;
+	}
+	ptOut->Add(pt3);
+	return ptOut->GetCount() - initCnt;
+}
+
+/*UOSInt Math::GeometryTool::CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+{
+	ptOut->Add(pt1);
+	ptOut->Add(pt2);
+	ptOut->Add(pt3);
+}
+*/

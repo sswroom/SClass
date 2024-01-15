@@ -559,6 +559,18 @@ UOSInt Math::Geometry::LineString::GetPointCount() const
 	return this->nPoint;
 }
 
+Math::Coord2DDbl Math::Geometry::LineString::GetPoint(UOSInt index) const
+{
+	if (index >= this->nPoint)
+	{
+		return this->pointArr[0];
+	}
+	else
+	{
+		return this->pointArr[index];
+	}
+}
+
 Double Math::Geometry::LineString::CalcLength() const
 {
 	Double leng = 0;

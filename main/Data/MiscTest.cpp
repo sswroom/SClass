@@ -12,6 +12,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
+#include "Math/GeometryTool.h"
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
@@ -560,9 +561,44 @@ Int32 PaperSize()
 	return 0;
 }
 
+Int32 CurveToLine()
+{
+	Math::Coord2DDbl pt1 = Math::Coord2DDbl(835736.32193, 818912.22624);
+	Math::Coord2DDbl pt2 = Math::Coord2DDbl(835744.47885, 818897.20205);
+	Math::Coord2DDbl pt3 = Math::Coord2DDbl(835789.34862, 818831.0624);
+
+	Data::ArrayListA<Math::Coord2DDbl> pts;
+	Math::GeometryTool::ArcToLine(pt1, pt2, pt3, 2.5, pts);
+	/*
+	835736.3219300006 818912.2262400016,
+	835737.4551645218 818910.0627034007,
+	835738.5991263686 818907.9048195927,
+	835739.7537873982 818905.7526418566,
+	835740.9191191493 818903.6062231957,
+	835742.0950928627 818901.4656165092,
+	835743.2816795706 818899.330874592,
+	835744.4788500005 818897.2020500023,
+	835750.2213875352 818887.3193698822,
+	835756.1919737755 818877.5727702527,
+	835762.387385696 818867.9675125479,
+	835768.8042788802 818858.50878188,
+	835775.4391894041 818849.2016842215,
+	835782.288535565 818840.0512437521,
+	835789.3486200012 818831.062400002*/
+	UOSInt i = 0;
+	UOSInt j = pts.GetCount();
+	while (i < j)
+	{
+		Math::Coord2DDbl pt = pts.GetItem(i);
+		printf("%lf %lf\r\n", pt.x, pt.y);
+		i++;
+	}
+	return 0;
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 11;
+	UOSInt testType = 12;
 	switch (testType)
 	{
 	case 0:
@@ -589,6 +625,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		return SSHTest(progCtrl);
 	case 11:
 		return PaperSize();
+	case 12:
+		return CurveToLine();
 	default:
 		return 0;
 	}
