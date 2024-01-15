@@ -118,7 +118,7 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, N
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
 				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
+ 				sb->AppendUTF8Char(' ');
 				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
 				i++;
 			}

@@ -362,7 +362,7 @@ NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPol
 		k = pgList.GetCount();
 		while (k-- > 0)
 		{
-			if (pgList.GetItem(k).SetTo(pg) && pg->Contains(lr))
+			if (pgList.GetItem(k).SetTo(pg) && pg->InsideOrTouch(lr->GetPoint(0)))
 			{
 				found = true;
 				pg->AddGeometry(NotNullPtr<LinearRing>::ConvertFrom(lr->Clone()));

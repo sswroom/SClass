@@ -43,6 +43,7 @@ namespace Math
 
 			Math::Coord2DDbl *GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
 			const Math::Coord2DDbl *GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
+			Math::Coord2DDbl GetPoint(UOSInt index) const;
 			Double CalcLength() const;
 
 			Double *GetZList(OutParam<UOSInt> nPoint) const;
