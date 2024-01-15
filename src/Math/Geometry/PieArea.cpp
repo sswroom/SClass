@@ -47,12 +47,27 @@ Double Math::Geometry::PieArea::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutP
 	return 0;
 }
 
+Double Math::Geometry::PieArea::CalArea() const
+{
+	return 0;
+}
+
 Bool Math::Geometry::PieArea::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
 
 Bool Math::Geometry::PieArea::HasZ() const
+{
+	return false;
+}
+
+Bool Math::Geometry::PieArea::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
+{
+	return false;
+}
+
+Bool Math::Geometry::PieArea::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
 {
 	return false;
 }

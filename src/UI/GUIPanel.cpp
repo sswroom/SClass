@@ -49,3 +49,8 @@ void UI::GUIPanel::SetHandle(ControlHandle *hwnd)
 {
 	this->hwnd = hwnd;
 }
+
+NotNullPtr<UI::GUIPanelBase> UI::GUIPanel::GetBase() const
+{
+	return this->base;
+}

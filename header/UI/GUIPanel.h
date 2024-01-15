@@ -23,6 +23,7 @@ namespace UI
 
 		void SetMinSize(Int32 minW, Int32 minH);
 		void SetHandle(ControlHandle *hwnd);
+		NotNullPtr<UI::GUIPanelBase> GetBase() const;
 	};
 }
 #endif

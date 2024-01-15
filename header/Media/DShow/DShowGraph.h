@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DSHOW_DSHOWGRAPH
 #define _SM_MEDIA_DSHOW_DSHOWGRAPH
+#include "Data/Duration.h"
 
 namespace Media
 {

@@ -22,8 +22,11 @@ Int32 UI::Win::WinPanelBase::useCnt = 0;
 
 OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::Win::WinPanelBase *me = (UI::Win::WinPanelBase*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
-	UI::GUIControl*ctrl;
+	UI::GUIPanel *pnl = (UI::GUIPanel*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	if (pnl == 0)
+		return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
+	NotNullPtr<UI::Win::WinPanelBase> me = NotNullPtr<UI::Win::WinPanelBase>::ConvertFrom(pnl->GetBase());
+	UI::GUIControl *ctrl;
 	SCROLLINFO si;
 	Bool upd;
 	NMHDR *nmhdr;
@@ -129,16 +132,13 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 		}
 		break;
 	case WM_SIZE:
-		if (me)
-		{
-			me->master->OnSizeChanged(false);
-			me->UpdateScrollBars();
-			me->master->UpdateChildrenSize(false);
+		me->master->OnSizeChanged(false);
+		me->UpdateScrollBars();
+		me->master->UpdateChildrenSize(false);
 /*			if (me->visible)
-			{
-				InvalidateRect((HWND)hWnd, 0, false);
-			}*/
-		}
+		{
+			InvalidateRect((HWND)hWnd, 0, false);
+		}*/
 		return 0;//DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 	case WM_ERASEBKGND:
 		return me->master->MyEraseBkg((void*)wParam);

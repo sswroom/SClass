@@ -83,10 +83,10 @@ Bool Media::DShow::DShowGraph::IsCompleted()
 	return this->completed;
 }
 
-Bool Media::DShow::DShowGraph::SeekToTime(Int32 time)
+Bool Media::DShow::DShowGraph::SeekToTime(Data::Duration time)
 {
 	HRESULT hr;
-	REFERENCE_TIME newTime = time * 10000LL;
+	REFERENCE_TIME newTime = (REFERENCE_TIME)(time.GetSeconds() * 10000000LL + time.GetNS() / 100);
 	if (this->pSeek)
 	{
 		hr = ((IMediaSeeking*)this->pSeek)->SetPositions(&newTime, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);;
