@@ -296,6 +296,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 	case 0x80: //Command sent by server to the terminal
 		break;
 	case 0x94: //Information transmission packet
+		{
+			UInt8 infoType = tagData[currOfst + 1];
+			frame->AddHex8(currOfst + 1, CSTR("Information Type"), infoType);
+			parsed = true;
+		}
 		break;
 	case 0x95: //Alarm packet
 		break;
