@@ -27,6 +27,11 @@ Text::JSONType Net::JSONResponse::Field::GetFieldType() const
 	return this->fieldType;
 }
 
+Bool Net::JSONResponse::Field::IsOptional() const
+{
+	return this->optional;
+}
+
 Bool Net::JSONResponse::Field::IsAllowNull() const
 {
 	return this->allowNull;
@@ -229,6 +234,7 @@ void Net::JSONResponse::FindMissingFields()
 						sbGet.Append(CSTR(",ClassName)\r\n"));
 						break;
 					case Text::JSONType::String:
+						printf("JSONResponse: %s.%s = %s\r\n", this->clsName.v, name->v, ((Text::JSONString*)val)->GetValue()->v);
 						sbSuggest.Append(CSTR("JSONRESP_STR("));
 						s = Text::JSText::ToNewJSTextDQuote(name->v);
 						sbSuggest.Append(s);
@@ -250,7 +256,7 @@ void Net::JSONResponse::FindMissingFields()
 		while (i < j)
 		{
 			field = this->fieldMap.GetItem(i);
-			if (field->IsAllowNull() || this->json->GetValue(field->GetName()) != 0)
+			if (field->IsOptional() || this->json->GetValue(field->GetName()) != 0)
 			{
 			}
 			else

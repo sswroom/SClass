@@ -36,6 +36,7 @@ void Net::MSGraphAccessToken::InitClient(NotNullPtr<Net::HTTPClient> cli)
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 }
 
+/*
 Text::CStringNN Net::MSGraphEventMessageRequest::knownTypes[] = {
 	CSTR("@odata.etag"),
 	CSTR("@odata.type"),
@@ -126,103 +127,7 @@ Bool Net::MSGraphEventMessageRequest::IsKnownType(Text::CStringNN type)
 			return true;
 	}
 	return false;
-}
-
-Text::CStringNN Net::MSGraphMailFolder::knownTypes[] = {
-	CSTR("@odata.etag"),
-	CSTR("@odata.type"),
-	CSTR("childFolderCount"),
-	CSTR("displayName"),
-	CSTR("id"),
-	CSTR("isHidden"),
-	CSTR("parentFolderId"),
-	CSTR("sizeInBytes"),
-	CSTR("totalItemCount"),
-	CSTR("unreadItemCount"),
-};
-
-Net::MSGraphMailFolder::MSGraphMailFolder(NotNullPtr<Text::JSONObject> obj)
-{
-	this->obj = obj;
-	this->obj->BeginUse();
-}
-
-Net::MSGraphMailFolder::~MSGraphMailFolder()
-{
-	this->obj->EndUse();
-}
-
-Optional<Text::String> Net::MSGraphMailFolder::GetId()
-{
-	return this->obj->GetObjectString(CSTR("id"));
-}
-
-Optional<Text::String> Net::MSGraphMailFolder::GetDisplayName()
-{
-	return this->obj->GetObjectString(CSTR("displayName"));
-}
-
-Optional<Text::String> Net::MSGraphMailFolder::GetParentFolderId()
-{
-	return this->obj->GetObjectString(CSTR("parentFolderId"));
-}
-
-Int64 Net::MSGraphMailFolder::GetChildFolderCount()
-{
-	return this->obj->GetObjectInt64(CSTR("childFolderCount"));
-}
-
-Int64 Net::MSGraphMailFolder::GetUnreadItemCount()
-{
-	return this->obj->GetObjectInt64(CSTR("unreadItemCount"));
-}
-
-Int64 Net::MSGraphMailFolder::GetTotalItemCount()
-{
-	return this->obj->GetObjectInt64(CSTR("totalItemCount"));
-}
-
-Int64 Net::MSGraphMailFolder::GetSizeInBytes()
-{
-	return this->obj->GetObjectInt64(CSTR("sizeInBytes"));
-}
-
-Bool Net::MSGraphMailFolder::GetIsHidden()
-{
-	return this->obj->GetObjectBool(CSTR("isHidden"));
-}
-
-Optional<Net::MSGraphMailFolder> Net::MSGraphMailFolder::Parse(NotNullPtr<Text::JSONObject> obj)
-{
-	if (!MSGraphClient::HasUnknownTypes(obj, IsKnownType, CSTR("MSGraphMailFolder")))
-	{
-		NotNullPtr<MSGraphMailFolder> folder;
-		NEW_CLASSNN(folder, MSGraphMailFolder(obj));
-		return folder;
-	}
-	return 0;
-}
-
-
-Bool Net::MSGraphMailFolder::IsKnownType(Text::CStringNN type)
-{
-	OSInt i = 0;
-	OSInt j = (sizeof(knownTypes) / sizeof(knownTypes[0])) - 1;
-	OSInt k;
-	OSInt l;
-	while (i <= j)
-	{
-		k = (i + j) >> 1;
-		l = knownTypes[k].CompareToFast(type);
-		if (l > 0)
-			j = k - 1;
-		else if (l < 0)
-			i = k + 1;
-		else
-			return true;
-	}
-	return false;
-}
+}*/
 
 Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content)
 {
@@ -279,6 +184,7 @@ template<class T> Bool Net::MSGraphClient::GetList(NotNullPtr<MSGraphAccessToken
 		{
 #if defined(VERBOSE)
 			printf("MSGraphClient: %s cannot parse result: %d, %s\r\n", funcName.v, (Int32)status, sb.ToString());
+			printf("MSGraphClient: %s url: %s\r\n", funcName.v, url.v);
 #endif
 			return false;
 		}
@@ -301,14 +207,22 @@ template<class T> Bool Net::MSGraphClient::GetList(NotNullPtr<MSGraphAccessToken
 			return false;
 		}
 		NotNullPtr<Text::JSONObject> dataObj;
-		NotNullPtr<MSGraphMailFolder> data;
+		NotNullPtr<T> data;
 		UOSInt i = 0;
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
 		{
-			if (dataObj.Set(arr->GetArrayObject(i)) && T::Parse(dataObj).SetTo(data))
+			if (dataObj.Set(arr->GetArrayObject(i)))
 			{
-				dataList->Add(data);
+				NEW_CLASSNN(data, T(dataObj));
+				if (data->IsValid())
+				{
+					dataList->Add(data);
+				}
+				else
+				{
+					data.Delete();
+				}
 			}
 			i++;
 		}
@@ -377,19 +291,47 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	return 0;
 }
 
-Bool Net::MSGraphClient::EntityGetMe(NotNullPtr<MSGraphAccessToken> token)
+Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTR("https://graph.microsoft.com/v1.0/me"), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
+	if (userName.v)
+	{
+		sb.Append(CSTR("users/"));
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName.v);
+		sb.AppendP(sbuff, sptr);
+	}
+	else
+	{
+		sb.Append(CSTR("me"));
+	}
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
-	Text::StringBuilderUTF8 sb;
+	sb.ClearStr();
 	if (cli->ReadAllContent(sb, 4096, 1048576))
 	{
 		cli.Delete();
 #if defined(VERBOSE)
 		printf("MSGraphClient: EntityGetMe %d, %s\r\n", (Int32)status, sb.ToString());
 #endif
-		return false;
+		NotNullPtr<Text::JSONBase> json;
+		if (json.Set(Text::JSONBase::ParseJSONStr(sb.ToCString())))
+		{
+			NotNullPtr<MSGraphEntity> entity;
+			NEW_CLASSNN(entity, MSGraphEntity(json));
+			json->EndUse();
+			if (entity->IsValid())
+				return entity;
+			entity.Delete();
+			return 0;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	else
 	{
@@ -477,9 +419,17 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
 		{
-			if (msgObj.Set(arr->GetArrayObject(i)) && MSGraphEventMessageRequest::Parse(msgObj).SetTo(msg))
+			if (msgObj.Set(arr->GetArrayObject(i)))
 			{
-				msgList->Add(msg);
+				NEW_CLASSNN(msg, MSGraphEventMessageRequest(msgObj));
+				if (msg->IsValid())
+				{
+					msgList->Add(msg);
+				}
+				else
+				{
+					msg.Delete();
+				}
 			}
 			i++;
 		}

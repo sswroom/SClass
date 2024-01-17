@@ -24,6 +24,7 @@ namespace Net
 
 			Text::CStringNN GetName() const;
 			Text::JSONType GetFieldType() const;
+			Bool IsOptional() const;
 			Bool IsAllowNull() const;
 		};
 
