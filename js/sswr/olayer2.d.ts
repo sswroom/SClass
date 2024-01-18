@@ -28,6 +28,7 @@ export class Olayer2Map extends map.MapControl
 	zoomScale(scale: number): void;
 	panTo(pos: math.Coord2D): void;
 	panZoomScale(pos: math.Coord2D, scale: number): void;
+	zoomToExtent(extent: math.RectArea): void;
 	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
 	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
 	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;

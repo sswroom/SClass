@@ -80,12 +80,14 @@ export class Olayer2Map extends map.MapControl
 
 	createMarkerLayer(name, options)
 	{
-		return new OpenLayers.Layer.Markers(name, options);
+		var layer = new OpenLayers.Layer.Markers(name);
+		return layer;
 	}
 
 	createGeometryLayer(name, options)
 	{
-		return new OpenLayers.Layer.Vector(name, options);
+		var layer = new OpenLayers.Layer.Vector(name);
+		return layer;
 	}
 
 	addLayer(layer)
@@ -130,7 +132,30 @@ export class Olayer2Map extends map.MapControl
 	panZoomScale(pos, scale)
 	{
 		this.map.zoomToScale(scale, false);
-		this.map.setCenter(new OpenLayers.LonLat(pos.x, pos.y).transform(this.mapProjection, this.map.getProjectionObject()), this.map.getZoom(), true, false);
+		this.map.setCenter(new OpenLayers.LonLat(pos.x, pos.y).transform(this.mapProjection, this.map.getProjectionObject()), this.map.getZoom(), false, false);
+	}
+
+	zoomToExtent(extent)
+	{
+		var pos = extent.getCenter();
+		var currZoom = this.map.getZoom();
+		var tl = this.map2ScnPos(new math.Coord2D(extent.min.x, extent.max.y));
+		var br = this.map2ScnPos(new math.Coord2D(extent.max.x, extent.min.y));
+		var scnSize = this.map.getSize();
+		var ratioX = (br.x - tl.x) / scnSize.w;
+		var ratioY = (br.y - tl.y) / scnSize.h;
+		if (ratioY > ratioX)
+		{
+			ratioX = ratioY;
+		}
+		var minZoom = 0;
+		var maxZoom = this.map.getNumZoomLevels() - 1;
+		currZoom += Math.floor(-Math.log(ratioX) / Math.log(2));
+		if (currZoom < 0)
+			currZoom = 0;
+		if (currZoom > maxZoom)
+			currZoom = maxZoom;
+		this.map.setCenter(new OpenLayers.LonLat(pos.x, pos.y).transform(this.mapProjection, this.map.getProjectionObject()), currZoom, false, false);
 	}
 
 	handleMouseLClick(clickFunc)
