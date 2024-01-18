@@ -112,3 +112,22 @@ Bool Math::Geometry::LinearRing::IsClose() const
 {
 	return this->pointArr[0] == this->pointArr[this->nPoint - 1];
 }
+
+NotNullPtr<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints)
+{
+	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, nPoints + 1, false, false));
+	Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
+	UOSInt i;
+	UOSInt j;
+	Double angle;
+	Math::Coord2DDbl *pointList = lr->GetPointList(j);
+	i = 0;
+	while (i < j)
+	{
+		angle = UOSInt2Double(i) * ratio;
+		pointList[i] = center + Math::Coord2DDbl(radiusX * Math_Cos(angle), radiusY * Math_Sin(angle));
+		i++;
+	}
+	return lr;
+}

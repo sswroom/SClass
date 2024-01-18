@@ -305,6 +305,27 @@ export class LinearRing extends LineString
 		var lastPoint = this.coordinates[this.coordinates.length - 1];
 		return firstPoint[0] == lastPoint[0] && firstPoint[1] == lastPoint[1];
 	}
+
+	toPolygon()
+	{
+		return new Polygon(this.srid, [this.coordinates]);
+	}
+
+	static createFromCircle(srid, center, radiusX, radiusY, nPoints)
+	{
+		var pos = [];
+		var ratio = 2 * Math.PI / nPoints;
+		var i = 0;
+		var angle;
+		i = 0;
+		while (i <= nPoints)
+		{
+			angle = i * ratio;
+			pos.push([center.x + radiusX * Math.cos(angle), center.y + radiusY * Math.sin(angle)]);
+			i++;
+		}
+		return new LinearRing(srid, pos);
+	}
 }
 
 export class MultiGeometry extends Vector2D

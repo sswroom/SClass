@@ -3,6 +3,7 @@ import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
 import { Coord2D } from "./math.js";
 import * as map from "./map.js";
+import * as web from "./web.js";
 
 export function fromLatLon(latLon)
 {
@@ -118,7 +119,14 @@ export function toKMLFeature(layer, doc)
 		{
 			var lineStyle = new kml.LineStyle();
 			if (layer.options.color)
-				lineStyle.fromCSSColor(layer.options.color);
+			{
+				var c = web.parseCSSColor(layer.options.color);
+				if (layer.options.opacity)
+				{
+					c.a = c.a * layer.options.opacity;
+				}
+				lineStyle.fromARGB(c.a, c.r, c.g, c.b);
+			}
 			if (layer.options.weight)
 				lineStyle.setWidth(layer.options.weight);
 			feature.setStyle(doc.getOrNewStyle(null, null, lineStyle, null, null, null));

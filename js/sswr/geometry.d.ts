@@ -36,6 +36,7 @@ export enum VectorType
 }
 
 export class Vector2D {
+	srid: number;
 	type: VectorType;
 	constructor(srid: number);
 	insideOrTouch(coord: math.Coord2D): boolean;
@@ -63,6 +64,9 @@ export class LinearRing extends LineString
 	insideOrTouch(coord: math.Coord2D): boolean;
 	isOpen(): boolean;
 	isClose(): boolean;
+	toPolygon(): Polygon;
+
+	static createFromCircle(srid: number, center: math.Coord2D, radiusX: number, radiusY: number, nPoints: number): LinearRing;
 }
 
 export class MultiGeometry<VecType> extends Vector2D

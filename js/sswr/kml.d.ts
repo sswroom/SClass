@@ -86,8 +86,18 @@ export class ColorStyle extends Element
 
 export class IconStyle extends ColorStyle
 {
-	
+	scale: number;
+	heading: number;
+	iconUrl: string;
+	hotSpotX: number;
+	hotSpotY: number;
+
 	constructor();
+	setScale(scale: number);
+	setHeading(heading: number);
+	setIconUrl(iconUrl: string);
+	setHotSpotX(hotSpotX: number);
+	setHotSpotY(hotSpotY: number);
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: IconStyle): boolean;
 };

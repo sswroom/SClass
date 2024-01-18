@@ -19,6 +19,8 @@ namespace Math
 			virtual Double CalArea() const;
 			Bool IsOpen() const;
 			Bool IsClose() const;
+
+			static NotNullPtr<LinearRing> CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints);
 		};
 	}
 }

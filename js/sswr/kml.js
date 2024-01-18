@@ -142,10 +142,47 @@ export class IconStyle extends ColorStyle
 		super();
 	}
 
+	setScale(scale)
+	{
+		this.scale = scale;
+	}
+
+	setHeading(heading)
+	{
+		this.heading = heading;
+	}
+
+	setIconUrl(iconUrl)
+	{
+		this.iconUrl = iconUrl;
+	}
+
+	setHotSpotX(hotSpotX)
+	{
+		this.hotSpotX = hotSpotX;
+	}
+
+	setHotSpotY(hotSpotY)
+	{
+		this.hotSpotY = hotSpotY;
+	}
+
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<IconStyle>");
 		this.appendInnerXML(strs, level + 1);
+		if (this.scale)
+			strs.push("\t".repeat(level + 1)+"<scale>"+this.scale+"</scale>");
+		if (this.heading != null)
+			strs.push("\t".repeat(level + 1)+"<heading>"+this.heading+"</heading>");
+		if (this.iconUrl)
+		{
+			strs.push("\t".repeat(level + 1)+"<Icon>");
+			strs.push("\t".repeat(level + 2)+"<href>"+text.toXMLText(this.iconUrl)+"</href>");
+			strs.push("\t".repeat(level + 1)+"</Icon>");
+		}
+		if (this.hotSpotX != null && this.hotSpotY != null)
+			strs.push("\t".repeat(level + 1)+"<hotSpot x="+text.toAttrText(""+this.hotSpotX)+" y="+text.toAttrText(""+this.hotSpotY)+" xunits=\"fraction\" yunits=\"fraction\"/>");
 		strs.push("\t".repeat(level)+"</IconStyle>");
 	}
 
@@ -154,6 +191,16 @@ export class IconStyle extends ColorStyle
 		if (!o instanceof IconStyle)
 			return false;
 		if (!this.sameColor(o))
+			return false;
+		if (this.scale != o.scale)
+			return false;
+		if (this.heading != o.heading)
+			return false;
+		if (this.iconUrl != o.iconUrl)
+			return false;
+		if (this.hotSpotX != o.hotSpotX)
+			return false;
+		if (this.hotSpotY != o.hotSpotY)
 			return false;
 		return true;
 	}
@@ -379,7 +426,6 @@ export class Style extends Element
 		{
 			return false;
 		}
-
 		if (labelStyle == null)
 		{
 			if (this.labelStyle != null)
@@ -393,7 +439,6 @@ export class Style extends Element
 		{
 			return false;
 		}
-
 		if (lineStyle == null)
 		{
 			if (this.lineStyle != null)
@@ -407,7 +452,6 @@ export class Style extends Element
 		{
 			return false;
 		}
-
 		if (polyStyle == null)
 		{
 			if (this.polyStyle != null)
@@ -421,7 +465,6 @@ export class Style extends Element
 		{
 			return false;
 		}
-
 		if (balloonStyle == null)
 		{
 			if (this.balloonStyle != null)
@@ -435,7 +478,6 @@ export class Style extends Element
 		{
 			return false;
 		}
-
 		if (listStyle == null)
 		{
 			if (this.listStyle != null)
@@ -583,7 +625,7 @@ export class Document extends Container
 		var i;
 		for (i in this.styleList)
 		{
-			if (this.styleList[i].isStyle(iconStyle, labelStyle, lineStyle, polyStyle, balloonStyle, lineStyle))
+			if (this.styleList[i].isStyle(iconStyle, labelStyle, lineStyle, polyStyle, balloonStyle, listStyle))
 				return this.styleList[i];
 		}
 		var style = new Style("style"+(this.styleList.length + 1));
@@ -659,6 +701,42 @@ export class Placemark extends Feature
 			}
 			strs.push("\t".repeat(level)+"</Point>");
 		}
+		else if (vec instanceof geometry.LinearRing)
+		{
+			if (subGeom)
+			{
+				var i;
+				strs.push("\t".repeat(level)+"<LinearRing>");
+				if (vec.coordinates[0].length >= 3)
+				{
+					if (subGeom != true)
+						strs.push("\t".repeat(level + 1)+"<altitudeMode>absolute</altitudeMode>");
+					strs.push("\t".repeat(level + 1)+"<coordinates>");
+					for (i in vec.coordinates)
+					{
+						strs.push("\t".repeat(level + 2)+vec.coordinates[i][0]+","+vec.coordinates[i][1]+","+vec.coordinates[i][2]+" ");
+					}
+					strs.push("\t".repeat(level + 1)+"</coordinates>");
+				}
+				else
+				{
+					if (subGeom != true)
+						strs.push("\t".repeat(level + 1)+"<tessellate>1</tessellate>");
+					strs.push("\t".repeat(level + 1)+"<coordinates>");
+					for (i in vec.coordinates)
+					{
+						strs.push("\t".repeat(level + 2)+vec.coordinates[i][0]+","+vec.coordinates[i][1]+" ");
+					}
+					strs.push("\t".repeat(level + 1)+"</coordinates>");
+				}
+				strs.push("\t".repeat(level)+"</LinearRing>");
+			}
+			else
+			{
+				var pg = vec.toPolygon();
+				this.appendGeometry(strs, level, pg, subGeom);
+			}
+		}
 		else if (vec instanceof geometry.LineString)
 		{
 			var i;
@@ -686,34 +764,6 @@ export class Placemark extends Feature
 				strs.push("\t".repeat(level + 1)+"</coordinates>");
 			}
 			strs.push("\t".repeat(level)+"</LineString>");
-		}
-		else if (vec instanceof geometry.LinearRing)
-		{
-			var i;
-			strs.push("\t".repeat(level)+"<LinearRing>");
-			if (vec.coordinates[0].length >= 3)
-			{
-				if (subGeom != true)
-					strs.push("\t".repeat(level + 1)+"<altitudeMode>absolute</altitudeMode>");
-				strs.push("\t".repeat(level + 1)+"<coordinates>");
-				for (i in vec.coordinates)
-				{
-					strs.push("\t".repeat(level + 2)+vec.coordinates[i][0]+","+vec.coordinates[i][1]+","+vec.coordinates[i][2]+" ");
-				}
-				strs.push("\t".repeat(level + 1)+"</coordinates>");
-			}
-			else
-			{
-				if (subGeom != true)
-					strs.push("\t".repeat(level + 1)+"<tessellate>1</tessellate>");
-				strs.push("\t".repeat(level + 1)+"<coordinates>");
-				for (i in vec.coordinates)
-				{
-					strs.push("\t".repeat(level + 2)+vec.coordinates[i][0]+","+vec.coordinates[i][1]+" ");
-				}
-				strs.push("\t".repeat(level + 1)+"</coordinates>");
-			}
-			strs.push("\t".repeat(level)+"</LinearRing>");
 		}
 		else if (vec instanceof geometry.Polygon)
 		{

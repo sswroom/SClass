@@ -142,3 +142,10 @@ export class GeolocationFilter
 		return true;
 	}
 }
+
+export class MapControl
+{
+	constructor()
+	{
+	}
+}

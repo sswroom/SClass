@@ -1,6 +1,7 @@
-import { CoordinateSystem, Vector3 } from "./math";
-import { LineString, Vector2D } from "./geometry";
 import { Timestamp } from "./data";
+import * as geometry from "./geometry";
+import * as map from "./map";
+import * as math from "./math";
 
 export enum DataFormat
 {
@@ -70,7 +71,7 @@ declare class GeoJSONFeatureCollection extends GeoJSON
 	features: GeoJSONFeature[];
 };
 
-export function calcDistance(srid: number, geom: Vector2D, x: number, y: number): number;
+export function calcDistance(srid: number, geom: geometry.Vector2D, x: number, y: number): number;
 export function getLayers(svcUrl: string, onResultFunc: Function): void;
 export function getLayerData(svcUrl: string, onResultFunc: Function, layerName: string, dataFormat: DataFormat): void;
 
@@ -90,18 +91,67 @@ export class GPSTrack
 {
 	recs: GPSRecord[];
 	constructor(recs: GPSRecord[]);
-	createLineString(): LineString;
-	getPosByTime(ts: Timestamp): Vector3;
-	getPosByTicks(ticks: number): Vector3;
+	createLineString(): geometry.LineString;
+	getPosByTime(ts: Timestamp): math.Vector3;
+	getPosByTicks(ticks: number): math.Vector3;
 };
 
 export class GeolocationFilter
 {
 	lastPos?: GeolocationPosition;
-	csys: CoordinateSystem;
+	csys: math.CoordinateSystem;
 	minSecs: number;
 	minDistMeter: number;
 
 	constructor(minSecs: number, minDistMeter: number);
 	isValid(pos: GeolocationPosition): boolean;
+};
+
+
+declare class LayerOptions
+{
+};
+
+declare class MarkerOptions
+{
+	zIndex?: number;
+}
+
+declare class GeometryOptions
+{
+	lineColor?: string;
+	lineWidth?: number;
+	fillColor?: string;
+	fillOpacity?: number;
+}
+
+export class MapControl
+{
+	constructor();
+	createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
+	createMarkerLayer(name: string, options?: LayerOptions): any;
+	createGeometryLayer(name: string, options?: LayerOptions): any;
+	addLayer(layer: any);
+	uninit(): void;
+	zoomIn(): void;
+	zoomOut(): void;
+	zoomScale(scale: number): void;
+	panTo(pos: math.Coord2D): void;
+	panZoomScale(pos: math.Coord2D, scale: number): void;
+	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
+	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
+	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;
+	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
+	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
+
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
+	layerAddMarker(markerLayer: any, marker: any): void;
+	layerRemoveMarker(markerLayer: any, marker: any): void;
+	layerClearMarkers(markerLayer: any): void;
+	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
+
+	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
+	layerAddGeometry(geometryLayer: any, geom: any): void;
+	layerRemoveGeometry(geometryLayer: any, geom: any): void;
+	layerClearGeometries(geometryLayer: any): void;
 };
