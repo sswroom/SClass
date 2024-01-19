@@ -471,6 +471,38 @@ export function parseCSSColor(c)
 	return {a: 0.0, r: 0.0, g: 0.0, b: 0.0};
 }
 
+export function handleFileDrop(ele, hdlr)
+{
+	ele.addEventListener("dragover",(ev)=>{
+		ev.preventDefault();
+		ev.dataTransfer.dropEffect = "copy";
+	});
+
+	ele.addEventListener("drop", (ev)=>{
+		ev.preventDefault();
+		if (ev.dataTransfer.items)
+		{
+			var i;
+			for (i in ev.dataTransfer.items)
+			{
+				var item = ev.dataTransfer.items[i];
+				if (item.kind === "file")
+				{
+					hdlr(item.getAsFile());
+				}
+			}
+		}
+		else if (ev.dataTransfer.files)
+		{
+			var i;
+			for (i in ev.dataTransfer.files)
+			{
+				hdlr(ev.dataTransfer.files[i]);
+			}
+		}
+	});
+}
+
 export class Dialog
 {
 	constructor(content, options)

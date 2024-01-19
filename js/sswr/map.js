@@ -149,3 +149,66 @@ export class MapControl
 	{
 	}
 }
+
+export class WMS
+{
+	constructor(url, layer, version)
+	{
+		this.url = url;
+		this.layer = layer;
+		this.version = version;
+	}
+
+	async queryInfos(mapPos, bounds, width, height)
+	{
+		if (this.version == null)
+		{
+			var resp = await fetch(this.url + "?SERVICE=WMS&REQUEST=GetCapabilities");
+			var parser = new DOMParser();
+			var contentType = resp.headers.get("Content-Type") || "text/xml";
+			var doc = parser.parseFromString(await resp.text(), contentType);
+			if (doc.activeElement.nodeName == "WMS_Capabilities" || doc.activeElement.nodeName == "WMT_MS_Capabilities")
+			{
+				var attr = doc.activeElement.attributes.getNamedItem("version");
+				if (attr)
+				{
+					this.version = attr.value;
+				}
+			}
+			if (this.version == null)
+			{
+				return null;
+			}
+		}
+		var x = (mapPos.x - bounds.min.x) * width / bounds.getWidth();
+		var y = (bounds.max.y - mapPos.y) * height / bounds.getHeight();
+		var url;
+	
+		if (this.version == "1.1.1")
+		{
+			url = this.url + "?service=WMS&version=1.1.1&request=GetFeatureInfo&layers="+encodeURIComponent(this.layer);
+			url = url + "&bbox="+bounds.min.y+"%2C"+bounds.min.x+"%2C"+bounds.max.y+"%2C"+bounds.max.x+"&width="+width+"&height="+height;
+			url = url + "&srs=EPSG%3A4326&styles=&format=image%2Fpng&QUERY_LAYERS="+encodeURIComponent(this.layer)+"&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=5";
+			url = url + "&X="+Math.round(x)+"&Y="+Math.round(y);
+		}
+		else if (this.version == "1.3.0")
+		{
+			url = this.url + "?service=WMS&version=1.3.0&request=GetFeatureInfo&layers="+encodeURIComponent(this.layer);
+			url = url + "&bbox="+bounds.min.y+"%2C"+bounds.min.x+"%2C"+bounds.max.y+"%2C"+bounds.max.x+"&width="+width+"&height="+height;
+			url = url + "&CRS=EPSG%3A4326&styles=&format=image%2Fpng&QUERY_LAYERS="+encodeURIComponent(this.layer)+"&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=5";
+			url = url + "&I="+Math.round(x)+"&J="+Math.round(y);
+		}
+		else
+		{
+			console.log("WMS: Unsupported version", this.version);
+			return null;
+		}
+		console.log(url);
+		var resp = await fetch(url);
+		if (resp.ok)
+		{
+			return await resp.json();
+		}
+		return null;
+	}
+}

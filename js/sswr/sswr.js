@@ -6,6 +6,7 @@ export * as kml from "./kml.js";
 export * as leaflet from "./leaflet.js";
 export * as map from "./map.js";
 export * as math from "./math.js";
+export * as olayer2 from "./olayer2.js";
 export * as osm from "./osm.js";
 export * as text from "./text.js";
 export * as unit from "./unit.js";

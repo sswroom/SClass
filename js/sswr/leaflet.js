@@ -1,13 +1,23 @@
 import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
-import { Coord2D } from "./math.js";
+import * as math from "./math.js";
 import * as map from "./map.js";
 import * as web from "./web.js";
 
 export function fromLatLon(latLon)
 {
-	return new Coord2D(latLon.lng, latLon.lat);
+	return new math.Coord2D(latLon.lng, latLon.lat);
+}
+
+export function fromLatLng(latLng)
+{
+	return new math.Coord2D(latLng.lng, latLng.lat);
+}
+
+export function fromLatLngBounds(b)
+{
+	return new math.RectArea(b.getWest(), b.getSouth(), b.getEast(), b.getNorth());
 }
 
 export function createLayer(layer, options)

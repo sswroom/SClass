@@ -29,4 +29,11 @@ function roundTest()
 	console.log(performance.now());
 }
 
-roundTest();
+async function wmsTest()
+{
+	var wms = new map.WMS("http://192.168.1.25:8080/geoserver/pbg/wms", "pbg:had_burial_poly");
+	await wms.queryInfos();
+	console.log(wms);
+}
+
+wmsTest();

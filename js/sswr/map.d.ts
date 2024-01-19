@@ -156,3 +156,38 @@ export class MapControl
 	layerRemoveGeometry(geometryLayer: any, geom: any): void;
 	layerClearGeometries(geometryLayer: any): void;
 };
+
+declare class OWSSpatialReference
+{
+	type: string;
+	properties: string;
+}
+
+declare class OWSFeature
+{
+	type: string;
+	id: string;
+	geometry_name?: string;
+	geometry: Geometry;
+	properties: object;
+}
+
+declare class OWSFeatureCollection
+{
+	crs: OWSSpatialReference;
+	features: OWSFeature[];
+	numberReturned: number;
+	timeStamp: string;
+	totalFeatures: number | string;
+	type: string;
+}
+
+export class WMS
+{
+	url: string;
+	layer: string;
+	version: string;
+
+	constructor(url: string, layer: string, version?: string);
+	queryInfos(mapPos: math.Coord2D, bounds: math.RectArea, width: number, height: number): Promise<object | null>;
+}
