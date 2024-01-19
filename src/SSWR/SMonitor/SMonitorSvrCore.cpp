@@ -16,6 +16,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/Email/SMTPClient.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
+#include "Net/WebServer/NodeModuleHandler.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/Benchmark/BenchmarkWebHandler.h"
 #include "SSWR/SMonitor/SMonitorSvrCore.h"
@@ -1282,6 +1283,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 					NotNullPtr<Net::WebServer::HTTPDirectoryHandler> fileshdlr;
 					NotNullPtr<SSWR::Benchmark::BenchmarkWebHandler> benchhdlr;
 					NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> vamsHdlr;
+					NotNullPtr<Net::WebServer::HTTPDirectoryHandler> jshdlr;
 					SSWR::VAMS::VAMSBTList *btList;
 					NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(Text::String::OrEmpty(s2), false, 0, false));
 					NEW_CLASSNN(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
@@ -1300,6 +1302,11 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 						NEW_CLASSNN(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(s, btList));
 						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
+					sb.ClearStr();
+					IO::Path::GetProcessFileName(sb);
+					IO::Path::AppendPath(sb, UTF8STRC("node_modules"));
+					NEW_CLASSNN(jshdlr, Net::WebServer::NodeModuleHandler(sb.ToCString(), 0));
+					hdlr->HandlePath(CSTR("/js"), jshdlr, true);
 
 					hdlr->ExpandPackageFiles(this->parsers, CSTR("*.spk"));
 					this->webHdlr = hdlr.Ptr();
