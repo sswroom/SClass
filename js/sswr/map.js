@@ -167,9 +167,10 @@ export class WMS
 			var parser = new DOMParser();
 			var contentType = resp.headers.get("Content-Type") || "text/xml";
 			var doc = parser.parseFromString(await resp.text(), contentType);
-			if (doc.activeElement.nodeName == "WMS_Capabilities" || doc.activeElement.nodeName == "WMT_MS_Capabilities")
+			var node = doc.childNodes[0];
+			if (node.nodeName == "WMS_Capabilities" || node.nodeName == "WMT_MS_Capabilities")
 			{
-				var attr = doc.activeElement.attributes.getNamedItem("version");
+				var attr = node.attributes.getNamedItem("version");
 				if (attr)
 				{
 					this.version = attr.value;
@@ -203,7 +204,6 @@ export class WMS
 			console.log("WMS: Unsupported version", this.version);
 			return null;
 		}
-		console.log(url);
 		var resp = await fetch(url);
 		if (resp.ok)
 		{

@@ -189,5 +189,5 @@ export class WMS
 	version: string;
 
 	constructor(url: string, layer: string, version?: string);
-	queryInfos(mapPos: math.Coord2D, bounds: math.RectArea, width: number, height: number): Promise<object | null>;
+	queryInfos(mapPos: math.Coord2D, bounds: math.RectArea, width: number, height: number): Promise<OWSFeatureCollection | null>;
 }

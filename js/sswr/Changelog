@@ -1,3 +1,6 @@
+1.4.1
+-Fixed problems in Chrome
+
 1.4.0
 -Added LinearRing.createFromCircle
 -Full support kml.IconStyle
