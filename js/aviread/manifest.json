@@ -1,0 +1,31 @@
+{
+	"name": "AVIRead Web Edition",
+	"short_name": "AVIRead",
+	"description": "AVIRead Web Edition",
+	"lang": "zh-HK",
+	"start_url": "./index.html",
+	"scope": "/aviread/",
+	"theme_color": "#181c25",
+	"background_color": "#000000",
+	"display": "standalone",
+	"display_override": [
+	  "window-controls-overlay"
+	],
+	"edge_side_panel": {
+	  "preferred_width": 496
+	},
+	"icons": [
+	  {
+		"src": "./icon.png",
+		"sizes": "512x512"
+	  }
+	],
+	"screenshots": [
+	],
+	"file_handlers": [
+	],
+	"protocol_handlers": [
+	],
+	"widgets": [
+	]
+  }

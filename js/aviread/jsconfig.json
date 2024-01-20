@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"module": "es6",
+		"target": "es6",
+		"checkJs": true,
+		"baseUrl": ".",
+		"paths": {
+			"/js/@sswroom/sswr/*":["../sswr/*"]
+		}
+	},
+	"include": [
+		"../sswr/*"
+//		"../../../VCClass/Release/SMonitorSvr/node_modules/**/*"
+	]
+}

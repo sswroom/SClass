@@ -170,6 +170,7 @@ console:
 @ELFFuncTest
 @KMLParserTest
 @ArgsTest
+@AVIReadWeb
 @GPIOSigGen
 @HelloWorld
 @HQMPCmd
@@ -616,6 +617,9 @@ ArgsTest:
 AVIRead:
 @AVIRMain.o
 @GUIStartup.o
+AVIReadWeb:
+@AVIReadWebMain.o
+@ConsoleStartup.o
 DiscDB:
 @DiscDBMain.o
 @GUIStartup.o
@@ -1083,6 +1087,7 @@ OpenCVFaceDetectMain.o: ../../main/OpenCV/OpenCVFaceDetectMain.cpp
 ELFFuncTest.o: ../../main/Parser/ELFFuncTest.cpp
 KMLParserTest.o: ../../main/Parser/KMLParserTest.cpp
 ArgsTestMain.o: ../../main/SSWR/ArgsTestMain.cpp
+AVIReadWebMain.o: ../../main/SSWR/AVIReadWebMain.cpp
 AVIRMain.o: ../../main/SSWR/AVIRMain.cpp
 BenchmarkMain.o: ../../main/SSWR/BenchmarkMain.cpp
 BenchmarkCliMain.o: ../../main/SSWR/BenchmarkCliMain.cpp

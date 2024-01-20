@@ -1071,7 +1071,7 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pa
 	UTF8Char *sptr;
 	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen - 1);
 	}
 	else
 	{

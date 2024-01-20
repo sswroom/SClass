@@ -190,13 +190,13 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 	else
 	{
 		sbuff = MemAlloc(UTF8Char, i);
-		MemCopyNO(sbuff, &relativePath.v[1], sizeof(UTF8Char) * i);
+		MemCopyNO(sbuff, &relativePath.v[1], sizeof(UTF8Char) * (i - 1));
 		sbuff[i] = 0;
 
-		if (!subHdlr.Set(this->hdlrs.GetC({sbuff, i})))
+		if (!subHdlr.Set(this->hdlrs.GetC({sbuff, i - 1})))
 		{
 			NEW_CLASSNN(subHdlr, Net::WebServer::WebStandardHandler());
-			this->hdlrs.PutC({sbuff, i}, subHdlr.Ptr());
+			this->hdlrs.PutC({sbuff, i - 1}, subHdlr.Ptr());
 			this->relHdlrs.Add(subHdlr);
 		}
 		MemFree(sbuff);
