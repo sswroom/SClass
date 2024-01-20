@@ -1,7 +1,7 @@
-import * as math from "./sswr/math.js";
-import * as map from "./sswr/map.js";
-import * as web from "./sswr/web.js";
-import { Timestamp } from "./sswr/data.js";
+import * as math from "../sswr/math.js";
+import * as map from "../sswr/map.js";
+import * as web from "../sswr/web.js";
+import { Timestamp } from "../sswr/data.js";
 
 function burialSiteReceived(result)
 {

@@ -7,9 +7,5 @@
 		"paths": {
 			"/js/@sswroom/sswr/*":["../sswr/*"]
 		}
-	},
-	"include": [
-		"../sswr/*"
-//		"../../../VCClass/Release/SMonitorSvr/node_modules/**/*"
-	]
+	}
 }
