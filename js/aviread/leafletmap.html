@@ -4,14 +4,14 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>AVIRead</title>
+		<title>AVIRead - Leaflet Map</title>
 		<link rel="manifest" href="manifest.json" />
+		<link rel="stylesheet" href="/js/leaflet/dist/leaflet.css"/>
 		<meta name="theme-color" content="#181c25" />
-		<script type="module" src="mod/index.js"></script>
+		<script src="/js/leaflet/dist/leaflet.js"></script>		
+		<script type="module" src="mod/mapctrl.js"></script>
 	</head>
-	<body>
-		<a href="unitconv.html">Unit Conversion</a><br/>
-		<a href="leafletmap.html">Leaflet Map</a><br/>
-		<a href="cesiummap.html">Cesium Map</a><br/>
+	<body style="margin: 0px;">
+		<div id="map" style="width: 100%; height: 100vh"></div>
 	</body>
 </html>

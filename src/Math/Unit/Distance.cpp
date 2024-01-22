@@ -81,9 +81,9 @@ Text::CStringNN Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
 	case DU_YARD:
 		return CSTR("yd");
 	case DU_MILE:
-		return CSTR("milw");
+		return CSTR("mile");
 	case DU_NAUTICAL_MILE:
-		return CSTR("nm");
+		return CSTR("NM");
 	case DU_AU:
 		return CSTR("AU");
 	case DU_LIGHTSECOND:

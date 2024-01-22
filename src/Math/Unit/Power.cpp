@@ -8,9 +8,9 @@ Double Math::Unit::Power::GetUnitRatio(PowerUnit unit)
 	{
 	case PU_WATT:
 		return 1.0;
-	case PU_MILLIVOLT:
+	case PU_MILLIWATT:
 		return 0.001;
-	case PU_KILOVOLT:
+	case PU_KILOWATT:
 		return 1000.0;
 	}
 	return 1;
@@ -22,9 +22,9 @@ Text::CString Math::Unit::Power::GetUnitShortName(PowerUnit unit)
 	{
 	case PU_WATT:
 		return CSTR("W");
-	case PU_MILLIVOLT:
+	case PU_MILLIWATT:
 		return CSTR("mW");
-	case PU_KILOVOLT:
+	case PU_KILOWATT:
 		return CSTR("kW");
 	}
 	return CSTR("");
@@ -36,9 +36,9 @@ Text::CString Math::Unit::Power::GetUnitName(PowerUnit unit)
 	{
 	case PU_WATT:
 		return CSTR("Watt");
-	case PU_MILLIVOLT:
+	case PU_MILLIWATT:
 		return CSTR("Milliwatt");
-	case PU_KILOVOLT:
+	case PU_KILOWATT:
 		return CSTR("Kilowatt");
 	}
 	return CSTR("");

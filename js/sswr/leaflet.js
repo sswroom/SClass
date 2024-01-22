@@ -3,6 +3,7 @@ import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
 import * as math from "./math.js";
 import * as map from "./map.js";
+import * as osm from "./osm.js";
 import * as web from "./web.js";
 
 export function fromLatLon(latLon)
@@ -119,6 +120,36 @@ export function toKMLFeature(layer, doc)
 		{
 			feature.setDescription(layer._popup._content);
 		}
+		if (layer.options && layer.options.icon)
+		{
+			var opt = layer.options.icon.options;
+			if (opt)
+			{
+				var imgW = layer._icon.naturalWidth || layer._icon.offsetWidth;
+				var iconStyle = new kml.IconStyle();
+				if (opt.iconSize)
+				{
+					iconStyle.setScale(opt.iconSize[0] / imgW);
+					if (opt.iconAnchor)
+					{
+						iconStyle.setHotSpotX(opt.iconAnchor[0] / opt.iconSize[0]);
+						iconStyle.setHotSpotY(1 - (opt.iconAnchor[1] / opt.iconSize[1]));
+					}
+				}
+				if (opt.iconUrl)
+				{
+					if (opt.iconUrl == "marker-icon.png")
+					{
+						iconStyle.setIconUrl(web.appendUrl("../../leaflet/dist/images/marker-icon.png", import.meta.url));
+					}
+					else
+					{
+						iconStyle.setIconUrl(web.appendUrl(opt.iconUrl, document.location.href));
+					}
+				}
+				feature.setStyle(doc.getOrNewStyle(iconStyle, null, null, null, null, null));
+			}
+		}
 		return feature;
 	}
 	else if (layer instanceof L.Polyline)
@@ -158,4 +189,71 @@ export function toKMLString(layer)
 		return kml.toString(feature);
 	}
 	return null;
+}
+
+export class LeafletMap extends map.MapControl
+{
+	constructor(divId)
+	{
+		super();
+		this.mapObj = L.map(divId);
+	}
+
+	createLayer(layer, options)
+	{
+		return createLayer(layer, options);
+	}
+
+//	createMarkerLayer(name: string, options?: LayerOptions): any;
+//	createGeometryLayer(name: string, options?: LayerOptions): any;
+
+	addLayer(layer)
+	{
+		layer.addTo(this.mapObj);
+	}
+
+//	uninit(): void;
+	zoomIn()
+	{
+		this.mapObj.zoomIn();
+	}
+
+	zoomOut()
+	{
+		this.mapObj.zoomOut();
+	}
+
+	zoomScale(scale)
+	{
+		this.mapObj.setZoom(osm.scale2Level(scale));
+	}
+
+	panTo(pos)
+	{
+		this.mapObj.setView(L.latLng(pos.y, pos.x));
+	}
+
+	panZoomScale(pos, scale)
+	{
+		this.mapObj.setView(L.latLng(pos.y, pos.x), osm.scale2Level(scale));
+	}
+
+	//zoomToExtent(extent: math.RectArea): void;
+
+/*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
+	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
+	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;
+	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
+	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
+
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
+	layerAddMarker(markerLayer: any, marker: any): void;
+	layerRemoveMarker(markerLayer: any, marker: any): void;
+	layerClearMarkers(markerLayer: any): void;
+	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
+
+	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
+	layerAddGeometry(geometryLayer: any, geom: any): void;
+	layerRemoveGeometry(geometryLayer: any, geom: any): void;
+	layerClearGeometries(geometryLayer: any): void;*/
 }

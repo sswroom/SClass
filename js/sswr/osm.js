@@ -104,3 +104,8 @@ export function removeTileUrls(urls, osmUrl, minLev, maxLev, areaList)
 		urls.push(i);
 	}
 }
+
+export function scale2Level(scale)
+{
+	return Math.round(Math.log10(204094080000.0 / scale / 256) / Math.log10(2));
+}

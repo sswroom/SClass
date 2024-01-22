@@ -14,9 +14,11 @@ namespace Math
 				EU_JOULE,
 				EU_WATTHOUR,
 				EU_KILOWATTHOUR,
+				EU_CALORIE,
+				EU_KILOCALORIE,
 
 				EU_FIRST = EU_JOULE,
-				EU_LAST = EU_KILOWATTHOUR
+				EU_LAST = EU_KILOCALORIE
 			} EnergyUnit;
 		public:
 			static Double GetUnitRatio(EnergyUnit unit);

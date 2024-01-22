@@ -1,3 +1,27 @@
+1.5.0
+-Change unit.AngleUnit and unit.DistanceUnit to unit.Angle.Unit and unit.Distance.Unit
+-Added unit.Acceleration
+-Added unit.ApparentPower
+-Added unit.Count
+-Added unit.ElectricCurrent
+-Added unit.ElectricPotential
+-Added unit.Energy
+-Added unit.Force
+-Added unit.Frequency
+-Added unit.MagneticField
+-Added unit.Mass
+-Added unit.Power
+-Added unit.Pressure
+-Added unit.Ratio
+-Added unit.ReactiveEnergy
+-Added unit.ReactivePower
+-Added unit.Speed
+-Added unit.Temperature
+-Added osm.scale2Level
+-Adding leaflet.LeafletMap
+-Adding cesium.CesiumMap
+-Added web.appendUrl
+
 1.4.1
 -Fixed problems in Chrome
 

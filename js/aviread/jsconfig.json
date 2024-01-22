@@ -2,10 +2,11 @@
 	"compilerOptions": {
 		"module": "es6",
 		"target": "es6",
-		"checkJs": true,
 		"baseUrl": ".",
 		"paths": {
-			"/js/@sswroom/sswr/*":["../sswr/*"]
+			"/js/@sswroom/sswr/*":["../sswr/*"],
+			"/js/leaflet/*":["../../../VCClass/Release/SMonitorSvr/node_modules/leaflet/*"],
+			"/js/cesium/Build/Cesium/*":["../../../VCClass/Release/SMonitorSvr/node_modules/cesium/Build/Cesium/*"]
 		}
 	}
 }

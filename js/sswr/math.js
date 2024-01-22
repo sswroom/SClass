@@ -250,9 +250,9 @@ export class EarthEllipsoid
 		var d = Math.acos(cLat1 * Math.cos(rLon1) * cLat2 * Math.cos(rLon2) + cLat1 * Math.sin(rLon1) * cLat2 * Math.sin(rLon2) + Math.sin(rLat1) * Math.sin(rLat2)) * r;
 		if (d > 0 || d < 0)
 		{
-			if (distUnit != null && distUnit != unit.DistanceUnit.METER)
+			if (distUnit != null && distUnit != unit.Distance.Unit.METER)
 			{
-				d = unit.Distance.convert(unit.DistanceUnit.METER, distUnit, d);
+				d = unit.Distance.convert(unit.Distance.Unit.METER, distUnit, d);
 			}
 		}
 		else if (d != 0)
@@ -740,9 +740,9 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 		diffX = diffX * diffX;
 		diffY = diffY * diffY;
 		var d = Math.sqrt(diffX + diffY);
-		if (distUnit != unit.DistanceUnit.METER)
+		if (distUnit != unit.Distance.Unit.METER)
 		{
-			d = unit.Distance.convert(unit.DistanceUnit.METER, distUnit, d);
+			d = unit.Distance.convert(unit.Distance.Unit.METER, distUnit, d);
 		}
 		return d;
 	}

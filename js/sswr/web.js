@@ -503,6 +503,48 @@ export function handleFileDrop(ele, hdlr)
 	});
 }
 
+export function appendUrl(targetUrl, docUrl)
+{
+	if (targetUrl.indexOf(":") >= 0)
+		return targetUrl;
+	var i = docUrl.indexOf("://");
+	if (i < 0)
+		return targetUrl;
+	var j = docUrl.indexOf("/", i + 3);
+	if (j < 0)
+	{
+		j = docUrl.length;
+	}
+
+	if (targetUrl.startsWith("/"))
+	{
+		return docUrl.substring(0, j) + targetUrl;
+	}
+	i = docUrl.lastIndexOf("/");
+	while (true)
+	{
+		if (targetUrl.startsWith("./"))
+		{
+			targetUrl = targetUrl.substring(2);
+		}
+		else if (targetUrl.startsWith("../"))
+		{
+			targetUrl = targetUrl.substring(3);
+			if (i > j)
+			{
+				docUrl = docUrl.substring(0, i);
+				i = docUrl.lastIndexOf("/");
+			}
+		}
+		else
+		{
+			if (i >= j)
+				docUrl = docUrl.substring(0, i);
+			return docUrl + "/" + targetUrl;
+		}
+	}
+}
+
 export class Dialog
 {
 	constructor(content, options)

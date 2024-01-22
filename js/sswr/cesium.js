@@ -1,3 +1,4 @@
+import * as map from "./map.js";
 import { Coord2D } from "./math.js";
 import { Polygon } from "./geometry.js";
 
@@ -176,3 +177,88 @@ export function fromPolygonGraphics(viewer, pg)
 	var pg = new Cesium.PolygonGraphics(o);
 	return pg;
 }*/
+
+export class CesiumMap extends map.MapControl
+{
+	constructor(divId)
+	{
+		super();
+		this.viewer = new Cesium.Viewer(divId, {
+			timeline:false,
+			animation:false,
+			scene3DOnly:true,
+			baseLayerPicker: false,
+//			baseLayer: new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider({
+//				url: "https://tile.openstreetmap.org/"
+//			  }))}
+		});
+	};
+
+	createLayer(layer, options)
+	{
+		if (layer.type == map.WebMapType.OSMTile)
+		{
+			var opt = {};
+			if (options && options.maxZoom)
+			{
+				opt.maximumLevel = options.maxZoom;
+			}
+			return new Cesium.ImageryLayer(new Cesium.UrlTemplateImageryProvider({
+				url: layer.url}, opt));
+		}
+	}
+
+	/*createMarkerLayer(name: string, options?: LayerOptions): any;
+	createGeometryLayer(name: string, options?: LayerOptions): any;*/
+	addLayer(layer)
+	{
+		if (layer instanceof Cesium.ImageryLayer)
+		{
+			this.viewer.imageryLayers.add(layer);
+		}
+	}
+
+//	uninit(): void;
+	zoomIn()
+	{
+
+	}
+
+	zoomOut()
+	{
+
+	}
+
+	zoomScale(scale)
+	{
+
+	}
+
+	panTo(pos)
+	{
+
+	}
+
+	panZoomScale(pos, scale)
+	{
+		var boundingSphere = new Cesium.BoundingSphere(Cesium.Cartesian3.fromDegrees(pos.x, pos.y, 0), scale);
+		this.viewer.camera.flyToBoundingSphere(boundingSphere);
+	}
+/*	zoomToExtent(extent: math.RectArea): void;
+	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
+	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
+	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;
+	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
+	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
+
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
+	layerAddMarker(markerLayer: any, marker: any): void;
+	layerRemoveMarker(markerLayer: any, marker: any): void;
+	layerClearMarkers(markerLayer: any): void;
+	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
+
+	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
+	layerAddGeometry(geometryLayer: any, geom: any): void;
+	layerRemoveGeometry(geometryLayer: any, geom: any): void;
+	layerClearGeometries(geometryLayer: any): void;*/
+}

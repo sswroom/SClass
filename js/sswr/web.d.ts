@@ -13,6 +13,7 @@ export function buildTable(o: object | object[]): string;
 export function openData(data: string, contentType: string, fileName?: string): void;
 export function parseCSSColor(c: string): Color;
 export function handleFileDrop(ele: HTMLElement, hdlr: (file: any)=>void): void;
+export function appendUrl(targetUrl: string, docUrl: string): string;
 
 declare class DialogButton
 {

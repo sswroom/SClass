@@ -12,11 +12,11 @@ namespace Math
 			typedef enum
 			{
 				PU_WATT,
-				PU_MILLIVOLT,
-				PU_KILOVOLT,
+				PU_MILLIWATT,
+				PU_KILOWATT,
 
 				PU_FIRST = PU_WATT,
-				PU_LAST = PU_KILOVOLT
+				PU_LAST = PU_KILOWATT
 			} PowerUnit;
 		public:
 			static Double GetUnitRatio(PowerUnit unit);

@@ -11,7 +11,7 @@ Double Math::Unit::Temperature::GetUnitRatio(TemperatureUnit unit)
 	case TU_KELVIN:
 		return 1.0;
 	case TU_FAHRENHEIT:
-		return 1.8;
+		return 5.0/9.0;
 	}
 	return 1;
 }
@@ -21,11 +21,11 @@ Double Math::Unit::Temperature::GetUnitScale(TemperatureUnit unit)
 	switch (unit)
 	{
 	case TU_CELSIUS:
-		return 273.15;
+		return -273.15;
 	case TU_KELVIN:
 		return 0.0;
 	case TU_FAHRENHEIT:
-		return 459.67;
+		return -459.67;
 	}
 	return 1;
 }

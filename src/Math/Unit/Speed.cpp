@@ -42,13 +42,13 @@ Text::CString Math::Unit::Speed::GetUnitName(SpeedUnit unit)
 	switch (unit)
 	{
 	case SU_METER_PER_SECOND:
-		return CSTR("meter per second");
+		return CSTR("Meter per second");
 	case SU_KM_PER_HOUR:
-		return CSTR("kilometer per hour");
+		return CSTR("Kilometer per hour");
 	case SU_MILE_PER_HOUR:
-		return CSTR("mile per hour");
+		return CSTR("Mile per hour");
 	case SU_KNOT:
-		return CSTR("knot");
+		return CSTR("Knot");
 	}
 	return CSTR("");
 }

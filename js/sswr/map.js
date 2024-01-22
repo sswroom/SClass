@@ -1,7 +1,7 @@
 import * as geometry from "./geometry.js";
 import * as math from "./math.js";
 import * as web from "./web.js";
-import { DistanceUnit } from "./unit.js";
+import * as unit from "./unit.js";
 
 export const DataFormat = {
 	Cesium: "cesium",
@@ -35,7 +35,7 @@ export function calcDistance(srid, geom, x, y)
 {
 	var pt = geom.calBoundaryPoint(new math.Coord2D(x, y));
 	var csys = math.CoordinateSystemManager.srCreateCsys(srid);
-	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, DistanceUnit.METER);
+	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, unit.Distance.Unit.METER);
 }
 
 export function getLayers(svcUrl, onResultFunc)
@@ -134,7 +134,7 @@ export class GeolocationFilter
 		}
 		if (this.minDistMeter)
 		{
-			if (this.csys.calcSurfaceDistance(pos.coords.longitude, pos.coords.latitude, this.lastPos.longitude, this.lastPos.latitude, DistanceUnit.METER) < this.minDistMeter)
+			if (this.csys.calcSurfaceDistance(pos.coords.longitude, pos.coords.latitude, this.lastPos.longitude, this.lastPos.latitude, unit.Distance.Unit.METER) < this.minDistMeter)
 				return false;
 		}
 
