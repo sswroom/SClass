@@ -32,8 +32,16 @@ export enum ItemIconMode
 	Fetching2
 };
 
+export enum HotSpotUnit
+{
+	Fraction,
+	Pixels,
+	InsetPixels
+};
+
 export class Element
 {
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
 
@@ -67,6 +75,7 @@ export class LookAt extends Element
 	setTilt(tilt: number): void;
 	setAltitudeMode(altitudeMode: AltitudeMode): void;
 
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 };
 
@@ -79,6 +88,7 @@ export class ColorStyle extends Element
 	setRandomColor(randomColor: boolean): void;
 	fromARGB(a: number, r: number, g: number, b: number): void;
 	fromCSSColor(color: string): void;
+	setColor(color: string): void;
 
 	sameColor(c: ColorStyle): boolean;
 	appendInnerXML(strs: string[], level: number): void;
@@ -91,21 +101,26 @@ export class IconStyle extends ColorStyle
 	iconUrl: string;
 	hotSpotX: number;
 	hotSpotY: number;
+	hotSpotUnitX: HotSpotUnit;
+	hotSpotUnitY: HotSpotUnit;
 
 	constructor();
-	setScale(scale: number);
-	setHeading(heading: number);
-	setIconUrl(iconUrl: string);
-	setHotSpotX(hotSpotX: number);
-	setHotSpotY(hotSpotY: number);
+	setScale(scale: number): void;
+	setHeading(heading: number): void;
+	setIconUrl(iconUrl: string): void;
+	setHotSpotX(hotSpotX: number, hsUnit?: HotSpotUnit): void;
+	setHotSpotY(hotSpotY: number, hsUnit?: HotSpotUnit): void;
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: IconStyle): boolean;
 };
 
 export class LabelStyle extends ColorStyle
 {
-	
+	scale: number;	
 	constructor();
+	setScale(scale: number): void;
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: LabelStyle): boolean;
 };
@@ -113,8 +128,11 @@ export class LabelStyle extends ColorStyle
 export class LineStyle extends ColorStyle
 {
 	width: number;
+	labelVisibility: boolean;
 	constructor();
-	setWidth(width: number);
+	setWidth(width: number): void;
+	setLabelVisibility(labelVisibility: boolean): void;
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: LineStyle): boolean;
 };
@@ -123,6 +141,7 @@ export class PolyStyle extends ColorStyle
 {
 
 	constructor();
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: PolyStyle): boolean;
 };
@@ -135,6 +154,7 @@ export class BalloonStyle extends Element
 	displayMode: DisplayMode;
 
 	constructor();
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: BalloonStyle): boolean;
 };
@@ -145,13 +165,18 @@ export class ListStyle extends Element
 	bgColor: string;
 
 	constructor();
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: ListStyle): boolean;
 };
 
-export class Style extends Element
+export class StyleSelector extends Element
 {
 	id: string;
+	constructor(id: string);
+}
+export class Style extends StyleSelector
+{
 	iconStyle: IconStyle;
 	labelStyle: LabelStyle;
 	lineStyle: LineStyle;
@@ -167,8 +192,19 @@ export class Style extends Element
 	setBalloonStyle(style: BalloonStyle): void;
 	setListStyle(style: ListStyle): void;
 	isStyle(iconStyle: IconStyle, labelStyle: LabelStyle, lineStyle: LineStyle, polyStyle: PolyStyle, balloonStyle: BalloonStyle, listStyle: ListStyle): boolean;
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 };
+
+export class StyleMap extends StyleSelector
+{
+	normalStyle: Style;
+	highlightStyle: Style;
+
+	constructor(id: string, normalStyle: Style, highlightStyle: Style);
+	getUsedNS(ns: object): void;
+	appendOuterXML(strs: string[], level: number): void;
+}
 
 export class Feature extends Element
 {
@@ -183,7 +219,7 @@ export class Feature extends Element
 	snippet: string;
 	description: string;
 	lookAt: LookAt;
-	style: Style;
+	style: StyleSelector;
 
 	constructor();
 	setName(name: string): void;
@@ -196,7 +232,7 @@ export class Feature extends Element
 	setSnippet(snippet: string): void;
 	setDescription(description: string): void;
 	setLookAt(lookAt: LookAt): void;
-	setStyle(style: Style): void;
+	setStyle(style: StyleSelector): void;
 
 	appendInnerXML(strs: string[], level: number): void;
 }
@@ -205,30 +241,34 @@ export class Container extends Feature
 {
 	eleName: string;
 	features: Feature[];
+	styleList: Style[];
+	styleMapList: StyleMap[];
 
 	constructor(eleName: string);
 	addFeature(feature: Feature): void;
+	addStyle(style: Style): void;
+	addStyleMap(styleMap: StyleMap): void;
+	getOrNewStyle(iconStyle: IconStyle, labelStyle: LabelStyle, lineStyle: LineStyle, polyStyle: PolyStyle, balloonStyle: BalloonStyle, listStyle: ListStyle): Style;
+	getStyleById(id: string): Style | StyleMap | null;
+	getUsedNS(ns: object): void;
+	appendOuterXML(strs: string[], level: number): void;
 }
 
 export class Document extends Container
 {
-	styleList: Style[];
-
 	constructor();
-	getOrNewStyle(iconStyle: IconStyle, labelStyle: LabelStyle, lineStyle: LineStyle, polyStyle: PolyStyle, balloonStyle: BalloonStyle, listStyle: ListStyle): Style;
-	appendOuterXML(strs: string[], level: number): void;
 }
 
 export class Folder extends Container
 {
 	constructor();
-	appendOuterXML(strs: string[], level: number): void;
 }
 
 export class NetworkLink extends Feature
 {
 	constructor();
 
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
 
@@ -238,6 +278,7 @@ export class Placemark extends Feature
 	constructor(vec: geometry.Vector2D);
 
 	appendGeometry(strs: string[], level: number, vec: geometry.Vector2D, subGeom?: boolean): void;
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
 
@@ -245,6 +286,7 @@ export class GroundOverlay extends Feature
 {
 	constructor();
 
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
 
@@ -252,6 +294,7 @@ export class PhotoOverlay extends Feature
 {
 	constructor();
 
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
 
@@ -259,6 +302,7 @@ export class ScreenOverlay extends Feature
 {
 	constructor();
 
+	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
 

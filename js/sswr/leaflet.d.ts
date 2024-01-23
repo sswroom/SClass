@@ -1,12 +1,26 @@
 import * as L from "./node_modules/leaflet/src/Leaflet";
+import * as geometry from "./geometry";
 import * as kml from "./kml";
 import { Coord2D, RectArea } from "./math";
 import * as map from "./map";
+
+declare class GeometryOptions
+{
+	name: string;
+	icon: object;
+}
+
+declare class KMLFeatureOptions
+{
+	noPopup: boolean;
+}
 
 export function fromLatLon(latLon: L.LatLng): Coord2D;
 export function fromLatLng(latLng: L.LatLng): Coord2D;
 export function fromLatLngBounds(b: L.LatLngBounds): RectArea;
 export function createLayer(layer: map.LayerInfo, options: object): L.Layer;
+export function createFromKMLFeature(feature: kml.Feature, options: KMLFeatureOptions): L.Layer;
+export function createFromGeometry(geom: geometry.Vector2D, options: GeometryOptions): L.Layer;
 export function createKMLLookAt(map: L.Map): kml.LookAt;
 export function toKMLFeature(layer: L.Layer, doc?: kml.Document): kml.Feature | null;
 export function toKMLString(layer: L.Layer): string | null;
@@ -17,7 +31,8 @@ export class LeafletMap extends map.MapControl
 	createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
 	createMarkerLayer(name: string, options?: LayerOptions): any;
 	createGeometryLayer(name: string, options?: LayerOptions): any;
-	addLayer(layer: any);
+	addLayer(layer: any): void;
+	addKMLFeature(feature: kml.Feature): void;
 	uninit(): void;
 	zoomIn(): void;
 	zoomOut(): void;

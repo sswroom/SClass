@@ -21,7 +21,8 @@ export class Olayer2Map extends map.MapControl
 	createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
 	createMarkerLayer(name: string, options?: LayerOptions): any;
 	createGeometryLayer(name: string, options?: LayerOptions): any;
-	addLayer(layer: any);
+	addLayer(layer: any): void;
+	addKMLFeature(feature: kml.Feature): void;
 	uninit(): void;
 	zoomIn(): void;
 	zoomOut(): void;

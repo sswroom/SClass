@@ -29,6 +29,12 @@ export const ItemIconMode = {
 	Fetching2: "fetching2"
 };
 
+export const HotSpotUnit = {
+	Fraction: "fraction",
+	Pixels: "pixels",
+	InsetPixels: "insetPixels"
+}
+
 export class Element
 {
 }
@@ -60,6 +66,10 @@ export class LookAt extends Element
 	setAltitudeMode(altitudeMode)
 	{
 		this.altitudeMode = altitudeMode;
+	}
+
+	getUsedNS(ns)
+	{
 	}
 
 	appendOuterXML(strs, level)
@@ -117,6 +127,14 @@ export class ColorStyle extends Element
 		this.fromARGB(c.a, c.r, c.g, c.b);
 	}
 
+	setColor(color)
+	{
+		if (typeof color == "string" && color.length == 8)
+		{
+			this.color = color;
+		}
+	}
+
 	sameColor(c)
 	{
 		if (this.randomColor != c.randomColor)
@@ -157,21 +175,27 @@ export class IconStyle extends ColorStyle
 		this.iconUrl = iconUrl;
 	}
 
-	setHotSpotX(hotSpotX)
+	setHotSpotX(hotSpotX, hsUnit)
 	{
 		this.hotSpotX = hotSpotX;
+		this.hotSpotUnitX = hsUnit || HotSpotUnit.Fraction;
 	}
 
-	setHotSpotY(hotSpotY)
+	setHotSpotY(hotSpotY, hsUnit)
 	{
 		this.hotSpotY = hotSpotY;
+		this.hotSpotUnitY = hsUnit || HotSpotUnit.Fraction;
+	}
+
+	getUsedNS(ns)
+	{
 	}
 
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<IconStyle>");
 		this.appendInnerXML(strs, level + 1);
-		if (this.scale)
+		if (this.scale != null)
 			strs.push("\t".repeat(level + 1)+"<scale>"+this.scale+"</scale>");
 		if (this.heading != null)
 			strs.push("\t".repeat(level + 1)+"<heading>"+this.heading+"</heading>");
@@ -182,7 +206,7 @@ export class IconStyle extends ColorStyle
 			strs.push("\t".repeat(level + 1)+"</Icon>");
 		}
 		if (this.hotSpotX != null && this.hotSpotY != null)
-			strs.push("\t".repeat(level + 1)+"<hotSpot x="+text.toAttrText(""+this.hotSpotX)+" y="+text.toAttrText(""+this.hotSpotY)+" xunits=\"fraction\" yunits=\"fraction\"/>");
+			strs.push("\t".repeat(level + 1)+"<hotSpot x="+text.toAttrText(""+this.hotSpotX)+" y="+text.toAttrText(""+this.hotSpotY)+" xunits=\""+this.hotSpotUnitX+"\" yunits=\""+this.hotSpotUnitY+"\"/>");
 		strs.push("\t".repeat(level)+"</IconStyle>");
 	}
 
@@ -202,6 +226,10 @@ export class IconStyle extends ColorStyle
 			return false;
 		if (this.hotSpotY != o.hotSpotY)
 			return false;
+		if (this.hotSpotUnitX != o.hotSpotUnitX)
+			return false;
+		if (this.hotSpotUnitY != o.hotSpotUnitY)
+			return false;
 		return true;
 	}
 }
@@ -213,10 +241,21 @@ export class LabelStyle extends ColorStyle
 		super();
 	}
 
+	setScale(scale)
+	{
+		this.scale = scale;
+	}
+
+	getUsedNS(ns)
+	{
+	}
+
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<LabelStyle>");
 		this.appendInnerXML(strs, level + 1);
+		if (this.scale != null)
+			strs.push("\t".repeat(level + 1)+"<scale>"+this.scale+"</scale>");
 		strs.push("\t".repeat(level)+"</LabelStyle>");
 	}
 
@@ -225,6 +264,8 @@ export class LabelStyle extends ColorStyle
 		if (!o instanceof LabelStyle)
 			return false;
 		if (!this.sameColor(o))
+			return false;
+		if (this.scale != o.scale)
 			return false;
 		return true;
 	}
@@ -242,12 +283,25 @@ export class LineStyle extends ColorStyle
 		this.width = width;
 	}
 
+	setLabelVisibility(labelVisibility)
+	{
+		this.labelVisibility = labelVisibility;
+	}
+
+	getUsedNS(ns)
+	{
+		if (this.labelVisibility != null)
+			ns.gx = "http://www.google.com/kml/ext/2.2";
+	}
+
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<LineStyle>");
 		this.appendInnerXML(strs, level + 1);
 		if (this.width)
 			strs.push("\t".repeat(level + 1)+"<width>"+this.width+"</width>");
+		if (this.labelVisibility != null)
+			strs.push("\t".repeat(level + 1)+"<gx:labelVisibility>"+(this.labelVisibility?"1":"0")+"</gx:labelVisibility>");
 		strs.push("\t".repeat(level)+"</LineStyle>");
 	}
 
@@ -261,13 +315,17 @@ export class LineStyle extends ColorStyle
 			return false;
 		return true;
 	}
-};
+}
 
 export class PolyStyle extends ColorStyle
 {
 	constructor()
 	{
 		super();
+	}
+
+	getUsedNS(ns)
+	{
 	}
 
 	appendOuterXML(strs, level)
@@ -292,6 +350,10 @@ export class BalloonStyle extends Element
 	constructor()
 	{
 		super();
+	}
+
+	getUsedNS(ns)
+	{
 	}
 
 	appendOuterXML(strs, level)
@@ -332,6 +394,10 @@ export class ListStyle extends Element
 		super();
 	}
 
+	getUsedNS(ns)
+	{
+	}
+
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<ListStyle>");
@@ -355,12 +421,20 @@ export class ListStyle extends Element
 	}
 };
 
-export class Style extends Element
+export class StyleSelector extends Element
 {
 	constructor(id)
 	{
 		super();
 		this.id = id;
+	}
+}
+
+export class Style extends StyleSelector
+{
+	constructor(id)
+	{
+		super(id);
 	}
 
 	setIconStyle(style)
@@ -494,6 +568,16 @@ export class Style extends Element
 		return true;
 	}
 
+	getUsedNS(ns)
+	{
+		if (this.iconStyle) this.iconStyle.getUsedNS(ns);
+		if (this.labelStyle) this.labelStyle.getUsedNS(ns);
+		if (this.lineStyle) this.lineStyle.getUsedNS(ns);
+		if (this.polyStyle) this.polyStyle.getUsedNS(ns);
+		if (this.balloonStyle) this.balloonStyle.getUsedNS(ns);
+		if (this.listStyle) this.listStyle.getUsedNS(ns);
+	}
+
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<Style id="+text.toAttrText(this.id)+">");
@@ -506,6 +590,34 @@ export class Style extends Element
 		strs.push("\t".repeat(level)+"</Style>");
 	}
 };
+
+export class StyleMap extends StyleSelector
+{
+	constructor(id, normalStyle, highlightStyle)
+	{
+		super(id);
+		this.normalStyle = normalStyle;
+		this.highlightStyle = highlightStyle;
+	}
+
+	getUsedNS(ns)
+	{
+	}
+
+	appendOuterXML(strs, level)
+	{
+		strs.push("\t".repeat(level)+"<StyleMap id="+text.toAttrText(this.id)+">");
+		strs.push("\t".repeat(level + 1)+"<Pair>");
+		strs.push("\t".repeat(level + 2)+"<key>normal</key>");
+		strs.push("\t".repeat(level + 2)+"<styleUrl>#"+text.toXMLText(this.normalStyle.id)+"</styleUrl>");
+		strs.push("\t".repeat(level + 1)+"</Pair>");
+		strs.push("\t".repeat(level + 1)+"<Pair>");
+		strs.push("\t".repeat(level + 2)+"<key>highlight</key>");
+		strs.push("\t".repeat(level + 2)+"<styleUrl>#"+text.toXMLText(this.highlightStyle.id)+"</styleUrl>");
+		strs.push("\t".repeat(level + 1)+"</Pair>");
+		strs.push("\t".repeat(level)+"</Style>");
+	}
+}
 
 export class Feature extends Element
 {
@@ -604,24 +716,32 @@ export class Container extends Feature
 		super();
 		this.eleName = eleName;
 		this.features = [];
+		this.styleList = null;
 	}
 
 	addFeature(feature)
 	{
 		this.features.push(feature);
 	}
-}
 
-export class Document extends Container
-{
-	constructor()
+	addStyle(style)
 	{
-		super("Document");
-		this.styleList = [];
+		if (this.styleList == null)
+			this.styleList = [];
+		this.styleList.push(style);
+	}
+
+	addStyleMap(styleMap)
+	{
+		if (this.styleMapList == null)
+			this.styleMapList = [];
+		this.styleMapList.push(styleMap);
 	}
 
 	getOrNewStyle(iconStyle, labelStyle, lineStyle, polyStyle, balloonStyle, listStyle)
 	{
+		if (this.styleList == null)
+			this.styleList = [];
 		var i;
 		for (i in this.styleList)
 		{
@@ -639,14 +759,58 @@ export class Document extends Container
 		return style;
 	}
 
+	getStyleById(id)
+	{
+		var i;
+		if (this.styleList)
+		{
+			for (i in this.styleList)
+			{
+				if (this.styleList[i].id == id)
+					return this.styleList[i];
+			}
+		}
+		if (this.styleMapList)
+		{
+			for (i in this.styleMapList)
+			{
+				if (this.styleMapList[i].id == id)
+					return this.styleMapList[i];
+			}
+		}
+		return null;
+	}
+
+	getUsedNS(ns)
+	{
+		if (this.styleList)
+		{
+			var i;
+			for (i in this.styleList)
+			{
+				this.styleList[i].getUsedNS(ns);
+			}
+		}
+	}
+
 	appendOuterXML(strs, level)
 	{
 		var i;
 		strs.push("\t".repeat(level)+"<"+this.eleName+">");
 		this.appendInnerXML(strs, level + 1);
-		for (i in this.styleList)
+		if (this.styleList)
 		{
-			this.styleList[i].appendOuterXML(strs, level + 1);
+			for (i in this.styleList)
+			{
+				this.styleList[i].appendOuterXML(strs, level + 1);
+			}
+		}
+		if (this.styleMapList)
+		{
+			for (i in this.styleMapList)
+			{
+				this.styleMapList[i].appendOuterXML(strs, level + 1);
+			}
 		}
 		for (i in this.features)
 		{
@@ -656,23 +820,19 @@ export class Document extends Container
 	}
 }
 
+export class Document extends Container
+{
+	constructor()
+	{
+		super("Document");
+	}
+}
+
 export class Folder extends Container
 {
 	constructor()
 	{
 		super("Folder");
-	}
-
-	appendOuterXML(strs, level)
-	{
-		strs.push("\t".repeat(level)+"<"+this.eleName+">");
-		this.appendInnerXML(strs, level + 1);
-		var i;
-		for (i in this.features)
-		{
-			this.features[i].appendOuterXML(strs, level + 1);
-		}
-		strs.push("\t".repeat(level)+"</"+this.eleName+">");
 	}
 }
 
@@ -808,6 +968,10 @@ export class Placemark extends Feature
 		}
 	}
 
+	getUsedNS(ns)
+	{
+	}
+
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<Placemark>");
@@ -824,6 +988,8 @@ export function toString(item)
 {
 	var strs = [];
 	strs.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+	var namespaces = {};
+	item.getUsedNS(namespaces);
 	strs.push("<kml xmlns=\"http://www.opengis.net/kml/2.2\">");
 	item.appendOuterXML(strs, 1);
 	strs.push("</kml>");

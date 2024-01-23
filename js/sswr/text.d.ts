@@ -5,3 +5,4 @@ export function toXMLText(s: string): string;
 export function toAttrText(s: string): string;
 export function toHTMLText(s: string): string;
 export function bracketToHTML(s: string): string;
+export function arrayToNumbers(arr: string[]): number[];

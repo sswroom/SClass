@@ -175,3 +175,14 @@ export function bracketToHTML(s)
 	}
 	return s;
 }
+
+export function arrayToNumbers(arr)
+{
+	var ret = [];
+	var i;
+	for (i in arr)
+	{
+		ret.push(Number.parseFloat(arr[i]));
+	}
+	return ret;
+}

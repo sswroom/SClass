@@ -104,6 +104,11 @@ export class Olayer2Map extends map.MapControl
 		}
 	}
 
+	addKMLFeature(feature)
+	{
+		///////////////////////////////
+	}
+
 	uninit()
 	{
 		this.map.destroy();

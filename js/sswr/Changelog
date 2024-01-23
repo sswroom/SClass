@@ -21,6 +21,10 @@
 -Adding leaflet.LeafletMap
 -Adding cesium.CesiumMap
 -Added web.appendUrl
+-Added parser.js
+-Added text.arrayToNumbers
+-Added leaflet.createFromKMLFeature
+-Added leaflet.createGeometry
 
 1.4.1
 -Fixed problems in Chrome

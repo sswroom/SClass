@@ -221,28 +221,27 @@ export class CesiumMap extends map.MapControl
 //	uninit(): void;
 	zoomIn()
 	{
-
+		this.viewer.camera.moveForward();
 	}
 
 	zoomOut()
 	{
-
+		this.viewer.camera.moveBackward();
 	}
 
 	zoomScale(scale)
 	{
-
+		this.viewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(pos.x, pos.y, scale), duration:0});
 	}
 
 	panTo(pos)
 	{
-
+		this.viewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(pos.x, pos.y, 20000), duration:0});
 	}
 
 	panZoomScale(pos, scale)
 	{
-		var boundingSphere = new Cesium.BoundingSphere(Cesium.Cartesian3.fromDegrees(pos.x, pos.y, 0), scale);
-		this.viewer.camera.flyToBoundingSphere(boundingSphere);
+		this.viewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(pos.x, pos.y, scale), duration:0});
 	}
 /*	zoomToExtent(extent: math.RectArea): void;
 	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;

@@ -4,6 +4,7 @@ import * as kml from "./kml.js";
 import * as math from "./math.js";
 import * as map from "./map.js";
 import * as osm from "./osm.js";
+import * as text from "./text.js";
 import * as web from "./web.js";
 
 export function fromLatLon(latLon)
@@ -50,6 +51,118 @@ export function createLayer(layer, options)
 		return L.tileLayer.wms(layer.url, lyrOpts);
 	}
 	return null;
+}
+
+export function createFromKMLFeature(feature, options)
+{
+	options = data.mergeOptions(options, {noPopup: false});
+	if (feature instanceof kml.Container)
+	{
+		var i;
+		var layers = L.featureGroup();
+		for (i in feature.features)
+		{
+			createFromKMLFeature(feature.features[i], options).addTo(layers);
+		}
+		return layers;
+	}
+	else if (feature instanceof kml.Placemark)
+	{
+		var opt = {};
+		if (feature.name)
+			opt.name = feature.name;
+		if (feature.style)
+		{
+			var style = feature.style;
+			if (style instanceof kml.StyleMap)
+			{
+				style = style.normalStyle;
+			}
+			if (style instanceof kml.Style)
+			{
+				if (style.iconStyle)
+				{
+					var s = style.iconStyle;
+					if (s.leafletIcon == null)
+					{
+						var icon = {};
+						if (s.iconUrl)
+						{
+							icon.iconUrl = s.iconUrl;
+						}
+						if (s.hotSpotX && s.hotSpotY)
+						{
+							icon.iconAnchor = [s.hotSpotX, s.hotSpotY];
+						}
+						s.leafletIcon = L.icon(icon);
+					}
+					opt.icon = s.leafletIcon;
+				}
+			}
+		}
+		var layer = createFromGeometry(feature.vec, opt);
+		if (layer && !options.noPopup)
+		{
+			if (feature.name && feature.description)
+			{
+				layer.bindPopup("<b>"+text.toHTMLText(feature.name)+"</b><br/>"+feature.description);
+			}
+			else if (feature.name)
+			{
+				layer.bindPopup("<b>"+text.toHTMLText(feature.name)+"</b>");
+			}
+			else if (feature.description)
+			{
+				layer.bindPopup(feature.description);
+			}
+		}
+		return layer;
+	}
+	else
+	{
+		console.log("Unknown KML feature type", feature);
+		return null;
+	}
+}
+
+export function createFromGeometry(geom, options)
+{
+	if (geom instanceof geometry.Point)
+	{
+		var opt = {};
+		if (options)
+		{
+			if (options.name)
+				opt.title = options.name;
+			if (options.icon)
+				opt.icon = options.icon;
+		}
+		return L.marker(L.latLng(geom.coordinates[1], geom.coordinates[0]), opt);
+	}
+	else if (geom instanceof geometry.LineString)
+	{
+		var opt = {};
+		var i;
+		var pts = [];
+		for (i in geom.coordinates)
+		{
+			var latLng = L.latLng(geom.coordinates[i][1], geom.coordinates[i][0]);
+			if (latLng)
+			{
+				pts.push(latLng);
+			}
+			else
+			{
+				console.log("Error in LineString", geom.coordinates[i]);
+			}
+		}
+		return L.polyline(pts, opt);
+	}
+	else
+	{
+		console.log("Unknown geometry type", geom);
+		return null;
+	}
 }
 
 export function createKMLLookAt(map)
@@ -210,6 +323,11 @@ export class LeafletMap extends map.MapControl
 	addLayer(layer)
 	{
 		layer.addTo(this.mapObj);
+	}
+
+	addKMLFeature(feature)
+	{
+		createFromKMLFeature(feature).addTo(this.mapObj);
 	}
 
 //	uninit(): void;
