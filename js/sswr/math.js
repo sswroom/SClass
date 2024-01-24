@@ -472,7 +472,7 @@ export class DatumData
 		this.yAngle = yAngle * aratio;
 		this.zAngle = zAngle * aratio;
 		this.scale = scale;
-		this.aunit = unit.AngleUnit.RADIAN;
+		this.aunit = unit.Angle.Unit.RADIAN;
 	}
 }
 
@@ -1014,17 +1014,17 @@ export class CoordinateSystemManager
 		switch (srid)
 		{
 		case 6326:
-			return new DatumData(6326, this.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.AngleUnit.RADIAN);
+			return new DatumData(6326, this.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6600:
-			return new DatumData(6600, this.srGetSpheroid(7012), "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.AngleUnit.RADIAN);
+			return new DatumData(6600, this.srGetSpheroid(7012), "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6601:
-			return new DatumData(6601, this.srGetSpheroid(7012), "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.AngleUnit.RADIAN);
+			return new DatumData(6601, this.srGetSpheroid(7012), "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6602:
-			return new DatumData(6602, this.srGetSpheroid(7012), "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, unit.AngleUnit.ARCSECOND);
+			return new DatumData(6602, this.srGetSpheroid(7012), "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, unit.Angle.Unit.ARCSECOND);
 		case 6603:
-			return new DatumData(6603, this.srGetSpheroid(7012), "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, unit.AngleUnit.ARCSECOND);
+			return new DatumData(6603, this.srGetSpheroid(7012), "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, unit.Angle.Unit.ARCSECOND);
 		case 6611:
-			return new DatumData(6611, this.srGetSpheroid(7022), "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, unit.AngleUnit.ARCSECOND);
+			return new DatumData(6611, this.srGetSpheroid(7022), "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, unit.Angle.Unit.ARCSECOND);
 		}
 		return null;
 	}
