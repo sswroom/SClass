@@ -1,3 +1,8 @@
+1.5.2
+-Support leaflet icon without adding to map
+-Added web.mimeFromExt
+-Added cesium.createFromKMLFeature
+
 1.5.1
 -Fixed AngleUnit problem
 

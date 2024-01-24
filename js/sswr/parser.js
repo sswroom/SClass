@@ -1,6 +1,8 @@
 import * as geomtry from "./geometry.js";
 import * as kml from "./kml.js";
+import { AltitudeMode } from "./kml.js";
 import * as text from "./text.js";
+import * as web from "./web.js";
 
 function parseKMLStyle(node)
 {
@@ -260,6 +262,8 @@ function parseKMLContainer(container, kmlNode, doc)
 			if (feature)
 				container.addFeature(feature);
 			break;
+		case "LookAt":
+			container.setLookAt(parseKMLLookAt(node));
 		case "#text":
 			break;
 		default:
@@ -397,6 +401,70 @@ function parseKMLPlacemark(kmlNode, doc)
 	return null;
 }
 
+function parseKMLLookAt(kmlNode)
+{
+	var longitude;
+	var latitude;
+	var altitude;
+	var range;
+	var heading;
+	var tilt;
+	var altitudeMode;
+	var node;
+	for (node of kmlNode.childNodes)
+	{
+		switch (node.nodeName)
+		{
+		case "#text":
+			break;
+		case "#comment":
+			break;
+		case "longitude":
+			longitude = Number.parseFloat(node.textContent);
+			break;
+		case "latitude":
+			latitude = Number.parseFloat(node.textContent);
+			break;
+		case "altitude":
+			altitude = Number.parseFloat(node.textContent);
+			break;
+		case "altitudeMode":
+			altitudeMode = node.textContent;
+			break;
+		case "range":
+			range = Number.parseFloat(node.textContent);
+			break;
+		case "heading":
+			heading = Number.parseFloat(node.textContent);
+			break;
+		case "tilt":
+			tilt = Number.parseFloat(node.textContent);
+			break;
+		default:
+			console.log("Unknown node in kml LookAt", node);
+			break;
+		}
+	}
+	if (longitude != null && latitude != null && altitude != null && range != null)
+	{
+		var lookAt = new kml.LookAt(longitude, latitude, altitude, range);
+		if (altitudeMode)
+		{
+			lookAt.setAltitudeMode(altitudeMode);
+		}
+		if (heading != null)
+			lookAt.setHeading(heading);
+		if (tilt != null)
+			lookAt.setTilt(tilt);
+		return lookAt;
+	}
+	else
+	{
+		console.log("Some fields in LookAt are missing", kmlNode);
+		return null;
+	}
+}
+
 function parseKMLNode(kmlNode, doc)
 {
 	switch (kmlNode.nodeName)
@@ -447,6 +515,11 @@ export function parseXML(txt)
 
 export async function parseFile(file)
 {
+	if (file.type == "")
+	{
+		file.type = web.mimeFromFileName(file.name);
+	}
+
 	if (file.type == "application/vnd.google-earth.kml+xml")
 	{
 		return parseXML(await file.text());

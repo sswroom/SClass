@@ -3,6 +3,7 @@ import * as kml from "/js/@sswroom/sswr/kml.js";
 import * as leaflet from "/js/@sswroom/sswr/leaflet.js";
 import * as map from "/js/@sswroom/sswr/map.js";
 import * as math from "/js/@sswroom/sswr/math.js";
+import * as olayer2 from "/js/@sswroom/sswr/olayer2.js";
 import * as parser from "/js/@sswroom/sswr/parser.js";
 import * as web from "/js/@sswroom/sswr/web.js";
 
@@ -36,6 +37,14 @@ if (window.L)
 else if (window.Cesium)
 {
 	mapCtrl = new cesium.CesiumMap("map");
+}
+else if (window.OpenLayers)
+{
+	mapCtrl = new olayer2.Olayer2Map("map");
+}
+else
+{
+	console.log("Unknown map type");
 }
 
 if (mapCtrl instanceof map.MapControl)

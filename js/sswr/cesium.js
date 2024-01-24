@@ -1,6 +1,8 @@
+import * as data from "./data.js";
+import * as kml from "./kml.js";
 import * as map from "./map.js";
-import { Coord2D } from "./math.js";
-import { Polygon } from "./geometry.js";
+import * as math from "./math.js";
+import * as geometry from "./geometry.js";
 
 export function screenToLatLon(viewer, x, y, ellipsoid)
 {
@@ -11,11 +13,11 @@ export function screenToLatLon(viewer, x, y, ellipsoid)
 	if (cartesian)
 	{
 		var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-		return new Coord2D(cartographic.longitude * 180 / Math.PI, cartographic.latitude * 180 / Math.PI);
+		return new math.Coord2D(cartographic.longitude * 180 / Math.PI, cartographic.latitude * 180 / Math.PI);
 	}
 	else
 	{
-		return new Coord2D(0, 0);
+		return new math.Coord2D(0, 0);
 	}
 }
 	
@@ -149,7 +151,141 @@ export function fromPolygonGraphics(viewer, pg)
 		coordinates.push(fromCartesian3Array(viewer, hierarchy.holes[i].positions));
 		i++;
 	}
-	return new Polygon(4326, coordinates);
+	return new geometry.Polygon(4326, coordinates);
+}
+
+export function createFromKMLFeature(feature, options)
+{
+	options = data.mergeOptions(options, {noPopup: false});
+	if (feature instanceof kml.Container)
+	{
+		var i;
+		var layers = [];
+		var layer;
+		for (i in feature.features)
+		{
+			layer = createFromKMLFeature(feature.features[i], options);
+			if (layer instanceof Cesium.Entity)
+			{
+				layers.push(layer);
+			}
+			else if (layer != null)
+			{
+				var j;
+				for (j in layer)
+				{
+					layers.push(layer[j]);
+				}
+			}
+		}
+		return layers;
+	}
+	else if (feature instanceof kml.Placemark)
+	{
+		var opt = {};
+		if (feature.name)
+			opt.name = feature.name;
+		if (feature.style)
+		{
+			var style = feature.style;
+			if (style instanceof kml.StyleMap)
+			{
+				style = style.normalStyle;
+			}
+			if (style instanceof kml.Style)
+			{
+				if (style.iconStyle)
+				{
+					var s = style.iconStyle;
+					if (s.iconUrl)
+					{
+						opt.iconUrl = s.iconUrl;
+					}
+					if (s.hotSpotX && s.hotSpotY)
+					{
+						if (s.hotSpotX == 0)
+							opt.horizontalOrigin = Cesium.HorizontalOrigin.LEFT;
+						else if (s.hotSpotUnitX == kml.HotSpotUnit.Fraction && s.hotSpotX == 1)
+							opt.horizontalOrigin = Cesium.HorizontalOrigin.RIGHT;
+						if (s.hotSpotY == 0)
+							opt.verticalOrigin = Cesium.VerticalOrigin.TOP;
+						else if (s.hotSpotUnitY == kml.HotSpotUnit.Fraction && s.hotSpotY == 1)
+							opt.verticalOrigin = Cesium.VerticalOrigin.BOTTOM;
+						else
+						{
+							if (s.hotSpotX * 2 == s.hotSpotY)
+							{
+								opt.verticalOrigin = Cesium.VerticalOrigin.CENTER;
+							}
+						}
+					}
+				}
+				if (style.lineStyle)
+				{
+					var ls = style.lineStyle;
+					if (ls.color)
+						opt.lineColor = ls.color;
+					if (ls.width)
+						opt.lineWidth = ls.width;
+				}
+			}
+		}
+		var layer = createFromGeometry(feature.vec, opt);
+		if (layer)
+		{
+			if (feature.name)
+				layer.name = feature.name;
+			if (feature.description)
+				layer.description = feature.description;
+		}
+		return layer;
+	}
+	else
+	{
+		console.log("Unknown KML feature type", feature);
+		return null;
+	}
+}
+
+
+export function createFromGeometry(geom, options)
+{
+	if (geom instanceof geometry.Point)
+	{
+		var opt = {};
+		if (options)
+		{
+			if (options.name)
+				opt.title = options.name;
+			if (options.iconUrl)
+				opt.image = options.iconUrl;
+			if (options.horizontalOrigin)
+				opt.horizontalOrigin = options.horizontalOrigin;
+			if (options.verticalOrigin)
+				opt.verticalOrigin = options.verticalOrigin;
+		}
+		return new Cesium.Entity({
+			position: Cesium.Cartesian3.fromDegrees(geom.coordinates[0], geom.coordinates[1]),
+			billboard: new Cesium.BillboardGraphics(opt)});
+	}
+	else if (geom instanceof geometry.LineString)
+	{
+		var opt = {};
+		if (options.lineColor)
+		{
+			var c = kml.toColor(options.lineColor);
+			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
+		}
+		if (options.lineWidth)
+			opt.width = options.lineWidth;
+		opt.positions = toCartesian3Arr(geom.coordinates);
+		return new Cesium.Entity({polyline: new Cesium.PolylineGraphics(opt)});
+	}
+	else
+	{
+		console.log("Unknown geometry type", geom);
+		return null;
+	}
 }
 
 /*export function createPolygon(viewer, lats, lons, height)
@@ -216,6 +352,27 @@ export class CesiumMap extends map.MapControl
 		{
 			this.viewer.imageryLayers.add(layer);
 		}
+		else if (layer instanceof Cesium.Entity)
+		{
+			this.viewer.entities.add(layer);
+		}
+		else if (data.isArray(layer))
+		{
+			var i;
+			for (i in layer)
+			{
+				this.addLayer(layer[i]);
+			}
+		}
+		else
+		{
+			console.log("Unknown type to add", layer);
+		}
+	}
+
+	addKMLFeature(feature)
+	{
+		this.addLayer(createFromKMLFeature(feature));
 	}
 
 //	uninit(): void;

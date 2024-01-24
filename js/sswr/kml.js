@@ -996,6 +996,19 @@ export function toString(item)
 	return strs.join("\r\n");
 }
 
+export function toColor(color)
+{
+	if (color.length != 8)
+		return null;
+
+	return {
+		a: Number.parseInt(color.substring(0, 2), 16) / 255,
+		b: Number.parseInt(color.substring(2, 4), 16) / 255,
+		g: Number.parseInt(color.substring(4, 6), 16) / 255,
+		r: Number.parseInt(color.substring(6, 8), 16) / 255
+	};
+}
+
 export function toCSSColor(color)
 {
 	if (color.length != 8)

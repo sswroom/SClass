@@ -2,6 +2,7 @@ import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
 import * as map from "./map.js";
 import * as math from "./math.js";
+import * as osm from "./osm.js";
 import * as web from "./web.js";
 
 export class Olayer2Map extends map.MapControl
@@ -10,6 +11,9 @@ export class Olayer2Map extends map.MapControl
 	{
 		super();
 		this.inited = false;
+		this.initX = 114.2;
+		this.initY = 22.4;
+		this.initLev = 12;
 		this.mapId = mapId;
 		var dom = document.getElementById(mapId);
 		dom.style.minWidth = '1px';
@@ -65,7 +69,7 @@ export class Olayer2Map extends map.MapControl
 	{
 		if (layer.type == map.WebMapType.OSMTile)
 		{
-			return new OpenLayers.Layer.OSM(layer.name, [layer.url]);
+			return new OpenLayers.Layer.OSM(layer.name, [layer.url.replace("{x}", "${x}").replace("{y}", "${y}").replace("{z}", "${z}")]);
 		}
 		else if (layer.type == map.WebMapType.ArcGIS)
 		{
@@ -97,10 +101,10 @@ export class Olayer2Map extends map.MapControl
 		{
 			this.inited = true;
 			this.map.setCenter(
-				new OpenLayers.LonLat(114.2, 22.4).transform(
+				new OpenLayers.LonLat(this.initX, this.initY).transform(
 					this.mapProjection,
 					this.map.getProjectionObject()
-				), 12);
+				), this.initLev);
 		}
 	}
 
@@ -136,8 +140,17 @@ export class Olayer2Map extends map.MapControl
 
 	panZoomScale(pos, scale)
 	{
-		this.map.zoomToScale(scale, false);
-		this.map.setCenter(new OpenLayers.LonLat(pos.x, pos.y).transform(this.mapProjection, this.map.getProjectionObject()), this.map.getZoom(), false, false);
+		if (this.inited)
+		{
+			this.map.zoomToScale(scale, false);
+			this.map.setCenter(new OpenLayers.LonLat(pos.x, pos.y).transform(this.mapProjection, this.map.getProjectionObject()), this.map.getZoom(), false, false);
+		}
+		else
+		{
+			this.initX = pos.x;
+			this.initY = pos.y;
+			this.initLev = osm.scale2Level(scale);
+		}
 	}
 
 	zoomToExtent(extent)

@@ -1,8 +1,13 @@
 import { Cartesian3, Ellipsoid, Viewer } from "cesium";
-import { Polygon } from "./geometry";
+import * as geometry from "./geometry";
 import * as kml from "./kml";
 import * as map from "./map";
 import { Coord2D } from "./math";
+
+declare class KMLFeatureOptions
+{
+	noPopup: boolean;
+}
 
 export function screenToLatLon(viewer: Viewer, x: number, y: number, ellipsoid: Ellipsoid) : Coord2D;
 export function fromCXYZArray(arr: any[]): Cartesian3[];
@@ -10,7 +15,9 @@ export function toCartesian3Arr(coords: number[][]) : Cartesian3[];
 export function newObjFromGeoJSON(geoJSON: object) : object;
 export function addGeoJSON(viewer: Viewer, geoJSON: object, color: any, extSize: number): void;
 export function fromCartesian3Array(viewer: Viewer, arr: Cartesian3[]): object[];
-export function fromPolygonGraphics(viewer: Viewer, pg: any): Polygon;
+export function fromPolygonGraphics(viewer: Viewer, pg: any): geometry.Polygon;
+export function createFromKMLFeature(feature: kml.Feature, options: KMLFeatureOptions): any;
+export function createFromGeometry(geom: geometry.Vector2D, options: GeometryOptions)
 
 export class CesiumMap extends map.MapControl
 {

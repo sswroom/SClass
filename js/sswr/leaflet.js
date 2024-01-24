@@ -250,16 +250,16 @@ export function toKMLFeature(layer, doc)
 			var opt = layer.options.icon.options;
 			if (opt)
 			{
-				var imgW = layer._icon.naturalWidth || layer._icon.offsetWidth;
 				var iconStyle = new kml.IconStyle();
-				if (opt.iconSize)
+				if (opt.iconSize && layer._icon)
 				{
+					var imgW = layer._icon.naturalWidth || layer._icon.offsetWidth;
 					iconStyle.setScale(opt.iconSize[0] / imgW);
-					if (opt.iconAnchor)
-					{
-						iconStyle.setHotSpotX(opt.iconAnchor[0], kml.HotSpotUnit.Pixels);
-						iconStyle.setHotSpotY(opt.iconAnchor[1], kml.HotSpotUnit.InsetPixels);
-					}
+				}
+				if (opt.iconAnchor)
+				{
+					iconStyle.setHotSpotX(opt.iconAnchor[0], kml.HotSpotUnit.Pixels);
+					iconStyle.setHotSpotY(opt.iconAnchor[1], kml.HotSpotUnit.InsetPixels);
 				}
 				if (opt.iconUrl)
 				{

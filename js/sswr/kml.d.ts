@@ -1,5 +1,6 @@
 import * as data from "./data";
 import * as geometry from "./geometry";
+import * as web from "./web";
 
 export enum AltitudeMode
 {
@@ -307,4 +308,5 @@ export class ScreenOverlay extends Feature
 }
 
 export function toString(item: Feature | NetworkLinkControl): string;
+export function toColor(color: string): web.Color;
 export function toCSSColor(color: string): string;

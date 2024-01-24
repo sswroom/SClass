@@ -14,6 +14,8 @@ export function openData(data: string, contentType: string, fileName?: string): 
 export function parseCSSColor(c: string): Color;
 export function handleFileDrop(ele: HTMLElement, hdlr: (file: File)=>void): void;
 export function appendUrl(targetUrl: string, docUrl: string): string;
+export function mimeFromFileName(fileName: string): string;
+export function mimeFromExt(ext: string): string;
 
 declare class DialogButton
 {

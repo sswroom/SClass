@@ -545,6 +545,161 @@ export function appendUrl(targetUrl, docUrl)
 	}
 }
 
+export function mimeFromFileName(fileName)
+{
+	var i;
+	i = fileName.lastIndexOf("/");
+	if (i >= 0)
+		fileName = fileName.substring(i + 1);
+	i = fileName.lastIndexOf(".");
+	if (i >= 0)
+		return mimeFromExt(fileName.substring(i + 1));
+	return "application/octet-stream";
+}
+
+export function mimeFromExt(ext)
+{
+	switch (ext)
+	{
+	case "3gp": return "video/3gpp";
+	case "3g2": return "video/3gpp2";
+	case "7z": return "application/x-7z-compressed";
+	case "aac": return "audio/aac";
+	case "abw": return "application/x-abiword";
+	case "aif": return "audio/aiff";
+	case "arc": return "application/x-freearc";
+	case "asf": return "video/x-ms-asf";
+	case "avi": return "video/x-msvideo";
+	case "avif": return "image/avif";
+	case "azw": return "application/vnd.amazon.ebook";
+	case "bin": return "application/octet-stream";
+	case "bmp": return "image/bmp";
+	case "bz": return "application/x-bzip";
+	case "bz2": return "application/x-bzip2";
+	case "cda": return "application/x-cdf";
+	case "cjs": return "application/node";
+	case "csh": return "application/x-csh";
+	case "css": return "text/css";
+	case "csv": return "text/csv";
+	case "dbf": return "application/dbf";
+	case "doc": return "application/msword";
+	case "docm": return "application/vnd.ms-word.document.macroEnabled.12";
+	case "docx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+	case "dot": return "application/msword";
+	case "dotm": return "application/vnd.ms-word.template.macroEnabled.12";
+	case "dotx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.template";
+	case "eml": return "message/rfc822";
+	case "eot": return "application/vnd.ms-fontobject";
+	case "epub": return "application/epub+zip";
+	case "exe": return "application/x-exe";
+	case "flv": return "video/x-flv";
+	case "gif": return "image/gif";
+	case "glb": return "model/gltf-binary";
+	case "gpx": return "application/gpx+xml";
+	case "gz": return "application/gzip";
+	case "heic": return "image/heic";
+	case "heif": return "image/heif";
+	case "htm": return "text/html";
+	case "html": return "text/html";
+	case "ico": return "image/vnd.microsoft.icon";
+	case "ics": return "text/calendar";
+	case "igs": return "model/iges";
+	case "ipa": return "application/x-ios-app";
+	case "iso": return "application/x-iso9660-image";
+	case "jar": return "application/java-archive";
+	case "jp2": return "image/jpeg2000";
+	case "jpeg": return "image/jpeg";
+	case "jpg": return "image/jpeg";
+	case "js": return "text/javascript"; //RFC 9239
+	case "json": return "application/json";
+	case "jsonld": return "application/ld+json";
+	case "kml": return "application/vnd.google-earth.kml+xml";
+	case "kmz": return "application/vnd.google-earth.kmz";
+	case "lnk": return "application/x-ms-shortcut";
+	case "m1v": return "video/MPV";
+	case "m2v": return "video/MPV";
+	case "m2p": return "video/MP2P";
+	case "m2ts": return "video/MP2T";
+	case "m2t": return "video/MP2T";
+	case "m3u8": return "application/vnd.apple.mpegurl";
+	case "m4a": return "audio/x-m4a";
+	case "md": return "text/markdown";
+	case "mdb": return "application/vnd.ms-access";
+	case "mid": return "audio/midi";
+	case "midi": return "audio/midi";
+	case "mjs": return "text/javascript"; //RFC 9239
+	case "mkv": return "video/x-matroska";
+	case "mov": return "video/quicktime";
+	case "mp2": return "audio/mpeg";
+	case "mp3": return "audio/mpeg";
+	case "mp4": return "video/mp4";
+	case "mpeg": return "video/mpeg";
+	case "mpg": return "video/mpeg";
+	case "mpkg": return "application/vnd.apple.installer+xml";
+	case "odp": return "application/vnd.oasis.opendocument.presentation";
+	case "ods": return "application/vnd.oasis.opendocument.spreadsheet";
+	case "odt": return "application/vnd.oasis.opendocument.text";
+	case "oga": return "audio/ogg";
+	case "ogg": return "application/ogg";
+	case "ogv": return "video/ogg";
+	case "ogx": return "application/ogg";
+	case "opus": return "audio/opus";
+	case "otf": return "font/otf";
+	case "p10": return "application/pkcs10";
+	case "p7c": return "application/pkcs7-mime";
+	case "p7m": return "application/pkcs7-mime";
+	case "p7s": return "application/pkcs7-signature";
+	case "pac": return "application/x-ns-proxy-autoconfig";
+	case "pdf": return "application/pdf";
+	case "php": return "application/x-httpd-php";
+	case "pic": return "image/x-pict";
+	case "png": return "image/png";
+	case "pnt": return "image/x-maxpaint";
+	case "ppt": return "application/vnd.ms-powerpoint";
+	case "pptx": return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+	case "rar": return "application/vnd.rar"; //application/x-rar-compressed
+	case "rtf": return "application/rtf";
+	case "sh": return "application/x-sh";
+	case "svg": return "image/svg+xml";
+	case "swf": return "application/x-shockwave-flash";
+	case "tar": return "application/x-tar";
+	case "tga": return "image/x-targa";
+	case "tif": return "image/tiff";
+	case "tiff": return "image/tiff";
+	case "ts": return "video/mp2t";
+	case "ttf": return "font/ttf";
+	case "txt": return "text/plain";
+	case "vsd": return "application/vnd.visio";
+	case "wasm": return "application/wasm";
+	case "wav": return "audio/wav";
+	case "weba": return "audio/webm";
+	case "webm": return "video/webm";
+	case "webp": return "image/webp";
+	case "wma": return "audio/x-ms-wma";
+	case "wmv": return "video/x-ms-wmv";
+	case "woff": return "font/woff";
+	case "woff2": return "font/woff2";
+	case "wrl": return "model/vrml";
+	case "x3d": return "model/x3d+xml";
+	case "x3dv": return "model/x3d+vrml";
+	case "x3db": return "model/x3d+binary";
+	case "xhtml": return "application/xhtml+xml";
+	case "xla": return "application/vnd.ms-excel";
+	case "xlam": return "application/vnd.ms-excel.addin.macroEnabled.12";
+	case "xls": return "application/vnd.ms-excel";
+	case "xlsb": return "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
+	case "xlsm": return "application/vnd.ms-excel.sheet.macroEnabled.12";
+	case "xlsx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	case "xlt": return "application/vnd.ms-excel";
+	case "xltm": return "application/vnd.ms-excel.template.macroEnabled.12";
+	case "xltx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.template";
+	case "xml": return "application/xml"; //RFC 7303
+	case "xul": return "application/vnd.mozilla.xul+xml";
+	case "zip": return "application/zip";
+	default: return "application/octet-stream";
+	}
+}
+
 export class Dialog
 {
 	constructor(content, options)
