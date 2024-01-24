@@ -995,3 +995,15 @@ export function toString(item)
 	strs.push("</kml>");
 	return strs.join("\r\n");
 }
+
+export function toCSSColor(color)
+{
+	if (color.length != 8)
+		return null;
+
+	var a = Number.parseInt(color.substring(0, 2), 16);
+	var b = Number.parseInt(color.substring(2, 4), 16);
+	var g = Number.parseInt(color.substring(4, 6), 16);
+	var r = Number.parseInt(color.substring(6, 8), 16);
+	return "rgba("+r+", "+g+", "+b+", "+(a / 255.0)+")";
+}

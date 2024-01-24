@@ -98,6 +98,14 @@ export function createFromKMLFeature(feature, options)
 					}
 					opt.icon = s.leafletIcon;
 				}
+				if (style.lineStyle)
+				{
+					var ls = style.lineStyle;
+					if (ls.color)
+						opt.lineColor = kml.toCSSColor(ls.color);
+					if (ls.width)
+						opt.lineWidth = ls.width;
+				}
 			}
 		}
 		var layer = createFromGeometry(feature.vec, opt);
@@ -144,6 +152,10 @@ export function createFromGeometry(geom, options)
 		var opt = {};
 		var i;
 		var pts = [];
+		if (options.lineColor)
+			opt.color = options.lineColor;
+		if (options.lineWidth)
+			opt.weight = options.lineWidth;
 		for (i in geom.coordinates)
 		{
 			var latLng = L.latLng(geom.coordinates[i][1], geom.coordinates[i][0]);
@@ -245,8 +257,8 @@ export function toKMLFeature(layer, doc)
 					iconStyle.setScale(opt.iconSize[0] / imgW);
 					if (opt.iconAnchor)
 					{
-						iconStyle.setHotSpotX(opt.iconAnchor[0] / opt.iconSize[0]);
-						iconStyle.setHotSpotY(1 - (opt.iconAnchor[1] / opt.iconSize[1]));
+						iconStyle.setHotSpotX(opt.iconAnchor[0], kml.HotSpotUnit.Pixels);
+						iconStyle.setHotSpotY(opt.iconAnchor[1], kml.HotSpotUnit.InsetPixels);
 					}
 				}
 				if (opt.iconUrl)

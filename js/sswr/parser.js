@@ -107,6 +107,14 @@ function parseKMLStyle(node)
 			{
 				switch (subNode2.nodeName)
 				{
+				case "#text":
+					break;
+				case "color":
+					innerStyle.setColor(subNode2.textContent);
+					break;
+				case "width":
+					innerStyle.setWidth(Number.parseFloat(subNode2.textContent));
+					break;
 				case "gx:labelVisibility":
 					innerStyle.setLabelVisibility(subNode2.textContent == "1");
 					break;

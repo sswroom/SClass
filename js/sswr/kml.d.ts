@@ -307,3 +307,4 @@ export class ScreenOverlay extends Feature
 }
 
 export function toString(item: Feature | NetworkLinkControl): string;
+export function toCSSColor(color: string): string;
