@@ -2156,6 +2156,7 @@ URIEncoding.o: ../../src/Text/TextBinEnc/URIEncoding.cpp
 UTF8LCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
+UTF16BETextBinEnc.o: ../../src/Text/TextBinEnc/UTF16BETextBinEnc.cpp
 
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
 GUIButton.o: ../../src/UI/GUIButton.cpp

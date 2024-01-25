@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 	{
 		me->txtChar->SetText(CSTR(""));
 
-		Text::StrReadChar(sb.ToString(), &v);
+		Text::StrReadChar(sb.ToString(), v);
 		me->UpdateChar((UInt32)v);
 		me->txtRadical->Focus();
 	}
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(void *userObj)
 	{
 		me->txtRadical->SetText(CSTR(""));
 
-		Text::StrReadChar(sb.ToString(), &v);
+		Text::StrReadChar(sb.ToString(), v);
 		me->currRadical = (UInt32)v;
 		sptr = Text::StrWriteChar(sbuff, v);
 		sptr[0] = 0;
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 	{
 		me->txtRelatedAdd->SetText(CSTR(""));
 
-		Text::StrReadChar(sb.ToString(), &v);
+		Text::StrReadChar(sb.ToString(), v);
 		if (me->currChar != 0)
 		{
 			if (me->currChar == (UInt32)v)

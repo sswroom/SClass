@@ -11,7 +11,7 @@ void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UT
 	sb->AppendUTF8Char('\"');
 	while (true)
 	{
-		str = Text::StrReadChar(str, &c);
+		str = Text::StrReadChar(str, c);
 		if (c == 0)
 		{
 			break;
@@ -107,7 +107,7 @@ void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UT
 		c = *str;
 		if (c & 0x80)
 		{
-			str = Text::StrReadChar(str, &c);
+			str = Text::StrReadChar(str, c);
 		}
 		else
 		{
@@ -205,7 +205,7 @@ void Text::CPPText::FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 	UTF32Char c;
 	while (true)
 	{
-		str = Text::StrReadChar(str, &c);
+		str = Text::StrReadChar(str, c);
 		if (c == 0)
 		{
 			break;
@@ -218,7 +218,7 @@ void Text::CPPText::FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 		{
 			if (c == '\\')
 			{
-				str = Text::StrReadChar(str, &c);
+				str = Text::StrReadChar(str, c);
 				if (c == 0)
 				{
 					break;

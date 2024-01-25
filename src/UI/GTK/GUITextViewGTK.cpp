@@ -384,7 +384,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 			currPtr = csptr;
 			while (true)
 			{
-				nextPtr = Text::StrReadChar(currPtr, &u32c);
+				nextPtr = Text::StrReadChar(currPtr, u32c);
 				if (u32c == 0)
 				{
 					break;

@@ -328,7 +328,7 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 				{
 					if (Text::CharUtil::UTF8CharValid(textPtr))
 					{
-						textPtr2 = Text::StrReadChar(textPtr, &wc);
+						textPtr2 = Text::StrReadChar(textPtr, wc);
 						if (wc < 32)
 						{
 							dimg->DrawString(currPos, CSTR("."), fnt, textBrush);

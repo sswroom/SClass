@@ -5267,63 +5267,63 @@ UOSInt Text::StrUTF32_UTF16Cnt(const UTF32Char *strToJoin, UOSInt charCnt)
 	return retCnt;
 }
 
-const UTF8Char *Text::StrReadChar(const UTF8Char *sptr, UTF32Char *outChar)
+const UTF8Char *Text::StrReadChar(const UTF8Char *sptr, OutParam<UTF32Char> outChar)
 {
 	UTF8Char b = *sptr++;
 	if (b < 0x80)
 	{
-		*outChar = b;
+		outChar.Set(b);
 	}
 	else if ((b & 0xe0) == 0xc0)
 	{
-		*outChar = (UTF32Char)(((UInt32)(b & 0x1f) << 6) | (UInt32)(*sptr & 0x3f));
+		outChar.Set((UTF32Char)(((UInt32)(b & 0x1f) << 6) | (UInt32)(*sptr & 0x3f)));
 		sptr++;
 	}
 	else if ((b & 0xf0) == 0xe0)
 	{
-		*outChar = (UTF32Char)(((UInt32)(b & 0x0f) << 12) | ((UInt32)(sptr[0] & 0x3f) << 6) | (UInt32)(sptr[1] & 0x3f));
+		outChar.Set((UTF32Char)(((UInt32)(b & 0x0f) << 12) | ((UInt32)(sptr[0] & 0x3f) << 6) | (UInt32)(sptr[1] & 0x3f)));
 		sptr += 2;
 	}
 	else if ((b & 0xf8) == 0xf0)
 	{
-		*outChar = (UTF32Char)(((UInt32)(b & 0x7) << 18) | ((UInt32)(sptr[0] & 0x3f) << 12) | ((UInt32)(sptr[1] & 0x3f) << 6) | (UInt32)(sptr[2] & 0x3f));
+		outChar.Set((UTF32Char)(((UInt32)(b & 0x7) << 18) | ((UInt32)(sptr[0] & 0x3f) << 12) | ((UInt32)(sptr[1] & 0x3f) << 6) | (UInt32)(sptr[2] & 0x3f)));
 		sptr += 3;
 	}
 	else if ((b & 0xfc) == 0xf8)
 	{
-		*outChar = (UTF32Char)(((UInt32)(b & 0x3) << 24) | ((UInt32)(sptr[0] & 0x3f) << 18) | ((UInt32)(sptr[1] & 0x3f) << 12) | ((UInt32)(sptr[2] & 0x3f) << 6) | (UInt32)(sptr[3] & 0x3f));
+		outChar.Set((UTF32Char)(((UInt32)(b & 0x3) << 24) | ((UInt32)(sptr[0] & 0x3f) << 18) | ((UInt32)(sptr[1] & 0x3f) << 12) | ((UInt32)(sptr[2] & 0x3f) << 6) | (UInt32)(sptr[3] & 0x3f)));
 		sptr += 4;
 	}
 	else if ((b & 0xfe) == 0xfc)
 	{
-		*outChar = (UTF32Char)(((UInt32)(b & 0x1) << 30) | ((UInt32)(sptr[0] & 0x3f) << 24) | ((UInt32)(sptr[1] & 0x3f) << 18) | ((UInt32)(sptr[2] & 0x3f) << 12) | ((UInt32)(sptr[3] & 0x3f) << 6) | (UInt32)(sptr[4] & 0x3f));
+		outChar.Set((UTF32Char)(((UInt32)(b & 0x1) << 30) | ((UInt32)(sptr[0] & 0x3f) << 24) | ((UInt32)(sptr[1] & 0x3f) << 18) | ((UInt32)(sptr[2] & 0x3f) << 12) | ((UInt32)(sptr[3] & 0x3f) << 6) | (UInt32)(sptr[4] & 0x3f)));
 		sptr += 5;
 	}
 	else
 	{
-		*outChar = b;
+		outChar.Set(b);
 	}
 	return sptr;
 }
 
-const UTF16Char *Text::StrReadChar(const UTF16Char *sptr, UTF32Char *outChar)
+const UTF16Char *Text::StrReadChar(const UTF16Char *sptr, OutParam<UTF32Char> outChar)
 {
 	UTF16Char c = *sptr++;
 	if (c >= 0xd800 && c < 0xdc00 && sptr[0] >= 0xdc00 && sptr[0] < 0xe000)
 	{
-		*outChar = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (sptr[0] - 0xdc00));
+		outChar.Set((UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (sptr[0] - 0xdc00)));
 		sptr++;
 	}
 	else
 	{
-		*outChar = c;
+		outChar.Set(c);
 	}
 	return sptr;
 }
 
-const UTF32Char *Text::StrReadChar(const UTF32Char *sptr, UTF32Char *outChar)
+const UTF32Char *Text::StrReadChar(const UTF32Char *sptr, OutParam<UTF32Char> outChar)
 {
-	*outChar = *sptr++;
+	outChar.Set(*sptr++);
 	return sptr;
 }
 

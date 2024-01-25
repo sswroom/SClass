@@ -40,5 +40,5 @@ UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *str, UOSInt s
 
 Text::CStringNN Text::TextBinEnc::UCS2TextBinEnc::GetName() const
 {
-	return CSTR("Unicode Text");
+	return CSTR("UTF16LE Text");
 }

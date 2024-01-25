@@ -1938,7 +1938,7 @@ void Map::MapConfig2TGen::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CSt
 			sinAngle = Math_Sin(angle);
 			lastAngle = angleDegree;
 
-			Text::StrReadChar(lbl, &nextChar);
+			Text::StrReadChar(lbl, nextChar);
 			while (nextChar)
 			{
 				lbl = nextPos;
@@ -1946,7 +1946,7 @@ void Map::MapConfig2TGen::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CSt
 
 				while (true)
 				{
-					nextPos = (UTF8Char*)Text::StrReadChar(nextPos, &nextChar);
+					nextPos = (UTF8Char*)Text::StrReadChar(nextPos, nextChar);
 					if (nextChar == 0)
 					{
 						nextPos--;
@@ -1954,13 +1954,13 @@ void Map::MapConfig2TGen::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CSt
 					}
 					if (nextChar == ' ')
 					{
-						Text::StrReadChar(nextPos, &nextChar);
+						Text::StrReadChar(nextPos, nextChar);
 						*nextPos = 0;
 						break;
 					}
 					else if (nextChar >= 0x3f00 && nextChar <= 0x9f00)
 					{
-						Text::StrReadChar(nextPos, &nextChar);
+						Text::StrReadChar(nextPos, nextChar);
 						*nextPos = 0;
 						break;
 					}

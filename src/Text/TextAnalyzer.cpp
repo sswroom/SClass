@@ -34,7 +34,7 @@ UTF8Char *Text::TextAnalyzer::NextWord(UTF8Char *sbuff, void *sess)
 	UTF8Char *sptr = sbuff;
 	while (true)
 	{
-		tsess->currPos = Text::StrReadChar(tsess->currPos, &c);
+		tsess->currPos = Text::StrReadChar(tsess->currPos, c);
 		if (c == 0)
 		{
 			break;

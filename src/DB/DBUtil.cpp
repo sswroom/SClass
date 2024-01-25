@@ -756,7 +756,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sq
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -823,7 +823,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sq
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -849,7 +849,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sq
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -874,7 +874,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sq
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -899,7 +899,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sq
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -924,7 +924,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sq
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -956,7 +956,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -1028,7 +1028,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -1069,7 +1069,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -1110,7 +1110,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -1151,7 +1151,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, &c);
+			val = Text::StrReadChar(val, c);
 			if (c == 0)
 			{
 				break;
@@ -1931,7 +1931,7 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 			*sptr++ = '\"';
 			while (true)
 			{
-				colName = Text::StrReadChar(colName, &c);
+				colName = Text::StrReadChar(colName, c);
 				if (c == 0)
 					break;
 				else if (c < 0x80)
@@ -2024,7 +2024,7 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::SQLType sqlType)
 			leng += 4;
 			while (true)
 			{
-				colName = Text::StrReadChar(colName, &c);
+				colName = Text::StrReadChar(colName, c);
 				if (c == 0)
 					break;
 				else if (c < 0x80)

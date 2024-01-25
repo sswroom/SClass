@@ -17,6 +17,7 @@
 #include "Text/TextBinEnc/UTF8LCaseTextBinEnc.h"
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
 #include "Text/TextBinEnc/UTF8UCaseTextBinEnc.h"
+#include "Text/TextBinEnc/UTF16BETextBinEnc.h"
 
 Text::TextBinEnc::TextBinEncList::TextBinEncList()
 {
@@ -41,6 +42,8 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 	NEW_CLASS(enc, Text::TextBinEnc::QuotedPrintableEnc());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::UCS2TextBinEnc());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::UTF16BETextBinEnc());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::ASN1OIDBinEnc());
 	this->encList->Add(enc);

@@ -11,6 +11,16 @@
 -geometry.MultiPolygon support dynamic adding
 -kml.PolyStyle support outline
 -cesium support Polygon/MultiPolygon
+-Added text.toHex8, toHex16, toHex32
+-Added text.getEncList
+-Added text.TextBinEnc
+-Added text.UTF8TextBinEnc
+-Added text.UTF8LCaseTextBinEnc
+-Added text.UTF8UCaseTextBinEnc
+-Added text.HexTextBinEnc
+-Added text.Base64Enc
+-Added text.UTF16LETextBinEnc
+-Added text.UTF16BETextBinEnc
 
 1.5.1
 -Fixed AngleUnit problem

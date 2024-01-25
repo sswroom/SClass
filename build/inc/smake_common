@@ -4646,6 +4646,8 @@ Text/TextBinEnc/UTF8TextBinEnc.h:
 @UTF8TextBinEnc.o
 Text/TextBinEnc/UTF8UCaseTextBinEnc.h:
 @UTF8UCaseTextBinEnc.o
+Text/TextBinEnc/UTF16BETextBinEnc.h:
+@UTF16BETextBinEnc.o
 
 adl_defines.h:
 adl_sdk.h:

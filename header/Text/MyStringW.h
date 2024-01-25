@@ -301,9 +301,9 @@ namespace Text
 	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF16_UTF8(bytes, wstr); }
 	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF16_UTF8Cnt(stri); }
 #endif
-	const UTF8Char *StrReadChar(const UTF8Char *sptr, UTF32Char *outChar);
-	const UTF16Char *StrReadChar(const UTF16Char *sptr, UTF32Char *outChar);
-	const UTF32Char *StrReadChar(const UTF32Char *sptr, UTF32Char *outChar);
+	const UTF8Char *StrReadChar(const UTF8Char *sptr, OutParam<UTF32Char> outChar);
+	const UTF16Char *StrReadChar(const UTF16Char *sptr, OutParam<UTF32Char> outChar);
+	const UTF32Char *StrReadChar(const UTF32Char *sptr, OutParam<UTF32Char> outChar);
 	UTF8Char *StrWriteChar(UTF8Char *sptr, UTF32Char c);
 	UTF16Char *StrWriteChar(UTF16Char *sptr, UTF32Char c);
 	UTF32Char *StrWriteChar(UTF32Char *sptr, UTF32Char c);

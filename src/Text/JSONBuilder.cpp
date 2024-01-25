@@ -81,7 +81,7 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	*sptr++ = '\"';
 	while (true)
 	{
-		val = Text::StrReadChar(val, &c);
+		val = Text::StrReadChar(val, c);
 		if (c == 0)
 		{
 			break;

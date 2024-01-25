@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	if (Text::CharUtil::UTF8CharValid(buff))
 	{
 		UTF32Char c;
-		Text::StrReadChar(buff, &c);
+		Text::StrReadChar(buff, c);
 		sptr = Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)c);
 		me->txtUTF8CharCode->SetText(CSTRP(sbuff, sptr));
 	}
