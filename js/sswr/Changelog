@@ -2,6 +2,15 @@
 -Support leaflet icon without adding to map
 -Added web.mimeFromExt
 -Added cesium.createFromKMLFeature
+-Added web.getImageInfo
+-Enhance KML parsing
+-Added olayer2.createFromKMLFeature
+-Added olayer2.createFromGeometry
+-Added olayer2.toPointArray
+-Added geometry.GeometryCollection
+-geometry.MultiPolygon support dynamic adding
+-kml.PolyStyle support outline
+-cesium support Polygon/MultiPolygon
 
 1.5.1
 -Fixed AngleUnit problem

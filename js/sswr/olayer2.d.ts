@@ -3,6 +3,17 @@ import * as kml from "./kml";
 import * as map from "./map";
 import * as math from "./math";
 
+declare class Olayer2Options
+{
+	objProjection: OpenLayers.Projection;
+	mapProjection: OpenLayers.Projection;
+	map: OpenLayers.Map;
+};
+
+export function toPointArray(numArr: number[][], options: Olayer2Options): OpenLayers.Geometry.Point[];
+export function createFromKMLFeature(feature: kml.Feature, options: Olayer2Options): Promise<OpenLayers.Feature.Vector | OpenLayers.Marker | any[] | null>;
+export function createFromGeometry(geom: geometry, options: Olayer2Options): Promise<OpenLayers.Marker | OpenLayers.Geometry | null>;
+
 export class Olayer2Map extends map.MapControl
 {
 	inited: boolean;

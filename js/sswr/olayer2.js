@@ -1,9 +1,210 @@
+import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
 import * as map from "./map.js";
 import * as math from "./math.js";
 import * as osm from "./osm.js";
+import * as text from "./text.js";
 import * as web from "./web.js";
+
+export function toPointArray(numArr, options)
+{
+	var ret = [];
+	var i;
+	for (i in numArr)
+	{
+		var pos = new OpenLayers.LonLat(numArr[i][0], numArr[i][1]).transform(options.objProjection, options.mapProjection);
+		ret.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
+	}
+	return ret;
+}
+
+export async function createFromKMLFeature(feature, options)
+{
+	options = data.mergeOptions(options, {noPopup: false});
+	if (feature instanceof kml.Container)
+	{
+		var i;
+		var layers = [];
+		var layer;
+		for (i in feature.features)
+		{
+			layer = await createFromKMLFeature(feature.features[i], options);
+			if (layer instanceof OpenLayers.Marker)
+			{
+				layers.push(layer);
+			}
+			else if (layer instanceof OpenLayers.Feature.Vector)
+			{
+				layers.push(layer);
+			}
+			else if (layer != null)
+			{
+				var j;
+				for (j in layer)
+				{
+					layers.push(layer[j]);
+				}
+			}
+		}
+		return layers;
+	}
+	else if (feature instanceof kml.Placemark)
+	{
+		var opt = {objProjection: options.objProjection, mapProjection: options.mapProjection};
+		if (feature.name)
+			opt.name = feature.name;
+		if (feature.style)
+		{
+			var style = feature.style;
+			if (style instanceof kml.StyleMap)
+			{
+				style = style.normalStyle;
+			}
+			if (style instanceof kml.Style)
+			{
+				if (style.iconStyle)
+				{
+					var s = style.iconStyle;
+					if (s.iconUrl)
+					{
+						opt.iconUrl = s.iconUrl;
+					}
+					if (s.hotSpotX && s.hotSpotY)
+					{
+						opt.iconOffset = new OpenLayers.Pixel(-s.hotSpotX, -s.hotSpotY);
+					}
+				}
+				if (style.lineStyle)
+				{
+					var ls = style.lineStyle;
+					if (ls.color)
+						opt.strokeColor = kml.toCSSColor(ls.color);
+					if (ls.width)
+						opt.strokeWidth = ls.width;
+					opt.stroke = true;
+				}
+				else
+				{
+					opt.stroke = false;
+				}
+				if (style.polyStyle)
+				{
+					var ps = style.polyStyle;
+					if (ps.color)
+						opt.fillColor = kml.toCSSColor(ps.color);
+					opt.fill = true;
+				}
+				else
+				{
+					opt.fill = false;
+				}		
+			}
+		}
+		var layer = await createFromGeometry(feature.vec, opt);
+		if (layer instanceof OpenLayers.Geometry)
+		{
+			return new OpenLayers.Feature.Vector(layer, {name: feature.name, description: feature.description}, opt);
+		}
+		else if (layer instanceof OpenLayers.Marker)
+		{
+			if (!options.noPopup && (feature.name || feature.description))
+			{
+				var content;
+				if (feature.name && feature.description)
+				{
+					content = "<b>"+text.toHTMLText(feature.name)+"</b><br/>"+feature.description;
+				}
+				else if (feature.name)
+				{
+					content = "<b>"+text.toHTMLText(feature.name)+"</b>";
+				}
+				else
+				{
+					content = feature.description;
+				}
+				layer.events.register('click', layer, function(evt) {
+					var popup = new OpenLayers.Popup.FramedCloud("Popup",
+						layer.lonlat,
+						null,
+						content,
+						null,
+						null);
+					options.map.addPopup(popup, true);
+				});
+			}
+			return layer;
+		}
+		return layer;
+	}
+	else
+	{
+		console.log("Unknown KML feature type", feature);
+		return null;
+	}
+}
+
+export async function createFromGeometry(geom, options)
+{
+	if (options == null)
+	{
+		console.log("createFromGeometry does not have options");
+		return null;
+	}
+	if (geom instanceof geometry.Point)
+	{
+		var icon;
+		if (options.iconUrl && options.iconOffset)
+		{
+			var size = await web.getImageInfo(options.iconUrl);
+			if (size == null)
+			{
+				console.log("Error in getting image info from url", options.iconUrl);
+				return null;
+			}
+			icon = new OpenLayers.Icon(options.iconUrl, new OpenLayers.Size(size.width, size.height), options.iconOffset);
+			return new OpenLayers.Marker(new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]).transform(options.objProjection, options.mapProjection), icon);
+		}
+		else
+		{
+			var lonLat = new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]).transform(options.objProjection, options.mapProjection);
+			return new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+		}
+	}
+	else if (geom instanceof geometry.LinearRing)
+	{
+		return new OpenLayers.Geometry.LinearRing(toPointArray(geom.coordinates, options));
+	}
+	else if (geom instanceof geometry.LineString)
+	{
+		return new OpenLayers.Geometry.LineString(toPointArray(geom.coordinates, options));
+	}
+	else if (geom instanceof geometry.Polygon)
+	{
+		var lrList = [];
+		var i;
+		for (i in geom.geometries)
+		{
+			lrList.push(await createFromGeometry(geom.geometries[i], options));
+		}
+		return new OpenLayers.Geometry.Polygon(lrList);
+	}
+	else if (geom instanceof geometry.MultiPolygon)
+	{
+		var pgList = [];
+		var i;
+		for (i in geom.geometries)
+		{
+			pgList.push(await createFromGeometry(geom.geometries[i], options));
+		}
+		return new OpenLayers.Geometry.MultiPolygon(pgList);
+	}
+	else
+	{
+		console.log("Unknown geometry type", geom);
+		return null;
+	}
+}
 
 export class Olayer2Map extends map.MapControl
 {
@@ -96,21 +297,60 @@ export class Olayer2Map extends map.MapControl
 
 	addLayer(layer)
 	{
-		this.map.addLayer(layer);
-		if (!this.inited)
+		if (layer instanceof OpenLayers.Layer)
 		{
-			this.inited = true;
-			this.map.setCenter(
-				new OpenLayers.LonLat(this.initX, this.initY).transform(
-					this.mapProjection,
-					this.map.getProjectionObject()
-				), this.initLev);
+			this.map.addLayer(layer);
+			if (!this.inited)
+			{
+				this.inited = true;
+				this.map.setCenter(
+					new OpenLayers.LonLat(this.initX, this.initY).transform(
+						this.mapProjection,
+						this.map.getProjectionObject()
+					), this.initLev);
+			}
+		}
+		else if (data.isArray(layer))
+		{
+			var vectorLayer;
+			var markerLayer;
+			var vectors = [];
+			var i;
+			for (i in layer)
+			{
+				if (layer[i] instanceof OpenLayers.Marker)
+				{
+					if (markerLayer == null)
+						markerLayer = new OpenLayers.Layer.Markers("Markers");
+					markerLayer.addMarker(layer[i]);
+				}
+				else if (layer[i] instanceof OpenLayers.Feature.Vector)
+				{
+					vectors.push(layer[i]);
+				}
+				else
+				{
+					console.log("Unknown type on layer array");
+				}
+			}
+			if (vectors.length > 0)
+			{
+				vectorLayer = new OpenLayers.Layer.Vector("Vectors");
+				vectorLayer.addFeatures(vectors);
+				this.map.addLayer(vectorLayer);
+			}
+			if (markerLayer)
+				this.map.addLayer(markerLayer);
+		}
+		else
+		{
+			console.log("Unknown layer type", layer);
 		}
 	}
 
 	addKMLFeature(feature)
 	{
-		///////////////////////////////
+		createFromKMLFeature(feature, {map: this.map, objProjection: this.mapProjection, mapProjection: this.map.getProjectionObject()}).then((layer)=>{this.addLayer(layer);});
 	}
 
 	uninit()

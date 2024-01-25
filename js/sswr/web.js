@@ -700,6 +700,25 @@ export function mimeFromExt(ext)
 	}
 }
 
+export function getImageInfo(url)
+{
+	return new Promise(function (resolve, reject) {
+        const image = document.createElement('img');
+        image.addEventListener('load', function (e) {
+            resolve({
+                width: e.target.width,
+                height: e.target.height,
+            });
+        });
+
+        image.addEventListener('error', function () {
+            reject();
+        });
+
+        image.src = url;
+    });
+}
+
 export class Dialog
 {
 	constructor(content, options)

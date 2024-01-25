@@ -324,6 +324,11 @@ export class PolyStyle extends ColorStyle
 		super();
 	}
 
+	setOutline(outline)
+	{
+		this.outline = outline;
+	}
+
 	getUsedNS(ns)
 	{
 	}
@@ -332,6 +337,8 @@ export class PolyStyle extends ColorStyle
 	{
 		strs.push("\t".repeat(level)+"<PolyStyle>");
 		this.appendInnerXML(strs, level + 1);
+		if (this.outline != null)
+			strs.push("\t".repeat(level + 1)+"<outline>"+(this.labelVisibility?"1":"0")+"</outline>");
 		strs.push("\t".repeat(level)+"</PolyStyle>");
 	}
 
@@ -340,6 +347,8 @@ export class PolyStyle extends ColorStyle
 		if (!o instanceof PolyStyle)
 			return false;
 		if (!this.sameColor(o))
+			return false;
+		if (this.outline != o.outline)
 			return false;
 		return true;
 	}
@@ -1015,8 +1024,15 @@ export function toCSSColor(color)
 		return null;
 
 	var a = Number.parseInt(color.substring(0, 2), 16);
-	var b = Number.parseInt(color.substring(2, 4), 16);
-	var g = Number.parseInt(color.substring(4, 6), 16);
-	var r = Number.parseInt(color.substring(6, 8), 16);
-	return "rgba("+r+", "+g+", "+b+", "+(a / 255.0)+")";
+	if (a == 255)
+	{
+		return "#"+color.substring(6, 8)+color.substring(4, 6)+color.substring(2, 4);
+	}
+	else
+	{
+		var b = Number.parseInt(color.substring(2, 4), 16);
+		var g = Number.parseInt(color.substring(4, 6), 16);
+		var r = Number.parseInt(color.substring(6, 8), 16);
+		return "rgba("+r+", "+g+", "+b+", "+(a / 255.0)+")";
+	}
 }

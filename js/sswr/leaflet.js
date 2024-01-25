@@ -106,6 +106,12 @@ export function createFromKMLFeature(feature, options)
 					if (ls.width)
 						opt.lineWidth = ls.width;
 				}
+				if (style.polyStyle)
+				{
+					var ps = style.polyStyle;
+					if (ps.color)
+						opt.fillColor = kml.toCSSColor(ps.color);
+				}
 			}
 		}
 		var layer = createFromGeometry(feature.vec, opt);
@@ -169,6 +175,120 @@ export function createFromGeometry(geom, options)
 			}
 		}
 		return L.polyline(pts, opt);
+	}
+	else if (geom instanceof geometry.LinearRing)
+	{
+		var opt = {};
+		var k;
+		var pts = [];
+		if (options.lineColor)
+			opt.color = options.lineColor;
+		if (options.lineWidth)
+			opt.weight = options.lineWidth;
+		if (options.fillColor)
+		{
+			opt.fillColor = options.fillColor;
+			opt.fillOpacity = 1.0;
+		}
+		
+		for (k in geom.coordinates)
+		{
+			var latLng = L.latLng(geom.coordinates[k][1], geom.coordinates[k][0]);
+			if (latLng)
+			{
+				pts.push(latLng);
+			}
+			else
+			{
+				console.log("Error in LinearRing", geom.coordinates[k]);
+			}
+		}
+		return L.polygon(pts, opt);		
+	}
+	else if (geom instanceof geometry.Polygon)
+	{
+		var opt = {};
+		var i;
+		var j;
+		var pts = [];
+		var pts2;
+		var lr;
+		if (options.lineColor)
+			opt.color = options.lineColor;
+		if (options.lineWidth)
+			opt.weight = options.lineWidth;
+		if (options.fillColor)
+		{
+			opt.fillColor = options.fillColor;
+			opt.fillOpacity = 1.0;
+		}
+		
+		for (i in geom.geometries)
+		{
+			pts2 = [];
+			lr = geom.geometries[j];
+			for (j in lr.coordinates)
+			{
+				var latLng = L.latLng(lr.coordinates[j][1], lr.coordinates[j][0]);
+				if (latLng)
+				{
+					pts2.push(latLng);
+				}
+				else
+				{
+					console.log("Error in Polygon", lr.coordinates[j]);
+				}
+			}
+			pts.push(pts2);
+		}
+		return L.polygon(pts, opt);
+	}
+	else if (geom instanceof geometry.MultiPolygon)
+	{
+		var opt = {};
+		var i;
+		var j;
+		var k;
+		var pts = [];
+		var pts2;
+		var pts3;
+		var pg;
+		var lr;
+		if (options.lineColor)
+			opt.color = options.lineColor;
+		if (options.lineWidth)
+			opt.weight = options.lineWidth;
+		if (options.fillColor)
+		{
+			opt.fillColor = options.fillColor;
+			opt.fillOpacity = 1.0;
+		}
+		
+		for (i in geom.geometries)
+		{
+			pts2 = [];
+			pg = geom.geometries[i];
+			for (j in pg.geometries)
+			{
+				pts3 = [];
+				lr = pg.geometries[j];
+				for (k in lr.coordinates)
+				{
+					var latLng = L.latLng(lr.coordinates[k][1], lr.coordinates[k][0]);
+					if (latLng)
+					{
+						pts3.push(latLng);
+					}
+					else
+					{
+						console.log("Error in MultiPolygon", lr.coordinates[k]);
+					}
+				}
+				pts2.push(pts3);
+			}
+			pts.push(pts2);
+		}
+		return L.polygon(pts, opt);
 	}
 	else
 	{

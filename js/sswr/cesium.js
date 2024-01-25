@@ -228,6 +228,12 @@ export function createFromKMLFeature(feature, options)
 					if (ls.width)
 						opt.lineWidth = ls.width;
 				}
+				if (style.polyStyle)
+				{
+					var ps = style.polyStyle;
+					if (ps.color)
+						opt.fillColor = ps.color;
+				}
 			}
 		}
 		var layer = createFromGeometry(feature.vec, opt);
@@ -246,7 +252,6 @@ export function createFromKMLFeature(feature, options)
 		return null;
 	}
 }
-
 
 export function createFromGeometry(geom, options)
 {
@@ -280,6 +285,63 @@ export function createFromGeometry(geom, options)
 			opt.width = options.lineWidth;
 		opt.positions = toCartesian3Arr(geom.coordinates);
 		return new Cesium.Entity({polyline: new Cesium.PolylineGraphics(opt)});
+	}
+	else if (geom instanceof geometry.Polygon)
+	{
+		var opt = {};
+		opt.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+		opt.height = 0;
+		if (options.lineColor)
+		{
+			var c = kml.toColor(options.lineColor);
+			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
+			opt.outline = true;
+		}
+		if (options.lineWidth)
+		{
+			opt.outlineWidth = options.lineWidth;
+			opt.outline = true;
+		}
+		if (options.fillColor)
+		{
+			var c = kml.toColor(options.fillColor);
+			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
+		}
+		opt.hierarchy = {positions: toCartesian3Arr(geom.geometries[0].coordinates), holes: []};
+		var i = 1;
+		var j = geom.geometries.length;
+		while (i < j)
+		{
+			opt.hierarchy.holes.push({positions: toCartesian3Arr(geom.geometries[i].coordinates)});
+			i++;
+		}
+		return new Cesium.Entity({polygon: new Cesium.PolygonGraphics(opt)});
+	}
+	else if (geom instanceof geometry.MultiPolygon)
+	{
+		if (geom.geometries.length == 1)
+		{
+			return createFromGeometry(geom.geometries[0], options);
+		}
+		var opt = {};
+		if (options.lineColor)
+		{
+			var c = kml.toColor(options.lineColor);
+			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
+			opt.outline = true;
+		}
+		if (options.lineWidth)
+		{
+			opt.outlineWidth = options.lineWidth;
+			opt.outline = true;
+		}
+		if (options.fillColor)
+		{
+			var c = kml.toColor(options.fillColor);
+			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
+		}
+		console.log("MultiPolygon not supported", geom);
+		return null;
 	}
 	else
 	{
@@ -335,12 +397,12 @@ export class CesiumMap extends map.MapControl
 		if (layer.type == map.WebMapType.OSMTile)
 		{
 			var opt = {};
-			if (options && options.maxZoom)
+			if (layer.maxZoom)
 			{
-				opt.maximumLevel = options.maxZoom;
+				opt.maximumLevel = layer.maxZoom;
 			}
-			return new Cesium.ImageryLayer(new Cesium.UrlTemplateImageryProvider({
-				url: layer.url}, opt));
+			opt.url = layer.url;
+			return new Cesium.ImageryLayer(new Cesium.UrlTemplateImageryProvider(opt));
 		}
 	}
 

@@ -87,3 +87,8 @@ export class MultiPolygon extends MultiGeometry<Polygon>
 {
 	constructor(srid: number, coordinates: number[][][][]);
 }
+
+export class GeometryCollection extends MultiGeometry<Vector2D>
+{
+	constructor(srid: number);
+}

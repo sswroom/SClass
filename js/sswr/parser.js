@@ -1,6 +1,5 @@
-import * as geomtry from "./geometry.js";
+import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
-import { AltitudeMode } from "./kml.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
 
@@ -135,6 +134,9 @@ function parseKMLStyle(node)
 				{
 				case "#text":
 					break;
+				case "color":
+					innerStyle.setColor(subNode2.textContent);
+					break;
 				case "scale":
 					innerStyle.setScale(Number.parseFloat(subNode2.textContent));
 					break;
@@ -144,6 +146,27 @@ function parseKMLStyle(node)
 				}
 			}
 			style.setLineStyle(innerStyle);
+			break;
+		case "PolyStyle":
+			innerStyle = new kml.PolyStyle();
+			for (subNode2 of subNode.childNodes)
+			{
+				switch (subNode2.nodeName)
+				{
+				case "#text":
+					break;
+				case "color":
+					innerStyle.setColor(subNode2.textContent);
+					break;
+				case "outline":
+					innerStyle.setOutline(subNode2.textContent == "1");
+					break;
+				default:
+					console.log("Unknown node in kml PolyStyle", subNode2);
+					break;
+				}
+			}
+			style.setPolyStyle(innerStyle);
 			break;
 		default:
 			console.log("Unknown node in kml Style", subNode);
@@ -240,11 +263,11 @@ function parseKMLContainer(container, kmlNode, doc)
 	{
 		switch (node.nodeName)
 		{
-		case "name":
-			container.setName(node.textContent);
-			break;
 		case "description":
 			container.setDescription(node.textContent);
+			break;
+		case "name":
+			container.setName(node.textContent);
 			break;
 		case "open":
 			container.setOpen(node.textContent == "1");
@@ -264,6 +287,10 @@ function parseKMLContainer(container, kmlNode, doc)
 			break;
 		case "LookAt":
 			container.setLookAt(parseKMLLookAt(node));
+			break;
+		case "Snippet":
+			container.setSnippet(node.textContent);
+			break;
 		case "#text":
 			break;
 		default:
@@ -300,6 +327,9 @@ function parseKMLPlacemark(kmlNode, doc)
 		case "snippet":
 			snippet = node.textContent;
 			break;
+		case "Snippet":
+			snippet = node.textContent;
+			break;
 		case "styleUrl":
 			if (node.textContent.startsWith("#") && doc)
 			{
@@ -318,63 +348,9 @@ function parseKMLPlacemark(kmlNode, doc)
 			visibility = (node.textContent == "1");
 			break;
 		case "Point":
-			for (subNode of node.childNodes)
-			{
-				switch (subNode.nodeName)
-				{
-				case "#text":
-					break;
-				case "extrude":
-					break;
-				case "altitudeMode":
-					break;
-				case "tessellate":
-					break;
-				case "coordinates":
-					coords = subNode.textContent.split(",");
-					geom = new geomtry.Point(4326, text.arrayToNumbers(coords));
-					break;
-				default:
-					console.log("Unknown node in kml Point: "+subNode.nodeName, subNode);
-					break;
-				}
-			}
-			break;
 		case "LineString":
-			for (subNode of node.childNodes)
-			{
-				switch (subNode.nodeName)
-				{
-				case "#text":
-					break;
-				case "extrude":
-					break;
-				case "altitudeMode":
-					break;
-				case "tessellate":
-					break;
-				case "coordinates":
-					{
-						var pts = subNode.textContent.split(/\s+/);
-						var ls = [];
-						var i;
-						var arr;
-						for (i in pts)
-						{
-							arr = pts[i].split(",");
-							if (arr.length >= 2)
-							{
-								ls.push(text.arrayToNumbers(arr));
-							}
-						}
-						geom = new geomtry.LineString(4326, ls);
-					}
-					break;
-				default:
-					console.log("Unknown node in kml LineString: "+subNode.nodeName, subNode);
-					break;
-				}
-			}
+		case "MultiGeometry":
+			geom = parseKMLGeometry(node);
 			break;
 		case "ExtendedData":
 			break;
@@ -397,6 +373,205 @@ function parseKMLPlacemark(kmlNode, doc)
 		if (visibility != null)
 			feature.setVisibility(visibility);
 		return feature;
+	}
+	return null;
+}
+
+function parseKMLGeometry(kmlNode)
+{
+	var subNode;
+	var subNode2;
+	var geomList;
+	var geom;
+	var coords;
+	var i;
+	switch (kmlNode.nodeName)
+	{
+	case "Point":
+		for (subNode of kmlNode.childNodes)
+		{
+			switch (subNode.nodeName)
+			{
+			case "#text":
+				break;
+			case "extrude":
+				break;
+			case "altitudeMode":
+				break;
+			case "tessellate":
+				break;
+			case "coordinates":
+				coords = subNode.textContent.split(",");
+				return new geometry.Point(4326, text.arrayToNumbers(coords));
+			default:
+				console.log("Unknown node in kml Point: "+subNode.nodeName, subNode);
+				break;
+			}
+		}
+		break;
+	case "LineString":
+		for (subNode of kmlNode.childNodes)
+		{
+			switch (subNode.nodeName)
+			{
+			case "#text":
+				break;
+			case "extrude":
+				break;
+			case "altitudeMode":
+				break;
+			case "tessellate":
+				break;
+			case "coordinates":
+				{
+					var pts = subNode.textContent.split(/\s+/);
+					var ls = [];
+					var i;
+					var arr;
+					for (i in pts)
+					{
+						arr = pts[i].split(",");
+						if (arr.length >= 2)
+						{
+							ls.push(text.arrayToNumbers(arr));
+						}
+					}
+					return new geometry.LineString(4326, ls);
+				}
+			default:
+				console.log("Unknown node in kml LineString: "+subNode.nodeName, subNode);
+				break;
+			}
+		}
+		break;
+	case "LinearRing":
+		for (subNode of kmlNode.childNodes)
+		{
+			switch (subNode.nodeName)
+			{
+			case "#text":
+				break;
+			case "extrude":
+				break;
+			case "altitudeMode":
+				break;
+			case "tessellate":
+				break;
+			case "coordinates":
+				{
+					var pts = subNode.textContent.split(/\s+/);
+					var ls = [];
+					var i;
+					var arr;
+					for (i in pts)
+					{
+						arr = pts[i].split(",");
+						if (arr.length >= 2)
+						{
+							ls.push(text.arrayToNumbers(arr));
+						}
+					}
+					return new geometry.LinearRing(4326, ls);
+				}
+			default:
+				console.log("Unknown node in kml LinearRing: "+subNode.nodeName, subNode);
+				break;
+			}
+		}
+		break;
+	case "Polygon":
+		geomList = [];
+		for (subNode of kmlNode.childNodes)
+		{
+			switch (subNode.nodeName)
+			{
+			case "#text":
+				break;
+			case "extrude":
+				break;
+			case "altitudeMode":
+				break;
+			case "tessellate":
+				break;
+			case "outerBoundaryIs":
+				for (subNode2 of subNode.childNodes)
+				{
+					switch (subNode2.nodeName)
+					{
+					case "#text":
+						break;
+					case "LinearRing":
+						geom = parseKMLGeometry(subNode2);
+						if (geom)
+							geomList.push(geom);
+						break;
+					default:
+						console.log("Unknown node in kml Polygon.outerBoundaryIs", subNode2);
+						break;
+					}
+				}
+				break;
+			default:
+				console.log("Unknown node in kml Polygon: "+subNode.nodeName, subNode);
+				break;
+			}
+		}
+		if (geomList.length > 0)
+		{
+			geom = new geometry.Polygon(4326);
+			for (i in geomList)
+			{
+				geom.geometries.push(geomList[i]);
+			}
+			return geom; 
+		}
+		break;
+	case "MultiGeometry":
+		geomList = [];
+		for (subNode of kmlNode.childNodes)
+		{
+			switch (subNode.nodeName)
+			{
+			case "#text":
+				break;
+			default:
+				geom = parseKMLGeometry(subNode);
+				if (geom)
+				{
+					geomList.push(geom);
+				}
+				else
+				{
+					console.log("Unknown node in kml MultiGeometry", subNode);
+				}
+				break;
+			}
+		}
+		if (geomList.length > 0)
+		{
+			if (geomList[0] instanceof geometry.Polygon && (geomList.length == 1 || geomList[1] instanceof geometry.Polygon))
+			{
+				geom = new geometry.MultiPolygon(4326);
+				for (i in geomList)
+				{
+					geom.geometries.push(geomList[i]);
+				}
+				return geom; 
+			}
+			else
+			{
+				geom = new geometry.GeometryCollection(4326);
+				for (i in geomList)
+				{
+					geom.geometries.push(geomList[i]);
+				}
+				return geom; 
+			}
+		}
+		break;
+	default:
+		console.log("Unknown node in kml geometry", kmlNode);
+		break;
 	}
 	return null;
 }

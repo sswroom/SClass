@@ -401,9 +401,21 @@ export class MultiPolygon extends MultiGeometry
 		super(srid);
 		this.type = VectorType.MultiPolygon;
 		var i;
-		for (i in coordinates)
+		if (coordinates)
 		{
-			this.geometries.push(new Polygon(srid, coordinates[i]));
+			for (i in coordinates)
+			{
+				this.geometries.push(new Polygon(srid, coordinates[i]));
+			}
 		}
+	}
+}
+
+export class GeometryCollection extends MultiGeometry
+{
+	constructor(srid)
+	{
+		super(srid);
+		this.type = VectorType.GeometryCollection;
 	}
 }

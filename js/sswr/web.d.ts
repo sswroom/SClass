@@ -6,6 +6,12 @@ declare class Color
 	b: number; //0.0-1.0
 }
 
+declare class ImageInfo
+{
+	width: number;
+	height: number;
+}
+
 export function getRequestURLBase(): string;
 export function getParameterByName(name: string): string | null;
 export function loadJSON(url: string, onResultFunc: Function): void;
@@ -16,6 +22,7 @@ export function handleFileDrop(ele: HTMLElement, hdlr: (file: File)=>void): void
 export function appendUrl(targetUrl: string, docUrl: string): string;
 export function mimeFromFileName(fileName: string): string;
 export function mimeFromExt(ext: string): string;
+export function getImageInfo(url: string): Promise<ImageInfo|null>;
 
 declare class DialogButton
 {

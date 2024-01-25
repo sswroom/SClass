@@ -140,8 +140,9 @@ export class LineStyle extends ColorStyle
 
 export class PolyStyle extends ColorStyle
 {
-
+	outline: boolean;
 	constructor();
+	setOutline(outline: boolean): void;
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: PolyStyle): boolean;
