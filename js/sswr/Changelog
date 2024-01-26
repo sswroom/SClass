@@ -21,6 +21,8 @@
 -Added text.Base64Enc
 -Added text.UTF16LETextBinEnc
 -Added text.UTF16BETextBinEnc
+-Added text.CPPByteArrBinEnc
+-Added text.CPPTextBinEnc
 
 1.5.1
 -Fixed AngleUnit problem

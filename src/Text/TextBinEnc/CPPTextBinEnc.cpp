@@ -46,6 +46,11 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NotNullPtr<Text::StringBuilder
 			sb->AppendC(UTF8STRC("\\\\"));
 			ret += 2;
 		}
+		else if (b == '\"')
+		{
+			sb->AppendC(UTF8STRC("\\\""));
+			ret += 2;
+		}
 		else if (b < 0x80)
 		{
 			sb->AppendChar(b, 1);

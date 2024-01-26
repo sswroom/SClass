@@ -224,6 +224,8 @@ export function getEncList()
 	ret.push(new UTF8TextBinEnc());
 	ret.push(new UTF8LCaseTextBinEnc());
 	ret.push(new UTF8UCaseTextBinEnc());
+	ret.push(new CPPByteArrBinEnc());
+	ret.push(new CPPTextBinEnc());
 	ret.push(new HexTextBinEnc());
 	ret.push(new UTF16LETextBinEnc());
 	ret.push(new UTF16BETextBinEnc());
@@ -714,6 +716,291 @@ export class UTF16BETextBinEnc extends TextBinEnc
 			ret.push(c >> 8);
 			ret.push(c & 255);
 			i++;
+		}
+		return new Uint8Array(ret);
+	}
+}
+
+export class CPPByteArrBinEnc extends TextBinEnc
+{
+	constructor()
+	{
+		super("CPP Byte Arr");
+	}
+
+	encodeBin(buff)
+	{
+		var lines = [];
+		var cols = [];
+		var arr = new Uint8Array(buff);
+		var i = 0;
+		var j = arr.length;
+		while (i < j)
+		{
+			if (i > 0 && (i & 15) == 0)
+			{
+				lines.push(cols.join(", "));
+				cols = [];
+			}
+			cols.push("0x"+toHex8(arr[i]));
+			i++;
+		}
+		if (cols.length > 0)
+		{
+			lines.push(cols.join(", "));
+		}
+		return lines.join(",\r\n");
+	}
+
+	decodeBin(str)
+	{
+		var ret = [];
+		var i = -1;
+		var j;
+		var s;
+		while (true)
+		{
+			j = str.indexOf(",", i + 1);
+			if (j < 0)
+			{
+				s = str.substring(i + 1).trim();
+			}
+			else
+			{
+				s = str.substring(i + 1, j).trim();
+			}
+			if (s.startsWith("0x"))
+				ret.push(Number.parseInt(s.substring(2), 16));
+			else
+				ret.push(Number.parseInt(s));
+			if (j < 0)
+				break;
+			else
+				i = j;
+		}
+		return new Uint8Array(ret);
+	}
+}
+
+export class CPPTextBinEnc extends TextBinEnc
+{
+	constructor()
+	{
+		super("CPP String");
+	}
+
+	encodeBin(buff)
+	{
+		var arr = new Uint8Array(buff);
+		var ret = [];
+		var lineStart = true;
+		var code;
+		var b;
+		var i = 0;
+		var j = arr.length;
+		while (i < j)
+		{
+			b = arr[i];
+			if (lineStart)
+			{
+				ret.push("\"");
+				lineStart = false;
+			}
+			if (b == 0)
+			{
+				ret.push("\\0");
+			}
+			else if (b == 13)
+			{
+				ret.push("\\r");
+			}
+			else if (b == 10)
+			{
+				ret.push("\\n\"\r\n");
+				lineStart = true;
+			}
+			else if (b == 0x5c)
+			{
+				ret.push("\\\\");
+			}
+			else if (b == 0x22)
+			{
+				ret.push("\\\"");
+			}
+			else if (b < 0x80)
+			{
+				ret.push(String.fromCharCode(b));
+			}
+			else if ((b & 0xe0) == 0xc0)
+			{
+				ret.push(String.fromCharCode((((b & 0x1f) << 6) | (arr[i + 1] & 0x3f))));
+				i++;
+			}
+			else if ((b & 0xf0) == 0xe0)
+			{
+				ret.push(String.fromCharCode(((b & 0x0f) << 12) | ((arr[i + 1] & 0x3f) << 6) | (arr[i + 2] & 0x3f)));
+				i += 2;
+			}
+			else if ((b & 0xf8) == 0xf0)
+			{
+				code = (((b & 0x7) << 18) | ((arr[i + 1] & 0x3f) << 12) | ((arr[i + 2] & 0x3f) << 6) | (arr[i + 3] & 0x3f));
+				if (code >= 0x10000)
+				{
+					ret.push(String.fromCharCode(((code - 0x10000) >> 10) + 0xd800, (code & 0x3ff) + 0xdc00));
+				}
+				else
+				{
+					ret.push(String.fromCharCode(code));
+				}
+				i += 3;
+			}
+			else if ((b & 0xfc) == 0xf8)
+			{
+				code = (((b & 0x3) << 24) | ((arr[i + 1] & 0x3f) << 18) | ((arr[i + 2] & 0x3f) << 12) | ((arr[i + 3] & 0x3f) << 6) | (arr[i + 4] & 0x3f));
+				if (code >= 0x10000)
+				{
+					ret.push(String.fromCharCode(((code - 0x10000) >> 10) + 0xd800, (code & 0x3ff) + 0xdc00));
+				}
+				else
+				{
+					ret.push(String.fromCharCode(code));
+				}
+				i += 4;
+			}
+			else if ((b & 0xfe) == 0xfc)
+			{
+				code = (UInt32)(((b & 0x1) << 30) | ((arr[i + 1] & 0x3f) << 24) | ((arr[i + 2] & 0x3f) << 18) | ((arr[i + 3] & 0x3f) << 12) | ((arr[i + 4] & 0x3f) << 6) | (arr[i + 5] & 0x3f));
+				if (code >= 0x10000)
+				{
+					ret.push(String.fromCharCode(((code - 0x10000) >> 10) + 0xd800, (code & 0x3ff) + 0xdc00));
+				}
+				else
+				{
+					ret.push(String.fromCharCode(code));
+				}
+				i += 5;
+			}
+			i++;
+		}
+		if (!lineStart)
+		{
+			ret.push('\"');
+		}
+		return ret.join("");
+	}
+
+	decodeBin(str)
+	{
+		var isQuote = false;
+		var ret = [];
+		var i = 0;
+		var j = str.length;
+		var c;
+		while (true)
+		{
+			if (i >= j)
+			{
+				if (isQuote)
+				{
+					throw new Error("Unexpected end of string");
+				}
+				break;
+			}
+			c = str.charCodeAt(i++);
+			if (!isQuote)
+			{
+				if (c == 0x22)
+				{
+					isQuote = true;
+				}
+				else if (c == 0x20 || c == '\t'.charCodeAt(0) || c == 13 || c == 10)
+				{
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else if (c == 0x5c)
+			{
+				if (i >= j)
+					throw new Error("Unexpected end of string after \\");
+				c = str.charAt(i++);
+				if (c == 'r')
+				{
+					ret.push(13);
+				}
+				else if (c == 'n')
+				{
+					ret.push(10);
+				}
+				else if (c == 't')
+				{
+					ret.push(9);
+				}
+				else if (c == '\\')
+				{
+					ret.push(0x5c);
+				}
+				else if (c == '\"')
+				{
+					ret.push(0x22);
+				}
+				else if (c == '0')
+				{
+					ret.push(0);
+				}
+				else
+				{
+					throw new Error("Unsupported escape sequence \\"+c);
+				}
+			}
+			else if (c == 0x22)
+			{
+				isQuote = false;
+			}
+			else
+			{
+				if (c < 0x80)
+				{
+					ret.push(c);
+				}
+				else if (c < 0x800)
+				{
+					ret.push(0xc0 | (c >> 6));
+					ret.push(0x80 | (c & 0x3f));
+				}
+				else if (c < 0x10000)
+				{
+					ret.push(0xe0 | (c >> 12));
+					ret.push(0x80 | ((c >> 6) & 0x3f));
+					ret.push(0x80 | (c & 0x3f));
+				}
+				else if (c < 0x200000)
+				{
+					ret.push(0xf0 | (c >> 18));
+					ret.push(0x80 | ((c >> 12) & 0x3f));
+					ret.push(0x80 | ((c >> 6) & 0x3f));
+					ret.push(0x80 | (c & 0x3f));
+				}
+				else if (c < 0x4000000)
+				{
+					ret.push(0xf8 | (c >> 24));
+					ret.push(0x80 | ((c >> 18) & 0x3f));
+					ret.push(0x80 | ((c >> 12) & 0x3f));
+					ret.push(0x80 | ((c >> 6) & 0x3f));
+					ret.push(0x80 | (c & 0x3f));
+				}
+				else
+				{
+					ret.push(0xfc | (c >> 30));
+					ret.push(0x80 | ((c >> 24) & 0x3f));
+					ret.push(0x80 | ((c >> 18) & 0x3f));
+					ret.push(0x80 | ((c >> 12) & 0x3f));
+					ret.push(0x80 | ((c >> 6) & 0x3f));
+					ret.push(0x80 | (c & 0x3f));
+				}
+			}
 		}
 		return new Uint8Array(ret);
 	}
