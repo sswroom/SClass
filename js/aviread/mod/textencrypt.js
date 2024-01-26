@@ -1,10 +1,10 @@
 import * as text from "/js/@sswroom/sswr/text.js";
 
-var list = text.getEncList();
-var i;
-var opt;
-var sourceType = document.getElementById("sourceType");
-var destType = document.getElementById("destType");
+let list = text.getEncList();
+let i;
+let opt;
+let sourceType = document.getElementById("sourceType");
+let destType = document.getElementById("destType");
 for (i in list)
 {
 	opt = document.createElement("option");
@@ -19,9 +19,9 @@ for (i in list)
 
 function onConvClicked(target, ev)
 {
-	var srcEnc = list[sourceType.value];
-	var destEnc = list[destType.value];
-	var srcText = document.getElementById("sourceText").value;
+	let srcEnc = list[sourceType.value];
+	let destEnc = list[destType.value];
+	let srcText = document.getElementById("sourceText").value;
 	document.getElementById("destText").innerText = destEnc.encodeBin(srcEnc.decodeBin(srcText));
 }
 

@@ -33,8 +33,8 @@ export const GeometryType = {
 
 export function calcDistance(srid, geom, x, y)
 {
-	var pt = geom.calBoundaryPoint(new math.Coord2D(x, y));
-	var csys = math.CoordinateSystemManager.srCreateCsys(srid);
+	let pt = geom.calBoundaryPoint(new math.Coord2D(x, y));
+	let csys = math.CoordinateSystemManager.srCreateCsys(srid);
 	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, unit.Distance.Unit.METER);
 }
 
@@ -57,9 +57,9 @@ export class GPSTrack
 
 	createLineString()
 	{
-		var coordinates = new Array();
-		var i = 0;
-		var j = this.recs.length;
+		let coordinates = new Array();
+		let i = 0;
+		let j = this.recs.length;
 		while (i < j)
 		{
 			coordinates.push([this.recs[i].lon, this.recs[i].lat, this.recs[i].a]);
@@ -77,10 +77,10 @@ export class GPSTrack
 	{
 		if (ticks >= this.recs[0].t && ticks <= this.recs[this.recs.length - 1].t)
 		{
-			var i = 0;
-			var j = this.recs.length - 1;
-			var k;
-			var l;
+			let i = 0;
+			let j = this.recs.length - 1;
+			let k;
+			let l;
 			while (i <= j)
 			{
 				k = (i + j) >> 1;
@@ -98,9 +98,9 @@ export class GPSTrack
 					return new math.Vector3(this.recs[k].lon, this.recs[k].lat, this.recs[k].a);
 				}
 			}
-			var tDiff;
-			var rec1 = this.recs[i - 1];
-			var rec2 = this.recs[i];
+			let tDiff;
+			let rec1 = this.recs[i - 1];
+			let rec2 = this.recs[i];
 			tDiff = rec2.t - rec1.t;
 			return new math.Vector3(
 				(rec1.lon * (rec2.t - ticks) + rec2.lon * (ticks - rec1.t)) / tDiff,
@@ -163,14 +163,14 @@ export class WMS
 	{
 		if (this.version == null)
 		{
-			var resp = await fetch(this.url + "?SERVICE=WMS&REQUEST=GetCapabilities");
-			var parser = new DOMParser();
-			var contentType = resp.headers.get("Content-Type") || "text/xml";
-			var doc = parser.parseFromString(await resp.text(), contentType);
-			var node = doc.childNodes[0];
+			let resp = await fetch(this.url + "?SERVICE=WMS&REQUEST=GetCapabilities");
+			let parser = new DOMParser();
+			let contentType = resp.headers.get("Content-Type") || "text/xml";
+			let doc = parser.parseFromString(await resp.text(), contentType);
+			let node = doc.childNodes[0];
 			if (node.nodeName == "WMS_Capabilities" || node.nodeName == "WMT_MS_Capabilities")
 			{
-				var attr = node.attributes.getNamedItem("version");
+				let attr = node.attributes.getNamedItem("version");
 				if (attr)
 				{
 					this.version = attr.value;
@@ -181,9 +181,9 @@ export class WMS
 				return null;
 			}
 		}
-		var x = (mapPos.x - bounds.min.x) * width / bounds.getWidth();
-		var y = (bounds.max.y - mapPos.y) * height / bounds.getHeight();
-		var url;
+		let x = (mapPos.x - bounds.min.x) * width / bounds.getWidth();
+		let y = (bounds.max.y - mapPos.y) * height / bounds.getHeight();
+		let url;
 	
 		if (this.version == "1.1.1")
 		{
@@ -204,7 +204,7 @@ export class WMS
 			console.log("WMS: Unsupported version", this.version);
 			return null;
 		}
-		var resp = await fetch(url);
+		let resp = await fetch(url);
 		if (resp.ok)
 		{
 			return await resp.json();

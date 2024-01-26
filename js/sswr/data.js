@@ -16,7 +16,7 @@ export function toObjectString(o, lev)
 	{
 		return "";
 	}
-	var nextLev;
+	let nextLev;
 	if (lev)
 	{
 		nextLev = lev + 1;
@@ -25,9 +25,9 @@ export function toObjectString(o, lev)
 	{
 		nextLev = 1;
 	}
-	var t = typeof o;
-	var out;
-	var name;
+	let t = typeof o;
+	let out;
+	let name;
 	if (data.isArray(o))
 	{
 		out = new Array();
@@ -84,7 +84,7 @@ export function compare(a, b)
 		return -1;
 	if (b == null)
 		return 1;
-	var ta = typeof a;
+	let ta = typeof a;
 	if (ta == "string")
 	{
 		return a.localeCompare(b);
@@ -114,20 +114,20 @@ export function compare(a, b)
 
 export function sort(arr, compareFunc, firstIndex, lastIndex)
 {
-    var levi = new Array();
-    var desni = new Array();
+    let levi = new Array();
+    let desni = new Array();
 
-	var index = 0;
-	var i = 0;
-	var j = 0;
-	var left = 0;
-	var right = 0;
-	var meja = 0;
-	var left1 = 0;
-	var right1 = 0;
-	var temp1 = 0;
-	var temp2 = 0;
-	var temp = 0;
+	let index = 0;
+	let i = 0;
+	let j = 0;
+	let left = 0;
+	let right = 0;
+	let meja = 0;
+	let left1 = 0;
+	let right1 = 0;
+	let temp1 = 0;
+	let temp2 = 0;
+	let temp = 0;
 	if (compareFunc == null)
 	{
 		compareFunc = compare;
@@ -201,35 +201,32 @@ export function sort(arr, compareFunc, firstIndex, lastIndex)
 				j++;
 			}
 		}
-		else
+		else if ( i != 0 )
 		{
-			if ( i != 0 )
+			temp1 = arr[left];
+			i = left + 1;
+			while (i <= right)
 			{
-				temp1 = arr[left];
-				i = left + 1;
-				while (i <= right)
+				temp2 = arr[i];
+				if ( compareFunc(temp1, temp2) > 0)
 				{
-					temp2 = arr[i];
-					if ( compareFunc(temp1, temp2) > 0)
+					arr[i] = temp1;
+					j = i - 1;
+					while (j > left)
 					{
-						arr[i] = temp1;
-						j = i - 1;
-						while (j > left)
-						{
-							temp = arr[j-1];
-							if ( compareFunc(temp, temp2) > 0)
-								arr[j--] = temp;
-							else
-								break;
-						}
-						arr[j] = temp2;
+						temp = arr[j-1];
+						if ( compareFunc(temp, temp2) > 0)
+							arr[j--] = temp;
+						else
+							break;
 					}
-					else
-					{
-						temp1 = temp2;
-					}
-					i++;
+					arr[j] = temp2;
 				}
+				else
+				{
+					temp1 = temp2;
+				}
+				i++;
 			}
 		}
 		index--;
@@ -240,7 +237,7 @@ export function mergeOptions(options, defOptions)
 {
 	if (options == null)
 		options = {};
-	var i;
+	let i;
 	for (i in defOptions)
 	{
 		if (options[i] == null)
@@ -278,9 +275,9 @@ export class DateTimeUtil
 	static monthString = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	static dateValueSetDate(t, dateStrs)
 	{
-		var vals0 = dateStrs[0] - 0;
-		var vals1 = dateStrs[1] - 0;
-		var vals2 = dateStrs[2] - 0;
+		let vals0 = dateStrs[0] - 0;
+		let vals1 = dateStrs[1] - 0;
+		let vals2 = dateStrs[2] - 0;
 		if (vals0 > 100)
 		{
 			t.year = vals0;
@@ -301,26 +298,23 @@ export class DateTimeUtil
 				t.day = vals1;
 			}
 		}
+		else if (vals1 > 12)
+		{
+			t.year = ((Math.floor(t.year / 100) * 100) + vals2);
+			t.month = vals0;
+			t.day = vals1;
+		}
 		else
 		{
-			if (vals1 > 12)
-			{
-				t.year = ((Math.floor(t.year / 100) * 100) + vals2);
-				t.month = vals0;
-				t.day = vals1;
-			}
-			else
-			{
-				t.year = ((Math.floor(t.year / 100) * 100) + vals0);
-				t.month = vals1;
-				t.day = vals2;
-			}
+			t.year = ((Math.floor(t.year / 100) * 100) + vals0);
+			t.month = vals1;
+			t.day = vals2;
 		}
 	}
 
 	static timeValueSetTime(t, timeStrs)
 	{
-		var strs;
+		let strs;
 
 		t.hour = timeStrs[0] - 0;
 		t.minute = timeStrs[1] - 0;
@@ -371,15 +365,15 @@ export class DateTimeUtil
 
 	static date2TotalDays(year, month, day)
 	{
-		var totalDays;
-		var leapDays;
-		var yearDiff;
-		var yearDiff100;
-		var yearDiff400;
+		let totalDays;
+		let leapDays;
+		let yearDiff;
+		let yearDiff100;
+		let yearDiff400;
 
-		var currYear = year;
-		var currMonth = month;
-		var currDay = day;
+		let currYear = year;
+		let currMonth = month;
+		let currDay = day;
 
 		if (currYear <= 2000)
 		{
@@ -482,50 +476,47 @@ export class DateTimeUtil
 				}
 			}
 		}
-		else
+		else if (totalDays < 10957)
 		{
-			if (totalDays < 10957)
+			t.year = 1970;
+			while (true)
 			{
-				t.year = 1970;
-				while (true)
+				if (DateTimeUtil.isYearLeap(t.year))
 				{
-					if (DateTimeUtil.isYearLeap(t.year))
+					if (totalDays < 366)
 					{
-						if (totalDays < 366)
-						{
-							break;
-						}
-						else
-						{
-							t.year++;
-							totalDays -= 366;
-						}
+						break;
 					}
 					else
 					{
-						if (totalDays < 365)
-						{
-							break;
-						}
-						else
-						{
-							t.year++;
-							totalDays -= 365;
-						}
+						t.year++;
+						totalDays -= 366;
+					}
+				}
+				else
+				{
+					if (totalDays < 365)
+					{
+						break;
+					}
+					else
+					{
+						t.year++;
+						totalDays -= 365;
 					}
 				}
 			}
-			else
+		}
+		else
+		{
+			totalDays -= 10957;
+			t.year = (2000 + (Math.floor(totalDays / 1461) * 4));
+			totalDays = totalDays % 1461;
+			if (totalDays >= 366)
 			{
-				totalDays -= 10957;
-				t.year = (2000 + (Math.floor(totalDays / 1461) * 4));
-				totalDays = totalDays % 1461;
-				if (totalDays >= 366)
-				{
-					totalDays--;
-					t.year = (t.year + Math.floor(totalDays / 365));
-					totalDays = totalDays % 365;
-				}
+				totalDays--;
+				t.year = (t.year + Math.floor(totalDays / 365));
+				totalDays = totalDays % 365;
 			}
 		}
 
@@ -547,7 +538,6 @@ export class DateTimeUtil
 					}
 				}
 				else
-				{
 					if (totalDays < 91)
 					{
 						t.month = 3;
@@ -558,7 +548,6 @@ export class DateTimeUtil
 						t.month = 4;
 						t.day = (totalDays - 91 + 1);
 					}
-				}
 			}
 			else
 			{
@@ -578,7 +567,6 @@ export class DateTimeUtil
 						}
 					}
 					else
-					{
 						if (totalDays < 213)
 						{
 							t.month = 7;
@@ -589,7 +577,6 @@ export class DateTimeUtil
 							t.month = 8;
 							t.day = (totalDays - 213 + 1);
 						}
-					}
 				}
 				else
 				{
@@ -607,7 +594,6 @@ export class DateTimeUtil
 						}
 					}
 					else
-					{
 						if (totalDays < 335)
 						{
 							t.month = 11;
@@ -618,7 +604,6 @@ export class DateTimeUtil
 							t.month = 12;
 							t.day = (totalDays - 335 + 1);
 						}
-					}
 				}
 			}
 		}
@@ -640,7 +625,6 @@ export class DateTimeUtil
 					}
 				}
 				else
-				{
 					if (totalDays < 90)
 					{
 						t.month = 3;
@@ -651,7 +635,6 @@ export class DateTimeUtil
 						t.month = 4;
 						t.day = (totalDays - 90 + 1);
 					}
-				}
 			}
 			else
 			{
@@ -671,7 +654,6 @@ export class DateTimeUtil
 						}
 					}
 					else
-					{
 						if (totalDays < 212)
 						{
 							t.month = 7;
@@ -682,7 +664,6 @@ export class DateTimeUtil
 							t.month = 8;
 							t.day = (totalDays - 212 + 1);
 						}
-					}
 				}
 				else
 				{
@@ -700,7 +681,6 @@ export class DateTimeUtil
 						}
 					}
 					else
-					{
 						if (totalDays < 334)
 						{
 							t.month = 11;
@@ -711,7 +691,6 @@ export class DateTimeUtil
 							t.month = 12;
 							t.day = (totalDays - 334 + 1);
 						}
-					}
 				}
 			}
 		}
@@ -722,8 +701,8 @@ export class DateTimeUtil
 		if (tzQhr == null)
 			tzQhr = DateTimeUtil.getLocalTzQhr();
 		secs = secs + tzQhr * 900;
-		var totalDays = Math.floor(secs / 86400);
-		var minutes;
+		let totalDays = Math.floor(secs / 86400);
+		let minutes;
 		if (secs < 0)
 		{
 			secs -= totalDays * 86400;
@@ -739,7 +718,7 @@ export class DateTimeUtil
 			minutes = (secs % 86400);
 		}
 
-		var t = new TimeValue();
+		let t = new TimeValue();
 		t.second = (minutes % 60);
 		minutes = Math.floor(minutes / 60);
 		t.minute = (minutes % 60);
@@ -752,23 +731,23 @@ export class DateTimeUtil
 
 	static toString(tval, pattern)
 	{
-		var output = new Array();
-		var i = 0;
+		let output = new Array();
+		let i = 0;
 		while (i < pattern.length)
 		{
 			switch (pattern.charAt(i))
 			{
 			case 'y':
 			{
-				var thisVal = tval.year;
-				var digiCnt = 1;
+				let thisVal = tval.year;
+				let digiCnt = 1;
 				i++;
 				while (i < pattern.length && pattern.charAt(i) == 'y')
 				{
 					digiCnt++;
 					i++;
 				}
-				var s = ""+thisVal;
+				let s = ""+thisVal;
 				if (s.length >= digiCnt)
 				{
 					output.push(s.substr(s.length - digiCnt));
@@ -908,8 +887,8 @@ export class DateTimeUtil
 			}
 			case 'F':
 			{
-				var digiCnt;
-				var thisMS;
+				let digiCnt;
+				let thisMS;
 				if (i + 1 >= pattern.length || pattern.charAt(i + 1) != 'F')
 				{
 					digiCnt = 1;
@@ -941,7 +920,7 @@ export class DateTimeUtil
 			}
 			case 'h':
 			{
-				var thisH = tval.hour % 12;
+				let thisH = tval.hour % 12;
 				if (thisH == 0)
 				{
 					thisH = 12;
@@ -1035,8 +1014,8 @@ export class DateTimeUtil
 			}
 			case 'z':
 			{
-				var hr = tval.tzQhr >> 2;
-				var min = (tval.tzQhr & 3) * 15;
+				let hr = tval.tzQhr >> 2;
+				let min = (tval.tzQhr & 3) * 15;
 				if (i + 1 >= pattern.length || pattern.charAt(i + 1) != 'z')
 				{
 					if (hr >= 0)
@@ -1115,12 +1094,11 @@ export class DateTimeUtil
 			return null;
 		if (tzQhr == null)
 			tzQhr = DateTimeUtil.getLocalTzQhr();
-		var tval = new TimeValue();
+		let tval = new TimeValue();
 		tval.nanosec = 0;
 		tval.tzQhr = tzQhr;
-		var strs2;
-		var strs;
-		var succ = true;
+		let strs2;
+		let strs;
 		if (dateStr.charAt(3) == ',' && dateStr.indexOf(',', 4) == -1)
 		{
 			dateStr = dateStr.substr(4);
@@ -1134,7 +1112,7 @@ export class DateTimeUtil
 		}
 		if (strs2.length == 2)
 		{
-			var dateSucc = true;
+			let dateSucc = true;
 			if ((strs = strs2[0].split('-')).length == 3)
 			{
 				DateTimeUtil.dateValueSetDate(tval, strs);
@@ -1152,18 +1130,18 @@ export class DateTimeUtil
 				tval = DateTimeUtil.ticks2TimeValue(new Date().getTime(), tzQhr);
 				dateSucc = false;
 			}
-			var i = strs2[1].indexOf('-');
+			let i = strs2[1].indexOf('-');
 			if (i == -1)
 			{
 				i = strs2[1].indexOf('+');
 			}
 			if (i != -1)
 			{
-				var c = strs2[1].charAt(i);
-				var tz = strs2[1].substr(i + 1);
+				let c = strs2[1].charAt(i);
+				let tz = strs2[1].substr(i + 1);
 				if (tz.length == 5)
 				{
-					var min = strs2[1].substr(i + 4) - 0;
+					let min = strs2[1].substr(i + 4) - 0;
 					if (tz.charAt(2) == ':')
 					{
 						tz = tz.substr(0, 2);
@@ -1246,11 +1224,11 @@ export class DateTimeUtil
 		}
 		else if (strs2.length == 4 || (strs2.length == 5 && (strs2[4].charAt(0) == '-' || strs2[4].charAt(0) == '+' || strs2[4] == "GMT")))
 		{
-			var len1 = strs2[0].length;
-			var len2 = strs2[1].length;
-			var len3 = strs2[2].length;
-			var len4 = strs2[3].length;
-			var timeStr = strs2[3];
+			let len1 = strs2[0].length;
+			let len2 = strs2[1].length;
+			let len3 = strs2[2].length;
+			let len4 = strs2[3].length;
+			let timeStr = strs2[3];
 			if (len1 == 3 && len2 <= 2 && len3 == 4)
 			{
 				tval.year = DateTimeUtil.parseYearStr(strs2[2]);
@@ -1291,7 +1269,7 @@ export class DateTimeUtil
 				}
 				else if (strs2[4].length == 5)
 				{
-					var min = strs2[4].substr(3) - 0;
+					let min = strs2[4].substr(3) - 0;
 					if (strs2[4].charAt(2) == ':')
 					{
 						strs2[4] = strs2[4].substr(0, 2);
@@ -1321,8 +1299,8 @@ export class DateTimeUtil
 			tval.minute = 0;
 			tval.second = 0;
 
-			var j = 0;
-			var i;
+			let j = 0;
+			let i;
 			while (j < strs2.length)
 			{
 				if ((strs = strs2[j].split(':')).length == 3)
@@ -1410,7 +1388,7 @@ export class DateTimeUtil
 
 	static parseYearStr(year)
 	{
-		var y = year - 0;
+		let y = year - 0;
 		if (y > 0)
 			return y;
 		return y + 1;
@@ -1490,8 +1468,8 @@ export class Duration
 	{
 		if (ticks < 0)
 		{
-			var ns = ticks % 1000;
-			var seconds = Math.floor(ticks / 1000);
+			let ns = ticks % 1000;
+			let seconds = Math.floor(ticks / 1000);
 			if (ns != 0)
 			{
 				ns = (-ns) * 1000000;
@@ -1509,8 +1487,8 @@ export class Duration
 	{
 		if (us < 0)
 		{
-			var ns = us % 1000000;
-			var seconds = Math.floor(us / 1000000);
+			let ns = us % 1000000;
+			let seconds = Math.floor(us / 1000000);
 			if (ns != 0)
 				return new Duration(seconds, 0);
 			else
@@ -1554,9 +1532,9 @@ export class Duration
 
 	toString()
 	{
-		var txt = new Array();
-		var secs = this.seconds;
-		var ns = this.nanosec;
+		let txt = new Array();
+		let secs = this.seconds;
+		let ns = this.nanosec;
 		if (secs < 0)
 		{
 			txt.push('-');
@@ -1588,7 +1566,7 @@ export class Duration
 		if (ns != 0)
 		{
 			txt.push('.');
-			var s = ""+ns;
+			let s = ""+ns;
 			while (s.length < 9) s = "0"+s;
 			while (s.endsWith("0")) s = s.substring(0, s.length - 1);
 			txt.push(s);
@@ -1609,7 +1587,7 @@ export class LocalDate
 		}
 		else
 		{
-			var t = typeof year;
+			let t = typeof year;
 			if (t == "number")
 			{
 				if (month != null && day != null)
@@ -1638,7 +1616,7 @@ export class LocalDate
 			}
 			else
 			{
-				var tval = DateTimeUtil.string2TimeValue(year, 0);
+				let tval = DateTimeUtil.string2TimeValue(year, 0);
 				if (tval == null)
 				{
 					this.dateVal = LocalDate.DATE_NULL;
@@ -1658,7 +1636,7 @@ export class LocalDate
 
 	getDateValue()
 	{
-		var d = new DateValue();
+		let d = new DateValue();
 		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
 		return d;
 	}
@@ -1670,28 +1648,28 @@ export class LocalDate
 
 	setYear(year)
 	{
-		var d = new DateValue();
+		let d = new DateValue();
 		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
 		this.dateVal = DateTimeUtil.date2TotalDays(year, d.month, d.day);
 	}
 
 	setMonth(month)
 	{
-		var d = new DateValue();
+		let d = new DateValue();
 		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
 		this.dateVal = DateTimeUtil.date2TotalDays(d.year, month, d.day);
 	}
 
 	setDay(day)
 	{
-		var d = new DateValue();
+		let d = new DateValue();
 		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
 		this.dateVal = DateTimeUtil.date2TotalDays(d.year, d.month, day);
 	}
 
 	isYearLeap()
 	{
-		var d = new DateValue();
+		let d = new DateValue();
 		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
 		return DateTimeUtil.isYearLeap(d.year);
 	}
@@ -1705,7 +1683,7 @@ export class LocalDate
 	{
 		if (pattern == null)
 			pattern = "yyyy-MM-dd";
-		var t = new TimeValue();
+		let t = new TimeValue();
 		DateTimeUtil.totalDays2DateValue(this.dateVal, t);
 		return DateTimeUtil.toString(t, pattern);
 	}
@@ -1738,10 +1716,10 @@ export class TimeInstant
 	{
 		if (window.performance)
 		{
-			var t1 = performance.now();
-			var t2 = performance.timeOrigin;
-			var secs = Math.floor((t1 + t2) / 1000);
-			var ns = (t1 / 1000) - Math.floor(t1 / 1000) + (t2 / 1000) - Math.floor(t2 / 1000);
+			let t1 = performance.now();
+			let t2 = performance.timeOrigin;
+			let secs = Math.floor((t1 + t2) / 1000);
+			let ns = (t1 / 1000) - Math.floor(t1 / 1000) + (t2 / 1000) - Math.floor(t2 / 1000);
 			if (ns >= 1)
 				ns -= 1;
 			return new TimeInstant(secs, Math.round(ns * 1000000000));
@@ -1754,15 +1732,15 @@ export class TimeInstant
 
 	static fromVariTime(variTime)
 	{
-		var days = Math.floor(variTime);
-		var ds = (variTime - days);
-		var s = Math.floor(ds * 86400);
+		let days = Math.floor(variTime);
+		let ds = (variTime - days);
+		let s = Math.floor(ds * 86400);
 		return new TimeInstant((days - 25569) * 86400000 + Math.floor(ds * 86400000), ((ds * 86400 - s) * 1000000000));
 	}
 
 	static fromTicks(ticks)
 	{
-		var ms = (ticks % 1000);
+		let ms = (ticks % 1000);
 		if (ms < 0)
 		{
 			return new TimeInstant(Math.floor(ticks / 1000) - 1, (ms + 1000) * 1000000);
@@ -1795,7 +1773,7 @@ export class TimeInstant
 
 	addMS(val)
 	{
-		var newSec = this.sec + Math.floor(val / 1000);
+		let newSec = this.sec + Math.floor(val / 1000);
 		val = (val % 1000) * 1000000 + this.nanosec;
 		while (val > 1000000000)
 		{
@@ -1807,7 +1785,7 @@ export class TimeInstant
 
 	addNS(val)
 	{
-		var newSec = this.sec + Math.floor(val / 1000000000);
+		let newSec = this.sec + Math.floor(val / 1000000000);
 		val = val % 1000000000 + this.nanosec;
 		while (val > 1000000000)
 		{
@@ -1861,9 +1839,9 @@ export class TimeInstant
 
 	diff(ts)
 	{
-		var secs = this.sec - ts.sec;
-		var ns1 = this.nanosec;
-		var ns2 = ts.nanosec;
+		let secs = this.sec - ts.sec;
+		let ns1 = this.nanosec;
+		let ns2 = ts.nanosec;
 		if (ns1 >= ns2)
 			return new Duration(secs, ns1 - ns2);
 		else
@@ -1918,7 +1896,7 @@ export class Timestamp
 
 	static fromStr(str, defTzQhr)
 	{
-		var tval = DateTimeUtil.string2TimeValue(str, defTzQhr);
+		let tval = DateTimeUtil.string2TimeValue(str, defTzQhr);
 		if (tval == 0)
 		{
 			return new Timestamp(new TimeInstant(0, 0), defTzQhr);
@@ -1995,7 +1973,7 @@ export class Timestamp
 
 	static fromYMDHMS(ymdhms, tzQhr)
 	{
-		var tval = DateTimeUtil.timeValueFromYMDHMS(ymdhms);
+		let tval = DateTimeUtil.timeValueFromYMDHMS(ymdhms);
 		if (tval != null)
 		{
 			return new Timestamp(new TimeInstant(DateTimeUtil.timeValue2Secs(tval), 0), tzQhr);
@@ -2008,7 +1986,7 @@ export class Timestamp
 
 	addMonth(val)
 	{
-		var tval = this.toTimeValue();
+		let tval = this.toTimeValue();
 		val += tval.month;
 		while (val < 1)
 		{
@@ -2026,7 +2004,7 @@ export class Timestamp
 
 	addYear(val)
 	{
-		var tval = this.toTimeValue();
+		let tval = this.toTimeValue();
 		tval.year = (tval.year + val);
 		return new Timestamp(new TimeInstant(DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 	}
@@ -2048,8 +2026,8 @@ export class Timestamp
 
 	addSecond(val)
 	{
-		var sec = Math.floor(val);
-		var ns = Math.floor((val - sec) * 1000000000);
+		let sec = Math.floor(val);
+		let ns = Math.floor((val - sec) * 1000000000);
 		return new Timestamp(this.inst.addSecond(sec).addNS(ns), this.tzQhr);
 	}
 
@@ -2080,7 +2058,7 @@ export class Timestamp
 
 	clearMonthAndDay()
 	{
-		var tval = this.toTimeValue();
+		let tval = this.toTimeValue();
 		tval.month = 1;
 		tval.day = 1;
 		tval.hour = 0;
@@ -2092,7 +2070,7 @@ export class Timestamp
 
 	clearDayOfMonth()
 	{
-		var tval = this.toTimeValue();
+		let tval = this.toTimeValue();
 		tval.day = 1;
 		tval.hour = 0;
 		tval.minute = 0;
@@ -2182,7 +2160,7 @@ export class Timestamp
 				pattern = "yyyy-MM-dd HH:mm:ss.fffffffff zzzz";
 			}
 		}
-		var tval = DateTimeUtil.instant2TimeValue(this.inst.sec, this.inst.nanosec, this.tzQhr);
+		let tval = DateTimeUtil.instant2TimeValue(this.inst.sec, this.inst.nanosec, this.tzQhr);
 		return DateTimeUtil.toString(tval, pattern);
 	}
 

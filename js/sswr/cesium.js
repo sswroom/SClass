@@ -6,13 +6,13 @@ import * as geometry from "./geometry.js";
 
 export function screenToLatLon(viewer, x, y, ellipsoid)
 {
-	var pos = new Cesium.Cartesian2(x, y);
+	let pos = new Cesium.Cartesian2(x, y);
 	if (ellipsoid == null)
 		ellipsoid = viewer.scene.globe.ellipsoid;
-	var cartesian = viewer.camera.pickEllipsoid(pos, ellipsoid);
+	let cartesian = viewer.camera.pickEllipsoid(pos, ellipsoid);
 	if (cartesian)
 	{
-		var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+		let cartographic = ellipsoid.cartesianToCartographic(cartesian);
 		return new math.Coord2D(cartographic.longitude * 180 / Math.PI, cartographic.latitude * 180 / Math.PI);
 	}
 	else
@@ -23,9 +23,9 @@ export function screenToLatLon(viewer, x, y, ellipsoid)
 	
 export function fromCXYZArray(arr)
 {
-	var ret = new Array();
-	var i = 0;
-	var j = arr.length;
+	let ret = new Array();
+	let i = 0;
+	let j = arr.length;
 	while (i < j)
 	{
 		ret.push(Cesium.Cartesian3.fromArray(arr[i]));
@@ -36,9 +36,9 @@ export function fromCXYZArray(arr)
 	
 export function toCartesian3Arr(coords)
 {
-	var arr = new Array();
-	var i = 0;
-	var j = coords.length;
+	let arr = new Array();
+	let i = 0;
+	let j = coords.length;
 	if (coords[0].length == 3)
 	{
 		while (i < j)
@@ -60,11 +60,11 @@ export function toCartesian3Arr(coords)
 	
 export function newObjFromGeoJSON(geoJSON)
 {
-	var o = new Object();
+	let o = new Object();
 	o.id = geoJSON.id;
 	o.name = geoJSON.id;
-	var n;
-	var props = new Array();
+	let n;
+	let props = new Array();
 	for (n in geoJSON.properties)
 	{
 		props.push(text.toHTMLText(n)+": "+text.toHTMLText(geoJSON.properties[n]));
@@ -75,11 +75,11 @@ export function newObjFromGeoJSON(geoJSON)
 
 export function addGeoJSON(viewer, geoJSON, color, extSize)
 {
-	var oColor = color.darken(0.5, new Cesium.Color());
+	let oColor = color.darken(0.5, new Cesium.Color());
 	if (geoJSON.type == "FeatureCollection")
 	{
-		var i = 0;
-		var j = geoJSON.features.length;
+		let i = 0;
+		let j = geoJSON.features.length;
 		while (i < j)
 		{
 			addGeoJSON(viewer, geoJSON.features[i], color, extSize);			
@@ -88,14 +88,14 @@ export function addGeoJSON(viewer, geoJSON, color, extSize)
 	}
 	else if (geoJSON.type == "Feature")
 	{
-		var o;
+		let o;
 		if (geoJSON.geometry != null)
 		{
 			if (geoJSON.geometry.type == "Polygon")
 			{
-				var coordinates = geoJSON.geometry.coordinates;
-				var i = 0;
-				var j = coordinates.length;
+				let coordinates = geoJSON.geometry.coordinates;
+				let i = 0;
+				let j = coordinates.length;
 				while (i < j)
 				{
 					o = newObjFromGeoJSON(geoJSON);
@@ -121,12 +121,12 @@ export function addGeoJSON(viewer, geoJSON, color, extSize)
 
 export function fromCartesian3Array(viewer, arr)
 {
-	var coordinates = new Array();
-	var points;
-	var ellipsoid = viewer.scene.globe.ellipsoid;
-	var cartoArr = ellipsoid.cartesianArrayToCartographicArray(arr);
-	var i = 0;
-	var j = cartoArr.length;
+	let coordinates = new Array();
+	let points;
+	let ellipsoid = viewer.scene.globe.ellipsoid;
+	let cartoArr = ellipsoid.cartesianArrayToCartographicArray(arr);
+	let i = 0;
+	let j = cartoArr.length;
 	while (i < j)
 	{
 		points = new Array();
@@ -141,11 +141,11 @@ export function fromCartesian3Array(viewer, arr)
 	
 export function fromPolygonGraphics(viewer, pg)
 {
-	var coordinates = new Array();
-	var hierarchy = pg.hierarchy.getValue();
+	let coordinates = new Array();
+	let hierarchy = pg.hierarchy.getValue();
 	coordinates.push(fromCartesian3Array(viewer, hierarchy.positions));
-	var i = 0;
-	var j =hierarchy.holes.length;
+	let i = 0;
+	let j =hierarchy.holes.length;
 	while (i < j)
 	{
 		coordinates.push(fromCartesian3Array(viewer, hierarchy.holes[i].positions));
@@ -159,9 +159,9 @@ export function createFromKMLFeature(feature, options)
 	options = data.mergeOptions(options, {noPopup: false});
 	if (feature instanceof kml.Container)
 	{
-		var i;
-		var layers = [];
-		var layer;
+		let i;
+		let layers = [];
+		let layer;
 		for (i in feature.features)
 		{
 			layer = createFromKMLFeature(feature.features[i], options);
@@ -171,7 +171,7 @@ export function createFromKMLFeature(feature, options)
 			}
 			else if (layer != null)
 			{
-				var j;
+				let j;
 				for (j in layer)
 				{
 					layers.push(layer[j]);
@@ -182,12 +182,12 @@ export function createFromKMLFeature(feature, options)
 	}
 	else if (feature instanceof kml.Placemark)
 	{
-		var opt = {};
+		let opt = {};
 		if (feature.name)
 			opt.name = feature.name;
 		if (feature.style)
 		{
-			var style = feature.style;
+			let style = feature.style;
 			if (style instanceof kml.StyleMap)
 			{
 				style = style.normalStyle;
@@ -196,7 +196,7 @@ export function createFromKMLFeature(feature, options)
 			{
 				if (style.iconStyle)
 				{
-					var s = style.iconStyle;
+					let s = style.iconStyle;
 					if (s.iconUrl)
 					{
 						opt.iconUrl = s.iconUrl;
@@ -222,7 +222,7 @@ export function createFromKMLFeature(feature, options)
 				}
 				if (style.lineStyle)
 				{
-					var ls = style.lineStyle;
+					let ls = style.lineStyle;
 					if (ls.color)
 						opt.lineColor = ls.color;
 					if (ls.width)
@@ -230,13 +230,13 @@ export function createFromKMLFeature(feature, options)
 				}
 				if (style.polyStyle)
 				{
-					var ps = style.polyStyle;
+					let ps = style.polyStyle;
 					if (ps.color)
 						opt.fillColor = ps.color;
 				}
 			}
 		}
-		var layer = createFromGeometry(feature.vec, opt);
+		let layer = createFromGeometry(feature.vec, opt);
 		if (layer)
 		{
 			if (feature.name)
@@ -257,7 +257,7 @@ export function createFromGeometry(geom, options)
 {
 	if (geom instanceof geometry.Point)
 	{
-		var opt = {};
+		let opt = {};
 		if (options)
 		{
 			if (options.name)
@@ -275,10 +275,10 @@ export function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.LineString)
 	{
-		var opt = {};
+		let opt = {};
 		if (options.lineColor)
 		{
-			var c = kml.toColor(options.lineColor);
+			let c = kml.toColor(options.lineColor);
 			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
 		}
 		if (options.lineWidth)
@@ -288,12 +288,12 @@ export function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.Polygon)
 	{
-		var opt = {};
+		let opt = {};
 		opt.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
 		opt.height = 0;
 		if (options.lineColor)
 		{
-			var c = kml.toColor(options.lineColor);
+			let c = kml.toColor(options.lineColor);
 			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
 			opt.outline = true;
 		}
@@ -304,12 +304,12 @@ export function createFromGeometry(geom, options)
 		}
 		if (options.fillColor)
 		{
-			var c = kml.toColor(options.fillColor);
+			let c = kml.toColor(options.fillColor);
 			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
 		}
 		opt.hierarchy = {positions: toCartesian3Arr(geom.geometries[0].coordinates), holes: []};
-		var i = 1;
-		var j = geom.geometries.length;
+		let i = 1;
+		let j = geom.geometries.length;
 		while (i < j)
 		{
 			opt.hierarchy.holes.push({positions: toCartesian3Arr(geom.geometries[i].coordinates)});
@@ -323,10 +323,10 @@ export function createFromGeometry(geom, options)
 		{
 			return createFromGeometry(geom.geometries[0], options);
 		}
-		var opt = {};
+		let opt = {};
 		if (options.lineColor)
 		{
-			var c = kml.toColor(options.lineColor);
+			let c = kml.toColor(options.lineColor);
 			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
 			opt.outline = true;
 		}
@@ -337,7 +337,7 @@ export function createFromGeometry(geom, options)
 		}
 		if (options.fillColor)
 		{
-			var c = kml.toColor(options.fillColor);
+			let c = kml.toColor(options.fillColor);
 			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
 		}
 		console.log("MultiPolygon not supported", geom);
@@ -360,11 +360,11 @@ export function createFromGeometry(geom, options)
 	{
 		height = 0;
 	}
-	var ellipsoid = viewer.scene.globe.ellipsoid;
-	var o = new Object();
+	let ellipsoid = viewer.scene.globe.ellipsoid;
+	let o = new Object();
 	o.positions = new Array();
-	var i = 0;
-	var j = lats.length;
+	let i = 0;
+	let j = lats.length;
 	while (i < j)
 	{
 		o.positions.push(ellipsoid.cartographicToCartesian(new Cesium.Cartographic(lons[i] * Math.PI / 180, lats[i] * Math.PI / 180, height)));
@@ -372,7 +372,7 @@ export function createFromGeometry(geom, options)
 	}
 	o.positions.push(ellipsoid.cartographicToCartesian(new Cesium.Cartographic(lons[0] * Math.PI / 180, lats[0] * Math.PI / 180, height)));
 	
-	var pg = new Cesium.PolygonGraphics(o);
+	let pg = new Cesium.PolygonGraphics(o);
 	return pg;
 }*/
 
@@ -396,7 +396,7 @@ export class CesiumMap extends map.MapControl
 	{
 		if (layer.type == map.WebMapType.OSMTile)
 		{
-			var opt = {};
+			let opt = {};
 			if (layer.maxZoom)
 			{
 				opt.maximumLevel = layer.maxZoom;
@@ -420,7 +420,7 @@ export class CesiumMap extends map.MapControl
 		}
 		else if (data.isArray(layer))
 		{
-			var i;
+			let i;
 			for (i in layer)
 			{
 				this.addLayer(layer[i]);

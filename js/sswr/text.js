@@ -12,7 +12,7 @@ export const LineBreakType = {
 
 export function zeroPad(val, ndigits)
 {
-	var s = "" + val;
+	let s = "" + val;
 	while (s.length < ndigits)
 		s = "0"+s;
 	return s;
@@ -24,11 +24,11 @@ export function isInteger(s)
 		return false;
 	if (s.startsWith("-"))
 		s = s.substring(1);
-	var j = s.length;
+	let j = s.length;
 	if (j == 0)
 		return false;
-	var i = 0;
-	var c;
+	let i = 0;
+	let c;
 	while (i < j)
 	{
 		c = s.charCodeAt(i);
@@ -41,11 +41,11 @@ export function isInteger(s)
 
 export function toJSText(s)
 {
-	var out = "\"";
-	var i = 0;
-	var j = s.length;
-	var c;
-	var ccode;
+	let out = "\"";
+	let i = 0;
+	let j = s.length;
+	let c;
+	let ccode;
 	while (i < j)
 	{
 		c = s.charAt(i);
@@ -85,10 +85,10 @@ export function toJSText(s)
 export function toXMLText(s)
 {
 	if (s == null) return "";
-	var out = "";
-	var i = 0;
-	var j = s.length;
-	var c;
+	let out = "";
+	let i = 0;
+	let j = s.length;
+	let c;
 	while (i < j)
 	{
 		c = s.charAt(i);
@@ -133,10 +133,10 @@ export function toAttrText(s)
 export function toHTMLText(s)
 {
 	if (s == null) return "";
-	var out = "";
-	var i = 0;
-	var j = s.length;
-	var c;
+	let out = "";
+	let i = 0;
+	let j = s.length;
+	let c;
 	while (i < j)
 	{
 		c = s.charAt(i);
@@ -173,8 +173,8 @@ export function toHTMLText(s)
 
 export function bracketToHTML(s)
 {
-	var i;
-	var j;
+	let i;
+	let j;
 	while (true)
 	{
 		i = s.indexOf("[i]");
@@ -190,8 +190,8 @@ export function bracketToHTML(s)
 
 export function arrayToNumbers(arr)
 {
-	var ret = [];
-	var i;
+	let ret = [];
+	let i;
 	for (i in arr)
 	{
 		ret.push(Number.parseFloat(arr[i]));
@@ -201,25 +201,25 @@ export function arrayToNumbers(arr)
 
 export function toHex8(v)
 {
-	var s = (v & 255).toString(16);
+	let s = (v & 255).toString(16);
 	return "0".repeat(2 - s.length)+s;
 }
 
 export function toHex16(v)
 {
-	var s = (v & 0xffff).toString(16);
+	let s = (v & 0xffff).toString(16);
 	return "0".repeat(4 - s.length)+s;
 }
 
 export function toHex32(v)
 {
-	var s = (v & 0xffffffff).toString(16);
+	let s = (v & 0xffffffff).toString(16);
 	return "0".repeat(8 - s.length)+s;
 }
 
 export function getEncList()
 {
-	var ret = [];
+	let ret = [];
 	ret.push(new Base64Enc());
 	ret.push(new UTF8TextBinEnc());
 	ret.push(new UTF8LCaseTextBinEnc());
@@ -227,6 +227,7 @@ export function getEncList()
 	ret.push(new CPPByteArrBinEnc());
 	ret.push(new CPPTextBinEnc());
 	ret.push(new HexTextBinEnc());
+	ret.push(new QuotedPrintableEnc());
 	ret.push(new UTF16LETextBinEnc());
 	ret.push(new UTF16BETextBinEnc());
 	return ret;
@@ -259,13 +260,13 @@ export class UTF8TextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var enc = new TextDecoder();
+		let enc = new TextDecoder();
 		return enc.decode(buff);
 	}
 
 	decodeBin(str)
 	{
-		var enc = new TextEncoder();
+		let enc = new TextEncoder();
 		return enc.encode(str);
 	}
 }
@@ -279,13 +280,13 @@ export class UTF8LCaseTextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var enc = new TextDecoder();
+		let enc = new TextDecoder();
 		return enc.decode(buff).toLowerCase();
 	}
 
 	decodeBin(str)
 	{
-		var enc = new TextEncoder();
+		let enc = new TextEncoder();
 		return enc.encode(str);
 	}
 }
@@ -299,13 +300,13 @@ export class UTF8UCaseTextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var enc = new TextDecoder();
+		let enc = new TextDecoder();
 		return enc.decode(buff).toUpperCase();
 	}
 
 	decodeBin(str)
 	{
-		var enc = new TextEncoder();
+		let enc = new TextEncoder();
 		return enc.encode(str);
 	}
 }
@@ -319,9 +320,9 @@ export class HexTextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var arr = new Uint8Array(buff);
-		var ret = [];
-		var i;
+		let arr = new Uint8Array(buff);
+		let ret = [];
+		let i;
 		for (i in arr)
 		{
 			ret.push(toHex8(arr[i]));
@@ -331,12 +332,12 @@ export class HexTextBinEnc extends TextBinEnc
 
 	decodeBin(str)
 	{
-		var arr = [];
-		var i = 0;
-		var j = str.length;
-		var v = 0;
-		var found = 0;
-		var c;
+		let arr = [];
+		let i = 0;
+		let j = str.length;
+		let v = 0;
+		let found = 0;
+		let c;
 		while (i < j)
 		{
 			c = str.charCodeAt(i);
@@ -410,15 +411,15 @@ export class Base64Enc extends TextBinEnc
 
 	encodeBin(buff, lbt, charsPerLine)
 	{
-		var arr = new Uint8Array(buff);
+		let arr = new Uint8Array(buff);
 		if (lbt == null)
 			lbt = LineBreakType.None;
-		var tmp1 = arr.length % 3;
-		var tmp2 = Math.floor(arr.length / 3);
+		let tmp1 = arr.length % 3;
+		let tmp2 = Math.floor(arr.length / 3);
 		if (lbt == LineBreakType.None || !charsPerLine)
 		{
-			var ret = [];
-			var i = 0;
+			let ret = [];
+			let i = 0;
 			while (tmp2-- > 0)
 			{
 				ret.push(this.encArr.charAt(arr[i + 0] >> 2));
@@ -456,9 +457,9 @@ export class Base64Enc extends TextBinEnc
 		}
 		else
 		{
-			var ret = [];
-			var i = 0;
-			var lineLeft = charsPerLine;
+			let ret = [];
+			let i = 0;
+			let lineLeft = charsPerLine;
 			while (tmp2-- > 0)
 			{
 				if (lineLeft >= 4)
@@ -512,23 +513,20 @@ export class Base64Enc extends TextBinEnc
 					if (this.noPadding)
 					{
 					}
+					else if (lineLeft == 2)
+					{
+						ret.push(lbt);
+						ret.push("==");
+					}
+					else if (lineLeft == 3)
+					{
+						ret.push("=");
+						ret.push(lbt);
+						ret.push("=");
+					}
 					else
 					{
-						if (lineLeft == 2)
-						{
-							ret.push(lbt);
-							ret.push("==");
-						}
-						else if (lineLeft == 3)
-						{
-							ret.push("=");
-							ret.push(lbt);
-							ret.push("=");
-						}
-						else
-						{
-							ret.push("==");
-						}
+						ret.push("==");
 					}
 				}
 				else
@@ -555,17 +553,14 @@ export class Base64Enc extends TextBinEnc
 					if (this.noPadding)
 					{
 					}
+					else if (lineLeft == 3)
+					{
+						ret.push(lbt);
+						ret.push("=");
+					}
 					else
 					{
-						if (lineLeft == 3)
-						{
-							ret.push(lbt);
-							ret.push("=");
-						}
-						else
-						{
-							ret.push("=");
-						}
+						ret.push("=");
 					}
 				}
 				else
@@ -593,19 +588,19 @@ export class Base64Enc extends TextBinEnc
 					}
 				}
 			}
-			return outSize;			
+			return ret.join("");
 		}
 	}
 
 	decodeBin(str)
 	{
-		var ret = [];
-		var i = 0;
-		var j = str.length;
-		var b = 0;
-		var b2;
-		var c;
-		var code;
+		let ret = [];
+		let i = 0;
+		let j = str.length;
+		let b = 0;
+		let b2;
+		let c;
+		let code;
 		while (i < j)
 		{
 			c = str.charCodeAt(i);
@@ -652,9 +647,9 @@ export class UTF16LETextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var ret = [];
-		var i = 0;
-		var j = buff.length;
+		let ret = [];
+		let i = 0;
+		let j = buff.length;
 		if (j & 1)
 			j--;
 		while (i < j)
@@ -667,10 +662,10 @@ export class UTF16LETextBinEnc extends TextBinEnc
 
 	decodeBin(str)
 	{
-		var ret = [];
-		var c;
-		var i = 0;
-		var j = str.length;
+		let ret = [];
+		let c;
+		let i = 0;
+		let j = str.length;
 		while (i < j)
 		{
 			c = str.charCodeAt(i);
@@ -691,9 +686,9 @@ export class UTF16BETextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var ret = [];
-		var i = 0;
-		var j = buff.length;
+		let ret = [];
+		let i = 0;
+		let j = buff.length;
 		if (j & 1)
 			j--;
 		while (i < j)
@@ -706,10 +701,10 @@ export class UTF16BETextBinEnc extends TextBinEnc
 
 	decodeBin(str)
 	{
-		var ret = [];
-		var c;
-		var i = 0;
-		var j = str.length;
+		let ret = [];
+		let c;
+		let i = 0;
+		let j = str.length;
 		while (i < j)
 		{
 			c = str.charCodeAt(i);
@@ -730,11 +725,11 @@ export class CPPByteArrBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var lines = [];
-		var cols = [];
-		var arr = new Uint8Array(buff);
-		var i = 0;
-		var j = arr.length;
+		let lines = [];
+		let cols = [];
+		let arr = new Uint8Array(buff);
+		let i = 0;
+		let j = arr.length;
 		while (i < j)
 		{
 			if (i > 0 && (i & 15) == 0)
@@ -754,10 +749,10 @@ export class CPPByteArrBinEnc extends TextBinEnc
 
 	decodeBin(str)
 	{
-		var ret = [];
-		var i = -1;
-		var j;
-		var s;
+		let ret = [];
+		let i = -1;
+		let j;
+		let s;
 		while (true)
 		{
 			j = str.indexOf(",", i + 1);
@@ -791,13 +786,13 @@ export class CPPTextBinEnc extends TextBinEnc
 
 	encodeBin(buff)
 	{
-		var arr = new Uint8Array(buff);
-		var ret = [];
-		var lineStart = true;
-		var code;
-		var b;
-		var i = 0;
-		var j = arr.length;
+		let arr = new Uint8Array(buff);
+		let ret = [];
+		let lineStart = true;
+		let code;
+		let b;
+		let i = 0;
+		let j = arr.length;
 		while (i < j)
 		{
 			b = arr[i];
@@ -884,18 +879,18 @@ export class CPPTextBinEnc extends TextBinEnc
 		}
 		if (!lineStart)
 		{
-			ret.push('\"');
+			ret.push('"');
 		}
 		return ret.join("");
 	}
 
 	decodeBin(str)
 	{
-		var isQuote = false;
-		var ret = [];
-		var i = 0;
-		var j = str.length;
-		var c;
+		let isQuote = false;
+		let ret = [];
+		let i = 0;
+		let j = str.length;
+		let c;
 		while (true)
 		{
 			if (i >= j)
@@ -918,7 +913,7 @@ export class CPPTextBinEnc extends TextBinEnc
 				}
 				else
 				{
-					return 0;
+					throw new Error("Only allow white space characters when it is not quoted");
 				}
 			}
 			else if (c == 0x5c)
@@ -942,7 +937,7 @@ export class CPPTextBinEnc extends TextBinEnc
 				{
 					ret.push(0x5c);
 				}
-				else if (c == '\"')
+				else if (c == '"')
 				{
 					ret.push(0x22);
 				}
@@ -959,47 +954,153 @@ export class CPPTextBinEnc extends TextBinEnc
 			{
 				isQuote = false;
 			}
+			else if (c < 0x80)
+			{
+				ret.push(c);
+			}
+			else if (c < 0x800)
+			{
+				ret.push(0xc0 | (c >> 6));
+				ret.push(0x80 | (c & 0x3f));
+			}
+			else if (c < 0x10000)
+			{
+				ret.push(0xe0 | (c >> 12));
+				ret.push(0x80 | ((c >> 6) & 0x3f));
+				ret.push(0x80 | (c & 0x3f));
+			}
+			else if (c < 0x200000)
+			{
+				ret.push(0xf0 | (c >> 18));
+				ret.push(0x80 | ((c >> 12) & 0x3f));
+				ret.push(0x80 | ((c >> 6) & 0x3f));
+				ret.push(0x80 | (c & 0x3f));
+			}
+			else if (c < 0x4000000)
+			{
+				ret.push(0xf8 | (c >> 24));
+				ret.push(0x80 | ((c >> 18) & 0x3f));
+				ret.push(0x80 | ((c >> 12) & 0x3f));
+				ret.push(0x80 | ((c >> 6) & 0x3f));
+				ret.push(0x80 | (c & 0x3f));
+			}
 			else
 			{
-				if (c < 0x80)
+				ret.push(0xfc | (c >> 30));
+				ret.push(0x80 | ((c >> 24) & 0x3f));
+				ret.push(0x80 | ((c >> 18) & 0x3f));
+				ret.push(0x80 | ((c >> 12) & 0x3f));
+				ret.push(0x80 | ((c >> 6) & 0x3f));
+				ret.push(0x80 | (c & 0x3f));
+			}
+		}
+		return new Uint8Array(ret);
+	}
+}
+
+export class QuotedPrintableEnc extends TextBinEnc
+{
+	constructor()
+	{
+		super("QuotedPrintable");
+	}
+
+	encodeBin(buff)
+	{
+		let hexStr = "0123456789ABCDEF";
+		let arr = new Uint8Array(buff);
+		let ret = [];
+		let lineCnt = 0;
+		let b;
+		let i = 0;
+		let j = arr.length;
+		while (i < j)
+		{
+			b = arr[i++];
+			if (b == 13 || b == 10)
+			{
+				ret.push(b);
+				lineCnt = 0;
+			}
+			else if (b >= 32 && b <= 126)
+			{
+				if (lineCnt < 75)
 				{
-					ret.push(c);
+					ret.push(b);
+					lineCnt++;
 				}
-				else if (c < 0x800)
+				else if (arr[i] == 13 || arr[i] == 10)
 				{
-					ret.push(0xc0 | (c >> 6));
-					ret.push(0x80 | (c & 0x3f));
-				}
-				else if (c < 0x10000)
-				{
-					ret.push(0xe0 | (c >> 12));
-					ret.push(0x80 | ((c >> 6) & 0x3f));
-					ret.push(0x80 | (c & 0x3f));
-				}
-				else if (c < 0x200000)
-				{
-					ret.push(0xf0 | (c >> 18));
-					ret.push(0x80 | ((c >> 12) & 0x3f));
-					ret.push(0x80 | ((c >> 6) & 0x3f));
-					ret.push(0x80 | (c & 0x3f));
-				}
-				else if (c < 0x4000000)
-				{
-					ret.push(0xf8 | (c >> 24));
-					ret.push(0x80 | ((c >> 18) & 0x3f));
-					ret.push(0x80 | ((c >> 12) & 0x3f));
-					ret.push(0x80 | ((c >> 6) & 0x3f));
-					ret.push(0x80 | (c & 0x3f));
+					ret.push(b);
+					lineCnt++;
 				}
 				else
 				{
-					ret.push(0xfc | (c >> 30));
-					ret.push(0x80 | ((c >> 24) & 0x3f));
-					ret.push(0x80 | ((c >> 18) & 0x3f));
-					ret.push(0x80 | ((c >> 12) & 0x3f));
-					ret.push(0x80 | ((c >> 6) & 0x3f));
-					ret.push(0x80 | (c & 0x3f));
+					ret.push('='.charCodeAt(0));
+					ret.push(13);
+					ret.push(10);
+					ret.push(b);
+					lineCnt = 1;
 				}
+			}
+			else if (lineCnt < 73)
+			{
+				ret.push('='.charCodeAt(0));
+				ret.push(hexStr.charCodeAt(b >> 4));
+				ret.push(hexStr.charCodeAt(b & 15));
+				lineCnt += 3;
+			}
+			else if (arr[i] == 13 || arr[i] == 10)
+			{
+				ret.push('='.charCodeAt(0));
+				ret.push(hexStr.charCodeAt(b >> 4));
+				ret.push(hexStr.charCodeAt(b & 15));
+				lineCnt += 3;
+			}
+			else
+			{
+				ret.push('='.charCodeAt(0));
+				ret.push(13);
+				ret.push(10);
+				ret.push('='.charCodeAt(0));
+				ret.push(hexStr.charCodeAt(b >> 4));
+				ret.push(hexStr.charCodeAt(b & 15));
+				lineCnt = 3;
+			}
+		}
+		
+		return new TextDecoder().decode(new Uint8Array(ret));
+	}
+
+	decodeBin(str)
+	{
+		let arr = new TextEncoder().encode(str);
+		let ret = [];
+		let c;
+		let i = 0;
+		let j = arr.length;
+		while (i < j)
+		{
+			c = arr[i++];
+			if (c == '='.charCodeAt(0))
+			{
+				if (i + 2 <= j && arr[i + 0] == 13 && arr[i + 1] == 10)
+				{
+					i += 2;
+				}
+				else if (i + 1 <= j && (arr[i] == 13 || arr[i] == 10))
+				{
+					i += 1;
+				}
+				else if (i + 2 <= j)
+				{
+					ret.push(Number.parseInt(String.fromCharCode(arr[i], arr[i + 1]), 16));
+					i += 2;
+				}
+			}
+			else
+			{
+				ret.push(c);
 			}
 		}
 		return new Uint8Array(ret);

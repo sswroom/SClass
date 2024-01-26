@@ -24,7 +24,7 @@ export function fromLatLngBounds(b)
 
 export function createLayer(layer, options)
 {
-	var lyrOpts;
+	let lyrOpts;
 	if (options == null)
 		options = {};
 	switch (layer.type)
@@ -58,8 +58,8 @@ export function createFromKMLFeature(feature, options)
 	options = data.mergeOptions(options, {noPopup: false});
 	if (feature instanceof kml.Container)
 	{
-		var i;
-		var layers = L.featureGroup();
+		let i;
+		let layers = L.featureGroup();
 		for (i in feature.features)
 		{
 			createFromKMLFeature(feature.features[i], options).addTo(layers);
@@ -68,12 +68,12 @@ export function createFromKMLFeature(feature, options)
 	}
 	else if (feature instanceof kml.Placemark)
 	{
-		var opt = {};
+		let opt = {};
 		if (feature.name)
 			opt.name = feature.name;
 		if (feature.style)
 		{
-			var style = feature.style;
+			let style = feature.style;
 			if (style instanceof kml.StyleMap)
 			{
 				style = style.normalStyle;
@@ -82,10 +82,10 @@ export function createFromKMLFeature(feature, options)
 			{
 				if (style.iconStyle)
 				{
-					var s = style.iconStyle;
+					let s = style.iconStyle;
 					if (s.leafletIcon == null)
 					{
-						var icon = {};
+						let icon = {};
 						if (s.iconUrl)
 						{
 							icon.iconUrl = s.iconUrl;
@@ -100,7 +100,7 @@ export function createFromKMLFeature(feature, options)
 				}
 				if (style.lineStyle)
 				{
-					var ls = style.lineStyle;
+					let ls = style.lineStyle;
 					if (ls.color)
 						opt.lineColor = kml.toCSSColor(ls.color);
 					if (ls.width)
@@ -108,13 +108,13 @@ export function createFromKMLFeature(feature, options)
 				}
 				if (style.polyStyle)
 				{
-					var ps = style.polyStyle;
+					let ps = style.polyStyle;
 					if (ps.color)
 						opt.fillColor = kml.toCSSColor(ps.color);
 				}
 			}
 		}
-		var layer = createFromGeometry(feature.vec, opt);
+		let layer = createFromGeometry(feature.vec, opt);
 		if (layer && !options.noPopup)
 		{
 			if (feature.name && feature.description)
@@ -143,7 +143,7 @@ export function createFromGeometry(geom, options)
 {
 	if (geom instanceof geometry.Point)
 	{
-		var opt = {};
+		let opt = {};
 		if (options)
 		{
 			if (options.name)
@@ -155,16 +155,16 @@ export function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.LineString)
 	{
-		var opt = {};
-		var i;
-		var pts = [];
+		let opt = {};
+		let i;
+		let pts = [];
 		if (options.lineColor)
 			opt.color = options.lineColor;
 		if (options.lineWidth)
 			opt.weight = options.lineWidth;
 		for (i in geom.coordinates)
 		{
-			var latLng = L.latLng(geom.coordinates[i][1], geom.coordinates[i][0]);
+			let latLng = L.latLng(geom.coordinates[i][1], geom.coordinates[i][0]);
 			if (latLng)
 			{
 				pts.push(latLng);
@@ -178,9 +178,9 @@ export function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.LinearRing)
 	{
-		var opt = {};
-		var k;
-		var pts = [];
+		let opt = {};
+		let k;
+		let pts = [];
 		if (options.lineColor)
 			opt.color = options.lineColor;
 		if (options.lineWidth)
@@ -193,7 +193,7 @@ export function createFromGeometry(geom, options)
 		
 		for (k in geom.coordinates)
 		{
-			var latLng = L.latLng(geom.coordinates[k][1], geom.coordinates[k][0]);
+			let latLng = L.latLng(geom.coordinates[k][1], geom.coordinates[k][0]);
 			if (latLng)
 			{
 				pts.push(latLng);
@@ -207,12 +207,12 @@ export function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.Polygon)
 	{
-		var opt = {};
-		var i;
-		var j;
-		var pts = [];
-		var pts2;
-		var lr;
+		let opt = {};
+		let i;
+		let j;
+		let pts = [];
+		let pts2;
+		let lr;
 		if (options.lineColor)
 			opt.color = options.lineColor;
 		if (options.lineWidth)
@@ -226,10 +226,10 @@ export function createFromGeometry(geom, options)
 		for (i in geom.geometries)
 		{
 			pts2 = [];
-			lr = geom.geometries[j];
+			lr = geom.geometries[i];
 			for (j in lr.coordinates)
 			{
-				var latLng = L.latLng(lr.coordinates[j][1], lr.coordinates[j][0]);
+				let latLng = L.latLng(lr.coordinates[j][1], lr.coordinates[j][0]);
 				if (latLng)
 				{
 					pts2.push(latLng);
@@ -245,15 +245,15 @@ export function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.MultiPolygon)
 	{
-		var opt = {};
-		var i;
-		var j;
-		var k;
-		var pts = [];
-		var pts2;
-		var pts3;
-		var pg;
-		var lr;
+		let opt = {};
+		let i;
+		let j;
+		let k;
+		let pts = [];
+		let pts2;
+		let pts3;
+		let pg;
+		let lr;
 		if (options.lineColor)
 			opt.color = options.lineColor;
 		if (options.lineWidth)
@@ -274,7 +274,7 @@ export function createFromGeometry(geom, options)
 				lr = pg.geometries[j];
 				for (k in lr.coordinates)
 				{
-					var latLng = L.latLng(lr.coordinates[k][1], lr.coordinates[k][0]);
+					let latLng = L.latLng(lr.coordinates[k][1], lr.coordinates[k][0]);
 					if (latLng)
 					{
 						pts3.push(latLng);
@@ -299,9 +299,9 @@ export function createFromGeometry(geom, options)
 
 export function createKMLLookAt(map)
 {
-	var center = map.getCenter();
-	var zoom = map.getZoom();
-	var range = 100000 * Math.pow(2, 11 - zoom);
+	let center = map.getCenter();
+	let zoom = map.getZoom();
+	let range = 100000 * Math.pow(2, 11 - zoom);
 	return new kml.LookAt(center.lng, center.lat, 0, range);
 }
 
@@ -318,8 +318,8 @@ export function toLineString(layer)
 {
 	if (layer instanceof L.Polyline)
 	{
-		var coords = [];
-		var i;
+		let coords = [];
+		let i;
 		for (i in layer._latlngs)
 		{
 			coords.push([layer._latlngs[i].lng,layer._latlngs[i].lat]);
@@ -331,7 +331,7 @@ export function toLineString(layer)
 
 export function toKMLFeature(layer, doc)
 {
-	var feature;
+	let feature;
 	if (doc == null)
 	{
 		doc = new kml.Document();
@@ -345,9 +345,9 @@ export function toKMLFeature(layer, doc)
 	}
 	if (layer instanceof L.FeatureGroup)
 	{
-		var featureGroup = new kml.Folder();
+		let featureGroup = new kml.Folder();
 		featureGroup.setName("FeatureGroup");
-		var i;
+		let i;
 		for (i in layer._layers)
 		{
 			feature = toKMLFeature(layer._layers[i], doc);
@@ -367,13 +367,13 @@ export function toKMLFeature(layer, doc)
 		}
 		if (layer.options && layer.options.icon)
 		{
-			var opt = layer.options.icon.options;
+			let opt = layer.options.icon.options;
 			if (opt)
 			{
-				var iconStyle = new kml.IconStyle();
+				let iconStyle = new kml.IconStyle();
 				if (opt.iconSize && layer._icon)
 				{
-					var imgW = layer._icon.naturalWidth || layer._icon.offsetWidth;
+					let imgW = layer._icon.naturalWidth || layer._icon.offsetWidth;
 					iconStyle.setScale(opt.iconSize[0] / imgW);
 				}
 				if (opt.iconAnchor)
@@ -403,10 +403,10 @@ export function toKMLFeature(layer, doc)
 		feature.setName("Polyline");
 		if (layer.options.color || layer.options.weight)
 		{
-			var lineStyle = new kml.LineStyle();
+			let lineStyle = new kml.LineStyle();
 			if (layer.options.color)
 			{
-				var c = web.parseCSSColor(layer.options.color);
+				let c = web.parseCSSColor(layer.options.color);
 				if (layer.options.opacity)
 				{
 					c.a = c.a * layer.options.opacity;
@@ -428,7 +428,7 @@ export function toKMLFeature(layer, doc)
 
 export function toKMLString(layer)
 {
-	var feature = toKMLFeature(layer);
+	let feature = toKMLFeature(layer);
 	if (feature)
 	{
 		return kml.toString(feature);

@@ -15,21 +15,21 @@ export function pixelX2Lon(x, level, tileSize)
 
 export function pixelY2Lat(y, level, tileSize)
 {
-	var n = Math.PI - 2.0 * Math.PI * y / tileSize / (1 << level);
+	let n = Math.PI - 2.0 * Math.PI * y / tileSize / (1 << level);
 	return 180.0 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
 }
 
 export function tileUrls(osmUrl, minCoord, maxCoord, minLev, maxLev)
 {
-	var tileSize = 256;
-	var ret = new Array();
-	var minX;
-	var minY;
-	var maxX;
-	var maxY;
-	var i;
-	var j;
-	var url;
+	let tileSize = 256;
+	let ret = new Array();
+	let minX;
+	let minY;
+	let maxX;
+	let maxY;
+	let i;
+	let j;
+	let url;
 	while (minLev <= maxLev)
 	{
 		minX = Math.floor(lon2PixelX(minCoord.x, minLev, tileSize) / tileSize);
@@ -57,23 +57,22 @@ export function removeTileUrls(urls, osmUrl, minLev, maxLev, areaList)
 {
 	if (areaList == null || areaList.length == 0)
 		return;
-	var urlMap = {};
-	var i;
+	let urlMap = {};
+	let i;
 	for (i in urls)
 	{
 		urlMap[urls[i]] = true;
 	}
 
-	var tileSize = 256;
-	var minX;
-	var minY;
-	var maxX;
-	var maxY;
-	var i;
-	var j;
-	var k;
-	var rect;
-	var url;
+	let tileSize = 256;
+	let minX;
+	let minY;
+	let maxX;
+	let maxY;
+	let j;
+	let k;
+	let rect;
+	let url;
 	while (minLev <= maxLev)
 	{
 		for (k in areaList)

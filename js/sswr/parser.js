@@ -5,12 +5,12 @@ import * as web from "./web.js";
 
 function parseKMLStyle(node)
 {
-	var subNode;
-	var subNode2;
-	var subNode3;
-	var innerStyle;
-	var id = node.id;
-	var style = new kml.Style(id);
+	let subNode;
+	let subNode2;
+	let subNode3;
+	let innerStyle;
+	let id = node.id;
+	let style = new kml.Style(id);
 	for (subNode of node.childNodes)
 	{
 		switch (subNode.nodeName)
@@ -33,10 +33,10 @@ function parseKMLStyle(node)
 					break;
 				case "hotSpot":
 					{
-						var x;
-						var y;
-						var xunits;
-						var yunits;
+						let x;
+						let y;
+						let xunits;
+						let yunits;
 						for (subNode3 of subNode2.attributes)
 						{
 							switch (subNode3.name)
@@ -78,7 +78,7 @@ function parseKMLStyle(node)
 							break;
 						case "href":
 							{
-								var url = subNode3.textContent;
+								let url = subNode3.textContent;
 								if (url.startsWith("http://") || url.startsWith("https://"))
 								{
 									innerStyle.setIconUrl(url);
@@ -179,10 +179,10 @@ function parseKMLStyle(node)
 function parseKMLContainer(container, kmlNode, doc)
 {
 	doc = doc || container;
-	var node;
-	var feature;
-	var subNode;
-	var subNode2;
+	let node;
+	let feature;
+	let subNode;
+	let subNode2;
 	for (node of kmlNode.childNodes)
 	{
 		switch (node.nodeName)
@@ -192,9 +192,9 @@ function parseKMLContainer(container, kmlNode, doc)
 			break;
 		case "StyleMap":
 			{
-				var id;
-				var normalStyle;
-				var highlightStyle;
+				let id;
+				let normalStyle;
+				let highlightStyle;
 				for (subNode of node.attributes)
 				{
 					if (subNode.name == "id")
@@ -204,7 +204,7 @@ function parseKMLContainer(container, kmlNode, doc)
 				}
 				for (subNode of node.childNodes)
 				{
-					var pairType;
+					let pairType;
 					switch (subNode.nodeName)
 					{
 					case "#text":
@@ -303,15 +303,13 @@ function parseKMLContainer(container, kmlNode, doc)
 
 function parseKMLPlacemark(kmlNode, doc)
 {
-	var node;
-	var subNode;
-	var name;
-	var description;
-	var snippet;
-	var coords;
-	var geom;
-	var visibility;
-	var style;
+	let node;
+	let name;
+	let description;
+	let snippet;
+	let geom;
+	let visibility;
+	let style;
 	for (node of kmlNode.childNodes)
 	{
 		switch (node.nodeName)
@@ -361,7 +359,7 @@ function parseKMLPlacemark(kmlNode, doc)
 	}
 	if (geom)
 	{
-		var feature = new kml.Placemark(geom);
+		let feature = new kml.Placemark(geom);
 		if (name)
 			feature.setName(name);
 		if (description)
@@ -379,12 +377,12 @@ function parseKMLPlacemark(kmlNode, doc)
 
 function parseKMLGeometry(kmlNode)
 {
-	var subNode;
-	var subNode2;
-	var geomList;
-	var geom;
-	var coords;
-	var i;
+	let subNode;
+	let subNode2;
+	let geomList;
+	let geom;
+	let coords;
+	let i;
 	switch (kmlNode.nodeName)
 	{
 	case "Point":
@@ -424,10 +422,10 @@ function parseKMLGeometry(kmlNode)
 				break;
 			case "coordinates":
 				{
-					var pts = subNode.textContent.split(/\s+/);
-					var ls = [];
-					var i;
-					var arr;
+					let pts = subNode.textContent.split(/\s+/);
+					let ls = [];
+					let i;
+					let arr;
 					for (i in pts)
 					{
 						arr = pts[i].split(",");
@@ -459,10 +457,10 @@ function parseKMLGeometry(kmlNode)
 				break;
 			case "coordinates":
 				{
-					var pts = subNode.textContent.split(/\s+/);
-					var ls = [];
-					var i;
-					var arr;
+					let pts = subNode.textContent.split(/\s+/);
+					let ls = [];
+					let i;
+					let arr;
 					for (i in pts)
 					{
 						arr = pts[i].split(",");
@@ -578,14 +576,14 @@ function parseKMLGeometry(kmlNode)
 
 function parseKMLLookAt(kmlNode)
 {
-	var longitude;
-	var latitude;
-	var altitude;
-	var range;
-	var heading;
-	var tilt;
-	var altitudeMode;
-	var node;
+	let longitude;
+	let latitude;
+	let altitude;
+	let range;
+	let heading;
+	let tilt;
+	let altitudeMode;
+	let node;
 	for (node of kmlNode.childNodes)
 	{
 		switch (node.nodeName)
@@ -622,7 +620,7 @@ function parseKMLLookAt(kmlNode)
 	}
 	if (longitude != null && latitude != null && altitude != null && range != null)
 	{
-		var lookAt = new kml.LookAt(longitude, latitude, altitude, range);
+		let lookAt = new kml.LookAt(longitude, latitude, altitude, range);
 		if (altitudeMode)
 		{
 			lookAt.setAltitudeMode(altitudeMode);
@@ -658,9 +656,9 @@ function parseKMLNode(kmlNode, doc)
 
 export function parseXML(txt)
 {
-	var parser = new DOMParser();
-	var xmlDoc = parser.parseFromString(txt, "application/xml");
-	var xmlRoot;
+	let parser = new DOMParser();
+	let xmlDoc = parser.parseFromString(txt, "application/xml");
+	let xmlRoot;
 	for (xmlRoot of xmlDoc.childNodes)
 	{
 		switch (xmlRoot.nodeName)
@@ -670,7 +668,7 @@ export function parseXML(txt)
 		default:
 			if (xmlRoot.nodeName == "kml")
 			{
-				var kmlNode;
+				let kmlNode;
 				for (kmlNode of xmlRoot.childNodes)
 				{
 					if (kmlNode.nodeName != "#text")

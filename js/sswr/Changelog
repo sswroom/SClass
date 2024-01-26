@@ -23,6 +23,7 @@
 -Added text.UTF16BETextBinEnc
 -Added text.CPPByteArrBinEnc
 -Added text.CPPTextBinEnc
+-Added text.QuotedPrintableEnc
 
 1.5.1
 -Fixed AngleUnit problem

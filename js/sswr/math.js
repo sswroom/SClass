@@ -6,7 +6,7 @@ export function roundToFloat(n, decimalPoints)
 		decimalPoints = 0;
 	}
 
-	var multiplicator = Math.pow(10, decimalPoints);
+	let multiplicator = Math.pow(10, decimalPoints);
 	n = parseFloat((n * multiplicator).toFixed(11));
 	return Math.round(n) / multiplicator;
 }
@@ -17,9 +17,9 @@ export function roundToStr(n, decimalPoints)
 		decimalPoints = 0;
 	}
 
-	var multiplicator = Math.pow(10, decimalPoints);
+	let multiplicator = Math.pow(10, decimalPoints);
 	n = parseFloat((n * multiplicator).toFixed(11));
-	var s = "" + Math.round(n);
+	let s = "" + Math.round(n);
 	if (decimalPoints == 0)
 	{
 		return s;
@@ -81,8 +81,8 @@ export class RectArea
 {
 	constructor(x1, y1, x2, y2)
 	{
-		var minX;
-		var maxX;
+		let minX;
+		let maxX;
 		if (x1 > x2)
 		{
 			maxX = x1;
@@ -224,17 +224,17 @@ export class EarthEllipsoid
 			this.inverseFlattening = inverseFlattening;
 		}
 		this.semiMinorAxis = this.semiMajorAxis * (1.0 - 1.0 / this.inverseFlattening);
-		var f = 1 - this.getSemiMinorAxis() / this.semiMajorAxis;
+		let f = 1 - this.getSemiMinorAxis() / this.semiMajorAxis;
 		this.eccentricity = Math.sqrt(2 * f - f * f);
 	};
 
 	calSurfaceDistance(dLat1, dLon1, dLat2, dLon2, distUnit)
 	{
-		var r;
-		var rLat1;
-		var rLon1;
-		var rLat2;
-		var rLon2;
+		let r;
+		let rLat1;
+		let rLon1;
+		let rLat2;
+		let rLon2;
 		if (dLat1 == dLat2 && dLon1 == dLon2)
 			return 0;
 
@@ -242,12 +242,12 @@ export class EarthEllipsoid
 		rLon1 = dLon1 * Math.PI / 180.0;
 		rLat2 = dLat2 * Math.PI / 180.0;
 		rLon2 = dLon2 * Math.PI / 180.0;
-		var y = (rLat1 + rLat2) * 0.5;
-		var tmpV = this.eccentricity * Math.sin(y);
+		let y = (rLat1 + rLat2) * 0.5;
+		let tmpV = this.eccentricity * Math.sin(y);
 		r = this.semiMajorAxis * (1 - this.eccentricity * this.eccentricity) / Math.pow(1 - tmpV * tmpV, 1.5);
-		var cLat1 = Math.cos(rLat1);
-		var cLat2 = Math.cos(rLat2);
-		var d = Math.acos(cLat1 * Math.cos(rLon1) * cLat2 * Math.cos(rLon2) + cLat1 * Math.sin(rLon1) * cLat2 * Math.sin(rLon2) + Math.sin(rLat1) * Math.sin(rLat2)) * r;
+		let cLat1 = Math.cos(rLat1);
+		let cLat2 = Math.cos(rLat2);
+		let d = Math.acos(cLat1 * Math.cos(rLon1) * cLat2 * Math.cos(rLon2) + cLat1 * Math.sin(rLon1) * cLat2 * Math.sin(rLon2) + Math.sin(rLat1) * Math.sin(rLat2)) * r;
 		if (d > 0 || d < 0)
 		{
 			if (distUnit != null && distUnit != unit.Distance.Unit.METER)
@@ -399,12 +399,12 @@ export class EarthEllipsoid
 	}
 	toCartesianCoordRad(lonLatH)
 	{
-		var cLat = Math.cos(lonLatH.lat);
-		var sLat = Math.sin(lonLatH.lat);
-		var cLon = Math.cos(lonLatH.lon);
-		var sLon = Math.sin(lonLatH.lon);
-		var e2 = this.eccentricity * this.eccentricity;
-		var v = this.semiMajorAxis / Math.sqrt(1 - e2 * sLat * sLat);
+		let cLat = Math.cos(lonLatH.lat);
+		let sLat = Math.sin(lonLatH.lat);
+		let cLon = Math.cos(lonLatH.lon);
+		let sLon = Math.sin(lonLatH.lon);
+		let e2 = this.eccentricity * this.eccentricity;
+		let v = this.semiMajorAxis / Math.sqrt(1 - e2 * sLat * sLat);
 		return new Vector3(
 			(v + lonLatH.z) * cLat * cLon,
 			(v + lonLatH.z) * cLat * sLon,
@@ -413,14 +413,14 @@ export class EarthEllipsoid
 
 	fromCartesianCoordRad(coord)
 	{
-		var e2 = this.eccentricity * this.eccentricity;
-		var rLon = Math.atan2(coord.y, coord.x);
-		var p = Math.sqrt(coord.x * coord.x + coord.y * coord.y);
-		var rLat = Math.atan2(coord.z, p * (1 - e2));
-		var sLat;
-		var thisLat;
-		var v = 0;
-		var i = 10;
+		let e2 = this.eccentricity * this.eccentricity;
+		let rLon = Math.atan2(coord.y, coord.x);
+		let p = Math.sqrt(coord.x * coord.x + coord.y * coord.y);
+		let rLat = Math.atan2(coord.z, p * (1 - e2));
+		let sLat;
+		let thisLat;
+		let v = 0;
+		let i = 10;
 		while (i-- > 0)
 		{
 			sLat = Math.sin(rLat);
@@ -467,7 +467,7 @@ export class DatumData
 		this.cX = cX;
 		this.cY = cY;
 		this.cZ = cZ;
-		var aratio = unit.Angle.getUnitRatio(aunit);
+		let aratio = unit.Angle.getUnitRatio(aunit);
 		this.xAngle = xAngle * aratio;
 		this.yAngle = yAngle * aratio;
 		this.zAngle = zAngle * aratio;
@@ -496,8 +496,8 @@ export class CoordinateSystem
 	{
 		if (this == csys)
 			return true;
-		var thisType = this.getCoordSysType();
-		var csysType = csys.getCoordSysType();
+		let thisType = this.getCoordSysType();
+		let csysType = csys.getCoordSysType();
 		if (thisType != csysType)
 			return false;
 		if (csysType == CoordinateSystemType.Geographic)
@@ -534,7 +534,7 @@ export class CoordinateSystem
 	
 		if (destCoord.isProjected())
 		{
-			var gcs = destCoord.getGeographicCoordinateSystem();
+			let gcs = destCoord.getGeographicCoordinateSystem();
 			srcPos = gcs.fromCartesianCoordRad(srcPos);
 			return Vector3.fromCoord2D(destCoord.fromGeographicCoordinateRad(srcPos), srcPos.z);
 		}
@@ -546,9 +546,9 @@ export class CoordinateSystem
 
 	static convertArray(srcCoord, destCoord, srcArr)
 	{
-		var i;
-		var srcRad = false;
-		var destArr = [];
+		let i;
+		let srcRad = false;
+		let destArr = [];
 		if (srcCoord.isProjected())
 		{
 			for (i in srcArr)
@@ -577,10 +577,10 @@ export class CoordinateSystem
 			}
 			return destArr;
 		}
-		var tmpPos;
+		let tmpPos;
 		if (destCoord.isProjected())
 		{
-			var gcs = destCoord.getGeographicCoordinateSystem();
+			let gcs = destCoord.getGeographicCoordinateSystem();
 			if (srcRad)
 			{
 				for (i in srcArr)
@@ -664,7 +664,7 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 
 	toCartesianCoordRad(lonLatH)
 	{
-		var tmpPos = this.datum.spheroid.ellipsoid.toCartesianCoordRad(lonLatH);
+		let tmpPos = this.datum.spheroid.ellipsoid.toCartesianCoordRad(lonLatH);
 		if (this.datum.scale == 0 && this.datum.xAngle == 0 && this.datum.yAngle == 0 && this.datum.zAngle == 0)
 		{
 			return new Vector3(
@@ -677,7 +677,7 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 			tmpPos.x -= this.datum.x0;
 			tmpPos.y -= this.datum.y0;
 			tmpPos.z -= this.datum.z0;
-			var s = 1 + this.datum.scale * 0.000001;
+			let s = 1 + this.datum.scale * 0.000001;
 			return new Vector3(
 				s * (                     tmpPos.x - this.datum.zAngle * tmpPos.y + this.datum.yAngle * tmpPos.z) + this.datum.cX + this.datum.x0,
 				s * ( this.datum.zAngle * tmpPos.x +                     tmpPos.y - this.datum.xAngle * tmpPos.z) + this.datum.cY + this.datum.y0,
@@ -687,7 +687,7 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 
 	fromCartesianCoordRad(coord)
 	{
-		var tmpPos;
+		let tmpPos;
 		if (this.datum.scale == 0 && this.datum.xAngle == 0 && this.datum.yAngle == 0 && this.datum.zAngle == 0)
 		{
 			tmpPos = new Vector3(
@@ -700,7 +700,7 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 			coord.x = coord.x - this.datum.x0 - this.datum.cX;
 			coord.y = coord.y - this.datum.y0 - this.datum.cY;
 			coord.z = coord.z - this.datum.z0 - this.datum.cZ;
-			var s = 1 / (1 + this.datum.scale * 0.000001);
+			let s = 1 / (1 + this.datum.scale * 0.000001);
 			tmpPos = new Vector3(
 				s * (                     coord.x + this.datum.zAngle * coord.y - this.datum.yAngle * coord.z) + this.datum.x0,
 				s * (-this.datum.zAngle * coord.x +                     coord.y + this.datum.xAngle * coord.z) + this.datum.y0,
@@ -735,11 +735,11 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 
 	calcSurfaceDistance(x1, y1, x2, y2, distUnit)
 	{
-		var diffX = x2 - x1;
-		var diffY = y2 - y1;
+		let diffX = x2 - x1;
+		let diffY = y2 - y1;
 		diffX = diffX * diffX;
 		diffY = diffY * diffY;
-		var d = Math.sqrt(diffX + diffY);
+		let d = Math.sqrt(diffX + diffY);
 		if (distUnit != unit.Distance.Unit.METER)
 		{
 			d = unit.Distance.convert(unit.Distance.Unit.METER, distUnit, d);
@@ -797,14 +797,14 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 
 	toGeographicCoordinateRad(projPos)
 	{
-		var ellipsoid = this.gcs.getEllipsoid();
-		var aF = ellipsoid.getSemiMajorAxis() * this.scaleFactor;
-		var rLatL = (projPos.y - this.falseNorthing) / aF + this.rlatitudeOfOrigin;
-		var rLastLat;
-		var e = ellipsoid.getEccentricity();
-		var e2 = e * e;
-		var tmpV;
-		var i = 20;
+		let ellipsoid = this.gcs.getEllipsoid();
+		let aF = ellipsoid.getSemiMajorAxis() * this.scaleFactor;
+		let rLatL = (projPos.y - this.falseNorthing) / aF + this.rlatitudeOfOrigin;
+		let rLastLat;
+		let e = ellipsoid.getEccentricity();
+		let e2 = e * e;
+		let tmpV;
+		let i = 20;
 		while (i-- > 0)
 		{
 			tmpV = projPos.y - this.falseNorthing - this.calcM(rLatL);
@@ -813,69 +813,69 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 			if (rLastLat == rLatL || (tmpV < 0.000000001 && tmpV > -0.000000001))
 				break;
 		}
-		var sLat = Math.sin(rLatL);
-		var cLat = Math.cos(rLatL);
-		var secLat = 1 / cLat;
-		var tLat = sLat * secLat; //Math_Tan(rLatL);
-		var tLat2 = tLat * tLat;
-		var tLat4 = tLat2 * tLat2;
-		var tmp = 1 - e2 * sLat * sLat;
-		var v = aF / Math.sqrt(tmp);
-		var v2 = v * v;
-		var v3 = v * v2;
-		var v5 = v3 * v2;
-		var v7 = v5 * v2;
-		var p = v * (1 - e2) / tmp;
-		var nb2 = v / p - 1;
+		let sLat = Math.sin(rLatL);
+		let cLat = Math.cos(rLatL);
+		let secLat = 1 / cLat;
+		let tLat = sLat * secLat; //Math_Tan(rLatL);
+		let tLat2 = tLat * tLat;
+		let tLat4 = tLat2 * tLat2;
+		let tmp = 1 - e2 * sLat * sLat;
+		let v = aF / Math.sqrt(tmp);
+		let v2 = v * v;
+		let v3 = v * v2;
+		let v5 = v3 * v2;
+		let v7 = v5 * v2;
+		let p = v * (1 - e2) / tmp;
+		let nb2 = v / p - 1;
 	
-		var ser7 = tLat / (2 * p * v);
-		var ser8 = tLat / (24 * p * v3) * (5 + 3 * tLat2 + nb2 - 9 * tLat2 * nb2);
-		var ser9 = tLat / (720 * p * v5) * (61 + 90 * tLat2 + 45 * tLat4);
-		var ser10 = secLat / v;
-		var ser11 = secLat / (6 * v3) * (v / p + 2 * tLat2);
-		var ser12 = secLat / (120 * v5) * (5 + 28 * tLat2 + 24 * tLat4);
-		var ser12a = secLat / (5040 * v7) * (61 + 662 * tLat2 + 1320 * tLat4 + 720 * tLat4 * tLat2);
+		let ser7 = tLat / (2 * p * v);
+		let ser8 = tLat / (24 * p * v3) * (5 + 3 * tLat2 + nb2 - 9 * tLat2 * nb2);
+		let ser9 = tLat / (720 * p * v5) * (61 + 90 * tLat2 + 45 * tLat4);
+		let ser10 = secLat / v;
+		let ser11 = secLat / (6 * v3) * (v / p + 2 * tLat2);
+		let ser12 = secLat / (120 * v5) * (5 + 28 * tLat2 + 24 * tLat4);
+		let ser12a = secLat / (5040 * v7) * (61 + 662 * tLat2 + 1320 * tLat4 + 720 * tLat4 * tLat2);
 	
-		var eDiff = projPos.x - this.falseEasting;
-		var eDiff2 = eDiff * eDiff;
-		var eDiff4 = eDiff2 * eDiff2;
-		var eDiff6 = eDiff4 * eDiff2;
+		let eDiff = projPos.x - this.falseEasting;
+		let eDiff2 = eDiff * eDiff;
+		let eDiff4 = eDiff2 * eDiff2;
+		let eDiff6 = eDiff4 * eDiff2;
 		return new Coord2D(this.rcentralMeridian + ser10 * eDiff - ser11 * (eDiff2 * eDiff) + ser12 * (eDiff4 * eDiff) - ser12a * (eDiff6 * eDiff),
 			rLatL - ser7 * eDiff2 + ser8 * eDiff4 - ser9 * eDiff6);
 	}
 	
 	fromGeographicCoordinateRad(geoPos)
 	{
-		var ellipsoid = this.gcs.getEllipsoid();
-		var rLat = geoPos.lat;
-		var rLon = geoPos.lon;
-		var rLon0 = this.rcentralMeridian;
-		var sLat = Math.sin(rLat);
-		var cLat = Math.cos(rLat);
-		var tLat = sLat / cLat; //Math_Tan(rLat);
-		var a = ellipsoid.getSemiMajorAxis();
-		var e = ellipsoid.getEccentricity();
-		var e2 = e * e;
-		var tmp = 1 - e2 * sLat * sLat;
-		var v = a * this.scaleFactor / Math.sqrt(tmp);
-		var p = v * (1 - e2) / tmp;
-		var nb2 = v / p - 1;
-		var m = this.calcM(rLat);
-		var tLat2 = tLat * tLat;
-		var tLat4 = tLat2 * tLat2;
-		var cLat3 = cLat * cLat * cLat;
-		var cLat5 = cLat3 * cLat * cLat;
+		let ellipsoid = this.gcs.getEllipsoid();
+		let rLat = geoPos.lat;
+		let rLon = geoPos.lon;
+		let rLon0 = this.rcentralMeridian;
+		let sLat = Math.sin(rLat);
+		let cLat = Math.cos(rLat);
+		let tLat = sLat / cLat; //Math_Tan(rLat);
+		let a = ellipsoid.getSemiMajorAxis();
+		let e = ellipsoid.getEccentricity();
+		let e2 = e * e;
+		let tmp = 1 - e2 * sLat * sLat;
+		let v = a * this.scaleFactor / Math.sqrt(tmp);
+		let p = v * (1 - e2) / tmp;
+		let nb2 = v / p - 1;
+		let m = this.calcM(rLat);
+		let tLat2 = tLat * tLat;
+		let tLat4 = tLat2 * tLat2;
+		let cLat3 = cLat * cLat * cLat;
+		let cLat5 = cLat3 * cLat * cLat;
 		
-		var ser1 = m + this.falseNorthing;
-		var ser2 = v * 0.5 * cLat * sLat;
-		var ser3 = v / 24 * sLat * cLat3 * (5 - tLat2 + 9 * nb2);
-		var ser3a = v / 720 * sLat * cLat5 * (61 - 58 * tLat2 + tLat4);
-		var ser4 = v * cLat;
-		var ser5 = v / 6 * cLat3 * (v / p - tLat2);
-		var ser6 = v / 120 * cLat5 * (5 - 18 * tLat2 + tLat4 + 14 * nb2 - 58 * tLat2 * nb2);
-		var dlon = rLon - rLon0;
-		var dlon2 = dlon * dlon;
-		var dlon4 = dlon2 * dlon2;
+		let ser1 = m + this.falseNorthing;
+		let ser2 = v * 0.5 * cLat * sLat;
+		let ser3 = v / 24 * sLat * cLat3 * (5 - tLat2 + 9 * nb2);
+		let ser3a = v / 720 * sLat * cLat5 * (61 - 58 * tLat2 + tLat4);
+		let ser4 = v * cLat;
+		let ser5 = v / 6 * cLat3 * (v / p - tLat2);
+		let ser6 = v / 120 * cLat5 * (5 - 18 * tLat2 + tLat4 + 14 * nb2 - 58 * tLat2 * nb2);
+		let dlon = rLon - rLon0;
+		let dlon2 = dlon * dlon;
+		let dlon4 = dlon2 * dlon2;
 	
 		return new Coord2D(this.falseEasting + ser4 * dlon + ser5 * dlon * dlon2 + ser6 * dlon * dlon4,
 			ser1 + ser2 * dlon2 + ser3 * dlon4 + ser3a * dlon4 * dlon2);
@@ -883,14 +883,14 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 	
 	calcM(rLat)
 	{
-		var ellipsoid = this.gcs.getEllipsoid();
-		var a = ellipsoid.getSemiMajorAxis();
-		var b = ellipsoid.getSemiMinorAxis();
-		var n = (a - b) / (a + b);
-		var n2 = n * n;
-		var n3 = n2 * n;
-		var rLat0 = this.rlatitudeOfOrigin;
-		var m;
+		let ellipsoid = this.gcs.getEllipsoid();
+		let a = ellipsoid.getSemiMajorAxis();
+		let b = ellipsoid.getSemiMinorAxis();
+		let n = (a - b) / (a + b);
+		let n2 = n * n;
+		let n3 = n2 * n;
+		let rLat0 = this.rlatitudeOfOrigin;
+		let m;
 		m = (1 + n + 1.25 * n2 + 1.25 * n3) * (rLat - rLat0);
 		m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math.sin(rLat - rLat0) * Math.cos(rLat + rLat0);
 		m = m + (1.875 * n2 + 1.875 * n3) * Math.sin(2 * (rLat - rLat0)) * Math.cos(2 * (rLat + rLat0));
@@ -914,21 +914,21 @@ export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSys
 
 	toGeographicCoordinateRad(projPos)
 	{
-		var ellipsoid = this.gcs.getEllipsoid();
-		var rLon0 = this.rcentralMeridian;
-		var a = ellipsoid.getSemiMajorAxis();
+		let ellipsoid = this.gcs.getEllipsoid();
+		let rLon0 = this.rcentralMeridian;
+		let a = ellipsoid.getSemiMajorAxis();
 		return new Coord2D(((projPos.x - this.falseEasting) / a + rLon0),
 			(Math.atan(Math.exp((projPos.y - this.falseNorthing) / a)) - Math.PI * 0.25) * 2);
 	}
 	
 	fromGeographicCoordinateRad(geoPos)
 	{
-		var ellipsoid = this.gcs.getEllipsoid();
-		var rLat = geoPos.lat;
-		var rLon = geoPos.lon;
-		var rLon0 = this.rcentralMeridian;
-		var a = ellipsoid.getSemiMajorAxis();
-		var dlon = rLon - rLon0;
+		let ellipsoid = this.gcs.getEllipsoid();
+		let rLat = geoPos.lat;
+		let rLon = geoPos.lon;
+		let rLon0 = this.rcentralMeridian;
+		let a = ellipsoid.getSemiMajorAxis();
+		let dlon = rLon - rLon0;
 		return new Coord2D(this.falseEasting + dlon * a,
 			this.falseNorthing + a * Math.log(Math.tan(Math.PI * 0.25 + rLat * 0.5)));
 	}
@@ -938,7 +938,7 @@ export class CoordinateSystemManager
 {
 	static srCreateGeogCSysData(srid, datumSrid, name)
 	{
-		var data = this.srGetDatumData(datumSrid);
+		let data = this.srGetDatumData(datumSrid);
 		if (data == null)
 		{
 			return null;
@@ -948,7 +948,7 @@ export class CoordinateSystemManager
 	
 	static srCreateProjCSysData(srid, geogcsSrid, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor)
 	{
-		var gcsys = this.srCreateGeogCSys(geogcsSrid);
+		let gcsys = this.srCreateGeogCSys(geogcsSrid);
 		if (gcsys == null)
 			return null;
 		if (csysType == CoordinateSystemType.MercatorProjected || csysType == CoordinateSystemType.GausskrugerProjected)

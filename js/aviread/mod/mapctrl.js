@@ -11,7 +11,7 @@ async function onFileDrop(file)
 {
 	if (file instanceof File)
 	{
-		var obj = await parser.parseFile(file);
+		let obj = await parser.parseFile(file);
 		if (obj == null)
 		{
 
@@ -27,11 +27,11 @@ async function onFileDrop(file)
 	}
 }
 
-var mapCtrl;
+let mapCtrl;
 if (window.L)
 {
 	mapCtrl = new leaflet.LeafletMap("map");
-//	var mapObj = L.map('map').setView([22.4, 114.2], 13);
+//	let mapObj = L.map('map').setView([22.4, 114.2], 13);
 //	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(mapObj);
 }
 else if (window.Cesium)
@@ -50,7 +50,7 @@ else
 if (mapCtrl instanceof map.MapControl)
 {
 	mapCtrl.panZoomScale(new math.Coord2D(114.2, 22.4), 20000);
-	var lyr = mapCtrl.createLayer({
+	let lyr = mapCtrl.createLayer({
 		name: "OSM",
 		url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 		type: map.WebMapType.OSMTile,

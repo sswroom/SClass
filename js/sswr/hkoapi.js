@@ -17,7 +17,7 @@ export function getLayers()
 
 export async function getLocalWeatherForecast(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -27,7 +27,7 @@ export async function getLocalWeatherForecast(lang)
 
 export async function get9DayWeatherForecast(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -37,7 +37,7 @@ export async function get9DayWeatherForecast(lang)
 
 export async function getCurrentWeatherReport(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -47,7 +47,7 @@ export async function getCurrentWeatherReport(lang)
 
 export async function getWeatherWarningSummary(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -57,7 +57,7 @@ export async function getWeatherWarningSummary(lang)
 
 export async function getWeatherWarningInfo(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warningInfo&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warningInfo&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -67,7 +67,7 @@ export async function getWeatherWarningInfo(lang)
 
 export async function getSpecialWeatherTips(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -77,7 +77,7 @@ export async function getSpecialWeatherTips(lang)
 
 export async function getQuickEarthquakeMessages(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -87,7 +87,7 @@ export async function getQuickEarthquakeMessages(lang)
 
 export async function getLocallyFeltEarthTremorReport(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=feltearthquake&lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=feltearthquake&lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -97,7 +97,7 @@ export async function getLocallyFeltEarthTremorReport(lang)
 
 export async function getLunarDate(date)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/lunardate.php?date="+date.toString("yyyy-MM-dd"));
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/lunardate.php?date="+date.toString("yyyy-MM-dd"));
 	if (resp.ok)
 	{
 		return await resp.json();
@@ -107,7 +107,7 @@ export async function getLunarDate(date)
 
 export async function getHourlyRainfall(lang)
 {
-	var resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang="+lang);
+	let resp = await fetch("https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang="+lang);
 	if (resp.ok)
 	{
 		return await resp.json();

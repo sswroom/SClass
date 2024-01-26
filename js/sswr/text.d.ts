@@ -97,3 +97,10 @@ export class CPPTextBinEnc extends TextBinEnc
 	encodeBin(buff: ArrayBuffer): string;
 	decodeBin(str: string): Uint8Array;
 }
+
+export class QuotedPrintableEnc extends TextBinEnc
+{
+	constructor();
+	encodeBin(buff: ArrayBuffer): string;
+	decodeBin(str: string): Uint8Array;
+}

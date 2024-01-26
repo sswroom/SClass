@@ -123,7 +123,7 @@ export class ColorStyle extends Element
 
 	fromCSSColor(color)
 	{
-		var c = web.parseCSSColor(color);
+		let c = web.parseCSSColor(color);
 		this.fromARGB(c.a, c.r, c.g, c.b);
 	}
 
@@ -212,7 +212,7 @@ export class IconStyle extends ColorStyle
 
 	equals(o)
 	{
-		if (!o instanceof IconStyle)
+		if (!(o instanceof IconStyle))
 			return false;
 		if (!this.sameColor(o))
 			return false;
@@ -261,7 +261,7 @@ export class LabelStyle extends ColorStyle
 
 	equals(o)
 	{
-		if (!o instanceof LabelStyle)
+		if (!(o instanceof LabelStyle))
 			return false;
 		if (!this.sameColor(o))
 			return false;
@@ -307,7 +307,7 @@ export class LineStyle extends ColorStyle
 
 	equals(o)
 	{
-		if (!o instanceof LineStyle)
+		if (!(o instanceof LineStyle))
 			return false;
 		if (!this.sameColor(o))
 			return false;
@@ -344,7 +344,7 @@ export class PolyStyle extends ColorStyle
 
 	equals(o)
 	{
-		if (!o instanceof PolyStyle)
+		if (!(o instanceof PolyStyle))
 			return false;
 		if (!this.sameColor(o))
 			return false;
@@ -382,7 +382,7 @@ export class BalloonStyle extends Element
 
 	equals(o)
 	{
-		if (!o instanceof BalloonStyle)
+		if (!(o instanceof BalloonStyle))
 			return false;
 		if (this.bgColor != o.bgColor)
 			return false;
@@ -420,7 +420,7 @@ export class ListStyle extends Element
 
 	equals(o)
 	{
-		if (!o instanceof ListStyle)
+		if (!(o instanceof ListStyle))
 			return false;
 		if (this.listItemType != o.listItemType)
 			return false;
@@ -751,13 +751,13 @@ export class Container extends Feature
 	{
 		if (this.styleList == null)
 			this.styleList = [];
-		var i;
+		let i;
 		for (i in this.styleList)
 		{
 			if (this.styleList[i].isStyle(iconStyle, labelStyle, lineStyle, polyStyle, balloonStyle, listStyle))
 				return this.styleList[i];
 		}
-		var style = new Style("style"+(this.styleList.length + 1));
+		let style = new Style("style"+(this.styleList.length + 1));
 		style.iconStyle = iconStyle;
 		style.labelStyle = labelStyle;
 		style.lineStyle = lineStyle;
@@ -770,7 +770,7 @@ export class Container extends Feature
 
 	getStyleById(id)
 	{
-		var i;
+		let i;
 		if (this.styleList)
 		{
 			for (i in this.styleList)
@@ -794,7 +794,7 @@ export class Container extends Feature
 	{
 		if (this.styleList)
 		{
-			var i;
+			let i;
 			for (i in this.styleList)
 			{
 				this.styleList[i].getUsedNS(ns);
@@ -804,7 +804,7 @@ export class Container extends Feature
 
 	appendOuterXML(strs, level)
 	{
-		var i;
+		let i;
 		strs.push("\t".repeat(level)+"<"+this.eleName+">");
 		this.appendInnerXML(strs, level + 1);
 		if (this.styleList)
@@ -874,7 +874,7 @@ export class Placemark extends Feature
 		{
 			if (subGeom)
 			{
-				var i;
+				let i;
 				strs.push("\t".repeat(level)+"<LinearRing>");
 				if (vec.coordinates[0].length >= 3)
 				{
@@ -902,13 +902,13 @@ export class Placemark extends Feature
 			}
 			else
 			{
-				var pg = vec.toPolygon();
+				let pg = vec.toPolygon();
 				this.appendGeometry(strs, level, pg, subGeom);
 			}
 		}
 		else if (vec instanceof geometry.LineString)
 		{
-			var i;
+			let i;
 			strs.push("\t".repeat(level)+"<LineString>");
 			if (vec.coordinates[0].length >= 3)
 			{
@@ -936,7 +936,7 @@ export class Placemark extends Feature
 		}
 		else if (vec instanceof geometry.Polygon)
 		{
-			var i;
+			let i;
 			strs.push("\t".repeat(level)+"<Polygon>");
 			if (vec.geometries[0].coordinates[0].length >= 3)
 			{
@@ -967,7 +967,7 @@ export class Placemark extends Feature
 		}
 		else if (vec instanceof geometry.MultiPolygon)
 		{
-			var i;
+			let i;
 			strs.push("\t".repeat(level)+"<MultiGeometry>");
 			for (i in vec.geometries)
 			{
@@ -995,9 +995,9 @@ export class Placemark extends Feature
 
 export function toString(item)
 {
-	var strs = [];
+	let strs = [];
 	strs.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-	var namespaces = {};
+	let namespaces = {};
 	item.getUsedNS(namespaces);
 	strs.push("<kml xmlns=\"http://www.opengis.net/kml/2.2\">");
 	item.appendOuterXML(strs, 1);
@@ -1023,16 +1023,16 @@ export function toCSSColor(color)
 	if (color.length != 8)
 		return null;
 
-	var a = Number.parseInt(color.substring(0, 2), 16);
+	let a = Number.parseInt(color.substring(0, 2), 16);
 	if (a == 255)
 	{
 		return "#"+color.substring(6, 8)+color.substring(4, 6)+color.substring(2, 4);
 	}
 	else
 	{
-		var b = Number.parseInt(color.substring(2, 4), 16);
-		var g = Number.parseInt(color.substring(4, 6), 16);
-		var r = Number.parseInt(color.substring(6, 8), 16);
+		let b = Number.parseInt(color.substring(2, 4), 16);
+		let g = Number.parseInt(color.substring(4, 6), 16);
+		let r = Number.parseInt(color.substring(6, 8), 16);
 		return "rgba("+r+", "+g+", "+b+", "+(a / 255.0)+")";
 	}
 }

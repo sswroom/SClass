@@ -41,15 +41,15 @@ window.registerClicked = function()
 		navigator.serviceWorker.register('./service-worker.js',{scope : '/push/'}).then(function(registration) {
 			window.reg = registration;
 			console.log('ServiceWorker registration successful with scope: ', registration.scope);
-			var options = null;
-			var appKey = document.getElementById("appKey").value;
+			let options = null;
+			let appKey = document.getElementById("appKey").value;
 			if (appKey && appKey.length > 0)
 			{
 				options = {applicationServerKey: appKey};
 			}
 			registration.pushManager.subscribe(options).then(
 				(pushSubscription) => {
-					var d = document.getElementById("message");
+					let d = document.getElementById("message");
 					d.innerHTML = "<br/>Endpoint: "+text.toHTMLText(pushSubscription.endpoint)+
 					"<br/>Key: "+data.arrayBuffer2Base64(pushSubscription.getKey("p256dh"))+
 					"<br/>Auth: "+data.arrayBuffer2Base64(pushSubscription.getKey("auth"))+

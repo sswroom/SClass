@@ -9,11 +9,11 @@ import * as web from "./web.js";
 
 export function toPointArray(numArr, options)
 {
-	var ret = [];
-	var i;
+	let ret = [];
+	let i;
 	for (i in numArr)
 	{
-		var pos = new OpenLayers.LonLat(numArr[i][0], numArr[i][1]).transform(options.objProjection, options.mapProjection);
+		let pos = new OpenLayers.LonLat(numArr[i][0], numArr[i][1]).transform(options.objProjection, options.mapProjection);
 		ret.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 	}
 	return ret;
@@ -24,9 +24,9 @@ export async function createFromKMLFeature(feature, options)
 	options = data.mergeOptions(options, {noPopup: false});
 	if (feature instanceof kml.Container)
 	{
-		var i;
-		var layers = [];
-		var layer;
+		let i;
+		let layers = [];
+		let layer;
 		for (i in feature.features)
 		{
 			layer = await createFromKMLFeature(feature.features[i], options);
@@ -40,7 +40,7 @@ export async function createFromKMLFeature(feature, options)
 			}
 			else if (layer != null)
 			{
-				var j;
+				let j;
 				for (j in layer)
 				{
 					layers.push(layer[j]);
@@ -51,12 +51,12 @@ export async function createFromKMLFeature(feature, options)
 	}
 	else if (feature instanceof kml.Placemark)
 	{
-		var opt = {objProjection: options.objProjection, mapProjection: options.mapProjection};
+		let opt = {objProjection: options.objProjection, mapProjection: options.mapProjection};
 		if (feature.name)
 			opt.name = feature.name;
 		if (feature.style)
 		{
-			var style = feature.style;
+			let style = feature.style;
 			if (style instanceof kml.StyleMap)
 			{
 				style = style.normalStyle;
@@ -65,7 +65,7 @@ export async function createFromKMLFeature(feature, options)
 			{
 				if (style.iconStyle)
 				{
-					var s = style.iconStyle;
+					let s = style.iconStyle;
 					if (s.iconUrl)
 					{
 						opt.iconUrl = s.iconUrl;
@@ -77,7 +77,7 @@ export async function createFromKMLFeature(feature, options)
 				}
 				if (style.lineStyle)
 				{
-					var ls = style.lineStyle;
+					let ls = style.lineStyle;
 					if (ls.color)
 						opt.strokeColor = kml.toCSSColor(ls.color);
 					if (ls.width)
@@ -90,7 +90,7 @@ export async function createFromKMLFeature(feature, options)
 				}
 				if (style.polyStyle)
 				{
-					var ps = style.polyStyle;
+					let ps = style.polyStyle;
 					if (ps.color)
 						opt.fillColor = kml.toCSSColor(ps.color);
 					opt.fill = true;
@@ -101,7 +101,7 @@ export async function createFromKMLFeature(feature, options)
 				}		
 			}
 		}
-		var layer = await createFromGeometry(feature.vec, opt);
+		let layer = await createFromGeometry(feature.vec, opt);
 		if (layer instanceof OpenLayers.Geometry)
 		{
 			return new OpenLayers.Feature.Vector(layer, {name: feature.name, description: feature.description}, opt);
@@ -110,7 +110,7 @@ export async function createFromKMLFeature(feature, options)
 		{
 			if (!options.noPopup && (feature.name || feature.description))
 			{
-				var content;
+				let content;
 				if (feature.name && feature.description)
 				{
 					content = "<b>"+text.toHTMLText(feature.name)+"</b><br/>"+feature.description;
@@ -124,7 +124,7 @@ export async function createFromKMLFeature(feature, options)
 					content = feature.description;
 				}
 				layer.events.register('click', layer, function(evt) {
-					var popup = new OpenLayers.Popup.FramedCloud("Popup",
+					let popup = new OpenLayers.Popup.FramedCloud("Popup",
 						layer.lonlat,
 						null,
 						content,
@@ -153,10 +153,10 @@ export async function createFromGeometry(geom, options)
 	}
 	if (geom instanceof geometry.Point)
 	{
-		var icon;
+		let icon;
 		if (options.iconUrl && options.iconOffset)
 		{
-			var size = await web.getImageInfo(options.iconUrl);
+			let size = await web.getImageInfo(options.iconUrl);
 			if (size == null)
 			{
 				console.log("Error in getting image info from url", options.iconUrl);
@@ -167,7 +167,7 @@ export async function createFromGeometry(geom, options)
 		}
 		else
 		{
-			var lonLat = new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]).transform(options.objProjection, options.mapProjection);
+			let lonLat = new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]).transform(options.objProjection, options.mapProjection);
 			return new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
 		}
 	}
@@ -181,8 +181,8 @@ export async function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.Polygon)
 	{
-		var lrList = [];
-		var i;
+		let lrList = [];
+		let i;
 		for (i in geom.geometries)
 		{
 			lrList.push(await createFromGeometry(geom.geometries[i], options));
@@ -191,8 +191,8 @@ export async function createFromGeometry(geom, options)
 	}
 	else if (geom instanceof geometry.MultiPolygon)
 	{
-		var pgList = [];
-		var i;
+		let pgList = [];
+		let i;
 		for (i in geom.geometries)
 		{
 			pgList.push(await createFromGeometry(geom.geometries[i], options));
@@ -216,7 +216,7 @@ export class Olayer2Map extends map.MapControl
 		this.initY = 22.4;
 		this.initLev = 12;
 		this.mapId = mapId;
-		var dom = document.getElementById(mapId);
+		let dom = document.getElementById(mapId);
 		dom.style.minWidth = '1px';
 		dom.style.minHeight = '1px';
 		this.mapProjection = new OpenLayers.Projection("EPSG:4326");
@@ -285,13 +285,13 @@ export class Olayer2Map extends map.MapControl
 
 	createMarkerLayer(name, options)
 	{
-		var layer = new OpenLayers.Layer.Markers(name);
+		let layer = new OpenLayers.Layer.Markers(name);
 		return layer;
 	}
 
 	createGeometryLayer(name, options)
 	{
-		var layer = new OpenLayers.Layer.Vector(name);
+		let layer = new OpenLayers.Layer.Vector(name);
 		return layer;
 	}
 
@@ -312,10 +312,10 @@ export class Olayer2Map extends map.MapControl
 		}
 		else if (data.isArray(layer))
 		{
-			var vectorLayer;
-			var markerLayer;
-			var vectors = [];
-			var i;
+			let vectorLayer;
+			let markerLayer;
+			let vectors = [];
+			let i;
 			for (i in layer)
 			{
 				if (layer[i] instanceof OpenLayers.Marker)
@@ -395,19 +395,18 @@ export class Olayer2Map extends map.MapControl
 
 	zoomToExtent(extent)
 	{
-		var pos = extent.getCenter();
-		var currZoom = this.map.getZoom();
-		var tl = this.map2ScnPos(new math.Coord2D(extent.min.x, extent.max.y));
-		var br = this.map2ScnPos(new math.Coord2D(extent.max.x, extent.min.y));
-		var scnSize = this.map.getSize();
-		var ratioX = (br.x - tl.x) / scnSize.w;
-		var ratioY = (br.y - tl.y) / scnSize.h;
+		let pos = extent.getCenter();
+		let currZoom = this.map.getZoom();
+		let tl = this.map2ScnPos(new math.Coord2D(extent.min.x, extent.max.y));
+		let br = this.map2ScnPos(new math.Coord2D(extent.max.x, extent.min.y));
+		let scnSize = this.map.getSize();
+		let ratioX = (br.x - tl.x) / scnSize.w;
+		let ratioY = (br.y - tl.y) / scnSize.h;
 		if (ratioY > ratioX)
 		{
 			ratioX = ratioY;
 		}
-		var minZoom = 0;
-		var maxZoom = this.map.getNumZoomLevels() - 1;
+		let maxZoom = this.map.getNumZoomLevels() - 1;
 		currZoom += Math.floor(-Math.log(ratioX) / Math.log(2));
 		if (currZoom < 0)
 			currZoom = 0;
@@ -433,21 +432,21 @@ export class Olayer2Map extends map.MapControl
 
 	map2ScnPos(mapPos)
 	{
-		var scnPx = this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(mapPos.x, mapPos.y).transform(this.mapProjection, this.map.getProjectionObject()));
+		let scnPx = this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(mapPos.x, mapPos.y).transform(this.mapProjection, this.map.getProjectionObject()));
 		return new math.Coord2D(scnPx.x, scnPx.y);
 	}
 
 	scn2MapPos(scnPos)
 	{
-		var lonLat = this.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(scnPos.x, scnPos.y)).transform(this.map.getProjectionObject(), this.mapProjection);
+		let lonLat = this.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(scnPos.x, scnPos.y)).transform(this.map.getProjectionObject(), this.mapProjection);
 		return new math.Coord2D(lonLat.lon, lonLat.lat);
 	}
 
 	createMarker(mapPos, imgURL, imgWidth, imgHeight, options)
 	{
-		var size = new OpenLayers.Size(imgWidth, imgHeight);
-		var offset = new OpenLayers.Pixel(-(size.w / 2), -(size.h / 2));
-		var icon = new OpenLayers.Icon(imgURL, size, offset);
+		let size = new OpenLayers.Size(imgWidth, imgHeight);
+		let offset = new OpenLayers.Pixel(-(size.w / 2), -(size.h / 2));
+		let icon = new OpenLayers.Icon(imgURL, size, offset);
 		if (options && options.zIndex)
 		{
 			icon.imageDiv.style.zIndex = options.zIndex;
@@ -473,7 +472,7 @@ export class Olayer2Map extends map.MapControl
 
 	markerIsOver(marker, scnPos)
 	{
-		var icon = marker.icon;
+		let icon = marker.icon;
 		//alert("x="+x+", y="+y+", px.x="+icon.px.x+", px.y="+icon.px.y+", offset.x="+icon.offset.x+", offset.y="+icon.offset.y+", size.w="+icon.size.w+", size.h="+icon.size.h+", debug="+(icon.px.x + icon.px.offset.x + icon.size.w));
 		if ((scnPos.x < icon.px.x + icon.offset.x) || (scnPos.y < icon.px.y + icon.offset.y))
 			return false;
@@ -484,7 +483,7 @@ export class Olayer2Map extends map.MapControl
 
 	createGeometry(geom, options)
 	{
-		var opt = {};
+		let opt = {};
 		if (options.lineColor)
 		{
 			opt.strokeColor = options.lineColor;
@@ -511,38 +510,38 @@ export class Olayer2Map extends map.MapControl
 		}
 		else if (geom instanceof geometry.LinearRing)
 		{
-			var i;
-			var points = [];
+			let i;
+			let points = [];
 			for (i in geom.coordinates)
 			{
-				var pos = new OpenLayers.LonLat(geom.coordinates[i][0], geom.coordinates[i][1]).transform(this.mapProjection, this.map.getProjectionObject());
+				let pos = new OpenLayers.LonLat(geom.coordinates[i][0], geom.coordinates[i][1]).transform(this.mapProjection, this.map.getProjectionObject());
 				points.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 			}
 			return new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LinearRing(points), null, opt);
 		}
 		else if (geom instanceof geometry.LineString)
 		{
-			var i;
-			var points = [];
+			let i;
+			let points = [];
 			for (i in geom.coordinates)
 			{
-				var pos = new OpenLayers.LonLat(geom.coordinates[i][0], geom.coordinates[i][1]).transform(this.mapProjection, this.map.getProjectionObject());
+				let pos = new OpenLayers.LonLat(geom.coordinates[i][0], geom.coordinates[i][1]).transform(this.mapProjection, this.map.getProjectionObject());
 				points.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 			}
 			return new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(points), null, opt);
 		}
 		else if (geom instanceof geometry.Polygon)
 		{
-			var i;
-			var j;
-			var lrArr = [];
+			let i;
+			let j;
+			let lrArr = [];
 			for (i in geom.geometries)
 			{
-				var points = [];
-				var lr = geom.geometries[i];
+				let points = [];
+				let lr = geom.geometries[i];
 				for (j in lr.coordinates)
 				{
-					var pos = new OpenLayers.LonLat(lr.coordinates[j][0], lr.coordinates[j][1]).transform(this.mapProjection, this.map.getProjectionObject());
+					let pos = new OpenLayers.LonLat(lr.coordinates[j][0], lr.coordinates[j][1]).transform(this.mapProjection, this.map.getProjectionObject());
 					points.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 				}
 				lrArr.push(new OpenLayers.Geometry.LineString(points));
@@ -551,21 +550,21 @@ export class Olayer2Map extends map.MapControl
 		}
 		else if (geom instanceof geometry.MultiPolygon)
 		{
-			var i;
-			var j;
-			var k;
-			var pgArr = [];
+			let i;
+			let j;
+			let k;
+			let pgArr = [];
 			for (i in geom.geometries)
 			{
-				var lrArr = [];
-				var pg = geom.geometries[i];
+				let lrArr = [];
+				let pg = geom.geometries[i];
 				for (j in pg.geometries)
 				{
-					var lr = pg.geometries[j];
-					var points = [];
+					let lr = pg.geometries[j];
+					let points = [];
 					for (k in lr.coordinates)
 					{
-						var pos = new OpenLayers.LonLat(lr.coordinates[k][0], lr.coordinates[k][1]).transform(this.mapProjection, this.map.getProjectionObject());
+						let pos = new OpenLayers.LonLat(lr.coordinates[k][0], lr.coordinates[k][1]).transform(this.mapProjection, this.map.getProjectionObject());
 						points.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 					}
 					lrArr.push(new OpenLayers.Geometry.LineString(points));
@@ -594,7 +593,7 @@ export class Olayer2Map extends map.MapControl
 
 	toKMLFeature(layer, doc)
 	{
-		var feature;
+		let feature;
 		if (doc == null || !(doc instanceof kml.Document))
 		{
 			doc = new kml.Document();
@@ -608,9 +607,9 @@ export class Olayer2Map extends map.MapControl
 		}
 		if (layer instanceof OpenLayers.Layer.Markers)
 		{
-			var featureGroup = new kml.Folder();
+			let featureGroup = new kml.Folder();
 			featureGroup.setName(layer.name || "Markers");
-			var i;
+			let i;
 			for (i in layer.markers)
 			{
 				feature = this.toKMLFeature(layer.markers[i], doc);
@@ -621,17 +620,17 @@ export class Olayer2Map extends map.MapControl
 		}
 		else if (layer instanceof OpenLayers.Marker)
 		{
-			var pos = layer.lonlat.transform(this.map.getProjectionObject(), this.mapProjection);
+			let pos = layer.lonlat.transform(this.map.getProjectionObject(), this.mapProjection);
 			feature = new kml.Placemark(new geometry.Point(4326, [pos.lon, pos.lat]));
 			feature.setName("Marker");
-			var icon = layer.icon;
+			let icon = layer.icon;
 			if (icon)
 			{
-				var iconStyle = new kml.IconStyle();
+				let iconStyle = new kml.IconStyle();
 				if (icon.url.startsWith("/"))
 				{
-					var durl = document.location.href;
-					var i = durl.indexOf("://");
+					let durl = document.location.href;
+					let i = durl.indexOf("://");
 					i = durl.indexOf("/", i + 3);
 					if (i >= 0)
 					{
@@ -654,9 +653,9 @@ export class Olayer2Map extends map.MapControl
 		}
 		else if (layer instanceof OpenLayers.Layer.Vector)
 		{
-			var featureGroup = new kml.Folder();
+			let featureGroup = new kml.Folder();
 			featureGroup.setName(layer.name || "Vector");
-			var i;
+			let i;
 			for (i in layer.features)
 			{
 				feature = this.toKMLFeature(layer.features[i], doc);
@@ -667,13 +666,13 @@ export class Olayer2Map extends map.MapControl
 		}
 		else if (layer instanceof OpenLayers.Feature.Vector)
 		{
-			var lineStyle = null;
-			var polyStyle = null;
+			let lineStyle = null;
+			let polyStyle = null;
 			if (layer.style)
 			{
 				if (layer.style.stroke)
 				{
-					var c = web.parseCSSColor(layer.style.strokeColor);
+					let c = web.parseCSSColor(layer.style.strokeColor);
 					lineStyle = new kml.LineStyle();
 					lineStyle.fromARGB(c.a, c.r, c.g, c.b);
 					if (layer.style.strokeWidth)
@@ -681,22 +680,22 @@ export class Olayer2Map extends map.MapControl
 				}
 				if (layer.style.fill)
 				{
-					var c = web.parseCSSColor(layer.style.fillColor);
+					let c = web.parseCSSColor(layer.style.fillColor);
 					if (layer.style.fillOpacity)
 						c.a = c.a * layer.style.fillOpacity;
 					polyStyle = new kml.PolyStyle();
 					polyStyle.fromARGB(c.a, c.r, c.g, c.b);
 				}
 			}
-			var vec;
-			var geom = layer.geometry;
+			let vec;
+			let geom = layer.geometry;
 			if (geom instanceof OpenLayers.Geometry.LinearRing)
 			{
-				var pts = [];
-				var i;
+				let pts = [];
+				let i;
 				for (i in geom.components)
 				{
-					var pt = new OpenLayers.LonLat(geom.components[i].x, geom.components[i].y).transform(this.map.getProjectionObject(), this.mapProjection);
+					let pt = new OpenLayers.LonLat(geom.components[i].x, geom.components[i].y).transform(this.map.getProjectionObject(), this.mapProjection);
 					pts.push([pt.lon, pt.lat]);
 				}
 				vec = new geometry.LinearRing(4326, pts);
@@ -705,7 +704,7 @@ export class Olayer2Map extends map.MapControl
 			{
 				throw new Error("Unsupported type of geometry");
 			}
-			var placemark = new kml.Placemark(vec);
+			let placemark = new kml.Placemark(vec);
 			placemark.setStyle(doc.getOrNewStyle(null, null, lineStyle, polyStyle, null, null));
 			return placemark;
 		}
@@ -720,7 +719,7 @@ export class Olayer2Map extends map.MapControl
 	{
 		if (this.lclickFunc)
 		{
-			var lonlat = this.map.getLonLatFromViewPortPx(e.xy).transform(this.map.getProjectionObject(), this.mapProjection);
+			let lonlat = this.map.getLonLatFromViewPortPx(e.xy).transform(this.map.getProjectionObject(), this.mapProjection);
 			this.lclickFunc(lonlat.lat, lonlat.lon, e.xy.x, e.xy.y);
 		}
 	}
@@ -731,7 +730,7 @@ export class Olayer2Map extends map.MapControl
 			return;
 		if (this.posFunc)
 		{
-			var cent = this.map.getCenter().transform(this.map.getProjectionObject(), this.mapProjection);
+			let cent = this.map.getCenter().transform(this.map.getProjectionObject(), this.mapProjection);
 			this.posFunc(new math.Coord2D(cent.lon, cent.lat));
 		}
 	}
@@ -742,8 +741,8 @@ export class Olayer2Map extends map.MapControl
 			return;
 		if (this.moveFunc)
 		{
-			var pos = this.map.events.getMousePosition(event);
-			var cent = this.map.getLonLatFromViewPortPx(pos).transform(this.map.getProjectionObject(), this.mapProjection);
+			let pos = this.map.events.getMousePosition(event);
+			let cent = this.map.getLonLatFromViewPortPx(pos).transform(this.map.getProjectionObject(), this.mapProjection);
 			this.moveFunc(new math.Coord2D(cent.lon, cent.lat));
 		}
 	}

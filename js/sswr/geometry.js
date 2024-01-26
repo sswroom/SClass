@@ -65,22 +65,22 @@ export class LineString extends Vector2D
 
 	calBoundaryPoint(coord)
 	{
-		var l;
-		var points;
+		let l;
+		let points;
 	
-		var calBase;
-		var calDiffX;
-		var calDiffY;
-		var calSqDiffX;
-		var calSqDiffY;
-		var calPtX;
-		var calPtY;
-		var calPtOutX = 0;
-		var calPtOutY = 0;
-		var calD;
-		var dist = 0x7fffffff;
-		var x = coord.x;
-		var y = coord.y;
+		let calBase;
+		let calDiffX;
+		let calDiffY;
+		let calSqDiffX;
+		let calSqDiffY;
+		let calPtX;
+		let calPtY;
+		let calPtOutX = 0;
+		let calPtOutY = 0;
+		let calD;
+		let dist = 0x7fffffff;
+		let x = coord.x;
+		let y = coord.y;
 	
 		points = this.coordinates;
 		l = points.length - 1;
@@ -171,7 +171,7 @@ export class LineString extends Vector2D
 				calPtOutY = points[l][1];
 			}
 		}
-		var ret = new Object();
+		let ret = new Object();
 		ret.x = calPtOutX;
 		ret.y = calPtOutY;
 		ret.dist = Math.sqrt(dist);
@@ -180,13 +180,13 @@ export class LineString extends Vector2D
 
 	insideOrTouch(coord)
 	{
-		var thisX;
-		var thisY;
-		var lastX;
-		var lastY;
-		var j;
-		var l;
-		var tmpX;
+		let thisX;
+		let thisY;
+		let lastX;
+		let lastY;
+		let j;
+		let l;
+		let tmpX;
 	
 		l = this.coordinates.length;
 		lastX = this.coordinates[0][0];
@@ -238,17 +238,17 @@ export class LinearRing extends LineString
 
 	insideOrTouch(coord)
 	{
-		var thisX;
-		var thisY;
-		var lastX;
-		var lastY;
-		var j;
-		var l;
-		var leftCnt = 0;
-		var tmpX;
-		var points;
-		var x = coord.x;
-		var y = coord.y;
+		let thisX;
+		let thisY;
+		let lastX;
+		let lastY;
+		let j;
+		let l;
+		let leftCnt = 0;
+		let tmpX;
+		let points;
+		let x = coord.x;
+		let y = coord.y;
 	
 		points = this.coordinates;
 
@@ -301,8 +301,8 @@ export class LinearRing extends LineString
 
 	isClose()
 	{
-		var firstPoint = this.coordinates[0];
-		var lastPoint = this.coordinates[this.coordinates.length - 1];
+		let firstPoint = this.coordinates[0];
+		let lastPoint = this.coordinates[this.coordinates.length - 1];
 		return firstPoint[0] == lastPoint[0] && firstPoint[1] == lastPoint[1];
 	}
 
@@ -313,10 +313,10 @@ export class LinearRing extends LineString
 
 	static createFromCircle(srid, center, radiusX, radiusY, nPoints)
 	{
-		var pos = [];
-		var ratio = 2 * Math.PI / nPoints;
-		var i = 0;
-		var angle;
+		let pos = [];
+		let ratio = 2 * Math.PI / nPoints;
+		let i = 0;
+		let angle;
 		i = 0;
 		while (i <= nPoints)
 		{
@@ -338,9 +338,9 @@ export class MultiGeometry extends Vector2D
 
 	calBoundaryPoint(coord)
 	{
-		var minObj = null;
-		var thisObj;
-		var i = this.coordinates.length;
+		let minObj = null;
+		let thisObj;
+		let i = this.coordinates.length;
 		while (i-- > 0)
 		{
 			thisObj = this.coordinates[i].calBoundaryPoint(coord);
@@ -354,7 +354,7 @@ export class MultiGeometry extends Vector2D
 
 	insideOrTouch(coord)
 	{
-		var i = this.coordinates.length;
+		let i = this.coordinates.length;
 		while (i-- > 0)
 		{
 			if (this.coordinates[i].insideOrTouch(coord))
@@ -372,7 +372,7 @@ export class Polygon extends MultiGeometry
 	{
 		super(srid);
 		this.type = VectorType.Polygon;
-		var i;
+		let i;
 		for (i in coordinates)
 		{
 			this.geometries.push(new LinearRing(srid, coordinates[i]));
@@ -381,8 +381,8 @@ export class Polygon extends MultiGeometry
 
 	insideOrTouch(coord)
 	{
-		var i = this.coordinates.length;
-		var inside = false;
+		let i = this.coordinates.length;
+		let inside = false;
 		while (i-- > 0)
 		{
 			if (this.coordinates[i].insideOrTouch(coord))
@@ -400,7 +400,7 @@ export class MultiPolygon extends MultiGeometry
 	{
 		super(srid);
 		this.type = VectorType.MultiPolygon;
-		var i;
+		let i;
 		if (coordinates)
 		{
 			for (i in coordinates)

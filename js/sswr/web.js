@@ -3,9 +3,9 @@ import * as text from "./text.js";
 
 export function getRequestURLBase()
 {
-	var url = document.location.href;
-	var i = url.indexOf("://");
-	var j = url.indexOf("/", i + 3);
+	let url = document.location.href;
+	let i = url.indexOf("://");
+	let j = url.indexOf("/", i + 3);
 	if (j >= 0)
 	{
 		return url.substring(0, j);
@@ -18,9 +18,9 @@ export function getRequestURLBase()
 	
 export function getParameterByName(name)
 {
-	var url = window.location.href;
+	let url = window.location.href;
 	name = name.replace(/[[\]]/g, '\\$&');
-	var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+	let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
 		results = regex.exec(url);
 	if (!results) return null;
 	if (!results[2]) return '';
@@ -29,7 +29,7 @@ export function getParameterByName(name)
 	
 export function loadJSON(url, onResultFunc)
 {
-	var xmlhttp = new XMLHttpRequest();
+	let xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200)
 		{
@@ -42,8 +42,8 @@ export function loadJSON(url, onResultFunc)
 
 export function buildTable(o)
 {
-	var name;
-	var ret = new Array();
+	let name;
+	let ret = new Array();
 	ret.push("<table>");
 	if (data.isArray(o))
 	{
@@ -56,9 +56,9 @@ export function buildTable(o)
 			}
 			ret.push("</tr>");
 		}
-		var i = 0;
-		var j = o.length;
-		var obj;
+		let i = 0;
+		let j = o.length;
+		let obj;
 		while (i < j)
 		{
 			obj = o[i];
@@ -89,7 +89,7 @@ export function openData(data, contentType, fileName)
 {
 	if (typeof data == "string")
 	{
-		var ele = document.createElement("a");
+		let ele = document.createElement("a");
 		ele.setAttribute('href', 'data:'+encodeURIComponent(contentType)+";charset=utf-8," + encodeURIComponent(data));
 		if (fileName)
 			ele.setAttribute('download', fileName);
@@ -99,20 +99,25 @@ export function openData(data, contentType, fileName)
 		ele.click();
 		document.body.removeChild(ele);
 	}
-	return;
 }
 
 function hexColor(c)
 {
-	var b = c % 256;
-	var g = (c >> 8) % 256;
-	var r = (c >> 16) % 256;
+	let b = c % 256;
+	let g = (c >> 8) % 256;
+	let r = (c >> 16) % 256;
 	return {a: 1.0, r: r / 255, g: g / 255, b: b / 255};
 }
-
+function toRatio(s, maxVal)
+{
+	if (s.endsWith("%"))
+		return s.substring(0, s.length - 1) / 100;
+	else
+		return s / maxVal;
+}
 export function parseCSSColor(c)
 {
-	var i;
+	let i;
 	if (c.startsWith("#"))
 	{
 		if (c.length == 7)
@@ -122,40 +127,24 @@ export function parseCSSColor(c)
 	}
 	else if ((i = c.indexOf("(")) >= 0 && c.endsWith(")"))
 	{
-		var funcName = c.substring(0, i).trim();
+		let funcName = c.substring(0, i).trim();
 		if (funcName == 'rgb')
 		{
-			var funcCont = c.substring(i + 1, c.length - 1).trim();
-			var color = {a: 1.0};
+			let funcCont = c.substring(i + 1, c.length - 1).trim();
+			let color = {a: 1.0};
 			i = funcCont.indexOf("/");
 			if (i >= 0)
 			{
-				var a = funcCont.substring(i + 1).trim();
+				let a = funcCont.substring(i + 1).trim();
 				funcCont = funcCont.substring(0, i).trim();
-				if (a.endsWith("%"))
-				{
-					color.a = a.substring(0, a.length - 1) / 100;
-				}
-				else
-				{
-					color.a = a - 0;
-				}
+				color.a = toRatio(a, 1);
 			}
-			var rgb = funcCont.split(" ");
+			let rgb = funcCont.split(" ");
 			if (rgb.length == 3)
 			{
-				if (rgb[0].endsWith("%"))
-					color.r = rgb[0].substring(0, rgb[0].length - 1) / 100;
-				else
-					color.r = rgb[0] / 255;
-				if (rgb[1].endsWith("%"))
-					color.g = rgb[1].substring(0, rgb[1].length - 1) / 100;
-				else
-					color.g = rgb[1] / 255;
-				if (rgb[2].endsWith("%"))
-					color.b = rgb[2].substring(0, rgb[2].length - 1) / 100;
-				else
-					color.b = rgb[2] / 255;
+				color.r = toRatio(rgb[0], 255);
+				color.g = toRatio(rgb[1], 255);
+				color.b = toRatio(rgb[2], 255);
 			}
 			else
 			{
@@ -468,6 +457,7 @@ export function parseCSSColor(c)
 			return hexColor(0x9acd32);
 		}
 	}
+	console.log("Unsupported CSS Color");
 	return {a: 0.0, r: 0.0, g: 0.0, b: 0.0};
 }
 
@@ -482,10 +472,10 @@ export function handleFileDrop(ele, hdlr)
 		ev.preventDefault();
 		if (ev.dataTransfer.items)
 		{
-			var i;
+			let i;
 			for (i in ev.dataTransfer.items)
 			{
-				var item = ev.dataTransfer.items[i];
+				let item = ev.dataTransfer.items[i];
 				if (item.kind === "file")
 				{
 					hdlr(item.getAsFile());
@@ -494,7 +484,7 @@ export function handleFileDrop(ele, hdlr)
 		}
 		else if (ev.dataTransfer.files)
 		{
-			var i;
+			let i;
 			for (i in ev.dataTransfer.files)
 			{
 				hdlr(ev.dataTransfer.files[i]);
@@ -507,10 +497,10 @@ export function appendUrl(targetUrl, docUrl)
 {
 	if (targetUrl.indexOf(":") >= 0)
 		return targetUrl;
-	var i = docUrl.indexOf("://");
+	let i = docUrl.indexOf("://");
 	if (i < 0)
 		return targetUrl;
-	var j = docUrl.indexOf("/", i + 3);
+	let j = docUrl.indexOf("/", i + 3);
 	if (j < 0)
 	{
 		j = docUrl.length;
@@ -547,7 +537,7 @@ export function appendUrl(targetUrl, docUrl)
 
 export function mimeFromFileName(fileName)
 {
-	var i;
+	let i;
 	i = fileName.lastIndexOf("/");
 	if (i >= 0)
 		fileName = fileName.substring(i + 1);
@@ -740,7 +730,7 @@ export class Dialog
 	{
 		if (this.darkColor)
 			return;
-		var darkColor = document.createElement("div");
+		let darkColor = document.createElement("div");
 		darkColor.style.position = "absolute";
 		darkColor.style.width = "100%";
 		darkColor.style.height = "100%";
@@ -754,10 +744,10 @@ export class Dialog
 		else
 			document.body.appendChild(darkColor);
 		this.darkColor = darkColor;
-		var dialog = document.createElement("div");
+		let dialog = document.createElement("div");
 		dialog.style.backgroundColor = "#ffffff";
-		var width;
-		var height;
+		let width;
+		let height;
 		if (typeof this.options.width == "number")
 			width = this.options.width + "px";
 		else
@@ -770,12 +760,12 @@ export class Dialog
 		dialog.style.height = height;
 		this.darkColor.appendChild(dialog);
 
-		var content = document.createElement("table");
+		let content = document.createElement("table");
 		content.setAttribute("border", "0");
 		content.style.width = width;
 		content.style.height = height;
-		var row = document.createElement("tr");
-		var contentCell = document.createElement("td");
+		let row = document.createElement("tr");
+		let contentCell = document.createElement("td");
 		contentCell.setAttribute("colspan", this.options.buttons.length);
 		contentCell.className = this.options.contentClass;
 		contentCell.style.overflowY = "auto";
@@ -793,8 +783,8 @@ export class Dialog
 		content.appendChild(row);
 		row = document.createElement("tr");
 		row.setAttribute("height", "20");
-		var i;
-		var col;
+		let i;
+		let col;
 		for (i in this.options.buttons)
 		{
 			col = document.createElement("td");
@@ -814,7 +804,7 @@ export class Dialog
 		contentCell.style.display = "inline-block";
 		if (this.options.margin)
 		{
-			var minHeight = row.offsetHeight;
+			let minHeight = row.offsetHeight;
 			row.setAttribute("height", this.options.margin + minHeight);
 			contentCell.style.height = (dialog.offsetHeight - minHeight - this.options.margin - this.options.margin)+"px";
 		}
