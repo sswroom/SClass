@@ -104,3 +104,31 @@ export class QuotedPrintableEnc extends TextBinEnc
 	encodeBin(buff: ArrayBuffer): string;
 	decodeBin(str: string): Uint8Array;
 }
+
+export class ASN1OIDBinEnc extends TextBinEnc
+{
+	constructor();
+	encodeBin(buff: ArrayBuffer): string;
+	decodeBin(str: string): Uint8Array;
+}
+
+export class URIEncoding extends TextBinEnc
+{
+	constructor();
+	encodeBin(buff: ArrayBuffer): string;
+	decodeBin(str: string): Uint8Array;
+}
+
+export class FormEncoding extends TextBinEnc
+{
+	constructor();
+	encodeBin(buff: ArrayBuffer): string;
+	decodeBin(str: string): Uint8Array;
+}
+
+export class ASCII85Enc extends TextBinEnc
+{
+	constructor();
+	encodeBin(buff: ArrayBuffer): string;
+	decodeBin(str: string): Uint8Array;
+}

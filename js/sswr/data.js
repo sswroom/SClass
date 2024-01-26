@@ -246,6 +246,36 @@ export function mergeOptions(options, defOptions)
 	return options;
 }
 
+export function readUInt16(arr, index)
+{
+	return arr[index] | (arr[index + 1] << 8);
+}
+
+export function readMUInt16(arr, index)
+{
+	return arr[index + 1] | (arr[index + 0] << 8);
+}
+
+export function readUInt24(arr, index)
+{
+	return arr[index] | (arr[index + 1] << 8) | (arr[index + 2] << 16);
+}
+
+export function readMUInt24(arr, index)
+{
+	return arr[index + 2] | (arr[index + 1] << 8) | (arr[index + 0] << 16);
+}
+
+export function readUInt32(arr, index)
+{
+	return arr[index] | (arr[index + 1] << 8) | (arr[index + 2] << 16) | (arr[index + 3] << 24);
+}
+
+export function readMUInt32(arr, index)
+{
+	return arr[index + 3] | (arr[index + 2] << 8) | (arr[index + 1] << 16) | (arr[index + 0] << 24);
+}
+
 export class DateValue
 {
 	constructor()

@@ -1,3 +1,6 @@
+import * as data from "./data.js";
+import * as net from "./net.js";
+
 export const Base64Charset = {
 	Normal: 1,
 	URL: 2
@@ -230,6 +233,10 @@ export function getEncList()
 	ret.push(new QuotedPrintableEnc());
 	ret.push(new UTF16LETextBinEnc());
 	ret.push(new UTF16BETextBinEnc());
+	ret.push(new ASN1OIDBinEnc());
+	ret.push(new FormEncoding());
+	ret.push(new URIEncoding());
+	ret.push(new ASCII85Enc());
 	return ret;
 }
 
@@ -1101,6 +1108,200 @@ export class QuotedPrintableEnc extends TextBinEnc
 			else
 			{
 				ret.push(c);
+			}
+		}
+		return new Uint8Array(ret);
+	}
+}
+
+export class ASN1OIDBinEnc extends TextBinEnc
+{
+	constructor()
+	{
+		super("SNMP OID");
+	}
+
+	encodeBin(buff)
+	{
+		return net.oidToString(buff);
+	}
+
+	decodeBin(str)
+	{
+		return net.oidText2PDU(str);
+	}
+}
+
+export class URIEncoding extends TextBinEnc
+{
+	constructor()
+	{
+		super("URI Encoding");
+	}
+
+	encodeBin(buff)
+	{
+		return encodeURI(new TextDecoder().decode(buff));
+	}
+
+	decodeBin(str)
+	{
+		return new TextEncoder().encode(decodeURI(str));
+	}
+}
+
+export class FormEncoding extends TextBinEnc
+{
+	constructor()
+	{
+		super("Form Encoding");
+	}
+
+	encodeBin(buff)
+	{
+		return encodeURIComponent(new TextDecoder().decode(buff));
+	}
+
+	decodeBin(str)
+	{
+		return new TextEncoder().encode(decodeURIComponent(str));
+	}
+}
+
+export class ASCII85Enc extends TextBinEnc
+{
+	constructor()
+	{
+		super("ASCII85");
+	}
+
+	encodeBin(buff)
+	{
+		let ret = [];
+		let arr = new Uint8Array(buff);
+		let i = 0;
+		let j = arr.length;
+		let v;
+		while (i + 4 <= j)
+		{
+			v = data.readMUInt32(arr, i);
+			i += 4;
+			ret.push(String.fromCharCode(Math.floor(v / 52200625) + 33));
+			v %= 52200625;
+			ret.push(String.fromCharCode(Math.floor(v / 614125) + 33));
+			v %= 614125;
+			ret.push(String.fromCharCode(Math.floor(v / 7225) + 33));
+			v %= 7225;
+			ret.push(String.fromCharCode(Math.floor(v / 85) + 33));
+			v %= 85;
+			ret.push(String.fromCharCode(v + 33));
+		}
+		switch (j - i)
+		{
+		case 1:
+			v = arr[i] << 24;
+			ret.push(String.fromCharCode(Math.floor(v / 52200625) + 33));
+			v %= 52200625;
+			ret.push(String.fromCharCode(Math.floor(v / 614125) + 33));
+			break;
+		case 2:
+			v = data.readMUInt16(arr, i) << 16;
+			ret.push(String.fromCharCode(Math.floor(v / 52200625) + 33));
+			v %= 52200625;
+			ret.push(String.fromCharCode(Math.floor(v / 614125) + 33));
+			v %= 614125;
+			ret.push(String.fromCharCode(Math.floor(v / 7225) + 33));
+			break;
+		case 3:
+			v = data.readMUInt24(arr, i) << 8;
+			ret.push(String.fromCharCode(Math.floor(v / 52200625) + 33));
+			v %= 52200625;
+			ret.push(String.fromCharCode(Math.floor(v / 614125) + 33));
+			v %= 614125;
+			ret.push(String.fromCharCode(Math.floor(v / 7225) + 33));
+			v %= 7225;
+			ret.push(String.fromCharCode(Math.floor(v / 85) + 33));
+			break;
+		}
+		return ret.join("");
+	}
+
+	decodeBin(str)
+	{
+		let i = 0;
+		let j = str.length;
+		let validCnt = 0;
+		const mulVals = [52200625, 614125, 7225, 85, 1];
+		let v = 0;
+		let lastU = 0;
+		let c;
+		let ret = [];
+		while (i < j)
+		{
+			c = str.charCodeAt(i++);
+			if (c == 'z'.charCodeAt(0))
+			{
+				ret.push(0);
+				ret.push(0);
+				ret.push(0);
+				ret.push(0);
+				lastU = 0;
+			}
+			else if (c == '~'.charCodeAt(0))
+			{
+				if (i < j && str.charAt(i) == '>')
+				{
+					lastU = 0;
+					break;
+				}
+			}
+			else if (c == 'u'.charCodeAt(0))
+			{
+				lastU++;
+				v += (c - 33) * mulVals[validCnt];
+				validCnt++;
+			}
+			else if (c < 33 || c > 'u'.charCodeAt(0))
+			{
+			}
+			else
+			{
+				lastU = 0;
+				v += (c - 33) * mulVals[validCnt];
+				validCnt++;
+			}
+			if (validCnt == 5)
+			{
+				ret.push((v >> 24) & 0xff);
+				ret.push((v >> 16) & 0xff);
+				ret.push((v >> 8) & 0xff);
+				ret.push(v & 0xff);
+				validCnt = 0;
+				v = 0;
+			}
+		}
+		if (validCnt > 0)
+		{
+			i = validCnt;
+			while (i < 5)
+			{
+				v += ('u'.charCodeAt(0) - 33) * mulVals[i];
+				i++;
+			}
+			validCnt--;
+			i = 0;
+			while (i < validCnt)
+			{
+				ret.push((v >> 24) & 0xff);
+				v = v << 8;
+				i++;
+			}
+		}
+		else if (lastU > 0)
+		{
+			while (lastU-- > 0)
+			{
+				ret.pop();
 			}
 		}
 		return new Uint8Array(ret);

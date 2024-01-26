@@ -24,6 +24,13 @@
 -Added text.CPPByteArrBinEnc
 -Added text.CPPTextBinEnc
 -Added text.QuotedPrintableEnc
+-Added text.ASN1OIDBinEnc
+-Added text.URIEncoding
+-Added text.FormEncoding
+-Added text.ASCII85Enc
+-Added data.readUInt/readMUInt
+-Added net.oidText2PDU
+-Added net.oidToString
 
 1.5.1
 -Fixed AngleUnit problem
