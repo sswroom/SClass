@@ -8,6 +8,12 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+//#define VERBOSE
+
+#ifdef VERBOSE
+#include <stdio.h>
+#endif
+
 IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	UTF8Char sbuff[512];
@@ -58,6 +64,9 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	Sync::MutexUsage urlMutUsage(this->urlMut);
 	if (!this->urls.GetItem(this->urlNext).SetTo(thisUrl))
 	{
+#ifdef VERBOSE
+		printf("OSMCacheHandler: Next url is error, urlNext = %d\r\n", (UInt32)this->urlNext);
+#endif
 		return 0;
 	}
 	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
@@ -80,6 +89,9 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		IO::FileStream imgFS(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
 		imgFS.SetFileTimes(&dt, 0, 0);
+#ifdef VERBOSE
+		printf("OSMCacheHandler: Server response 304: %s\r\n", urlSb.v);
+#endif
 	}
 	else
 	{
@@ -121,11 +133,17 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 			}
 			else
 			{
+#ifdef VERBOSE
+				printf("OSMCacheHandler: Read incomplete: %d, %lld\r\n", (UInt32)currPos, contLeng);
+#endif
 				Sync::Interlocked::IncrementI32(this->status.remoteErrCnt);
 			}
 		}
 		else
 		{
+#ifdef VERBOSE
+			printf("OSMCacheHandler: Content length out of range: %lld, url = %s\r\n", contLeng, urlSb.v);
+#endif
 			Sync::Interlocked::IncrementI32(this->status.remoteErrCnt);
 		}
 	}
@@ -183,6 +201,9 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRe
 
 	if (i != 4)
 	{
+#ifdef VERBOSE
+		printf("OSMCacheHandler: Split not = 4 (%d)\r\n", (UInt32)i);
+#endif
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
@@ -200,6 +221,9 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRe
 	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile, mutUsage);
 	if (stm == 0)
 	{
+#ifdef VERBOSE
+		printf("OSMCacheHandler: Get Tile Data failed, lev = %d, xTile = %d, yTile = %d\r\n", lev, xTile, yTile);
+#endif
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	}
 	else

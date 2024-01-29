@@ -1,4 +1,4 @@
-import { isInteger, zeroPad } from "./text.js";
+import * as text from "./text.js";
 
 export function isArray(o)
 {
@@ -28,13 +28,13 @@ export function toObjectString(o, lev)
 	let t = typeof o;
 	let out;
 	let name;
-	if (data.isArray(o))
+	if (isArray(o))
 	{
 		out = new Array();
 		out.push("[");
 		for (name in o)
 		{
-			out.push(data.toObjectString(o[name], nextLev));
+			out.push(toObjectString(o[name], nextLev));
 			out.push(",");
 		}
 		out.pop();
@@ -49,7 +49,7 @@ export function toObjectString(o, lev)
 		{
 			out.push(text.toJSText(name));
 			out.push(":");
-			out.push(data.toObjectString(o[name], nextLev));
+			out.push(toObjectString(o[name], nextLev));
 			out.push(",");
 		}
 		out.pop();
@@ -63,6 +63,10 @@ export function toObjectString(o, lev)
 	else if (t == "string")
 	{
 		return text.toJSText(o);
+	}
+	else if (t == "number")
+	{
+		return o.toString();
 	}
 	else
 	{
@@ -870,42 +874,42 @@ export class DateTimeUtil
 				}
 				else if (i + 2 >= pattern.length || pattern.charAt(i + 2) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 10000000), 2));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 10000000), 2));
 					i += 2;
 				}
 				else if (i + 3 >= pattern.length || pattern.charAt(i + 3) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 1000000), 3));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 1000000), 3));
 					i += 3;
 				}
 				else if (i + 4 >= pattern.length || pattern.charAt(i + 4) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 100000), 4));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 100000), 4));
 					i += 4;
 				}
 				else if (i + 5 >= pattern.length || pattern.charAt(i + 5) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 10000), 5));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 10000), 5));
 					i += 5;
 				}
 				else if (i + 6 >= pattern.length || pattern.charAt(i + 6) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 1000), 6));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 1000), 6));
 					i += 6;
 				}
 				else if (i + 7 >= pattern.length || pattern.charAt(i + 7) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 100), 7));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 100), 7));
 					i += 7;
 				}
 				else if (i + 8 >= pattern.length || pattern.charAt(i + 8) != 'f')
 				{
-					output.push(zeroPad(Math.floor(tval.nanosec / 10), 8));
+					output.push(text.zeroPad(Math.floor(tval.nanosec / 10), 8));
 					i += 8;
 				}
 				else
 				{
-					output.push(""+zeroPad(tval.nanosec, 9));
+					output.push(""+text.zeroPad(tval.nanosec, 9));
 					i += 9;
 					while (i < pattern.length && pattern.charAt(i) == 'f')
 					{
@@ -945,7 +949,7 @@ export class DateTimeUtil
 						break;
 				}
 				if (digiCnt > 0)
-					output.push(zeroPad(thisMS, digiCnt));
+					output.push(text.zeroPad(thisMS, digiCnt));
 				break;
 			}
 			case 'h':
@@ -962,7 +966,7 @@ export class DateTimeUtil
 				}
 				else
 				{
-					output.push(zeroPad(thisH, 2));
+					output.push(text.zeroPad(thisH, 2));
 					i++;
 
 	//				while (*pattern == 'h')
@@ -979,7 +983,7 @@ export class DateTimeUtil
 				}
 				else
 				{
-					output.push(zeroPad(tval.hour, 2));
+					output.push(text.zeroPad(tval.hour, 2));
 					i++;
 	//				while (*pattern == 'H')
 	//					pattern++;
@@ -995,7 +999,7 @@ export class DateTimeUtil
 				}
 				else if (i + 2 >= pattern.length || pattern.charAt(i + 2) != 'M')
 				{
-					output.push(zeroPad(tval.month, 2));
+					output.push(text.zeroPad(tval.month, 2));
 					i += 2;
 				}
 				else if (pattern[3] != 'M')
@@ -1062,11 +1066,11 @@ export class DateTimeUtil
 				{
 					if (hr >= 0)
 					{
-						output.push("+" + zeroPad(hr, 2));
+						output.push("+" + text.zeroPad(hr, 2));
 					}
 					else
 					{
-						output.push("-" + zeroPad(-hr, 2));
+						output.push("-" + text.zeroPad(-hr, 2));
 					}
 					i += 2;
 				}
@@ -1074,11 +1078,11 @@ export class DateTimeUtil
 				{
 					if (hr >= 0)
 					{
-						output.push("+" + zeroPad(hr, 2) + zeroPad(min, 2));
+						output.push("+" + text.zeroPad(hr, 2) + text.zeroPad(min, 2));
 					}
 					else
 					{
-						output.push("-" + zeroPad(-hr, 2) + zeroPad(min, 2));
+						output.push("-" + text.zeroPad(-hr, 2) + text.zeroPad(min, 2));
 					}
 					i += 3;
 				}
@@ -1086,11 +1090,11 @@ export class DateTimeUtil
 				{
 					if (hr >= 0)
 					{
-						output.push("+" + zeroPad(hr, 2) + ':' + zeroPad(min, 2));
+						output.push("+" + text.zeroPad(hr, 2) + ':' + text.zeroPad(min, 2));
 					}
 					else
 					{
-						output.push("-" + zeroPad(-hr, 2) + ':' + zeroPad(min, 2));
+						output.push("-" + text.zeroPad(-hr, 2) + ':' + text.zeroPad(min, 2));
 					}
 					i += 4;
 					while (i < pattern.length && pattern.charAt(i) == 'z')
@@ -1629,7 +1633,7 @@ export class LocalDate
 					this.dateVal = year;
 				}
 			}
-			else if (t == "string" && isInteger(year))
+			else if (t == "string" && text.isInteger(year))
 			{
 				if (month != null && day != null)
 				{
