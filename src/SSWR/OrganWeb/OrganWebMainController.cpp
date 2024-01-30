@@ -37,20 +37,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-		if (group == 0 || group->cateId != cateId)
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0 || ((cate->flags & 1) && notAdmin))
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -365,7 +363,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		if (group->groups.GetCount())
 		{
 			GroupInfo *sgroup;
-			Data::StringMap<GroupInfo*> groups;
+			Data::StringMap<Optional<GroupInfo>> groups;
 			i = group->groups.GetCount();
 			while (i-- > 0)
 			{
@@ -385,7 +383,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		if (group->species.GetCount())
 		{
 			SpeciesInfo *sp;
-			Data::StringMap<SpeciesInfo*> species;
+			Data::StringMap<Optional<SpeciesInfo>> species;
 			i = group->species.GetCount();
 			while (i-- > 0)
 			{
@@ -486,23 +484,21 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		Text::StringBuilderUTF8 sb;
 		NotNullPtr<Text::String> s;
 		NotNullPtr<Text::String> txt;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
-		if (group == 0)
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, cateId);
-		if (cate == 0)
+		if (!me->env->CateGet(mutUsage, cateId).SetTo(cate))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -515,16 +511,17 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		NotNullPtr<Text::String> descr = ename;
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
-		GroupInfo *modGroup = 0;
+		Optional<GroupInfo> modGroup = 0;
+		NotNullPtr<GroupInfo> nnmodGroup;
 		if (req->GetQueryValueI32(CSTR("groupId"), groupId))
 		{
 			modGroup = me->env->GroupGet(mutUsage, groupId);
-			if (modGroup)
+			if (modGroup.SetTo(nnmodGroup))
 			{
-				cname = modGroup->chiName;
-				ename = modGroup->engName;
-				descr = modGroup->descript;
-				groupTypeId = modGroup->groupType;
+				cname = nnmodGroup->chiName;
+				ename = nnmodGroup->engName;
+				descr = nnmodGroup->descript;
+				groupTypeId = nnmodGroup->groupType;
 			}
 		}
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -579,13 +576,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 						}
 					}
 				}
-				else if (task->Equals(UTF8STRC("modify")) && modGroup != 0 && modGroup->cateId == cateId)
+				else if (task->Equals(UTF8STRC("modify")) && modGroup.SetTo(nnmodGroup) && nnmodGroup->cateId == cateId)
 				{
 					Bool found = false;
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i) != modGroup && group->groups.GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItem(i) != nnmodGroup.Ptr() && group->groups.GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -597,14 +594,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 					}
 					else
 					{
-						if (me->env->GroupModify(mutUsage, modGroup->id, ename->ToCString(), cname->ToCString(), descr->ToCString(), groupTypeId, groupFlags))
+						if (me->env->GroupModify(mutUsage, nnmodGroup->id, ename->ToCString(), cname->ToCString(), descr->ToCString(), groupTypeId, groupFlags))
 						{
 							mutUsage.EndUse();
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("group.html?id="));
-							sb.AppendI32(modGroup->id);
+							sb.AppendI32(nnmodGroup->id);
 							sb.AppendC(UTF8STRC("&cateId="));
-							sb.AppendI32(modGroup->cateId);
+							sb.AppendI32(nnmodGroup->cateId);
 
 							resp->RedirectURL(req, sb.ToCString(), 0);
 							return true;
@@ -615,11 +612,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 						}
 					}
 				}
-				else if (task->Equals(UTF8STRC("delete")) && modGroup != 0 && modGroup->groups.GetCount() == 0 && modGroup->species.GetCount() == 0)
+				else if (task->Equals(UTF8STRC("delete")) && modGroup.SetTo(nnmodGroup) && nnmodGroup->groups.GetCount() == 0 && nnmodGroup->species.GetCount() == 0)
 				{
-					Int32 parentId = modGroup->parentId;
-					Int32 cateId = modGroup->cateId;
-					if (me->env->GroupDelete(mutUsage, modGroup->id))
+					Int32 parentId = nnmodGroup->parentId;
+					Int32 cateId = nnmodGroup->cateId;
+					if (me->env->GroupDelete(mutUsage, nnmodGroup->id))
 					{
 						mutUsage.EndUse();
 						sb.ClearStr();
@@ -643,7 +640,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
-		if (modGroup)
+		if (!modGroup.IsNull())
 		{
 			sb.AppendC(UTF8STRC("Modify group in "));
 		}
@@ -654,12 +651,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		if (modGroup)
+		if (modGroup.SetTo(nnmodGroup))
 		{
 			sb.AppendC(UTF8STRC(" of "));
-			sb.Append(modGroup->chiName);
+			sb.Append(nnmodGroup->chiName);
 			sb.AppendC(UTF8STRC(" "));
-			sb.Append(modGroup->engName);
+			sb.Append(nnmodGroup->engName);
 		}
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>"));
@@ -746,8 +743,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>"));
 		if (groupId != 0)
 		{
-			GroupInfo *modGroup = me->env->GroupGet(mutUsage, groupId);
-			if (modGroup && modGroup->species.GetCount() == 0 && modGroup->groups.GetCount() == 0)
+			NotNullPtr<GroupInfo> modGroup;
+			if (me->env->GroupGet(mutUsage, groupId).SetTo(modGroup) && modGroup->species.GetCount() == 0 && modGroup->groups.GetCount() == 0)
 			{
 				writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
 			}
@@ -796,9 +793,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
-		SpeciesInfo *species;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<SpeciesInfo> species;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		BookSpInfo *bookSp;
 		BookInfo *book;
 		UserFileInfo *userFile;
@@ -807,8 +804,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		Data::DateTime dt;
 
 		Sync::RWMutexUsage mutUsage;
-		species = me->env->SpeciesGet(mutUsage, id);
-		if (species == 0)
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(species))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -816,15 +812,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		}
 
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-		group = me->env->GroupGet(mutUsage, species->groupId);
-		if (group == 0 || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
+		if (!me->env->GroupGet(mutUsage, species->groupId).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0 || ((cate->flags & 1) && notAdmin))
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -1596,14 +1590,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		GroupInfo *group;
+		NotNullPtr<GroupInfo> group;
 		Text::StringBuilderUTF8 sb;
 		NotNullPtr<Text::String> s;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
-		if (group == 0)
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -1617,17 +1610,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		NotNullPtr<Text::String> descr = cname;
 		Bool canDelete = false;
 		const UTF8Char *bookIgn = 0;
-		SpeciesInfo *species = 0;
+		Optional<SpeciesInfo> species = 0;
+		NotNullPtr<SpeciesInfo> nnspecies;
 		if (req->GetQueryValueI32(CSTR("spId"), spId))
 		{
 			species = me->env->SpeciesGet(mutUsage, spId);
-			if (species)
+			if (species.SetTo(nnspecies))
 			{
-				cname = species->chiName;
-				sname = species->sciName;
-				ename = species->engName;
-				descr = species->descript;
-				canDelete = (species->files.GetCount() == 0 && species->books.GetCount() == 0 && species->wfiles.GetCount() == 0);
+				cname = nnspecies->chiName;
+				sname = nnspecies->sciName;
+				ename = nnspecies->engName;
+				descr = nnspecies->descript;
+				canDelete = (nnspecies->files.GetCount() == 0 && nnspecies->books.GetCount() == 0 && nnspecies->wfiles.GetCount() == 0);
 			}
 		}
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -1644,7 +1638,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 				if (task->Equals(UTF8STRC("new")))
 				{
 					sb.ClearStr();
-					if (me->env->SpeciesGetByName(mutUsage, sname) != 0)
+					if (!me->env->SpeciesGetByName(mutUsage, sname).IsNull())
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
@@ -1681,11 +1675,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 						}
 					}
 				}
-				else if (task->Equals(UTF8STRC("modify")) && species != 0)
+				else if (task->Equals(UTF8STRC("modify")) && species.SetTo(nnspecies))
 				{
-					Bool nameChg = !sname->Equals(species->sciName);
+					Bool nameChg = !sname->Equals(nnspecies->sciName);
 					sb.ClearStr();
-					if (nameChg && me->env->SpeciesGetByName(mutUsage, sname) != 0)
+					if (nameChg && !me->env->SpeciesGetByName(mutUsage, sname).IsNull())
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
@@ -1720,10 +1714,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 						}
 					}
 				}
-				else if (task->Equals(UTF8STRC("delete")) && species != 0 && species->files.GetCount() == 0 && species->books.GetCount() == 0 && species->wfiles.GetCount() == 0)
+				else if (task->Equals(UTF8STRC("delete")) && species.SetTo(nnspecies) && nnspecies->files.GetCount() == 0 && nnspecies->books.GetCount() == 0 && nnspecies->wfiles.GetCount() == 0)
 				{
-					Int32 groupId = species->groupId;
-					if (me->env->SpeciesDelete(mutUsage, species->speciesId))
+					Int32 groupId = nnspecies->groupId;
+					if (me->env->SpeciesDelete(mutUsage, nnspecies->speciesId))
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("group.html?id="));
@@ -1746,7 +1740,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		Text::UTF8Writer writer(mstm);
 
 		sb.ClearStr();
-		if (species)
+		if (!species.IsNull())
 		{
 			sb.AppendC(UTF8STRC("Modify Species in "));
 		}
@@ -1757,16 +1751,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		if (species)
+		if (species.SetTo(nnspecies))
 		{
 			sb.AppendC(UTF8STRC(" of "));
-			sb.Append(species->chiName);
+			sb.Append(nnspecies->chiName);
 			sb.AppendC(UTF8STRC(" "));
-			sb.Append(species->sciName);
-			if (species->engName->leng > 0)
+			sb.Append(nnspecies->sciName);
+			if (nnspecies->engName->leng > 0)
 			{
 				sb.AppendC(UTF8STRC(" "));
-				sb.Append(species->engName);
+				sb.Append(nnspecies->engName);
 			}
 		}
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
@@ -1889,20 +1883,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-		if (group == 0 || group->cateId != cateId)
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0 || ((cate->flags & 1) && notAdmin))
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -1967,10 +1959,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 		{
 			j = spList->GetCount();
 		}
-		Data::ArrayList<SpeciesInfo*> species;
+		Data::ArrayListNN<SpeciesInfo> species;
+		NotNullPtr<SpeciesInfo> sp;
 		while (i < j)
 		{
-			species.Add(spList->GetItem(i));
+			if (sp.Set(spList->GetItem(i)))
+			{
+				species.Add(sp);
+			}
 			i++;
 		}
 		me->WriteSpeciesTable(mutUsage, &writer, species, env.scnWidth, group->cateId, false, (env.user && env.user->userType == UserType::Admin));
@@ -2095,31 +2091,27 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
-		SpeciesInfo *species;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<SpeciesInfo> species;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		Text::PString sarr[4];
 		WebFileInfo *wfile;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
-		species = me->env->SpeciesGet(mutUsage, id);
-		if (species == 0 || species->cateId != cateId)
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(species) || species->cateId != cateId)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-
-		group = me->env->GroupGet(mutUsage, species->groupId);
-		if (group == 0)
+		if (!me->env->GroupGet(mutUsage, species->groupId).SetTo(group))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0)
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -3112,22 +3104,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-		if (group == 0 || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0 || ((cate->flags & 1) && notAdmin))
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -3173,9 +3163,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListDbl speciesIndice;
-		Data::ArrayList<SpeciesInfo*> speciesObjs;
+		Data::ArrayListNN<SpeciesInfo> speciesObjs;
 		Data::ArrayListDbl groupIndice;
-		Data::ArrayList<GroupInfo*> groupObjs;
+		Data::ArrayListNN<GroupInfo> groupObjs;
 		sb.ClearStr();
 		sb.Append(searchStr);
 		sb.Trim();
@@ -3184,13 +3174,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		writer.WriteStrC(s->v, s->leng);
 		s->Release();
 		writer.WriteLineC(UTF8STRC("\"<br/>"));
-		me->env->SearchInGroup(mutUsage, group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
+		me->env->SearchInGroup(mutUsage, group, sb.ToString(), sb.GetLength(), speciesIndice, speciesObjs, groupIndice, groupObjs, env.user);
 
 		Bool found = false;
 
 		if (speciesObjs.GetCount() > 0)
 		{
-			Data::ArrayList<SpeciesInfo*> speciesList;
+			Data::ArrayListNN<SpeciesInfo> speciesList;
+			NotNullPtr<SpeciesInfo> sp;
 			i = speciesObjs.GetCount();
 			if (i > 50)
 			{
@@ -3202,7 +3193,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 			}
 			while (i-- > j)
 			{
-				speciesList.Add(speciesObjs.GetItem(i));
+				if (speciesObjs.GetItem(i).SetTo(sp))
+					speciesList.Add(sp);
 			}
 			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == UserType::Admin));
 			if (j > 0)
@@ -3227,7 +3219,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		}
 		if (groupObjs.GetCount() > 0)
 		{
-			Data::ArrayList<GroupInfo*> groupList;
+			Data::ArrayListNN<GroupInfo> groupList;
+			NotNullPtr<GroupInfo> group;
 			i = groupObjs.GetCount();
 			if (i > 50)
 			{
@@ -3239,24 +3232,28 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 			}
 			while (i-- > j)
 			{
-				groupList.Add(groupObjs.GetItem(i));
+				if (groupObjs.GetItem(i).SetTo(group))
+					groupList.Add(group);
 			}
 			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user != 0 && env.user->userType == UserType::Admin);
-			if (j > 0)
+			if (groupList.GetLast().SetTo(group))
 			{
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer.WriteStrC(UTF8STRC("<a href="));
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
-				sb.AppendI32(group->id);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(group->cateId);
-				sb.AppendC(UTF8STRC("&searchStr="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer.WriteStrC(s->v, s->leng);
-				s->Release();
-				writer.WriteStrC(UTF8STRC(">More</a><br/>"));
+				if (j > 0)
+				{
+					sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+					writer.WriteStrC(UTF8STRC("<a href="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
+					sb.AppendI32(group->id);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(group->cateId);
+					sb.AppendC(UTF8STRC("&searchStr="));
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(">More</a><br/>"));
+				}
 			}
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;
@@ -3307,22 +3304,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-		if (group == 0 || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0 || ((cate->flags & 1) && notAdmin))
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -3368,9 +3363,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListDbl speciesIndice;
-		Data::ArrayList<SpeciesInfo*> speciesObjs;
+		Data::ArrayListNN<SpeciesInfo> speciesObjs;
 		Data::ArrayListDbl groupIndice;
-		Data::ArrayList<GroupInfo*> groupObjs;
+		Data::ArrayListNN<GroupInfo> groupObjs;
 		sb.ClearStr();
 		sb.Append(searchStr);
 		sb.Trim();
@@ -3379,13 +3374,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 		writer.WriteStrC(s->v, s->leng);
 		s->Release();
 		writer.WriteLineC(UTF8STRC("\"<br/>"));
-		me->env->SearchInGroup(mutUsage, group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
+		me->env->SearchInGroup(mutUsage, group, sb.ToString(), sb.GetLength(), speciesIndice, speciesObjs, groupIndice, groupObjs, env.user);
 
 		Bool found = false;
 
 		if (speciesObjs.GetCount() > pageNo * 50)
 		{
-			Data::ArrayList<SpeciesInfo*> speciesList;
+			Data::ArrayListNN<SpeciesInfo> speciesList;
+			NotNullPtr<SpeciesInfo> sp;
 			j = speciesObjs.GetCount() - pageNo * 50;
 			i = j - 50;
 			if (j < 50)
@@ -3394,7 +3390,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 			}
 			while (j-- > i)
 			{
-				speciesList.Add(speciesObjs.GetItem(j));
+				if (speciesObjs.GetItem(j).SetTo(sp))
+					speciesList.Add(sp);
 			}
 			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == UserType::Admin));
 			if (pageNo > 0)
@@ -3482,22 +3479,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		group = me->env->GroupGet(mutUsage, id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-		if (group == 0 || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
+		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0 || ((cate->flags & 1) && notAdmin))
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -3543,9 +3538,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListDbl speciesIndice;
-		Data::ArrayList<SpeciesInfo*> speciesObjs;
+		Data::ArrayListNN<SpeciesInfo> speciesObjs;
 		Data::ArrayListDbl groupIndice;
-		Data::ArrayList<GroupInfo*> groupObjs;
+		Data::ArrayListNN<GroupInfo> groupObjs;
 		sb.ClearStr();
 		sb.Append(searchStr);
 		sb.Trim();
@@ -3554,13 +3549,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 		writer.WriteStrC(s->v, s->leng);
 		s->Release();
 		writer.WriteLineC(UTF8STRC("\"<br/>"));
-		me->env->SearchInGroup(mutUsage, group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
+		me->env->SearchInGroup(mutUsage, group, sb.ToString(), sb.GetLength(), speciesIndice, speciesObjs, groupIndice, groupObjs, env.user);
 
 		Bool found = false;
 
 		if (groupObjs.GetCount() > 0)
 		{
-			Data::ArrayList<GroupInfo*> groupList;
+			Data::ArrayListNN<GroupInfo> groupList;
+			NotNullPtr<GroupInfo> group;
 			j = groupObjs.GetCount() - pageNo * 50;
 			i = j - 50;
 			if (i < 0)
@@ -3569,44 +3565,48 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 			}
 			while (j-- > i)
 			{
-				groupList.Add(groupObjs.GetItem(j));
+				if (groupObjs.GetItem(j).SetTo(group))
+					groupList.Add(group);
 			}
 			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user && env.user->userType == UserType::Admin);
-			if (pageNo > 0)
+			if (groupList.GetLast().SetTo(group))
 			{
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer.WriteStrC(UTF8STRC("<a href="));
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
-				sb.AppendI32(group->id);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(group->cateId);
-				sb.AppendC(UTF8STRC("&pageNo="));
-				sb.AppendU32(pageNo - 1);
-				sb.AppendC(UTF8STRC("&searchStr="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer.WriteStrC(s->v, s->leng);
-				s->Release();
-				writer.WriteStrC(UTF8STRC(">Prev</a> "));
-			}
-			if (i > 0)
-			{
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer.WriteStrC(UTF8STRC(" <a href="));
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
-				sb.AppendI32(group->id);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(group->cateId);
-				sb.AppendC(UTF8STRC("&pageNo="));
-				sb.AppendU32(pageNo + 1);
-				sb.AppendC(UTF8STRC("&searchStr="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer.WriteStrC(s->v, s->leng);
-				s->Release();
-				writer.WriteStrC(UTF8STRC(">Next</a>"));
+				if (pageNo > 0)
+				{
+					sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+					writer.WriteStrC(UTF8STRC("<a href="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
+					sb.AppendI32(group->id);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(group->cateId);
+					sb.AppendC(UTF8STRC("&pageNo="));
+					sb.AppendU32(pageNo - 1);
+					sb.AppendC(UTF8STRC("&searchStr="));
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(">Prev</a> "));
+				}
+				if (i > 0)
+				{
+					sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+					writer.WriteStrC(UTF8STRC(" <a href="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
+					sb.AppendI32(group->id);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(group->cateId);
+					sb.AppendC(UTF8STRC("&pageNo="));
+					sb.AppendU32(pageNo + 1);
+					sb.AppendC(UTF8STRC("&searchStr="));
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(">Next</a>"));
+				}
 			}
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;

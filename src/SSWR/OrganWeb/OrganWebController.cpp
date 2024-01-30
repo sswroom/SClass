@@ -121,95 +121,95 @@ void SSWR::OrganWeb::OrganWebController::WriteFooter(IO::Writer *writer)
 	writer->WriteLineC(UTF8STRC("</HTML>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocator(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocator(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate)
 {
 	GroupTypeInfo *grpType;
 	NotNullPtr<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
-	Data::ArrayList<GroupInfo *> groupList;
+	Data::ArrayListNN<GroupInfo> groupList;
 	UOSInt i;
-	while (group)
+	while (true)
 	{
 		groupList.Add(group);
-		group = this->env->GroupGet(mutUsage, group->parentId);
+		if (!this->env->GroupGet(mutUsage, group->parentId).SetTo(group))
+			break;
 	}
 
 
 	writer->WriteLineC(UTF8STRC("<center><table border=\"0\" cellpadding=\"0\" cellspacing=\"4\">"));
 	writer->WriteStrC(UTF8STRC("<tr><td></td><td></td><td><a href=\"/\">Index"));
 	writer->WriteStrC(UTF8STRC("</a></td></tr>"));
-	if (cate)
-	{
-		writer->WriteStrC(UTF8STRC("<tr><td></td><td></td><td><a href="));
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("cate.html?cateName="));
-		sb.Append(cate->dirName);
-		s = Text::XML::ToNewAttrText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
-		s->Release();
-		writer->WriteStrC(UTF8STRC(">"));
-		s = Text::XML::ToNewHTMLBodyText(cate->chiName->v);
-		writer->WriteStrC(s->v, s->leng);
-		s->Release();
-		writer->WriteStrC(UTF8STRC("</a></td></tr>"));
-	}
+
+	writer->WriteStrC(UTF8STRC("<tr><td></td><td></td><td><a href="));
+	sb.ClearStr();
+	sb.AppendC(UTF8STRC("cate.html?cateName="));
+	sb.Append(cate->dirName);
+	s = Text::XML::ToNewAttrText(sb.ToString());
+	writer->WriteStrC(s->v, s->leng);
+	s->Release();
+	writer->WriteStrC(UTF8STRC(">"));
+	s = Text::XML::ToNewHTMLBodyText(cate->chiName->v);
+	writer->WriteStrC(s->v, s->leng);
+	s->Release();
+	writer->WriteStrC(UTF8STRC("</a></td></tr>"));
 
 	i = groupList.GetCount();
 	while (i-- > 0)
 	{
-		group = groupList.GetItem(i);
-		grpType = cate->groupTypes.Get(group->groupType);
-		writer->WriteLineC(UTF8STRC("<tr>"));
-		if (grpType)
+		if (groupList.GetItem(i).SetTo(group))
 		{
-			writer->WriteStrC(UTF8STRC("<td>"));
-			s = Text::XML::ToNewHTMLBodyText(grpType->chiName->v);
+			grpType = cate->groupTypes.Get(group->groupType);
+			writer->WriteLineC(UTF8STRC("<tr>"));
+			if (grpType)
+			{
+				writer->WriteStrC(UTF8STRC("<td>"));
+				s = Text::XML::ToNewHTMLBodyText(grpType->chiName->v);
+				writer->WriteStrC(s->v, s->leng);
+				s->Release();
+				writer->WriteLineC(UTF8STRC("</td>"));
+				writer->WriteStrC(UTF8STRC("<td>"));
+				s = Text::XML::ToNewHTMLBodyText(grpType->engName->v);
+				writer->WriteStrC(s->v, s->leng);
+				s->Release();
+				writer->WriteLineC(UTF8STRC("</td>"));
+			}
+			else
+			{
+				writer->WriteLineC(UTF8STRC("<td>?</td>"));
+				writer->WriteLineC(UTF8STRC("<td>?</td>"));
+			}
+			writer->WriteStrC(UTF8STRC("<td><a href=\"group.html?id="));
+			sptr = Text::StrInt32(sbuff, group->id);
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->WriteStrC(UTF8STRC("&amp;cateId="));
+			sptr = Text::StrInt32(sbuff, group->cateId);
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->WriteStrC(UTF8STRC("\">"));
+			sb.ClearStr();
+			sb.Append(group->engName);
+			sb.AppendC(UTF8STRC(" "));
+			sb.Append(group->chiName);
+			s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</td>"));
-			writer->WriteStrC(UTF8STRC("<td>"));
-			s = Text::XML::ToNewHTMLBodyText(grpType->engName->v);
-			writer->WriteStrC(s->v, s->leng);
-			s->Release();
-			writer->WriteLineC(UTF8STRC("</td>"));
+			writer->WriteLineC(UTF8STRC("</a></td>"));
+			writer->WriteLineC(UTF8STRC("</tr>"));
 		}
-		else
-		{
-			writer->WriteLineC(UTF8STRC("<td>?</td>"));
-			writer->WriteLineC(UTF8STRC("<td>?</td>"));
-		}
-		writer->WriteStrC(UTF8STRC("<td><a href=\"group.html?id="));
-		sptr = Text::StrInt32(sbuff, group->id);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("&amp;cateId="));
-		sptr = Text::StrInt32(sbuff, group->cateId);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">"));
-		sb.ClearStr();
-		sb.Append(group->engName);
-		sb.AppendC(UTF8STRC(" "));
-		sb.Append(group->chiName);
-		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
-		s->Release();
-		writer->WriteLineC(UTF8STRC("</a></td>"));
-		writer->WriteLineC(UTF8STRC("</tr>"));
-
 	}
 	writer->WriteLineC(UTF8STRC("</table>"));
 	WriteLocatorText(mutUsage, writer, group, cate);
 	writer->WriteLineC(UTF8STRC("</center>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, GroupInfo *group, CategoryInfo *cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate)
 {
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<GroupInfo *> groupList;
+	Data::ArrayListNN<GroupInfo> groupList;
 	UOSInt i;
 	Bool found = false;
-	while (group)
+	while (true)
 	{
 		groupList.Add(group);
 		if (group->groupType == 21)
@@ -217,7 +217,10 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMut
 			found = true;
 			break;
 		}
-		group = this->env->GroupGet(mutUsage, group->parentId);
+		if (!this->env->GroupGet(mutUsage, group->parentId).SetTo(group))
+		{
+			break;
+		}
 	}
 
 	if (!found)
@@ -229,19 +232,21 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMut
 	i = groupList.GetCount();
 	while (i-- > 0)
 	{
-		if (found)
+		if (groupList.GetItem(i).SetTo(group))
 		{
-			sb.AppendC(UTF8STRC(", "));
+			if (found)
+			{
+				sb.AppendC(UTF8STRC(", "));
+			}
+			sb.Append(group->engName);
+			found = true;
 		}
-		group = groupList.GetItem(i);
-		sb.Append(group->engName);
-		found = true;
 	}
 	sb.AppendC(UTF8STRC("<br/>"));
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<GroupInfo *>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
+void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
 	NotNullPtr<GroupInfo> group;
 	NotNullPtr<Text::String> s;
@@ -261,7 +266,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMute
 		currColumn = 0;
 		while (i < j)
 		{
-			if (group.Set(groupList->GetItem(i)))
+			if (groupList->GetItem(i).SetTo(group))
 			{
 				this->env->CalcGroupCount(mutUsage, group);
 				if (showAll || group->totalCount != 0 || showSelect)
@@ -437,9 +442,9 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMute
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ArrayList<SpeciesInfo *>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
+void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
-	SpeciesInfo *sp;
+	NotNullPtr<SpeciesInfo> sp;
 	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -447,200 +452,200 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMu
 	UInt32 colCount = scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = spList->GetCount();
+	UOSInt i = 0;
+	UOSInt j = spList->GetCount();
 	if (j > 0)
 	{
 		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 		currColumn = 0;
 		while (i < j)
 		{
-			sp = spList->GetItem(i);
-			if (currColumn == 0)
+			if (spList->GetItem(i).SetTo(sp))
 			{
-				writer->WriteLineC(UTF8STRC("<tr>"));
-			}
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("<td width=\""));
-			sb.AppendU32(colWidth);
-			sb.AppendC(UTF8STRC("%\">"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
-			sb.ClearStr();
-			if (sp->cateId == cateId || showSelect)
-			{
-				sb.AppendC(UTF8STRC("<center><a href=\"species.html?id="));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("&amp;cateId="));
-				sb.AppendI32(sp->cateId);
-				sb.AppendC(UTF8STRC("\">"));
+				if (currColumn == 0)
+				{
+					writer->WriteLineC(UTF8STRC("<tr>"));
+				}
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("<td width=\""));
+				sb.AppendU32(colWidth);
+				sb.AppendC(UTF8STRC("%\">"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
-			}
-			else
-			{
-				writer->WriteLineC(UTF8STRC("<center>"));
-			}
-
-			if (sp->files.GetCount() > 0)
-			{
-				if ((sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
-				{
-					this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags | SSWR::OrganWeb::SF_HAS_MYPHOTO));
-					this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:1, 1);
-				}
-			}
-			else
-			{
-				if (sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
-				{
-					this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
-					this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
-				}
-			}
-			if (sp->photoId != 0)
-			{
-				writer->WriteStrC(UTF8STRC("<img src="));
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(sp->cateId);
-				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendI32(PREVIEW_SIZE);
-				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendI32(PREVIEW_SIZE);
-				sb.AppendC(UTF8STRC("&fileId="));
-				sb.AppendI32(sp->photoId);
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
-				s = Text::XML::ToNewAttrText(sp->sciName->v);
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteLineC(UTF8STRC("><br/>"));
-			}
-			else if (sp->photoWId)
-			{
-				writer->WriteStrC(UTF8STRC("<img src="));
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(sp->cateId);
-				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendI32(PREVIEW_SIZE);
-				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendI32(PREVIEW_SIZE);
-				sb.AppendC(UTF8STRC("&fileWId="));
-				sb.AppendI32(sp->photoWId);
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
-				s = Text::XML::ToNewAttrText(sp->sciName->v);
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteLineC(UTF8STRC("><br/>"));
-			}
-			else if (sp->photo.SetTo(s) && s->leng > 0)
-			{
-				writer->WriteStrC(UTF8STRC("<img src="));
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("&cateId="));
-				sb.AppendI32(sp->cateId);
-				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendI32(PREVIEW_SIZE);
-				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendI32(PREVIEW_SIZE);
-				sb.AppendC(UTF8STRC("&file="));
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, s->v);
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
-				s = Text::XML::ToNewAttrText(sp->sciName->v);
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteLineC(UTF8STRC("><br/>"));
-			}
-			else
-			{
-				s = Text::XML::ToNewHTMLBodyText(sp->sciName->v);
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteLineC(UTF8STRC("<br/>"));
-			}
-			if (showSelect || showModify)
-			{
-				writer->WriteLineC(UTF8STRC("</a>"));
-				if (showSelect)
+				if (sp->cateId == cateId || showSelect)
 				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("<input type=\"checkbox\" name=\"species"));
+					sb.AppendC(UTF8STRC("<center><a href=\"species.html?id="));
 					sb.AppendI32(sp->speciesId);
-					sb.AppendC(UTF8STRC("\" id=\"species"));
-					sb.AppendI32(sp->speciesId);
-					sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"species"));
-					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("&amp;cateId="));
+					sb.AppendI32(sp->cateId);
 					sb.AppendC(UTF8STRC("\">"));
-					writer->WriteStrC(sb.ToString(), sb.GetLength());
-				}
-				sb.ClearStr();
-				sb.Append(sp->sciName);
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(sp->chiName);
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(sp->engName);
-				s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				if (showSelect)
-				{
-					writer->WriteLineC(UTF8STRC("</label>"));
-				}
-
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<br/><a href=\"speciesmod.html?id="));
-				sb.AppendI32(sp->groupId);
-				sb.AppendC(UTF8STRC("&amp;cateId="));
-				sb.AppendI32(sp->cateId);
-				sb.AppendC(UTF8STRC("&amp;spId="));
-				sb.AppendI32(sp->speciesId);
-				sb.AppendC(UTF8STRC("\">Modify</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-				writer->WriteLineC(UTF8STRC("</center></td>"));
-			}
-			else
-			{
-				sb.ClearStr();
-				sb.Append(sp->sciName);
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(sp->chiName);
-				sb.AppendC(UTF8STRC(" "));
-				sb.Append(sp->engName);
-				s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				if (sp->cateId == cateId)
-				{
-					writer->WriteLineC(UTF8STRC("</a></center></td>"));
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				else
 				{
+					writer->WriteLineC(UTF8STRC("<center>"));
+				}
+
+				if (sp->files.GetCount() > 0)
+				{
+					if ((sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
+					{
+						this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags | SSWR::OrganWeb::SF_HAS_MYPHOTO));
+						this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:1, 1);
+					}
+				}
+				else
+				{
+					if (sp->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
+					{
+						this->env->SpeciesSetFlags(mutUsage, sp->speciesId, (SSWR::OrganWeb::SpeciesFlags)(sp->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
+						this->env->GroupAddCounts(mutUsage, sp->groupId, 0, (sp->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
+					}
+				}
+				if (sp->photoId != 0)
+				{
+					writer->WriteStrC(UTF8STRC("<img src="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(sp->cateId);
+					sb.AppendC(UTF8STRC("&width="));
+					sb.AppendI32(PREVIEW_SIZE);
+					sb.AppendC(UTF8STRC("&height="));
+					sb.AppendI32(PREVIEW_SIZE);
+					sb.AppendC(UTF8STRC("&fileId="));
+					sb.AppendI32(sp->photoId);
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
+					s = Text::XML::ToNewAttrText(sp->sciName->v);
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteLineC(UTF8STRC("><br/>"));
+				}
+				else if (sp->photoWId)
+				{
+					writer->WriteStrC(UTF8STRC("<img src="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(sp->cateId);
+					sb.AppendC(UTF8STRC("&width="));
+					sb.AppendI32(PREVIEW_SIZE);
+					sb.AppendC(UTF8STRC("&height="));
+					sb.AppendI32(PREVIEW_SIZE);
+					sb.AppendC(UTF8STRC("&fileWId="));
+					sb.AppendI32(sp->photoWId);
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
+					s = Text::XML::ToNewAttrText(sp->sciName->v);
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteLineC(UTF8STRC("><br/>"));
+				}
+				else if (sp->photo.SetTo(s) && s->leng > 0)
+				{
+					writer->WriteStrC(UTF8STRC("<img src="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("&cateId="));
+					sb.AppendI32(sp->cateId);
+					sb.AppendC(UTF8STRC("&width="));
+					sb.AppendI32(PREVIEW_SIZE);
+					sb.AppendC(UTF8STRC("&height="));
+					sb.AppendI32(PREVIEW_SIZE);
+					sb.AppendC(UTF8STRC("&file="));
+					sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, s->v);
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
+					s = Text::XML::ToNewAttrText(sp->sciName->v);
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteLineC(UTF8STRC("><br/>"));
+				}
+				else
+				{
+					s = Text::XML::ToNewHTMLBodyText(sp->sciName->v);
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					writer->WriteLineC(UTF8STRC("<br/>"));
+				}
+				if (showSelect || showModify)
+				{
+					writer->WriteLineC(UTF8STRC("</a>"));
+					if (showSelect)
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("<input type=\"checkbox\" name=\"species"));
+						sb.AppendI32(sp->speciesId);
+						sb.AppendC(UTF8STRC("\" id=\"species"));
+						sb.AppendI32(sp->speciesId);
+						sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"species"));
+						sb.AppendI32(sp->speciesId);
+						sb.AppendC(UTF8STRC("\">"));
+						writer->WriteStrC(sb.ToString(), sb.GetLength());
+					}
+					sb.ClearStr();
+					sb.Append(sp->sciName);
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(sp->chiName);
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(sp->engName);
+					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					if (showSelect)
+					{
+						writer->WriteLineC(UTF8STRC("</label>"));
+					}
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<br/><a href=\"speciesmod.html?id="));
+					sb.AppendI32(sp->groupId);
+					sb.AppendC(UTF8STRC("&amp;cateId="));
+					sb.AppendI32(sp->cateId);
+					sb.AppendC(UTF8STRC("&amp;spId="));
+					sb.AppendI32(sp->speciesId);
+					sb.AppendC(UTF8STRC("\">Modify</a>"));
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(UTF8STRC("</center></td>"));
 				}
-			}
+				else
+				{
+					sb.ClearStr();
+					sb.Append(sp->sciName);
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(sp->chiName);
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(sp->engName);
+					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+					writer->WriteStrC(s->v, s->leng);
+					s->Release();
+					if (sp->cateId == cateId)
+					{
+						writer->WriteLineC(UTF8STRC("</a></center></td>"));
+					}
+					else
+					{
+						writer->WriteLineC(UTF8STRC("</center></td>"));
+					}
+				}
 
-			currColumn++;
-			if (currColumn >= colCount)
-			{
-				writer->WriteLineC(UTF8STRC("</tr>"));
-				currColumn = 0;
+				currColumn++;
+				if (currColumn >= colCount)
+				{
+					writer->WriteLineC(UTF8STRC("</tr>"));
+					currColumn = 0;
+				}
 			}
 			i++;
 		}
@@ -671,7 +676,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
 	UserFileInfo *userFile;
-	SpeciesInfo *species;
+	NotNullPtr<SpeciesInfo> species;
 	Data::DateTime dt;
 	UTF8Char sbuff2[64];
 	UTF8Char *sptr2;
@@ -693,9 +698,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 		while (i < j)
 		{
 			userFile = this->env->UserfileGet(mutUsage, env->pickObjs->GetItem(i));
-			species = 0;
-			if (userFile) species = this->env->SpeciesGet(mutUsage, userFile->speciesId);
-			if (userFile && species)
+			if (userFile && this->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(species))
 			{
 				if (currColumn == 0)
 				{
@@ -841,14 +844,13 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 		sb.AppendC(UTF8STRC(" method=\"POST\"/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"place\"/>"));
-		SpeciesInfo *species;
-		Data::ArrayList<SpeciesInfo*> spList;
+		NotNullPtr<SpeciesInfo> species;
+		Data::ArrayListNN<SpeciesInfo> spList;
 		i = 0;
 		j = env->pickObjs->GetCount();
 		while (i < j)
 		{
-			species = this->env->SpeciesGet(mutUsage, env->pickObjs->GetItem(i));
-			if (species)
+			if (this->env->SpeciesGet(mutUsage, env->pickObjs->GetItem(i)).SetTo(species))
 			{
 				spList.Add(species);
 			}
@@ -874,14 +876,13 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 		sb.AppendC(UTF8STRC(" method=\"POST\"/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"place\"/>"));
-		GroupInfo *group;
-		Data::ArrayList<GroupInfo*> groupList;
+		NotNullPtr<GroupInfo> group;
+		Data::ArrayListNN<GroupInfo> groupList;
 		i = 0;
 		j = env->pickObjs->GetCount();
 		while (i < j)
 		{
-			group = this->env->GroupGet(mutUsage, env->pickObjs->GetItem(i));
-			if (group)
+			if (this->env->GroupGet(mutUsage, env->pickObjs->GetItem(i)).SetTo(group))
 			{
 				groupList.Add(group);
 			}

@@ -98,9 +98,9 @@ namespace SSWR
 			NotNullPtr<Media::DrawEngine> GetDrawEngine() const;
 
 			void CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group);
-			void GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
-			void SearchInGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user);
-			Bool GroupIsAdmin(GroupInfo *group);
+			void GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
+			void SearchInGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group, const UTF8Char *searchStr, UOSInt searchStrLen, NotNullPtr<Data::ArrayListDbl> speciesIndice, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NotNullPtr<Data::ArrayListDbl> groupIndice, NotNullPtr<Data::ArrayListNN<GroupInfo>> groupObjs, WebUserInfo *user);
+			Bool GroupIsAdmin(NotNullPtr<GroupInfo> group);
 			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);
 
 			BookInfo *BookGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
@@ -117,8 +117,8 @@ namespace SSWR
 			WebUserInfo *UserGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Optional<WebUserInfo> UserGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
 
-			SpeciesInfo *SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			SpeciesInfo *SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname);
+			Optional<SpeciesInfo> SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<SpeciesInfo> SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname);
 			Int32 SpeciesAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
 			Bool SpeciesUpdateDefPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesSetPhotoId(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId);
@@ -146,7 +146,7 @@ namespace SSWR
 			IO::ParsedObject *DataFileParse(NotNullPtr<DataFileInfo> dataFile);
 			DataFileInfo *DataFileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
-			GroupInfo *GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<GroupInfo> GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Int32 GroupAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
 			Bool GroupModify(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags);
 			Bool GroupDelete(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
@@ -156,8 +156,8 @@ namespace SSWR
 			Bool GroupSetPhotoGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoGroupId);
 			Bool GroupIsPublic(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId);
 
-			CategoryInfo *CateGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			CategoryInfo *CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
+			Optional<CategoryInfo> CateGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<CategoryInfo> CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
 			Data::ReadingList<CategoryInfo*> *CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage);
 
 			UOSInt PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);

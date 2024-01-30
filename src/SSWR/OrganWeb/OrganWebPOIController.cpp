@@ -14,6 +14,7 @@
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
 #include "Text/JSONUtil.h"
 #include "Text/JSText.h"
+#include "Text/UTF8Reader.h"
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
@@ -166,10 +167,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCate(NotNullPtr<Net::We
 	me->ParseRequestEnv(req, resp, env, false);
 
 	Sync::RWMutexUsage mutUsage;
-	CategoryInfo *cate;
+	NotNullPtr<CategoryInfo> cate;
 	NotNullPtr<GroupInfo> group;
 	NotNullPtr<Text::String> cateName;
-	if (req->GetQueryValue(CSTR("cateName")).SetTo(cateName) && (cate = me->env->CateGetByName(mutUsage, cateName)) != 0)
+	if (req->GetQueryValue(CSTR("cateName")).SetTo(cateName) && me->env->CateGetByName(mutUsage, cateName).SetTo(cate))
 	{
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
 		if ((cate->flags & 1) && notAdmin)
@@ -303,7 +304,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 		UInt8 day = 0;
 		OSInt dayStartIndex = 0;
 		UserFileInfo *userFile;
-		SpeciesInfo *sp;
+		NotNullPtr<SpeciesInfo> sp;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListStringNN locList;
 		NotNullPtr<Text::String> unkLoc = Text::String::New(UTF8STRC("?"));
@@ -317,22 +318,23 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 				if (month != 0 && day != 0)
 				{
 					userFile = env.user->userFileObj.GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
-					sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
-
-					json.ArrayBeginObject();
-					json.ObjectAddInt64(CSTR("day"), Data::Date(year, month, day).GetTotalDays());
-					json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
-					json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
-					json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
-					json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
-					json.ObjectBeginArray(CSTR("locs"));
-					Data::ArrayIterator<NotNullPtr<Text::String>> it = locList.Iterator();
-					while (it.HasNext())
+					if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 					{
-						json.ArrayAddStr(it.Next());
+						json.ArrayBeginObject();
+						json.ObjectAddInt64(CSTR("day"), Data::Date(year, month, day).GetTotalDays());
+						json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
+						json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
+						json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
+						json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
+						json.ObjectBeginArray(CSTR("locs"));
+						Data::ArrayIterator<NotNullPtr<Text::String>> it = locList.Iterator();
+						while (it.HasNext())
+						{
+							json.ArrayAddStr(it.Next());
+						}
+						json.ArrayEnd();
+						json.ObjectEnd();
 					}
-					json.ArrayEnd();
-					json.ObjectEnd();
 				}
 
 				month = dt.GetMonth();
@@ -355,22 +357,23 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 		if (month != 0 && day != 0)
 		{
 			userFile = env.user->userFileObj.GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
-			sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
-
-			json.ArrayBeginObject();
-			json.ObjectAddInt64(CSTR("day"), Data::Date(year, month, day).GetTotalDays());
-			json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
-			json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
-			json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
-			json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
-			json.ObjectBeginArray(CSTR("locs"));
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = locList.Iterator();
-			while (it.HasNext())
+			if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 			{
-				json.ArrayAddStr(it.Next());
+				json.ArrayBeginObject();
+				json.ObjectAddInt64(CSTR("day"), Data::Date(year, month, day).GetTotalDays());
+				json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
+				json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
+				json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
+				json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
+				json.ObjectBeginArray(CSTR("locs"));
+				Data::ArrayIterator<NotNullPtr<Text::String>> it = locList.Iterator();
+				while (it.HasNext())
+				{
+					json.ArrayAddStr(it.Next());
+				}
+				json.ArrayEnd();
+				json.ObjectEnd();
 			}
-			json.ArrayEnd();
-			json.ObjectEnd();
 		}
 		mutUsage.EndUse();
 		unkLoc->Release();
@@ -440,7 +443,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 		while (startIndex < endIndex)
 		{
 			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
-			if (sp.Set(me->env->SpeciesGet(mutUsage, userFile->speciesId)))
+			if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 			{
 				si = spList.SortedIndexOf(userFile->speciesId);
 				if (si < 0)
@@ -484,7 +487,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 			UOSInt j = spList.GetCount();
 			while (i < j)
 			{
-				if (sp.Set(me->env->SpeciesGet(mutUsage, spList.GetItem(i))))
+				if (me->env->SpeciesGet(mutUsage, spList.GetItem(i)).SetTo(sp))
 				{
 					json.ArrayBeginObject();
 					me->AppendSpecies(json, sp, mutUsage);
@@ -664,8 +667,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
 			if (userFile)
 			{
-				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
-				if (sp)
+				NotNullPtr<SpeciesInfo> sp;
+				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
 					json.ObjectBeginObject(CSTR("userfile"));
 					json.ObjectAddInt32(CSTR("id"), userFile->id);
@@ -687,7 +690,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 		{
 			BookSpInfo *bookSp = book->species.GetItem(i);
 			NotNullPtr<SpeciesInfo> species;
-			if (species.Set(me->env->SpeciesGet(mutUsage, bookSp->speciesId)))
+			if (me->env->SpeciesGet(mutUsage, bookSp->speciesId).SetTo(species))
 			{
 				json.ArrayBeginObject();
 				json.ObjectAddStr(CSTR("dispName"), bookSp->dispName);
@@ -699,6 +702,159 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 		json.ArrayEnd();
 	}
 	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpecies(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	Int32 cateId;
+	if (req->GetQueryValueI32(CSTR("id"), id) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId))
+	{
+		UOSInt i;
+		UOSInt j;
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		UTF8Char *sptr2;
+		Text::StringBuilderUTF8 sb;
+		NotNullPtr<SpeciesInfo> species;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
+		BookInfo *book;
+		UserFileInfo *userFile;
+		WebFileInfo *wfile;
+
+		Sync::RWMutexUsage mutUsage;
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(species))
+		{
+			mutUsage.EndUse();
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+
+		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		if (!me->env->GroupGet(mutUsage, species->groupId).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
+		{
+			mutUsage.EndUse();
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate) || ((cate->flags & 1) && notAdmin))
+		{
+			mutUsage.EndUse();
+			return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		}
+
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		json.ObjectBeginObject(CSTR("cate"));
+		json.ObjectAddInt32(CSTR("cateId"), cate->cateId);
+		json.ObjectAddStr(CSTR("chiName"), cate->chiName);
+		json.ObjectAddStr(CSTR("dirName"), cate->dirName);
+		json.ObjectEnd();
+
+		json.ObjectBeginObject(CSTR("species"));
+		me->AppendSpecies(json, species, mutUsage);
+		json.ObjectBeginArray(CSTR("files"));
+		i = 0;
+		j = species->files.GetCount();
+		while (i < j)
+		{
+			userFile = species->files.GetItem(i);
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), userFile->id);
+			json.ObjectAddInt64(CSTR("captureTimeTicks"), userFile->captureTimeTicks);
+			json.ObjectAddInt64(CSTR("fileTimeTicks"), userFile->fileTimeTicks);
+			if (env.user != 0 && (env.user->userType == UserType::Admin || userFile->webuserId == env.user->id))
+			{
+				json.ObjectAddStrOpt(CSTR("descript"), userFile->descript);
+				json.ObjectAddStrOpt(CSTR("location"), userFile->location);
+				json.ObjectAddStrOpt(CSTR("oriFileName"), userFile->oriFileName);
+				json.ObjectAddFloat64(CSTR("lat"), userFile->lat);
+				json.ObjectAddFloat64(CSTR("lon"), userFile->lon);
+			}
+			json.ObjectEnd();
+			i++;
+		}
+		json.ArrayEnd();
+
+		json.ObjectBeginArray(CSTR("wfiles"));
+		i = 0;
+		j = species->wfiles.GetCount();
+		while (i < j)
+		{
+			wfile = species->wfiles.GetItem(i);
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), wfile->id);
+			if (env.user && env.user->userType == UserType::Admin)
+			{
+				json.ObjectAddStr(CSTR("location"), wfile->location);
+			}
+			json.ObjectAddStr(CSTR("srcUrl"), wfile->srcUrl);
+			json.ObjectEnd();
+
+			i++;
+		}
+		json.ArrayEnd();
+
+		json.ObjectBeginArray(CSTR("webfiles"));
+		sptr = cate->srcDir->ConcatTo(sbuff);
+		if (IO::Path::PATH_SEPERATOR != '\\')
+		{
+			Text::StrReplace(sbuff, '\\', IO::Path::PATH_SEPERATOR);
+		}
+		sptr = species->dirName->ConcatTo(sptr);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
+		if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
+		{
+			Text::PString sarr[4];
+			IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			Text::UTF8Reader reader(fs);
+			sb.ClearStr();
+			while (reader.ReadLine(sb, 4096))
+			{
+				if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
+				{
+					json.ArrayBeginObject();
+					json.ObjectAddStr(CSTR("refUrl"), sarr[2].ToCString());
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
+					*sptr2++ = IO::Path::PATH_SEPERATOR;
+					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
+					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
+					if (i != INVALID_INDEX)
+					{
+						sptr[i] = 0;
+						sptr2 = &sptr[i];
+					}
+					json.ObjectAddStr(CSTR("fileName"), CSTRP(sptr, sptr2));
+					json.ObjectEnd();
+				}
+			}
+		}
+		json.ArrayEnd();
+
+		json.ObjectEnd();
+
+		json.ObjectAddBool(CSTR("isPublic"), me->env->GroupIsPublic(mutUsage, group->id));
+		json.ObjectBeginArray(CSTR("groups"));
+		me->AppendLocator(json, mutUsage, group, cate);
+		json.ArrayEnd();
+		if (env.user && env.user->userType == UserType::Admin && (book = me->env->BookGetSelected(mutUsage)) != 0)
+		{
+			json.ObjectBeginObject(CSTR("selectedBook"));
+			json.ObjectAddInt32(CSTR("id"), book->id);
+			json.ObjectAddStr(CSTR("title"), book->title);
+			json.ObjectEnd();
+		}
+		mutUsage.EndUse();
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -713,32 +869,29 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NotNullPtr<
 	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
 		req->GetHTTPFormInt32(CSTR("cateId"), cateId))
 	{
-		SpeciesInfo *species;
-		GroupInfo *group;
-		CategoryInfo *cate;
+		NotNullPtr<SpeciesInfo> species;
+		NotNullPtr<GroupInfo> group;
+		NotNullPtr<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 		Sync::RWMutexUsage mutUsage;
-		species = me->env->SpeciesGet(mutUsage, id);
-		if (species == 0 || species->cateId != cateId)
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(species) || species->cateId != cateId)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		group = me->env->GroupGet(mutUsage, species->groupId);
-		if (group == 0)
+		if (!me->env->GroupGet(mutUsage, species->groupId).SetTo(group))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->env->CateGet(mutUsage, group->cateId);
-		if (cate == 0)
+		if (!me->env->CateGet(mutUsage, group->cateId).SetTo(cate))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -1101,7 +1254,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NotNullPtr<Ne
 	Data::ArrayListNN<GroupInfo> groups;
 	Data::ArrayListNN<SpeciesInfo> speciesList;
 	json.ObjectBeginArray(CSTR("poi"));
-	if (poiGroup.Set(me->env->GroupGet(mutUsage, 21593)))
+	if (me->env->GroupGet(mutUsage, 21593).SetTo(poiGroup))
 	{
 		me->AddGroupPOI(mutUsage, json, poiGroup, 0, groups, speciesList);
 	}
@@ -1128,7 +1281,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net
 	if (req->GetQueryValueI32(CSTR("id"), groupId))
 	{
 		NotNullPtr<GroupInfo> poiGroup;
-		if (poiGroup.Set(me->env->GroupGet(mutUsage, groupId)))
+		if (me->env->GroupGet(mutUsage, groupId).SetTo(poiGroup))
 		{
 			groups.Add(poiGroup);
 			me->AddGroupPOI(mutUsage, json, poiGroup, env.user?env.user->id:0, groups, speciesList);
@@ -1156,7 +1309,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<N
 	if (req->GetQueryValueI32(CSTR("id"), speciesId))
 	{
 		NotNullPtr<SpeciesInfo> poiSpecies;
-		if (poiSpecies.Set(me->env->SpeciesGet(mutUsage, speciesId)))
+		if (me->env->SpeciesGet(mutUsage, speciesId).SetTo(poiSpecies))
 		{
 			speciesList.Add(poiSpecies);
 			me->AddSpeciesPOI(mutUsage, json, poiSpecies, env.user?env.user->id:0, me->env->GroupIsPublic(mutUsage, poiSpecies->groupId));
@@ -1221,7 +1374,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 
 		while (startIndex < endIndex)
 		{
-			if (userFile.Set(env.user->userFileObj.GetItem((UOSInt)startIndex)) && sp.Set(me->env->SpeciesGet(mutUsage, userFile->speciesId)))
+			if (userFile.Set(env.user->userFileObj.GetItem((UOSInt)startIndex)) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 			{
 				me->AddUserfilePOI(json, sp, userFile);
 			}
@@ -1292,7 +1445,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NotNullPtr<
 
 			while (startIndex < endIndex)
 			{
-				if (userFile.Set(env.user->userFileObj.GetItem((UOSInt)startIndex)) && sp.Set(me->env->SpeciesGet(mutUsage, userFile->speciesId)))
+				if (userFile.Set(env.user->userFileObj.GetItem((UOSInt)startIndex)) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
 					me->AddUserfilePOI(json, sp, userFile);
 				}
@@ -1457,6 +1610,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NotNullPtr<Text::JSONBuil
 
 void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species, NotNullPtr<Sync::RWMutexUsage> mutUsage)
 {
+	UOSInt i;
+	UOSInt j;
 	NotNullPtr<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), species->speciesId);
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
@@ -1497,8 +1652,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONB
 		json->ObjectAddStr(CSTR("photo"), s);
 	}
 	json->ObjectBeginArray(CSTR("books"));
-	UOSInt i = 0;
-	UOSInt j = species->books.GetCount();
+	i = 0;
+	j = species->books.GetCount();
 	while (i < j)
 	{
 		BookSpInfo *bookSp = species->books.GetItem(i);
@@ -1507,6 +1662,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONB
 		json->ObjectAddStr(CSTR("dispName"), bookSp->dispName);
 		if (book)
 		{
+			json->ObjectAddInt32(CSTR("id"), book->id);
 			json->ObjectAddStr(CSTR("bookTitle"), book->title);
 			json->ObjectAddStr(CSTR("bookAuthor"), book->author);
 			json->ObjectAddTSStr(CSTR("publishDate"), Data::Timestamp(book->publishDate, 32));
@@ -1556,6 +1712,29 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NotNullPtr<Text::JSO
 			json->ObjectEnd();
 		}
 		startIndex++;
+	}
+}
+
+void SSWR::OrganWeb::OrganWebPOIController::AppendLocator(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate)
+{
+	GroupTypeInfo *grpType;
+	while (true)
+	{
+		json->ArrayBeginObject();
+		json->ObjectAddInt32(CSTR("id"), group->id);
+		json->ObjectAddInt32(CSTR("cateId"), group->cateId);
+		json->ObjectAddInt32(CSTR("groupType"), group->groupType);
+		json->ObjectAddStr(CSTR("engName"), group->engName);
+		json->ObjectAddStr(CSTR("chiName"), group->chiName);
+		grpType = cate->groupTypes.Get(group->groupType);
+		if (grpType)
+		{
+			json->ObjectAddStr(CSTR("grpTypeChi"), grpType->chiName);
+			json->ObjectAddStr(CSTR("grpTypeEng"), grpType->engName);
+		}
+		json->ObjectEnd();
+		if (!this->env->GroupGet(mutUsage, group->parentId).SetTo(group))
+			return;
 	}
 }
 

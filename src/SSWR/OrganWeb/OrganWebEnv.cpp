@@ -1030,13 +1030,13 @@ void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> 
 	}
 }
 
-void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user)
+void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	UOSInt i;
 	UOSInt j;
 	SpeciesInfo *sp;
-	GroupInfo *sgroup;
+	NotNullPtr<GroupInfo> sgroup;
 	i = 0;
 	j = group->species.GetCount();
 	while (i < j)
@@ -1048,20 +1048,27 @@ void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage>
 	i = group->groups.GetCount();
 	while (i-- > 0)
 	{
-		sgroup = group->groups.GetItem(i);
-		if ((sgroup->flags & 1) == 0 || user != 0)
+		if (sgroup.Set(group->groups.GetItem(i)) && ((sgroup->flags & 1) == 0 || user != 0))
 		{
 			GetGroupSpecies(mutUsage, sgroup, spMap, user);
 		}
 	}
 }
 
-void SSWR::OrganWeb::OrganWebEnv::SearchInGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user)
+void SSWR::OrganWeb::OrganWebEnv::SearchInGroup(
+	NotNullPtr<Sync::RWMutexUsage> mutUsage,
+	NotNullPtr<GroupInfo> group,
+	const UTF8Char *searchStr, UOSInt searchStrLen,
+	NotNullPtr<Data::ArrayListDbl> speciesIndice,
+	NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesObjs,
+	NotNullPtr<Data::ArrayListDbl> groupIndice,
+	NotNullPtr<Data::ArrayListNN<GroupInfo>> groupObjs,
+	WebUserInfo *user)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
-	SpeciesInfo *species;
+	NotNullPtr<SpeciesInfo> species;
 	BookSpInfo *bookSp;
-	GroupInfo *subGroup;
+	NotNullPtr<GroupInfo> subGroup;
 	Double rating;
 	Double currRating;
 	UOSInt i;
@@ -1076,41 +1083,43 @@ e = c
 	while (i-- > 0)
 	{
 		rating = 0;
-		species = group->species.GetItem(i);
-		if (species->sciName->Equals(searchStr, searchStrLen) || species->chiName->Equals(searchStr, searchStrLen))
+		if (species.Set(group->species.GetItem(i)))
 		{
-			speciesIndice->Add(1.0);
-			speciesObjs->Add(species);
-		}
-		else
-		{
-			if (rating < (currRating = species->sciName->MatchRating(searchStr, searchStrLen)))
-				rating = currRating;
-			if (rating < (currRating = species->chiName->MatchRating(searchStr, searchStrLen)))
-				rating = currRating;
-			if (rating < (currRating = species->engName->MatchRating(searchStr, searchStrLen)))
-				rating = currRating;
-			if (rating < (currRating = species->descript->MatchRating(searchStr, searchStrLen)))
-				rating = currRating;
-			j = species->books.GetCount();
-			while (j-- > 0)
+			if (species->sciName->Equals(searchStr, searchStrLen) || species->chiName->Equals(searchStr, searchStrLen))
 			{
-				bookSp = species->books.GetItem(j);
-				if (bookSp->dispName->Equals(searchStr, searchStrLen))
-				{
-					rating = 1.0;
-					break;
-				}
-				else
-				{
-					if (rating < (currRating = bookSp->dispName->MatchRating(searchStr, searchStrLen)))
-						rating = currRating;
-				}
+				speciesIndice->Add(1.0);
+				speciesObjs->Add(species);
 			}
-			if (rating > 0)
+			else
 			{
-				j = speciesIndice->SortedInsert(rating);
-				speciesObjs->Insert(j, species);
+				if (rating < (currRating = species->sciName->MatchRating(searchStr, searchStrLen)))
+					rating = currRating;
+				if (rating < (currRating = species->chiName->MatchRating(searchStr, searchStrLen)))
+					rating = currRating;
+				if (rating < (currRating = species->engName->MatchRating(searchStr, searchStrLen)))
+					rating = currRating;
+				if (rating < (currRating = species->descript->MatchRating(searchStr, searchStrLen)))
+					rating = currRating;
+				j = species->books.GetCount();
+				while (j-- > 0)
+				{
+					bookSp = species->books.GetItem(j);
+					if (bookSp->dispName->Equals(searchStr, searchStrLen))
+					{
+						rating = 1.0;
+						break;
+					}
+					else
+					{
+						if (rating < (currRating = bookSp->dispName->MatchRating(searchStr, searchStrLen)))
+							rating = currRating;
+					}
+				}
+				if (rating > 0)
+				{
+					j = speciesIndice->SortedInsert(rating);
+					speciesObjs->Insert(j, species);
+				}
 			}
 		}
 	}
@@ -1118,46 +1127,48 @@ e = c
 	while (i-- > 0)
 	{
 		rating = 0;
-		subGroup = group->groups.GetItem(i);
-		if (user == 0 && (subGroup->flags & 1))
+		if (subGroup.Set(group->groups.GetItem(i)))
 		{
-
-		}
-		else
-		{
-			if (subGroup->engName->Equals(searchStr, searchStrLen) || subGroup->chiName->Equals(searchStr, searchStrLen))
+			if (user == 0 && (subGroup->flags & 1))
 			{
-				groupIndice->Add(1.0);
-				groupObjs->Add(subGroup);
+
 			}
 			else
 			{
-				if (rating < (currRating = subGroup->engName->MatchRating(searchStr, searchStrLen)))
-					rating = currRating;
-				if (rating < (currRating = subGroup->chiName->MatchRating(searchStr, searchStrLen)))
-					rating = currRating;
-				if (rating > 0)
+				if (subGroup->engName->Equals(searchStr, searchStrLen) || subGroup->chiName->Equals(searchStr, searchStrLen))
 				{
-					j = groupIndice->SortedInsert(rating);
-					groupObjs->Insert(j, subGroup);
+					groupIndice->Add(1.0);
+					groupObjs->Add(subGroup);
 				}
+				else
+				{
+					if (rating < (currRating = subGroup->engName->MatchRating(searchStr, searchStrLen)))
+						rating = currRating;
+					if (rating < (currRating = subGroup->chiName->MatchRating(searchStr, searchStrLen)))
+						rating = currRating;
+					if (rating > 0)
+					{
+						j = groupIndice->SortedInsert(rating);
+						groupObjs->Insert(j, subGroup);
+					}
+				}
+				SearchInGroup(mutUsage, subGroup, searchStr, searchStrLen, speciesIndice, speciesObjs, groupIndice, groupObjs, user);
 			}
-			SearchInGroup(mutUsage, subGroup, searchStr, searchStrLen, speciesIndice, speciesObjs, groupIndice, groupObjs, user);
 		}
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::GroupIsAdmin(GroupInfo *group)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupIsAdmin(NotNullPtr<GroupInfo> group)
 {
-	while (group)
+	while (true)
 	{
 		if (group->flags & 1)
 		{
 			return true;
 		}
-		group = this->groupMap.Get(group->parentId);
+		if (!group.Set(this->groupMap.Get(group->parentId)))
+			return false;
 	}
-	return false;
 }
 
 UTF8Char *SSWR::OrganWeb::OrganWebEnv::PasswordEnc(UTF8Char *buff, Text::CString pwd)
@@ -1306,8 +1317,8 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> 
 	if (book == 0)
 		return false;
 	BookSpInfo *bookSp;
-	SpeciesInfo *species = this->SpeciesGet(mutUsage, speciesId);
-	if (species == 0)
+	NotNullPtr<SpeciesInfo> species;
+	if (!this->SpeciesGet(mutUsage, speciesId).SetTo(species))
 		return false;
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -1422,13 +1433,13 @@ Optional<SSWR::OrganWeb::WebUserInfo> SSWR::OrganWeb::OrganWebEnv::UserGetByName
 	return this->userNameMap.GetNN(name);
 }
 
-SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
+Optional<SSWR::OrganWeb::SpeciesInfo> SSWR::OrganWeb::OrganWebEnv::SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	return this->spMap.Get(id);
 }
 
-SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname)
+Optional<SSWR::OrganWeb::SpeciesInfo> SSWR::OrganWeb::OrganWebEnv::SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	return this->spNameMap.GetNN(sname);
@@ -1519,7 +1530,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesUpdateDefPhoto(NotNullPtr<Sync::RWMutex
 				this->SpeciesSetFlags(mutUsage, speciesId, (SpeciesFlags)(species->flags & ~SF_HAS_MYPHOTO));
 				this->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
 			}
-			GroupInfo *group = this->GroupGet(mutUsage, species->groupId);
+			GroupInfo *group = this->GroupGet(mutUsage, species->groupId).OrNull();
 			Int32 parentGroupId = 0;
 			Int32 photoSpId = 0;
 			SpeciesInfo *phSp;
@@ -1579,7 +1590,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesUpdateDefPhoto(NotNullPtr<Sync::RWMutex
 					}
 				}
 				parentGroupId = group->id;
-				group = this->GroupGet(mutUsage, group->parentId);
+				group = this->GroupGet(mutUsage, group->parentId).OrNull();
 			}
 		}
 	}
@@ -3160,7 +3171,7 @@ SSWR::OrganWeb::DataFileInfo *SSWR::OrganWeb::OrganWebEnv::DataFileGet(NotNullPt
 	return this->dataFileMap.Get(datafileId);
 }
 
-SSWR::OrganWeb::GroupInfo *SSWR::OrganWeb::OrganWebEnv::GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
+Optional<SSWR::OrganWeb::GroupInfo> SSWR::OrganWeb::OrganWebEnv::GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	return this->groupMap.Get(id);
@@ -3478,13 +3489,13 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupIsPublic(NotNullPtr<Sync::RWMutexUsage> m
 	return GroupIsPublic(mutUsage, group->parentId);
 }
 
-SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
+Optional<SSWR::OrganWeb::CategoryInfo> SSWR::OrganWeb::OrganWebEnv::CateGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	return this->cateMap.Get(id);
 }
 
-SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name)
+Optional<SSWR::OrganWeb::CategoryInfo> SSWR::OrganWeb::OrganWebEnv::CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	return this->cateSMap.GetNN(name);

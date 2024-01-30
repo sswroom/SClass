@@ -82,17 +82,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		BookInfo *book;
-		CategoryInfo *cate;
+		NotNullPtr<CategoryInfo> cate;
 		Sync::RWMutexUsage mutUsage;
 		book = me->env->BookGet(mutUsage, id);
-		cate = me->env->CateGet(mutUsage, cateId);
 		if (env.user == 0 || env.user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
 			return true;
 		}
-		else if (book == 0 || cate == 0 || env.pickObjType != PickObjType::POT_USERFILE)
+		else if (book == 0 || !me->env->CateGet(mutUsage, cateId).SetTo(cate) || env.pickObjType != PickObjType::POT_USERFILE)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -132,8 +131,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
 			if (userFile)
 			{
-				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
-				if (sp)
+				NotNullPtr<SpeciesInfo> sp;
+				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
 					writer.WriteStrC(UTF8STRC("<img src="));
 					sb.ClearStr();
@@ -231,12 +230,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 				writer.WriteStrC(UTF8STRC("<img src="));
-				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
+				NotNullPtr<SpeciesInfo> sp;
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
 				sb.AppendI32(userFile->speciesId);
 				sb.AppendC(UTF8STRC("&cateId="));
-				if (sp)
+				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 					sb.AppendI32(sp->cateId);
 				else
 					sb.AppendI32(cate->cateId);
@@ -309,16 +308,15 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		CategoryInfo *cate;
+		NotNullPtr<CategoryInfo> cate;
 		Sync::RWMutexUsage mutUsage;
-		cate = me->env->CateGet(mutUsage, cateId);
 		if (env.user == 0 || env.user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
 			return true;
 		}
-		else if (cate == 0)
+		else if (!me->env->CateGet(mutUsage, cateId).SetTo(cate))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);

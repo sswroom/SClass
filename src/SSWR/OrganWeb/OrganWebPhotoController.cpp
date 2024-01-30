@@ -118,8 +118,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NotNullPtr<Ne
 
 void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
 {
-	CategoryInfo *cate;
-	SpeciesInfo *sp;
+	NotNullPtr<CategoryInfo> cate;
+	NotNullPtr<SpeciesInfo> sp;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr2;
@@ -127,12 +127,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd = sbuff;
 	Sync::RWMutexUsage mutUsage;
-	sp = this->env->SpeciesGet(mutUsage, speciesId);
 	Bool notAdmin = (user == 0 || user->userType != UserType::Admin);
-	if (sp && sp->cateId == cateId)
+	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId)
 	{
-		cate = this->env->CateGet(mutUsage, sp->cateId);
-		if (cate && ((cate->flags & 1) == 0 || !notAdmin))
+		if (this->env->CateGet(mutUsage, sp->cateId).SetTo(cate) && ((cate->flags & 1) == 0 || !notAdmin))
 		{
 			Text::StringBuilderUTF8 sb;
 			NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
@@ -425,7 +423,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 
 void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
 {
-	SpeciesInfo *sp;
+	NotNullPtr<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -433,9 +431,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 	UserFileInfo *userFile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
-	sp = this->env->SpeciesGet(mutUsage, speciesId);
 	userFile = this->env->UserfileGet(mutUsage, fileId);
-	if (sp && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == FileType::Image || userFile->fileType == FileType::Audio))
+	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == FileType::Image || userFile->fileType == FileType::Audio))
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{
@@ -738,7 +735,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 
 void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
 {
-	SpeciesInfo *sp;
+	NotNullPtr<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -746,8 +743,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 	WebFileInfo *wfile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
-	sp = this->env->SpeciesGet(mutUsage, speciesId);
-	if (sp && sp->cateId == cateId)
+	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId)
 	{
 		wfile = sp->wfiles.Get(fileWId);
 		if (wfile)
