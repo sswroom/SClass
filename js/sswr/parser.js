@@ -688,18 +688,19 @@ export function parseXML(txt)
 
 export async function parseFile(file)
 {
-	if (file.type == "")
+	let t = file.type;
+	if (t == "")
 	{
-		file.type = web.mimeFromFileName(file.name);
+		t = web.mimeFromFileName(file.name);
 	}
 
-	if (file.type == "application/vnd.google-earth.kml+xml")
+	if (t == "application/vnd.google-earth.kml+xml")
 	{
 		return parseXML(await file.text());
 	}
 	else
 	{
-		console.log("Unsupported file type", file.type);
+		console.log("Unsupported file type", t);
 		return null;
 	}
 }
