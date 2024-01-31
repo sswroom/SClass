@@ -790,6 +790,29 @@ export class Container extends Feature
 		return null;
 	}
 
+	getBounds()
+	{
+		let bounds = null;
+		let thisBounds;
+		let i;
+		for (i in this.features)
+		{
+			thisBounds = this.features[i].getBounds();
+			if (thisBounds)
+			{
+				if (bounds)
+				{
+					bounds = bounds.unionInPlace(thisBounds);
+				}
+				else
+				{
+					bounds = thisBounds;
+				}
+			}
+		}
+		return bounds;
+	}
+
 	getUsedNS(ns)
 	{
 		if (this.styleList)
@@ -975,6 +998,15 @@ export class Placemark extends Feature
 			}
 			strs.push("\t".repeat(level)+"</MultiGeometry>");
 		}
+	}
+
+	getBounds()
+	{
+		if (this.vec)
+		{
+			return this.vec.getBounds();
+		}
+		return null;
 	}
 
 	getUsedNS(ns)

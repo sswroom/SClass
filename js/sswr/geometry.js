@@ -52,6 +52,11 @@ export class Point extends Vector2D
 	{
 		return this.coordinates[0] == coord.x && this.coordinates[1] == coord.y;
 	}
+
+	getBounds()
+	{
+		return new math.RectArea(this.coordinates[0], this.coordinates[1], this.coordinates[0], this.coordinates[1]);
+	}
 }
 
 export class LineString extends Vector2D
@@ -226,6 +231,17 @@ export class LineString extends Vector2D
 		}
 		return false;
 	}
+
+	getBounds()
+	{
+		let bounds = new math.RectArea(this.coordinates[0][0], this.coordinates[0][1], this.coordinates[0][0], this.coordinates[0][1]);
+		let i;
+		for (i in this.coordinates)
+		{
+			bounds.unionPointInPlace(this.coordinates[i][0], this.coordinates[i][1]);
+		}
+		return bounds;
+	}
 }
 
 export class LinearRing extends LineString
@@ -363,6 +379,29 @@ export class MultiGeometry extends Vector2D
 			}
 		}
 		return false;
+	}
+
+	getBounds()
+	{
+		if (this.geometries.length == 0)
+		{
+			return null;
+		}
+		let bounds;
+		let thisBounds;
+		let i;
+		for (i in this.geometries)
+		{
+			thisBounds = this.geometries[i].getBounds();
+			if (thisBounds)
+			{
+				if (bounds)
+					bounds.unionInPlace(thisBounds);
+				else
+					bounds = thisBounds;
+			}
+		}
+		return bounds;
 	}
 }
 

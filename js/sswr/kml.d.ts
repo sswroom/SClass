@@ -1,5 +1,6 @@
 import * as data from "./data";
 import * as geometry from "./geometry";
+import * as math from "./math";
 import * as web from "./web";
 
 export enum AltitudeMode
@@ -235,6 +236,7 @@ export class Feature extends Element
 	setDescription(description: string): void;
 	setLookAt(lookAt: LookAt): void;
 	setStyle(style: StyleSelector): void;
+	getBounds(): math.RectArea | null;
 
 	appendInnerXML(strs: string[], level: number): void;
 }
@@ -252,6 +254,7 @@ export class Container extends Feature
 	addStyleMap(styleMap: StyleMap): void;
 	getOrNewStyle(iconStyle: IconStyle, labelStyle: LabelStyle, lineStyle: LineStyle, polyStyle: PolyStyle, balloonStyle: BalloonStyle, listStyle: ListStyle): Style;
 	getStyleById(id: string): Style | StyleMap | null;
+	getBounds(): math.RectArea | null;
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
@@ -270,6 +273,7 @@ export class NetworkLink extends Feature
 {
 	constructor();
 
+	getBounds(): math.RectArea | null;
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }
@@ -280,6 +284,7 @@ export class Placemark extends Feature
 	constructor(vec: geometry.Vector2D);
 
 	appendGeometry(strs: string[], level: number, vec: geometry.Vector2D, subGeom?: boolean): void;
+	getBounds(): math.RectArea | null;
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 }

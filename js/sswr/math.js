@@ -149,6 +149,32 @@ export class RectArea
 	{
 		return this.getWidth() * this.getHeight();
 	}
+
+	unionInPlace(rect)
+	{
+		if (this.min.x > rect.min.x)
+			this.min.x = rect.min.x;
+		if (this.min.y > rect.min.y)
+			this.min.y = rect.min.y;
+		if (this.max.x < rect.max.x)
+			this.max.x = rect.max.x;
+		if (this.max.y < rect.max.y)
+			this.max.y = rect.max.y;
+		return this;
+	}
+
+	unionPointInPlace(x, y)
+	{
+		if (this.min.x > x)
+			this.min.x = x;
+		if (this.min.y > y)
+			this.min.y = y;
+		if (this.max.x < x)
+			this.max.x = x;
+		if (this.max.y < y)
+			this.max.y = y;
+		return this;
+	}
 };
 
 export class Vector3 extends Coord2D

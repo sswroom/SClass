@@ -18,7 +18,9 @@ async function onFileDrop(file)
 		}
 		else if (obj instanceof kml.Feature)
 		{
+			let bounds = obj.getBounds();
 			mapCtrl.addKMLFeature(obj);
+			mapCtrl.zoomToExtent(bounds);
 		}
 		else
 		{

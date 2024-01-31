@@ -22,6 +22,11 @@ export function fromLatLngBounds(b)
 	return new math.RectArea(b.getWest(), b.getSouth(), b.getEast(), b.getNorth());
 }
 
+export function toLatLngBounds(rect)
+{
+	return L.latLngBounds(L.latLng(rect.min.y, rect.min.x), L.latLng(rect.max.y, rect.max.x));
+}
+
 export function createLayer(layer, options)
 {
 	let lyrOpts;
@@ -488,7 +493,10 @@ export class LeafletMap extends map.MapControl
 		this.mapObj.setView(L.latLng(pos.y, pos.x), osm.scale2Level(scale));
 	}
 
-	//zoomToExtent(extent: math.RectArea): void;
+	zoomToExtent(extent)
+	{
+		this.mapObj.fitBounds(toLatLngBounds(extent));
+	}
 
 /*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
 	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;

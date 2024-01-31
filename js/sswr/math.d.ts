@@ -34,6 +34,8 @@ export class RectArea
 	getWidth(): number;
 	getHeight(): number;
 	getArea(): number;
+	unionInPlace(rect: RectArea): RectArea;
+	unionPointInPlace(x: number, y: number): RectArea;
 };
 
 export class Vector3 extends Coord2D

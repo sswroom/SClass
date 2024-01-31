@@ -462,8 +462,21 @@ export class CesiumMap extends map.MapControl
 	{
 		this.viewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(pos.x, pos.y, scale), duration:0});
 	}
-/*	zoomToExtent(extent: math.RectArea): void;
-	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
+
+	zoomToExtent(extent)
+	{
+		const zoomRatio = 500000000;
+		let center = extent.getCenter();
+		let xScale = (extent.max.x - extent.min.x) / this.viewer.canvas.width * zoomRatio;
+		let yScale = (extent.max.y - extent.min.y) / this.viewer.canvas.height * zoomRatio;
+		if (yScale > xScale)
+		{
+			xScale = yScale;
+		}
+		this.viewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(center.x, center.y, xScale), duration:0});
+	}
+
+/*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
 	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
 	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;
 	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;

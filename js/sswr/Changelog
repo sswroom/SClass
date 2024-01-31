@@ -1,3 +1,10 @@
+1.5.4
+-Added geometry.Vector2D.getBounds
+-Added kml.Feature.getBounds
+-Added leaflet.toLatLngBounds
+-Added math.RectArea.unionInPlace
+-Added math.RectArea.unionPointInPlace
+
 1.5.3
 -Fixed parser file type handling
 

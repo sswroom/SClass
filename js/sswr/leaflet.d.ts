@@ -1,7 +1,7 @@
 import * as L from "./node_modules/leaflet/src/Leaflet";
 import * as geometry from "./geometry";
 import * as kml from "./kml";
-import { Coord2D, RectArea } from "./math";
+import * as math from "./math";
 import * as map from "./map";
 
 declare class GeometryOptions
@@ -15,9 +15,11 @@ declare class KMLFeatureOptions
 	noPopup: boolean;
 }
 
-export function fromLatLon(latLon: L.LatLng): Coord2D;
-export function fromLatLng(latLng: L.LatLng): Coord2D;
-export function fromLatLngBounds(b: L.LatLngBounds): RectArea;
+export function fromLatLon(latLon: L.LatLng): math.Coord2D;
+export function fromLatLng(latLng: L.LatLng): math.Coord2D;
+export function fromLatLngBounds(b: L.LatLngBounds): math.RectArea;
+export function toLatLngBounds(rect: math.RectArea): L.LatLngBounds;
+
 export function createLayer(layer: map.LayerInfo, options: object): L.Layer;
 export function createFromKMLFeature(feature: kml.Feature, options: KMLFeatureOptions): L.Layer;
 export function createFromGeometry(geom: geometry.Vector2D, options: GeometryOptions): L.Layer;
