@@ -41,6 +41,21 @@ export enum HotSpotUnit
 	InsetPixels
 };
 
+export enum RefreshMode
+{
+	OnChange,
+	OnInterval,
+	OnExpire
+};
+
+export enum ViewRefreshMode
+{
+	Never,
+	OnStop,
+	OnRequest,
+	OnRegion
+};
+
 export class Element
 {
 	getUsedNS(ns: object): void;
@@ -215,6 +230,7 @@ export class Feature extends Element
 	visibility: boolean;
 	open: boolean;
 	author: string;
+	authorName: string;
 	link: string;
 	address: string;
 	//AddressDetails: ?;
@@ -229,6 +245,7 @@ export class Feature extends Element
 	setVisibility(visibility: boolean): void;
 	setOpen(open: boolean): void;
 	setAuthor(author: string): void;
+	setAuthorName(authorName: string): void;
 	setLink(link: string): void;
 	setAddress(address: string): void;
 	setPhoneNumber(phoneNumber: string): void;
@@ -271,7 +288,19 @@ export class Folder extends Container
 
 export class NetworkLink extends Feature
 {
-	constructor();
+	networkLink: string;
+	refreshVisibility: boolean;
+	flyToView: boolean;
+	refreshMode: RefreshMode;
+	refreshInterval: number;
+	viewRefreshMode: ViewRefreshMode;
+
+	constructor(networkLink: string);
+	setRefreshVisibility(refreshVisibility: boolean): void;
+	setFlyToView(flyToView: boolean): void;
+	setRefreshMode(refreshMode: RefreshMode): void;
+	setRefreshInterval(refreshInterval: number): void;
+	setViewRefreshMode(viewRefreshMode: ViewRefreshMode): void;
 
 	getBounds(): math.RectArea | null;
 	getUsedNS(ns: object): void;

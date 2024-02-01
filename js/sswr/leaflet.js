@@ -4,6 +4,7 @@ import * as kml from "./kml.js";
 import * as math from "./math.js";
 import * as map from "./map.js";
 import * as osm from "./osm.js";
+import * as parser from "./parser.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
 
@@ -136,6 +137,10 @@ export function createFromKMLFeature(feature, options)
 			}
 		}
 		return layer;
+	}
+	else if (feature instanceof kml.NetworkLink)
+	{
+		return new KMLNetworkLink(feature);
 	}
 	else
 	{
@@ -439,6 +444,48 @@ export function toKMLString(layer)
 		return kml.toString(feature);
 	}
 	return null;
+}
+
+export class KMLNetworkLink
+{
+	constructor(feature)
+	{
+		if (feature instanceof kml.NetworkLink)
+		{
+			this.feature = feature;
+			this.container = L.featureGroup();
+			this.reload();
+		}
+		else
+		{
+			throw new Error("Feature is not NetworkLink");
+		}
+	}
+
+	reload()
+	{
+		fetch(this.feature.networkLink).then((resp)=>{
+			console.log(resp);
+			if (resp.ok)
+			{
+				parser.parseFile(resp).then((val)=>{
+					console.log(val);
+					if (val instanceof kml.Feature)
+					{
+						this.container.clearLayers();
+						let layer = createFromKMLFeature(val);
+						if (layer)
+							layer.addTo(this.container);
+					}
+				})
+			}
+		})
+	}
+
+	addTo(container)
+	{
+		this.container.addTo(container);
+	}
 }
 
 export class LeafletMap extends map.MapControl

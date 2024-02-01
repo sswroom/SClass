@@ -20,7 +20,8 @@ async function onFileDrop(file)
 		{
 			let bounds = obj.getBounds();
 			mapCtrl.addKMLFeature(obj);
-			mapCtrl.zoomToExtent(bounds);
+			if (bounds)
+				mapCtrl.zoomToExtent(bounds);
 		}
 		else
 		{

@@ -275,6 +275,46 @@ function parseKMLContainer(container, kmlNode, doc)
 		case "visibility":
 			container.setVisibility(node.textContent == "1");
 			break;
+		case "atom:author":
+			for (subNode of node.childNodes)
+			{
+				switch (subNode.nodeName)
+				{
+				case "#text":
+					{
+						let txt = subNode.textContent.trim();
+						if (txt.length > 0)
+						{
+							if (container.author)
+								container.setAuthor(container.author + " " + txt);
+							else
+								container.setAuthor(txt);
+						}						
+					}
+					break;
+				case "atom:name":
+					container.setAuthorName(subNode.textContent);
+					break;
+				default:
+					console.log("Unknown node in kml atom:author: "+subNode.nodeName, subNode);
+					break;
+				}
+			}
+			break;
+		case "atom:link":
+			for (subNode of node.attributes)
+			{
+				switch (subNode.name)
+				{
+				case "href":
+					container.setLink(subNode.value);
+					break;
+				default:
+					console.log("Unknown attribute in kml atom:link: "+subNode.nodeName, subNode);
+					break;
+				}
+			}
+			break;
 		case "Style":
 			break;
 		case "StyleMap":
@@ -282,6 +322,11 @@ function parseKMLContainer(container, kmlNode, doc)
 		case "Folder":
 		case "Placemark":
 			feature = parseKMLNode(node, doc || container);
+			if (feature)
+				container.addFeature(feature);
+			break;
+		case "NetworkLink":
+			feature = parseKMLNetworkLink(node, doc || container);
 			if (feature)
 				container.addFeature(feature);
 			break;
@@ -570,6 +615,98 @@ function parseKMLGeometry(kmlNode)
 	default:
 		console.log("Unknown node in kml geometry", kmlNode);
 		break;
+	}
+	return null;
+}
+
+function parseKMLNetworkLink(kmlNode, doc)
+{
+	let name;
+	let description;
+	let open;
+	let refreshVisibility;
+	let flyToView;
+	let linkHref;
+	let refreshMode;
+	let refreshInterval;
+	let viewRefreshMode;
+
+	let feature;
+	let node;
+	let subNode;
+	for (node of kmlNode.childNodes)
+	{
+		switch (node.nodeName)
+		{
+		case "#text":
+			break;
+		case "name":
+			name = node.textContent;
+			break;
+		case "description":
+			description = node.textContent.trim();
+			break;
+		case "open":
+			open = (node.textContent == "1");
+			break;
+		case "refreshVisibility":
+			refreshVisibility = (node.textContent == "1");
+			break;
+		case "flyToView":
+			flyToView = (node.textContent == "1");
+			break;
+		case "Link":
+			for (subNode of node.childNodes)
+			{
+				switch (subNode.nodeName)
+				{
+				case "#comment":
+					break;
+				case "#text":
+					break;
+				case "href":
+					linkHref = subNode.textContent;
+					break;
+				case "refreshMode":
+					refreshMode = subNode.textContent;
+					break;
+				case "refreshInterval":
+					refreshInterval = subNode.textContent;
+					break;
+				case "viewRefreshMode":
+					viewRefreshMode = subNode.textContent;
+					break;
+				default:
+					console.log("Unknown node in kml NetworkLink.Link", subNode);
+					break;
+				}
+			}
+			break;
+		default:
+			console.log("Unknown node in kml NetworkLink", node);
+			break;
+		}
+	}
+	if (linkHref)
+	{
+		feature = new kml.NetworkLink(linkHref);
+		if (name)
+			feature.setName(name);
+		if (description)
+			feature.setDescription(description);
+		if (open != null)
+			feature.setOpen(open);
+		if (refreshVisibility != null)
+			feature.setRefreshVisibility(refreshVisibility);
+		if (flyToView != null)
+			feature.setFlyToView(flyToView);
+		if (refreshMode)
+			feature.setRefreshMode(refreshMode);
+		if (refreshInterval)
+			feature.setRefreshInterval(Number.parseFloat(refreshInterval));
+		if (viewRefreshMode)
+			feature.setViewRefreshMode(viewRefreshMode);
+		return feature;
 	}
 	return null;
 }

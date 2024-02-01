@@ -438,7 +438,7 @@ void Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHei
 	else if (this->size.y == 0)
 	{
 		sizeX = UOSInt2Double(scnWidth) * this->size.x;
-		sizeY = UOSInt2Double(scnWidth) * this->size.x * UOSInt2Double(simg->info.dispSize.x) / UOSInt2Double(simg->info.dispSize.y);
+		sizeY = UOSInt2Double(scnWidth) * this->size.x * UOSInt2Double(simg->info.dispSize.y) / UOSInt2Double(simg->info.dispSize.x);
 	}
 	else
 	{

@@ -27,6 +27,16 @@ export function createKMLLookAt(map: L.Map): kml.LookAt;
 export function toKMLFeature(layer: L.Layer, doc?: kml.Document): kml.Feature | null;
 export function toKMLString(layer: L.Layer): string | null;
 
+export class KMLNetworkLink
+{
+	feature: kml.NetworkLink;
+	container: L.FeatureGroup;
+
+	constructor(feature: kml.NetworkLink);
+	reload(): void;
+	addTo(container: L.FeatureGroup): KMLNetworkLink;
+}
+
 export class LeafletMap extends map.MapControl
 {
 	constructor(divId: string);

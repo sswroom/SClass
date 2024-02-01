@@ -35,6 +35,19 @@ export const HotSpotUnit = {
 	InsetPixels: "insetPixels"
 }
 
+export const RefreshMode = {
+	OnChange: "onChange",
+	OnInterval: "onInterval",
+	OnExpire: "onExpire"
+};
+
+export const ViewRefreshMode = {
+	Never: "never",
+	OnStop: "onStop",
+	OnRequest: "onRequest",
+	OnRegion: "onRegion"
+};
+
 export class Element
 {
 }
@@ -655,6 +668,11 @@ export class Feature extends Element
 		this.author = author;
 	}
 
+	setAuthorName(authorName)
+	{
+		this.authorName = authorName;
+	}
+
 	setLink(link)
 	{
 		this.link = link;
@@ -698,8 +716,12 @@ export class Feature extends Element
 			strs.push("\t".repeat(level)+"<visibility>"+(this.visibility?"1":"0")+"</visibility>");
 		if (this.open != null)
 			strs.push("\t".repeat(level)+"<open>"+(this.open?"1":"0")+"</open>");
-		if (this.author)
+		if (this.author && this.authorName)
+			strs.push("\t".repeat(level)+"<atom:author>"+text.toXMLText(this.author)+"<atom:name>"+text.toXMLText(this.authorName)+"</atom:name></atom:author>");
+		else if (this.author)
 			strs.push("\t".repeat(level)+"<atom:author>"+text.toXMLText(this.author)+"</atom:author>");
+		else if (this.authorName)
+			strs.push("\t".repeat(level)+"<atom:author><atom:name>"+text.toXMLText(this.authorName)+"</atom:name></atom:author>");
 		if (this.link)
 			strs.push("\t".repeat(level)+"<atom:link href="+text.toAttrText(this.link)+"/>");
 		if (this.address)
@@ -868,6 +890,70 @@ export class Folder extends Container
 	}
 }
 
+export class NetworkLink extends Feature
+{
+	constructor(networkLink)
+	{
+		super();
+		this.networkLink = networkLink;
+	}
+
+	setRefreshVisibility(refreshVisibility)
+	{
+		this.refreshVisibility = refreshVisibility;
+	}
+
+	setFlyToView(flyToView)
+	{
+		this.flyToView = flyToView;
+	}
+
+	setRefreshMode(refreshMode)
+	{
+		this.refreshMode = refreshMode;
+	}
+
+	setRefreshInterval(refreshInterval)
+	{
+		this.refreshInterval = refreshInterval;
+	}
+
+	setViewRefreshMode(viewRefreshMode)
+	{
+		this.viewRefreshMode = viewRefreshMode;
+	}
+
+	getBounds()
+	{
+		return null;
+	}
+
+	getUsedNS(ns)
+	{
+	}
+
+	appendOuterXML(strs, level)
+	{
+		strs.push("\t".repeat(level)+"<NetworkLink>");
+		this.appendInnerXML(strs, level + 1);
+		if (this.refreshVisibility != null)
+			strs.push("\t".repeat(level + 1)+"<refreshVisibility>"+(this.refreshVisibility?"1":"0")+"</refreshVisibility>");
+		if (this.flyToView != null)
+			strs.push("\t".repeat(level + 1)+"<flyToView>"+(this.flyToView?"1":"0")+"</flyToView>");
+
+		strs.push("\t".repeat(level + 1)+"<Link>");
+		strs.push("\t".repeat(level + 2)+"<href>"+text.toXMLText(this.networkLink)+"</href>");
+		if (this.refreshMode)
+			strs.push("\t".repeat(level + 2)+"<refreshMode>"+text.toXMLText(this.refreshMode)+"</refreshMode>");
+		if (this.refreshInterval)
+			strs.push("\t".repeat(level + 2)+"<refreshInterval>"+this.refreshInterval+"</refreshInterval>");
+		if (this.viewRefreshMode)
+			strs.push("\t".repeat(level + 2)+"<viewRefreshMode>"+text.toXMLText(this.viewRefreshMode)+"</viewRefreshMode>");
+		strs.push("\t".repeat(level + 1)+"</Link>");
+		strs.push("\t".repeat(level)+"</NetworkLink>");
+	}
+}
+
 export class Placemark extends Feature
 {
 	constructor(vec)
@@ -1011,6 +1097,10 @@ export class Placemark extends Feature
 
 	getUsedNS(ns)
 	{
+		if (this.author || this.link || this.authorName)
+		{
+			ns.atom = "http://www.w3.org/2005/Atom";
+		}
 	}
 
 	appendOuterXML(strs, level)
