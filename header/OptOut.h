@@ -1,5 +1,6 @@
 #ifndef _SM_OPTOUT
 #define _SM_OPTOUT
+#include "OutParam.h"
 #include <cstddef>
 
 template <typename T> struct OptOut
@@ -51,6 +52,14 @@ public:
 	void SetNoCheck(T p)
 	{
 		*this->p = p;
+	}
+
+	OutParam<T> Or(T &p)
+	{
+		if (this->p)
+			return OutParam<T>(*this->p);
+		else
+			return OutParam<T>(p);
 	}
 
 	T *Ptr()

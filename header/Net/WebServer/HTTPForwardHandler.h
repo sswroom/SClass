@@ -27,6 +27,7 @@ namespace Net
 			Sync::Mutex mut;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
+			Optional<Text::String> forceHost;
 			ForwardType fwdType;
 			ReqHandler reqHdlr;
 			void *reqHdlrObj;
@@ -35,7 +36,7 @@ namespace Net
 
 			virtual Optional<Text::String> GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
-			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString forwardURL, ForwardType fwdType);
+			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType);
 			virtual ~HTTPForwardHandler();
 
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
@@ -44,6 +45,7 @@ namespace Net
 			void AddInjectHeader(NotNullPtr<Text::String> header);
 			void AddInjectHeader(Text::CString header);
 			void SetLog(IO::LogTool *log, Bool logContent);
+			void SetForceHost(Text::CString forceHost);
 
 			void HandleForwardRequest(ReqHandler reqHdlr, void *userObj);
 		};

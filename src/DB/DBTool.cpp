@@ -40,6 +40,11 @@ void DB::DBTool::SetSSHTunnel(Optional<Net::SSHManager> ssh, Optional<Net::SSHCl
 	this->sshCli = sshCli;
 }
 
+Optional<Net::SSHClient> DB::DBTool::GetSSHClient() const
+{
+	return this->sshCli;
+}
+
 OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 {
 	{

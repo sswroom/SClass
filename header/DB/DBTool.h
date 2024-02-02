@@ -28,6 +28,7 @@ namespace DB
 
 /*		static DBTool *NullSource(IO::LogTool *);*/
 		void SetSSHTunnel(Optional<Net::SSHManager> ssh, Optional<Net::SSHClient> sshCli);
+		Optional<Net::SSHClient> GetSSHClient() const;
 
 		OSInt ExecuteNonQuery(Text::CStringNN sqlCmd);
 		void BeginTrans();

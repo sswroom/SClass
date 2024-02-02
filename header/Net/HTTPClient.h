@@ -35,6 +35,7 @@ namespace Net
 
 		Bool kaConn;
 		NotNullPtr<Text::String> url;
+		Optional<Text::String> forceHost;
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
@@ -63,6 +64,7 @@ namespace Net
 		void AddContentLength(UInt64 leng);
 		Bool WriteContent(Text::CStringNN contType, Text::CStringNN content);
 
+		void ForceHostName(Text::CStringNN hostName);
 		UOSInt GetRespHeaderCnt() const;
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff);

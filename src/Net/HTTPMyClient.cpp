@@ -612,8 +612,17 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		ptr2 = CSTR_NULL;
 		ptr1.ConcatTo(urltmp);
 	}
-	cptr = Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
-	urltmpLen = (UOSInt)(cptr - urltmp);
+	NotNullPtr<Text::String> hostName;
+	if (this->forceHost.SetTo(hostName))
+	{
+		hostName->ConcatTo(urltmp);
+		urltmpLen = hostName->leng;
+	}
+	else
+	{
+		cptr = Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
+		urltmpLen = (UOSInt)(cptr - urltmp);
+	}
 	cptr = Text::StrConcatC(host, UTF8STRC("Host: "));
 	cptr = Text::StrConcatC(cptr, urltmp, urltmpLen);
 	cptr = Text::StrConcatC(cptr, UTF8STRC("\r\n"));

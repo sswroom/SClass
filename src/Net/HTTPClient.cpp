@@ -27,6 +27,7 @@ Net::HTTPClient::HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn) :
 	this->hdrLen = 0;
 	this->totalUpload = 0;
 	this->totalDownload = 0;
+	this->forceHost = 0;
 	this->kaConn = kaConn;
 	this->svrAddr.addrType = Net::AddrType::Unknown;
 }
@@ -36,6 +37,7 @@ Net::HTTPClient::~HTTPClient()
 	this->headers.FreeAll();
 	SDEL_CLASS(this->formSb);
 	this->url->Release();
+	OPTSTR_DEL(this->forceHost);
 }
 
 Bool Net::HTTPClient::IsDown() const
@@ -114,6 +116,13 @@ Bool Net::HTTPClient::WriteContent(Text::CStringNN contType, Text::CStringNN con
 	this->AddContentType(contType);
 	this->AddContentLength(content.leng);
 	return this->Write(content.v, content.leng) == content.leng;
+}
+
+void Net::HTTPClient::ForceHostName(Text::CStringNN hostName)
+{
+	OPTSTR_DEL(this->forceHost);
+	if (hostName.leng > 0)
+		this->forceHost = Text::String::New(hostName);
 }
 
 UOSInt Net::HTTPClient::GetRespHeaderCnt() const

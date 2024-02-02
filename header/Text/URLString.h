@@ -8,13 +8,14 @@ namespace Text
 	{
 	public:
 		static UTF8Char *GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
-		static UTF8Char *GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt16 *port);
+		static UTF8Char *GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, OptOut<UInt16> port);
 
 		static UTF8Char *GetURIScheme(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 		static UTF8Char *GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 		static UTF8Char *GetURLPath(UTF8Char *sbuff, Text::CStringNN url);
 		static UTF8Char *GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 		static UTF8Char *GetURLQueryString(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
+		static Text::CStringNN GetURLPathQuery(Text::CStringNN url);
 
 		static UTF8Char *AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CStringNN path);
 	};

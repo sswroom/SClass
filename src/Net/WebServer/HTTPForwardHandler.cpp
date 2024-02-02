@@ -13,10 +13,11 @@ Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NotNullPtr
 	return this->forwardAddrs.GetItem(i);
 }
 
-Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString forwardURL, ForwardType fwdType)
+Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
+	this->forceHost = 0;
 	this->fwdType = fwdType;
 	this->reqHdlr = 0;
 	this->reqHdlrObj = 0;
@@ -30,6 +31,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 {
 	this->forwardAddrs.FreeAll();
 	this->injHeaders.FreeAll();
+	OPTSTR_DEL(this->forceHost);
 }
 
 Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
@@ -76,6 +78,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 		this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
+	NotNullPtr<Text::String> hdr;
+	if (this->forceHost.SetTo(hdr))
+	{
+		cli->ForceHostName(hdr->ToCString());
+	}
 	if (!cli->Connect(sb.ToCString(), req->GetReqMethod(), 0, 0, false))
 	{
 		cli.Delete();
@@ -83,7 +90,6 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
 	}
-	NotNullPtr<Text::String> hdr;
 	Data::ArrayListStringNN hdrNames;
 	req->GetHeaderNames(hdrNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it;
@@ -335,6 +341,15 @@ void Net::WebServer::HTTPForwardHandler::SetLog(IO::LogTool *log, Bool logConten
 {
 	this->logContent = logContent;
 	this->log = log;
+}
+
+void Net::WebServer::HTTPForwardHandler::SetForceHost(Text::CString forceHost)
+{
+	OPTSTR_DEL(this->forceHost);
+	if (forceHost.leng > 0)
+	{
+		this->forceHost = Text::String::New(forceHost);
+	}
 }
 
 void Net::WebServer::HTTPForwardHandler::HandleForwardRequest(ReqHandler reqHdlr, void *userObj)

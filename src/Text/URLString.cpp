@@ -22,15 +22,29 @@ UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, 
 	}
 }
 
-UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt16 *port)
+UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, OptOut<UInt16> port)
 {
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	i = url.IndexOf(UTF8STRC("://"));
-	if (i != INVALID_INDEX)
+	UInt16 defPort = 0;
+	if (url.StartsWith(UTF8STRC("http://")))
 	{
-		url = url.Substring(i + 3);
+		url = url.Substring(7);
+		defPort = 80;
+	}
+	else if (url.StartsWith(UTF8STRC("https://")))
+	{
+		url = url.Substring(8);
+		defPort = 443;
+	}
+	else
+	{
+		i = url.IndexOf(UTF8STRC("://"));
+		if (i != INVALID_INDEX)
+		{
+			url = url.Substring(i + 3);
+		}
 	}
 	k = url.IndexOf('@');
 	i = url.IndexOf('/');
@@ -42,12 +56,11 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt
 	j = url.IndexOf(':');
 	if (i != INVALID_INDEX && j != INVALID_INDEX && j < i)
 	{
-		NotNullPtr<UInt16> nnPort;
-		if (nnPort.Set(port))
+		if (port.IsNotNull())
 		{
 			MemCopyNO(sbuff, &url.v[j + 1], (i - j - 1) * sizeof(UTF8Char));
 			sbuff[i - j - 1] = 0;
-			Text::StrToUInt16S(sbuff, nnPort, 0);
+			Text::StrToUInt16S(sbuff, port.Or(defPort), 0);
 		}
 		if (i < j)
 		{
@@ -64,20 +77,16 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt
 	}
 	else if (i != INVALID_INDEX)
 	{
-		if (port)
-		{
-			*port = 0;
-		}
+		port.Set(defPort);
 		MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 		return &sbuff[i];
 	}
 	else if (j != INVALID_INDEX)
 	{
-		NotNullPtr<UInt16> nnPort;
-		if (nnPort.Set(port))
+		if (port.IsNotNull())
 		{
-			Text::StrToUInt16S(&url.v[j + 1], nnPort, 0);
+			Text::StrToUInt16S(&url.v[j + 1], port.Or(defPort), 0);
 		}
 		MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * j);
 		sbuff[j] = 0;
@@ -85,10 +94,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CString url, UInt
 	}
 	else
 	{
-		if (port)
-		{
-			*port = 0;
-		}
+		port.Set(defPort);
 		return url.ConcatTo(sbuff);
 	}
 }
@@ -203,6 +209,18 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	{
 		return Text::StrConcatC(sbuff, UTF8STRC("/"));
 	}
+}
+
+Text::CStringNN Text::URLString::GetURLPathQuery(Text::CStringNN url)
+{
+	UOSInt i = url.IndexOf(UTF8STRC("://"));
+	if (i == INVALID_INDEX)
+		return url;
+	url = url.Substring(i + 3);
+	i = url.IndexOf('/');
+	if (i == INVALID_INDEX)
+		return CSTR("");
+	return url.Substring(i);
 }
 
 UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CStringNN path)
