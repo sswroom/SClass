@@ -249,7 +249,7 @@ UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
 UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
+	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
 	UInt32 l;
 	while (i <= j)
@@ -275,7 +275,7 @@ UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
 UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
+	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
 	UInt32 l;
 	while (i <= j)
@@ -303,7 +303,7 @@ UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage
 UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
+	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
 	UInt32 l;
 	while (i <= j)

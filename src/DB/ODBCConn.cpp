@@ -816,7 +816,7 @@ Bool DB::ODBCConn::IsLastDataError()
 		return (this->lastStmtState & 1) != 0;
 	}
 
-	SQLRETURN ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (SQLSMALLINT)recNumber, state, (SQLINTEGER*)&errCode, msg, sizeof(msg) / sizeof(msg[0]), &msgSize);
+	SQLRETURN ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (SQLSMALLINT)recNumber, state, (SQLINTEGER*)&errCode, msg, (SQLSMALLINT)(sizeof(msg) / sizeof(msg[0])), &msgSize);
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
 		state[5] = 0;
@@ -1090,7 +1090,7 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 		return;
 	SQLINTEGER nativeError;
 	SQLSMALLINT txtSize;
-	SQLGetDiagRecW(SQL_HANDLE_STMT, (SQLHANDLE)hStmt, 1, state, &nativeError, errorMsg, sizeof(errorMsg) / sizeof(errorMsg[0]), &txtSize);
+	SQLGetDiagRecW(SQL_HANDLE_STMT, (SQLHANDLE)hStmt, 1, state, &nativeError, errorMsg, (SQLSMALLINT)(sizeof(errorMsg) / sizeof(errorMsg[0])), &txtSize);
 	this->ShowSQLError((const UTF16Char*)state, (const UTF16Char*)errorMsg);
 }
 

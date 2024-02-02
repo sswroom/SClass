@@ -197,7 +197,7 @@ Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::
 const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRef(UInt32 epsgId)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -224,7 +224,7 @@ const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManag
 const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRefPrev(UInt32 epsgId)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -256,7 +256,7 @@ const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManag
 {
 	OSInt lastInd;
 	OSInt i = 0;
-	OSInt j = lastInd = (sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
+	OSInt j = lastInd = (OSInt)(sizeof(srInfoList) / sizeof(srInfoList[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -287,7 +287,7 @@ const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManag
 const Math::CoordinateSystemManager::SpheroidInfo *Math::CoordinateSystemManager::SRGetSpheroid(UInt32 epsgId)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(spheroidSRID) / sizeof(spheroidSRID[0])) - 1;
+	OSInt j = (OSInt)(sizeof(spheroidSRID) / sizeof(spheroidSRID[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -314,7 +314,7 @@ const Math::CoordinateSystemManager::SpheroidInfo *Math::CoordinateSystemManager
 const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::SRGetDatum(UInt32 epsgId)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(datumSRID) / sizeof(datumSRID[0])) - 1;
+	OSInt j = (OSInt)(sizeof(datumSRID) / sizeof(datumSRID[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -341,7 +341,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::S
 const Math::CoordinateSystemManager::GeogcsSRInfo *Math::CoordinateSystemManager::SRGetGeogcsInfo(UInt32 epsgId)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(geogcsSRID) / sizeof(geogcsSRID[0])) - 1;
+	OSInt j = (OSInt)(sizeof(geogcsSRID) / sizeof(geogcsSRID[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -368,7 +368,7 @@ const Math::CoordinateSystemManager::GeogcsSRInfo *Math::CoordinateSystemManager
 const Math::CoordinateSystemManager::ProjcsSRInfo *Math::CoordinateSystemManager::SRGetProjcsInfo(UInt32 epsgId)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(projcsSRID) / sizeof(projcsSRID[0])) - 1;
+	OSInt j = (OSInt)(sizeof(projcsSRID) / sizeof(projcsSRID[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
@@ -542,7 +542,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 		name = &name[2];
 	}
 	OSInt i = 0;
-	OSInt j = (sizeof(datumList) / sizeof(datumList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(datumList) / sizeof(datumList[0])) - 1;
 	OSInt k;
 	OSInt l;
 	while (i <= j)
@@ -686,7 +686,7 @@ UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(Data::ArrayLi
 const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemManager::GetProjCoordinateSystemInfo(const UTF8Char *name)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(pcsysList) / sizeof(pcsysList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(pcsysList) / sizeof(pcsysList[0])) - 1;
 	OSInt k;
 	OSInt l;
 	while (i <= j)
@@ -748,7 +748,7 @@ UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(Data::ArrayList<G
 const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemManager::GetGeogCoordinateSystemInfo(const UTF8Char *name)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(csysList) / sizeof(csysList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(csysList) / sizeof(csysList[0])) - 1;
 	OSInt k;
 	OSInt l;
 	while (i <= j)

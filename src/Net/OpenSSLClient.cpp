@@ -34,7 +34,7 @@ Net::OpenSSLClient::OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ss
 	this->clsData->shutdown = false;
 
 	STACK_OF(X509) *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
-#if OPENSSL_VERSION_NUMBER >= 0x10002000
+#if OPENSSL_VERSION_NUMBER >= 0x10100010
 	if (certs == 0 || sk_X509_num(certs) == 0)
 	{
 		certs = SSL_get0_verified_chain(this->clsData->ssl);

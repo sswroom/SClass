@@ -150,7 +150,7 @@ Text::CStringNN Net::MIME::GetMIMEFromExt(Text::CString ext)
 	}
 	Text::StrToLowerC(sbuff, ext.v, ext.leng);
 	OSInt i = 0;
-	OSInt j = (sizeof(mimeList) / sizeof(mimeList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(mimeList) / sizeof(mimeList[0])) - 1;
 	OSInt k;
 	OSInt l;
 	while (i <= j)

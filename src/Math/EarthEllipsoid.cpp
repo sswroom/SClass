@@ -295,7 +295,7 @@ Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) c
 NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(refEllipsoids) / sizeof(refEllipsoids[0])) - 1;
+	OSInt j = (OSInt)(sizeof(refEllipsoids) / sizeof(refEllipsoids[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{
