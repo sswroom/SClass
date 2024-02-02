@@ -398,7 +398,7 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 			*outlen = in[0];
 			return SSL_TLSEXT_ERR_OK;
 		}
-		inlen -= in[0] + 1;
+		inlen -= (unsigned int)in[0] + 1;
 		in += in[0] + 1;
 	}
 }
@@ -416,7 +416,7 @@ int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned cha
 			*outlen = in[0];
 			return SSL_TLSEXT_ERR_OK;
 		}
-		inlen -= in[0] + 1;
+		inlen -= (unsigned int)in[0] + 1;
 		in += in[0] + 1;
 	}
 }

@@ -874,7 +874,7 @@ Net::UserAgentDB::UAEntry Net::UserAgentDB::uaList[] = {
 const Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUserAgentInfo(const UTF8Char *userAgent)
 {
 	OSInt i = 0;
-	OSInt j = (sizeof(uaList) / sizeof(uaList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(uaList) / sizeof(uaList[0])) - 1;
 	OSInt k;
 	OSInt l;
 	while (i <= j)
@@ -1530,7 +1530,7 @@ Text::CString Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OSType os, Net::Br
 	Text::CString ua = CSTR("sswr/1.0");
 	OSInt comp;
 	OSInt i = 0;
-	OSInt j = (sizeof(uaList) / sizeof(uaList[0])) - 1;
+	OSInt j = (OSInt)(sizeof(uaList) / sizeof(uaList[0])) - 1;
 	while (i < j)
 	{
 		if (uaList[i].browser == browser && uaList[i].os == os)

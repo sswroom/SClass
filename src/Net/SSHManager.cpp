@@ -183,11 +183,11 @@ Text::CStringNN Net::SSHManager::ErrorGetName(Int32 errorCode)
 		return CSTR("Bad Socket");
 	case LIBSSH2_ERROR_KNOWN_HOSTS:
 		return CSTR("Known Hosts");
-	case LIBSSH2_ERROR_CHANNEL_WINDOW_FULL:
+	case -47: //LIBSSH2_ERROR_CHANNEL_WINDOW_FULL:
 		return CSTR("Channel Window Full");
-	case LIBSSH2_ERROR_KEYFILE_AUTH_FAILED:
+	case -48: //LIBSSH2_ERROR_KEYFILE_AUTH_FAILED:
 		return CSTR("Keyfile Auth Failed");
-	case LIBSSH2_ERROR_RANDGEN:
+	case -49: //LIBSSH2_ERROR_RANDGEN:
 		return CSTR("Randgen");
 	case -50: //LIBSSH2_ERROR_MISSING_USERAUTH_BANNER:
 		return CSTR("Missing Userauth Banner");
