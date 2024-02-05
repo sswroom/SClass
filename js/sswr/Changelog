@@ -1,3 +1,6 @@
+1.5.5
+-Fixed web.Dialog in iframe
+
 1.5.4
 -Added geometry.Vector2D.getBounds
 -Added kml.Feature.getBounds

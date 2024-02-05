@@ -739,10 +739,10 @@ export class Dialog
 		darkColor.style.display = "flex";
 		darkColor.style.alignItems = "center";
 		darkColor.style.justifyContent = "center";
-		if (document.body.children.length > 0)
-			document.body.insertBefore(darkColor, document.body.children[0]);
+		if (top.document.body.children.length > 0)
+			top.document.body.insertBefore(darkColor, top.document.body.children[0]);
 		else
-			document.body.appendChild(darkColor);
+			top.document.body.appendChild(darkColor);
 		this.darkColor = darkColor;
 		let dialog = document.createElement("div");
 		dialog.style.backgroundColor = "#ffffff";
@@ -818,7 +818,7 @@ export class Dialog
 	{
 		if (this.darkColor)
 		{
-			document.body.removeChild(this.darkColor);
+			top.document.body.removeChild(this.darkColor);
 			this.darkColor = null;
 		}
 	}
