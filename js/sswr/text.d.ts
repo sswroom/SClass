@@ -23,6 +23,7 @@ export function arrayToNumbers(arr: string[]): number[];
 export function toHex8(v: number): string;
 export function toHex16(v: number): string;
 export function toHex32(v: number): string;
+export function u8Arr2Hex(buff: Uint8Array, byteSep: string, rowSep: string): string;
 export function getEncList(): TextBinEnc[];
 
 export class TextBinEnc

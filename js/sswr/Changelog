@@ -1,3 +1,12 @@
+1.5.6
+-Added data.ByteReader
+-Added media.StaticImage
+-Added media.EXIFData
+-Added media.loadImageFromBlob
+-Support parse JPG file
+-Added text.u8Arr2Hex
+-Added web.propertiesToHTML
+
 1.5.5
 -Fixed web.Dialog in iframe
 

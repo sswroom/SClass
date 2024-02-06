@@ -1,5 +1,7 @@
+import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
+import * as media from "./media.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
 
@@ -791,6 +793,144 @@ function parseKMLNode(kmlNode, doc)
 	}
 }
 
+async function parseJpg(reader)
+{
+	if (!(reader instanceof data.ByteReader))
+		return null;
+	if (reader.getLength() < 2)
+		return null;
+	if (reader.readUInt8(0) != 0xff || reader.readUInt8(1) != 0xd8)
+		return null;
+	let ofst = 2;
+	let ret = false;
+	let j;
+	let exif;
+	while (true)
+	{
+		if (ofst + 4 > reader.getLength())
+		{
+			ret = false;
+			break;
+		}
+		if (reader.readUInt8(ofst + 0) != 0xff)
+		{
+			ret = false;
+			break;
+		}
+		if (reader.readUInt8(ofst + 1) == 0xdb)
+		{
+			ret = true;
+			break;
+		}
+
+		j = ((reader.readUInt8(ofst + 2) << 8) | reader.readUInt8(ofst + 3)) - 2;
+		if (reader.readUInt8(ofst + 1) == 0xe1)
+		{
+			let t = reader.readUTF8Z(ofst + 4, 14);
+			if (t == "Exif")
+			{
+				let lsb;
+				if (reader.readUTF8(ofst + 10, 2) == "II")
+				{
+					lsb = true;
+				}
+				else if (reader.readUTF8(ofst + 10, 2) == "MM")
+				{
+					lsb = false;
+				}
+				else
+				{
+					console.log("JPG Exif unknown byte order", reader.readUTF8(ofst + 10, 2));
+					ret = false;
+					break;
+				}
+				if (reader.readUInt16(ofst + 12, lsb) != 42)
+				{
+					console.log("JPG Exif not 42", reader.readUInt16(ofst + 12, lsb));
+					ret = false;
+					break;
+				}
+				if (reader.readUInt32(ofst + 14, lsb) != 8)
+				{
+					console.log("JPG Exif not 8", reader.readUInt32(ofst + 14, lsb));
+					ret = false;
+					break;
+				}
+				exif = media.EXIFData.parseIFD(reader, ofst + 18, lsb, null, ofst + 10);
+				if (exif == null)
+				{
+					console.log("Error in parsing EXIF");
+				}
+				ofst += j + 4;
+			}
+			else if (t == "FLIR")
+			{
+/*				if (buff[4] == 0 && buff[5] == 1)
+				{
+					if (flirMstm == 0 && buff[6] == 0)
+					{
+						flirMaxSegm = buff[7];
+						NEW_CLASS(flirMstm, IO::MemoryStream());
+						flirCurrSegm = buff[6];
+						Data::ByteBuffer tagBuff(j);
+						fd->GetRealData(ofst + 4, j, tagBuff);
+						flirMstm->Write(&tagBuff[8], j - 8);
+					}
+					else if (flirMstm && buff[6] == (flirCurrSegm + 1))
+					{
+						flirCurrSegm = (UInt8)(flirCurrSegm + 1);
+						Data::ByteBuffer tagBuff(j);
+						fd->GetRealData(ofst + 4, j, tagBuff);
+						flirMstm->Write(&tagBuff[8], j - 8);
+					}
+				}*/
+				ofst += j + 4;
+			}
+			else
+			{
+				console.log("Unknown type for e1", t);
+				ofst += j + 4;
+			}
+		}
+		else if (reader.readUInt8(ofst + 1) == 0xe2)
+		{
+			let t = reader.readUTF8Z(ofst + 4);
+			if (t == "ICC_PROFILE")
+			{
+				let iccBuff = reader.getArrayBuffer(ofst + 4 + 14, j - 14);
+				/*
+				NotNullPtr<Media::ICCProfile> icc;
+				if (Media::ICCProfile::Parse(tagBuff.SubArray(14, j - 14)).SetTo(icc))
+				{
+					icc->SetToColorProfile(img->info.color);
+					icc.Delete();
+				}*/
+				console.log("ICC Profile found");
+			}
+			else
+			{
+				console.log("Unknown type for e2", t);
+			}
+			ofst += j + 4;
+		}
+		else
+		{
+			ofst += j + 4;
+		}
+	}
+	if (ret)
+	{
+		let buff = reader.getArrayBuffer();
+		let b = new Blob([buff], {type: "image/jpeg"});
+		let img = await media.loadImageFromBlob(b);
+		let simg = new media.StaticImage(img);
+		if (exif)
+			simg.setExif(exif);
+		return simg;
+	}
+	return null;
+}
+
 export function parseXML(txt)
 {
 	let parser = new DOMParser();
@@ -837,6 +977,9 @@ export async function parseFile(file)
 	}
 	else
 	{
+		let view = new data.ByteReader(await file.arrayBuffer());
+		let obj;
+		if (obj = await parseJpg(view)) return obj;
 		console.log("Unsupported file type", t);
 		return null;
 	}

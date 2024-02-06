@@ -709,6 +709,27 @@ export function getImageInfo(url)
     });
 }
 
+export function propertiesToHTML(prop)
+{
+	let ret = ["<ul>"];
+	let i;
+	for (i in prop)
+	{
+		ret.push("<li><b>"+text.toHTMLText(i)+": </b>");
+		if (typeof prop[i] == "object")
+		{
+			ret.push(propertiesToHTML(prop[i]));
+		}
+		else
+		{
+			ret.push(text.toHTMLText(""+prop[i]));
+		}
+		ret.push("</li>");
+	}
+	ret.push("</ul>");
+	return ret.join("");
+}
+
 export class Dialog
 {
 	constructor(content, options)

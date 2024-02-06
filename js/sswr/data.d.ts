@@ -176,3 +176,30 @@ export class Timestamp {
 	toTimeValue(): TimeValue;
 	roundToS(): Timestamp;
 }
+
+export class ByteReader
+{
+	view: DataView;
+
+	constructor(arr: ArrayBuffer);
+	getLength(): number;
+	getArrayBuffer(ofst: number, size: number): ArrayBuffer;
+
+	readUInt8(ofst: number): number;
+	readUInt16(ofst: number, lsb: boolean): number;
+	readUInt32(ofst: number, lsb: boolean): number;
+	readInt8(ofst: number): number;
+	readInt16(ofst: number, lsb: boolean): number;
+	readInt32(ofst: number, lsb: boolean): number;
+	readFloat64(ofst: number, lsb: boolean): number;
+	readUTF8(ofst: number, len: number): string;
+	readUTF8Z(ofst: number, maxSize?: number): string;
+
+	readUInt8Arr(ofst: number, cnt: number): number[];
+	readUInt16Arr(ofst: number, lsb: boolean, cnt: number): number[];
+	readUInt32Arr(ofst: number, lsb: boolean, cnt: number): number[];
+	readInt8Arr(ofst: number, cnt: number): number[];
+	readInt16Arr(ofst: number, lsb: boolean, cnt: number): number[];
+	readInt32Arr(ofst: number, lsb: boolean, cnt: number): number[];
+	readFloat64Arr(ofst: number, lsb: boolean, cnt: number): number[];
+}

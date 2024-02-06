@@ -2292,3 +2292,163 @@ export class Timestamp
 		return new Timestamp(this.inst.roundToS(), this.tzQhr);
 	}
 }
+
+export class ByteReader
+{
+	constructor(arr)
+	{
+		this.view = new DataView(arr);
+	}
+
+	getLength()
+	{
+		return this.view.byteLength;
+	}
+
+	getArrayBuffer(ofst, size)
+	{
+		if (ofst == null)
+			ofst = 0;
+		if (size == null)
+			size = this.view.byteLength - ofst;
+		return this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + ofst + size);
+	}
+
+	readUInt8(ofst)
+	{
+		return this.view.getUint8(ofst);
+	}
+
+	readUInt16(ofst, lsb)
+	{
+		return this.view.getUint16(ofst, lsb);
+	}
+
+	readUInt32(ofst, lsb)
+	{
+		return this.view.getUint32(ofst, lsb);
+	}
+
+	readInt8(ofst)
+	{
+		return this.view.getInt8(ofst);
+	}
+
+	readInt16(ofst, lsb)
+	{
+		return this.view.getInt16(ofst, lsb);
+	}
+
+	readInt32(ofst, lsb)
+	{
+		return this.view.getInt32(ofst, lsb);
+	}
+
+	readFloat64(ofst, lsb)
+	{
+		return this.view.getFloat64(ofst, lsb);
+	}
+
+	readUTF8(ofst, len)
+	{
+		let dec = new TextDecoder();
+		return dec.decode(this.getArrayBuffer(ofst, len));
+	}
+
+	readUTF8Z(ofst, maxSize)
+	{
+		let end = ofst;
+		let maxEnd;
+		if (maxSize)
+		{
+			maxEnd = ofst + maxSize;
+			if (maxEnd > this.view.byteLength)
+				maxEnd = this.view.byteLength;
+		}
+		else
+		{
+			maxEnd = this.view.byteLength;
+		}
+		while (end < maxEnd && this.view.getUint8(end) != 0)
+			end++;
+		let dec = new TextDecoder();
+		return dec.decode(this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + end));
+	}
+
+	readUInt8Arr(ofst, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readUInt8(ofst));
+			ofst++;
+		}
+		return ret;
+	}
+
+	readUInt16Arr(ofst, lsb, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readUInt16(ofst, lsb));
+			ofst += 2;
+		}
+		return ret;
+	}
+
+	readUInt32Arr(ofst, lsb, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readUInt32(ofst, lsb));
+			ofst += 4;
+		}
+		return ret;
+	}
+
+	readInt8Arr(ofst, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readInt8(ofst));
+			ofst++;
+		}
+		return ret;
+	}
+
+	readInt16Arr(ofst, lsb, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readInt16(ofst, lsb));
+			ofst += 2;
+		}
+		return ret;
+	}
+
+	readInt32Arr(ofst, lsb, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readInt32(ofst, lsb));
+			ofst += 4;
+		}
+		return ret;
+	}
+
+	readFloat64Arr(ofst, lsb, cnt)
+	{
+		let ret = [];
+		while (cnt-- > 0)
+		{
+			ret.push(this.readFloat64(ofst, lsb));
+			ofst += 8;
+		}
+		return ret;
+	}
+}

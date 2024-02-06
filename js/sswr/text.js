@@ -220,6 +220,33 @@ export function toHex32(v)
 	return "0".repeat(8 - s.length)+s;
 }
 
+export function u8Arr2Hex(buff, byteSep, rowSep)
+{
+	let rows = [];
+	let thisRow = [];
+	let i = 1;
+	let j = buff.length;
+	if (j == 0)
+		return "";
+	if (byteSep == null)
+		byteSep = "";
+	thisRow.push(toHex8(buff[0]));
+	while (i < j)
+	{
+		if ((i & 15) == 0)
+		{
+			rows.push(thisRow.join(byteSep));
+			thisRow = [];
+		}
+		thisRow.push(toHex8(buff[i]));
+		i++;
+	}
+	rows.push(thisRow.join(byteSep));
+	if (rowSep == null)
+		rowSep = byteSep;
+	return rows.join(rowSep);
+}
+
 export function getEncList()
 {
 	let ret = [];
