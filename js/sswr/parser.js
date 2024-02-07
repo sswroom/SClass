@@ -931,6 +931,21 @@ async function parseJpg(reader)
 	return null;
 }
 
+async function parseWebp(reader)
+{
+	if (!(reader instanceof data.ByteReader))
+		return null;
+	if (reader.getLength() < 20)
+		return null;
+	if (reader.readUInt32(0, true) != 0x46464952 || reader.readUInt32(8, true) != 0x50424557 || reader.readUInt32(4, true) + 8 != reader.getLength())
+		return null;
+	let buff = reader.getArrayBuffer();
+	let b = new Blob([buff], {type: "image/webp"});
+	let img = await media.loadImageFromBlob(b);
+	let simg = new media.StaticImage(img);
+	return simg;
+}
+
 export function parseXML(txt)
 {
 	let parser = new DOMParser();
@@ -980,6 +995,7 @@ export async function parseFile(file)
 		let view = new data.ByteReader(await file.arrayBuffer());
 		let obj;
 		if (obj = await parseJpg(view)) return obj;
+		if (obj = await parseWebp(view)) return obj;
 		console.log("Unsupported file type", t);
 		return null;
 	}

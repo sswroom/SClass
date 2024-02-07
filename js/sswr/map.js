@@ -134,7 +134,7 @@ export class GeolocationFilter
 		}
 		if (this.minDistMeter)
 		{
-			if (this.csys.calcSurfaceDistance(pos.coords.longitude, pos.coords.latitude, this.lastPos.longitude, this.lastPos.latitude, unit.Distance.Unit.METER) < this.minDistMeter)
+			if (this.csys.calcSurfaceDistance(pos.coords.longitude, pos.coords.latitude, this.lastPos.coords.longitude, this.lastPos.coords.latitude, unit.Distance.Unit.METER) < this.minDistMeter)
 				return false;
 		}
 

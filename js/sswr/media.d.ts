@@ -111,4 +111,9 @@ export class StaticImage
 	getWidth(): number;
 	getHeight(): number;
 	getProperties(): object;
+
+	createCanvas(): HTMLCanvasElement;
+	exportJPG(quality?: number): Promise<Blob | null>;
+	exportWEBP(quality?: number): Promise<Blob | null>;
+	exportPNG(): Promise<Blob | null>;
 }

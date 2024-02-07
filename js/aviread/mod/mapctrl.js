@@ -30,6 +30,16 @@ async function onFileDrop(file)
 	}
 }
 
+function onBrowseClick()
+{
+	let inputElement = document.createElement("input");
+	inputElement.type = "file";
+	inputElement.addEventListener("change", (e)=>{
+		onFileDrop(e.target.files[0]);
+	});
+	inputElement.dispatchEvent(new MouseEvent("click")); 
+}
+
 let mapCtrl;
 if (window.L)
 {
@@ -62,3 +72,5 @@ if (mapCtrl instanceof map.MapControl)
 	mapCtrl.addLayer(lyr);
 	web.handleFileDrop(document.getElementById("map"), onFileDrop);
 }
+
+document.getElementById("btnBrowse").addEventListener("click", onBrowseClick);

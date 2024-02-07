@@ -2235,4 +2235,37 @@ export class StaticImage
 			ret.exif = this.exif.getProperties();
 		return ret;
 	}
+
+	createCanvas()
+	{
+		let canvas = document.createElement("canvas");
+		canvas.width = this.img.naturalWidth;
+		canvas.height = this.img.naturalHeight;
+		let ctx = canvas.getContext("2d");
+		ctx.drawImage(this.img, 0, 0, this.img.naturalWidth, this.img.naturalHeight);
+		return canvas;
+	}
+
+	exportJPG(quality)
+	{
+		let canvas = this.createCanvas();
+		return new Promise(function (resolve, reject) {
+			canvas.toBlob((blob)=>{resolve(blob);}, "image/jpeg", quality);
+		});
+	}
+	exportWEBP(quality)
+	{
+		let canvas = this.createCanvas();
+		return new Promise(function (resolve, reject) {
+			canvas.toBlob((blob)=>{resolve(blob);}, "image/webp", quality);
+		});
+	}
+
+	exportPNG()
+	{
+		let canvas = this.createCanvas();
+		return new Promise(function (resolve, reject) {
+			canvas.toBlob((blob)=>{resolve(blob);}, "image/png");
+		});
+	}
 }

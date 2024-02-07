@@ -33,4 +33,34 @@ async function fileHandler(file)
 	}
 }
 
+async function onJPGClicked()
+{
+	if (currImg)
+	{
+		let data = await currImg.exportJPG(0.75);
+		web.openData(data, null, "Image.jpg");
+	}
+}
+
+async function onWEBPClicked()
+{
+	if (currImg)
+	{
+		let data = await currImg.exportWEBP(0.75);
+		web.openData(data, null, "Image.webp");
+	}
+}
+
+async function onPNGClicked()
+{
+	if (currImg)
+	{
+		let data = await currImg.exportPNG();
+		web.openData(data, null, "Image.png");
+	}
+}
+
 web.handleFileDrop(content, fileHandler);
+document.getElementById("btnJPG").addEventListener("click", onJPGClicked);
+document.getElementById("btnWEBP").addEventListener("click", onWEBPClicked);
+document.getElementById("btnPNG").addEventListener("click", onPNGClicked);

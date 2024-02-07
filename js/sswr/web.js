@@ -99,6 +99,18 @@ export function openData(data, contentType, fileName)
 		ele.click();
 		document.body.removeChild(ele);
 	}
+	else if (data instanceof Blob)
+	{
+		let ele = document.createElement("a");
+		ele.setAttribute('href', URL.createObjectURL(data));
+		if (fileName)
+			ele.setAttribute('download', fileName);
+		ele.style.display = 'none';
+
+		document.body.appendChild(ele);
+		ele.click();
+		document.body.removeChild(ele);
+	}
 }
 
 function hexColor(c)
