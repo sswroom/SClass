@@ -547,7 +547,6 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						i++;
 					}
 					rowData = csvData.PutNN(s, rowData);
-					s->Release();
 					if (rowData)
 					{
 						i = j;
@@ -557,10 +556,16 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						}
 						MemFree(rowData);
 
-						this->ui->ShowMsgOK(CSTR("Data File Key duplicate"), CSTR("Check Table Changes"), this);
+						Text::StringBuilderUTF8 sb;
+						sb.Append(CSTR("Data File Key duplicate ("));
+						sb.Append(s);
+						sb.AppendUTF8Char(')');
+						this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
+						s->Release();
 						succ = false;
 						break;
 					}
+					s->Release();
 				}
 			}
 		}
@@ -642,6 +647,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 								s->Release();
 								break;
 							case DB::DBUtil::CT_Date:
+								{
+									Data::Date ts1 = r->GetTimestamp(i).ToDate();
+									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz).ToDate();
+									if (ts1.GetTotalDays() != ts2.GetTotalDays())
+									{
+										diff = true;
+									}
+								}
+								break;
 							case DB::DBUtil::CT_DateTime:
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
@@ -1265,6 +1279,21 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										sql.AppendStr(rowData[i]);
 										break;
 									case DB::DBUtil::CT_Date:
+										{
+											Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz).ToDate();
+											if (diff)
+											{
+												sql.AppendCmdC(CSTR(", "));
+											}
+											else
+											{
+												diff = true;
+											}
+											sql.AppendCol(col->GetColName()->v);
+											sql.AppendCmdC(CSTR(" = "));
+											sql.AppendDate(ts2);
+										}
+										break;
 									case DB::DBUtil::CT_DateTime:
 									case DB::DBUtil::CT_DateTimeTZ:
 										{
@@ -1435,6 +1464,25 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 								s->Release();
 								break;
 							case DB::DBUtil::CT_Date:
+								{
+									Data::Date ts1 = r->GetTimestamp(i).ToDate();
+									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz).ToDate();
+									if (ts1.GetTotalDays() != ts2.GetTotalDays())
+									{
+										if (diff)
+										{
+											sql.AppendCmdC(CSTR(", "));
+										}
+										else
+										{
+											diff = true;
+										}
+										sql.AppendCol(col->GetColName()->v);
+										sql.AppendCmdC(CSTR(" = "));
+										sql.AppendDate(ts2);
+									}
+								}
+								break;
 							case DB::DBUtil::CT_DateTime:
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
