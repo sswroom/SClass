@@ -8,6 +8,22 @@ namespace Net
 {
 	struct SSHChannelHandle;
 	class SSHTCPChannel;
+
+	enum class SSHMethodType
+	{
+		KeyExchange,
+		HostKey,
+		CryptoClientToServer,
+		CryptoServerToClient,
+		MACClientToServer,
+		MACServerToClient,
+		CompressClientToServer,
+		CompressServerToClient,
+		LangClientToServer,
+		LangServerToClient,
+		SignatureAlgorithm
+	};
+
 	class SSHConn
 	{
 	private:
@@ -26,6 +42,8 @@ namespace Net
 		Optional<Net::TCPClient> GetTCPClient() const;
 
 		Bool GetHostKeySHA1(UInt8 *buff); //20 bytes
+		const UTF8Char *GetBanner();
+		const UTF8Char *GetActiveAlgorithm(SSHMethodType method);
 		Bool GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::ArrayListStringNN> authMeth);
 		Bool AuthPassword(Text::CStringNN userName, Text::CStringNN password);
 		Optional<SSHTCPChannel> RemoteConnect(Socket *sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort);

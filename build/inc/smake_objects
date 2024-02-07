@@ -1908,6 +1908,7 @@ AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
 AVIRSolarEdgeForm.o: ../../src/SSWR/AVIRead/AVIRSolarEdgeForm.cpp
 AVIRSSDPClientForm.o: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
+AVIRSSHInfoForm.o: ../../src/SSWR/AVIRead/AVIRSSHInfoForm.cpp
 AVIRSSLCertKeyForm.o: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
 AVIRSSLInfoForm.o: ../../src/SSWR/AVIRead/AVIRSSLInfoForm.cpp
 AVIRStreamConvForm.o: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp

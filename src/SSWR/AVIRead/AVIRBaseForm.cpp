@@ -204,6 +204,7 @@
 #include "SSWR/AVIRead/AVIRSNSManagerForm.h"
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
 #include "SSWR/AVIRead/AVIRSSDPClientForm.h"
+#include "SSWR/AVIRead/AVIRSSHInfoForm.h"
 #include "SSWR/AVIRead/AVIRSSLInfoForm.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
 #include "SSWR/AVIRead/AVIRStreamEchoForm.h"
@@ -504,7 +505,8 @@ typedef enum
 	MNU_VBOX_MANAGER,
 	MNU_JWT_PARSER,
 	MNU_GCIS_CLIENT,
-	MNU_SET_DNS
+	MNU_SET_DNS,
+	MNU_SSH_INFO
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
@@ -792,6 +794,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, NotNullP
 	mnu3->AddItem(CSTR("Local Weather Forecast"), MNU_HKO_LOCAL_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("Warning Summary"), MNU_HKO_WARNING_SUMMARY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Wake-On-LAN"), MNU_WOL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SSH Info"), MNU_SSH_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Other"));
 	mnu2->AddItem(CSTR("GPSDev Viewer"), MNU_GPSDEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JT/T808 Server"), MNU_JTT808, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2924,6 +2927,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSetDNSForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSetDNSForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SSH_INFO:
+		{
+			SSWR::AVIRead::AVIRSSHInfoForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSSHInfoForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

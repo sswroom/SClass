@@ -99,6 +99,16 @@ Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
 	return false;
 }
 
+const UTF8Char *Net::SSHConn::GetBanner()
+{
+	return (const UTF8Char*)libssh2_session_banner_get(this->clsData->session);
+}
+
+const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
+{
+	return (const UTF8Char*)libssh2_session_methods(this->clsData->session, (int)method);
+}
+
 Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::ArrayListStringNN> authMeth)
 {
 	const Char *userauthlist = libssh2_userauth_list(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng);

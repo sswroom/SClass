@@ -4151,6 +4151,8 @@ SSWR/AVIRead/AVIRSolarEdgeForm.h:
 @AVIRSolarEdgeForm.o
 SSWR/AVIRead/AVIRSSDPClientForm.h:
 @AVIRSSDPClientForm.o
+SSWR/AVIRead/AVIRSSHInfoForm.h:
+@AVIRSSHInfoForm.o
 SSWR/AVIRead/AVIRSSLCertKeyForm.h:
 @AVIRSSLCertKeyForm.o
 SSWR/AVIRead/AVIRSSLInfoForm.h:
