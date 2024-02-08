@@ -67,6 +67,10 @@ void Map::MapView::SetViewBounds(Math::RectAreaDbl bounds)
 	{
 		ChangeViewXY(this->scnSize, bounds.GetCenter(), currScale / xRatio);
 	}
+	else if (yRatio == 0 || (currScale / yRatio < 400))
+	{
+		ChangeViewXY(this->scnSize, bounds.GetCenter(), 400);
+	}
 	else
 	{
 		ChangeViewXY(this->scnSize, bounds.GetCenter(), currScale / yRatio);

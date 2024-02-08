@@ -151,6 +151,7 @@ DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CSt
 		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
 		this->GetColumnDef(i, col);
 		tab->AddCol(col);
+		i++;
 	}
 	return tab;
 }

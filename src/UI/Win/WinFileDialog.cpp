@@ -62,7 +62,8 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		sb.Append(this->names.GetItem(i).OrNull());
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(this->patterns.GetItem(i).OrNull());
-		sb.AppendChar('\0', 2);
+		sb.AppendChar(')', 1);
+		sb.AppendChar('\0', 1);
 		sb.Append(this->patterns.GetItem(i++).OrNull());
 		sb.AppendChar('\0', 1);
 	}

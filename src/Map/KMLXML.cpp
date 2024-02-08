@@ -1302,7 +1302,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 				NotNullPtr<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					NEW_CLASSNN(lyr, Map::VectorLayer(vec->HasZ()?Map::DRAW_LAYER_POLYLINE3D:Map::DRAW_LAYER_POLYLINE, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
 					lyr->AddVector(vec, colValues);
 					if (style)
 					{

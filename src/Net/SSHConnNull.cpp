@@ -40,6 +40,16 @@ Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
 	return false;
 }
 
+const UTF8Char *Net::SSHConn::GetBanner()
+{
+	return 0;
+}
+
+const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
+{
+	return 0;
+}
+
 Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::ArrayListStringNN> authMeth)
 {
 	return false;
