@@ -12,7 +12,7 @@ export enum EXIFMaker
 	Nikon3,
 	Sanyo,
 	Apple
-};
+}
 
 export enum EXIFType
 {
@@ -30,7 +30,7 @@ export enum EXIFType
 	Double,
 	UINT64,
 	INT64
-};
+}
 
 declare class GPSInfo
 {
@@ -40,7 +40,7 @@ declare class GPSInfo
 	gpsTime: data.Timestamp;
 }
 
-export function loadImageFromBlob(blob: Blob): Promise<Image>;
+export function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement>;
 
 export class EXIFItem
 {
@@ -50,7 +50,7 @@ export class EXIFItem
 
 	constructor(id: number, type: EXIFType, data: any);
 	clone(): EXIFItem;
-};
+}
 
 export class EXIFData
 {
@@ -98,16 +98,16 @@ export class EXIFData
 	parseMakerNote(buff: ArrayBuffer): EXIFData | null;
 
 	static getEXIFName(exifMaker: EXIFMaker, id: number, subId: number): string;
-	static parseIFD(reader: data.ByteReader, ofst: number, lsb: boolean, nextOfst: object, readBase: number, maker?: EXIFMaker);
-};
+	static parseIFD(reader: data.ByteReader, ofst: number, lsb: boolean, nextOfst: object, readBase: number, maker?: EXIFMaker): EXIFData | null;
+}
 
-export class StaticImage
+export class StaticImage extends data.ParsedObject
 {
 	img: HTMLImageElement;
-	exif: any;
+	exif: EXIFData;
 	
-	constructor(img: HTMLImageElement);
-	setExif(exif: any): void;
+	constructor(img: HTMLImageElement, sourceName: string, objType: string);
+	setExif(exif: EXIFData): void;
 	getWidth(): number;
 	getHeight(): number;
 	getProperties(): object;

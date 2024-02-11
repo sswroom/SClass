@@ -10,7 +10,7 @@ export enum LineBreakType
 	CR,
 	LF,
 	CRLF
-};
+}
 
 export function zeroPad(val: string | number, ndigits: number): string;
 export function isInteger(s: string): boolean;

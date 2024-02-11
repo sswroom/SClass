@@ -1,3 +1,4 @@
+import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
@@ -1115,13 +1116,35 @@ export class Placemark extends Feature
 	}
 }
 
+export class KMLFile extends data.ParsedObject
+{
+	constructor(root, sourceName)
+	{
+		super(sourceName, "application/vnd.google-earth.kml+xml");
+		this.root = root;
+	}
+
+	toString()
+	{
+		toString(this.root);
+	}
+}
+
 export function toString(item)
 {
 	let strs = [];
 	strs.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 	let namespaces = {};
 	item.getUsedNS(namespaces);
-	strs.push("<kml xmlns=\"http://www.opengis.net/kml/2.2\">");
+	let ns;
+	let rootEle = [];
+	rootEle.push("<kml xmlns=\"http://www.opengis.net/kml/2.2\"");
+	for (ns in namespaces)
+	{
+		rootEle.push(" xmlns:"+ns+"="+text.toAttrText(namespaces[ns]));
+	}
+	rootEle.push(">");
+	strs.push(rootEle.join(""));
 	item.appendOuterXML(strs, 1);
 	strs.push("</kml>");
 	return strs.join("\r\n");

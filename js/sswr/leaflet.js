@@ -59,8 +59,12 @@ export function createLayer(layer, options)
 	return null;
 }
 
-export function createFromKMLFeature(feature, options)
+export function createFromKML(feature, options)
 {
+	if (feature instanceof kml.KMLFile)
+	{
+		return createFromKML(feature.root, options);
+	}
 	options = data.mergeOptions(options, {noPopup: false});
 	if (feature instanceof kml.Container)
 	{
@@ -68,7 +72,7 @@ export function createFromKMLFeature(feature, options)
 		let layers = L.featureGroup();
 		for (i in feature.features)
 		{
-			createFromKMLFeature(feature.features[i], options).addTo(layers);
+			createFromKML(feature.features[i], options).addTo(layers);
 		}
 		return layers;
 	}
@@ -473,7 +477,7 @@ export class KMLNetworkLink
 					if (val instanceof kml.Feature)
 					{
 						this.container.clearLayers();
-						let layer = createFromKMLFeature(val);
+						let layer = createFromKML(val);
 						if (layer)
 							layer.addTo(this.container);
 					}
@@ -509,9 +513,9 @@ export class LeafletMap extends map.MapControl
 		layer.addTo(this.mapObj);
 	}
 
-	addKMLFeature(feature)
+	addKML(feature)
 	{
-		createFromKMLFeature(feature).addTo(this.mapObj);
+		createFromKML(feature).addTo(this.mapObj);
 	}
 
 //	uninit(): void;

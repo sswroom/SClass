@@ -1,3 +1,6 @@
+1.6.0
+-Added data.ParsedObject
+
 1.5.5
 -Fixed web.Dialog in iframe
 -Fixed GeolocationFilter when using minDistMeter

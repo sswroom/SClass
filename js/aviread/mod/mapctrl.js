@@ -16,10 +16,10 @@ async function onFileDrop(file)
 		{
 
 		}
-		else if (obj instanceof kml.Feature)
+		else if (obj instanceof kml.KMLFile)
 		{
 			let bounds = obj.getBounds();
-			mapCtrl.addKMLFeature(obj);
+			mapCtrl.addKML(obj);
 			if (bounds)
 				mapCtrl.zoomToExtent(bounds);
 		}

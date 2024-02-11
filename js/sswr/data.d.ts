@@ -19,7 +19,7 @@ export class DateValue
 	day: number;
 
 	constructor();
-};
+}
 
 export class TimeValue extends DateValue
 {
@@ -30,7 +30,7 @@ export class TimeValue extends DateValue
 	tzQhr: number;
 	
 	constructor();
-};
+}
 
 export class DateTimeUtil
 {
@@ -52,7 +52,7 @@ export class DateTimeUtil
 	static parseYearStr(year: string): number;
 	static parseMonthStr(month: string): number;
 	static getLocalTzQhr(): number;
-};
+}
 
 export class Duration
 {
@@ -72,7 +72,7 @@ export class Duration
 
 export class LocalDate
 {
-	static DATE_NULL: number = -1234567;
+	static DATE_NULL: number;
 
 	dateVal: number;
 	constructor();
@@ -202,4 +202,11 @@ export class ByteReader
 	readInt16Arr(ofst: number, lsb: boolean, cnt: number): number[];
 	readInt32Arr(ofst: number, lsb: boolean, cnt: number): number[];
 	readFloat64Arr(ofst: number, lsb: boolean, cnt: number): number[];
+}
+
+export abstract class ParsedObject
+{
+	sourceName: string;
+	objType: string;
+	constructor(sourceName: string, objType: string);
 }

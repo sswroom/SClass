@@ -11,7 +11,7 @@ declare class Olayer2Options
 };
 
 export function toPointArray(numArr: number[][], options: Olayer2Options): OpenLayers.Geometry.Point[];
-export function createFromKMLFeature(feature: kml.Feature, options: Olayer2Options): Promise<OpenLayers.Feature.Vector | OpenLayers.Marker | any[] | null>;
+export function createFromKML(feature: kml.Feature | kml.KMLFile, options: Olayer2Options): Promise<OpenLayers.Feature.Vector | OpenLayers.Marker | any[] | null>;
 export function createFromGeometry(geom: geometry, options: Olayer2Options): Promise<OpenLayers.Marker | OpenLayers.Geometry | null>;
 
 export class Olayer2Map extends map.MapControl
@@ -33,7 +33,7 @@ export class Olayer2Map extends map.MapControl
 	createMarkerLayer(name: string, options?: LayerOptions): any;
 	createGeometryLayer(name: string, options?: LayerOptions): any;
 	addLayer(layer: any): void;
-	addKMLFeature(feature: kml.Feature): void;
+	addKML(feature: kml.Feature | kml.KMLFile): void;
 	uninit(): void;
 	zoomIn(): void;
 	zoomOut(): void;

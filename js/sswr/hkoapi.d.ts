@@ -5,20 +5,20 @@ export enum Language {
 	English,
 	TChinese,
 	SChinese
-};
+}
 
 declare class WebLayerInfo
 {
 	name: string;
 	url: string;
 	type: map.WebMapType;
-};
+}
 
 declare class UnitValue
 {
 	unit: string;
 	value: number;
-};
+}
 
 declare class SoilTemp
 {
@@ -27,7 +27,7 @@ declare class SoilTemp
 	recordTime: string;
 	unit: string;
 	value: number;
-};
+}
 
 declare class SeaTemp
 {
@@ -35,20 +35,20 @@ declare class SeaTemp
 	recordTime: string;
 	unit: string;
 	value: number;
-};
+}
 
 declare class PlaceUnitValue
 {
 	place: string;
 	unit: string;
 	value: number;
-};
+}
 
 declare class HumidityData
 {
 	data: PlaceUnitValue[];
 	recordTime: string;
-};
+}
 
 declare class Rainfall
 {
@@ -56,33 +56,33 @@ declare class Rainfall
 	max: number;
 	place: string;
 	unit: string;
-};
+}
 
 declare class RainfallData
 {
 	data: Rainfall[];
 	endTime: string;
 	startTime: string;
-};
+}
 
 declare class TemperatureData
 {
 	data: PlaceUnitValue[];
 	recordTime: string;
-};
+}
 
 declare class UVIndex
 {
 	place: string;
 	desc: string;
 	value: number;
-};
+}
 
 declare class UVIndexData
 {
 	data: UVIndex[];
 	recordDesc: string;
-};
+}
 
 declare class WeatherForecast
 {
@@ -96,7 +96,7 @@ declare class WeatherForecast
 	forecastWeather: string;
 	forecastWind: string;
 	week: string;
-};
+}
 
 declare class LocalWeatherForecast
 {
@@ -107,7 +107,7 @@ declare class LocalWeatherForecast
 	outlook: string;
 	tcInfo: string;
 	updateTime: string;
-};
+}
 
 declare class NineDayWeatherForecast
 {
@@ -116,7 +116,7 @@ declare class NineDayWeatherForecast
 	soilTemp: SoilTemp;
 	updateTime: string;
 	weatherForecast: WeatherForecast[];
-};
+}
 
 declare class CurrentWeatherReport
 {
@@ -133,7 +133,7 @@ declare class CurrentWeatherReport
 	updateTime: string;
 	uvindex: UVIndexData;
 	warningMessage: string;
-};
+}
 
 declare class WarningSummary
 {
@@ -144,7 +144,7 @@ declare class WarningSummary
 	issueTime: string;
 	updateTime: string;
 	expireTime?: string;
-};
+}
 
 declare class WeatherWarningSummary
 {
@@ -159,23 +159,23 @@ declare class WeatherWarningSummary
 	WTCSGNL: WarningSummary;
 	WTMW: WarningSummary;
 	WTS: WarningSummary;
-};
+}
 
 declare class WeatherWarningInfo
 {
 
-};
+}
 
 declare class WeatherTips
 {
 	desc?: string;
 	updateTime?: string;
-};
+}
 
 declare class SpecialWeatherTips
 {
 	swt: WeatherTips[];
-};
+}
 
 declare class QuickEarthquakeMessages
 {
@@ -185,7 +185,7 @@ declare class QuickEarthquakeMessages
 	ptime: string;
 	region: string;
 	updateTime: string;
-};
+}
 
 declare class LocallyFeltEarthTremorReport
 {
@@ -197,13 +197,13 @@ declare class LocallyFeltEarthTremorReport
 	ptime: string;
 	region: string;
 	updateTime: string;
-};
+}
 
 declare class LunarDate
 {
 	LunarDate: string;
 	LunarYear: string;
-};
+}
 
 declare class AutomaticWeatherStationRainfall
 {
@@ -211,13 +211,13 @@ declare class AutomaticWeatherStationRainfall
 	automaticWeatherStationID: string;
 	unit: string;
 	value: string;
-};
+}
 
 declare class HourlyRainfall
 {
 	hourlyRainfall: AutomaticWeatherStationRainfall[];
 	obsTime: string;
-};
+}
 
 export function getLayers() : WebLayerInfo[];
 export function getLocalWeatherForecast(lang: Language) : Promise<LocalWeatherForecast | null>;

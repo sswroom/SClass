@@ -923,7 +923,7 @@ async function parseJpg(reader)
 		let buff = reader.getArrayBuffer();
 		let b = new Blob([buff], {type: "image/jpeg"});
 		let img = await media.loadImageFromBlob(b);
-		let simg = new media.StaticImage(img);
+		let simg = new media.StaticImage(img, sourceName, "image/jpeg");
 		if (exif)
 			simg.setExif(exif);
 		return simg;
@@ -942,11 +942,11 @@ async function parseWebp(reader)
 	let buff = reader.getArrayBuffer();
 	let b = new Blob([buff], {type: "image/webp"});
 	let img = await media.loadImageFromBlob(b);
-	let simg = new media.StaticImage(img);
+	let simg = new media.StaticImage(img, sourceName, "image/webp");
 	return simg;
 }
 
-export function parseXML(txt)
+export function parseXML(txt, sourceName)
 {
 	let parser = new DOMParser();
 	let xmlDoc = parser.parseFromString(txt, "application/xml");
@@ -964,7 +964,17 @@ export function parseXML(txt)
 				for (kmlNode of xmlRoot.childNodes)
 				{
 					if (kmlNode.nodeName != "#text")
-						return parseKMLNode(kmlNode);
+					{
+						let feature = parseKMLNode(kmlNode);
+						if (feature)
+						{
+							return new kml.KMLFile(feature, sourceName);
+						}
+						else
+						{
+							return null;
+						}
+					}
 				}
 			}
 			else
@@ -988,14 +998,14 @@ export async function parseFile(file)
 
 	if (t == "application/vnd.google-earth.kml+xml")
 	{
-		return parseXML(await file.text());
+		return parseXML(await file.text(), file.name);
 	}
 	else
 	{
 		let view = new data.ByteReader(await file.arrayBuffer());
 		let obj;
-		if (obj = await parseJpg(view)) return obj;
-		if (obj = await parseWebp(view)) return obj;
+		if (obj = await parseJpg(view, file.name)) return obj;
+		if (obj = await parseWebp(view, file.name)) return obj;
 		console.log("Unsupported file type", t);
 		return null;
 	}

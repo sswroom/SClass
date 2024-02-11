@@ -2452,3 +2452,12 @@ export class ByteReader
 		return ret;
 	}
 }
+
+export class ParsedObject
+{
+	constructor(sourceName, objType)
+	{
+		this.sourceName = sourceName;
+		this.objType = objType;
+	}
+}

@@ -21,7 +21,7 @@ export function fromLatLngBounds(b: L.LatLngBounds): math.RectArea;
 export function toLatLngBounds(rect: math.RectArea): L.LatLngBounds;
 
 export function createLayer(layer: map.LayerInfo, options: object): L.Layer;
-export function createFromKMLFeature(feature: kml.Feature, options: KMLFeatureOptions): L.Layer;
+export function createFromKML(feature: kml.Feature | kml.KMLFile, options: KMLFeatureOptions): L.Layer;
 export function createFromGeometry(geom: geometry.Vector2D, options: GeometryOptions): L.Layer;
 export function createKMLLookAt(map: L.Map): kml.LookAt;
 export function toKMLFeature(layer: L.Layer, doc?: kml.Document): kml.Feature | null;
@@ -40,11 +40,11 @@ export class KMLNetworkLink
 export class LeafletMap extends map.MapControl
 {
 	constructor(divId: string);
-	createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
-	createMarkerLayer(name: string, options?: LayerOptions): any;
-	createGeometryLayer(name: string, options?: LayerOptions): any;
+	createLayer(layer: map.LayerInfo, options?: map.LayerOptions): any;
+	createMarkerLayer(name: string, options?: map.LayerOptions): any;
+	createGeometryLayer(name: string, options?: map.LayerOptions): any;
 	addLayer(layer: any): void;
-	addKMLFeature(feature: kml.Feature): void;
+	addKML(feature: kml.Feature | kml.KMLFile): void;
 	uninit(): void;
 	zoomIn(): void;
 	zoomOut(): void;
@@ -58,13 +58,13 @@ export class LeafletMap extends map.MapControl
 	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
 	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
 
-	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: map.MarkerOptions): any;
 	layerAddMarker(markerLayer: any, marker: any): void;
 	layerRemoveMarker(markerLayer: any, marker: any): void;
 	layerClearMarkers(markerLayer: any): void;
 	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
 
-	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
+	createGeometry(geom: geometry.Vector2D, options: map.GeometryOptions): any;
 	layerAddGeometry(geometryLayer: any, geom: any): void;
 	layerRemoveGeometry(geometryLayer: any, geom: any): void;
 	layerClearGeometries(geometryLayer: any): void;

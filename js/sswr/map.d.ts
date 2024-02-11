@@ -1,5 +1,6 @@
 import { Timestamp } from "./data";
 import * as geometry from "./geometry";
+import * as kml from "./kml";
 import * as map from "./map";
 import * as math from "./math";
 
@@ -8,7 +9,7 @@ export enum DataFormat
 	Cesium,
 	WKT,
 	GeoJSON
-};
+}
 
 export enum WebMapType
 {
@@ -16,13 +17,13 @@ export enum WebMapType
 	WFS,
 	ArcGIS,
 	OSMTile
-};
+}
 
 export enum GeoJSONType
 {
 	Feature,
 	FeatureCollection
-};
+}
 
 export enum GeometryType
 {
@@ -33,7 +34,7 @@ export enum GeometryType
 	Polygon,
 	MultiPolygon,
 	GeometryCollection
-};
+}
 
 declare class LayerInfo
 {
@@ -44,32 +45,32 @@ declare class LayerInfo
 	format?: string;
 	minZoom?: number;
 	maxZoom?: number;
-};
+}
 
 declare class GeoJSON
 {
 	type: GeoJSONType;
 	bbox?: number[];
-};
+}
 
 declare class Geometry
 {
 	type: GeometryType;
 	coordinates?: any[];
 	geometries?: Geometry[];
-};
+}
 
 declare class GeoJSONFeature<PropType> extends GeoJSON
 {
 	id?: string | number;
 	geometry: Geometry;
 	properties?: PropType;
-};
+}
 
-declare class GeoJSONFeatureCollection extends GeoJSON
+declare class GeoJSONFeatureCollection<PropType> extends GeoJSON
 {
-	features: GeoJSONFeature[];
-};
+	features: GeoJSONFeature<PropType>[];
+}
 
 export function calcDistance(srid: number, geom: geometry.Vector2D, x: number, y: number): number;
 export function getLayers(svcUrl: string, onResultFunc: Function): void;
@@ -85,7 +86,7 @@ declare class GPSRecord
 	d: number;
 	v: boolean;
 	sate: number;
-};
+}
 
 export class GPSTrack
 {
@@ -94,7 +95,7 @@ export class GPSTrack
 	createLineString(): geometry.LineString;
 	getPosByTime(ts: Timestamp): math.Vector3;
 	getPosByTicks(ticks: number): math.Vector3;
-};
+}
 
 export class GeolocationFilter
 {
@@ -105,12 +106,12 @@ export class GeolocationFilter
 
 	constructor(minSecs: number, minDistMeter: number);
 	isValid(pos: GeolocationPosition): boolean;
-};
+}
 
 
 declare class LayerOptions
 {
-};
+}
 
 declare class MarkerOptions
 {
@@ -156,7 +157,7 @@ export class MapControl
 	layerAddGeometry(geometryLayer: any, geom: any): void;
 	layerRemoveGeometry(geometryLayer: any, geom: any): void;
 	layerClearGeometries(geometryLayer: any): void;
-};
+}
 
 declare class OWSSpatialReference
 {

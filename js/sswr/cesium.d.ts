@@ -1,32 +1,32 @@
-import { Cartesian3, Ellipsoid, Viewer } from "cesium";
+import { Cartesian3, Ellipsoid, Viewer, Color, PolygonGraphics } from "cesium";
 import * as geometry from "./geometry";
 import * as kml from "./kml";
 import * as map from "./map";
-import { Coord2D } from "./math";
+import * as math from "./math";
 
 declare class KMLFeatureOptions
 {
 	noPopup: boolean;
 }
 
-export function screenToLatLon(viewer: Viewer, x: number, y: number, ellipsoid: Ellipsoid) : Coord2D;
+export function screenToLatLon(viewer: Viewer, x: number, y: number, ellipsoid: Ellipsoid) : math.Coord2D;
 export function fromCXYZArray(arr: any[]): Cartesian3[];
 export function toCartesian3Arr(coords: number[][]) : Cartesian3[];	
 export function newObjFromGeoJSON(geoJSON: object) : object;
-export function addGeoJSON(viewer: Viewer, geoJSON: object, color: any, extSize: number): void;
+export function addGeoJSON(viewer: Viewer, geoJSON: object, color: Color, extSize: number): void;
 export function fromCartesian3Array(viewer: Viewer, arr: Cartesian3[]): object[];
-export function fromPolygonGraphics(viewer: Viewer, pg: any): geometry.Polygon;
-export function createFromKMLFeature(feature: kml.Feature, options: KMLFeatureOptions): any;
-export function createFromGeometry(geom: geometry.Vector2D, options: GeometryOptions)
+export function fromPolygonGraphics(viewer: Viewer, pg: PolygonGraphics): geometry.Polygon;
+export function createFromKML(feature: kml.Feature | kml.KMLFile, options: KMLFeatureOptions): any;
+export function createFromGeometry(geom: geometry.Vector2D, options: map.GeometryOptions)
 
 export class CesiumMap extends map.MapControl
 {
 	constructor(divId: string);
-	createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
-	createMarkerLayer(name: string, options?: LayerOptions): any;
-	createGeometryLayer(name: string, options?: LayerOptions): any;
+	createLayer(layer: map.LayerInfo, options?: map.LayerOptions): any;
+	createMarkerLayer(name: string, options?: map.LayerOptions): any;
+	createGeometryLayer(name: string, options?: map.LayerOptions): any;
 	addLayer(layer: any): void;
-	addKMLFeature(feature: kml.Feature): void;
+	addKML(feature: kml.Feature | kml.KMLFile): void;
 	uninit(): void;
 	zoomIn(): void;
 	zoomOut(): void;
@@ -40,13 +40,13 @@ export class CesiumMap extends map.MapControl
 	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
 	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
 
-	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: map.MarkerOptions): any;
 	layerAddMarker(markerLayer: any, marker: any): void;
 	layerRemoveMarker(markerLayer: any, marker: any): void;
 	layerClearMarkers(markerLayer: any): void;
 	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
 
-	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
+	createGeometry(geom: geometry.Vector2D, options: map.GeometryOptions): any;
 	layerAddGeometry(geometryLayer: any, geom: any): void;
 	layerRemoveGeometry(geometryLayer: any, geom: any): void;
 	layerClearGeometries(geometryLayer: any): void;

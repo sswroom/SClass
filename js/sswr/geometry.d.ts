@@ -5,7 +5,7 @@ declare class BoundaryPointResult
 	x: number;
 	y: number;
 	dist: number;
-};
+}
 
 export enum VectorType
 {
@@ -41,7 +41,7 @@ export class Vector2D {
 	constructor(srid: number);
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
-};
+}
 
 export class Point extends Vector2D
 {

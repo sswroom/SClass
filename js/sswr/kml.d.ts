@@ -8,13 +8,13 @@ export enum AltitudeMode
 	ClampToGround,
 	RelativeToGround,
 	Absolute
-};
+}
 
 export enum DisplayMode
 {
 	Default,
 	Hide
-};
+}
 
 export enum ListItemType
 {
@@ -22,7 +22,7 @@ export enum ListItemType
 	RadioFolder,
 	CheckOffOnly,
 	CheckHideChildren
-};
+}
 
 export enum ItemIconMode
 {
@@ -32,21 +32,21 @@ export enum ItemIconMode
 	Fetching0,
 	Fetching1,
 	Fetching2
-};
+}
 
 export enum HotSpotUnit
 {
 	Fraction,
 	Pixels,
 	InsetPixels
-};
+}
 
 export enum RefreshMode
 {
 	OnChange,
 	OnInterval,
 	OnExpire
-};
+}
 
 export enum ViewRefreshMode
 {
@@ -54,7 +54,7 @@ export enum ViewRefreshMode
 	OnStop,
 	OnRequest,
 	OnRegion
-};
+}
 
 export class Element
 {
@@ -75,7 +75,7 @@ export class NetworkLinkControl extends Element
 
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
-};
+}
 
 export class LookAt extends Element
 {
@@ -94,7 +94,7 @@ export class LookAt extends Element
 
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
-};
+}
 
 export class ColorStyle extends Element
 {
@@ -109,7 +109,7 @@ export class ColorStyle extends Element
 
 	sameColor(c: ColorStyle): boolean;
 	appendInnerXML(strs: string[], level: number): void;
-};
+}
 
 export class IconStyle extends ColorStyle
 {
@@ -130,7 +130,7 @@ export class IconStyle extends ColorStyle
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: IconStyle): boolean;
-};
+}
 
 export class LabelStyle extends ColorStyle
 {
@@ -140,7 +140,7 @@ export class LabelStyle extends ColorStyle
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: LabelStyle): boolean;
-};
+}
 
 export class LineStyle extends ColorStyle
 {
@@ -152,7 +152,7 @@ export class LineStyle extends ColorStyle
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: LineStyle): boolean;
-};
+}
 
 export class PolyStyle extends ColorStyle
 {
@@ -162,7 +162,7 @@ export class PolyStyle extends ColorStyle
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: PolyStyle): boolean;
-};
+}
 
 export class BalloonStyle extends Element
 {
@@ -175,7 +175,7 @@ export class BalloonStyle extends Element
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: BalloonStyle): boolean;
-};
+}
 
 export class ListStyle extends Element
 {
@@ -186,13 +186,14 @@ export class ListStyle extends Element
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
 	equals(o: ListStyle): boolean;
-};
+}
 
 export class StyleSelector extends Element
 {
 	id: string;
 	constructor(id: string);
 }
+
 export class Style extends StyleSelector
 {
 	iconStyle: IconStyle;
@@ -212,7 +213,7 @@ export class Style extends StyleSelector
 	isStyle(iconStyle: IconStyle, labelStyle: LabelStyle, lineStyle: LineStyle, polyStyle: PolyStyle, balloonStyle: BalloonStyle, listStyle: ListStyle): boolean;
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
-};
+}
 
 export class StyleMap extends StyleSelector
 {
@@ -340,6 +341,13 @@ export class ScreenOverlay extends Feature
 
 	getUsedNS(ns: object): void;
 	appendOuterXML(strs: string[], level: number): void;
+}
+
+export class KMLFile extends data.ParsedObject
+{
+	root: Feature | NetworkLinkControl;
+	constructor(root: Feature | NetworkLinkControl, sourceName: string);
+	toString():string;
 }
 
 export function toString(item: Feature | NetworkLinkControl): string;

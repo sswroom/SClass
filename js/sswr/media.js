@@ -2206,10 +2206,11 @@ export class EXIFData
 	}
 }
 
-export class StaticImage
+export class StaticImage extends data.ParsedObject
 {
-	constructor(img)
+	constructor(img, sourceName, objType)
 	{
+		super(sourceName, objType);
 		this.img = img;
 	}
 

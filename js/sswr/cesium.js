@@ -154,8 +154,12 @@ export function fromPolygonGraphics(viewer, pg)
 	return new geometry.Polygon(4326, coordinates);
 }
 
-export function createFromKMLFeature(feature, options)
+export function createFromKML(feature, options)
 {
+	if (feature instanceof kml.KMLFile)
+	{
+		return createFromKML(feature.root, options);
+	}
 	options = data.mergeOptions(options, {noPopup: false});
 	if (feature instanceof kml.Container)
 	{
@@ -164,7 +168,7 @@ export function createFromKMLFeature(feature, options)
 		let layer;
 		for (i in feature.features)
 		{
-			layer = createFromKMLFeature(feature.features[i], options);
+			layer = createFromKML(feature.features[i], options);
 			if (layer instanceof Cesium.Entity)
 			{
 				layers.push(layer);
@@ -432,9 +436,9 @@ export class CesiumMap extends map.MapControl
 		}
 	}
 
-	addKMLFeature(feature)
+	addKML(feature)
 	{
-		this.addLayer(createFromKMLFeature(feature));
+		this.addLayer(createFromKML(feature));
 	}
 
 //	uninit(): void;

@@ -19,8 +19,12 @@ export function toPointArray(numArr, options)
 	return ret;
 }
 
-export async function createFromKMLFeature(feature, options)
+export async function createFromKML(feature, options)
 {
+	if (feature instanceof kml.KMLFile)
+	{
+		return await createFromKML(feature.root, options);
+	}
 	options = data.mergeOptions(options, {noPopup: false});
 	if (feature instanceof kml.Container)
 	{
@@ -29,7 +33,7 @@ export async function createFromKMLFeature(feature, options)
 		let layer;
 		for (i in feature.features)
 		{
-			layer = await createFromKMLFeature(feature.features[i], options);
+			layer = await createFromKML(feature.features[i], options);
 			if (layer instanceof OpenLayers.Marker)
 			{
 				layers.push(layer);
@@ -348,9 +352,9 @@ export class Olayer2Map extends map.MapControl
 		}
 	}
 
-	addKMLFeature(feature)
+	addKML(feature)
 	{
-		createFromKMLFeature(feature, {map: this.map, objProjection: this.mapProjection, mapProjection: this.map.getProjectionObject()}).then((layer)=>{this.addLayer(layer);});
+		createFromKML(feature, {map: this.map, objProjection: this.mapProjection, mapProjection: this.map.getProjectionObject()}).then((layer)=>{this.addLayer(layer);});
 	}
 
 	uninit()
