@@ -75,13 +75,16 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 UTF8Char *UI::GTK::GTKComboBox::GetText(UTF8Char *buff)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
-	return Text::StrConcat(buff, (const UTF8Char*)lbl);
+	buff = Text::StrConcat(buff, (const UTF8Char*)lbl);
+	g_free(lbl);
+	return buff;
 }
 
 Bool UI::GTK::GTKComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
 	sb->AppendSlow((const UTF8Char*)lbl);
+	g_free(lbl);
 	return true;
 }
 

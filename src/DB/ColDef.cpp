@@ -293,6 +293,11 @@ void DB::ColDef::SetAttr(Optional<Text::String> attr)
 	this->attr = Text::String::CopyOrNull(attr);
 }
 
+void DB::ColDef::SetGeometrySRID(UInt32 srid)
+{
+	this->colDP = srid;
+}
+
 void DB::ColDef::Set(NotNullPtr<const ColDef> colDef)
 {
 	this->SetColName(colDef->colName);

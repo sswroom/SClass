@@ -13,6 +13,7 @@ UI::GUIPanel::GUIPanel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> 
 
 UI::GUIPanel::~GUIPanel()
 {
+	this->base.Delete();
 }
 
 Bool UI::GUIPanel::IsChildVisible()

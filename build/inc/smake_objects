@@ -1710,6 +1710,7 @@ AVIRCOVID19Form.o: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
 AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 AVIRCPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 AVIRCustomTileMapForm.o: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
+AVIRDBAssignColumnForm.o: ../../src/SSWR/AVIRead/AVIRDBAssignColumnForm.cpp
 AVIRDBCheckChgForm.o: ../../src/SSWR/AVIRead/AVIRDBCheckChgForm.cpp
 AVIRDBCopyTablesForm.o: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 AVIRDBExportForm.o: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp

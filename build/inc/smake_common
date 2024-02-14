@@ -3757,6 +3757,8 @@ SSWR/AVIRead/AVIRCPUInfoForm.h:
 @AVIRCPUInfoForm.o
 SSWR/AVIRead/AVIRCustomTileMapForm.h:
 @AVIRCustomTileMapForm.o
+SSWR/AVIRead/AVIRDBAssignColumnForm.h:
+@AVIRDBAssignColumnForm.o
 SSWR/AVIRead/AVIRDBCheckChgForm.h:
 @AVIRDBCheckChgForm.o
 SSWR/AVIRead/AVIRDBCopyTablesForm.h:

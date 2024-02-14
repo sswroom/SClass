@@ -50,8 +50,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboKeyCol;
 			NotNullPtr<UI::GUILabel> lblNullCol;
 			NotNullPtr<UI::GUIComboBox> cboNullCol;
-			NotNullPtr<UI::GUILabel> lblIgnoreCol;
-			NotNullPtr<UI::GUITextBox> txtIgnoreCol;
+			NotNullPtr<UI::GUILabel> lblAssignCol;
+			NotNullPtr<UI::GUIButton> btnAssignCol;
 			NotNullPtr<UI::GUILabel> lblDataFilter;
 			NotNullPtr<UI::GUITextBox> txtDataFilter;
 			NotNullPtr<UI::GUIButton> btnDataCheck;
@@ -80,6 +80,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			Data::ArrayList<UOSInt> colInd;
 			DB::ReadingDB *db;
 			Text::CString schema;
 			Text::CStringNN table;
@@ -93,12 +94,16 @@ namespace SSWR
 			static void __stdcall OnDataCheckClk(void *userObj);
 			static void __stdcall OnSQLClicked(void *userObj);
 			static void __stdcall OnExecuteClicked(void *userObj);
+			static void __stdcall OnDataTableChg(void *userObj);
+			static void __stdcall OnAssignColClicked(void *userObj);
 			Bool LoadDataFile(Text::CStringNN fileName);
+			Bool GetColIndex(NotNullPtr<Data::ArrayList<UOSInt>> colInd, NotNullPtr<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
+			Bool IsColIndexValid(NotNullPtr<Data::ArrayList<UOSInt>> colInd, NotNullPtr<DB::TableDef> destTable);
 			Bool CheckDataFile();
-			Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLSession *sess);
-			Bool NextSQL(Text::CStringNN sql, SQLSession *sess);
-			void UpdateStatus(SQLSession *sess);
-			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Optional<Text::String> s, Int8 tzQhr);
+			Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, NotNullPtr<SQLSession> sess);
+			Bool NextSQL(Text::CStringNN sql, NotNullPtr<SQLSession> sess);
+			void UpdateStatus(NotNullPtr<SQLSession> sess);
+			static void __stdcall AppendCol(NotNullPtr<DB::SQLBuilder> sql, NotNullPtr<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr);
 			Text::CString GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:

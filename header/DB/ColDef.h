@@ -106,6 +106,7 @@ namespace DB
 		void SetDefVal(Optional<Text::String> defVal);
 		void SetAttr(Text::CString attr);
 		void SetAttr(Optional<Text::String> attr);
+		void SetGeometrySRID(UInt32 srid);
 
 		void Set(NotNullPtr<const ColDef> colDef);
 

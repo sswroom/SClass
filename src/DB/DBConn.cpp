@@ -281,6 +281,33 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			}
 			DEL_CLASS(cmd);
 		}
+		if (tab)
+		{
+			sql.Clear();
+			sql.AppendCmdC(CSTR("select srs_id from gpkg_contents where table_name="));
+			sql.AppendStrC(tableName);
+			if (this->ExecuteReader(sql.ToCString()).SetTo(r))
+			{
+				if (r->ReadNext())
+				{
+					Int32 srid = r->GetInt32(0);
+					NotNullPtr<DB::ColDef> col;
+					UOSInt i = tab->GetColCnt();
+					while (i-- > 0)
+					{
+						if (tab->GetCol(i).SetTo(col))
+						{
+							if (col->GetColType() == DB::DBUtil::CT_Vector)
+							{
+								col->SetGeometrySRID((UInt32)srid);
+							}
+						}
+					}
+				}
+				this->CloseReader(r);
+			}
+
+		}
 		return tab;
 	}
 	case DB::SQLType::PostgreSQL:
