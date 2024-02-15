@@ -28,6 +28,7 @@ namespace IO
 		DataHdlr hdlr;
 		UOSInt buffSize;
 
+		Bool started;
 		Bool running;
 		Bool toStop;
 		Int32 currIndex;

@@ -136,7 +136,7 @@ public:
 	}
 };
 
-Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
+Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 {
 	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".MD5")))
 	{
@@ -153,7 +153,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 		}
 		else
 		{
-			UInt8 hash[16];
+			UInt8 hash[32];
 			UOSInt i;
 			UOSInt j;
 			
@@ -163,10 +163,14 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 			{
 				if (!fileChk->CheckEntryHash(i, hash))
 				{
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("File validation failed: "));
+					sb.AppendOpt(fileChk->GetEntryName(i));
 					succ = false;
-					console->WriteLineC(UTF8STRC("File validation failed"));
+					console->WriteLineC(sb.v, sb.leng);
 					break;
 				}
+				i++;
 			}
 			showHelp = false;
 			DEL_CLASS(fileChk);
@@ -175,32 +179,8 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 	}
 	else
 	{
-		IO::FileCheck *fileChk;
-		NotNullPtr<IO::FileCheck> nnfileChk;
-		{
-			ProgressHandler progress;
-			fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, Crypto::Hash::HashType::MD5, &progress, false);
-		}
-		console->WriteLine();
-		if (nnfileChk.Set(fileChk))
-		{
-			Text::StringBuilderUTF8 sb;
-			Exporter::MD5Exporter exporter;
-			sb.AppendC(fileName, fileNameLen);
-			sb.AppendC(UTF8STRC(".md5"));
-			{
-				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
-			}
-			nnfileChk.Delete();
-			showHelp = false;
-			return true;
-		}
-		else
-		{
-			console->WriteLineC(UTF8STRC("Error in calculating MD5"));
-			return false;
-		}
+		console->WriteLineC(UTF8STRC("File is not MD5 file"));
+		return false;
 	}
 }
 
@@ -214,47 +194,128 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	showHelp = true;
 	if (cmdCnt == 2)
 	{
-		UOSInt i = Text::StrIndexOfChar(cmdLines[1], '*');
-		UOSInt j = Text::StrIndexOfChar(cmdLines[1], '?');
-		if (i == INVALID_INDEX && j == INVALID_INDEX)
+		UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
+		IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
+		if (pt == IO::Path::PathType::Unknown)
 		{
-			UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
-			IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
-			if (pt == IO::Path::PathType::Unknown)
-			{
-				console->WriteLineC(UTF8STRC("File not found"));
-			}
-			else
-			{
-				ParseFile(cmdLines[1], cmdLen);
-			}
+			console->WriteLineC(UTF8STRC("File not found"));
 		}
 		else
 		{
-			IO::Path::FindFileSession *sess;
-			Text::StringBuilderUTF8 sb;
-			IO::Path::PathType pt;
-			sptr = Text::StrConcat(sbuff, cmdLines[1]);
-			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-			sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
-			if (sess)
+			if (VerifyMD5(cmdLines[1], cmdLen))
 			{
-				while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Checking "));
-					sb.AppendP(&sbuff[i + 1], sptr);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
-					ParseFile(sbuff, (UOSInt)(sptr - sbuff));
-					console->WriteLine();
-				}
-				IO::Path::FindFileClose(sess);
+				showHelp = false;
 			}
 		}
 	}
+	else if (cmdCnt >= 3)
+	{
+		ProgressHandler progress;
+		IO::FileCheck *fileChk = 0;
+		NotNullPtr<IO::FileCheck> thisChk;
+		NotNullPtr<IO::FileCheck> nnfileChk;
+		IO::Path::FindFileSession *sess;
+		Text::StringBuilderUTF8 sb;
+		IO::Path::PathType pt;
+		UOSInt i;
+		UOSInt j = 2;
+		showHelp = false;
+		while (!showHelp && j < cmdCnt)
+		{
+			sptr = Text::StrConcat(sbuff, cmdLines[2]);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+			Text::CStringNN cstr = CSTRP(sbuff, sptr).Substring(i + 1);
+			if (cstr.IndexOf('*') != INVALID_INDEX || cstr.IndexOf('?') != INVALID_INDEX)
+			{
+				sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
+				if (sess)
+				{
+					while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)
+					{
+						if (sbuff[i + 1] == '.' && (sbuff[i + 2] == 0 || (sbuff[i + 2] == '.' && sbuff[i + 3] == 0)))
+						{
+
+						}
+						else
+						{
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("Checking "));
+							sb.AppendP(&sbuff[i + 1], sptr);
+							console->WriteLineC(sb.ToString(), sb.GetLength());
+							if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+							{
+								SDEL_CLASS(fileChk);
+								showHelp = true;
+								break;
+							}
+							else if (fileChk)
+							{
+								fileChk->MergeFrom(thisChk);
+								thisChk.Delete();
+							}
+							else
+							{
+								fileChk = thisChk.Ptr();
+							}
+						}
+					}
+					IO::Path::FindFileClose(sess);
+				}
+				else
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Error in searching for path: "));
+					sb.AppendP(sbuff, sptr);
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+				}
+			}
+			else
+			{
+				if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+				{
+					SDEL_CLASS(fileChk);
+					showHelp = true;
+				}
+				else if (fileChk)
+				{
+					fileChk->MergeFrom(thisChk);
+					thisChk.Delete();
+				}
+				else
+				{
+					fileChk = thisChk.Ptr();
+				}
+				console->WriteLine();
+			}
+			j++;
+		}
+		if (nnfileChk.Set(fileChk))
+		{
+			Exporter::MD5Exporter exporter;
+			{
+				IO::FileStream fs(Text::CStringNN::FromPtr(cmdLines[1]), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
+			}
+			nnfileChk.Delete();
+			showHelp = false;
+		}
+		else
+		{
+			console->WriteLineC(UTF8STRC("Error in calculating MD5"));
+		}
+	}
+	else
+	{
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Unknown parameter type ("));
+		sptr = Text::StrUOSInt(sptr, cmdCnt);
+		*sptr++ = ')';
+		*sptr = 0;
+		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	}
 	if (showHelp)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SMD5 [File to check]"));
+		console->WriteLineC(UTF8STRC("Usage: SMD5 [MD5 file] (Base directory is same as MD5 file)"));
+		console->WriteLineC(UTF8STRC("       SMD5 [MD5 file] [files to read]"));
 	}
 	DEL_CLASS(console);
 	return 0;

@@ -34,8 +34,9 @@ namespace IO
 		UOSInt GetCount() const;
 		Optional<Text::String> GetEntryName(UOSInt index) const;
 		Bool GetEntryHash(UOSInt index, UInt8 *hashVal) const;
-		void AddEntry(Text::CString fileName, UInt8 *hashVal);
+		void AddEntry(Text::CStringNN fileName, UInt8 *hashVal);
 		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal) const;
+		Bool MergeFrom(NotNullPtr<FileCheck> chk);
 
 		virtual IO::ParserType GetParserType() const;
 	};

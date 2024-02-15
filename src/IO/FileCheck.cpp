@@ -7,6 +7,11 @@
 #include "IO/Path.h"
 #include "Text/MyString.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 typedef struct
 {
 	Crypto::Hash::IHash *hash;
@@ -100,7 +105,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 		i = Text::StrLastIndexOfCharC(sbuff, i, IO::Path::PATH_SEPERATOR);
 		if (i < 2)
 		{
-			if (CheckDir(reader, sbuff, &sbuff[i], hash, fchk, progress, skipError))
+			if (CheckDir(reader, sbuff, &sbuff[i + 1], hash, fchk, progress, skipError))
 			{
 				DEL_CLASS(fchk);
 				fchk = 0;
@@ -108,7 +113,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 		}
 		else
 		{
-			if (CheckDir(reader, &sbuff[2], &sbuff[i], hash, fchk, progress, skipError))
+			if (CheckDir(reader, &sbuff[2], &sbuff[i + 1], hash, fchk, progress, skipError))
 			{
 				DEL_CLASS(fchk);
 				fchk = 0;
@@ -295,7 +300,7 @@ Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal) const
 	return true;
 }
 
-void IO::FileCheck::AddEntry(Text::CString fileName, UInt8 *hashVal)
+void IO::FileCheck::AddEntry(Text::CStringNN fileName, UInt8 *hashVal)
 {
 	UOSInt index = this->fileNames.Add(Text::String::New(fileName));
 	if (index >= this->chkCapacity)
@@ -319,11 +324,24 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 
 	NotNullPtr<Text::String> fileName;
 	if (!this->fileNames.GetItem(index).SetTo(fileName))
+	{
+#if defined(VERBOSE)
+		printf("Unknown file name\r\n");
+#endif
 		return false;
+	}
+#if defined(VERBOSE)
+	printf("Checking file: %s\r\n", fileName->v);
+#endif
 	sptr = this->sourceName->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
+	{
+#if defined(VERBOSE)
+		printf("Seperator not found: %s\r\n", sbuff);
+#endif
 		return false;
+	}
 	sptr = &sbuff[i];
 	if (fileName->v[0] == '/' || fileName->v[0] == '\\')
 	{
@@ -343,11 +361,19 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	}
 	hash = Crypto::Hash::HashCreator::CreateHash(this->chkType);
 	if (hash == 0)
+	{
+#if defined(VERBOSE)
+		printf("Error in creating hash calculator\r\n");
+#endif
 		return false;
+	}
 
 	IO::FileStream fs(CSTRP(sbuff, sptrEnd), IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer);
 	if (fs.IsError())
 	{
+#if defined(VERBOSE)
+		printf("Error in opening file: %s\r\n", sbuff);
+#endif
 		DEL_CLASS(hash);
 		return false;
 	}
@@ -370,9 +396,34 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 			hash->GetValue(hashVal);
 			ret = true;
 		}
+		else
+		{
+#if defined(VERBOSE)
+			printf("Error in reading file: %s\r\n", sbuff);
+#endif
+		}
 		DEL_CLASS(hash);
 		return ret;
 	}
+}
+
+Bool IO::FileCheck::MergeFrom(NotNullPtr<FileCheck> chk)
+{
+	if (this->chkType != chk->chkType)
+		return false;
+	NotNullPtr<Text::String> s;
+	UInt8 val[64];
+	UOSInt i = 0;
+	UOSInt j = chk->GetCount();
+	while (i < j)
+	{
+		if (chk->GetEntryName(i).SetTo(s) && chk->GetEntryHash(i, val))
+		{
+			this->AddEntry(s->ToCString(), val);
+		}
+		i++;
+	}
+	return true;
 }
 
 IO::ParserType IO::FileCheck::GetParserType() const

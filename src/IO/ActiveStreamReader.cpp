@@ -8,6 +8,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 	IO::ActiveStreamReader *me = (IO::ActiveStreamReader *)obj;
 	Int32 i = 0;
 	OptOut<BottleNeckType> bnt;
+	me->started = true;
 	me->running = true;
 	while (!me->toStop)
 	{
@@ -36,6 +37,7 @@ IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, UOSInt
 	this->buffSize = buffSize;
 	this->currIndex = 0;
 	this->userData = userData;
+	this->started = false;
 	this->running = false;
 	this->toStop = false;
 	this->reading = false;
@@ -53,7 +55,7 @@ IO::ActiveStreamReader::~ActiveStreamReader()
 {
 	this->toStop = true;
 	this->fullEvt.Set();
-	while (this->running)
+	while (this->running || !this->started)
 	{
 		this->emptyEvt.Wait(1000);
 	}
