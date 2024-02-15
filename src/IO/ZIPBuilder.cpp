@@ -3,7 +3,6 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "Data/Compress/Inflate.h"
-#include "IO/MinizZIP.h"
 #include "IO/ZIPBuilder.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"

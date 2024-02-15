@@ -496,9 +496,6 @@ MemFileBuffer.o: $(CLASSDIR)src/IO/MemFileBuffer.cpp
 MemoryStream.o: $(CLASSDIR)src/IO/MemoryStream.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
-MinizZIP.o: $(CLASSDIR)src/IO/MinizZIP.cpp
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
-
 MODBUSController.o: $(CLASSDIR)src/IO/MODBUSController.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

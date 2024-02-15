@@ -442,8 +442,6 @@ LoopFileLog.o: ../../src/IO/LoopFileLog.cpp
 MemFileBuffer.o: ../../src/IO/MemFileBuffer.cpp
 MemoryReadingStream.o: ../../src/IO/MemoryReadingStream.cpp
 MemoryStream.o: ../../src/IO/MemoryStream.cpp
-MinizZIP.o: ../../src/IO/MinizZIP.cpp
-$-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 MODBUSController.o: ../../src/IO/MODBUSController.cpp
 MODBUSDevice.o: ../../src/IO/MODBUSDevice.cpp
 MODBUSRTUMaster.o: ../../src/IO/MODBUSRTUMaster.cpp

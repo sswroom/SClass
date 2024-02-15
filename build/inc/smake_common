@@ -1823,8 +1823,6 @@ IO/MemoryReadingStream.h:
 @MemoryReadingStream.o
 IO/MemoryStream.h:
 @MemoryStream.o
-IO/MinizZIP.h:
-@MinizZIP.o
 IO/MODBUSController.h:
 @MODBUSController.o
 IO/MODBUSDevice.h:

@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "Data/StringUTF8Map.h"
+#include "IO/FileStream.h"
 #include "IO/FileUtil.h"
-#include "IO/MinizZIP.h"
 #include "IO/Path.h"
-//#include "IO/WindowZIP.h"
+#include "IO/ZIPMTBuilder.h"
 #include "SSWR/AVIRead/AVIRLogBackupForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
@@ -25,7 +25,6 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	LogGroup *logGrp;
 	UOSInt i;
 	UOSInt j;
-	IO::MinizZIP *zip;
 	Bool succ;
 	IO::Path::PathType pt;
 
@@ -88,20 +87,28 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	{
 		logGrp = logGrpList->GetItem(i);
 		succ = true;
-		Text::StrConcatC(Text::StrConcat(filePath, logGrp->logName), UTF8STRC(".zip"));
+		filePathEnd = Text::StrConcatC(Text::StrConcat(filePath, logGrp->logName), UTF8STRC(".zip"));
 
-		NEW_CLASS(zip, IO::MinizZIP(sbuff));
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = logGrp->fileNames->Iterator();
-		while (succ && it.HasNext())
 		{
-			NotNullPtr<Text::String> s = it.Next();
-			succ = succ & zip->AddFile(s->ToCString());
+			IO::FileStream fs(CSTRP(sbuff, filePathEnd), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::ZIPMTBuilder zip(fs, IO::ZIPOS::UNIX);
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = logGrp->fileNames->Iterator();
+			while (succ && it.HasNext())
+			{
+				NotNullPtr<Text::String> s = it.Next();
+				IO::FileStream rfs(s, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				UInt32 unixAttr = IO::Path::GetFileUnixAttr(s->ToCString());
+				Data::Timestamp lastModTime = 0;
+				Data::Timestamp createTime = 0;
+				Data::Timestamp accessTime = 0;
+				rfs.GetFileTimes(createTime, accessTime, lastModTime);
+				succ = succ & zip.AddFile(s->ToCString().Substring((UOSInt)(filePath - sbuff)), rfs, lastModTime, accessTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
+			}
 		}
-		DEL_CLASS(zip);
 
 		if (succ)
 		{
-			it = logGrp->fileNames->Iterator();
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = logGrp->fileNames->Iterator();
 			while (it.HasNext())
 			{
 				NotNullPtr<Text::String> s = it.Next();
