@@ -2,6 +2,7 @@ build/*/obj/
 build/*/bin/
 build/*/smake.exe
 build/*/DBConn.dat
+build/*/optional*.cfg
 
 doc/
 node_modules/

@@ -756,19 +756,19 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 						const UInt8 *respData = mstm->GetBuff(respSize);
 						if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 						{
-							IO::MemoryStream *mstm2;
+							NotNullPtr<IO::MemoryStream> mstm2;
 							Data::Compress::Inflate inflate(false);
 							i = 10;
 							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
-							NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
+							NEW_CLASSNN(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
 							if (inflate.Decompress(mstm2, mdata))
 							{
 								DEL_CLASS(mstm);
-								mstm = mstm2;
+								mstm = mstm2.Ptr();
 							}
 							else
 							{
-								DEL_CLASS(mstm2);
+								mstm2.Delete();
 							}
 						}
 					}

@@ -239,7 +239,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 			NotNullPtr<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp(false);
 			IO::MemoryStream mstm;
-			if (!comp.Decompress(&mstm, stmData))
+			if (!comp.Decompress(mstm, stmData))
 			{
 				NotNullPtr<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(mstm.GetArray()).SetTo(icc))

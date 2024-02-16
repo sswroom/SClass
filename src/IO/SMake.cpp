@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/Condition.h"
 #include "IO/FileFindRecur.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -19,6 +20,7 @@
 /*
 <name>: [!/@]<source>
 @<object>
+@?(NO_MINIZ > 0)<object>
 !<lib>
 !?(ANDROID_API >= 24)<lib>
 $<compileCfg>
@@ -184,7 +186,6 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 	Text::StringBuilderUTF8 sb2;
 	Text::PString str1;
 	Text::PString str2;
-	Text::PString str3;
 	UOSInt i;
 	IO::SMake::ConfigItem *cfg;
 	IO::SMake::ProgramItem *prog = 0;
@@ -199,84 +200,17 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		}
 		else if (sb.ToString()[0] == '@')
 		{
-			if (prog)
+			Bool valid = true;
+			str1 = this->ParseCond(sb.SubstrTrim(1), valid);
+			if (valid && prog)
 			{
-				prog->subItems.Add(Text::String::New(sb.SubstrTrim(1).ToCString()));
+				prog->subItems.Add(Text::String::New(str1.ToCString()));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
 		{
 			Bool valid = true;
-			str1 = sb.SubstrTrim(1);
-			if (str1.StartsWith(UTF8STRC("?(")))
-			{
-				i = str1.IndexOf(')');
-				if (i != INVALID_INDEX)
-				{
-					str2 = str1.Substring(i + 1);
-					sb2.ClearStr();
-					sb2.AppendC(&str1.v[2], (UOSInt)i - 2);
-					str1 = sb2.TrimAsNew();
-					if ((i = str1.IndexOf(UTF8STRC(">="))) != INVALID_INDEX)
-					{
-						str3 = str1.SubstrTrim(i + 2);
-						str1 = str1.SubstrTrim(0, i);
-						Int32 val1 = 0;
-						Int32 val2 = 0;
-						if (str1.v[0] >= '0' && str1.v[0] <= '9')
-						{
-							val1 = str1.ToInt32();
-						}
-						else
-						{
-							cfg = this->cfgMap.Get(str1.ToCString());
-							if (cfg)
-							{
-								val1 = cfg->value->ToInt32();
-							}
-						}
-						if (str3.v[0] >= '0' && str3.v[0] <= '9')
-						{
-							val2 = str3.ToInt32();
-						}
-						else
-						{
-							cfg = this->cfgMap.Get(str3.ToCString());
-							if (cfg)
-							{
-								val2 = cfg->value->ToInt32();
-							}
-						}
-						if (val1 >= val2)
-						{
-							str1 = str2;
-						}
-						else
-						{
-							valid = false;
-						}
-					}
-				}
-			}
-			else if (str1.StartsWith(UTF8STRC("@(")))
-			{
-				i = str1.BranketSearch(2, ')');
-				if (i != INVALID_INDEX)
-				{
-					Text::StringBuilderUTF8 sbCmd;
-					Text::StringBuilderUTF8 result;
-					AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], i - 2));
-					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) != 0)
-					{
-						valid = false;
-					}
-					else
-					{
-						str1 = str1.Substring(i + 1);
-					}
-				}
-			}
+			str1 = this->ParseCond(sb.SubstrTrim(1), valid);
 			if (valid && prog)
 			{
 				prog->libs.Add(Text::String::New(str1.ToCString()));
@@ -497,6 +431,136 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 	return ret;
 }
 
+Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
+{
+	UOSInt i;
+	Text::PString str2;
+	Text::PString str3;
+	if (str1.StartsWith(UTF8STRC("?(")))
+	{
+		i = str1.BranketSearch(2, ')');
+		if (i != INVALID_INDEX)
+		{
+			str2 = str1.Substring(i + 1);
+			Text::StringBuilderUTF8 sb2;
+			sb2.AppendC(&str1.v[2], (UOSInt)i - 2);
+			str1 = sb2.TrimAsNew();
+			Data::CompareCondition cond = Data::CompareCondition::Unknown;
+			if ((i = str1.IndexOf(UTF8STRC(">="))) != INVALID_INDEX)
+			{
+				str3 = str1.SubstrTrim(i + 2);
+				str1 = str1.SubstrTrim(0, i);
+				cond = Data::CompareCondition::GreaterOrEqual;
+			}
+			else if ((i = str1.IndexOf(UTF8STRC("<="))) != INVALID_INDEX)
+			{
+				str3 = str1.SubstrTrim(i + 2);
+				str1 = str1.SubstrTrim(0, i);
+				cond = Data::CompareCondition::LessOrEqual;
+			}
+			else if ((i = str1.IndexOf(UTF8STRC(">"))) != INVALID_INDEX)
+			{
+				str3 = str1.SubstrTrim(i + 1);
+				str1 = str1.SubstrTrim(0, i);
+				cond = Data::CompareCondition::Greater;
+			}
+			else if ((i = str1.IndexOf(UTF8STRC("<"))) != INVALID_INDEX)
+			{
+				str3 = str1.SubstrTrim(i + 1);
+				str1 = str1.SubstrTrim(0, i);
+				cond = Data::CompareCondition::Less;
+			}
+			else if ((i = str1.IndexOf(UTF8STRC("=="))) != INVALID_INDEX)
+			{
+				str3 = str1.SubstrTrim(i + 2);
+				str1 = str1.SubstrTrim(0, i);
+				cond = Data::CompareCondition::Equal;
+			}
+			else if ((i = str1.IndexOf(UTF8STRC("!="))) != INVALID_INDEX)
+			{
+				str3 = str1.SubstrTrim(i + 2);
+				str1 = str1.SubstrTrim(0, i);
+				cond = Data::CompareCondition::NotEqual;
+			}
+			if (cond != Data::CompareCondition::Unknown)
+			{
+				Int32 val1 = 0;
+				Int32 val2 = 0;
+				ConfigItem *cfg;
+				if (str1.v[0] >= '0' && str1.v[0] <= '9')
+				{
+					val1 = str1.ToInt32();
+				}
+				else
+				{
+					cfg = this->cfgMap.Get(str1.ToCString());
+					if (cfg)
+					{
+						val1 = cfg->value->ToInt32();
+					}
+				}
+				if (str3.v[0] >= '0' && str3.v[0] <= '9')
+				{
+					val2 = str3.ToInt32();
+				}
+				else
+				{
+					cfg = this->cfgMap.Get(str3.ToCString());
+					if (cfg)
+					{
+						val2 = cfg->value->ToInt32();
+					}
+				}
+				switch (cond)
+				{
+				case Data::CompareCondition::Equal:
+					valid.Set(val1 == val2);
+					break;
+				case Data::CompareCondition::Greater:
+					valid.Set(val1 > val2);
+					break;
+				case Data::CompareCondition::GreaterOrEqual:
+					valid.Set(val1 >= val2);
+					break;
+				case Data::CompareCondition::Less:
+					valid.Set(val1 < val2);
+					break;
+				case Data::CompareCondition::LessOrEqual:
+					valid.Set(val1 <= val2);
+					break;
+				case Data::CompareCondition::NotEqual:
+					valid.Set(val1 != val2);
+					break;
+				case Data::CompareCondition::Unknown:
+				default:
+					valid.Set(false);
+					break;
+				}
+			}
+			str1 = str2;
+		}
+	}
+	else if (str1.StartsWith(UTF8STRC("@(")))
+	{
+		i = str1.BranketSearch(2, ')');
+		if (i != INVALID_INDEX)
+		{
+			Text::StringBuilderUTF8 sbCmd;
+			Text::StringBuilderUTF8 result;
+			AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], i - 2));
+			Int32 ret;
+			if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) != 0)
+			{
+				valid.Set(false);
+			}
+			else
+			{
+				str1 = str1.Substring(i + 1);
+			}
+		}
+	}
+	return str1;
+}
 
 Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	NotNullPtr<Data::FastStringMap<Int32>> libList,

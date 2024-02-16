@@ -11,12 +11,12 @@ Data::Compress::LZODecompressor::~LZODecompressor()
 {
 }
 
-Bool Data::Compress::LZODecompressor::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::LZODecompressor::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
-	return LZODecompressor_Decompress(srcBuff, srcBuffSize, destBuff, destBuffSize);
+	return LZODecompressor_Decompress(srcBuff.Ptr(), srcBuff.GetSize(), destBuff.Ptr(), outDestBuffSize.Ptr());
 }
 
-Bool Data::Compress::LZODecompressor::Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData)
+Bool Data::Compress::LZODecompressor::Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData)
 {
 	UInt64 srcSize = srcData->GetDataSize();
 	Data::ByteBuffer srcBuff((UOSInt)srcSize);

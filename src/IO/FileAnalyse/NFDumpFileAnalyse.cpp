@@ -67,7 +67,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSIn
 {
 	Data::Compress::LZODecompressor dec;
 	UOSInt destSize;
-	if (dec.Decompress(outBlock, &destSize, srcBlock, srcSize))
+	if (dec.Decompress(Data::ByteArray(outBlock, maxOutSize), destSize, Data::ByteArrayR(srcBlock, srcSize)))
 	{
 		return destSize;
 	}

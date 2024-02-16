@@ -1438,6 +1438,7 @@ Data/CircularByteBuff.h:
 Data/Class.h:
 @Class.o
 Data/Comparator.h:
+Data/Condition.h:
 Data/DataArray.h:
 Data/DataComparer.h:
 @DataComparer.o
@@ -1500,11 +1501,14 @@ Data/VariObject.h:
 Data/Compress/Decompressor.h:
 @Decompressor.o
 Data/Compress/DeflateStream.h:
-@DeflateStream.o
+@?(NO_MINIZ == 0)DeflateStreamMiniz.o
+@?(NO_MINIZ > 0)DeflateStreamNull.o
 Data/Compress/Inflate.h:
-@Inflate.o
+@?(NO_MINIZ == 0)InflateMiniz.o
+@?(NO_MINIZ > 0)InflateNull.o
 Data/Compress/InflateStream.h:
-@InflateStream.o
+@?(NO_MINIZ == 0)InflateStreamMiniz.o
+@?(NO_MINIZ > 0)InflateStreamNull.o
 Data/Compress/LZODecompressor.h:
 @LZODecompressor.o
 @LZODecompressor_CPP.o

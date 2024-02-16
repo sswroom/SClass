@@ -2,6 +2,7 @@
 #define _SM_DATA_QUERYCONDITIONS
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/Condition.h"
 #include "Data/ObjectGetter.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
@@ -55,16 +56,6 @@ namespace Data
 			virtual void GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList);
 
 			virtual Bool TestValid(NotNullPtr<Data::VariItem> item) = 0;
-		};
-
-		enum class CompareCondition
-		{
-			Equal,
-			GreaterOrEqual,
-			LessOrEqual,
-			Greater,
-			Less,
-			NotEqual
 		};
 
 		class TimeBetweenCondition : public FieldCondition

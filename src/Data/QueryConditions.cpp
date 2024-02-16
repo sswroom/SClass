@@ -196,6 +196,8 @@ Bool Data::QueryConditions::Int32Condition::TestValid(NotNullPtr<Data::VariItem>
 		return iVal < this->val;
 	case CompareCondition::LessOrEqual:
 		return iVal <= this->val;
+	case CompareCondition::Unknown:
+		return false;
 	}
 	return false;
 }
@@ -210,7 +212,7 @@ Int32 Data::QueryConditions::Int32Condition::GetVal()
 	return this->val;
 }
 
-Data::QueryConditions::CompareCondition Data::QueryConditions::Int32Condition::GetCompareCond()
+Data::CompareCondition Data::QueryConditions::Int32Condition::GetCompareCond()
 {
 	return this->cond;
 }
@@ -395,6 +397,8 @@ Bool Data::QueryConditions::Int64Condition::TestValid(NotNullPtr<Data::VariItem>
 		return iVal < this->val;
 	case CompareCondition::LessOrEqual:
 		return iVal <= this->val;
+	case CompareCondition::Unknown:
+		return false;
 	}
 	return false;
 }
@@ -409,7 +413,7 @@ Int64 Data::QueryConditions::Int64Condition::GetVal()
 	return this->val;
 }
 
-Data::QueryConditions::CompareCondition Data::QueryConditions::Int64Condition::GetCompareCond()
+Data::CompareCondition Data::QueryConditions::Int64Condition::GetCompareCond()
 {
 	return this->cond;
 }
@@ -502,6 +506,8 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(NotNullPtr<Data::VariItem
 		return dVal < this->val;
 	case CompareCondition::LessOrEqual:
 		return dVal <= this->val;
+	case CompareCondition::Unknown:
+		return false;
 	}
 	return false;
 }
@@ -1395,6 +1401,8 @@ Text::CStringNN Data::QueryConditions::CompareConditionGetStr(CompareCondition c
 		return CSTR(" <= ");
 	case CompareCondition::NotEqual:
 		return CSTR(" <> ");
+	case CompareCondition::Unknown:
+		return CSTR("");
 	}
 	return CSTR("");
 }

@@ -129,8 +129,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(NotNullPtr<IO::St
 							fd->GetRealData(thisOfst, nextOfst - thisOfst, srcBuff);
 							if (srcBuff[0] == 0x78 && srcBuff[1] == 0xda)
 							{
-								decSize = 4096;
-								inf.Decompress(imgBuff.Ptr(), &decSize, srcBuff.Ptr(), nextOfst - thisOfst);
+								inf.Decompress(imgBuff, decSize, srcBuff.SubArray(0, nextOfst - thisOfst));
 								if (decSize == 4096)
 								{
 									imgX1 = (OSInt)currX << 6;

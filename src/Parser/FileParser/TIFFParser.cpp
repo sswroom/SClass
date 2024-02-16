@@ -487,7 +487,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 					{
 						Data::ByteBuffer compImgData(stripLeng);
 						lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-						lzw.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+						lzw.Decompress(imgData, destSize, compImgData.SubArray(0, lengLeft));
 					}
 					else
 					{
@@ -511,7 +511,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 							{
 								i = 4748;
 							}
-							lzw.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+							lzw.Decompress(imgData, destSize, compImgData.SubArray(0, lengLeft));
 							if (destSize != decSize)
 							{
 								destSize = decSize;
@@ -529,7 +529,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 					{
 						Data::ByteBuffer compImgData(stripLeng);
 						lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-						inflate.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+						inflate.Decompress(imgData, destSize, compImgData.SubArray(0, lengLeft));
 					}
 					else
 					{
@@ -550,7 +550,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 							//imgData += stripLengs[i];
 
 							lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-							inflate.Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+							inflate.Decompress(imgData, destSize, compImgData.SubArray(0, lengLeft));
 							imgData = imgData.SubArray(destSize);
 
 							i++;

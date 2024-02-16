@@ -29,8 +29,8 @@ namespace Data
 			Inflate(Bool hasHeader);
 			virtual ~Inflate();
 
-			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize);
-			virtual Bool Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData);
+			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff);
+			virtual Bool Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData);
 
 			static UOSInt TestCompress(const UInt8 *srcBuff, UOSInt srcBuffSize, Bool hasHeader);
 			static UOSInt Compress(const UInt8 *srcBuff, UOSInt srcBuffSize, UInt8 *destBuff, Bool hasHeader, CompressionLevel level);

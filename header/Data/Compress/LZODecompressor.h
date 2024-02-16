@@ -18,8 +18,8 @@ namespace Data
 			LZODecompressor();
 			virtual ~LZODecompressor();
 
-			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize);
-			virtual Bool Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData);
+			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff);
+			virtual Bool Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData);
 		};
 	}
 }

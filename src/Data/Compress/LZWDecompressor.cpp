@@ -14,25 +14,22 @@ Data::Compress::LZWDecompressor::~LZWDecompressor()
 {
 }
 
-Bool Data::Compress::LZWDecompressor::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::LZWDecompressor::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
-	IO::MemoryReadingStream mstm(srcBuff, srcBuffSize);
+	IO::MemoryReadingStream mstm(srcBuff);
 	Data::Compress::LZWDecStream lzw(&mstm, false, 8, 15, 1);
 	UOSInt writeSize = 0;
 	UOSInt thisSize;
-	while ((thisSize = lzw.Read(Data::ByteArray(destBuff, 4096))) != 0)
+	while ((thisSize = lzw.Read(destBuff)) != 0)
 	{
 		writeSize += thisSize;
 		destBuff += thisSize;
 	}
-	if (destBuffSize)
-	{
-		*destBuffSize = writeSize;
-	}
+	outDestBuffSize.Set(writeSize);
 	return true;
 }
 
-Bool Data::Compress::LZWDecompressor::Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData)
+Bool Data::Compress::LZWDecompressor::Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData)
 {
 	IO::StreamDataStream *srcStm;
 	Data::ByteBuffer tmpBuff(65536);

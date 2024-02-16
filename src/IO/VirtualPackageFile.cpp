@@ -496,10 +496,10 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NotNullPtr<c
 		sptr = item->name->ConcatTo(sptr);
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			Crypto::Hash::HashStream hashStm(&fs, hash);
+			Crypto::Hash::HashStream hashStm(fs, hash);
 
 			hash->Clear();
-			decomp->Decompress(&hashStm, fd);
+			decomp->Decompress(hashStm, fd);
 			resSize = hash->GetResultSize();
 			hash->GetValue(chkResult);
 
@@ -853,10 +853,10 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 			Bool diff = false;
 			{
 				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				Crypto::Hash::HashStream hashStm(&fs, hash);
+				Crypto::Hash::HashStream hashStm(fs, hash);
 
 				hash->Clear();
-				decomp->Decompress(&hashStm, fd);
+				decomp->Decompress(hashStm, fd);
 				resSize = hash->GetResultSize();
 				hash->GetValue(chkResult);
 

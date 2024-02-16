@@ -141,12 +141,15 @@ UUID.o: ../../src/Data/UUID.cpp
 VariItem.o: ../../src/Data/VariItem.cpp
 VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
-DeflateStream.o: ../../src/Data/Compress/DeflateStream.cpp
+DeflateStreamMiniz.o: ../../src/Data/Compress/DeflateStreamMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
-Inflate.o: ../../src/Data/Compress/Inflate.cpp
+DeflateStreamNull.o: ../../src/Data/Compress/DeflateStreamNull.cpp
+InflateMiniz.o: ../../src/Data/Compress/InflateMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
-InflateStream.o: ../../src/Data/Compress/InflateStream.cpp
+InflateNull.o: ../../src/Data/Compress/InflateNull.cpp
+InflateStreamMiniz.o: ../../src/Data/Compress/InflateStreamMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
+InflateStreamNull.o: ../../src/Data/Compress/InflateStreamNull.cpp
 LZODecompressor.o: ../../src/Data/Compress/LZODecompressor.cpp
 LZWDecompressor.o: ../../src/Data/Compress/LZWDecompressor.cpp
 LZWDecStream.o: ../../src/Data/Compress/LZWDecStream.cpp

@@ -64,6 +64,7 @@ namespace IO
 		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CStringNN cfgFile);
 
+		Text::PString ParseCond(Text::PString str1, OutParam<Bool> valid);
 		Bool ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> headerFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> objectFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);

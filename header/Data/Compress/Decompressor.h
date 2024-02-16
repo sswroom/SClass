@@ -23,8 +23,8 @@ namespace Data
 		public:
 			virtual ~Decompressor();
 
-			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize) = 0;
-			virtual Bool Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData) = 0;
+			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff) = 0;
+			virtual Bool Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData) = 0;
 
 			static Data::Compress::Decompressor *CreateDecompressor(CompressMethod compMeth);
 			static Text::CStringNN GetCompMethName(CompressMethod compMethod);

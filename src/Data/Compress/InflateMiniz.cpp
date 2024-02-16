@@ -15,19 +15,19 @@ Data::Compress::Inflate::~Inflate()
 {
 }
 
-Bool Data::Compress::Inflate::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
-	mz_ulong buffSize = (mz_ulong)*destBuffSize;
-	Int32 ret = mz_uncompress(destBuff, &buffSize, srcBuff, (mz_ulong)srcBuffSize);
+	mz_ulong buffSize = (mz_ulong)destBuff.GetSize();
+	Int32 ret = mz_uncompress(destBuff.Ptr(), &buffSize, srcBuff.Ptr(), (mz_ulong)srcBuff.GetSize());
 	if (ret == MZ_OK)
 	{
-		*destBuffSize = buffSize;
+		outDestBuffSize.Set(buffSize);
 		return true;
 	}
 	return false;
 }
 
-Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData)
+Bool Data::Compress::Inflate::Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData)
 {
 	UInt64 srcOfst = 0;
 	UInt64 srcLen = srcData->GetDataSize();
