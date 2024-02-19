@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		fd->GetRealData(fnameOfst, fnameSize, BYTEARR(fnameBuff));
 		sptr = enc.UTF8FromBytes(fileName, fnameBuff, fnameSize, 0);
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(fileName, sptr), 0, 0, 0, 0);
 
 		nextOfst = fileOfst + fileSize;
 		i += 20;

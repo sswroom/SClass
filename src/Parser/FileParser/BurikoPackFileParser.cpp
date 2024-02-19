@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(NotNull
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 16, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(fileName, sptr), 0, 0, 0, 0);
 
 		nextOfst = fileOfst + fileSize;
 		i++;

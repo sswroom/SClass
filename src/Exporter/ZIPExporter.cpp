@@ -72,10 +72,10 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 				NotNullPtr<const IO::PackFileItem> pitem;
 				if (NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPackFileItem(i).SetTo(pitem) && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
 				{
-					UInt64 dataSize = pitem->fd->GetDataSize();
+					UInt64 dataSize = pitem->dataLength;
 					UOSInt readSize;
 					Data::ByteBuffer buff((UOSInt)dataSize);
-					if ((readSize = pitem->fd->GetRealData(0, (UOSInt)dataSize, buff)) != dataSize)
+					if ((readSize = pitem->fullFd->GetRealData(NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff)) != dataSize)
 					{
 #if defined(VERBOSE)
 						printf("ZIPExp: Error in reading compressed data: dataSize = %lld, readSize = %lld, fileName = %s\r\n", dataSize, (UInt64)readSize, pitem->name->v);

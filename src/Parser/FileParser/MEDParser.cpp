@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(NotNullPtr<IO::Str
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], recSize - 8, 0);
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(fileName, sptr), 0, 0, 0, 0);
 
 		nextOfst = fileOfst + fileSize;
 		i++;

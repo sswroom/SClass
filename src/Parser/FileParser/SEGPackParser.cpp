@@ -80,7 +80,7 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFileHdr(NotNullPtr<IO:
 		}
 		
 		sptr = enc.UTF8FromBytes(name, &buff[buffOfst + 16], packSize - 17, 0);
-		pf->AddData(fd, thisOfst, thisSize, CSTRP(name, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, thisOfst, thisSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(name, sptr), 0, 0, 0, 0);
 
 		fileOfst += thisSize;
 		buffOfst += packSize;

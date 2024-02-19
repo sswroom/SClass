@@ -529,6 +529,23 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NotNullPtr<IO::FileAnalyse::
 				k += ntfsSize;
 			}
 		}
+		else if (extraTag == 0x5455)
+		{
+			k = extraStart + j + 4;
+			frame->AddUInt(k, 1, CSTR("Flags"), tagData[k]);
+			frame->AddUInt64(k + 1, CSTR("File last modification time"), ReadUInt64(&tagData[k + 1]));
+		}
+		else if (extraTag == 0x7875)
+		{
+			k = extraStart + j + 4;
+			frame->AddUInt(k, 1, CSTR("Version"), tagData[k]);
+			k++;
+			frame->AddUInt(k, 1, CSTR("UIDSize"), tagData[k]);
+			frame->AddHexBuff(k + 1, CSTR("UID"), tagData.SubArray(k + 1, tagData[k]), false);
+			k += 1 + (UOSInt)tagData[k];
+			frame->AddUInt(k, 1, CSTR("GIDSize"), tagData[k]);
+			frame->AddHexBuff(k + 1, CSTR("GID"), tagData.SubArray(k + 1, tagData[k]), false);
+		}
 		j += 4 + (UOSInt)extraSize;
 	}
 }

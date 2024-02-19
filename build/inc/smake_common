@@ -1,3 +1,7 @@
+## optional.cfg
+# NO_MINIZ := 1
+
+
 INCLUDEPATH :=../../header
 CFLAGS += -I ../../header
 INCLUDEPATH +=:../../ThirdParty/miniz
@@ -1502,13 +1506,13 @@ Data/Compress/Decompressor.h:
 @Decompressor.o
 Data/Compress/DeflateStream.h:
 @?(NO_MINIZ == 0)DeflateStreamMiniz.o
-@?(NO_MINIZ > 0)DeflateStreamNull.o
+@?(NO_MINIZ > 0)DeflateStreamZlib.o
 Data/Compress/Inflate.h:
 @?(NO_MINIZ == 0)InflateMiniz.o
-@?(NO_MINIZ > 0)InflateNull.o
+@?(NO_MINIZ > 0)InflateZlib.o
 Data/Compress/InflateStream.h:
 @?(NO_MINIZ == 0)InflateStreamMiniz.o
-@?(NO_MINIZ > 0)InflateStreamNull.o
+@?(NO_MINIZ > 0)InflateStreamZlib.o
 Data/Compress/LZODecompressor.h:
 @LZODecompressor.o
 @LZODecompressor_CPP.o

@@ -176,7 +176,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, 0, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
 						break;
 					}
 				}
@@ -238,7 +238,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, 0, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
 						break;
 					}
 				}

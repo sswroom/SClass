@@ -199,7 +199,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 						}
 						currSect = ReadUInt32(&fat[currSect * 4]);
 					}
-					pkg->AddData(itemFd, 0, itemFd.GetDataSize(), sb.ToCString(), modifyTS, modifyTS, createTS, 0);
+					pkg->AddData(itemFd, 0, itemFd.GetDataSize(), IO::PackFileItem::HeaderType::No, 0, sb.ToCString(), modifyTS, modifyTS, createTS, 0);
 				}
 				else
 				{
@@ -227,7 +227,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 						}
 						currSect = ReadUInt32(&miniFat[currSect * 4]);
 					}
-					pkg->AddData(itemFd, 0, itemFd.GetDataSize(), sb.ToCString(), modifyTS, modifyTS, createTS, 0);
+					pkg->AddData(itemFd, 0, itemFd.GetDataSize(), IO::PackFileItem::HeaderType::No, 0, sb.ToCString(), modifyTS, modifyTS, createTS, 0);
 				}
 			}
 			i += 128;

@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			UInt8 *buff = &recBuff[recCnt * 12 + ReadUInt32(&recBuff[j])];
 			sptr = enc.UTF8FromBytes(fileName, buff, Text::StrCharCnt(buff), 0);
-			pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0, 0, 0, 0);
+			pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(fileName, sptr), 0, 0, 0, 0);
 		}
 		i++;
 		j += 12;
