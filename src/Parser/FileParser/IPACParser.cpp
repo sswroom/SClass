@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFileHdr(NotNullPtr<IO::St
 		sptr = enc.UTF8FromBytes(name, rec, 32, 0);
 		currSize = ReadUInt32(&rec[40]);
 
-		pf->AddData(fd, currOfst, currSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(name, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, currOfst, currSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);
 		currOfst += currSize;
 		hdrOfst += 44;
 		i++;

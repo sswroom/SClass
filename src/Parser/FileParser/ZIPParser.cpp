@@ -385,7 +385,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 
 					if (compMeth == 0)
 					{
-						pf2->AddData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::Zip, 30 + fnameSize + extraSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+						pf2->AddData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::Zip, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
 					else
 					{
@@ -422,7 +422,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							}
 							compInfo.decSize = ReadUInt32(&buff[22]);
 						}
-						pf2->AddCompData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::Zip, 30 + fnameSize + extraSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+						pf2->AddCompData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::Zip, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
 					currOfst += 30 + fnameSize + extraSize + dataSize;
 				}
@@ -685,7 +685,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 			}
 			if (compMeth == 0)
 			{
-				pf2->AddData(fd, ofst, compSize, IO::PackFileItem::HeaderType::Zip, hdrLen, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
+				pf2->AddData(fd, ofst, compSize, IO::PackFileItem::HeaderType::Zip, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
 			}
 			else
 			{
@@ -703,7 +703,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 					compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 				}
 				compInfo.decSize = uncompSize;
-				pf2->AddCompData(fd, ofst, compSize, IO::PackFileItem::HeaderType::Zip, hdrLen, &compInfo, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
+				pf2->AddCompData(fd, ofst, compSize, IO::PackFileItem::HeaderType::Zip, &compInfo, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
 			}
 		}
 

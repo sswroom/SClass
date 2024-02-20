@@ -258,7 +258,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::VirtualPackageFil
 					sptr = &fileNameEnd[i];
 				}
 				fd = sectorData->GetStreamData(sectorNum, fileSize);
-				pkgFile->AddData(fd, 0, fileSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(fileNameEnd, sptr), Data::Timestamp(dt.ToInstant(), 0), 0, 0, 0);
+				pkgFile->AddData(fd, 0, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileNameEnd, sptr), Data::Timestamp(dt.ToInstant(), 0), 0, 0, 0);
 				fd.Delete();
 			}
 

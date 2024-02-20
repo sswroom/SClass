@@ -151,7 +151,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 				break;
 			}
 		}
-		pf2->AddData(fd, currOfst, itemSize, IO::PackFileItem::HeaderType::No, 0, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
+		pf2->AddData(fd, currOfst, itemSize, IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
 		if (itemSize & 511)
 		{
 			currOfst += itemSize + 512 - (itemSize & 511);
