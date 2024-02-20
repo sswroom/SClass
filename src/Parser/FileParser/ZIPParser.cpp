@@ -325,7 +325,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sptr[i] = 0;
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 							sb.AppendC(sptr, i);
-							if (!pf3.Set(pf2->GetPackFile({sptr, i})))
+							if (!pf2->GetPackFile({sptr, i}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
@@ -337,7 +337,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							sb.AppendC(UTF8STRC("\\"));
 							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-							if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
+							if (!pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
@@ -369,7 +369,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sptr[i] = 0;
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 							sb.AppendC(sptr, i);
-							if (!pf3.Set(pf2->GetPackFile({sptr, i})))
+							if (!pf2->GetPackFile({sptr, i}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
@@ -629,7 +629,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 				if (j != INVALID_INDEX)
 				{
 					sptr[j] = 0;
-					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
+					if (!pf2->GetPackFile({sptr, j}).SetTo(pf3))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, &sptr[j])));
 						pf2->AddPack(pf3, {sptr, j}, modTime, accTime, createTime, unixAttr);
@@ -640,7 +640,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 				}
 				else
 				{
-					if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
+					if (!pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)}).SetTo(pf3))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, sptrEnd)));
 						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
@@ -660,7 +660,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 				if (j != INVALID_INDEX)
 				{
 					sptr[j] = 0;
-					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
+					if (!pf2->GetPackFile({sptr, j}).SetTo(pf3))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, &sptr[j])));
 						pf2->AddPack(pf3, {sptr, j}, modTime, accTime, createTime, unixAttr);

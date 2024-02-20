@@ -46,7 +46,7 @@ namespace IO
 	private:
 		Data::ArrayList<FileItem> files;
 		NotNullPtr<Text::String> dirName;
-		IO::PackageFile *parent;
+		Optional<IO::PackageFile> parent;
 
 		void AddFile(Text::CStringNN fileName);
 		void Init();
@@ -79,9 +79,9 @@ namespace IO
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
 		virtual Optional<IO::StreamData> OpenStreamData(Text::CString fileName) const;
 		virtual Bool HasParent() const;
-		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
+		virtual Optional<IO::PackageFile> GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UOSInt index);
-		virtual void SetParent(IO::PackageFile *pkg);
+		virtual void SetParent(Optional<IO::PackageFile> pkg);
 
 		Bool Sort();
 	};

@@ -60,9 +60,9 @@ namespace IO
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName) = 0;
 		virtual Optional<IO::StreamData> OpenStreamData(Text::CString fileName) const = 0;
 		virtual Bool HasParent() const = 0;
-		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const = 0;
+		virtual Optional<IO::PackageFile> GetParent(OutParam<Bool> needRelease) const = 0;
 		virtual Bool DeleteItem(UOSInt index) = 0;
-		virtual void SetParent(IO::PackageFile *pkg) = 0;
+		virtual void SetParent(Optional<IO::PackageFile> pkg) = 0;
 	};
 }
 #endif

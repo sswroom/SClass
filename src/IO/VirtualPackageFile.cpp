@@ -20,7 +20,7 @@
 void IO::VirtualPackageFile::ReusePackFileItem(NotNullPtr<IO::PackFileItem> item)
 {
 	SDEL_CLASS(item->fullFd);
-	SDEL_CLASS(item->pobj);
+	item->pobj.Delete();
 	if (item->compInfo)
 	{
 		if (item->compInfo->compExtras)
@@ -52,7 +52,7 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 		{
 			item->name->Release();
 			SDEL_CLASS(item->fullFd);
-			SDEL_CLASS(item->pobj);
+			item->pobj.Delete();
 			if (item->compInfo)
 			{
 				if (item->compInfo->compExtras)
@@ -265,19 +265,20 @@ Bool IO::VirtualPackageFile::AddOrReplaceCompData(NotNullPtr<StreamData> fd, UIn
 Bool IO::VirtualPackageFile::AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NotNullPtr<PackFileItem> item;
+	NotNullPtr<IO::ParsedObject> pobj;
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		if (this->items.GetItem(i).SetTo(item) && item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		if (this->items.GetItem(i).SetTo(item) && item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj.SetTo(pobj) && pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			IO::PackageFile *myPkg = (IO::PackageFile*)item->pobj;
+			NotNullPtr<IO::PackageFile> myPkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 			if (myPkg->GetFileType() == IO::PackageFileType::Virtual)
 			{
 				item->modTime = modTime;
 				item->accTime = accTime;
 				item->createTime = createTime;
 				item->unixAttr = unixAttr;
-				Bool succ = ((IO::VirtualPackageFile*)myPkg)->MergePackage(pkg);
+				Bool succ = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(myPkg)->MergePackage(pkg);
 				pkg.Delete();
 				return succ;
 			}
@@ -288,11 +289,11 @@ Bool IO::VirtualPackageFile::AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, T
 	return this->AddPack(pkg, name, modTime, accTime, createTime, unixAttr);
 }
 
-IO::PackageFile *IO::VirtualPackageFile::GetPackFile(Text::CStringNN name) const
+Optional<IO::PackageFile> IO::VirtualPackageFile::GetPackFile(Text::CStringNN name) const
 {
 	IO::PackFileItem *item = this->pkgFiles.GetC(name);
 	if (item)
-		return (IO::PackageFile*)item->pobj;
+		return Optional<IO::PackageFile>::ConvertFrom(item->pobj);
 	return 0;
 }
 
@@ -303,6 +304,7 @@ Bool IO::VirtualPackageFile::MergePackage(NotNullPtr<IO::PackageFile> pkg)
 		NotNullPtr<IO::VirtualPackageFile> vpkg = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg);
 		NotNullPtr<const IO::PackFileItem> item;
 		NotNullPtr<IO::StreamData> fd;
+		NotNullPtr<IO::ParsedObject> pobj;
 		Data::ArrayIterator<NotNullPtr<PackFileItem>> it = vpkg->PackFileIterator();
 		while (it.HasNext())
 		{
@@ -322,11 +324,11 @@ Bool IO::VirtualPackageFile::MergePackage(NotNullPtr<IO::PackageFile> pkg)
 					return false;
 				break;
 			case IO::PackFileItem::PackItemType::ParsedObject:
-				if (item->pobj == 0)
+				if (!item->pobj.SetTo(pobj))
 					return false;
-				if (item->pobj->GetParserType() != IO::ParserType::PackageFile)
+				if (pobj->GetParserType() != IO::ParserType::PackageFile)
 					return false;
-				if (!this->AddOrReplacePack(((IO::PackageFile*)item->pobj)->Clone(), item->name->ToCString(), item->modTime, item->accTime, item->createTime, item->unixAttr))
+				if (!this->AddOrReplacePack(NotNullPtr<IO::PackageFile>::ConvertFrom(pobj)->Clone(), item->name->ToCString(), item->modTime, item->accTime, item->createTime, item->unixAttr))
 					return false;
 				break;
 			default:
@@ -383,6 +385,7 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(const U
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
 	UOSInt nameLen;
+	NotNullPtr<IO::ParsedObject> pobj;
 	UTF8Char c;
 	sptr = name;
 	while (true)
@@ -406,20 +409,20 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(const U
 			}
 			if (sptr[0] == 0)
 				return item;
-			if (item->itemType != IO::PackFileItem::PackItemType::ParsedObject)
+			if (item->itemType != IO::PackFileItem::PackItemType::ParsedObject || !item->pobj.SetTo(pobj))
 			{
 				return 0;
 			}
-			if (item->pobj->GetParserType() != IO::ParserType::PackageFile)
+			if (pobj->GetParserType() != IO::ParserType::PackageFile)
 			{
 				return 0;
 			}
-			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
+			NotNullPtr<IO::PackageFile> pf = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 			if (pf->GetFileType() != PackageFileType::Virtual)
 			{
 				return 0;
 			}
-			return ((IO::VirtualPackageFile*)pf)->GetPackFileItem(sptr);
+			return NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pf)->GetPackFileItem(sptr);
 		}
 	}
 	return 0;
@@ -432,13 +435,14 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UOSInt 
 
 IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetPItemType(NotNullPtr<const PackFileItem> itemObj) const
 {
+	NotNullPtr<IO::ParsedObject> pobj;
 	if (itemObj->itemType == IO::PackFileItem::PackItemType::Compressed || itemObj->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 	{
 		return IO::PackageFile::PackObjectType::StreamData;
 	}
-	else if (itemObj->itemType == IO::PackFileItem::PackItemType::ParsedObject)
+	else if (itemObj->itemType == IO::PackFileItem::PackItemType::ParsedObject && itemObj->pobj.SetTo(pobj))
 	{
-		if (itemObj->pobj->GetParserType() == IO::ParserType::PackageFile)
+		if (pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			return IO::PackageFile::PackObjectType::PackageFileType;
 		}
@@ -559,10 +563,11 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NotNullPtr<c
 
 Optional<IO::PackageFile> IO::VirtualPackageFile::GetPItemPack(NotNullPtr<const PackFileItem> item, OutParam<Bool> needRelease) const
 {
-	if (item->itemType == PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+	NotNullPtr<IO::ParsedObject> pobj;
+	if (item->itemType == PackFileItem::PackItemType::ParsedObject && item->pobj.SetTo(pobj) && pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
 		needRelease.Set(false);
-		return ((IO::PackageFile*)item->pobj);
+		return Optional<IO::PackageFile>::ConvertFrom(item->pobj);
 	}
 	return 0;
 }
@@ -604,9 +609,9 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(UOSInt index)
 	return 0;
 }
 
-Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const
+Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(Text::CStringNN name) const
 {
-	UOSInt index = GetItemIndex({name, nameLen});
+	UOSInt index = GetItemIndex(name);
 	if (index == INVALID_INDEX)
 	{
 		return 0;
@@ -718,6 +723,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 {
 	UOSInt i;
 	NotNullPtr<IO::PackFileItem> item;
+	NotNullPtr<IO::ParsedObject> pobj;
 	Data::ArrayIterator<NotNullPtr<PackFileItem>> it = this->items.Iterator();
 	i = 0;
 	while (it.HasNext())
@@ -733,7 +739,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 		}
 		else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 		{
-			if (item->pobj->GetSourceNameObj()->EqualsICase(name))
+			if (item->pobj.SetTo(pobj) && pobj->GetSourceNameObj()->EqualsICase(name))
 				return i;
 		}
 		i++;
@@ -830,6 +836,7 @@ Bool IO::VirtualPackageFile::RetryMoveFrom(Text::CStringNN fileName, IO::Progres
 Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName)
 {
 	NotNullPtr<IO::PackFileItem> item;
+	NotNullPtr<IO::ParsedObject> pobj;
 	if (this->items.GetItem(index).SetTo(item))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -958,9 +965,9 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 
 			return succ;
 		}
-		else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj.SetTo(pobj) && pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
+			NotNullPtr<IO::PackageFile> pf = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 			IO::Path::CreateDirectory(sb.ToCString());
 			UOSInt i = 0;
 			UOSInt j = pf->GetCount();
@@ -1067,10 +1074,10 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CString fi
 
 Bool IO::VirtualPackageFile::HasParent() const
 {
-	return this->parent != 0;
+	return !this->parent.IsNull();
 }
 
-IO::PackageFile *IO::VirtualPackageFile::GetParent(OutParam<Bool> needRelease) const
+Optional<IO::PackageFile> IO::VirtualPackageFile::GetParent(OutParam<Bool> needRelease) const
 {
 	needRelease.Set(false);
 	return this->parent;
@@ -1079,9 +1086,10 @@ IO::PackageFile *IO::VirtualPackageFile::GetParent(OutParam<Bool> needRelease) c
 Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
 {
 	NotNullPtr<IO::PackFileItem> item;
+	NotNullPtr<IO::ParsedObject> pobj;
 	if (this->items.RemoveAt(index).SetTo(item))
 	{
-		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj.SetTo(pobj) && pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			this->pkgFiles.RemoveNN(item->name);
 		}
@@ -1093,17 +1101,18 @@ Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
 	return false;
 }
 
-void IO::VirtualPackageFile::SetParent(IO::PackageFile *pkg)
+void IO::VirtualPackageFile::SetParent(Optional<IO::PackageFile> pkg)
 {
 	this->parent = pkg;
 	NotNullPtr<PackFileItem> item;
+	NotNullPtr<IO::ParsedObject> pobj;
 	Data::ArrayIterator<NotNullPtr<PackFileItem>> it = this->items.Iterator();
 	while (it.HasNext())
 	{
 		item = it.Next();
-		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj.SetTo(pobj) && pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			((IO::PackageFile*)item->pobj)->SetParent(this);
+			NotNullPtr<IO::PackageFile>::ConvertFrom(pobj)->SetParent(this);
 		}
 	}
 }

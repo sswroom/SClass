@@ -98,7 +98,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[i] = 0;
 						sb.AppendC(UTF8STRC("\\"));
 						sb.AppendC(sptr, i);
-						if (!pf3.Set(pf2->GetPackFile({sptr, i})))
+						if (!pf2->GetPackFile({sptr, i}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 							pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
@@ -112,7 +112,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							sb.AppendC(UTF8STRC("\\"));
 							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-							if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
+							if (!pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
@@ -138,7 +138,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 				sptr[i] = 0;
 				sb.AppendC(UTF8STRC("\\"));
 				sb.AppendC(sptr, i);
-				if (!pf3.Set(pf2->GetPackFile({sptr, i})))
+				if (!pf2->GetPackFile({sptr, i}).SetTo(pf3))
 				{
 					NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 					pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
