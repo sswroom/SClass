@@ -63,7 +63,7 @@ namespace Net
 		void ReadBegin();
 		Text::CStringNN ReadName(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff);
 		Text::CString ReadNameNoDef(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff);
-		void ReadContainer();
+		void ReadContainerBegin();
 		void ReadContainerEnd();
 
 		NotNullPtr<ASN1Names> AnyCond();

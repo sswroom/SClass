@@ -148,7 +148,7 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 	}
 }
 
-void Net::ASN1Names::ReadContainer()
+void Net::ASN1Names::ReadContainerBegin()
 {
 	Optional<NameRule> rule;
 	NotNullPtr<NameRule> nnrule;

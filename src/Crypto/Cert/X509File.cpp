@@ -3079,27 +3079,13 @@ Bool Crypto::Cert::X509File::IsSignatureKey(NotNullPtr<Net::SSLEngine> ssl, NotN
 	{
 		return false;
 	}
-	if (signature[0] == 0)
-	{
-		signature++;
-		signSize--;
-	}
-	UOSInt mySignSize;
-	UInt8 mySignature[256];
-	if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, data, dataSize + itemOfst, mySignature, mySignSize))
+	if (signature[0] != 0)
+		return false;
+	signature++;
+	signSize--;
+	if (!ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, data, dataSize + itemOfst, signature, signSize))
 	{
 		return false;
-	}
-	if (signSize != mySignSize)
-	{
-		return false;
-	}
-	while (signSize-- > 0)
-	{
-		if (signature[signSize] != mySignature[signSize])
-		{
-			return false;
-		}
 	}
 	return true;
 }

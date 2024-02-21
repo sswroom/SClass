@@ -1,0 +1,1966 @@
+import * as data from "./data.js";
+import * as hash from "./hash.js";
+import * as text from "./text.js";
+
+export const ASN1Type = {
+	X509: 0
+}
+
+export const X509FileType = {
+	Cert: 0,
+	Key: 1,
+	CertRequest: 2,
+	PrivateKey: 3,
+	PublicKey: 4,
+	PKCS7: 5,
+	PKCS12: 6,
+	CRL: 7,
+	FileList: 8
+}
+
+export const KeyType = {
+	Unknown: 0,
+	RSA: 1,
+	DSA: 2,
+	ECDSA: 3,
+	ED25519: 4,
+	RSAPublic: 5,
+	ECPublic: 6
+}
+
+export const CertValidStatus = {
+	Valid: "Valid",
+	SelfSigned: "SelfSigned",
+	SignatureInvalid: "SignatureInvalid",
+	Revoked: "Revoked",
+	FileFormatInvalid: "FileFormatInvalid",
+	UnknownIssuer: "UnknownIssuer",
+	Expired: "Expired",
+	UnsupportedAlgorithm: "UnsupportedAlgorithm"
+}
+
+export const AlgType = {
+	Unknown: "Unknown",
+	MD2WithRSAEncryption: "MD2WithRSAEncryption",
+	MD5WithRSAEncryption: "MD5WithRSAEncryption",
+	SHA1WithRSAEncryption: "SHA1WithRSAEncryption",
+	SHA256WithRSAEncryption: "SHA256WithRSAEncryption",
+	SHA384WithRSAEncryption: "SHA384WithRSAEncryption",
+	SHA512WithRSAEncryption: "SHA512WithRSAEncryption",
+	SHA224WithRSAEncryption: "SHA224WithRSAEncryption",
+	ECDSAWithSHA256: "ECDSAWithSHA256",
+	ECDSAWithSHA384: "ECDSAWithSHA384"
+}
+
+export const ASN1ItemType = {
+	UNKNOWN: 0,
+	BOOLEAN: 0x01,
+	INTEGER: 0x02,
+	BIT_STRING: 0x03,
+	OCTET_STRING: 0x04,
+	NULL: 0x05,
+	OID: 0x06,
+	ENUMERATED: 0x0a,
+	UTF8STRING: 0x0c,
+	NUMERICSTRING: 0x12,
+	PRINTABLESTRING: 0x13,
+	T61STRING: 0x14,
+	VIDEOTEXSTRING: 0x15,
+	IA5STRING: 0x16,
+	UTCTIME: 0x17,
+	GENERALIZEDTIME: 0x18,
+	UNIVERSALSTRING: 0x1c,
+	BMPSTRING: 0x1e,
+	SEQUENCE: 0x30,
+	SET: 0x31,
+	CHOICE_0: 0x80,
+	CHOICE_1: 0x81,
+	CHOICE_2: 0x82,
+	CHOICE_3: 0x83,
+	CHOICE_4: 0x84,
+	CHOICE_5: 0x85,
+	CHOICE_6: 0x86,
+	CHOICE_7: 0x87,
+	CHOICE_8: 0x88,
+	CONTEXT_SPECIFIC_0: 0xa0,
+	CONTEXT_SPECIFIC_1: 0xa1,
+	CONTEXT_SPECIFIC_2: 0xa2,
+	CONTEXT_SPECIFIC_3: 0xa3,
+	CONTEXT_SPECIFIC_4: 0xa4
+}
+
+export const RuleCond = {
+	Any: 0,
+	TypeIsItemType: 1,
+	TypeIsTime: 2,
+	TypeIsString: 3,
+	TypeIsOpt: 4,
+	RepeatIfTypeIs: 5,
+	LastOIDAndTypeIs: 6,
+	AllNotMatch: 7
+}
+
+export class ASN1Util
+{
+	static pduParseLen(reader, ofst, endOfst)
+	{
+		if (ofst >= endOfst)
+			return null;
+		let v = reader.readUInt8(ofst);
+		if (v & 0x80)
+		{
+			if (v == 0x81)
+			{
+				if (ofst + 2 > endOfst)
+					return null;
+				return {nextOfst: ofst + 2, pduLen: reader.readUInt8(ofst + 1)};
+			}
+			else if (v == 0x82)
+			{
+				if (ofst + 3 > endOfst)
+					return null;
+				return {nextOfst: ofst + 3, pduLen: reader.readUInt16(ofst + 1, false)};
+			}
+			else if (v == 0x83)
+			{
+				if (ofst + 4 > endOfst)
+					return null;
+				return {nextOfst: ofst + 4, pduLen: reader.readUInt24(ofst + 1, false)};
+			}
+			else if (v == 0x84)
+			{
+				if (ofst + 5 > endOfst)
+					return null;
+				return {nextOfst: ofst + 5, pduLen: reader.readUInt32(ofst + 1, false)};
+			}
+			else if (v == 0x80)
+			{
+				return {nextOfst: ofst + 1, pduLen: 0};
+			}
+			return null;
+		}
+		else
+		{
+			return {nextOfst: ofst + 1, pduLen: v};
+		}
+	}
+
+	static pduDSizeEnd(reader, startOfst, endOfst)
+	{
+		while (startOfst < endOfst)
+		{
+			size = (UOSInt)(pduEnd - pdu);
+			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
+			if (len == null)
+			{
+				return null;
+			}
+			else if (len.nextOfst + len.pduLen > endOfst)
+			{
+				return null;
+			}
+	
+			if (reader.readUInt8(startOfst) == 0 && reader.readUInt8(startOfst + 1) == 0)
+			{
+				return startOfst + 2;
+			}
+			else if (pdu[1] == 0x80)
+			{
+				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
+				if (startOfst == null)
+				{
+					return null;
+				}
+			}
+			else
+			{
+				startOfst = len.nextOfst + len.pduLen;
+			}
+		}
+		return startOfst;
+	}
+
+	static pduGetItem(reader, startOfst, endOfst, path)
+	{
+		if (path == null || path == "")
+			return null;
+		let i = path.indexOf(".");
+		let cnt;
+		if (i == -1)
+		{
+			cnt = Number.parseInt(path);
+			path = "";
+		}
+		else
+		{
+			cnt = Number.parseInt(path.substr(0, i));
+			path = path.substr(i + 1);
+		}
+		if (Number.isNaN(cnt) || cnt < 1)
+			return null;
+
+		while (startOfst < endOfst)
+		{
+			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
+			if (len == null)
+			{
+				return null;
+			}
+			else if (len.nextOfst + len.pduLen > endOfst)
+			{
+				return null;
+			}
+			else if (reader.readUInt8(startOfst) == 0 && reader.readUInt8(startOfst + 1) == 0)
+			{
+				return null;
+			}
+	
+			cnt--;
+			if (cnt == 0)
+			{
+				if (path == "")
+				{
+					if (reader.readUInt8(startOfst + 1) == 0x80)
+					{
+						let ret = {
+							rawOfst: startOfst,
+							hdrLen: len.nextOfst - startOfst,
+							contLen: ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst),
+							itemType: reader.readUInt8(startOfst)};
+						if (ret.contLen == null)
+							return null;
+						return ret;
+					}
+					else
+					{
+						return {
+							rawOfst: startOfst,
+							hdrLen: len.nextOfst - startOfst,
+							contLen: len.pduLen,
+							itemType: reader.readUInt8(startOfst)};
+					}
+				}
+				if (pdu[1] == 0x80)
+				{
+					return ASN1Util.pduGetItem(reader, len.nextOfst, endOfst, path);
+				}
+				else
+				{
+					return ASN1Util.pduGetItem(reader, len.nextOfst, len.nextOfst + len.pduLen, path);
+				}
+			}
+			else if (reader.readUInt8(startOfst + 1) == 0x80)
+			{
+				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
+				if (startOfst == null)
+				{
+					return null;
+				}
+			}
+			else
+			{
+				startOfst = len.nextOfst + len.pduLen;
+			}
+		}
+		return null;
+	}
+
+	static oidCompare(oid1, oid2)
+	{
+		let i = 0;
+		let oid1Len = oid1.length;
+		let oid2Len = oid2.length;
+		while (true)
+		{
+			if (i == oid1Len && i == oid2Len)
+			{
+				return 0;
+			}
+			else if (i >= oid1Len)
+			{
+				return -1;
+			}
+			else if (i >= oid2Len)
+			{
+				return 1;
+			}
+			else if (oid1[i] > oid2[i])
+			{
+				return 1;
+			}
+			else if (oid1[i] < oid2[i])
+			{
+				return -1;
+			}
+			i++;
+		}
+	}
+
+	static oidEqualsText(oidPDU, oidText)
+	{
+		let oid2 = ASN1Util.oidText2PDU(oidText);
+		return ASN1Util.oidCompare(oidPDU, oid2) == 0;
+	}
+
+	static oidText2PDU(oidText)
+	{
+		let sarr = oidText.split(".");
+		let i = 2;
+		let j = sarr.length;
+		if (j == 1)
+		{
+			return [Number.parseInt(sarr[0])];
+		}
+		let pduBuff = [];
+		pduBuff.push(pduBuff[0] * 40 + pduBuff[1]);
+		if (j == 2)
+		{
+			return pduBuff;
+		}
+		while (i < j)
+		{
+			let v = Number.parseInt(sarr[i]);
+			if (Number.isNaN(v))
+				return null;
+			if (v < 128)
+			{
+				pduBuff.push(v);
+			}
+			else if (v < 0x4000)
+			{
+				pduBuff.push(0x80 | (v >> 7));
+				pduBuff.push((v & 0x7f));
+			}
+			else if (v < 0x200000)
+			{
+				pduBuff.push(0x80 | (v >> 14));
+				pduBuff.push(0x80 | ((v >> 7) & 0x7f));
+				pduBuff.push(v & 0x7f);
+			}
+			else if (v < 0x10000000)
+			{
+				pduBuff.push(0x80 | (v >> 21));
+				pduBuff.push(0x80 | ((v >> 14) & 0x7f));
+				pduBuff.push(0x80 | ((v >> 7) & 0x7f));
+				pduBuff.push(v & 0x7f);
+			}
+			else
+			{
+				pduBuff.push(0x80 | (v >> 28));
+				pduBuff.push(0x80 | ((v >> 21) & 0x7f));
+				pduBuff.push(0x80 | ((v >> 14) & 0x7f));
+				pduBuff.push(0x80 | ((v >> 7) & 0x7f));
+				pduBuff.push(v & 0x7f);
+			}
+			i++;
+		}
+		return pduBuff;
+	}
+
+	static itemTypeGetName(itemType)
+	{
+		switch (itemType)
+		{
+		case ASN1ItemType.UNKNOWN:
+			return "UNKNOWN";
+		case ASN1ItemType.BOOLEAN:
+			return "BOOLEAN";
+		case ASN1ItemType.INTEGER:
+			return "INTEGER";
+		case ASN1ItemType.BIT_STRING:
+			return "BIT_STRING";
+		case ASN1ItemType.OCTET_STRING:
+			return "OCTET_STRING";
+		case ASN1ItemType.NULL:
+			return "NULL";
+		case ASN1ItemType.OID:
+			return "OID";
+		case ASN1ItemType.ENUMERATED:
+			return "ENUMERATED";
+		case ASN1ItemType.UTF8STRING:
+			return "UTF8STRING";
+		case ASN1ItemType.NUMERICSTRING:
+			return "NUMERICSTRING";
+		case ASN1ItemType.PRINTABLESTRING:
+			return "PRINTABLESTRING";
+		case ASN1ItemType.T61STRING:
+			return "T61STRING";
+		case ASN1ItemType.VIDEOTEXSTRING:
+			return "VIDEOTEXSTRING";
+		case ASN1ItemType.IA5STRING:
+			return "IA5STRING";
+		case ASN1ItemType.UTCTIME:
+			return "UTCTIME";
+		case ASN1ItemType.GENERALIZEDTIME:
+			return "GENERALIZEDTIME";
+		case ASN1ItemType.UNIVERSALSTRING:
+			return "UNIVERSALSTRING";
+		case ASN1ItemType.BMPSTRING:
+			return "BMPSTRING";
+		case ASN1ItemType.SEQUENCE:
+			return "SEQUENCE";
+		case ASN1ItemType.SET:
+			return "SET";
+		case ASN1ItemType.CHOICE_0:
+			return "CHOICE_0";
+		case ASN1ItemType.CHOICE_1:
+			return "CHOICE_1";
+		case ASN1ItemType.CHOICE_2:
+			return "CHOICE_2";
+		case ASN1ItemType.CHOICE_3:
+			return "CHOICE_3";
+		case ASN1ItemType.CHOICE_4:
+			return "CHOICE_4";
+		case ASN1ItemType.CHOICE_5:
+			return "CHOICE_5";
+		case ASN1ItemType.CHOICE_6:
+			return "CHOICE_6";
+		case ASN1ItemType.CHOICE_7:
+			return "CHOICE_7";
+		case ASN1ItemType.CHOICE_8:
+			return "CHOICE_8";
+		case ASN1ItemType.CONTEXT_SPECIFIC_0:
+			return "CONTEXT_SPECIFIC_0";
+		case ASN1ItemType.CONTEXT_SPECIFIC_1:
+			return "CONTEXT_SPECIFIC_1";
+		case ASN1ItemType.CONTEXT_SPECIFIC_2:
+			return "CONTEXT_SPECIFIC_2";
+		case ASN1ItemType.CONTEXT_SPECIFIC_3:
+			return "CONTEXT_SPECIFIC_3";
+		case ASN1ItemType.CONTEXT_SPECIFIC_4:
+			return "CONTEXT_SPECIFIC_4";
+		default:
+			return "Unknown";
+		}		
+	}
+}
+
+class RuleContainer
+{
+	constructor()
+	{
+		this.rules = [];
+	}
+}
+
+export class ASN1Names
+{
+	addRule(rule)
+	{
+		if (this.readContainer)
+			this.readContainer.rules.push(rule);
+		else
+			this.rules.push(rule);
+		this.anyCond();
+	}
+	
+	constructor()
+	{
+		this.readContainer = null;
+		this.readLev = [];
+		this.readLastOID = null;
+		this.readIndex = 0;
+		this.rules = [];
+		this.readBegin();
+		this.anyCond();
+	}
+
+	readBegin()
+	{
+		this.readLev = [];
+		this.readIndex = 0;
+		this.readContainer = 0;
+		this.readLastOIDLen = 0;
+	}
+
+	readName(itemType, len, reader, ofst)
+	{
+		let name = this.readNameNoDef(itemType, len, reader, ofst);
+		if (name)
+			return name;
+		return ASN1Util.itemTypeGetName(itemType);
+	}
+
+	readNameNoDef(itemType, len, reader, ofst)
+	{
+		let anyMatch = false;
+		if (itemType == ASN1ItemType.OID)
+		{
+			this.readLastOID = new Uint8Array(reader.getArrayBuffer(ofst, len));
+		}
+		if (this.readIndex == -1)
+		{
+			return null;
+		}
+		let rule;
+		while (true)
+		{
+			if (this.readContainer)
+			{
+				rule = this.readContainer.rules[this.readIndex];
+			}
+			else
+			{
+				rule = this.rules[this.readIndex];
+			}
+			if (rule == null)
+			{
+				return null;
+			}
+			switch (rule.cond)
+			{
+			default:
+			case RuleCond.Any:
+				this.readIndex++;
+				return rule.name;
+			case RuleCond.TypeIsItemType:
+				this.readIndex++;
+				if (rule.itemType == itemType)
+					return rule.name;
+				break;
+			case RuleCond.TypeIsTime:
+				this.readIndex++;
+				if (itemType == ASN1ItemType.UTCTIME || itemType == ASN1ItemType.GENERALIZEDTIME)
+					return rule.name;
+				break;
+			case RuleCond.TypeIsString:
+				this.readIndex++;
+				if (itemType == ASN1ItemType.BMPSTRING ||
+					itemType == ASN1ItemType.UTF8STRING ||
+					itemType == ASN1ItemType.UNIVERSALSTRING ||
+					itemType == ASN1ItemType.PRINTABLESTRING ||
+					itemType == ASN1ItemType.T61STRING)
+					return rule.name;
+				break;
+			case RuleCond.TypeIsOpt:
+				this.readIndex++;
+				if (itemType == rule.itemType + ASN1ItemType.CHOICE_0 ||
+					itemType == rule.itemType + ASN1ItemType.CONTEXT_SPECIFIC_0)
+					return rule.name;
+				break;
+			case RuleCond.LastOIDAndTypeIs:
+				this.readIndex++;
+				if (itemType == rule.itemType && ASN1Util.oidEqualsText(this.readLastOID, rule.condParam))
+					return rule.name;
+				break;
+			case RuleCond.RepeatIfTypeIs:
+				if (itemType == rule.itemType)
+					return rule.name;
+				this.readIndex++;
+				break;
+			case RuleCond.AllNotMatch:
+				this.readIndex = 0;
+				if (anyMatch)
+					return rule.name;
+				anyMatch = true;
+				break;
+			}
+		}
+	}
+
+	readContainerBegin()
+	{
+		let rule;
+		if (this.readIndex == -1)
+		{
+			this.readLev.push(-1);
+		}
+		else
+		{
+			if (this.readContainer)
+			{
+				if (this.readIndex == 0)
+					rule = this.readContainer.rules[0];
+				else
+					rule = this.readContainer.rules[this.readIndex - 1];
+			}
+			else
+			{
+				if (this.readIndex == 0)
+					rule = this.rules[0];
+				else
+					rule = this.rules[this.readIndex - 1];
+			}
+			this.readLev.push(this.readIndex);
+			if (rule == null || rule.contentFunc == null)
+			{
+				this.readIndex = -1;
+			}
+			else
+			{
+				this.readIndex = 0;
+				let container = new RuleContainer();
+				container.parent = this.readContainer;
+				this.readContainer = container;
+				rule.contentFunc(this);
+			}
+		}
+	}
+
+	readContainerEnd()
+	{
+		if (this.readIndex == -1)
+		{
+			this.readIndex = this.readLev.pop();
+		}
+		else
+		{
+			this.readIndex = this.readLev.pop();
+			if (this.readContainer)
+			{
+				this.readContainer = this.readContainer.parent;
+			}
+		}
+	}
+
+	anyCond()
+	{
+		this.currCond = RuleCond.Any;
+		this.currItemType = ASN1ItemType.UNKNOWN;
+		this.currCondParam = null;
+		return this;
+	}
+
+	typeIs(itemType)
+	{
+		this.currCond = RuleCond.TypeIsItemType;
+		this.currItemType = itemType;
+		this.currCondParam = null;
+		return this;
+	}
+
+	typeIsTime()
+	{
+		this.currCond = RuleCond.TypeIsTime;
+		this.currItemType = ASN1ItemType.UNKNOWN;
+		this.currCondParam = null;
+		return this;
+	}
+
+	typeIsString()
+	{
+		this.currCond = RuleCond.TypeIsString;
+		this.currItemType = ASN1ItemType.UNKNOWN;
+		this.currCondParam = null;
+		return this;
+	}
+
+	typeIsOpt(index)
+	{
+		this.currCond = RuleCond.TypeIsOpt;
+		this.currItemType = index;
+		this.currCondParam = null;
+		return this;
+	}
+
+	repeatIfTypeIs(itemType)
+	{
+		this.currCond = RuleCond.RepeatIfTypeIs;
+		this.currItemType = itemType;
+		this.currCondParam = null;
+		return this;
+	}
+
+	lastOIDAndTypeIs(oidText, itemType)
+	{
+		this.currCond = RuleCond.LastOIDAndTypeIs;
+		this.currItemType = itemType;
+		this.currCondParam = oidText;
+		return this;
+	}
+
+	allNotMatch()
+	{
+		this.currCond = RuleCond.AllNotMatch;
+		this.currItemType = ASN1ItemType.UNKNOWN;
+		this.currCondParam = null;
+		return this;
+	}
+
+	container(name, contFunc)
+	{
+		let rule = {
+			cond: this.currCond,
+			itemType: this.currItemType,
+			condParam: this.currCondParam,
+			name: name,
+			contentFunc: contFunc,
+			enumVals: null};
+		this.addRule(rule);
+		return this;
+	}
+
+	nextValue(name)
+	{
+		let rule = {
+			cond: this.currCond,
+			itemType: this.currItemType,
+			condParam: this.currCondParam,
+			name: name,
+			contentFunc: null,
+			enumVals: null};
+		this.addRule(rule);
+		return this;
+	}
+
+	enum(name, enums)
+	{
+		let rule = {
+			cond: this.currCond,
+			itemType: this.currItemType,
+			condParam: this.currCondParam,
+			name: name,
+			contentFunc: null,
+			enumVals: enums};
+		this.addRule(rule);
+		return this;
+	}
+
+	setCertificate()
+	{
+		PKIX1Explicit88.certificate(this);
+		return this;
+	}
+
+	setRSAPublicKey()
+	{
+		PKCS1.rsaPublicKey(this);
+		return this;
+	}
+
+	setRSAPrivateKey()
+	{
+		PKCS1.rsaPrivateKey(this);
+		return this;
+	}
+
+	setPKCS7ContentInfo()
+	{
+		PKCS7.contentInfo(this);
+		return this;
+	}
+
+	setCertificationRequest()
+	{
+		PKCS10.certificationRequest(this);
+		return this;
+	}
+
+	setPFX()
+	{
+		PKCS12.pfx(this);
+		return this;
+	}
+}
+
+class General
+{
+	static pbeParam(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("salt");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("iterations");
+	}
+	
+	static extendedValidationCertificates(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.OCTET_STRING).nextValue("signedCertTimestamp");
+	}
+	
+	static attributeOutlookExpress(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("issuerAndSerialNumber", PKCS7.issuerAndSerialNumberCont);
+	}
+}
+
+class InformationFramework
+{
+	static attributeCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("attrId");
+	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.1", ASN1ItemType.SET).container("attrValues", AttributeEmailAddress);
+	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.2", ASN1ItemType.SET).container("attrValues", AttributeUnstructuredName);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.3", ASN1ItemType.SET).container("attrValues", PKCS9.attributeContentType);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.4", ASN1ItemType.SET).container("attrValues", PKCS9.attributeMessageDigest);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.5", ASN1ItemType.SET).container("attrValues", PKCS9.attributeSigningTime);
+	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.6", ASN1ItemType.SET).container("attrValues", AttributeCounterSignature);
+	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.7", ASN1ItemType.SET).container("attrValues", AttributeChallengePassword);
+	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.8", ASN1ItemType.SET).container("attrValues", AttributeUnstructuredAddress);
+	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.9", ASN1ItemType.SET).container("attrValues", AttributeExtendedCertificateAttributes);
+	
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.15", ASN1ItemType.SET).container("attrValues", PKCS9.attributeSMIMECapabilities);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.16.2.11", ASN1ItemType.SET).container("attrValues", RFC8551.smimeEncryptionKeyPreference);
+	
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.20", ASN1ItemType.SET).container("attrValues", PKCS9.attributeFriendlyName);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.21", ASN1ItemType.SET).container("attrValues", PKCS9.attributeLocalKeyId);
+		names.lastOIDAndTypeIs("1.3.6.1.4.1.311.16.4", ASN1ItemType.SET).container("attrValues", General.attributeOutlookExpress);
+		
+		names.typeIs(ASN1ItemType.SET).nextValue("attrValues");
+	}
+}
+
+class PKCS1
+{
+	static rsaPublicKey(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("RSAPublicKey", PKCS1.rsaPublicKeyCont);
+	}
+
+	static rsaPublicKeyCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("modulus");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("publicExponent");
+	}
+
+	static rsaPrivateKey(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("RSAPrivateKey", PKCS1.rsaPrivateKeyCont);
+	}
+
+	static rsaPrivateKeyCont(names)
+	{
+		let version = ["two-prime", "multi"];
+		names.typeIs(ASN1ItemType.INTEGER).enum("Version", version);
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("modulus");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("publicExponent");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("privateExponent");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime1");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime2");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("exponent1");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("exponent2");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("coefficient");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("otherPrimeInfos", PKCS1.otherPrimeInfos);
+	}
+
+	static otherPrimeInfos(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("exponent");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("coefficient");
+	}
+
+	static addDigestInfo(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS1.digestInfoCont);
+	}
+
+	static digestInfoCont(names)
+	{
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "digestAlgorithm");
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("digest");
+	}
+
+}
+
+class PKCS7
+{
+	static addContentInfo(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS7.contentInfoCont);
+	}
+	
+	static contentInfo(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("ContentInfo", PKCS7.contentInfoCont);
+	}
+	
+	static contentInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.data);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.envelopedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.4", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedAndEnvelopedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.5", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.digestedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.encryptedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.16.1.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.authenticatedData);
+		names.nextValue("pkcs7-content"); ////////////////////////
+	}
+	
+	static data(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("data");
+	}
+	
+	static signedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.signedDataCont);
+	}
+	
+	static signedDataCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names.typeIs(ASN1ItemType.SET).container("digestAlgorithms", PKCS7.digestAlgorithmIdentifiers);
+		names.typeIs(ASN1ItemType.SEQUENCE).container("contentInfo", PKCS7.contentInfoCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
+		names.typeIs(ASN1ItemType.SET).container("signerInfos", PKCS7.signerInfos);
+	}
+	
+	static digestAlgorithmIdentifiers(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("DigestAlgorithmIdentifier", PKIX1Explicit88.algorithmIdentifierCont);
+	}
+	
+	static certificateSet(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("certificate", PKIX1Explicit88.certificateCont);
+		names.repeatIfTypeIs(ASN1ItemType.CHOICE_0).nextValue("extendedCertificate");//, ExtendedCertificate);
+		names.repeatIfTypeIs(ASN1ItemType.CHOICE_1).nextValue("attributeCertificate");//, AttributeCertificate);
+	}
+	
+	static certificateRevocationLists(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).nextValue("CertificateRevocationLists");//, CertificateListCont);
+	}
+	
+	static signerInfos(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SignerInfo", PKCS7.signerInfoCont);
+	}
+	
+	static signerInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signerIdentifier", PKCS7.issuerAndSerialNumberCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_2).container("signerIdentifier", PKIX1Implicit88.subjectKeyIdentifier);
+		names.typeIs(ASN1ItemType.SEQUENCE).container("digestAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("authenticatedAttributes", PKCS10.attributesCont);
+		names.typeIs(ASN1ItemType.SEQUENCE).container("digestEncryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedDigest");
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unauthenticatedAttributes", PKCS10.attributesCont);
+	}
+	
+	static issuerAndSerialNumberCont(names)
+	{
+		PKIX1Explicit88.addName(names, "issuer");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("serialNumber");
+	}
+	
+	static addDigestInfo(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS7.digestInfoCont);
+	}
+	
+	static digestInfoCont(names)
+	{
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "digestAlgorithm");
+		names.nextValue("digest"); ////////////////////////
+	}
+	
+	static envelopedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("enveloped-data", PKCS7.envelopedDataCont);
+	}
+	
+	static envelopedDataCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("originatorInfo", PKCS7.originatorInfoCont);
+		names.typeIs(ASN1ItemType.SET).container("recipientInfos", PKCS7.recipientInfos);
+		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptedContentInfo", PKCS7.contentInfoCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unprotectedAttributes", PKCS10.attributesCont);
+	}
+	
+	static originatorInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
+	}
+	
+	static recipientInfos(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("keyTransportRecipientInfo", PKCS7.keyTransportRecipientInfoCont);
+		names.repeatIfTypeIs(ASN1ItemType.CHOICE_0).nextValue("keyAgreementRecipientInfo");//, PKCS7.keyAgreementRecipientInfo);
+		names.repeatIfTypeIs(ASN1ItemType.CHOICE_1).nextValue("keyEncryptionKeyRecipientInfo");//, PKCS7.keyEncryptionKeyRecipientInfo);
+	}
+	
+	static keyTransportRecipientInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names//.typeIs(ASN1ItemType.INTEGER)
+			.nextValue("recipientIdentifier"); //PKCS7.RecipientIdentifier
+		names.typeIs(ASN1ItemType.SEQUENCE).container("keyEncryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedKey");
+	}
+	
+	static signedAndEnvelopedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.signedAndEnvelopedDataCont);
+	}
+	
+	static signedAndEnvelopedDataCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names.typeIs(ASN1ItemType.SET).nextValue("recipientInfos");
+		names.typeIs(ASN1ItemType.SET).container("digestAlgorithms", PKCS7.digestAlgorithmIdentifiers);
+		names.typeIs(ASN1ItemType.SEQUENCE).container("contentInfo", PKCS7.contentInfoCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
+		names.typeIs(ASN1ItemType.SET).container("signerInfos", PKCS7.signerInfos);
+	}
+	
+	static digestedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.digestedDataCont);
+	}
+	
+	static digestedDataCont(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.digestedDataCont);
+	}
+	
+	static encryptedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("encrypted-data", PKCS7.encryptedDataCont);
+	}
+	
+	static encryptedDataCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptedContentInfo", PKCS7.encryptedContentInfoCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unprotectedAttributes", PKCS10.attributesCont);
+	}
+	
+	static encryptedContentInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("contentType");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("contentEncryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
+		names.typeIs(ASN1ItemType.CHOICE_0).nextValue("encryptedContent");
+	}
+	
+	static authenticatedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.authenticatedData);
+	}
+}
+
+class PKCS8
+{
+	static privateKeyInfo(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("PrivateKeyInfo", PKCS8.privateKeyInfoCont);
+	}
+	
+	static privateKeyInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("privateKeyAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("privateKey");
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("attributes", PKCS10.attributesCont);
+	}
+	
+	static encryptedPrivateKeyInfo(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("EncryptedPrivateKeyInfo", PKCS8.encryptedPrivateKeyInfoCont);
+	}
+	
+	static encryptedPrivateKeyInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedData");
+	}
+}
+
+class PKCS9
+{
+	static attributeContentType(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("contentType");
+	}
+
+	static attributeMessageDigest(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("messageDigest");
+	}
+
+	static attributeSigningTime(names)
+	{
+		names.typeIsTime().nextValue("signingTime");
+	}
+
+	static attributeFriendlyName(names)
+	{
+		names.typeIs(ASN1ItemType.BMPSTRING).nextValue("friendlyName");
+	}
+
+	static attributeSMIMECapabilities(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("smimeCapabilities", PKCS9.smimeCapabilitiesCont);
+	}
+
+	static attributeLocalKeyId(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("localKeyId");
+	}
+
+	static smimeCapabilitiesCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SMIMECapability", PKCS9.smimeCapabilityCont);
+	}
+
+	static smimeCapabilityCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("algorithm");
+		names.nextValue("parameters");
+	}
+}
+
+class PKCS10
+{
+	static addCertificationRequestInfo(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS10.certificationRequestInfoCont);
+	}
+	
+	static certificationRequestInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
+		PKIX1Explicit88.addName(names, "subject");
+		PKIX1Explicit88.addSubjectPublicKeyInfo(names, "subjectPKInfo");
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("attributes", PKCS10.attributesCont);
+	}
+	
+	static attributesCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("Attribute", InformationFramework.attributeCont);
+	}
+	
+	static certificationRequest(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificationRequest", PKCS10.certificationRequestCont);
+	}
+	
+	static certificationRequestCont(names)
+	{
+		PKCS10.addCertificationRequestInfo(names, "certificationRequestInfo");
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "signatureAlgorithm");
+		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
+	}
+}
+
+class PKCS12
+{
+	static pfx(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("PFX", PKCS12.pfxCont);
+	}
+	
+	static pfxCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("Version");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("authSafe", PKCS12.authenticatedSafeContentInfoCont);
+		PKCS12.addMacData(names, "macData");
+	}
+	
+	static addMacData(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS12.macDataCont);
+	}
+	
+	static macDataCont(names)
+	{
+		PKCS7.addDigestInfo(names, "mac");
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("macSalt");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("iterations");
+	}
+	
+	static authenticatedSafeContentInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.authenticatedSafeData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.authenticatedSafeEnvelopedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.authenticatedSafeEncryptedData);
+		names.nextValue("pkcs7-content"); ////////////////////////
+	}
+	
+	static authenticatedSafeData(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).container("data", PKCS12.authenticatedSafe);
+	}
+	
+	static authenticatedSafeEnvelopedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.envelopedDataCont);
+	}
+	
+	static authenticatedSafeEncryptedData(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("encrypted-data", PKCS7.encryptedDataCont);
+	}
+	
+	static authenticatedSafe(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthenticatedSafe", PKCS12.authSafeContentInfo);
+	}
+	
+	static authSafeContentInfo(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("ContentInfo", PKCS12.authSafeContentInfoCont);
+	}
+	
+	static authSafeContentInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.safeContentsData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.envelopedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.4", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedAndEnvelopedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.5", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.digestedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.7.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.encryptedData);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.16.1.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.authenticatedData);
+		names.nextValue("pkcs7-content"); ////////////////////////
+	}
+	
+	static safeContentsData(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).container("data", PKCS12.safeContents);
+	}
+	
+	static safeContents(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("SafeContents", PKCS12.safeContentsCont);
+	}
+	
+	static safeContentsCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SafeBag", PKCS12.safeBagCont);
+	}
+	
+	static safeBagCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("bagId");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("keyBag", PKCS8.privateKeyInfo);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs8ShroudedKeyBag", PKCS8.encryptedPrivateKeyInfo);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certBag", PKCS12.certBag);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.4", ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlBag", PKCS12.crlBag);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.5", ASN1ItemType.CONTEXT_SPECIFIC_0).container("secretBag", PKCS12.secretBag);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("safeContentsBag", PKCS12.safeContents);
+		names.typeIs(ASN1ItemType.SET).container("bagAttributes", PKCS12.pkcs12Attributes);
+	}
+	
+	static certBag(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("CertBag", PKCS12.certBagCont);
+	}
+	
+	static certBagCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("certId");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.22.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certValue", PKCS12.x509Certificate);
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.22.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certValue", PKCS12.sdsiCertificate);
+	}
+	
+	static x509Certificate(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).container("x509Certificate", PKIX1Explicit88.certificate);
+	}
+	
+	static sdsiCertificate(names)
+	{
+		names.typeIs(ASN1ItemType.IA5STRING).nextValue("sdsiCertificate");
+	}
+	
+	static crlBag(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("CRLBag", PKCS12.crlBagCont);
+	}
+	
+	static crlBagCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("crlId");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.9.23.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlValue", PKCS12.x509CRL);
+	}
+	
+	static x509CRL(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).container("x509CRL", PKIX1Explicit88.certificateList);
+	}
+	
+	static secretBag(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("SecretBag", PKCS12.secretBagCont);
+	}
+	
+	static secretBagCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("secretTypeId");
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).nextValue("secretValue");
+	}
+	
+	static pkcs12Attributes(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PKCS12Attribute", InformationFramework.attributeCont);
+	}
+}
+
+class PKIX1Explicit88
+{
+	static addAttributeTypeAndValue(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.attributeTypeAndValueCont);
+	}
+
+	static attributeTypeAndValueCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("type");
+		names.nextValue("value");
+	}
+
+	static addName(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.rdnSequenceCont);
+	}
+
+	static name(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("Name", PKIX1Explicit88.rdnSequenceCont);
+	}
+
+	static rdnSequenceCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SET).container("rdnSequence", PKIX1Explicit88.relativeDistinguishedNameCont);
+	}
+
+	static relativeDistinguishedName(names)
+	{
+		names.typeIs(ASN1ItemType.SET).container("RelativeDistinguishedName", PKIX1Explicit88.relativeDistinguishedNameCont);
+	}
+
+	static relativeDistinguishedNameCont(names)
+	{
+		PKIX1Explicit88.addAttributeTypeAndValue(names, "AttributeTypeAndValue");
+	}
+
+	static certificate(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("Certificate", PKIX1Explicit88.certificateCont);
+	}
+
+	static certificateCont(names)
+	{
+		PKIX1Explicit88.addTBSCertificate(names, "tbsCertificate");
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "signatureAlgorithm");
+		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
+	}
+
+	static addTBSCertificate(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.tbsCertificateCont);
+	}
+
+	static tbsCertificateCont(names)
+	{
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("version", version);
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("serialNumber");
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "signature");
+		PKIX1Explicit88.addName(names, "issuer");
+		PKIX1Explicit88.addValidity(names, "validity");
+		PKIX1Explicit88.addName(names, "subject");
+		PKIX1Explicit88.addSubjectPublicKeyInfo(names, "subjectPublicKeyInfo");
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).nextValue("issuerUniqueID");/////////////////////
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_2).nextValue("subjectUniqueID");//////////////////////
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_3).container("extensions", PKIX1Explicit88.extensions);
+	}
+
+	static version(names)
+	{
+		let versions = ["v1", "v2", "v3"];
+		names.typeIs(ASN1ItemType.INTEGER).enum("Version", versions);
+	}
+
+	static addValidity(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.validityCont);
+	}
+
+	static validityCont(names)
+	{
+		names.typeIsTime().nextValue("notBefore");
+		names.typeIsTime().nextValue("notAfter");
+	}
+
+	static addSubjectPublicKeyInfo(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.subjectPublicKeyInfoCont);
+	}
+
+	static subjectPublicKeyInfoCont(names)
+	{
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "algorithm");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.1.1", ASN1ItemType.BIT_STRING).container("subjectPublicKey", PKCS1.rsaPublicKey);
+		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("subjectPublicKey");
+	}
+
+	static addExtensions(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.extensionsCont);
+	}
+
+	static extensions(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("Extensions", PKIX1Explicit88.extensionsCont);
+	}
+
+	static extensionsCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("Extension", PKIX1Explicit88.extensionCont);
+	}
+
+	static extensionCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("extnID");
+		names.typeIs(ASN1ItemType.BOOLEAN).nextValue("critical");
+		names.lastOIDAndTypeIs("1.3.6.1.4.1.11129.2.4.2", ASN1ItemType.OCTET_STRING).container("extendedValidationCertificates", General.extendedValidationCertificates);
+		names.lastOIDAndTypeIs("1.3.6.1.5.5.7.1.1", ASN1ItemType.OCTET_STRING).container("authorityInfoAccess", RFC2459.authorityInfoAccessSyntax);
+		names.lastOIDAndTypeIs("2.5.29.14", ASN1ItemType.OCTET_STRING).container("subjectKeyIdentifier", PKIX1Implicit88.subjectKeyIdentifier);
+		names.lastOIDAndTypeIs("2.5.29.15", ASN1ItemType.OCTET_STRING).container("keyUsage", PKIX1Implicit88.keyUsage);
+		names.lastOIDAndTypeIs("2.5.29.17", ASN1ItemType.OCTET_STRING).container("subjectAltName", PKIX1Implicit88.generalNames);
+		names.lastOIDAndTypeIs("2.5.29.19", ASN1ItemType.OCTET_STRING).container("basicConstraints", PKIX1Implicit88.basicConstraints);
+		names.lastOIDAndTypeIs("2.5.29.31", ASN1ItemType.OCTET_STRING).container("cRLDistributionPoints", PKIX1Implicit88.crlDistributionPoints);
+		names.lastOIDAndTypeIs("2.5.29.32", ASN1ItemType.OCTET_STRING).container("certificatePolicies", PKIX1Implicit88.certificatePolicies);
+		names.lastOIDAndTypeIs("2.5.29.35", ASN1ItemType.OCTET_STRING).container("authorityKeyIdentifier", PKIX1Implicit88.authorityKeyIdentifier);
+		names.lastOIDAndTypeIs("2.5.29.37", ASN1ItemType.OCTET_STRING).container("extKeyUsage", PKIX1Implicit88.extKeyUsageSyntax);
+		names.nextValue("extnValue");//////////////////////////////
+	}
+
+	static certificateList(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificateList", PKIX1Explicit88.certificateListCont);
+	}
+
+	static certificateListCont(names)
+	{
+		PKIX1Explicit88.addTBSCertList(names, "tbsCertList");
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "signatureAlgorithm");
+		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
+	}
+
+	static addTBSCertList(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.tbsCertListCont);
+	}
+
+	static tbsCertListCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("Version");
+		PKIX1Explicit88.addAlgorithmIdentifier(names, "signature");
+		PKIX1Explicit88.addName(names, "issuer");
+		names.typeIsTime().nextValue("thisUpdate");
+		names.typeIsTime().nextValue("nextUpdate");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("revokedCertificates", PKIX1Explicit88.revokedCertificates);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlExtensions", PKIX1Explicit88.extensions);
+	}
+
+	static revokedCertificates(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("revokedCertificate", PKIX1Explicit88.revokedCertificateCont);
+	}
+
+	static revokedCertificateCont(names)
+	{
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("userCertificate");
+		names.typeIsTime().nextValue("revocationDate");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("crlEntryExtensions", PKIX1Explicit88.extensionsCont);
+	}
+
+	static addAlgorithmIdentifier(names, name)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.algorithmIdentifierCont);
+	}
+
+	static algorithmIdentifierCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("algorithm");
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.1.3", ASN1ItemType.SEQUENCE).container("parameters", General.pbeParam); //pbeWithSHAAnd3-KeyTripleDES-CBC
+		names.lastOIDAndTypeIs("1.2.840.113549.1.12.1.6", ASN1ItemType.SEQUENCE).container("parameters", General.pbeParam); //pbeWithSHAAnd40BitRC2-CBC
+		names.nextValue("parameters");
+	}
+}
+
+class PKIX1Implicit88
+{
+	static authorityKeyIdentifier(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthorityKeyIdentifier", PKIX1Implicit88.authorityKeyIdentifierCont);
+	}
+
+	static authorityKeyIdentifierCont(names)
+	{
+		names.typeIsOpt(0).nextValue("keyIdentifier");
+		names.typeIsOpt(1).container("authorityCertIssuer", PKIX1Implicit88.generalNameCont);
+		names.typeIsOpt(2).nextValue("authorityCertSerialNumber");
+	}
+
+	static subjectKeyIdentifier(names)
+	{
+		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("SubjectKeyIdentifier");
+	}
+
+	static keyUsage(names)
+	{
+		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("KeyUsage");
+	}
+
+	static certificatePolicies(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificatePolicies", PKIX1Implicit88.certificatePoliciesCont);
+	}
+
+	static certificatePoliciesCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PolicyInformation", PKIX1Implicit88.policyInformationCont);
+	}
+
+	static policyInformationCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("policyIdentifier");
+		names.typeIs(ASN1ItemType.SEQUENCE).container("policyQualifiers", PKIX1Implicit88.policyQualifiers);
+	}
+
+	static policyQualifiers(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PolicyQualifierInfo", PKIX1Implicit88.policyQualifierInfoCont);
+	}
+
+	static policyQualifierInfoCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("policyQualifierId");
+		names.nextValue("qualifier");
+	}
+
+	static generalNames(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("GeneralName", PKIX1Implicit88.generalNameCont);
+	}
+
+	static generalNameCont(names)
+	{
+		names.typeIsOpt(0).nextValue("otherName");
+		names.typeIsOpt(1).nextValue("rfc822Name");
+		names.typeIsOpt(2).nextValue("dNSName");
+		names.typeIsOpt(3).nextValue("x400Address");
+		names.typeIsOpt(4).container("directoryName", PKIX1Explicit88.name);
+		names.typeIsOpt(5).nextValue("ediPartyName");
+		names.typeIsOpt(6).nextValue("uniformResourceIdentifier");
+		names.typeIsOpt(7).nextValue("iPAddress");
+		names.typeIsOpt(8).nextValue("registeredID");
+		names.allNotMatch().nextValue("unknown");
+	}
+
+	static basicConstraints(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("BasicConstraints", PKIX1Implicit88.basicConstraintsCont);
+	}
+
+	static basicConstraintsCont(names)
+	{
+		names.typeIs(ASN1ItemType.BOOLEAN).nextValue("cA");
+		names.typeIs(ASN1ItemType.INTEGER).nextValue("pathLenConstraint");
+	}
+
+	static crlDistributionPoints(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("CRLDistributionPoints", PKIX1Implicit88.crlDistributionPointsCont);
+	}
+
+	static crlDistributionPointsCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("DistributionPoint", PKIX1Implicit88.distributionPointCont);
+	}
+
+	static distributionPointCont(names)
+	{
+		names.typeIsOpt(0).container("distributionPoint", PKIX1Implicit88.distributionPointName);
+		names.typeIsOpt(1).container("reasons", PKIX1Implicit88.reasonFlags);
+		names.typeIsOpt(2).container("cRLIssuer", PKIX1Implicit88.generalNames);
+	}
+
+	static distributionPointName(names)
+	{
+		names.typeIsOpt(0).container("fullName", PKIX1Implicit88.generalNameCont);
+		names.typeIsOpt(1).container("nameRelativeToCRLIssuer", PKIX1Explicit88.relativeDistinguishedNameCont);
+	}
+
+	static reasonFlags(names)
+	{
+		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("ReasonFlags");
+	}
+
+	static extKeyUsageSyntax(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("ExtKeyUsageSyntax", PKIX1Implicit88.extKeyUsageSyntaxCont);
+	}
+
+	static extKeyUsageSyntaxCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.OID).nextValue("KeyPurposeId");
+	}
+}
+
+class RFC2459
+{
+	static authorityInfoAccessSyntax(names)
+	{
+		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthorityInfoAccessSyntax", RFC2459.authorityInfoAccessSyntaxCont);
+	}
+	
+	static authorityInfoAccessSyntaxCont(names)
+	{
+		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("AccessDescription", RFC2459.accessDescriptionCont);
+	}
+	
+	static accessDescriptionCont(names)
+	{
+		names.typeIs(ASN1ItemType.OID).nextValue("accessMethod");
+		names.nextValue("accessLocation");
+	}
+}
+
+class RFC8551
+{
+	static smimeEncryptionKeyPreference(names)
+	{
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("issuerAndSerialNumber", PKCS7.issuerAndSerialNumberCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).nextValue("receipentKeyId");//, RecipientKeyIdentifierCont);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_2).nextValue("subjectAltKeyIdentifier");//, SubjectKeyIdentifierCont);
+	}
+}
+
+export class ASN1Data extends data.ParsedObject(UInt8)
+{
+	constructor(sourceName, objType, buff)
+	{
+		super(sourceName, objType);
+		this.reader = new data.ByteReader(buff);
+	}
+
+	toASN1String()
+	{
+		let names = this.createNames();
+		return ASN1Util.pduToString(this.reader, 0, this.reader.getLength(), 0, 0, names);
+	}
+
+	getASN1Buff()
+	{
+		return this.reader;
+	}
+
+	static appendInteger(arr, reader, ofst, len)
+	{
+		if (len == 1)
+		{
+			arr.push(reader.readUInt8(ofst).toString());
+		}
+		else if (len == 2)
+		{
+			arr.push(reader.readInt16(ofst, false).toString());
+		}
+		else if (len == 3)
+		{
+			arr.push(reader.readInt24(ofst, false).toString());
+		}
+		else if (len == 4)
+		{
+			arr.push(reader.readInt32(ofst, false).toString());
+		}
+		else if (len == 8)
+		{
+			arr.push(reader.readInt64(ofst, false).toString());
+		}
+		else
+		{
+			arr.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(ofst, len)), ' ', null));
+		}
+	}
+}
+
+export class X509File extends ASN1Data
+{
+	constructor(sourceName, objType, buff)
+	{
+		super(sourceName, objType, buff);
+	}
+
+	getASN1Type()
+	{
+		return ASN1Type.X509;
+	}
+
+	getCertCount()
+	{
+		return 0;
+	}
+
+	getCertName(index)
+	{
+		return null;
+	}
+
+	getNewCert(index)
+	{
+		return null;
+	}
+
+	toShortString()
+	{
+		return fileTypeGetName(this.getFileType())+": "+this.toShortName();
+	}
+
+	isSignatureKey(key)
+	{
+		let data = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1");
+		let signature = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3");
+		if (data == 0 || signature == 0 || signature.itemType != ASN1ItemType.BIT_STRING)
+		{
+			return false;
+		}
+		let signOfst = signature.rawOfst + signature.hdrLen;
+		let signSize = signature.contLen;
+		if (this.reader.readUInt8(signOfst) != 0)
+			return false;
+		signOfst++;
+		signSize--;
+		if (!key.signatureVerify(hash.HashType.SHA256, this.reader.getArrayBuffer(data.rawOfst, data.hdrLen + data.contLen), this.reader.getArrayBuffer(signOfst, signOfst + signSize)))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	getSignedInfo()
+	{
+		let payload = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1");
+		if (payload == null)
+		{
+			return null;
+		}
+		let itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+		let algType;
+		if (itemPDU == null || itemPDU.itemType != ASN1ItemType.SEQUENCE || (algType = X509File.algorithmIdentifierGet(this.reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen)) == AlgType.Unknown)
+		{
+			return null;
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3")) == null || itemPDU.itemType != ASN1ItemType.BIT_STRING)
+		{
+			return null;
+		}
+		return {payload: this.reader.getArrayBuffer(payload.rawOfst, payload.hdrLen + payload.contLen),
+			signature: this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen),
+			algType: algType};
+	}
+}
+
+export class X509Key extends X509File
+{
+	constructor(sourceName, buff, keyType)
+	{
+		super(sourceName, "application/x-pem-file", buff);
+		this.keyType = keyType;
+	}
+
+	getFileType()
+	{
+		return X509FileType.Key;
+	}
+
+	toShortName()
+	{
+		return keyTypeGetName(this.keyType)+" "+this.getKeySizeBits()+" bits";
+	}
+
+	isValid()
+	{
+		if (this.keyType == KeyType.Unknown)
+		{
+			return CertValidStatus.FileFormatInvalid;
+		}
+		return CertValidStatus.Valid;
+	}
+	
+	clone()
+	{
+		return new X509Key(this.sourceName, this.reader.getArrayBuffer(0, this.reader.getLength()), this.keyType);
+	}
+
+	toString()
+	{
+		let strs = [];
+		let buff;
+		if (this.keyType == KeyType.RSA)
+		{
+			buff = this.getRSAModulus();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Modulus = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAPublicExponent();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Public Exponent = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAPrivateExponent();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Private Exponent = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAPrime1();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Prime1 = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAPrime2();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Prime2 = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAExponent1();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Exponent1 = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAExponent2();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Exponent2 = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSACoefficient();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Coefficient = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+		}
+		else if (this.keyType == KeyType.RSAPublic)
+		{
+			buff = this.getRSAModulus();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Modulus = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getRSAPublicExponent();
+			if (buff)
+			{
+				strs.push(this.sourceName+".RSA.Public Exponent = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+		}
+		else if (this.keyType == KeyType.ECPublic)
+		{
+			let ecName = this.getECName();
+			strs.push(this.sourceName+".EC.Name = "+ecNameGetName(ecName));
+	
+			buff = this.getECPublic();
+			if (buff)
+			{
+				strs.push(this.sourceName+".EC.Public = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+		}
+		else if (this.keyType == KeyType.ECDSA)
+		{
+			let ecName = this.getECName();
+			strs.push(this.sourceName+".EC.Name = "+ecNameGetName(ecName));
+	
+			buff = this.getECPrivate();
+			if (buff)
+			{
+				strs.push(this.sourceName+".EC.Private = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+			buff = this.getECPublic();
+			if (buff)
+			{
+				strs.push(this.sourceName+".EC.Public = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+			}
+		}
+	
+		buff = this.getKeyId();
+		if (buff)
+		{
+			strs.push(this.sourceName+".KeyId = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
+		}
+	}
+
+	createNames()
+	{
+		let names = new ASN1Names();
+		switch (this.keyType)
+		{
+		case KeyType.RSA:
+			return names.setRSAPrivateKey();
+		case KeyType.RSAPublic:
+			return names.setRSAPublicKey();
+		default:
+		case KeyType.DSA:
+		case KeyType.ECDSA:
+		case KeyType.ECPublic:
+		case KeyType.ED25519:
+		case KeyType.Unknown:
+			return names;
+		}
+	}
+
+/*	KeyType GetKeyType() const;
+	UOSInt GetKeySizeBits() const;
+	Bool IsPrivateKey() const;
+	Crypto::Cert::X509Key *CreatePublicKey() const;
+	Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
+
+	const UInt8 *GetRSAModulus(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSAPublicExponent(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSAPrivateExponent(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSAPrime1(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSAPrime2(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSAExponent1(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSAExponent2(OptOut<UOSInt> size) const;
+	const UInt8 *GetRSACoefficient(OptOut<UOSInt> size) const;
+
+	const UInt8 *GetECPrivate(OptOut<UOSInt> size) const;
+	const UInt8 *GetECPublic(OptOut<UOSInt> size) const;
+	ECName GetECName() const;*/
+}
+
+export function fileTypeGetName(fileType)
+{
+	switch (fileType)
+	{
+	case X509FileType.Cert:
+		return "Cert";
+	case X509FileType.CertRequest:
+		return "CertReq";
+	case X509FileType.Key:
+		return "Key";
+	case X509FileType.PrivateKey:
+		return "PrivateKey";
+	case X509FileType.PublicKey:
+		return "PublicKey";
+	case X509FileType.PKCS7:
+		return "PKCS7";
+	case X509FileType.PKCS12:
+		return "PKCS12";
+	case X509FileType.CRL:
+		return "CRL";
+	case X509FileType.FileList:
+		return "FileList";
+	default:
+		return "Unknown";
+	}
+}
+
+export function keyTypeGetName(keyType)
+{
+	switch (keyType)
+	{
+	case KeyType.RSA:
+		return "RSA";
+	case KeyType.DSA:
+		return "DSA";
+	case KeyType.ECDSA:
+		return "ECDSA";
+	case KeyType.ED25519:
+		return "ED25519";
+	case KeyType.RSAPublic:
+		return "RSAPublic";
+	case KeyType.ECPublic:
+		return "ECPublic";
+	case KeyType.Unknown:
+	default:
+		return "Unknown";
+	}
+}
