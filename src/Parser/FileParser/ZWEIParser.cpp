@@ -111,7 +111,7 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(NotNullPtr<IO::St
 			sptr = Text::StrConcatC(sptr, &extHdrs[buffOfst], 4);
 			
 			fileSize = ReadUInt32(&recHdrs[recOfst + 8]);
-			pf->AddData(fd, fileOfst, fileSize, CSTRP(name, sptr), 0, 0, 0, 0);
+			pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);
 			fileOfst += fileSize;
 
 			j++;

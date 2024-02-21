@@ -457,7 +457,7 @@ Optional<IO::StreamData> IO::DirectoryPackage::OpenStreamData(Text::CString file
 
 Bool IO::DirectoryPackage::HasParent() const
 {
-	if (this->parent)
+	if (!this->parent.IsNull())
 		return true;
 	if (IO::Path::PATH_SEPERATOR == '/')
 	{
@@ -472,7 +472,7 @@ Bool IO::DirectoryPackage::HasParent() const
 	return false;
 }
 
-IO::PackageFile *IO::DirectoryPackage::GetParent(OutParam<Bool> needRelease) const
+Optional<IO::PackageFile> IO::DirectoryPackage::GetParent(OutParam<Bool> needRelease) const
 {
 	return this->parent;
 }
@@ -500,7 +500,7 @@ Bool IO::DirectoryPackage::DeleteItem(UOSInt index)
 	return false;
 }
 
-void IO::DirectoryPackage::SetParent(IO::PackageFile *pkg)
+void IO::DirectoryPackage::SetParent(Optional<IO::PackageFile> pkg)
 {
 	this->parent = pkg;
 }

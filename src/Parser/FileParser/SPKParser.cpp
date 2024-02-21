@@ -153,7 +153,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[k] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
-						if (!pf3.Set(pf2->GetPackFile({sptr, k})))
+						if (!pf2->GetPackFile({sptr, k}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
@@ -166,7 +166,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[l] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
-						if (!pf3.Set(pf2->GetPackFile({sptr, l})))
+						if (!pf2->GetPackFile({sptr, l}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
@@ -176,7 +176,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
 						break;
 					}
 				}
@@ -215,7 +215,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[k] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
-						if (!pf3.Set(pf2->GetPackFile({sptr, k})))
+						if (!pf2->GetPackFile({sptr, k}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
@@ -228,7 +228,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[l] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
-						if (!pf3.Set(pf2->GetPackFile({sptr, l})))
+						if (!pf2->GetPackFile({sptr, l}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
@@ -238,7 +238,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
 						break;
 					}
 				}

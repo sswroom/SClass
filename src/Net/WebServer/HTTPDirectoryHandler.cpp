@@ -285,18 +285,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 			compBuff[9] = 0xff;
 			resp->Write(compBuff, 10);
 
-			UInt64 dataSize = pitem->fd->GetDataSize();
+			UInt64 dataSize = pitem->dataLength;
 			UInt64 ofst;
 			UOSInt readSize;
 			if (dataSize < 1048576)
 			{
 				Data::ByteBuffer buff((UOSInt)dataSize);
-				pitem->fd->GetRealData(0, (UOSInt)dataSize, buff);
+				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
 				resp->Write(buff.Ptr(), (UOSInt)dataSize);
 			}
 			else
 			{
-				ofst = 0;
+				ofst = packageFile->GetPItemDataOfst(pitem);
 				Data::ByteBuffer buff(1048576);
 				while (dataSize > 0)
 				{
@@ -308,7 +308,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 					{
 						readSize = (UOSInt)dataSize;
 					}
-					pitem->fd->GetRealData(ofst, readSize, buff);
+					pitem->fullFd->GetRealData(ofst, readSize, buff);
 					resp->Write(buff.Ptr(), readSize);
 					ofst += readSize;
 					dataSize -= readSize;
@@ -329,18 +329,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 			resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
 			resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
-			UInt64 dataSize = pitem->fd->GetDataSize();
+			UInt64 dataSize = pitem->dataLength;
 			UInt64 ofst;
 			UOSInt readSize;
 			if (dataSize < 1048576)
 			{
 				Data::ByteBuffer buff((UOSInt)dataSize);
-				pitem->fd->GetRealData(0, (UOSInt)dataSize, buff);
+				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
 				resp->Write(buff.Ptr(), (UOSInt)dataSize);
 			}
 			else
 			{
-				ofst = 0;
+				ofst = packageFile->GetPItemDataOfst(pitem);
 				Data::ByteBuffer buff(1048576);
 				while (dataSize > 0)
 				{
@@ -352,7 +352,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 					{
 						readSize = (UOSInt)dataSize;
 					}
-					pitem->fd->GetRealData(ofst, readSize, buff);
+					pitem->fullFd->GetRealData(ofst, readSize, buff);
 					resp->Write(buff.Ptr(), readSize);
 					ofst += readSize;
 					dataSize -= readSize;

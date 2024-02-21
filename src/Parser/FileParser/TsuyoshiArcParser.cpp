@@ -94,7 +94,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(NotNullPtr
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], Text::StrCharCnt(&recBuff[j]), 0);
 		if (recSize == decSize)
 		{
-			pf->AddData(fd, recOfst, recSize, CSTRP(fileName, sptr), 0, 0, 0, 0);
+			pf->AddData(fd, recOfst, recSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);
 		}
 		else
 		{
@@ -104,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(NotNullPtr
 			compInfo.compFlags = 0;
 			compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
 			compInfo.decSize = decSize;
-			pf->AddCompData(fd, recOfst, recSize, &compInfo, CSTRP(fileName, sptr), 0, 0, 0, 0);
+			pf->AddCompData(fd, recOfst, recSize, IO::PackFileItem::HeaderType::No, &compInfo, CSTRP(fileName, sptr), 0, 0, 0, 0);
 		}
 
 		nextOfst = recOfst + recSize;

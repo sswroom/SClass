@@ -144,12 +144,18 @@ Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
 DeflateStreamMiniz.o: ../../src/Data/Compress/DeflateStreamMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 DeflateStreamNull.o: ../../src/Data/Compress/DeflateStreamNull.cpp
+DeflateStreamZlib.o: ../../src/Data/Compress/DeflateStreamZlib.cpp
+!-lz
 InflateMiniz.o: ../../src/Data/Compress/InflateMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 InflateNull.o: ../../src/Data/Compress/InflateNull.cpp
+InflateZlib.o: ../../src/Data/Compress/InflateZlib.cpp
+!-lz
 InflateStreamMiniz.o: ../../src/Data/Compress/InflateStreamMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 InflateStreamNull.o: ../../src/Data/Compress/InflateStreamNull.cpp
+InflateStreamZlib.o: ../../src/Data/Compress/InflateStreamZlib.cpp
+!-lz
 LZODecompressor.o: ../../src/Data/Compress/LZODecompressor.cpp
 LZWDecompressor.o: ../../src/Data/Compress/LZWDecompressor.cpp
 LZWDecStream.o: ../../src/Data/Compress/LZWDecStream.cpp

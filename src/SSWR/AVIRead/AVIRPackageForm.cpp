@@ -426,7 +426,7 @@ void SSWR::AVIRead::AVIRPackageForm::GoUpLevel()
 {
 	Bool needRelease;
 	NotNullPtr<IO::PackageFile> pkg;
-	if (pkg.Set(this->packFile->GetParent(needRelease)))
+	if (this->packFile->GetParent(needRelease).SetTo(pkg))
 	{
 		NotNullPtr<Text::String> name = this->packFile->GetSourceNameObj();
 		UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
