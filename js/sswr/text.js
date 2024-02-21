@@ -247,6 +247,48 @@ export function u8Arr2Hex(buff, byteSep, rowSep)
 	return rows.join(rowSep);
 }
 
+export function splitLines(txt)
+{
+	let lines = [];
+	let pos = 0;
+	let i;
+	let j;
+	while (true)
+	{
+		i = txt.indexOf("\r", pos);
+		j = txt.indexOf("\n", pos);
+		if (i == -1 && j == -1)
+		{
+			lines.push(txt.substring(pos));
+			break;
+		}
+		else if (i == -1)
+		{
+			lines.push(txt.substring(pos, j));
+			pos = j + 1;
+		}
+		else if (j == -1)
+		{
+			lines.push(txt.substring(pos, i));
+			pos = i + 1;
+		}
+		else if (i < j)
+		{
+			lines.push(txt.substring(pos, i));
+			if (j == i + 1)
+				pos = j + 1;
+			else
+				pos = i + 1;
+		}
+		else
+		{
+			lines.push(txt.substring(pos, j));
+			pos = j + 1;
+		}
+	}
+	return lines;
+}
+
 export function getEncList()
 {
 	let ret = [];

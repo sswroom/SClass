@@ -1,5 +1,6 @@
 1.6.0
 -Added data.ParsedObject
+-Added text.splitLines
 
 1.5.5
 -Fixed web.Dialog in iframe

@@ -55,6 +55,14 @@ export enum AlgType
 	ECDSAWithSHA384
 }
 
+export enum ECName
+{
+	Unknown,
+	secp256r1,
+	secp384r1,
+	secp521r1
+};
+
 export enum ASN1ItemType
 {
 	UNKNOWN,
@@ -128,15 +136,11 @@ export class ASN1Util
 //	static const UInt8 *PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb);
 //	static const UInt8 *PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val);
 
-//	static Bool PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NotNullPtr<Data::DateTime> dt);
-
-//	static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level);
-//	static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext);
-//	static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, Net::ASN1Names *names);
-
+	static pduParseUTCTimeCont(reader: data.ByteReader, startOfst: number, endOfst: number): data.Timestamp;
+	static pduToString(reader: data.ByteReader, startOfst: number, endOfst: number, outLines: string[], level: number, names?: ASN1Names): number;
 	static pduDSizeEnd(reader: data.ByteReader, startOfst: number, endOfst: number): number | null;
 	static pduGetItem(reader: data.ByteReader, startOfst: number, endOfst: number, path: string): PDUInfo;
-//	static UOSInt PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
+	static pduCountItem(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): number;
 //	static Bool PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd);
 //	static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names);
 
@@ -149,11 +153,11 @@ export class ASN1Util
 
 //	static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, NotNullPtr<Text::StringBuilderUTF8> sb);
 
-//	static void BooleanToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb);
-//	static void IntegerToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb);
-//	static void UTCTimeToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb);
+	static booleanToString(reader: data.ByteReader, ofst: number, len: number): string;
+	static integerToString(reader: data.ByteReader, ofst: number, len: number): string;
+	static utcTimeToString(reader: data.ByteReader, ofst: number, len: number): string;
 	static itemTypeGetName(itemType: ASN1ItemType): string;
-//	static UInt32 Str2Digit(const UTF8Char *s);
+	static str2Digit(reader: data.ByteReader, ofst: number): number;
 }
 
 declare class NameRule
@@ -503,8 +507,42 @@ export abstract class X509File extends ASN1Data
 	toShortString(): string;
 	isSignatureKey(key: X509Key): boolean;
 	getSignedInfo(): SignedInfo | null;
+
+	static keyGetLeng(reader: data.ByteReader, startOfst: number, endOfst: number, keyType: KeyType): number;
+}
+
+export class X509Key extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer, keyType: KeyType);
+	getFileType(): X509FileType;
+	toShortName(): string;
+	isValid(): CertValidStatus;
+	clone(): X509Key;
+	toString(): string;
+	createNames(): ASN1Names;
+	getKeyType(): KeyType;
+	getKeySizeBits(): number;
+	isPrivateKey() : boolean;
+
+	//createPublicKey(): X509Key | null;
+	//getKeyId(): ArrayBuffer | null;
+
+	getRSAModulus(): ArrayBuffer | null;
+	getRSAPublicExponent(): ArrayBuffer | null;
+	getRSAPrivateExponent(): ArrayBuffer | null;
+	getRSAPrime1(): ArrayByffer | null;
+	getRSAPrime2(): ArrayBuffer | null;
+	getRSAExponent1(): ArrayBuffer | null;
+	getRSAExponent2(): ArrayBuffer | null;
+	getRSACoefficient(): ArrayBuffer | null;
+
+	getECPrivate(): ArrayBuffer | null;
+	getECPublic(): ArrayBuffer | null;
+	getECName(): ECName;
 }
 
 export function fileTypeGetName(fileType: X509FileType): string;
 export function keyTypeGetName(keyType: KeyType): string;
-
+export function ecNameGetName(ecName: ECName): string;
+export function ecNameGetOID(ecName: ECName): string;
+export function ecNameFromOID(buff: ArrayBuffer): ECName;
