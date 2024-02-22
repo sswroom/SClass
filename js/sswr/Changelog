@@ -1,6 +1,10 @@
 1.6.0
 -Added data.ParsedObject
 -Added text.splitLines
+-Added data.ByteReader.readInt24/readUInt24
+-Added data.ByteReader.readUTF16
+-Added data.ByteReader.isASCIIText
+-Added hash.SHA1
 
 1.5.5
 -Fixed web.Dialog in iframe

@@ -2324,6 +2324,14 @@ export class ByteReader
 		return this.view.getUint16(ofst, lsb);
 	}
 
+	readUInt24(ofst, lsb)
+	{
+		if (lsb)
+			return this.view.getUint8(ofst) + (this.view.getUint16(ofst + 1, true) << 8);
+		else
+			return (this.view.getUint16(ofst, false) << 8) | this.view.getUint8(ofst + 2);
+	}
+
 	readUInt32(ofst, lsb)
 	{
 		return this.view.getUint32(ofst, lsb);
@@ -2337,6 +2345,14 @@ export class ByteReader
 	readInt16(ofst, lsb)
 	{
 		return this.view.getInt16(ofst, lsb);
+	}
+
+	readInt24(ofst, lsb)
+	{
+		if (lsb)
+			return this.view.getUint8(ofst) + (this.view.getInt16(ofst + 1, true) << 8);
+		else
+			return (this.view.getInt16(ofst, false) << 8) | this.view.getUint8(ofst + 2);
 	}
 
 	readInt32(ofst, lsb)
@@ -2373,6 +2389,17 @@ export class ByteReader
 			end++;
 		let dec = new TextDecoder();
 		return dec.decode(this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + end));
+	}
+
+	readUTF16(ofst, nChar, lsb)
+	{
+		let ret = [];
+		while (nChar-- > 0)
+		{
+			ret.push(String.fromCharCode(this.readUInt16(ofst, lsb)));
+			ofst += 2;
+		}
+		return ret.join("");
 	}
 
 	readUInt8Arr(ofst, cnt)
@@ -2450,6 +2477,24 @@ export class ByteReader
 			ofst += 8;
 		}
 		return ret;
+	}
+
+	isASCIIText(ofst, len)
+	{
+		while (len-- > 0)
+		{
+			let b = this.readUInt8(ofst);
+			if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10)
+			{
+	
+			}
+			else
+			{
+				return false;
+			}
+			ofst++;
+		}
+		return true;
 	}
 }
 

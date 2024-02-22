@@ -183,18 +183,21 @@ export class ByteReader
 
 	constructor(arr: ArrayBuffer);
 	getLength(): number;
-	getArrayBuffer(ofst: number, size: number): ArrayBuffer;
+	getArrayBuffer(ofst?: number, size?: number): ArrayBuffer;
 
 	readUInt8(ofst: number): number;
 	readUInt16(ofst: number, lsb: boolean): number;
+	readUInt24(ofst: number, lsb: boolean): number;
 	readUInt32(ofst: number, lsb: boolean): number;
 	readInt8(ofst: number): number;
 	readInt16(ofst: number, lsb: boolean): number;
+	readInt24(ofst: number, lsb: boolean): number;
 	readInt32(ofst: number, lsb: boolean): number;
 	readFloat64(ofst: number, lsb: boolean): number;
 	readUTF8(ofst: number, len: number): string;
 	readUTF8Z(ofst: number, maxSize?: number): string;
-
+	readUTF16(ofst: number, nChar: number, lsb: boolean): string;
+	
 	readUInt8Arr(ofst: number, cnt: number): number[];
 	readUInt16Arr(ofst: number, lsb: boolean, cnt: number): number[];
 	readUInt32Arr(ofst: number, lsb: boolean, cnt: number): number[];
@@ -202,6 +205,8 @@ export class ByteReader
 	readInt16Arr(ofst: number, lsb: boolean, cnt: number): number[];
 	readInt32Arr(ofst: number, lsb: boolean, cnt: number): number[];
 	readFloat64Arr(ofst: number, lsb: boolean, cnt: number): number[];
+
+	isASCIIText(ofst: number, len: number): boolean;
 }
 
 export abstract class ParsedObject

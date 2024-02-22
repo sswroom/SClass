@@ -119,6 +119,12 @@ declare class PDULenInfo
 	pduLen: number;
 }
 
+declare class PDUValueInfo<ValType>
+{
+	nextOfst: number;
+	val: ValType;
+}
+
 declare class PDUInfo
 {
 	rawOfst: number;
@@ -132,16 +138,16 @@ export class ASN1Util
 	static pduParseLen(reader: data.ByteReader, ofst: number, endOfst: number): PDULenInfo | null;
 
 //	static const UInt8 *PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd);
-//	static const UInt8 *PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val);
-//	static const UInt8 *PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb);
-//	static const UInt8 *PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt32> val);
+	static pduParseUInt32(reader: data.ByteReader, ofst: number, endOfst: number): PDUValueInfo<number>;
+	static pduParseString(reader: data.ByteReader, ofst: number, endOfst: number): PDUValueInfo<string>;
+	static pduParseChoice(reader: data.ByteReader, ofst: number, endOfst: number): PDUValueInfo<number>;
 
 	static pduParseUTCTimeCont(reader: data.ByteReader, startOfst: number, endOfst: number): data.Timestamp;
 	static pduToString(reader: data.ByteReader, startOfst: number, endOfst: number, outLines: string[], level: number, names?: ASN1Names): number;
 	static pduDSizeEnd(reader: data.ByteReader, startOfst: number, endOfst: number): number | null;
 	static pduGetItem(reader: data.ByteReader, startOfst: number, endOfst: number, path: string): PDUInfo;
 	static pduCountItem(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): number;
-//	static Bool PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd);
+	static pduIsValid(reader: data.ByteReader, startOfst: number, endOfst: number): boolean;
 //	static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names);
 
 	static oidCompare(oid1: Uint8Array | number[], oid2: Uint8Array | number[]): number;
@@ -524,8 +530,8 @@ export class X509Key extends X509File
 	getKeySizeBits(): number;
 	isPrivateKey() : boolean;
 
-	//createPublicKey(): X509Key | null;
-	//getKeyId(): ArrayBuffer | null;
+	createPublicKey(): X509Key | null;
+	getKeyId(): ArrayBuffer | null;
 
 	getRSAModulus(): ArrayBuffer | null;
 	getRSAPublicExponent(): ArrayBuffer | null;

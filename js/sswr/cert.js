@@ -153,6 +153,85 @@ export class ASN1Util
 		}
 	}
 
+	static pduParseUInt32(reader, ofst, endOfst)
+	{
+		if (endOfst - ofst < 3)
+			return null;
+		if (reader.readUInt8(ofst) != 2)
+			return null;
+		let len = reader.readUInt8(ofst + 1);
+		if (len == 1)
+		{
+			return {nextOfst: ofst + 3,
+				val: reader.readUInt8(ofst + 2)};
+		}
+		else if (len == 2 && endOfst - ofst >= 4)
+		{
+			return {nextOfst: ofst + 4,
+				val: reader.readUInt16(ofst + 2, false)};
+		}
+		else if (len == 3 && endOfst - ofst >= 5)
+		{
+			return {nextOfst: ofst + 5,
+				val: reader.readUInt24(ofst + 2, false)};
+		}
+		else if (len == 4 && endOfst - ofst >= 6)
+		{
+			return {nextOfst: ofst + 6,
+				val: reader.readUInt32(ofst + 2, false)};
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	static pduParseString(reader, ofst, endOfst)
+	{
+		let len = ASN1Util.pduParseLen(reader, ofst, endOfst);
+		if (len == null)
+			return null;
+		if (len.itemType != 4)
+			return null;
+		if (len.nextOfst + len.pduLen > endOfst)
+			return null;
+		return {nextOfst: len.nextOfst + len.pduLen,
+			val: reader.readUTF8(len.nextOfst, len.pduLen)};
+	}
+
+	static pduParseChoice(reader, ofst, endOfst)
+	{
+		if (endOfst - ofst < 3)
+			return null;
+		if (reader.readUInt8(ofst) != 10)
+			return null;
+		let len = reader.readUInt8(ofst + 1);
+		if (len == 1)
+		{
+			return {nextOfst: ofst + 3,
+				val: reader.readUInt8(ofst + 2)};
+		}
+		else if (len == 2 && endOfst - ofst >= 4)
+		{
+			return {nextOfst: ofst + 4,
+				val: reader.readUInt16(ofst + 2, false)};
+		}
+		else if (len == 3 && endOfst - ofst >= 5)
+		{
+			return {nextOfst: ofst + 5,
+				val: reader.readUInt24(ofst + 2, false)};
+		}
+		else if (len == 4 && endOfst - ofst >= 6)
+		{
+			return {nextOfst: ofst + 6,
+				val: reader.readUInt32(ofst + 2, false)};
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	static pduParseUTCTimeCont(reader, startOfst, endOfst)
 	{
 		if ((endOfst - startOfst) == 13 && reader.readUInt8(startOfst + 12) == 'Z'.charCodeAt(0))
@@ -225,231 +304,247 @@ export class ASN1Util
 				outLines.push(sb.join(""));
 				startOfst = len.nextOfst + len.pduLen;
 				break;
-/*			case 0x2:
+			case 0x2:
 				if (len.pduLen <= 4)
 				{
-					pdu = PDUParseUInt32(pdu, pduEnd, iVal);
-					if (pdu == 0)
+					let val = ASN1Util.pduParseUInt32(reader, startOfst, endOfst);
+					if (val == null)
 					{
-						return false;
+						return null;
 					}
-					sb->AppendChar('\t', level);
-					if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-					sb->AppendC(UTF8STRC("INTEGER "));
-					sb->AppendU32(iVal);
-					sb->AppendC(UTF8STRC("\r\n"));
+					sb = ["\t".repeat(level)];
+					if (name) sb.push(name+" ")
+					sb.push("INTEGER ");
+					sb.push(val.val.toString());
+					outLines.push(sb.join(""));
+					startOfst = len.nextOfst + len.pduLen;
 				}
-				else if (len <= 32)
+				else if (len.pduLen <= 32)
 				{
-					sb->AppendChar('\t', level);
-					if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-					sb->AppendC(UTF8STRC("INTEGER "));
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-					sb->AppendC(UTF8STRC("\r\n"));
-					pdu += ofst + len;
+					sb = ["\t".repeat(level)];
+					if (name) sb.push(name+" ")
+					sb.push("INTEGER ");
+					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
+					outLines.push(sb.join(""));
+					startOfst = len.nextOfst + len.pduLen;
 				}
 				else
 				{
-					sb->AppendChar('\t', level);
-					if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-					sb->AppendC(UTF8STRC("INTEGER\r\n"));
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::CRLF);
-					sb->AppendC(UTF8STRC("\r\n"));
-					pdu += ofst + len;
+					sb = ["\t".repeat(level)];
+					if (name) sb.push(name+" ")
+					sb.push("INTEGER");
+					outLines.push(sb.join(""));
+					outLines.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", "\r\n"));
+					startOfst = len.nextOfst + len.pduLen;
 				}
 				break;
 			case 0x3:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("BIT STRING "));
-				sb->AppendHex8(pdu[ofst]);
-				if (PDUIsValid(&pdu[ofst + 1], &pdu[ofst + len]))
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("BIT STRING ");
+				sb.push(text.toHex8(reader.readUInt8(len.nextOfst)));
+
+				sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
+				outLines.push(sb.join(""));
+
+				if (ASN1Util.pduIsValid(reader, len.nextOfst + 1, len.nextOfst + len.pduLen))
 				{
-					Text::StringBuilderUTF8 innerSb;
-					if (names) names->ReadContainerBegin();
-					PDUToString(&pdu[ofst + 1], &pdu[ofst + len], innerSb, level + 1, 0, names);
-					if (names) names->ReadContainerEnd();
-					sb->AppendC(UTF8STRC(" {\r\n"));
-					sb->Append(&innerSb);
-					sb->AppendChar('\t', level);
-					sb->AppendC(UTF8STRC("}\r\n"));
+					sb.push(" {");
+					outLines.push(sb.join(""));
+					if (names) names.readContainerBegin();
+					ASN1Util.pduToString(reader, len.nextOfst + 1, len.nextOfst + len.pduLen, outLines, level + 1, names);
+					if (names) names.readContainerEnd();
+					outLines.push("\t".repeat(level)+"}");
 				}
 				else
 				{
-					sb->AppendC(UTF8STRC(" ("));
-					sb->AppendHexBuff(&pdu[ofst + 1], len - 1, ' ', Text::LineBreakType::None);
-					sb->AppendC(UTF8STRC(")\r\n"));
+					sb.push(" (");
+					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst + 1, len.pduLen - 1)), " ", null));
+					sb.push(")");
+					outLines.push(sb.join(""));
 				}
-				pdu += ofst + len;
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x4:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("OCTET STRING "));
-				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("OCTET STRING ");
+				if (ASN1Util.pduIsValid(reader, len.nextOfst, len.nextOfst + len.pduLen))
 				{
-					Text::StringBuilderUTF8 innerSb;
-					if (names) names->ReadContainerBegin();
-					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-					if (names) names->ReadContainerEnd();
-					sb->AppendC(UTF8STRC("{\r\n"));
-					sb->Append(&innerSb);
-					sb->AppendChar('\t', level);
-					sb->AppendC(UTF8STRC("}\r\n"));
+					sb.push("{");
+					outLines.push(sb.join(""));
+					if (names) names.readContainerBegin();
+					ASN1Util.pduToString(reader, len.nextOfst + 1, len.nextOfst + len.pduLen, outLines, level + 1, names);
+					if (names) names.readContainerEnd();
+					outLines.push("\t".repeat(level)+"}");
 				}
 				else
 				{
-					sb->AppendC(UTF8STRC("("));
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-					sb->AppendC(UTF8STRC(")\r\n"));
+					sb.push("(");
+					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst + 1, len.pduLen - 1)), " ", null));
+					sb.push(")");
+					outLines.push(sb.join(""));
 				}
-				pdu += ofst + len;
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x5:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("NULL\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("NULL");
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x6:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("OID "));
-				Net::ASN1Util::OIDToString(&pdu[ofst], len, sb);
-				sb->AppendC(UTF8STRC(" ("));
-				Net::ASN1OIDDB::OIDToNameString(&pdu[ofst], len, sb);
-				sb->AppendC(UTF8STRC(")\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("OID ");
+				let oidPDU = new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen));
+				sb.push(ASN1Util.oidToString(oidPDU));
+				sb.push(" (");
+				//sb.push(oiddb.oidToNameString(oidPDU));
+				sb.push(")");
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x0a:
-				if (len == 1)
+				if (len.pduLen == 1)
 				{
-					sb->AppendChar('\t', level);
-					if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-					sb->AppendC(UTF8STRC("ENUMERATED "));
-					sb->AppendU32(pdu[ofst]);
-					sb->AppendC(UTF8STRC("\r\n"));
-					pdu += ofst + len;
+					sb = ["\t".repeat(level)];
+					if (name) sb.push(name+" ")
+					sb.push("ENUMERATED ");
+					sb.push(reader.readUInt8(len.nextOfst).toString());
+					outLines.push(sb.join(""));
+					startOfst = len.nextOfst + len.pduLen;
 				}
 				else
 				{
-					return false;
+					return null;
 				}
 				break;
 			case 0x0C:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("UTF8String "));
-				sb->AppendC(&pdu[ofst], len);
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("UTF8String ");
+				sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x12:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("NumericString "));
-				sb->AppendC(&pdu[ofst], len);
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("NumericString ");
+				sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x13:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("PrintableString "));
-				sb->AppendC(&pdu[ofst], len);
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("PrintableString ");
+				sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x14:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("T61String "));
-				sb->AppendC(&pdu[ofst], len);
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("T61String ");
+				sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x15:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("VideotexString "));
-				sb->AppendC(&pdu[ofst], len);
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("VideotexString ");
+				sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x16:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("IA5String "));
-				sb->AppendC(&pdu[ofst], len);
-				if (sb->GetEndPtr()[-1] == 0)
-				{
-					sb->RemoveChars(1);
-				}
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("IA5String ");
+				if (reader.readUInt8(len.nextOfst + len.pduLen - 1) == 0)
+					sb.push(reader.readUTF8(len.nextOfst + 1, len.pduLen - 1));
+				else
+					sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x17:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("UTCTIME "));
-				if (len == 13 && pdu[ofst + 12] == 'Z')
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("UTCTIME ");
+				if (len.pduLen == 13 && reader.readUTF8(len.nextOfst + 12, 1) == "Z")
 				{
-					Data::DateTime dt;
-					dt.SetCurrTimeUTC();
-					dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), (OSInt)Str2Digit(&pdu[ofst + 2]), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), 0);
-					sb->AppendDateTime(dt);
+					let tv = new data.TimeValue();
+					tv.year = ASN1Util.str2Digit(reader, len.nextOfst) + 2000;
+					tv.month = ASN1Util.str2Digit(reader, len.nextOfst + 2);
+					tv.day = ASN1Util.str2Digit(reader, len.nextOfst + 4);
+					tv.hour = ASN1Util.str2Digit(reader, len.nextOfst + 6);
+					tv.minute = ASN1Util.str2Digit(reader, len.nextOfst + 8);
+					tv.second = ASN1Util.str2Digit(reader, len.nextOfst + 10);
+					tv.nanosec = 0;
+					tv.tzQhr = 0;
+					sb.push(data.Timestamp.fromTimeValue(tv).toStringNoZone());
 				}
 				else
 				{
-					sb->AppendC(&pdu[ofst], len);
+					sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
 				}
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x18:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("GeneralizedTime "));
-				if (len == 15 && pdu[ofst + 14] == 'Z')
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("GeneralizedTime ");
+				if (len.pduLen == 15 && reader.readUTF8(len.nextOfst + 14, 1) == "Z")
 				{
-					Data::DateTime dt;
-					dt.SetCurrTimeUTC();
-					dt.SetValue((UInt16)(Str2Digit(&pdu[ofst]) * 100 + Str2Digit(&pdu[ofst + 2])), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), (OSInt)Str2Digit(&pdu[ofst + 12]), 0);
-					sb->AppendDateTime(dt);
+					let tv = new data.TimeValue();
+					tv.year = ASN1Util.str2Digit(reader, len.nextOfst) * 100 + ASN1Util.str2Digit(reader, len.nextOfst + 2);
+					tv.month = ASN1Util.str2Digit(reader, len.nextOfst + 4);
+					tv.day = ASN1Util.str2Digit(reader, len.nextOfst + 6);
+					tv.hour = ASN1Util.str2Digit(reader, len.nextOfst + 8);
+					tv.minute = ASN1Util.str2Digit(reader, len.nextOfst + 10);
+					tv.second = ASN1Util.str2Digit(reader, len.nextOfst + 12);
+					tv.nanosec = 0;
+					tv.tzQhr = 0;
+					sb.push(data.Timestamp.fromTimeValue(tv).toStringNoZone());
 				}
 				else
 				{
-					sb->AppendC(&pdu[ofst], len);
+					sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
 				}
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x1C:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("UniversalString "));
-				sb->AppendC(&pdu[ofst], len);
-				sb->AppendC(UTF8STRC("\r\n"));
-				pdu += ofst + len;
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("UniversalString ");
+				sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
 				break;
 			case 0x1E:
-				sb->AppendChar('\t', level);
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
 				if (len & 1)
 				{
-					if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-					sb->AppendC(UTF8STRC("BMPString ("));
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-					sb->AppendC(UTF8STRC(")\r\n"));
+					sb.push("BMPString (");
+					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), ' ', null));
+					sb.push(")");
 				}
 				else
 				{
-					if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-					sb->AppendC(UTF8STRC("BMPString "));
-					sb->AppendUTF16BE(&pdu[ofst], len >> 1);
-					sb->AppendC(UTF8STRC("\r\n"));
+					sb.push("BMPString ");
+					sb.push(reader.readUTF16(len.nextOfst, len.pduLen >> 1, false));
 				}
-				pdu += ofst + len;
-				break;*/
+				outLines.push(sb.join(""));
+				startOfst = len.nextOfst + len.pduLen;
+				break;
 			case 0x0:
 				if (len.pduLen == 0)
 				{
@@ -475,25 +570,23 @@ export class ASN1Util
 					if (name) sb.push(name+" ")
 					sb.push("UNKNOWN 0x");
 					sb.push(text.toHex8(type));
-/*					if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
+					if (ASN1Util.pduIsValid(reader, len.nextOfst, len.nextOfst + len.pduLen))
 					{
-						Text::StringBuilderUTF8 innerSb;
-						if (names) names->ReadContainerBegin();
-						PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-						if (names) names->ReadContainerEnd();
-						sb->AppendC(UTF8STRC(" {\r\n"));
-						sb->Append(innerSb);
-						sb->AppendChar('\t', level);
-						sb->AppendC(UTF8STRC("}\r\n"));
+						sb.push(" {");
+						outLines.push(sb.join(""));
+						if (names) names.readContainerBegin();
+						ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
+						if (names) names.readContainerEnd();
+						outLines.push("\t".repeat(level)+"}");
 					}
-					else*/
+					else
 					{
 						sb.push(" (");
-/*						if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&pdu[ofst], len)))
+						if (reader.isASCIIText(len.nextOfst, len.pduLen))
 						{
 							sb.push(reader.getUTF8(len.nextOfst, len.pduLen));
 						}
-						else*/
+						else
 						{
 							sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
 						}
@@ -565,7 +658,7 @@ export class ASN1Util
 				}
 				outLines.push("\t".repeat(level)+"}");
 				break;
-/*			case 0x80:
+			case 0x80:
 			case 0x81:
 			case 0x82:
 			case 0x83:
@@ -574,50 +667,50 @@ export class ASN1Util
 			case 0x86:
 			case 0x87:
 			case 0x88:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("CHOICE["));
-				sb->AppendU16((UInt16)(type - 0x80));
-				sb->AppendC(UTF8STRC("] "));
-				if (pdu[1] == 0x80)
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("CHOICE[");
+				sb.push((type - 0x80).toString());
+				sb.push("] ");
+				if (reader.readUTF8(startOfst + 1) == 0x80)
 				{
-					sb->AppendC(UTF8STRC("{\r\n"));
-					if (names) names->ReadContainerBegin();
-					if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu, names))
+					sb.push("{");
+					outLines.push(sb.join(""));
+					if (names) names.readContainerBegin();
+					if (ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names) == null)
 					{
 						return false;
 					}
-					if (names) names->ReadContainerEnd();
-					sb->AppendChar('\t', level);
-					sb->AppendC(UTF8STRC("}\r\n"));
+					if (names) names.readContainerEnd();
+					outLines.push("\t".repeat(level)+"}");
+					startOfst = len.nextOfst + len.pduLen;
 				}
 				else
 				{
-					if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
+					if (ASN1Util.pduIsValid(reader, len.nextOfst, len.nextOfst + len.pduLen))
 					{
-						Text::StringBuilderUTF8 innerSb;
-						if (names) names->ReadContainerBegin();
-						PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-						if (names) names->ReadContainerEnd();
-						sb->AppendC(UTF8STRC("{\r\n"));
-						sb->Append(innerSb);
-						sb->AppendChar('\t', level);
-						sb->AppendC(UTF8STRC("}\r\n"));
+						sb.push("{");
+						outLines.push(sb.join(""));
+						if (names) names.readContainerBegin();
+						ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
+						if (names) names.readContainerEnd();
+						outLines.push("\t".repeat(level)+"}");
 					}
 					else
 					{
-						sb->AppendC(UTF8STRC(" ("));
-						if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&pdu[ofst], len)))
+						sb.push(" (");
+						if (reader.isASCIIText(len.nextOfst, len.pduLen))
 						{
-							sb->AppendC(&pdu[ofst], len);
+							sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
 						}
 						else
 						{
-							sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+							sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
 						}
-						sb->AppendC(UTF8STRC(")\r\n"));
+						sb.push(")");
+						outLines.push(sb.join(""));
 					}
-					pdu += ofst + len;
+					startOfst = len.nextOfst + len.pduLen;
 				}
 				break;
 			case 0xA0:
@@ -629,45 +722,52 @@ export class ASN1Util
 			case 0xA6:
 			case 0xA7:
 			case 0xA8:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("CONTEXT SPECIFIC["));
-				sb->AppendU16((UInt16)(type - 0xA0));
-				sb->AppendC(UTF8STRC("] "));
-				if (pdu[1] == 0x80)
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("CONTEXT SPECIFIC[");
+				sb.push((type - 0xA0).toString());
+				sb.push("] ");
+				if (reader.readUTF8(startOfst + 1) == 0x80)
 				{
-					sb->AppendC(UTF8STRC("{\r\n"));
-					if (names) names->ReadContainerBegin();
-					if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu, names))
+					sb.push("{");
+					outLines.push(sb.join(""));
+					if (names) names.readContainerBegin();
+					if (ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names) == null)
 					{
 						return false;
 					}
-					if (names) names->ReadContainerEnd();
-					sb->AppendChar('\t', level);
-					sb->AppendC(UTF8STRC("}\r\n"));
+					if (names) names.readContainerEnd();
+					outLines.push("\t".repeat(level)+"}");
+					startOfst = len.nextOfst + len.pduLen;
 				}
 				else
 				{
-					Text::StringBuilderUTF8 innerSb;
-					if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
+					if (ASN1Util.pduIsValid(reader, len.nextOfst, len.nextOfst + len.pduLen))
 					{
-						if (names) names->ReadContainerBegin();
-						PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-						if (names) names->ReadContainerEnd();
-						sb->AppendC(UTF8STRC("{\r\n"));
-						sb->Append(innerSb);
-						sb->AppendChar('\t', level);
-						sb->AppendC(UTF8STRC("}\r\n"));
+						sb.push("{");
+						outLines.push(sb.join(""));
+						if (names) names.readContainerBegin();
+						ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
+						if (names) names.readContainerEnd();
+						outLines.push("\t".repeat(level)+"}");
 					}
 					else
 					{
-						sb->AppendC(UTF8STRC("("));
-						sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-						sb->AppendC(UTF8STRC(")\r\n"));
+						sb.push(" (");
+						if (reader.isASCIIText(len.nextOfst, len.pduLen))
+						{
+							sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
+						}
+						else
+						{
+							sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
+						}
+						sb.push(")");
+						outLines.push(sb.join(""));
 					}
-					pdu += ofst + len;
+					startOfst = len.nextOfst + len.pduLen;
 				}
-				break;*/
+				break;
 			}
 		}
 		return startOfst;
@@ -890,6 +990,32 @@ export class ASN1Util
 			}
 		}
 		return 0;
+	}
+
+	static pduIsValid(reader, startOfst, endOfst)
+	{
+		while (startOfst < endOfst)
+		{
+			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
+			if (len == null)
+			{
+				return false;
+			}
+			else if (len.nextOfst + len.pduLen > endOfst)
+			{
+				return false;
+			}
+			let type = reader.readUInt8(startOfst);
+			if (type >= 0x30 && type < 0x40)
+			{
+				if (!ASN1Util.pduIsValid(reader, len.nextOfst, len.nextOfst + len.pduLen))
+				{
+					return false;
+				}
+			}
+			startOfst = len.nextOfst + len.pduLen;
+		}
+		return true;
 	}
 
 	static oidCompare(oid1, oid2)
@@ -2656,7 +2782,7 @@ export class X509Key extends X509File
 		}
 	}
 
-/*	createPublicKey()
+	createPublicKey()
 	{
 		if (this.keyType == KeyType.RSAPublic)
 		{
@@ -2664,8 +2790,7 @@ export class X509Key extends X509File
 		}
 		else if (this.keyType == KeyType.RSA)
 		{
-			builder = new ASN1PDUBuilder();
-			UOSInt buffSize;
+/*			builder = new ASN1PDUBuilder();
 			let buff;
 			builder.beginSequence();
 			if ((buff = this.getRSAModulus()) == null) return null;
@@ -2673,7 +2798,8 @@ export class X509Key extends X509File
 			if ((buff = this.getRSAPublicExponent()) == null) return null;
 			builder.appendOther(ASN1ItemType.INTEGER, buff);
 			builder.endLevel();
-			return new X509Key(this.sourceName, builder.getArrayBuffer(), KeyType.RSAPublic);
+			return new X509Key(this.sourceName, builder.getArrayBuffer(), KeyType.RSAPublic);*/
+			return null;
 		}
 		else if (this.keyType == KeyType.ECPublic)
 		{
@@ -2683,17 +2809,17 @@ export class X509Key extends X509File
 		{
 			return null;
 		}		
-	}*/
+	}
 
 	getKeyId()
 	{
-/*		let pubKey = this.createPublicKey();
+		let pubKey = this.createPublicKey();
 		if (pubKey)
 		{
 			let sha1 = new hash.SHA1();
-			sha1.calc(pubKey.getASN1Buff());
+			sha1.calc(pubKey.getASN1Buff().getArrayBuffer());
 			return sha1.getValue();
-		}*/
+		}
 		return null;
 	}
 

@@ -27,3 +27,31 @@ export enum HashType
 	// Compound Algorithm
 	SHA1_SHA1
 }
+
+export abstract class Hash
+{
+	abstract getName(): string;
+	abstract clone(): Hash;
+	abstract clear(): void;
+	abstract calc(buff: ArrayBuffer): void;
+	abstract getValue(): ArrayBuffer;
+	abstract getBlockSize(): number;
+}
+
+export class SHA1 extends Hash
+{
+	intermediateHash: number[];
+	messageLength: number;
+	messageBlockIndex: number;
+	messageBlock: number[];
+
+	constructor();
+	getName(): string;
+	clone(): Hash;
+	clear(): void;
+	calc(buff: ArrayBuffer): void;
+	getValue(): ArrayBuffer;
+	getBlockSize(): number;
+
+	static calcBlock(intermediateHash: number[], messageBlock: ArrayBuffer): void;
+}
