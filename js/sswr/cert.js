@@ -196,7 +196,7 @@ export class ASN1Util
 	{
 		while (startOfst < endOfst)
 		{
-			let type = reader.readUInt8(0);
+			let type = reader.readUInt8(startOfst);
 			let sb;
 			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
 			if (len == null)
@@ -449,16 +449,12 @@ export class ASN1Util
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				pdu += ofst + len;
-				break;
+				break;*/
 			case 0x0:
-				if (len == 0)
+				if (len.pduLen == 0)
 				{
-					if (pduNext)
-					{
-						*pduNext = pdu + 2;
-					}
-					return true;
-				}*/
+					return startOfst + 2;
+				}
 			default:
 				if (type < 0x30)
 				{
@@ -467,7 +463,7 @@ export class ASN1Util
 					sb.push("UNKNOWN 0x");
 					sb.push(text.toHex8(type));
 					sb.push(" (");
-					sb.push(text.u8Arr2Hex(reader.getArrayBuffer(len.nextOfst, len.pduLen), " ", null));
+					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
 					sb.push(')');
 					outLines.push(sb.join(""));
 					startOfst = len.nextOfst + len.pduLen;
@@ -499,7 +495,7 @@ export class ASN1Util
 						}
 						else*/
 						{
-							sb.push(text.u8Arr2Hex(reader.getArrayBuffer(len.nextOfst, len.pduLen), " ", null));
+							sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
 						}
 						sb.push(")");
 					}
@@ -507,63 +503,69 @@ export class ASN1Util
 					startOfst = len.nextOfst + len.pduLen;
 					break;
 				}
-			/*case 0x30:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("SEQUENCE {\r\n"));
-				if (pdu[1] == 0x80)
+			case 0x30:
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("SEQUENCE {");
+				outLines.push(sb.join(""));
+
+				if (reader.readUInt8(startOfst + 1) == 0x80)
 				{
-					pdu += ofst;
-					if (names) names->ReadContainerBegin();
-					if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu, names))
+					startOfst = len.nextOfst;
+					if (names) names.readContainerBegin();
+					startOfst = ASN1Util.pduToString(reader, startOfst, endOfst, outLines, level + 1, names);
+					if (startOfst == null)
 					{
-						return false;
+						return null;
 					}
-					if (names) names->ReadContainerEnd();
+					if (names) names.readContainerEnd();
 				}
 				else
 				{
-					pdu += ofst;
-					if (names) names->ReadContainerBegin();
-					if (!PDUToString(pdu, pdu + len, sb, level + 1, 0, names))
+					startOfst = len.nextOfst;
+					if (names) names.readContainerBegin();
+					startOfst = ASN1Util.pduToString(reader, startOfst, startOfst + len.pduLen, outLines, level + 1, names);
+					if (startOfst == null)
 					{
-						return false;
+						return null;
 					}
-					if (names) names->ReadContainerEnd();
-					pdu += len;
+					if (names) names.readContainerEnd();
+					startOfst = len.nextOfst + len.pduLen;
 				}
-				sb->AppendChar('\t', level);
-				sb->AppendC(UTF8STRC("}\r\n"));
+				outLines.push("\t".repeat(level)+"}");
 				break;
 			case 0x31:
-				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
-				sb->AppendC(UTF8STRC("SET {\r\n"));
-				if (pdu[1] == 0x80)
+				sb = ["\t".repeat(level)];
+				if (name) sb.push(name+" ")
+				sb.push("SET {");
+				outLines.push(sb.join(""));
+
+				if (reader.readUInt8(startOfst + 1) == 0x80)
 				{
-					pdu += ofst;
-					if (names) names->ReadContainerBegin();
-					if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu, names))
+					startOfst = len.nextOfst;
+					if (names) names.readContainerBegin();
+					startOfst = ASN1Util.pduToString(reader, startOfst, endOfst, outLines, level + 1, names);
+					if (startOfst == null)
 					{
-						return false;
+						return null;
 					}
-					if (names) names->ReadContainerEnd();
+					if (names) names.readContainerEnd();
 				}
 				else
 				{
-					pdu += ofst;
-					if (names) names->ReadContainerBegin();
-					if (!PDUToString(pdu, pdu + len, sb, level + 1, 0, names))
+					startOfst = len.nextOfst;
+					if (names) names.readContainerBegin();
+					startOfst = ASN1Util.pduToString(reader, startOfst, startOfst + len.pduLen, outLines, level + 1, names);
+					if (startOfst == null)
 					{
-						return false;
+						return null;
 					}
-					if (names) names->ReadContainerEnd();
-					pdu += len;
+					if (names) names.readContainerEnd();
+					startOfst = len.nextOfst + len.pduLen;
 				}
-				sb->AppendChar('\t', level);
-				sb->AppendC(UTF8STRC("}\r\n"));
+				outLines.push("\t".repeat(level)+"}");
 				break;
-			case 0x80:
+/*			case 0x80:
 			case 0x81:
 			case 0x82:
 			case 0x83:
