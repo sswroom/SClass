@@ -480,6 +480,41 @@ declare class RFC8551
 	static smimeEncryptionKeyPreference(names: ASN1Names): void;
 }
 
+export class ASN1PDUBuilder
+{
+	seqOffset: number[];
+	buff: number[];
+
+	constructor();
+	
+	beginOther(type: ASN1ItemType): void;
+	beginSequence(): void;
+	beginSet(): void;
+	beginContentSpecific(n: number): void;
+	endLevel(): void;
+	endAll(): void;
+	appendBool(v: boolean): void;
+	appendInt32(v: number): void;
+	appendBitString(bitLeft: number, buff: ArrayBuffer): void;
+	appendOctetString(buff: ArrayBuffer | string): void;
+	appendNull(): void;
+	appendOID(buff: ArrayBuffer): void;
+	appendOIDString(oidStr: string): void;
+	appendChoice(v: number): void;
+	appendPrintableString(s: string): void;
+	appendUTF8String(s: string): void;
+	appendIA5String(s: string): void;
+	appendUTCTime(t: data.Timestamp): void;
+	appendOther(type: ASN1ItemType, buff: ArrayBuffer): void;
+	appendContentSpecific(n: number, buff: ArrayBuffer): void;
+	appendSequence(buff: ArrayBuffer): void;
+	appendInteger(buff: ArrayBuffer): void;
+
+	getArrayBuffer(): ArrayBuffer;
+	appendTypeLen(type: ASN1ItemType, len: number): void;
+	appendArrayBuffer(buff: ArrayBuffer): void;
+};
+
 export abstract class ASN1Data extends data.ParsedObject
 {
 	reader: data.ByteReader;

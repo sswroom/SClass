@@ -2435,6 +2435,279 @@ class RFC8551
 	}
 }
 
+export class ASN1PDUBuilder
+{
+	constructor()
+	{
+		this.seqOffset = [];
+		this.buff = [];
+	}
+	
+	beginOther(type)
+	{
+		this.buff.push(type);
+		this.buff.push(0);
+		this.seqOffset.push(this.buff.length);
+	}
+
+	beginSequence()
+	{
+		this.beginOther(0x30);
+	}
+
+	beginSet()
+	{
+		this.beginOther(0x31);
+	}
+
+	beginContentSpecific(n)
+	{
+		this.beginOther(0xa0 + n);
+	}
+
+	endLevel()
+	{
+		if (this.seqOffset.length > 0)
+		{
+			let seqOffset = this.seqOffset.pop();
+			let seqLen = this.buff.length - seqOffset;
+			if (seqLen < 128)
+			{
+				this.buff[seqOffset - 1] = seqLen;
+			}
+			else if (seqLen < 256)
+			{
+				this.buff[seqOffset - 1] = 0x81;
+				this.buff.splice(seqOffset, 0, seqLen);
+			}
+			else if (seqLen < 65536)
+			{
+				this.buff[seqOffset - 1] = 0x82;
+				this.buff.splice(seqOffset, 0, seqLen >> 8, seqLen & 0xff);
+			}
+			else
+			{
+				this.buff[seqOffset - 1] = 0x83;
+				this.buff.splice(seqOffset, 0, seqLen >> 16, (seqLen >> 8) & 0xff, seqLen & 0xff);
+			}
+		}	
+	}
+
+	endAll()
+	{
+		while (this.seqOffset.length > 0)
+		{
+			this.endLevel();
+		}
+	}
+
+	appendBool(v)
+	{
+		this.buff.push(1);
+		this.buff.push(1);
+		this.buff.push(v?0xFF:0);
+	}
+
+	appendInt32(v)
+	{
+		this.buff.push(2);
+		if (v < 128 && v >= -128)
+		{
+			this.buff.push(1);
+			this.buff.push(v & 0xff);
+		}
+		else if (v < 32768 && v >= -32768)
+		{
+			this.buff.push(2);
+			this.buff.push((v >> 8) & 0xff);
+			this.buff.push(v & 0xff);
+		}
+		else if (v < 8388608 && v >= -8388608)
+		{
+			this.buff.push(3);
+			this.buff.push((v >> 16) & 0xff);
+			this.buff.push((v >> 8) & 0xff);
+			this.buff.push(v & 0xff);
+		}
+		else
+		{
+			this.buff.push(4);
+			this.buff.push((v >> 24) & 0xff);
+			this.buff.push((v >> 16) & 0xff);
+			this.buff.push((v >> 8) & 0xff);
+			this.buff.push(v & 0xff);
+		}
+	}
+
+	appendBitString(bitLeft, buff)
+	{
+		this.appendTypeLen(3, buff.byteLength + 1);
+		this.buff.push(bitLeft);
+		this.appendArrayBuffer(buff);
+	}
+
+	appendOctetString(buff)
+	{
+		if (buff instanceof ArrayBuffer)
+		{
+			this.appendTypeLen(4, buff.byteLength);
+			this.appendArrayBuffer(buff);
+		}
+		else if (typeof buff == "string")
+		{
+			let b = new TextEncoder().encode(buff);
+			this.appendTypeLen(4, b.byteLength);
+			this.appendArrayBuffer(b);
+		}
+		else
+		{
+			throw new Error("Unknown type");
+		}
+	}
+
+	appendNull()
+	{
+		this.appendTypeLen(5, 0);
+	}
+
+	appendOID(buff)
+	{
+		this.appendTypeLen(6, buff.byteLength);
+		this.appendArrayBuffer(buff);
+	}
+
+	appendOIDString(oidStr)
+	{
+		let buff = ASN1Util.oidText2PDU(oidStr);
+		this.appendOID(new Uint8Array(buff).buffer);
+	}
+
+	appendChoice(v)
+	{
+		this.buff.push(10);
+		if (v < 128 && v >= -128)
+		{
+			this.buff.push(1);
+			this.buff.push(v & 0xff);
+		}
+		else if (v < 32768 && v >= -32768)
+		{
+			this.buff.push(2);
+			this.buff.push((v >> 8) & 0xff);
+			this.buff.push(v & 0xff);
+		}
+		else if (v < 8388608 && v >= -8388608)
+		{
+			this.buff.push(3);
+			this.buff.push((v >> 16) & 0xff);
+			this.buff.push((v >> 8) & 0xff);
+			this.buff.push(v & 0xff);
+		}
+		else
+		{
+			this.buff.push(4);
+			this.buff.push((v >> 24) & 0xff);
+			this.buff.push((v >> 16) & 0xff);
+			this.buff.push((v >> 8) & 0xff);
+			this.buff.push(v & 0xff);
+		}
+	}
+
+	appendPrintableString(s)
+	{
+		this.appendOther(0x13, new TextEncoder().encode(s).buffer);
+	}
+
+	appendUTF8String(s)
+	{
+		this.appendOther(0xc, new TextEncoder().encode(s).buffer);
+	}
+
+	appendIA5String(s)
+	{
+		this.appendOther(0x16, new TextEncoder().encode(s).buffer);
+	}
+
+	appendUTCTime(t)
+	{
+		let s = t.toUTCTime().toString("yyMMddHHmmss")+"Z";
+		this.appendOther(0x17, new TextEncoder().encode(s).buffer);
+	}
+
+	appendOther(type, buff)
+	{
+		this.appendTypeLen(type, buff.byteLength);
+		this.appendArrayBuffer(buff);
+	}
+
+	appendContentSpecific(n, buff)
+	{
+		this.appendOther(0xa0 + n, buff);
+	}
+
+	appendSequence(buff)
+	{
+		this.appendOther(0x30, buff);
+	}
+
+	appendInteger(buff)
+	{
+		this.appendOther(2, buff);
+	}
+
+	getArrayBuffer()
+	{
+		this.endAll();
+		return new Uint8Array(this.buff).buffer;
+	}
+
+	appendTypeLen(type, len)
+	{
+		this.buff.push(type);
+		if (len < 128)
+		{
+			this.buff.push(len & 0xff);
+		}
+		else if (len < 256)
+		{
+			this.buff.push(0x81);
+			this.buff.push(len);
+		}
+		else if (len < 65536)
+		{
+			this.buff.push(0x82);
+			this.buff.push(len >> 8);
+			this.buff.push(len & 0xff);
+		}
+		else if (len < 0x1000000)
+		{
+			this.buff.push(0x83);
+			this.buff.push(len >> 16);
+			this.buff.push((len >> 8) & 0xff);
+			this.buff.push(len & 0xff);
+		}
+		else
+		{
+			this.buff.push(0x84);
+			this.buff.push(len >> 24);
+			this.buff.push((len >> 16) & 0xff);
+			this.buff.push((len >> 8) & 0xff);
+			this.buff.push(len & 0xff);
+		}
+	}
+
+	appendArrayBuffer(buff)
+	{
+		let arr = new Uint8Array(buff);
+		let i = 0;
+		while (i < arr.length)
+		{
+			this.buff.push(arr[i]);
+			i++;
+		}
+	}
+}
+
 export class ASN1Data extends data.ParsedObject
 {
 	constructor(sourceName, objType, buff)
@@ -2790,7 +3063,7 @@ export class X509Key extends X509File
 		}
 		else if (this.keyType == KeyType.RSA)
 		{
-/*			builder = new ASN1PDUBuilder();
+			let builder = new ASN1PDUBuilder();
 			let buff;
 			builder.beginSequence();
 			if ((buff = this.getRSAModulus()) == null) return null;
@@ -2798,8 +3071,7 @@ export class X509Key extends X509File
 			if ((buff = this.getRSAPublicExponent()) == null) return null;
 			builder.appendOther(ASN1ItemType.INTEGER, buff);
 			builder.endLevel();
-			return new X509Key(this.sourceName, builder.getArrayBuffer(), KeyType.RSAPublic);*/
-			return null;
+			return new X509Key(this.sourceName, builder.getArrayBuffer(), KeyType.RSAPublic);
 		}
 		else if (this.keyType == KeyType.ECPublic)
 		{

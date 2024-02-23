@@ -111,8 +111,8 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 	keyPDU.BeginSequence();
 	keyPDU.AppendInt32(0);
 	keyPDU.BeginSequence();
-	Text::CString oidStr = KeyTypeGetOID(keyType);
-	keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
+	Text::CStringNN oidStr = KeyTypeGetOID(keyType);
+	keyPDU.AppendOIDString(oidStr);
 	keyPDU.AppendNull();
 	keyPDU.EndLevel();
 	keyPDU.AppendOctetString(buff, buffSize);
@@ -134,16 +134,16 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<C
 		keyPDU.BeginSequence();
 		keyPDU.AppendInt32(0);
 		keyPDU.BeginSequence();
-		Text::CString oidStr = KeyTypeGetOID(keyType);
-		keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
+		Text::CStringNN oidStr = KeyTypeGetOID(keyType);
+		keyPDU.AppendOIDString(oidStr);
 		oidStr = ECNameGetOID(ecName);
-		keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
+		keyPDU.AppendOIDString(oidStr);
 		keyPDU.EndLevel();
 		keyPDU.BeginOther(4);
 		keyPDU.BeginSequence();
 		keyPDU.AppendInt32(1);
 		keyBuff = key->GetECPrivate(keyBuffLen);
-		keyPDU.AppendOctetStringC(keyBuff, keyBuffLen);
+		keyPDU.AppendOctetString(keyBuff, keyBuffLen);
 		keyBuff = key->GetECPublic(keyBuffLen);
 		if (keyBuff)
 		{

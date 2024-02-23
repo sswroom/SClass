@@ -608,18 +608,18 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 		dt.SetCurrTimeUTC();
 		Net::ASN1PDUBuilder builder;
 		builder.BeginSequence();
-			builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.7.2")); //signedData
+			builder.AppendOIDString(CSTR("1.2.840.113549.1.7.2")); //signedData
 			builder.BeginContentSpecific(0);
 				builder.BeginSequence();
 					builder.AppendInt32(1);
 					builder.BeginSet();
 						builder.BeginSequence();
-							builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.2.1")); //id-sha256
+							builder.AppendOIDString(CSTR("2.16.840.1.101.3.4.2.1")); //id-sha256
 							builder.AppendNull();
 						builder.EndLevel();
 					builder.EndLevel();
 					builder.BeginSequence();
-						builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.7.1")); //data
+						builder.AppendOIDString(CSTR("1.2.840.113549.1.7.1")); //data
 					builder.EndLevel();
 					builder.AppendContentSpecific(0, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize());
 					builder.BeginSet();
@@ -632,18 +632,18 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 								builder.AppendInteger(data, dataSize);
 							builder.EndLevel();
 							builder.BeginSequence();
-								builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.2.1")); //id-sha256
+								builder.AppendOIDString(CSTR("2.16.840.1.101.3.4.2.1")); //id-sha256
 								builder.AppendNull();
 							builder.EndLevel();
 							builder.BeginContentSpecific(0);
 								builder.BeginSequence();
-									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.3")); //contentType
+									builder.AppendOIDString(CSTR("1.2.840.113549.1.9.3")); //contentType
 									builder.BeginSet();
-										builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.7.1")); //data
+										builder.AppendOIDString(CSTR("1.2.840.113549.1.7.1")); //data
 									builder.EndLevel();
 								builder.EndLevel();
 								builder.BeginSequence();
-									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.5")); //signing-time
+									builder.AppendOIDString(CSTR("1.2.840.113549.1.9.5")); //signing-time
 									builder.BeginSet();
 										builder.AppendUTCTime(dt);
 									builder.EndLevel();
@@ -654,45 +654,45 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 									sha.GetValue(signData);
 
 									builder.BeginSequence();
-										builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.4")); //messageDigest
+										builder.AppendOIDString(CSTR("1.2.840.113549.1.9.4")); //messageDigest
 										builder.BeginSet();
-											builder.AppendOctetStringC(signData, 32);
+											builder.AppendOctetString(signData, 32);
 										builder.EndLevel();
 									builder.EndLevel();
 								}
 								builder.BeginSequence();
-									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.15")); //smimeCapabilities
+									builder.AppendOIDString(CSTR("1.2.840.113549.1.9.15")); //smimeCapabilities
 									builder.BeginSet();
 										builder.BeginSequence();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.1.42")); //aes256-CBC
+												builder.AppendOIDString(CSTR("2.16.840.1.101.3.4.1.42")); //aes256-CBC
 											builder.EndLevel();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.1.2")); //aes128-CBC
+												builder.AppendOIDString(CSTR("2.16.840.1.101.3.4.1.2")); //aes128-CBC
 											builder.EndLevel();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.7")); //des-ede3-cbc
+												builder.AppendOIDString(CSTR("1.2.840.113549.3.7")); //des-ede3-cbc
 											builder.EndLevel();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.2")); //rc2CBC
+												builder.AppendOIDString(CSTR("1.2.840.113549.3.2")); //rc2CBC
 												builder.AppendInt32(128);
 											builder.EndLevel();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.2")); //rc2CBC
+												builder.AppendOIDString(CSTR("1.2.840.113549.3.2")); //rc2CBC
 												builder.AppendInt32(64);
 											builder.EndLevel();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("1.3.14.3.2.7")); //desCBC
+												builder.AppendOIDString(CSTR("1.3.14.3.2.7")); //desCBC
 											builder.EndLevel();
 											builder.BeginSequence();
-												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.2")); //rc2CBC
+												builder.AppendOIDString(CSTR("1.2.840.113549.3.2")); //rc2CBC
 												builder.AppendInt32(40);
 											builder.EndLevel();
 										builder.EndLevel();
 									builder.EndLevel();
 								builder.EndLevel();
 								builder.BeginSequence();
-									builder.AppendOIDString(UTF8STRC("1.3.6.1.4.1.311.16.4")); //outlookExpress
+									builder.AppendOIDString(CSTR("1.3.6.1.4.1.311.16.4")); //outlookExpress
 									builder.BeginSet();
 										builder.BeginSequence();
 											data = this->signCert->GetIssuerNamesSeq(dataSize);
@@ -703,7 +703,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 									builder.EndLevel();
 								builder.EndLevel();
 								builder.BeginSequence();
-									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.16.2.11")); //id-aa-encrypKeyPref
+									builder.AppendOIDString(CSTR("1.2.840.113549.1.9.16.2.11")); //id-aa-encrypKeyPref
 									builder.BeginSet();
 										builder.BeginContentSpecific(0);
 											data = this->signCert->GetIssuerNamesSeq(dataSize);
@@ -715,12 +715,12 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 								builder.EndLevel();
 							builder.EndLevel();
 							builder.BeginSequence();
-								builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.1.1")); //rsaEncryption
+								builder.AppendOIDString(CSTR("1.2.840.113549.1.1.1")); //rsaEncryption
 								builder.AppendNull();
 							builder.EndLevel();
 							///////////////////////////////////////
 							nnssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(), (UOSInt)mstm.GetLength(), signData, signLen);
-							builder.AppendOctetStringC(signData, signLen);
+							builder.AppendOctetString(signData, signLen);
 						builder.EndLevel();
 					builder.EndLevel();
 				builder.EndLevel();

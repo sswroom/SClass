@@ -602,12 +602,12 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	pdu->AppendUInt32(3); //version
 	if (userDN.v == 0 || password.v == 0)
 	{
-		pdu->AppendOctetStringC(0, 0); //name
+		pdu->AppendOctetString(0, 0); //name
 		pdu->AppendOther(0x80, 0, 0); //authentication
 	}
 	else
 	{
-		pdu->AppendOctetStringC(userDN.v, userDN.leng); //name
+		pdu->AppendOctetStringC(userDN.OrEmpty()); //name
 		pdu->AppendOther(0x80, password.v, password.leng); //authentication
 	}
 	pdu->EndLevel();
@@ -658,7 +658,7 @@ Bool Net::LDAPClient::Unbind()
 
 	pdu->BeginOther(0xA0); //control
 	pdu->BeginSequence(); //Control
-	pdu->AppendOctetStringC(UTF8STRC("2.16.840.1.113730.3.4.2")); //controlType
+	pdu->AppendOctetStringC(CSTR("2.16.840.1.113730.3.4.2")); //controlType
 	pdu->EndLevel();
 	pdu->EndLevel();
 
@@ -670,7 +670,7 @@ Bool Net::LDAPClient::Unbind()
 	return valid;
 }
 
-Bool Net::LDAPClient::Search(Text::CString baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<Net::LDAPClient::SearchResObject*> *results)
+Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<Net::LDAPClient::SearchResObject*> *results)
 {
 	Net::ASN1PDUBuilder *pdu;
 	UOSInt buffSize;
@@ -687,7 +687,7 @@ Bool Net::LDAPClient::Search(Text::CString baseObject, ScopeType scope, DerefTyp
 	status.searchObjs = &resObjs;
 
 	pdu->BeginOther(0x63); //SearchRequest
-	pdu->AppendOctetStringC(baseObject.v, baseObject.leng);
+	pdu->AppendOctetStringC(baseObject);
 	pdu->AppendChoice((UInt32)scope);
 	pdu->AppendChoice((UInt32)derefAliases);
 	pdu->AppendUInt32(sizeLimit);
@@ -710,7 +710,7 @@ Bool Net::LDAPClient::Search(Text::CString baseObject, ScopeType scope, DerefTyp
 
 	pdu->BeginOther(0xA0); //control
 	pdu->BeginSequence(); //Control
-	pdu->AppendOctetStringC(UTF8STRC("2.16.840.1.113730.3.4.2")); //controlType
+	pdu->AppendOctetStringC(CSTR("2.16.840.1.113730.3.4.2")); //controlType
 	pdu->EndLevel();
 	pdu->EndLevel();
 

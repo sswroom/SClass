@@ -486,7 +486,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::FromECPublicKey(const UInt8 *buff,
 	Net::ASN1PDUBuilder pdu;
 	pdu.BeginSequence();
 	pdu.BeginSequence();
-	pdu.AppendOIDString(UTF8STRC("1.2.840.10045.2.1"));
+	pdu.AppendOIDString(CSTR("1.2.840.10045.2.1"));
 	pdu.AppendOID(paramOID, oidLen);
 	pdu.EndLevel();
 	pdu.AppendBitString(0, buff, buffSize);
