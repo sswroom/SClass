@@ -893,6 +893,15 @@ export class ASN1Util
 		return null;
 	}
 
+	static pduGetItemType(reader, startOfst, endOfst, path)
+	{
+		let item = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
+		if (item == null)
+			return ASN1ItemType.UNKNOWN;
+		else
+			return item.itemType;
+	}
+
 	static pduCountItem(reader, startOfst, endOfst, path)
 	{
 		let cnt;
@@ -2833,6 +2842,49 @@ export class X509File extends ASN1Data
 			algType: algType};
 	}
 
+	static nameGetByOID(reader, startOfst, endOfst, oidText)
+	{
+		let itemPDU;
+		let oidPDU;
+		let strPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+	
+			let path = i.toString()+".1";
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path)) != null)
+			{
+				if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+				{
+					oidPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+					if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID && ASN1Util.oidEqualsText(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen), oidText))
+					{
+						strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "2");
+						if (strPDU)
+						{
+							if (strPDU.itemType == ASN1ItemType.BMPSTRING)
+							{
+								return reader.readUTF16(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen >> 1, false);
+							}
+							else
+							{
+								return reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	static nameGetCN(reader, startOfst, endOfst)
+	{
+		return X509File.nameGetByOID(reader, startOfst, endOfst, "2.5.4.3");
+	}
+
 	static keyGetLeng(reader, startOfst, endOfst, keyType)
 	{
 		let keyPDU;
@@ -2878,6 +2930,257 @@ export class X509File extends ASN1Data
 		default:
 			return 0;
 		}
+	}
+}
+
+export class X509Cert extends X509File
+{
+	constructor(sourceName, buff)
+	{
+		super(sourceName, "application/x-pem-file", buff);
+	}
+
+	getSubjectCN()
+	{
+		let tmpBuff;
+		if (ASN1Util.pduGetItemType(this.reader, 0, this.reader.getLength(), "1.1.1") == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.6");
+		}
+		else
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.5");
+		}
+		if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
+		{
+			return X509File.nameGetCN(this.reader, tmpBuff.rawOfst + tmpBuff.hdrLen, tmpBuff.rawOfst + tmpBuff.hdrLen + tmpBuff.contLen);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	getIssuerCN()
+	{
+		let tmpBuff;
+		if (ASN1Util.pduGetItemType(this.reader, 0, this.reader.getLength(), "1.1.1") == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.4");
+		}
+		else
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.3");
+		}
+		if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
+		{
+			return X509File.nameGetCN(this.reader, tmpBuff.rawOfst + tmpBuff.hdrLen, tmpBuff.rawOfst + tmpBuff.hdrLen + tmpBuff.contLen);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	setDefaultSourceName()
+	{
+		let cn = this.getSubjectCN();
+		if (cn)
+		{
+			this.sourceName = cn+".crt";
+		}
+	}
+	
+	getFileType()
+	{
+		return X509FileType.Cert;	
+	}
+
+	toShortName()
+	{
+		return this.getSubjectCN();
+	}
+
+	getCertCount()
+	{
+		return 1;
+	}
+
+	getCertName(index)
+	{
+		if (index != 0)
+			return null;
+		return this.getSubjectCN();
+	}
+
+	getNewCert(index)
+	{
+		if (index != 0)
+			return null;
+		return this.clone();
+	}
+
+	isValid()
+	{
+	/*
+		if (trustStore == 0)
+	{
+		trustStore = ssl->GetTrustStore();
+	}
+	Text::StringBuilderUTF8 sb;
+	if (!this->GetIssuerCN(sb))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Data::DateTime dt;
+	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	if (!this->GetNotBefore(dt))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	if (dt.ToTicks() > currTime)
+	{
+		return Crypto::Cert::X509File::ValidStatus::Expired;
+	}
+	if (!this->GetNotAfter(dt))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	if (dt.ToTicks() < currTime)
+	{
+		return Crypto::Cert::X509File::ValidStatus::Expired;
+	}
+	SignedInfo signedInfo;
+	if (!this->GetSignedInfo(signedInfo))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Crypto::Hash::HashType hashType = GetAlgHash(signedInfo.algType);
+	if (hashType == Crypto::Hash::HashType::Unknown)
+	{
+		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
+	}
+
+	Crypto::Cert::X509Cert *issuer = trustStore->GetCertByCN(sb.ToCString());
+	if (issuer == 0)
+	{
+		if (!this->IsSelfSigned())
+		{
+			return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
+		}
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (!key.Set(this->GetNewPublicKey()))
+		{
+			return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+		}
+		Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+		key.Delete();
+		if (signValid)
+		{
+			return Crypto::Cert::X509File::ValidStatus::SelfSigned;
+		}
+		else
+		{
+			return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+		}
+	}
+
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!key.Set(issuer->GetNewPublicKey()))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+	key.Delete();
+	if (!signValid)
+	{
+		return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+	}
+
+	Data::ArrayList<Text::CString> crlDistributionPoints;
+	this->GetCRLDistributionPoints(&crlDistributionPoints);
+	//////////////////////////
+	// CRL
+	return Crypto::Cert::X509File::ValidStatus::Valid;*/	
+	}
+
+	clone()
+	{
+		return new X509Cert(this.sourceName, this.reader.getArrayBuffer());
+	}
+
+	createX509Cert()
+	{
+		return new X509Cert(this.sourceName, this.reader.getArrayBuffer());
+	}
+
+	toString()
+	{
+		///////////////////////////////////////////////
+	}
+
+	createNames()
+	{
+		return new ASN1Names().setCertificate();
+	}
+
+	getIssuerNames()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getSubjNames()
+	{
+		/////////////////////////////////////////////
+	}
+	getExtensions()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getNewPublicKey()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getKeyId()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getNotBefore()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getNotAfter()
+	{
+		/////////////////////////////////////////////
+	}
+
+	domainValid(domain)
+	{
+		/////////////////////////////////////////////
+	}
+
+	isSelfSigned()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getCRLDistributionPoints()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getIssuerNamesSeq()
+	{
+		/////////////////////////////////////////////
+	}
+
+	getSerialNumber()
+	{
+		/////////////////////////////////////////////
 	}
 }
 

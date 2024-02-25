@@ -146,6 +146,7 @@ export class ASN1Util
 	static pduToString(reader: data.ByteReader, startOfst: number, endOfst: number, outLines: string[], level: number, names?: ASN1Names): number;
 	static pduDSizeEnd(reader: data.ByteReader, startOfst: number, endOfst: number): number | null;
 	static pduGetItem(reader: data.ByteReader, startOfst: number, endOfst: number, path: string): PDUInfo;
+	static pduGetItemType(reader: data.ByteReader, startOfst: number, endOfst: number, path: string): ASN1ItemType;
 	static pduCountItem(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): number;
 	static pduIsValid(reader: data.ByteReader, startOfst: number, endOfst: number): boolean;
 //	static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names);
@@ -541,7 +542,7 @@ export abstract class X509File extends ASN1Data
 	abstract toShortName(): string;
 
 	getCertCount(): number;
-	getCertName(index: number): string;
+	getCertName(index: number): string | null;
 	getNewCert(index: number): X509Cert | null;
 	abstract isValid(): CertValidStatus;
 
@@ -549,7 +550,46 @@ export abstract class X509File extends ASN1Data
 	isSignatureKey(key: X509Key): boolean;
 	getSignedInfo(): SignedInfo | null;
 
+	static nameGetByOID(reader: data.ByteReader, startOfst: number, endOfst: number, oidText: string): string | null;
+	static nameGetCN(reader: data.ByteReader, startOfst: number, endOfst: number): string | null;
+
 	static keyGetLeng(reader: data.ByteReader, startOfst: number, endOfst: number, keyType: KeyType): number;
+}
+
+export class X509Cert extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getSubjectCN(): string | null;
+	getIssuerCN(): string | null;
+	setDefaultSourceName(): void;
+	
+	getFileType(): X509FileType;
+	toShortName(): string;
+
+	getCertCount(): number;
+	getCertName(index: number): string | null;
+	getNewCert(index: number): X509Cert | null;
+	isValid(): CertValidStatus;
+
+	clone(): ASN1Data;
+	createX509Cert(): X509Cert;
+	toString(): string;
+	createNames(): ASN1Names;
+
+	getIssuerNames(): CertNames | null;
+	getSubjNames(): CertNames | null;
+	getExtensions(): CertExtensions | null;
+	getNewPublicKey(): X509Key | null;
+	getKeyId(): ArrayBuffer | null;
+	getNotBefore(): data.Timestamp | null;
+	getNotAfter(): data.Timestamp | null;
+	domainValid(domain: string): boolean;
+	isSelfSigned(): boolean;
+	getCRLDistributionPoints(): string[];
+
+	getIssuerNamesSeq(): ArrayBuffer | null;
+	getSerialNumber(): ArrayBuffer | null;
 }
 
 export class X509Key extends X509File
