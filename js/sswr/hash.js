@@ -1,4 +1,5 @@
 import * as data from "./data.js";
+import * as text from "./text.js";
 
 export const HashType = {
 	Unknown: 0,
@@ -33,10 +34,13 @@ export class Hash
 {
 }
 
-function sha1CircularShift(x, y)
+function sha1CircularShift(y, x)
 {
-	return ((x << y) | (x >> (32 - y)))	& 0xffffffff;
+	if (y == 0)
+		return x;
+	return ((x << y) | ((x >> 1) & 0x7fffffff) >> (31 - y));
 }
+
 export class SHA1 extends Hash
 {
 	constructor()
@@ -73,7 +77,7 @@ export class SHA1 extends Hash
 
 	clear()
 	{
-		this.messageLength        = 0;
+		this.messageLength        = 0n;
 		this.messageBlockIndex    = 0;
 		
 		this.intermediateHash = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0];
@@ -86,7 +90,7 @@ export class SHA1 extends Hash
 			return;
 		let i;
 		let arr;
-		this.messageLength += (buff.byteLength << 3);
+		this.messageLength += BigInt(buff.byteLength << 3);
 		if ((buff.byteLength + this.messageBlockIndex) < 64)
 		{
 			arr = new Uint8Array(buff);
@@ -176,9 +180,9 @@ export class SHA1 extends Hash
 			}
 		}
 		let view = new DataView(new Uint8Array(calBuff).buffer);
-		view.setUint32(56, this.messageLength, false);
+		view.setBigUint64(56, this.messageLength, false);
 		SHA1.calcBlock(intHash, view.buffer);
-		view = new DataView(new Uint8Array(20));
+		view = new DataView(new ArrayBuffer(20));
 		i = 20;
 		while (i > 0)
 		{
@@ -235,7 +239,7 @@ export class SHA1 extends Hash
 	
 		for(t = 20; t < 40; t++)
 		{
-			temp = (sha11CircularShift(5, a) + (b ^ c ^ d) + e + w[t] + k[1]) & 0xffffffff;
+			temp = (sha1CircularShift(5, a) + (b ^ c ^ d) + e + w[t] + k[1]) & 0xffffffff;
 			e = d;
 			d = c;
 			c = sha1CircularShift(30, b);

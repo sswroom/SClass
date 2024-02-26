@@ -216,8 +216,7 @@ export function toHex16(v)
 
 export function toHex32(v)
 {
-	let s = (v & 0xffffffff).toString(16);
-	return "0".repeat(8 - s.length)+s;
+	return toHex16(v >> 16) + toHex16(v);
 }
 
 export function u8Arr2Hex(buff, byteSep, rowSep)
