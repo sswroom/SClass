@@ -966,7 +966,27 @@ function parseX509(reader, fileName, mime)
 		let j = lines.length;
 		while (i < j)
 		{
-			if (lines[i] == "-----BEGIN RSA PRIVATE KEY-----")
+			if (lines[i] == "-----BEGIN CERTIFICATE-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END CERTIFICATE-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509Cert(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer));
+			}
+			else if (lines[i] == "-----BEGIN RSA PRIVATE KEY-----")
 			{
 				let b64 = [];
 				let enc = false;
@@ -1006,7 +1026,7 @@ function parseX509(reader, fileName, mime)
 	}
 	else
 	{
-		
+
 	}
 	return null;
 }

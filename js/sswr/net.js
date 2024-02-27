@@ -74,3 +74,8 @@ export function oidToString(oid)
 	}
 	return ret.join(".");
 }
+
+export function getIPv4Name(ip)
+{
+	return ((ip >> 24) & 0xff).toString() + "." + ((ip >> 16) & 0xff).toString() + "." + ((ip >> 8) & 0xff).toString() + "." + (ip & 0xff).toString()
+}

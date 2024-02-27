@@ -1,4 +1,5 @@
 import * as data from "./data";
+import * as hash from "./hash";
 
 export enum ASN1Type
 {
@@ -61,13 +62,40 @@ export enum ECName
 	secp256r1,
 	secp384r1,
 	secp521r1
-};
+}
+
+export enum ContentDataType
+{
+	Unknown,
+	AuthenticatedSafe
+}
 
 declare class SignedInfo
 {
 	signature: ArrayBuffer;
 	payload: ArrayBuffer;
 	algType: AlgType;
+}
+
+declare class CertNames
+{
+	countryName: string;
+	stateOrProvinceName: string;
+	localityName: string;
+	organizationName: string;
+	organizationUnitName: string;
+	commonName: string;
+	emailAddress: string;
+}
+
+declare class CertExtensions
+{
+	subjectAltName?: string[];
+	issuerAltName?: string[];
+	subjKeyId?: ArrayBuffer;
+	authKeyId?: ArrayBuffer;
+	digitalSign: boolean;
+	caCert: boolean;
 }
 
 export abstract class ASN1Data extends data.ParsedObject
@@ -104,10 +132,70 @@ export abstract class X509File extends ASN1Data
 	isSignatureKey(key: X509Key): boolean;
 	getSignedInfo(): SignedInfo | null;
 
+	static isSigned(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
+	static appendSigned(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // AuthenticationFramework
+	static isTBSCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
+	static appendTBSCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // AuthenticationFramework
+	static isCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
+	static appendCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // AuthenticationFramework
+	static isTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC3280
+	static appendTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // RFC3280
+	static isCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC3280
+	static appendCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // RFC3280
+	static isPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-8
+	static appendPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-8
+	static isCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-10
+	static appendCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-10
+	static isCertificateRequest(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-10
+	static appendCertificateRequest(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-8
+	static isPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
+	static appendPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // AuthenticationFramework
+	static isContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC2315 / PKCS7
+	static appendContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string, dataType: ContentDataType): void; // RFC2315 / PKCS7
+	static isPFX(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS12
+	static appendPFX(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // PKCS12
+
+	static appendVersion(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // AuthenticationFramework
+	static appendAlgorithmIdentifier(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, pubKey: boolean): KeyType; // PKCS-5
+	static appendValidity(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // AuthenticationFramework
+	static appendSubjectPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // AuthenticationFramework
+	static appendName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // InformationFramework
+	static appendRelativeDistinguishedName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // InformationFramework
+	static appendAttributeTypeAndDistinguishedValue(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // InformationFramework
+	static appendCRLExtensions(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendCRLExtension(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendMSOSVersion(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendMSRequestClientInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendMSEnrollmentCSPProvider(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendGeneralNames(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendGeneralName(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
+	static appendDistributionPoint(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
+	static appendIntegerppendDistributionPointName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendPolicyInformation(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
+	static appendPKCS7SignedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
+	static appendPKCS7DigestAlgorithmIdentifiers(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
+	static appendPKCS7SignerInfos(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
+	static appendPKCS7SignerInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
+	static appendIssuerAndSerialNumber(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
+	static appendPKCS7Attributes(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
+	static appendMacData(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean; // PKCS12
+	static appendDigestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315 / PKCS7
+	static appendData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, dataType: ContentDataType): void;
+	static appendEncryptedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, dataType: ContentDataType): void;
+	static appendAuthenticatedSafe(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; //PKCS12
+	static appendEncryptedContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, dataType: ContentDataType): void;
+
 	static nameGetByOID(reader: data.ByteReader, startOfst: number, endOfst: number, oidText: string): string | null;
 	static nameGetCN(reader: data.ByteReader, startOfst: number, endOfst: number): string | null;
+	static namesGet(reader: data.ByteReader, startOfst: number, endOfst: number): CertNames;
+	static extensionsGet(reader: data.ByteReader, startOfst: number, endOfst: number): CertExtensions;
+	static extensionsGetCRLDistributionPoints(reader: data.ByteReader, startOfst: number, endOfst: number): string[];
+	static distributionPointAdd(reader: data.ByteReader, startOfst: number, endOfst: number, distPoints: string[]): boolean;
+	static publicKeyGetNew(reader: data.ByteReader, startOfst: number, endOfst: number): X509Key | null;
 
 	static keyGetLeng(reader: data.ByteReader, startOfst: number, endOfst: number, keyType: KeyType): number;
+	static keyTypeFromOID(oid: ArrayBuffer, pubKey: boolean): KeyType;
+	static algorithmIdentifierGet(reader: data.ByteReader, startOfst: number, endOfst: number): AlgType;
 }
 
 export class X509Cert extends X509File
@@ -174,8 +262,28 @@ export class X509Key extends X509File
 	getECPrivate(): ArrayBuffer | null;
 	getECPublic(): ArrayBuffer | null;
 	getECName(): ECName;
+
+	static fromECPublicKey(buff: ArrayBuffer, paramOID: ArrayBuffer): X509Key;
 }
 
+export class X509PubKey extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+	isValid(): CertValidStatus;
+	clone(): X509PubKey;
+	toString(): string;
+	createNames(): ASN1Names;
+	
+	createKey(): X509Key;
+
+	static createFromKeyBuff(keyType: KeyType, buff: ArrayBuffer, sourceName: string): X509PubKey;
+	static createFromKey(key: X509Key): X509PubKey;
+}
+
+export function algTypeGetHash(algType: AlgType): hash.HashType;
 export function fileTypeGetName(fileType: X509FileType): string;
 export function keyTypeGetName(keyType: KeyType): string;
 export function ecNameGetName(ecName: ECName): string;

@@ -284,10 +284,6 @@ export class ASN1Util
 				if (name) sb.push(name+" ")
 				sb.push("BIT STRING ");
 				sb.push(text.toHex8(reader.readUInt8(len.nextOfst)));
-
-				sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), " ", null));
-				outLines.push(sb.join(""));
-
 				if (ASN1Util.pduIsValid(reader, len.nextOfst + 1, len.nextOfst + len.pduLen))
 				{
 					sb.push(" {");
@@ -718,7 +714,6 @@ export class ASN1Util
 	{
 		while (startOfst < endOfst)
 		{
-			size = (UOSInt)(pduEnd - pdu);
 			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
 			if (len == null)
 			{
@@ -852,7 +847,6 @@ export class ASN1Util
 			cnt = 0;
 			while (startOfst < endOfst)
 			{
-				size = (UOSInt)(pduEnd - pdu);
 				len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
 				if (len == null)
 				{
@@ -1003,6 +997,26 @@ export class ASN1Util
 	{
 		let oid2 = ASN1Util.oidText2PDU(oidText);
 		return ASN1Util.oidCompare(oidPDU, oid2) == 0;
+	}
+
+	static oidToString(oidPDU)
+	{
+		let sb = [];
+		let v = 0;
+		let i = 1;
+		sb.push(Math.floor(oidPDU[0] / 40));
+		sb.push(oidPDU[0] % 40);
+		while (i < oidPDU.length)
+		{
+			v = (v << 7) | (oidPDU[i] & 0x7f);
+			if ((oidPDU[i] & 0x80) == 0)
+			{
+				sb.push(v);
+				v = 0;
+			}
+			i++;
+		}
+		return sb.join(".");
 	}
 
 	static oidText2PDU(oidText)
@@ -2109,7 +2123,7 @@ class PKIX1Explicit88
 
 	static tbsCertificateCont(names)
 	{
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("version", version);
+		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("version", PKIX1Explicit88.version);
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("serialNumber");
 		PKIX1Explicit88.addAlgorithmIdentifier(names, "signature");
 		PKIX1Explicit88.addName(names, "issuer");

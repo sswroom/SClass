@@ -91,7 +91,7 @@ export class ASN1Util
 	static oidCompare(oid1: Uint8Array | number[], oid2: Uint8Array | number[]): number;
 //	static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 	static oidEqualsText(oidPDU: Uint8Array | number[], oidText: string): boolean;
-//	static void OIDToString(const UInt8 *pdu, UOSInt pduSize, NotNullPtr<Text::StringBuilderUTF8> sb);
+	static oidToString(oidPDU: Uint8Array | number[]): string;
 //	static UOSInt OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen);
 	static oidText2PDU(oidText: string): number[];
 
