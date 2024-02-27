@@ -5,6 +5,7 @@
 -Added data.ByteReader.readUTF16
 -Added data.ByteReader.isASCIIText
 -Added hash.SHA1
+-Added data.rol32, ror32, shl32, shr32, sar32
 
 1.5.5
 -Fixed web.Dialog in iframe

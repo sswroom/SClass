@@ -34,13 +34,6 @@ export class Hash
 {
 }
 
-function sha1CircularShift(y, x)
-{
-	if (y == 0)
-		return x;
-	return ((x << y) | ((x >> 1) & 0x7fffffff) >> (31 - y));
-}
-
 export class SHA1 extends Hash
 {
 	constructor()
@@ -218,7 +211,7 @@ export class SHA1 extends Hash
 	
 		for(t = 16; t < 80; t++)
 		{
-			w[t] = sha1CircularShift(1, w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]);
+			w[t] = data.rol32(w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16], 1);
 		}
 	
 		a = intermediateHash[0];
@@ -229,40 +222,40 @@ export class SHA1 extends Hash
 	
 		for(t = 0; t < 20; t++)
 		{
-			temp = (sha1CircularShift(5, a) + (((b & c) | ((~b) & d)) + e + w[t] + k[0])) & 0xffffffff;
+			temp = (data.rol32(a, 5) + (((b & c) | ((~b) & d)) + e + w[t] + k[0])) & 0xffffffff;
 			e = d;
 			d = c;
-			c = sha1CircularShift(30, b);
+			c = data.rol32(b, 30);
 			b = a;
 			a = temp;
 		}
 	
 		for(t = 20; t < 40; t++)
 		{
-			temp = (sha1CircularShift(5, a) + (b ^ c ^ d) + e + w[t] + k[1]) & 0xffffffff;
+			temp = (data.rol32(a, 5) + (b ^ c ^ d) + e + w[t] + k[1]) & 0xffffffff;
 			e = d;
 			d = c;
-			c = sha1CircularShift(30, b);
+			c = data.rol32(b, 30);
 			b = a;
 			a = temp;
 		}
 	
 		for(t = 40; t < 60; t++)
 		{
-			temp = (sha1CircularShift(5, a) + ((b & c) | (b & d) | (c & d)) + e + w[t] + k[2]) & 0xffffffff;
+			temp = (data.rol32(a, 5) + ((b & c) | (b & d) | (c & d)) + e + w[t] + k[2]) & 0xffffffff;
 			e = d;
 			d = c;
-			c = sha1CircularShift(30, b);
+			c = data.rol32(b, 30);
 			b = a;
 			a = temp;
 		}
 	
 		for(t = 60; t < 80; t++)
 		{
-			temp = (sha1CircularShift(5, a) + (b ^ c ^ d) + e + w[t] + k[3]) & 0xffffffff;
+			temp = (data.rol32(a, 5) + (b ^ c ^ d) + e + w[t] + k[3]) & 0xffffffff;
 			e = d;
 			d = c;
-			c = sha1CircularShift(30, b);
+			c = data.rol32(b, 30);
 			b = a;
 			a = temp;
 		}

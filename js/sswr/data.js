@@ -280,6 +280,37 @@ export function readMUInt32(arr, index)
 	return arr[index + 3] | (arr[index + 2] << 8) | (arr[index + 1] << 16) | (arr[index + 0] << 24);
 }
 
+export function rol32(v, n)
+{
+	if (n == 0)
+		return v;
+	return ((v << n) | ((v >> 1) & 0x7fffffff) >> (31 - n));
+}
+
+export function ror32(v, n)
+{
+	if (n == 0)
+		return v;
+	return ((v << (32 - n)) | ((v >> 1) & 0x7fffffff) >> (n - 1));
+}
+
+export function shl32(v, n)
+{
+	return v << n;
+}
+
+export function sar32(v, n)
+{
+	return v >> n;
+}
+
+export function shr32(v, n)
+{
+	if (n == 0)
+		return v;
+	return ((v >> 1) & 0x7fffffff) >> (n - 1);
+}
+
 export class DateValue
 {
 	constructor()

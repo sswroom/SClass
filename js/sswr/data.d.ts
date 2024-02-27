@@ -11,6 +11,11 @@ export function readUInt24(arr: Uint8Array, index: number): number;
 export function readMUInt24(arr: Uint8Array, index: number): number;
 export function readUInt32(arr: Uint8Array, index: number): number;
 export function readMUInt32(arr: Uint8Array, index: number): number;
+export function rol32(v: number, n: number): number;
+export function ror32(v: number, n: number): number;
+export function shl32(v: number, n: number): number;
+export function sar32(v: number, n: number): number;
+export function shr32(v: number, n: number): number;
 
 export class DateValue
 {
