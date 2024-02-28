@@ -62,12 +62,16 @@ declare class PDUValueInfo<ValType>
 	val: ValType;
 }
 
-declare class PDUInfo
+export class PDUInfo
 {
 	rawOfst: number;
 	hdrLen: number;
 	contLen: number;
 	itemType: ASN1ItemType;
+
+	constructor(rawOfst: number, hdrLen: number, contLen: number, itemType: ASN1ItemType);
+	get dataOfst(): number;
+	get endOfst(): number;
 }
 
 export class ASN1Util

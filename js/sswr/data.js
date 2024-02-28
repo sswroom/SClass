@@ -2345,6 +2345,11 @@ export class ByteReader
 		return this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + ofst + size);
 	}
 
+	getU8Arr(ofst, size)
+	{
+		return new Uint8Array(this.getArrayBuffer(ofst, size));
+	}
+
 	readUInt8(ofst)
 	{
 		return this.view.getUint8(ofst);

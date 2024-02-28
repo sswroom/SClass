@@ -49,6 +49,27 @@ export const RuleCond = {
 	AllNotMatch: 7
 }
 
+export class PDUInfo
+{
+	constructor(rawOfst, hdrLen, contLen, itemType)
+	{
+		this.rawOfst = rawOfst;
+		this.hdrLen = hdrLen;
+		this.contLen = contLen;
+		this.itemType = itemType;
+	}
+
+	get dataOfst()
+	{
+		return this.rawOfst + this.hdrLen;
+	}
+
+	get endOfst()
+	{
+		return this.rawOfst + this.hdrLen + this.contLen;
+	}
+}
+
 export class ASN1Util
 {
 	static pduParseLen(reader, ofst, endOfst)
@@ -786,22 +807,14 @@ export class ASN1Util
 				{
 					if (reader.readUInt8(startOfst + 1) == 0x80)
 					{
-						let ret = {
-							rawOfst: startOfst,
-							hdrLen: len.nextOfst - startOfst,
-							contLen: ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst),
-							itemType: reader.readUInt8(startOfst)};
+						let ret = new PDUInfo(startOfst, len.nextOfst - startOfst, ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst), reader.readUInt8(startOfst));
 						if (ret.contLen == null)
 							return null;
 						return ret;
 					}
 					else
 					{
-						return {
-							rawOfst: startOfst,
-							hdrLen: len.nextOfst - startOfst,
-							contLen: len.pduLen,
-							itemType: reader.readUInt8(startOfst)};
+						return new PDUInfo(startOfst, len.nextOfst - startOfst, len.pduLen, reader.readUInt8(startOfst));
 					}
 				}
 				if (reader.readUInt8(startOfst + 1) == 0x80)

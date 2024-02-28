@@ -189,6 +189,7 @@ export class ByteReader
 	constructor(arr: ArrayBuffer);
 	getLength(): number;
 	getArrayBuffer(ofst?: number, size?: number): ArrayBuffer;
+	getU8Arr(ofst?: number, size?: number): Uint8Array;
 
 	readUInt8(ofst: number): number;
 	readUInt16(ofst: number, lsb: boolean): number;
