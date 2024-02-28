@@ -1,3 +1,4 @@
+import * as cert from "./cert.js";
 import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
@@ -946,6 +947,90 @@ async function parseWebp(reader)
 	return simg;
 }
 
+function parseX509(reader, fileName, mime)
+{
+	if (!(reader instanceof data.ByteReader))
+		return null;
+	let initTxt;
+	let initOfst = 0;
+	if (reader.readUInt8(0) == 0xef && reader.readUInt8(1) == 0xbb && reader.readUInt8(2) == 0xbf)
+	{
+		initOfst = 3;
+	}
+	initTxt = reader.readUTF8(initOfst, 5);
+	if (initTxt == "-----")
+	{
+		let files = [];
+		let lines = text.splitLines(reader.readUTF8(initOfst, reader.getLength() - initOfst));
+		let i = 0;
+		let j = lines.length;
+		while (i < j)
+		{
+			if (lines[i] == "-----BEGIN CERTIFICATE-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END CERTIFICATE-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509Cert(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer));
+			}
+			else if (lines[i] == "-----BEGIN RSA PRIVATE KEY-----")
+			{
+				let b64 = [];
+				let enc = false;
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END RSA PRIVATE KEY-----")
+					{
+						break;
+					}
+					else if (lines[i].startsWith("Proc-Type:"))
+					{
+						enc = true;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509Key(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer, cert.KeyType.RSA));
+			}
+			i++;
+		}
+		if (files.length == 1)
+		{
+			return files[0];
+		}
+		else if (files.length > 1)
+		{
+			console.log("X509FileList");
+			return null;
+		}
+		console.log("Unsupported file", fileName, mime);
+	}
+	else
+	{
+
+	}
+	return null;
+}
+
 export function parseXML(txt, sourceName)
 {
 	let parser = new DOMParser();
@@ -1006,6 +1091,7 @@ export async function parseFile(file)
 		let obj;
 		if (obj = await parseJpg(view, file.name)) return obj;
 		if (obj = await parseWebp(view, file.name)) return obj;
+		if (obj = parseX509(view, file.name, t)) return obj;
 		console.log("Unsupported file type", t);
 		return null;
 	}

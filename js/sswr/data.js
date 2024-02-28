@@ -280,6 +280,37 @@ export function readMUInt32(arr, index)
 	return arr[index + 3] | (arr[index + 2] << 8) | (arr[index + 1] << 16) | (arr[index + 0] << 24);
 }
 
+export function rol32(v, n)
+{
+	if (n == 0)
+		return v;
+	return ((v << n) | ((v >> 1) & 0x7fffffff) >> (31 - n));
+}
+
+export function ror32(v, n)
+{
+	if (n == 0)
+		return v;
+	return ((v << (32 - n)) | ((v >> 1) & 0x7fffffff) >> (n - 1));
+}
+
+export function shl32(v, n)
+{
+	return v << n;
+}
+
+export function sar32(v, n)
+{
+	return v >> n;
+}
+
+export function shr32(v, n)
+{
+	if (n == 0)
+		return v;
+	return ((v >> 1) & 0x7fffffff) >> (n - 1);
+}
+
 export class DateValue
 {
 	constructor()
@@ -2324,6 +2355,14 @@ export class ByteReader
 		return this.view.getUint16(ofst, lsb);
 	}
 
+	readUInt24(ofst, lsb)
+	{
+		if (lsb)
+			return this.view.getUint8(ofst) + (this.view.getUint16(ofst + 1, true) << 8);
+		else
+			return (this.view.getUint16(ofst, false) << 8) | this.view.getUint8(ofst + 2);
+	}
+
 	readUInt32(ofst, lsb)
 	{
 		return this.view.getUint32(ofst, lsb);
@@ -2337,6 +2376,14 @@ export class ByteReader
 	readInt16(ofst, lsb)
 	{
 		return this.view.getInt16(ofst, lsb);
+	}
+
+	readInt24(ofst, lsb)
+	{
+		if (lsb)
+			return this.view.getUint8(ofst) + (this.view.getInt16(ofst + 1, true) << 8);
+		else
+			return (this.view.getInt16(ofst, false) << 8) | this.view.getUint8(ofst + 2);
 	}
 
 	readInt32(ofst, lsb)
@@ -2373,6 +2420,17 @@ export class ByteReader
 			end++;
 		let dec = new TextDecoder();
 		return dec.decode(this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + end));
+	}
+
+	readUTF16(ofst, nChar, lsb)
+	{
+		let ret = [];
+		while (nChar-- > 0)
+		{
+			ret.push(String.fromCharCode(this.readUInt16(ofst, lsb)));
+			ofst += 2;
+		}
+		return ret.join("");
 	}
 
 	readUInt8Arr(ofst, cnt)
@@ -2450,6 +2508,24 @@ export class ByteReader
 			ofst += 8;
 		}
 		return ret;
+	}
+
+	isASCIIText(ofst, len)
+	{
+		while (len-- > 0)
+		{
+			let b = this.readUInt8(ofst);
+			if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10)
+			{
+	
+			}
+			else
+			{
+				return false;
+			}
+			ofst++;
+		}
+		return true;
 	}
 }
 

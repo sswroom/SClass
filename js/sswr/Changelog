@@ -1,5 +1,12 @@
 1.6.0
 -Added data.ParsedObject
+-Added text.splitLines
+-Added data.ByteReader.readInt24/readUInt24
+-Added data.ByteReader.readUTF16
+-Added data.ByteReader.isASCIIText
+-Added hash.SHA1
+-Added data.rol32, ror32, shl32, shr32, sar32
+-Added net.getIPv4Name
 
 1.5.5
 -Fixed web.Dialog in iframe

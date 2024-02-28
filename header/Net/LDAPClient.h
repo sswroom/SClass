@@ -75,7 +75,7 @@ namespace Net
 		Bool Bind(Text::CString userDN, Text::CString password);
 		Bool Unbind();
 
-		Bool Search(Text::CString baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<SearchResObject*> *results);
+		Bool Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<SearchResObject*> *results);
 
 		static void SearchResultsFree(Data::ArrayList<SearchResObject*> *results);
 		static void SearchResObjectFree(SearchResObject *obj);

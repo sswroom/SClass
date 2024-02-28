@@ -1,5 +1,7 @@
+import {ASN1ItemType, ASN1Util, ASN1Names, ASN1PDUBuilder} from "./certutil.js";
 import * as data from "./data.js";
 import * as hash from "./hash.js";
+import * as net from "./net.js";
 import * as text from "./text.js";
 
 export const ASN1Type = {
@@ -52,1581 +54,19 @@ export const AlgType = {
 	ECDSAWithSHA384: "ECDSAWithSHA384"
 }
 
-export const ASN1ItemType = {
-	UNKNOWN: 0,
-	BOOLEAN: 0x01,
-	INTEGER: 0x02,
-	BIT_STRING: 0x03,
-	OCTET_STRING: 0x04,
-	NULL: 0x05,
-	OID: 0x06,
-	ENUMERATED: 0x0a,
-	UTF8STRING: 0x0c,
-	NUMERICSTRING: 0x12,
-	PRINTABLESTRING: 0x13,
-	T61STRING: 0x14,
-	VIDEOTEXSTRING: 0x15,
-	IA5STRING: 0x16,
-	UTCTIME: 0x17,
-	GENERALIZEDTIME: 0x18,
-	UNIVERSALSTRING: 0x1c,
-	BMPSTRING: 0x1e,
-	SEQUENCE: 0x30,
-	SET: 0x31,
-	CHOICE_0: 0x80,
-	CHOICE_1: 0x81,
-	CHOICE_2: 0x82,
-	CHOICE_3: 0x83,
-	CHOICE_4: 0x84,
-	CHOICE_5: 0x85,
-	CHOICE_6: 0x86,
-	CHOICE_7: 0x87,
-	CHOICE_8: 0x88,
-	CONTEXT_SPECIFIC_0: 0xa0,
-	CONTEXT_SPECIFIC_1: 0xa1,
-	CONTEXT_SPECIFIC_2: 0xa2,
-	CONTEXT_SPECIFIC_3: 0xa3,
-	CONTEXT_SPECIFIC_4: 0xa4
+export const ECName = {
+	Unknown: 0,
+	secp256r1: 1,
+	secp384r1: 2,
+	secp521r1: 3
 }
 
-export const RuleCond = {
-	Any: 0,
-	TypeIsItemType: 1,
-	TypeIsTime: 2,
-	TypeIsString: 3,
-	TypeIsOpt: 4,
-	RepeatIfTypeIs: 5,
-	LastOIDAndTypeIs: 6,
-	AllNotMatch: 7
+export const ContentDataType = {
+	Unknown: 0,
+	AuthenticatedSafe: 1
 }
 
-export class ASN1Util
-{
-	static pduParseLen(reader, ofst, endOfst)
-	{
-		if (ofst >= endOfst)
-			return null;
-		let v = reader.readUInt8(ofst);
-		if (v & 0x80)
-		{
-			if (v == 0x81)
-			{
-				if (ofst + 2 > endOfst)
-					return null;
-				return {nextOfst: ofst + 2, pduLen: reader.readUInt8(ofst + 1)};
-			}
-			else if (v == 0x82)
-			{
-				if (ofst + 3 > endOfst)
-					return null;
-				return {nextOfst: ofst + 3, pduLen: reader.readUInt16(ofst + 1, false)};
-			}
-			else if (v == 0x83)
-			{
-				if (ofst + 4 > endOfst)
-					return null;
-				return {nextOfst: ofst + 4, pduLen: reader.readUInt24(ofst + 1, false)};
-			}
-			else if (v == 0x84)
-			{
-				if (ofst + 5 > endOfst)
-					return null;
-				return {nextOfst: ofst + 5, pduLen: reader.readUInt32(ofst + 1, false)};
-			}
-			else if (v == 0x80)
-			{
-				return {nextOfst: ofst + 1, pduLen: 0};
-			}
-			return null;
-		}
-		else
-		{
-			return {nextOfst: ofst + 1, pduLen: v};
-		}
-	}
-
-	static pduDSizeEnd(reader, startOfst, endOfst)
-	{
-		while (startOfst < endOfst)
-		{
-			size = (UOSInt)(pduEnd - pdu);
-			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
-			if (len == null)
-			{
-				return null;
-			}
-			else if (len.nextOfst + len.pduLen > endOfst)
-			{
-				return null;
-			}
-	
-			if (reader.readUInt8(startOfst) == 0 && reader.readUInt8(startOfst + 1) == 0)
-			{
-				return startOfst + 2;
-			}
-			else if (pdu[1] == 0x80)
-			{
-				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
-				if (startOfst == null)
-				{
-					return null;
-				}
-			}
-			else
-			{
-				startOfst = len.nextOfst + len.pduLen;
-			}
-		}
-		return startOfst;
-	}
-
-	static pduGetItem(reader, startOfst, endOfst, path)
-	{
-		if (path == null || path == "")
-			return null;
-		let i = path.indexOf(".");
-		let cnt;
-		if (i == -1)
-		{
-			cnt = Number.parseInt(path);
-			path = "";
-		}
-		else
-		{
-			cnt = Number.parseInt(path.substr(0, i));
-			path = path.substr(i + 1);
-		}
-		if (Number.isNaN(cnt) || cnt < 1)
-			return null;
-
-		while (startOfst < endOfst)
-		{
-			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
-			if (len == null)
-			{
-				return null;
-			}
-			else if (len.nextOfst + len.pduLen > endOfst)
-			{
-				return null;
-			}
-			else if (reader.readUInt8(startOfst) == 0 && reader.readUInt8(startOfst + 1) == 0)
-			{
-				return null;
-			}
-	
-			cnt--;
-			if (cnt == 0)
-			{
-				if (path == "")
-				{
-					if (reader.readUInt8(startOfst + 1) == 0x80)
-					{
-						let ret = {
-							rawOfst: startOfst,
-							hdrLen: len.nextOfst - startOfst,
-							contLen: ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst),
-							itemType: reader.readUInt8(startOfst)};
-						if (ret.contLen == null)
-							return null;
-						return ret;
-					}
-					else
-					{
-						return {
-							rawOfst: startOfst,
-							hdrLen: len.nextOfst - startOfst,
-							contLen: len.pduLen,
-							itemType: reader.readUInt8(startOfst)};
-					}
-				}
-				if (pdu[1] == 0x80)
-				{
-					return ASN1Util.pduGetItem(reader, len.nextOfst, endOfst, path);
-				}
-				else
-				{
-					return ASN1Util.pduGetItem(reader, len.nextOfst, len.nextOfst + len.pduLen, path);
-				}
-			}
-			else if (reader.readUInt8(startOfst + 1) == 0x80)
-			{
-				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
-				if (startOfst == null)
-				{
-					return null;
-				}
-			}
-			else
-			{
-				startOfst = len.nextOfst + len.pduLen;
-			}
-		}
-		return null;
-	}
-
-	static oidCompare(oid1, oid2)
-	{
-		let i = 0;
-		let oid1Len = oid1.length;
-		let oid2Len = oid2.length;
-		while (true)
-		{
-			if (i == oid1Len && i == oid2Len)
-			{
-				return 0;
-			}
-			else if (i >= oid1Len)
-			{
-				return -1;
-			}
-			else if (i >= oid2Len)
-			{
-				return 1;
-			}
-			else if (oid1[i] > oid2[i])
-			{
-				return 1;
-			}
-			else if (oid1[i] < oid2[i])
-			{
-				return -1;
-			}
-			i++;
-		}
-	}
-
-	static oidEqualsText(oidPDU, oidText)
-	{
-		let oid2 = ASN1Util.oidText2PDU(oidText);
-		return ASN1Util.oidCompare(oidPDU, oid2) == 0;
-	}
-
-	static oidText2PDU(oidText)
-	{
-		let sarr = oidText.split(".");
-		let i = 2;
-		let j = sarr.length;
-		if (j == 1)
-		{
-			return [Number.parseInt(sarr[0])];
-		}
-		let pduBuff = [];
-		pduBuff.push(pduBuff[0] * 40 + pduBuff[1]);
-		if (j == 2)
-		{
-			return pduBuff;
-		}
-		while (i < j)
-		{
-			let v = Number.parseInt(sarr[i]);
-			if (Number.isNaN(v))
-				return null;
-			if (v < 128)
-			{
-				pduBuff.push(v);
-			}
-			else if (v < 0x4000)
-			{
-				pduBuff.push(0x80 | (v >> 7));
-				pduBuff.push((v & 0x7f));
-			}
-			else if (v < 0x200000)
-			{
-				pduBuff.push(0x80 | (v >> 14));
-				pduBuff.push(0x80 | ((v >> 7) & 0x7f));
-				pduBuff.push(v & 0x7f);
-			}
-			else if (v < 0x10000000)
-			{
-				pduBuff.push(0x80 | (v >> 21));
-				pduBuff.push(0x80 | ((v >> 14) & 0x7f));
-				pduBuff.push(0x80 | ((v >> 7) & 0x7f));
-				pduBuff.push(v & 0x7f);
-			}
-			else
-			{
-				pduBuff.push(0x80 | (v >> 28));
-				pduBuff.push(0x80 | ((v >> 21) & 0x7f));
-				pduBuff.push(0x80 | ((v >> 14) & 0x7f));
-				pduBuff.push(0x80 | ((v >> 7) & 0x7f));
-				pduBuff.push(v & 0x7f);
-			}
-			i++;
-		}
-		return pduBuff;
-	}
-
-	static itemTypeGetName(itemType)
-	{
-		switch (itemType)
-		{
-		case ASN1ItemType.UNKNOWN:
-			return "UNKNOWN";
-		case ASN1ItemType.BOOLEAN:
-			return "BOOLEAN";
-		case ASN1ItemType.INTEGER:
-			return "INTEGER";
-		case ASN1ItemType.BIT_STRING:
-			return "BIT_STRING";
-		case ASN1ItemType.OCTET_STRING:
-			return "OCTET_STRING";
-		case ASN1ItemType.NULL:
-			return "NULL";
-		case ASN1ItemType.OID:
-			return "OID";
-		case ASN1ItemType.ENUMERATED:
-			return "ENUMERATED";
-		case ASN1ItemType.UTF8STRING:
-			return "UTF8STRING";
-		case ASN1ItemType.NUMERICSTRING:
-			return "NUMERICSTRING";
-		case ASN1ItemType.PRINTABLESTRING:
-			return "PRINTABLESTRING";
-		case ASN1ItemType.T61STRING:
-			return "T61STRING";
-		case ASN1ItemType.VIDEOTEXSTRING:
-			return "VIDEOTEXSTRING";
-		case ASN1ItemType.IA5STRING:
-			return "IA5STRING";
-		case ASN1ItemType.UTCTIME:
-			return "UTCTIME";
-		case ASN1ItemType.GENERALIZEDTIME:
-			return "GENERALIZEDTIME";
-		case ASN1ItemType.UNIVERSALSTRING:
-			return "UNIVERSALSTRING";
-		case ASN1ItemType.BMPSTRING:
-			return "BMPSTRING";
-		case ASN1ItemType.SEQUENCE:
-			return "SEQUENCE";
-		case ASN1ItemType.SET:
-			return "SET";
-		case ASN1ItemType.CHOICE_0:
-			return "CHOICE_0";
-		case ASN1ItemType.CHOICE_1:
-			return "CHOICE_1";
-		case ASN1ItemType.CHOICE_2:
-			return "CHOICE_2";
-		case ASN1ItemType.CHOICE_3:
-			return "CHOICE_3";
-		case ASN1ItemType.CHOICE_4:
-			return "CHOICE_4";
-		case ASN1ItemType.CHOICE_5:
-			return "CHOICE_5";
-		case ASN1ItemType.CHOICE_6:
-			return "CHOICE_6";
-		case ASN1ItemType.CHOICE_7:
-			return "CHOICE_7";
-		case ASN1ItemType.CHOICE_8:
-			return "CHOICE_8";
-		case ASN1ItemType.CONTEXT_SPECIFIC_0:
-			return "CONTEXT_SPECIFIC_0";
-		case ASN1ItemType.CONTEXT_SPECIFIC_1:
-			return "CONTEXT_SPECIFIC_1";
-		case ASN1ItemType.CONTEXT_SPECIFIC_2:
-			return "CONTEXT_SPECIFIC_2";
-		case ASN1ItemType.CONTEXT_SPECIFIC_3:
-			return "CONTEXT_SPECIFIC_3";
-		case ASN1ItemType.CONTEXT_SPECIFIC_4:
-			return "CONTEXT_SPECIFIC_4";
-		default:
-			return "Unknown";
-		}		
-	}
-}
-
-class RuleContainer
-{
-	constructor()
-	{
-		this.rules = [];
-	}
-}
-
-export class ASN1Names
-{
-	addRule(rule)
-	{
-		if (this.readContainer)
-			this.readContainer.rules.push(rule);
-		else
-			this.rules.push(rule);
-		this.anyCond();
-	}
-	
-	constructor()
-	{
-		this.readContainer = null;
-		this.readLev = [];
-		this.readLastOID = null;
-		this.readIndex = 0;
-		this.rules = [];
-		this.readBegin();
-		this.anyCond();
-	}
-
-	readBegin()
-	{
-		this.readLev = [];
-		this.readIndex = 0;
-		this.readContainer = 0;
-		this.readLastOIDLen = 0;
-	}
-
-	readName(itemType, len, reader, ofst)
-	{
-		let name = this.readNameNoDef(itemType, len, reader, ofst);
-		if (name)
-			return name;
-		return ASN1Util.itemTypeGetName(itemType);
-	}
-
-	readNameNoDef(itemType, len, reader, ofst)
-	{
-		let anyMatch = false;
-		if (itemType == ASN1ItemType.OID)
-		{
-			this.readLastOID = new Uint8Array(reader.getArrayBuffer(ofst, len));
-		}
-		if (this.readIndex == -1)
-		{
-			return null;
-		}
-		let rule;
-		while (true)
-		{
-			if (this.readContainer)
-			{
-				rule = this.readContainer.rules[this.readIndex];
-			}
-			else
-			{
-				rule = this.rules[this.readIndex];
-			}
-			if (rule == null)
-			{
-				return null;
-			}
-			switch (rule.cond)
-			{
-			default:
-			case RuleCond.Any:
-				this.readIndex++;
-				return rule.name;
-			case RuleCond.TypeIsItemType:
-				this.readIndex++;
-				if (rule.itemType == itemType)
-					return rule.name;
-				break;
-			case RuleCond.TypeIsTime:
-				this.readIndex++;
-				if (itemType == ASN1ItemType.UTCTIME || itemType == ASN1ItemType.GENERALIZEDTIME)
-					return rule.name;
-				break;
-			case RuleCond.TypeIsString:
-				this.readIndex++;
-				if (itemType == ASN1ItemType.BMPSTRING ||
-					itemType == ASN1ItemType.UTF8STRING ||
-					itemType == ASN1ItemType.UNIVERSALSTRING ||
-					itemType == ASN1ItemType.PRINTABLESTRING ||
-					itemType == ASN1ItemType.T61STRING)
-					return rule.name;
-				break;
-			case RuleCond.TypeIsOpt:
-				this.readIndex++;
-				if (itemType == rule.itemType + ASN1ItemType.CHOICE_0 ||
-					itemType == rule.itemType + ASN1ItemType.CONTEXT_SPECIFIC_0)
-					return rule.name;
-				break;
-			case RuleCond.LastOIDAndTypeIs:
-				this.readIndex++;
-				if (itemType == rule.itemType && ASN1Util.oidEqualsText(this.readLastOID, rule.condParam))
-					return rule.name;
-				break;
-			case RuleCond.RepeatIfTypeIs:
-				if (itemType == rule.itemType)
-					return rule.name;
-				this.readIndex++;
-				break;
-			case RuleCond.AllNotMatch:
-				this.readIndex = 0;
-				if (anyMatch)
-					return rule.name;
-				anyMatch = true;
-				break;
-			}
-		}
-	}
-
-	readContainerBegin()
-	{
-		let rule;
-		if (this.readIndex == -1)
-		{
-			this.readLev.push(-1);
-		}
-		else
-		{
-			if (this.readContainer)
-			{
-				if (this.readIndex == 0)
-					rule = this.readContainer.rules[0];
-				else
-					rule = this.readContainer.rules[this.readIndex - 1];
-			}
-			else
-			{
-				if (this.readIndex == 0)
-					rule = this.rules[0];
-				else
-					rule = this.rules[this.readIndex - 1];
-			}
-			this.readLev.push(this.readIndex);
-			if (rule == null || rule.contentFunc == null)
-			{
-				this.readIndex = -1;
-			}
-			else
-			{
-				this.readIndex = 0;
-				let container = new RuleContainer();
-				container.parent = this.readContainer;
-				this.readContainer = container;
-				rule.contentFunc(this);
-			}
-		}
-	}
-
-	readContainerEnd()
-	{
-		if (this.readIndex == -1)
-		{
-			this.readIndex = this.readLev.pop();
-		}
-		else
-		{
-			this.readIndex = this.readLev.pop();
-			if (this.readContainer)
-			{
-				this.readContainer = this.readContainer.parent;
-			}
-		}
-	}
-
-	anyCond()
-	{
-		this.currCond = RuleCond.Any;
-		this.currItemType = ASN1ItemType.UNKNOWN;
-		this.currCondParam = null;
-		return this;
-	}
-
-	typeIs(itemType)
-	{
-		this.currCond = RuleCond.TypeIsItemType;
-		this.currItemType = itemType;
-		this.currCondParam = null;
-		return this;
-	}
-
-	typeIsTime()
-	{
-		this.currCond = RuleCond.TypeIsTime;
-		this.currItemType = ASN1ItemType.UNKNOWN;
-		this.currCondParam = null;
-		return this;
-	}
-
-	typeIsString()
-	{
-		this.currCond = RuleCond.TypeIsString;
-		this.currItemType = ASN1ItemType.UNKNOWN;
-		this.currCondParam = null;
-		return this;
-	}
-
-	typeIsOpt(index)
-	{
-		this.currCond = RuleCond.TypeIsOpt;
-		this.currItemType = index;
-		this.currCondParam = null;
-		return this;
-	}
-
-	repeatIfTypeIs(itemType)
-	{
-		this.currCond = RuleCond.RepeatIfTypeIs;
-		this.currItemType = itemType;
-		this.currCondParam = null;
-		return this;
-	}
-
-	lastOIDAndTypeIs(oidText, itemType)
-	{
-		this.currCond = RuleCond.LastOIDAndTypeIs;
-		this.currItemType = itemType;
-		this.currCondParam = oidText;
-		return this;
-	}
-
-	allNotMatch()
-	{
-		this.currCond = RuleCond.AllNotMatch;
-		this.currItemType = ASN1ItemType.UNKNOWN;
-		this.currCondParam = null;
-		return this;
-	}
-
-	container(name, contFunc)
-	{
-		let rule = {
-			cond: this.currCond,
-			itemType: this.currItemType,
-			condParam: this.currCondParam,
-			name: name,
-			contentFunc: contFunc,
-			enumVals: null};
-		this.addRule(rule);
-		return this;
-	}
-
-	nextValue(name)
-	{
-		let rule = {
-			cond: this.currCond,
-			itemType: this.currItemType,
-			condParam: this.currCondParam,
-			name: name,
-			contentFunc: null,
-			enumVals: null};
-		this.addRule(rule);
-		return this;
-	}
-
-	enum(name, enums)
-	{
-		let rule = {
-			cond: this.currCond,
-			itemType: this.currItemType,
-			condParam: this.currCondParam,
-			name: name,
-			contentFunc: null,
-			enumVals: enums};
-		this.addRule(rule);
-		return this;
-	}
-
-	setCertificate()
-	{
-		PKIX1Explicit88.certificate(this);
-		return this;
-	}
-
-	setRSAPublicKey()
-	{
-		PKCS1.rsaPublicKey(this);
-		return this;
-	}
-
-	setRSAPrivateKey()
-	{
-		PKCS1.rsaPrivateKey(this);
-		return this;
-	}
-
-	setPKCS7ContentInfo()
-	{
-		PKCS7.contentInfo(this);
-		return this;
-	}
-
-	setCertificationRequest()
-	{
-		PKCS10.certificationRequest(this);
-		return this;
-	}
-
-	setPFX()
-	{
-		PKCS12.pfx(this);
-		return this;
-	}
-}
-
-class General
-{
-	static pbeParam(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("salt");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("iterations");
-	}
-	
-	static extendedValidationCertificates(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.OCTET_STRING).nextValue("signedCertTimestamp");
-	}
-	
-	static attributeOutlookExpress(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("issuerAndSerialNumber", PKCS7.issuerAndSerialNumberCont);
-	}
-}
-
-class InformationFramework
-{
-	static attributeCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("attrId");
-	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.1", ASN1ItemType.SET).container("attrValues", AttributeEmailAddress);
-	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.2", ASN1ItemType.SET).container("attrValues", AttributeUnstructuredName);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.3", ASN1ItemType.SET).container("attrValues", PKCS9.attributeContentType);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.4", ASN1ItemType.SET).container("attrValues", PKCS9.attributeMessageDigest);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.5", ASN1ItemType.SET).container("attrValues", PKCS9.attributeSigningTime);
-	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.6", ASN1ItemType.SET).container("attrValues", AttributeCounterSignature);
-	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.7", ASN1ItemType.SET).container("attrValues", AttributeChallengePassword);
-	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.8", ASN1ItemType.SET).container("attrValues", AttributeUnstructuredAddress);
-	//	names.lastOIDAndTypeIs("1.2.840.113549.1.9.9", ASN1ItemType.SET).container("attrValues", AttributeExtendedCertificateAttributes);
-	
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.15", ASN1ItemType.SET).container("attrValues", PKCS9.attributeSMIMECapabilities);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.16.2.11", ASN1ItemType.SET).container("attrValues", RFC8551.smimeEncryptionKeyPreference);
-	
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.20", ASN1ItemType.SET).container("attrValues", PKCS9.attributeFriendlyName);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.21", ASN1ItemType.SET).container("attrValues", PKCS9.attributeLocalKeyId);
-		names.lastOIDAndTypeIs("1.3.6.1.4.1.311.16.4", ASN1ItemType.SET).container("attrValues", General.attributeOutlookExpress);
-		
-		names.typeIs(ASN1ItemType.SET).nextValue("attrValues");
-	}
-}
-
-class PKCS1
-{
-	static rsaPublicKey(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("RSAPublicKey", PKCS1.rsaPublicKeyCont);
-	}
-
-	static rsaPublicKeyCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("modulus");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("publicExponent");
-	}
-
-	static rsaPrivateKey(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("RSAPrivateKey", PKCS1.rsaPrivateKeyCont);
-	}
-
-	static rsaPrivateKeyCont(names)
-	{
-		let version = ["two-prime", "multi"];
-		names.typeIs(ASN1ItemType.INTEGER).enum("Version", version);
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("modulus");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("publicExponent");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("privateExponent");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime1");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime2");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("exponent1");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("exponent2");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("coefficient");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("otherPrimeInfos", PKCS1.otherPrimeInfos);
-	}
-
-	static otherPrimeInfos(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("exponent");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("coefficient");
-	}
-
-	static addDigestInfo(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS1.digestInfoCont);
-	}
-
-	static digestInfoCont(names)
-	{
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "digestAlgorithm");
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("digest");
-	}
-
-}
-
-class PKCS7
-{
-	static addContentInfo(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS7.contentInfoCont);
-	}
-	
-	static contentInfo(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("ContentInfo", PKCS7.contentInfoCont);
-	}
-	
-	static contentInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.data);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.envelopedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.4", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedAndEnvelopedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.5", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.digestedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.encryptedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.16.1.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.authenticatedData);
-		names.nextValue("pkcs7-content"); ////////////////////////
-	}
-	
-	static data(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("data");
-	}
-	
-	static signedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.signedDataCont);
-	}
-	
-	static signedDataCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names.typeIs(ASN1ItemType.SET).container("digestAlgorithms", PKCS7.digestAlgorithmIdentifiers);
-		names.typeIs(ASN1ItemType.SEQUENCE).container("contentInfo", PKCS7.contentInfoCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
-		names.typeIs(ASN1ItemType.SET).container("signerInfos", PKCS7.signerInfos);
-	}
-	
-	static digestAlgorithmIdentifiers(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("DigestAlgorithmIdentifier", PKIX1Explicit88.algorithmIdentifierCont);
-	}
-	
-	static certificateSet(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("certificate", PKIX1Explicit88.certificateCont);
-		names.repeatIfTypeIs(ASN1ItemType.CHOICE_0).nextValue("extendedCertificate");//, ExtendedCertificate);
-		names.repeatIfTypeIs(ASN1ItemType.CHOICE_1).nextValue("attributeCertificate");//, AttributeCertificate);
-	}
-	
-	static certificateRevocationLists(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).nextValue("CertificateRevocationLists");//, CertificateListCont);
-	}
-	
-	static signerInfos(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SignerInfo", PKCS7.signerInfoCont);
-	}
-	
-	static signerInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signerIdentifier", PKCS7.issuerAndSerialNumberCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_2).container("signerIdentifier", PKIX1Implicit88.subjectKeyIdentifier);
-		names.typeIs(ASN1ItemType.SEQUENCE).container("digestAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("authenticatedAttributes", PKCS10.attributesCont);
-		names.typeIs(ASN1ItemType.SEQUENCE).container("digestEncryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedDigest");
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unauthenticatedAttributes", PKCS10.attributesCont);
-	}
-	
-	static issuerAndSerialNumberCont(names)
-	{
-		PKIX1Explicit88.addName(names, "issuer");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("serialNumber");
-	}
-	
-	static addDigestInfo(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS7.digestInfoCont);
-	}
-	
-	static digestInfoCont(names)
-	{
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "digestAlgorithm");
-		names.nextValue("digest"); ////////////////////////
-	}
-	
-	static envelopedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("enveloped-data", PKCS7.envelopedDataCont);
-	}
-	
-	static envelopedDataCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("originatorInfo", PKCS7.originatorInfoCont);
-		names.typeIs(ASN1ItemType.SET).container("recipientInfos", PKCS7.recipientInfos);
-		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptedContentInfo", PKCS7.contentInfoCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unprotectedAttributes", PKCS10.attributesCont);
-	}
-	
-	static originatorInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
-	}
-	
-	static recipientInfos(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("keyTransportRecipientInfo", PKCS7.keyTransportRecipientInfoCont);
-		names.repeatIfTypeIs(ASN1ItemType.CHOICE_0).nextValue("keyAgreementRecipientInfo");//, PKCS7.keyAgreementRecipientInfo);
-		names.repeatIfTypeIs(ASN1ItemType.CHOICE_1).nextValue("keyEncryptionKeyRecipientInfo");//, PKCS7.keyEncryptionKeyRecipientInfo);
-	}
-	
-	static keyTransportRecipientInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names//.typeIs(ASN1ItemType.INTEGER)
-			.nextValue("recipientIdentifier"); //PKCS7.RecipientIdentifier
-		names.typeIs(ASN1ItemType.SEQUENCE).container("keyEncryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedKey");
-	}
-	
-	static signedAndEnvelopedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.signedAndEnvelopedDataCont);
-	}
-	
-	static signedAndEnvelopedDataCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names.typeIs(ASN1ItemType.SET).nextValue("recipientInfos");
-		names.typeIs(ASN1ItemType.SET).container("digestAlgorithms", PKCS7.digestAlgorithmIdentifiers);
-		names.typeIs(ASN1ItemType.SEQUENCE).container("contentInfo", PKCS7.contentInfoCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
-		names.typeIs(ASN1ItemType.SET).container("signerInfos", PKCS7.signerInfos);
-	}
-	
-	static digestedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.digestedDataCont);
-	}
-	
-	static digestedDataCont(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.digestedDataCont);
-	}
-	
-	static encryptedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("encrypted-data", PKCS7.encryptedDataCont);
-	}
-	
-	static encryptedDataCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptedContentInfo", PKCS7.encryptedContentInfoCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unprotectedAttributes", PKCS10.attributesCont);
-	}
-	
-	static encryptedContentInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("contentType");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("contentEncryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
-		names.typeIs(ASN1ItemType.CHOICE_0).nextValue("encryptedContent");
-	}
-	
-	static authenticatedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.authenticatedData);
-	}
-}
-
-class PKCS8
-{
-	static privateKeyInfo(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("PrivateKeyInfo", PKCS8.privateKeyInfoCont);
-	}
-	
-	static privateKeyInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("privateKeyAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("privateKey");
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("attributes", PKCS10.attributesCont);
-	}
-	
-	static encryptedPrivateKeyInfo(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("EncryptedPrivateKeyInfo", PKCS8.encryptedPrivateKeyInfoCont);
-	}
-	
-	static encryptedPrivateKeyInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedData");
-	}
-}
-
-class PKCS9
-{
-	static attributeContentType(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("contentType");
-	}
-
-	static attributeMessageDigest(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("messageDigest");
-	}
-
-	static attributeSigningTime(names)
-	{
-		names.typeIsTime().nextValue("signingTime");
-	}
-
-	static attributeFriendlyName(names)
-	{
-		names.typeIs(ASN1ItemType.BMPSTRING).nextValue("friendlyName");
-	}
-
-	static attributeSMIMECapabilities(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("smimeCapabilities", PKCS9.smimeCapabilitiesCont);
-	}
-
-	static attributeLocalKeyId(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("localKeyId");
-	}
-
-	static smimeCapabilitiesCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SMIMECapability", PKCS9.smimeCapabilityCont);
-	}
-
-	static smimeCapabilityCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("algorithm");
-		names.nextValue("parameters");
-	}
-}
-
-class PKCS10
-{
-	static addCertificationRequestInfo(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS10.certificationRequestInfoCont);
-	}
-	
-	static certificationRequestInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
-		PKIX1Explicit88.addName(names, "subject");
-		PKIX1Explicit88.addSubjectPublicKeyInfo(names, "subjectPKInfo");
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("attributes", PKCS10.attributesCont);
-	}
-	
-	static attributesCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("Attribute", InformationFramework.attributeCont);
-	}
-	
-	static certificationRequest(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificationRequest", PKCS10.certificationRequestCont);
-	}
-	
-	static certificationRequestCont(names)
-	{
-		PKCS10.addCertificationRequestInfo(names, "certificationRequestInfo");
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "signatureAlgorithm");
-		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
-	}
-}
-
-class PKCS12
-{
-	static pfx(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("PFX", PKCS12.pfxCont);
-	}
-	
-	static pfxCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("Version");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("authSafe", PKCS12.authenticatedSafeContentInfoCont);
-		PKCS12.addMacData(names, "macData");
-	}
-	
-	static addMacData(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS12.macDataCont);
-	}
-	
-	static macDataCont(names)
-	{
-		PKCS7.addDigestInfo(names, "mac");
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("macSalt");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("iterations");
-	}
-	
-	static authenticatedSafeContentInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.authenticatedSafeData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.authenticatedSafeEnvelopedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.authenticatedSafeEncryptedData);
-		names.nextValue("pkcs7-content"); ////////////////////////
-	}
-	
-	static authenticatedSafeData(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).container("data", PKCS12.authenticatedSafe);
-	}
-	
-	static authenticatedSafeEnvelopedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.envelopedDataCont);
-	}
-	
-	static authenticatedSafeEncryptedData(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("encrypted-data", PKCS7.encryptedDataCont);
-	}
-	
-	static authenticatedSafe(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthenticatedSafe", PKCS12.authSafeContentInfo);
-	}
-	
-	static authSafeContentInfo(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("ContentInfo", PKCS12.authSafeContentInfoCont);
-	}
-	
-	static authSafeContentInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS12.safeContentsData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.envelopedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.4", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.signedAndEnvelopedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.5", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.digestedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.7.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.encryptedData);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.16.1.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs7-content", PKCS7.authenticatedData);
-		names.nextValue("pkcs7-content"); ////////////////////////
-	}
-	
-	static safeContentsData(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).container("data", PKCS12.safeContents);
-	}
-	
-	static safeContents(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("SafeContents", PKCS12.safeContentsCont);
-	}
-	
-	static safeContentsCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SafeBag", PKCS12.safeBagCont);
-	}
-	
-	static safeBagCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("bagId");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("keyBag", PKCS8.privateKeyInfo);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("pkcs8ShroudedKeyBag", PKCS8.encryptedPrivateKeyInfo);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.3", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certBag", PKCS12.certBag);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.4", ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlBag", PKCS12.crlBag);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.5", ASN1ItemType.CONTEXT_SPECIFIC_0).container("secretBag", PKCS12.secretBag);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.10.1.6", ASN1ItemType.CONTEXT_SPECIFIC_0).container("safeContentsBag", PKCS12.safeContents);
-		names.typeIs(ASN1ItemType.SET).container("bagAttributes", PKCS12.pkcs12Attributes);
-	}
-	
-	static certBag(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("CertBag", PKCS12.certBagCont);
-	}
-	
-	static certBagCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("certId");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.22.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certValue", PKCS12.x509Certificate);
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.22.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certValue", PKCS12.sdsiCertificate);
-	}
-	
-	static x509Certificate(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).container("x509Certificate", PKIX1Explicit88.certificate);
-	}
-	
-	static sdsiCertificate(names)
-	{
-		names.typeIs(ASN1ItemType.IA5STRING).nextValue("sdsiCertificate");
-	}
-	
-	static crlBag(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("CRLBag", PKCS12.crlBagCont);
-	}
-	
-	static crlBagCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("crlId");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.9.23.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlValue", PKCS12.x509CRL);
-	}
-	
-	static x509CRL(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).container("x509CRL", PKIX1Explicit88.certificateList);
-	}
-	
-	static secretBag(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("SecretBag", PKCS12.secretBagCont);
-	}
-	
-	static secretBagCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("secretTypeId");
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).nextValue("secretValue");
-	}
-	
-	static pkcs12Attributes(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PKCS12Attribute", InformationFramework.attributeCont);
-	}
-}
-
-class PKIX1Explicit88
-{
-	static addAttributeTypeAndValue(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.attributeTypeAndValueCont);
-	}
-
-	static attributeTypeAndValueCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("type");
-		names.nextValue("value");
-	}
-
-	static addName(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.rdnSequenceCont);
-	}
-
-	static name(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("Name", PKIX1Explicit88.rdnSequenceCont);
-	}
-
-	static rdnSequenceCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SET).container("rdnSequence", PKIX1Explicit88.relativeDistinguishedNameCont);
-	}
-
-	static relativeDistinguishedName(names)
-	{
-		names.typeIs(ASN1ItemType.SET).container("RelativeDistinguishedName", PKIX1Explicit88.relativeDistinguishedNameCont);
-	}
-
-	static relativeDistinguishedNameCont(names)
-	{
-		PKIX1Explicit88.addAttributeTypeAndValue(names, "AttributeTypeAndValue");
-	}
-
-	static certificate(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("Certificate", PKIX1Explicit88.certificateCont);
-	}
-
-	static certificateCont(names)
-	{
-		PKIX1Explicit88.addTBSCertificate(names, "tbsCertificate");
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "signatureAlgorithm");
-		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
-	}
-
-	static addTBSCertificate(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.tbsCertificateCont);
-	}
-
-	static tbsCertificateCont(names)
-	{
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("version", version);
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("serialNumber");
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "signature");
-		PKIX1Explicit88.addName(names, "issuer");
-		PKIX1Explicit88.addValidity(names, "validity");
-		PKIX1Explicit88.addName(names, "subject");
-		PKIX1Explicit88.addSubjectPublicKeyInfo(names, "subjectPublicKeyInfo");
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).nextValue("issuerUniqueID");/////////////////////
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_2).nextValue("subjectUniqueID");//////////////////////
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_3).container("extensions", PKIX1Explicit88.extensions);
-	}
-
-	static version(names)
-	{
-		let versions = ["v1", "v2", "v3"];
-		names.typeIs(ASN1ItemType.INTEGER).enum("Version", versions);
-	}
-
-	static addValidity(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.validityCont);
-	}
-
-	static validityCont(names)
-	{
-		names.typeIsTime().nextValue("notBefore");
-		names.typeIsTime().nextValue("notAfter");
-	}
-
-	static addSubjectPublicKeyInfo(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.subjectPublicKeyInfoCont);
-	}
-
-	static subjectPublicKeyInfoCont(names)
-	{
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "algorithm");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.1.1", ASN1ItemType.BIT_STRING).container("subjectPublicKey", PKCS1.rsaPublicKey);
-		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("subjectPublicKey");
-	}
-
-	static addExtensions(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.extensionsCont);
-	}
-
-	static extensions(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("Extensions", PKIX1Explicit88.extensionsCont);
-	}
-
-	static extensionsCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("Extension", PKIX1Explicit88.extensionCont);
-	}
-
-	static extensionCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("extnID");
-		names.typeIs(ASN1ItemType.BOOLEAN).nextValue("critical");
-		names.lastOIDAndTypeIs("1.3.6.1.4.1.11129.2.4.2", ASN1ItemType.OCTET_STRING).container("extendedValidationCertificates", General.extendedValidationCertificates);
-		names.lastOIDAndTypeIs("1.3.6.1.5.5.7.1.1", ASN1ItemType.OCTET_STRING).container("authorityInfoAccess", RFC2459.authorityInfoAccessSyntax);
-		names.lastOIDAndTypeIs("2.5.29.14", ASN1ItemType.OCTET_STRING).container("subjectKeyIdentifier", PKIX1Implicit88.subjectKeyIdentifier);
-		names.lastOIDAndTypeIs("2.5.29.15", ASN1ItemType.OCTET_STRING).container("keyUsage", PKIX1Implicit88.keyUsage);
-		names.lastOIDAndTypeIs("2.5.29.17", ASN1ItemType.OCTET_STRING).container("subjectAltName", PKIX1Implicit88.generalNames);
-		names.lastOIDAndTypeIs("2.5.29.19", ASN1ItemType.OCTET_STRING).container("basicConstraints", PKIX1Implicit88.basicConstraints);
-		names.lastOIDAndTypeIs("2.5.29.31", ASN1ItemType.OCTET_STRING).container("cRLDistributionPoints", PKIX1Implicit88.crlDistributionPoints);
-		names.lastOIDAndTypeIs("2.5.29.32", ASN1ItemType.OCTET_STRING).container("certificatePolicies", PKIX1Implicit88.certificatePolicies);
-		names.lastOIDAndTypeIs("2.5.29.35", ASN1ItemType.OCTET_STRING).container("authorityKeyIdentifier", PKIX1Implicit88.authorityKeyIdentifier);
-		names.lastOIDAndTypeIs("2.5.29.37", ASN1ItemType.OCTET_STRING).container("extKeyUsage", PKIX1Implicit88.extKeyUsageSyntax);
-		names.nextValue("extnValue");//////////////////////////////
-	}
-
-	static certificateList(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificateList", PKIX1Explicit88.certificateListCont);
-	}
-
-	static certificateListCont(names)
-	{
-		PKIX1Explicit88.addTBSCertList(names, "tbsCertList");
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "signatureAlgorithm");
-		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
-	}
-
-	static addTBSCertList(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.tbsCertListCont);
-	}
-
-	static tbsCertListCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("Version");
-		PKIX1Explicit88.addAlgorithmIdentifier(names, "signature");
-		PKIX1Explicit88.addName(names, "issuer");
-		names.typeIsTime().nextValue("thisUpdate");
-		names.typeIsTime().nextValue("nextUpdate");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("revokedCertificates", PKIX1Explicit88.revokedCertificates);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlExtensions", PKIX1Explicit88.extensions);
-	}
-
-	static revokedCertificates(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("revokedCertificate", PKIX1Explicit88.revokedCertificateCont);
-	}
-
-	static revokedCertificateCont(names)
-	{
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("userCertificate");
-		names.typeIsTime().nextValue("revocationDate");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("crlEntryExtensions", PKIX1Explicit88.extensionsCont);
-	}
-
-	static addAlgorithmIdentifier(names, name)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.algorithmIdentifierCont);
-	}
-
-	static algorithmIdentifierCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("algorithm");
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.1.3", ASN1ItemType.SEQUENCE).container("parameters", General.pbeParam); //pbeWithSHAAnd3-KeyTripleDES-CBC
-		names.lastOIDAndTypeIs("1.2.840.113549.1.12.1.6", ASN1ItemType.SEQUENCE).container("parameters", General.pbeParam); //pbeWithSHAAnd40BitRC2-CBC
-		names.nextValue("parameters");
-	}
-}
-
-class PKIX1Implicit88
-{
-	static authorityKeyIdentifier(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthorityKeyIdentifier", PKIX1Implicit88.authorityKeyIdentifierCont);
-	}
-
-	static authorityKeyIdentifierCont(names)
-	{
-		names.typeIsOpt(0).nextValue("keyIdentifier");
-		names.typeIsOpt(1).container("authorityCertIssuer", PKIX1Implicit88.generalNameCont);
-		names.typeIsOpt(2).nextValue("authorityCertSerialNumber");
-	}
-
-	static subjectKeyIdentifier(names)
-	{
-		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("SubjectKeyIdentifier");
-	}
-
-	static keyUsage(names)
-	{
-		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("KeyUsage");
-	}
-
-	static certificatePolicies(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificatePolicies", PKIX1Implicit88.certificatePoliciesCont);
-	}
-
-	static certificatePoliciesCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PolicyInformation", PKIX1Implicit88.policyInformationCont);
-	}
-
-	static policyInformationCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("policyIdentifier");
-		names.typeIs(ASN1ItemType.SEQUENCE).container("policyQualifiers", PKIX1Implicit88.policyQualifiers);
-	}
-
-	static policyQualifiers(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PolicyQualifierInfo", PKIX1Implicit88.policyQualifierInfoCont);
-	}
-
-	static policyQualifierInfoCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("policyQualifierId");
-		names.nextValue("qualifier");
-	}
-
-	static generalNames(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("GeneralName", PKIX1Implicit88.generalNameCont);
-	}
-
-	static generalNameCont(names)
-	{
-		names.typeIsOpt(0).nextValue("otherName");
-		names.typeIsOpt(1).nextValue("rfc822Name");
-		names.typeIsOpt(2).nextValue("dNSName");
-		names.typeIsOpt(3).nextValue("x400Address");
-		names.typeIsOpt(4).container("directoryName", PKIX1Explicit88.name);
-		names.typeIsOpt(5).nextValue("ediPartyName");
-		names.typeIsOpt(6).nextValue("uniformResourceIdentifier");
-		names.typeIsOpt(7).nextValue("iPAddress");
-		names.typeIsOpt(8).nextValue("registeredID");
-		names.allNotMatch().nextValue("unknown");
-	}
-
-	static basicConstraints(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("BasicConstraints", PKIX1Implicit88.basicConstraintsCont);
-	}
-
-	static basicConstraintsCont(names)
-	{
-		names.typeIs(ASN1ItemType.BOOLEAN).nextValue("cA");
-		names.typeIs(ASN1ItemType.INTEGER).nextValue("pathLenConstraint");
-	}
-
-	static crlDistributionPoints(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("CRLDistributionPoints", PKIX1Implicit88.crlDistributionPointsCont);
-	}
-
-	static crlDistributionPointsCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("DistributionPoint", PKIX1Implicit88.distributionPointCont);
-	}
-
-	static distributionPointCont(names)
-	{
-		names.typeIsOpt(0).container("distributionPoint", PKIX1Implicit88.distributionPointName);
-		names.typeIsOpt(1).container("reasons", PKIX1Implicit88.reasonFlags);
-		names.typeIsOpt(2).container("cRLIssuer", PKIX1Implicit88.generalNames);
-	}
-
-	static distributionPointName(names)
-	{
-		names.typeIsOpt(0).container("fullName", PKIX1Implicit88.generalNameCont);
-		names.typeIsOpt(1).container("nameRelativeToCRLIssuer", PKIX1Explicit88.relativeDistinguishedNameCont);
-	}
-
-	static reasonFlags(names)
-	{
-		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("ReasonFlags");
-	}
-
-	static extKeyUsageSyntax(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("ExtKeyUsageSyntax", PKIX1Implicit88.extKeyUsageSyntaxCont);
-	}
-
-	static extKeyUsageSyntaxCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.OID).nextValue("KeyPurposeId");
-	}
-}
-
-class RFC2459
-{
-	static authorityInfoAccessSyntax(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthorityInfoAccessSyntax", RFC2459.authorityInfoAccessSyntaxCont);
-	}
-	
-	static authorityInfoAccessSyntaxCont(names)
-	{
-		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("AccessDescription", RFC2459.accessDescriptionCont);
-	}
-	
-	static accessDescriptionCont(names)
-	{
-		names.typeIs(ASN1ItemType.OID).nextValue("accessMethod");
-		names.nextValue("accessLocation");
-	}
-}
-
-class RFC8551
-{
-	static smimeEncryptionKeyPreference(names)
-	{
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("issuerAndSerialNumber", PKCS7.issuerAndSerialNumberCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).nextValue("receipentKeyId");//, RecipientKeyIdentifierCont);
-		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_2).nextValue("subjectAltKeyIdentifier");//, SubjectKeyIdentifierCont);
-	}
-}
-
-export class ASN1Data extends data.ParsedObject(UInt8)
+export class ASN1Data extends data.ParsedObject
 {
 	constructor(sourceName, objType, buff)
 	{
@@ -1637,7 +77,9 @@ export class ASN1Data extends data.ParsedObject(UInt8)
 	toASN1String()
 	{
 		let names = this.createNames();
-		return ASN1Util.pduToString(this.reader, 0, this.reader.getLength(), 0, 0, names);
+		let lines = [];
+		ASN1Util.pduToString(this.reader, 0, this.reader.getLength(), lines, 0, names);
+		return lines.join("\r\n");
 	}
 
 	getASN1Buff()
@@ -1747,6 +189,3202 @@ export class X509File extends ASN1Data
 		return {payload: this.reader.getArrayBuffer(payload.rawOfst, payload.hdrLen + payload.contLen),
 			signature: this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen),
 			algType: algType};
+	}
+
+	static isSigned(reader, startOfst, endOfst, path)
+	{
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
+		if (cnt < 3)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+".2") != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+".3") != ASN1ItemType.BIT_STRING)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static appendSigned(reader, startOfst, endOfst, path, sb, varName)
+	{
+		let name;
+		let itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+".2")) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "algorithmIdentifier";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name, false);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+".3")) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.BIT_STRING)
+			{
+				if (varName)
+				{
+					sb.push(varName+".");
+				}
+				sb.push("signature = ");
+				sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1)), ':', null));
+				sb.push("\r\n");
+			}
+		}		
+	}
+
+	static isTBSCertificate(reader, startOfst, endOfst, path)
+	{
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
+		if (cnt < 6)
+		{
+			return false;
+		}
+		let i = 1;
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i)) == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			i++;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.INTEGER)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static appendTBSCertificate(reader, startOfst, endOfst, path, sb, varName)
+	{
+		let name;
+		let i = 1;
+		let itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				if (varName)
+				{
+					sb.push(varName+".");
+				}
+				sb.push("version = ");
+				X509File.appendVersion(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1", sb);
+				sb.push("\r\n");
+				i++;
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.INTEGER)
+			{
+				if (varName)
+				{
+					sb.push(varName+".");
+				}
+				sb.push("serialNumber = ");
+				sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen)), ':', null));
+				sb.push("\r\n");
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "signature";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name, false);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "issuer";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendName(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "validity";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendValidity(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "subject";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendName(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "subjectPublicKeyInfo";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendSubjectPublicKeyInfo(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+				let pubKey = new X509PubKey(name, reader.getArrayBuffer(itemPDU.rawOfst, itemPDU.hdrLen + itemPDU.contLen));
+				let key = pubKey.createKey();
+				if (key)
+				{
+					sb.push(key.toString());
+					sb.push("\r\n");
+				}
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_3)
+			{
+				name = "extensions";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendCRLExtensions(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+			}
+		}
+	}
+
+	static isCertificate(reader, startOfst, endOfst, path)
+	{
+		return X509File.isSigned(reader, startOfst, endOfst, path) && X509File.isTBSCertificate(reader, startOfst, endOfst, path+".1");
+	}
+
+	static appendCertificate(reader, startOfst, endOfst, path, sb, varName)
+	{
+		X509File.appendTBSCertificate(reader, startOfst, endOfst, path+".1", sb, varName);
+		X509File.appendSigned(reader, startOfst, endOfst, path, sb, varName);
+	}
+
+	static isTBSCertList(reader, startOfst, endOfst, path)
+	{
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
+		let i = 1;
+		if (cnt < 4)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i)) == ASN1ItemType.INTEGER)
+		{
+			i++;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.UTCTIME)
+		{
+			return false;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i)) == ASN1ItemType.UTCTIME)
+		{
+			i++;
+		}
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++)) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		let itemType = ASN1Util.pduGetItemType(reader, startOfst, endOfst, path+"."+(i++));
+		if (itemType != ASN1ItemType.CONTEXT_SPECIFIC_0 && itemType != ASN1ItemType.UNKNOWN)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static appendTBSCertList(reader, startOfst, endOfst, path, sb, varName)
+	{
+		let dt;
+		let name;
+		let i = 1;
+		let itemPDU;
+		let subitemPDU;
+		let subsubitemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.INTEGER)
+			{
+				if (varName)
+				{
+					sb.push(varName+".");
+				}
+				sb.push("version = ");
+				X509File.appendVersion(reader, startOfst, endOfst, path+"."+(i), sb);
+				sb.push("\r\n");
+				i++;
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "signature";
+				if (varName)
+				{
+					name = varName+"."+name;
+				}
+				X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name, false);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				name = "issuer";
+				if (varName)
+				{
+					name = varName+"."+name;
+				}
+				X509File.appendName(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.UTCTIME && (dt = ASN1Util.pduParseUTCTimeCont(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen)))
+			{
+				if (varName)
+				{
+					sb.push(varName+".");
+				}
+				sb.push("thisUpdate = ");
+				sb.push(dt.toStringNoZone());
+				sb.push("\r\n");
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i))) != null && itemPDU.itemType == ASN1ItemType.UTCTIME)
+		{
+			if (dt = ASN1Util.pduParseUTCTimeCont(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen))
+			{
+				if (varName)
+				{
+					sb.push(varName+".");
+				}
+				sb.push("nextUpdate = ");
+				sb.push(dt.toStringNoZone());
+				sb.push("\r\n");
+			}
+			i++;
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
+		{
+			let j = 0;
+			while (true)
+			{
+				j++;
+				if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, j.toString())) == null || subitemPDU.itemType != ASN1ItemType.SEQUENCE)
+				{
+					break;
+				}
+	
+				if ((subsubitemPDU = ASN1Util.pduGetItem(reader, subitemPDU.rawOfst + subitemPDU.hdrLen, subitemPDU.rawOfst + subItemPDU.hdrLen + subitemPDU.contLen, "1")) != null && subsubitemPDU.itemType == ASN1ItemType.INTEGER)
+				{
+					if (varName)
+					{
+						sb.push(varName+".");
+					}
+					sb.push("revokedCertificates[");
+					sb.push(j.toString());
+					sb.push("].userCertificate = ");
+					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(subsubitemPDU.rawOfst + subsubitemPDU.hdrLen, subsubitemPDU.contLen)), ':', null));
+					sb.push("\r\n");
+				}
+				if ((subsubitemPDU = ASN1Util.pduGetItem(reader, subitemPDU.rawOfst + subitemPDU.hdrLen, subitemPDU.rawOfst + subItemPDU.hdrLen + subitemPDU.contLen, "2")) != null && subsubitemPDU.itemType == ASN1ItemType.UTCTIME && (dt = ASN1Util.pduParseUTCTimeCont(reader, subsubitemPDU.rawOfst + subsubitemPDU.hdrLen, subsubitemPDU.rawOfst + subsubitemPDU.hdrLen + subsubitemPDU.contLen)))
+				{
+					if (varName)
+					{
+						sb.push(varName+".");
+					}
+					sb.push("revokedCertificates[");
+					sb.push(j);
+					sb.push("].revocationDate = ");
+					sb.push(dt.toStringNoZone());
+					sb.push("\r\n");
+				}
+				if ((subsubitemPDU = ASN1Util.pduGetItem(reader, subitemPDU.rawOfst + subitemPDU.hdrLen, subitemPDU.rawOfst + subItemPDU.hdrLen + subitemPDU.contLen, "3")) != null && subsubitemPDU.itemType == ASN1ItemType.SEQUENCE)
+				{
+					name = "revokedCertificates[";
+					if (varName)
+					{
+						name = varName+"."+name;
+					}
+					name = name + j + "].crlEntryExtensions";
+					X509File.appendCRLExtensions(reader, subsubitemPDU.rawOfst, subsubitemPDU.rawOfst + subsubitemPDU.hdrLen + subsubitemPDU.contLen, sb, name);
+				}
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path+"."+(i++))) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				name = "crlExtensions";
+				if (varName)
+				{
+					name = varName + "." + name;
+				}
+				X509File.appendCRLExtensions(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, name);
+			}
+		}
+	}
+
+	static isCertificateList(reader, startOfst, endOfst, path)
+	{
+		return X509File.isSigned(reader, startOfst, endOfst, path) && X509File.isTBSCertList(reader, startOfst, endOfst, path+".1");
+	}
+
+	static appendCertificateList(reader, startOfst, endOfst, path, sb, varName)
+	{
+		X509File.appendTBSCertList(reader, startOfst, endOfst, path+".1", sb, varName);
+		X509File.appendSigned(reader, startOfst, endOfst, path, sb, varName);
+	}
+
+/*	static isPrivateKeyInfo(reader, startOfst, endOfst, path)
+	{
+		UOSInt cnt = ASN1Util.pduCountItem(pdu, pduEnd, path);
+		if (cnt != 3 && cnt != 4)
+		{
+			return false;
+		}
+		Char sbuff[256];
+		Char *sptr;
+		sptr = Text.StrConcat(sbuff, path);
+		Text.StrConcat(sptr, ".1");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.INTEGER)
+		{
+			return false;
+		}
+		Text.StrConcat(sptr, ".2");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		Text.StrConcat(sptr, ".3");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.OCTET_STRING)
+		{
+			return false;
+		}
+		if (cnt == 4)
+		{
+			Text.StrConcat(sptr, ".4");
+			if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SET)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	static appendPrivateKeyInfo(reader, startOfst, endOfst, path, sb)
+	{
+		Char sbuff[256];
+		Char *sptr;
+		const UInt8 *itemPDU;
+		UOSInt len;
+		Net.ASN1Util.ItemType itemType;
+		KeyType keyType = KeyType.Unknown;
+		sptr = Text.StrConcat(sbuff, path);
+		Text.StrConcat(sptr, ".1");
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, len, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.INTEGER)
+			{
+				sb.push("version = "));
+				AppendVersion(pdu, pduEnd, sbuff, sb);
+				sb.push("\r\n"));
+			}
+		}
+		Text.StrConcat(sptr, ".2");
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, len, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.SEQUENCE)
+			{
+				AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, CSTR("privateKeyAlgorithm"), false, &keyType);
+			}
+		}
+		Text.StrConcat(sptr, ".3");
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, len, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.OCTET_STRING)
+			{
+				sb.push("privateKey = "));
+				sb.push("\r\n"));
+				if (keyType != KeyType.Unknown)
+				{
+					Crypto.Cert.X509Key privkey(CSTR("PrivKey"), Data.ByteArrayR(itemPDU, len), keyType);
+					privkey.ToString(sb);
+				}
+			}
+		}
+	}
+
+	static isCertificateRequestInfo(reader, startOfst, endOfst, path)
+	{
+		UOSInt cnt = ASN1Util.pduCountItem(pdu, pduEnd, path);
+		if (cnt < 4)
+		{
+			return false;
+		}
+		Char sbuff[256];
+		Char *sptr = Text.StrConcat(sbuff, path);
+		*sptr++ = '.';
+		UOSInt i = 1;
+		Text.StrUOSInt(sptr, i++);
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.INTEGER)
+		{
+			return false;
+		}
+		Text.StrUOSInt(sptr, i++);
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		Text.StrUOSInt(sptr, i++);
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		Text.StrUOSInt(sptr, i++);
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static appendCertificateRequestInfo(reader, startOfst, endOfst, path, sb)
+	{
+		Char sbuff[256];
+		Char *sptr = Text.StrConcat(sbuff, path);
+		*sptr++ = '.';
+		UOSInt i = 1;
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		const UInt8 *subitemPDU;
+		UOSInt subitemLen;
+		Net.ASN1Util.ItemType itemType;
+		Text.StrUOSInt(sptr, i++);
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, itemLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.INTEGER)
+			{
+				sb.push("serialNumber = "));
+				AppendVersion(pdu, pduEnd, sbuff, sb);
+				sb.push("\r\n"));
+			}
+		}
+		Text.StrUOSInt(sptr, i++);
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, itemLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.SEQUENCE)
+			{
+				AppendName(itemPDU, itemPDU + itemLen, sb, CSTR("subject"));
+			}
+		}
+		Text.StrUOSInt(sptr, i++);
+		UOSInt itemOfst;
+		if ((itemPDU = Net.ASN1Util.PDUGetItemRAW(pdu, pduEnd, sbuff, itemLen, itemOfst)) != 0)
+		{
+			if (itemPDU[0] == ASN1ItemType.SEQUENCE)
+			{
+				AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, CSTR("subjectPublicKeyInfo"));
+				Crypto.Cert.X509PubKey *pubKey;
+				Crypto.Cert.X509Key *key;
+				NEW_CLASS(pubKey, Crypto.Cert.X509PubKey(CSTR("PubKey"), Data.ByteArrayR(itemPDU, itemOfst + itemLen)));
+				key = pubKey->CreateKey();
+				if (key)
+				{
+					key->ToString(sb);
+					sb->AppendLB(Text.LineBreakType.CRLF);
+					DEL_CLASS(key);
+				}
+				DEL_CLASS(pubKey);
+			}
+		}
+		Text.StrUOSInt(sptr, i++);
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, itemLen, itemType)) != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			i = 1;
+			Text.StrUOSInt(sbuff, i);
+			while ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, sbuff, subitemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+			{
+				const UInt8 *extOID;
+				UOSInt extOIDLen;
+				const UInt8 *ext;
+				UOSInt extLen;
+				if ((extOID = ASN1Util.pduGetItem(subitemPDU, subitemPDU + subitemLen, "1", extOIDLen, itemType)) != 0 && itemType == ASN1ItemType.OID &&
+					(ext = ASN1Util.pduGetItem(subitemPDU, subitemPDU + subitemLen, "2", extLen, itemType)) != 0 && itemType == ASN1ItemType.SET)
+				{
+					if (Net.ASN1Util.OIDEqualsText(extOID, extOIDLen, UTF8STRC("1.2.840.113549.1.9.14")))
+					{
+						AppendCRLExtensions(ext, ext + extLen, sb, CSTR("extensionRequest"));
+					}
+					else if (Net.ASN1Util.OIDEqualsText(extOID, extOIDLen, UTF8STRC("1.3.6.1.4.1.311.13.2.3"))) //szOID_OS_VERSION
+					{
+						AppendMSOSVersion(ext, ext + extLen, sb, CSTR("osVersion"));
+					}
+					else if (Net.ASN1Util.OIDEqualsText(extOID, extOIDLen, UTF8STRC("1.3.6.1.4.1.311.21.20"))) //szOID_REQUEST_CLIENT_INFO
+					{
+						AppendMSRequestClientInfo(ext, ext + extLen, sb, CSTR("reqClientInfo"));
+					}
+					else if (Net.ASN1Util.OIDEqualsText(extOID, extOIDLen, UTF8STRC("1.3.6.1.4.1.311.13.2.2"))) //szOID_ENROLLMENT_CSP_PROVIDER
+					{
+						AppendMSEnrollmentCSPProvider(ext, ext + extLen, sb, CSTR("enrollCSPProv"));
+					}
+				}
+				Text.StrUOSInt(sbuff, ++i);
+			}
+		}
+	}
+
+	static isCertificateRequest(reader, startOfst, endOfst, path)
+	{
+		Char sbuff[256];
+		Text.StrConcat(Text.StrConcat(sbuff, path), ".1");
+		return IsSigned(pdu, pduEnd, path) && IsCertificateRequestInfo(pdu, pduEnd, sbuff);
+	}
+
+	static appendCertificateRequest(reader, startOfst, endOfst, path, sb)
+	{
+		Char sbuff[256];
+		Text.StrConcat(Text.StrConcat(sbuff, path), ".1");
+		AppendCertificateRequestInfo(pdu, pduEnd, sbuff, sb);
+		AppendSigned(pdu, pduEnd, path, sb, CSTR_NULL);
+	}
+
+	static isPublicKeyInfo(reader, startOfst, endOfst, path)
+	{
+		UOSInt cnt = ASN1Util.pduCountItem(pdu, pduEnd, path);
+		if (cnt < 2)
+		{
+			return false;
+		}
+		Char sbuff[256];
+		Char *sptr = Text.StrConcat(sbuff, path);
+		Text.StrConcat(sptr, ".1");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SEQUENCE)
+		{
+			return false;
+		}
+		Text.StrConcat(sptr, ".2");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.BIT_STRING)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static appendPublicKeyInfo(reader, startOfst, endOfst, path, sb)
+	{
+		UOSInt itemOfst;
+		UOSInt buffSize;
+		const UInt8 *buff = Net.ASN1Util.PDUGetItemRAW(pdu, pduEnd, path, buffSize, itemOfst);
+		if (buff[0] == ASN1ItemType.SEQUENCE)
+		{
+			AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, CSTR("PubKey"));
+			Crypto.Cert.X509PubKey *pubKey;
+			Crypto.Cert.X509Key *key;
+			NEW_CLASS(pubKey, Crypto.Cert.X509PubKey(CSTR("PubKey"), Data.ByteArrayR(buff, itemOfst + buffSize)));
+			key = pubKey->CreateKey();
+			if (key)
+			{
+				key->ToString(sb);
+				sb->AppendLB(Text.LineBreakType.CRLF);
+				DEL_CLASS(key);
+			}
+			DEL_CLASS(pubKey);
+		}
+	}
+
+	static isContentInfo(reader, startOfst, endOfst, path)
+	{
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, path) != ASN1ItemType.SEQUENCE)
+			return false;
+		UOSInt cnt = ASN1Util.pduCountItem(pdu, pduEnd, path);
+		if (cnt != 2)
+		{
+			return false;
+		}
+		Char sbuff[256];
+		Char *sptr = Text.StrConcat(sbuff, path);
+		Text.StrConcat(sptr, ".1");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.OID)
+		{
+			return false;
+		}
+		Text.StrConcat(sptr, ".2");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	static appendContentInfo(reader, startOfst, endOfst, path, sb, varName, dataType)
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		UOSInt buffSize;
+		Net.ASN1Util.ItemType itemType;
+		const UInt8 *buff = ASN1Util.pduGetItem(pdu, pduEnd, path, buffSize, itemType);
+		if (itemType == ASN1ItemType.SEQUENCE)
+		{
+			Net.ASN1Util.ItemType itemType1;
+			UOSInt contentTypeLen;
+			const UInt8 *contentType = ASN1Util.pduGetItem(buff, buff + buffSize, "1", contentTypeLen, itemType1);
+			Net.ASN1Util.ItemType itemType2;
+			UOSInt contentLen;
+			const UInt8 *content = ASN1Util.pduGetItem(buff, buff + buffSize, "2", contentLen, itemType2);
+	
+			if (contentType)
+			{
+				if (varName.v)
+				{
+					sb.push(varName);
+					sb->AppendUTF8Char('.');
+				}
+				sb.push("content-type = "));
+				Net.ASN1Util.OIDToString(contentType, contentTypeLen, sb);
+				const Net.ASN1OIDDB.OIDInfo *oid = Net.ASN1OIDDB.OIDGetEntry(contentType, contentTypeLen);
+				if (oid)
+				{
+					sb.push(" ("));
+					sb->AppendSlow((const UTF8Char*)oid->name);
+					sb->AppendUTF8Char(')');
+				}
+				sb.push("\r\n"));
+			}
+			if (contentType && content)
+			{
+				if (Net.ASN1Util.OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.1"))) //data
+				{
+					UOSInt itemLen;
+					const UInt8 *itemPDU = ASN1Util.pduGetItem(content, content + contentLen, "1", itemLen, itemType);
+					if (itemPDU != 0 && itemType == ASN1ItemType.OCTET_STRING)
+					{
+						sptr = varName.ConcatTo(sbuff);
+						sptr = Text.StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+						AppendData(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), dataType);
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.2"))) //signedData
+				{
+					sptr = varName.ConcatTo(sbuff);
+					sptr = Text.StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+					AppendPKCS7SignedData(content, content + contentLen, sb, CSTRP(sbuff, sptr));
+				}
+				else if (Net.ASN1Util.OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.3"))) //envelopedData
+				{
+	
+				}
+				else if (Net.ASN1Util.OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.4"))) //signedAndEnvelopedData
+				{
+	
+				}
+				else if (Net.ASN1Util.OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.5"))) //digestedData
+				{
+	
+				}
+				else if (Net.ASN1Util.OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.6"))) //encryptedData
+				{
+					sptr = varName.ConcatTo(sbuff);
+					sptr = Text.StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+					AppendEncryptedData(content, content + contentLen, sb, CSTRP(sbuff, sptr), dataType);
+				}
+			}
+		}
+	}
+
+	static isPFX(reader, startOfst, endOfst, path)
+	{
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, path) != ASN1ItemType.SEQUENCE)
+			return false;
+		UOSInt cnt = ASN1Util.pduCountItem(pdu, pduEnd, path);
+		if (cnt != 2 && cnt != 3)
+		{
+			return false;
+		}
+		Char sbuff[256];
+		Char *sptr = Text.StrConcat(sbuff, path);
+		Text.StrConcat(sptr, ".1");
+		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.INTEGER)
+		{
+			return false;
+		}
+		Text.StrConcat(sptr, ".2");
+		if (!IsContentInfo(pdu, pduEnd, sbuff))
+		{
+			return false;
+		}
+		if (cnt == 3)
+		{
+			Text.StrConcat(sptr, ".3");
+			if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SEQUENCE)
+			{
+				return false;
+			}
+		}
+		return true;		
+	}
+
+	static appendPFX(reader, startOfst, endOfst, path, sb, varName)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		UOSInt buffSize;
+		Net.ASN1Util.ItemType itemType;
+		const UInt8 *buff = ASN1Util.pduGetItem(pdu, pduEnd, path, buffSize, itemType);
+		if (itemType == ASN1ItemType.SEQUENCE)
+		{
+			UOSInt cnt = ASN1Util.pduCountItem(buff, buff + buffSize, 0);
+	
+			Net.ASN1Util.ItemType itemType;
+			UOSInt versionLen;
+			const UInt8 *version = ASN1Util.pduGetItem(buff, buff + buffSize, "1", versionLen, itemType);
+			if (version && itemType == ASN1ItemType.INTEGER)
+			{
+				if (varName.v)
+				{
+					sb.push(varName);
+					sb->AppendUTF8Char('.');
+				}
+				sb.push("version = "));
+				Net.ASN1Util.IntegerToString(version, versionLen, sb);
+				sb.push("\r\n"));
+			}
+			sptr = sbuff;
+			if (varName.v)
+			{
+				sptr = varName.ConcatTo(sptr);
+				*sptr++ = '.';
+			}
+			sptr = Text.StrConcatC(sptr, UTF8STRC("authSafe"));
+			AppendContentInfo(buff, buff + buffSize, "2", sb, CSTRP(sbuff, sptr), ContentDataType.AuthenticatedSafe);
+			if (cnt == 3)
+			{
+				sptr = sbuff;
+				if (varName.v)
+				{
+					sptr = varName.ConcatTo(sptr);
+					*sptr++ = '.';
+				}
+				sptr = Text.StrConcatC(sptr, UTF8STRC("macData"));
+				AppendMacData(buff, buff + buffSize, "3", sb, CSTRP(sbuff, sptr));
+			}
+		}
+	}*/
+
+	static appendVersion(reader, startOfst, endOfst, path, sb)
+	{
+		let itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
+		if (itemPDU != null && itemPDU.itemType == ASN1ItemType.INTEGER)
+		{
+			if (itemPDU.contLen == 1)
+			{
+				switch (reader.readUInt8(itemPDU.rawOfst + itemPDU.hdrLen))
+				{
+				case 0:
+					sb.push("v1");
+					break;
+				case 1:
+					sb.push("v2");
+					break;
+				case 2:
+					sb.push("v3");
+					break;
+				}
+			}
+		}
+	}
+
+	static appendAlgorithmIdentifier(reader, startOfst, endOfst, sb, varName, pubKey)
+	{
+		let itemPDU;
+		let keyType = KeyType.Unknown;
+		let innerKeyType = KeyType.Unknown;
+		let algorithm = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
+		let parameters = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2");
+		if (algorithm && algorithm.algorithmType == ASN1ItemType.OID)
+		{
+			sb.push(varName+".");
+			sb.push("algorithm = ");
+			sb.push(ASN1Util.oidToString(new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen))));
+			keyType = keyTypeFromOID(new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen)), pubKey);
+			let oid = null; //oiddb.oidGetEntry(new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen)));
+			if (oid)
+			{
+				sb.push(" (" + oid.name + ")");
+			}
+			sb.push("\r\n");
+		}
+		if (parameters)
+		{
+			let oid = new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen));
+			if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.5.13") && parameters.itemType == ASN1ItemType.SEQUENCE)
+			{
+				if ((itemPDU = ASN1Util.pduGetItem(reader, parameters.rawOfst + parameters.hdrLen, parameters.rawOfst + parameters.hdrLen + parameters.contLen, "1")) != null)
+				{
+					if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+					{
+						innerKeyType = X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, varName + ".pbes2.kdf", true);
+					}
+				}
+				if ((itemPDU = ASN1Util.pduGetItem(reader, parameters.rawOfst + parameters.hdrLen, parameters.rawOfst + parameters.hdrLen + parameters.contLen, "2")) != null)
+				{
+					if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+					{
+						innerKeyType = X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, varName + ".pbes2.encryptScheme", true);
+					}
+				}
+			}
+			else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.5.12") && parameters.itemType == ASN1ItemType.SEQUENCE)
+			{
+				if ((itemPDU = ASN1Util.pduGetItem(reader, parameters.rawOfst + parameters.hdrLen, parameters.rawOfst + parameters.hdrLen + parameters.contLen, "1")) != null)
+				{
+					if (itemPDU.itemType == ASN1ItemType.OCTET_STRING)
+					{
+						sb.push(varName);
+						sb.push(".pbkdf2.salt = ");
+						sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen)), ' ', null));
+						sb.push("\r\n");
+					}
+				}
+				if ((itemPDU = ASN1Util.pduGetItem(reader, parameters.rawOfst + parameters.hdrLen, parameters.rawOfst + parameters.hdrLen + parameters.contLen, "2")) != null)
+				{
+					if (itemPDU.itemType == ASN1ItemType.INTEGER)
+					{
+						sb.push(varName);
+						sb.push(".pbkdf2.iterationCount = ");
+						sb.push(ASN1Util.integerToString(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
+						sb.push("\r\n");
+					}
+				}
+				if ((itemPDU = ASN1Util.pduGetItem(reader, parameters.rawOfst + parameters.hdrLen, parameters.rawOfst + parameters.hdrLen + parameters.contLen, "3")) != null)
+				{
+					if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+					{
+						innerKeyType = X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, varName + ".pbkdf2.prf", true);
+					}
+				}
+			}
+			else if (ASN1Util.oidEqualsText(oid, "2.16.840.1.101.3.4.1.42") && parameters.itemType == ASN1ItemType.OCTET_STRING)
+			{
+				sb.push(varName);
+				sb.push(".aes256-cbc.iv = ");
+				sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(parameters.rawOfst + parameters.hdrLen, parameters.contLen)), ' ', null));
+				sb.push("\r\n");
+			}
+			else if (ASN1Util.oidEqualsText(oid, "1.2.840.10045.2.1") && parameters.itemType == ASN1ItemType.OID)
+			{
+				sb.push(varName);
+				sb.push(".ecPublicKey.parameters = ");
+				sb.push(ASN1Util.oidToString(new Uint8Array(reader.getArrayBuffer(parameters.rawOfst + parameters.hdrLen, parameters.contLen))));
+				let oidInfo = null; //oiddb.oidGetEntry(new Uint8Array(reader.getArrayBuffer(parameters.rawOfst + parameters.hdrLen, parameters.contLen)));
+				if (oidInfo)
+				{
+					sb.push(" ("+oidInfo.name+")");
+				}
+				sb.push("\r\n");
+			}
+			else
+			{
+				sb.push(varName+".parameters = ");
+				if (parameters.itemType == ASN1ItemType.NULL)
+				{
+					sb.push("NULL");
+				}
+				sb.push("\r\n");
+			}
+		}
+		return keyType;
+	}
+
+	static appendValidity(reader, startOfst, endOfst, sb, varName)
+	{
+		let dt;
+		let itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null)
+		{
+			if ((itemPDU.itemType == ASN1ItemType.UTCTIME || itemPDU.itemType == ASN1ItemType.GENERALIZEDTIME) && (dt = ASN1Util.pduParseUTCTimeCont(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen)))
+			{
+				sb.push(varName+".notBefore = ");
+				sb.push(dt.toStringNoZone());
+				sb.push("\r\n");
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2")) != null)
+		{
+			if ((itemPDU.itemType == ASN1ItemType.UTCTIME || itemPDU.itemType == ASN1ItemType.GENERALIZEDTIME) && (dt = ASN1Util.pduParseUTCTimeCont(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen)))
+			{
+				sb.push(varName+".notAfter = ");
+				sb.push(dt.toStringNoZone());
+				sb.push("\r\n");
+			}
+		}
+	}
+
+	static appendSubjectPublicKeyInfo(reader, startOfst, endOfst, sb, varName)
+	{
+		let itemPDU;
+		let keyType = KeyType.Unknown;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				keyType = X509File.appendAlgorithmIdentifier(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, varName+".algorithm", true);
+			}
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2")) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.BIT_STRING)
+			{
+				sb.push(varName);
+				sb.push(".subjectPublicKey = ");
+				sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1)), ':', null));
+				sb.push("\r\n");
+				if (keyType != KeyType.Unknown)
+				{
+					sptr = Text.StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".subjectPublicKey"));
+					let pkey = new X509Key(varName+".subjectPublicKey", reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1), keyType);
+					sb.push(pkey.toString());
+					sb.push("\r\n");
+				}
+			}
+		}
+	}
+
+	static appendName(reader, startOfst, endOfst, sb, varName)
+	{
+		let itemPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, i.toString())) != null)
+			{
+				if (itemPDU.itemType == ASN1ItemType.SET)
+				{
+					X509File.appendRelativeDistinguishedName(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, varName);
+				}
+			}
+		}
+	}
+
+	static appendRelativeDistinguishedName(reader, startOfst, endOfst, sb, varName)
+	{
+		let itemPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+	
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, i.toString())) != null)
+			{
+				if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+				{
+					X509File.appendAttributeTypeAndDistinguishedValue(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, sb, varName);
+				}
+			}
+		}
+	}
+
+	static appendAttributeTypeAndDistinguishedValue(reader, startOfst, endOfst, sb, varName)
+	{
+		let typePDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
+		let valuePDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2");
+		if (typePDU && valuePDU && typePDU.itemType == ASN1ItemType.OID)
+		{
+			sb.push(varName+".");
+			let typeOID = reader.getArrayBuffer(typePDU.rawOfst + typePDU.hdrLen, typePDU.contLen);
+			if (ASN1Util.oidEqualsText(typeOID, "2.5.4.3"))
+			{
+				sb.push("commonName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.4"))
+			{
+				sb.push("surname");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.6"))
+			{
+				sb.push("countryName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.7"))
+			{
+				sb.push("localityName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.8"))
+			{
+				sb.push("stateOrProvinceName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.9"))
+			{
+				sb.push("streetAddress");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.10"))
+			{
+				sb.push("organizationName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.11"))
+			{
+				sb.push("organizationalUnitName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.12"))
+			{
+				sb.push("title");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.42"))
+			{
+				sb.push("givenName");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "2.5.4.43"))
+			{
+				sb.push("initials");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "0.9.2342.19200300.100.1.25"))
+			{
+				sb.push("domainComponent");
+			}
+			else if (ASN1Util.oidEqualsText(typeOID, "1.2.840.113549.1.9.1"))
+			{
+				sb.push("emailAddress");
+			}
+			else
+			{
+				sb.push(ASN1Util.oidToString(typeOID));
+			}
+			sb.push(" = ");
+			if (valuePDU.itemType == ASN1ItemType.BMPSTRING)
+			{
+				sb.push(reader.readUTF16(valuePDU.rawOfst + valuePDU.hdrLen, valuePDU.contLen >> 1, false));
+			}
+			else
+			{
+				sb.push(reader.readUTF8(valuePDU.rawOfst + valuePDU.hdrLen, valuePDU.contLen));
+			}
+			sb.push("\r\n");
+		}
+	}
+
+	static appendCRLExtensions(reader, startOfst, endOfst, sb, varName)
+	{
+		let itemPDU;
+		let subItemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null)
+		{
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE || itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				let i = 1;
+				while ((subItemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, i.toString())) != null)
+				{
+					X509File.appendCRLExtension(reader, subItemPDU.rawOfst + subItemPDU.hdrLen, subItemPDU.rawOfst + subItemPDU.hdrLen + subItemPDU.contLen, sb, varName);
+					i++;
+				}
+			}
+		}
+	}
+
+/*	static appendCRLExtension(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		const UInt8 *extension = 0;
+		UOSInt extensionLen = 0;
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		const UInt8 *subItemPDU;
+		UOSInt subItemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((extension = ASN1Util.pduGetItem(pdu, pduEnd, "1", extensionLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.OID)
+			{
+				sb.push(varName);
+				sb->AppendUTF8Char('.');
+				sb.push("extensionType = "));
+				Net.ASN1Util.OIDToString(extension, extensionLen, sb);
+				const Net.ASN1OIDDB.OIDInfo *oid = Net.ASN1OIDDB.OIDGetEntry(extension, extensionLen);
+				if (oid)
+				{
+					sb.push(" ("));
+					sb->AppendSlow((const UTF8Char*)oid->name);
+					sb->AppendUTF8Char(')');
+				}
+				sb.push("\r\n"));
+			}
+		}
+		else
+		{
+			return;
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "2", itemLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.BOOLEAN)
+			{
+				sb.push(varName);
+				sb->AppendUTF8Char('.');
+				sb.push("critical = "));
+				Net.ASN1Util.BooleanToString(itemPDU, itemLen, sb);
+				sb.push("\r\n"));
+				if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "3", itemLen, itemType)) == 0)
+				{
+					return;
+				}
+			}
+			if (itemType == ASN1ItemType.OCTET_STRING)
+			{
+				if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("1.3.6.1.5.5.7.1.1"))) //id-pe-authorityInfoAccess
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+					{
+						UOSInt i = 1;
+						Text.StrUOSInt(sbuff, i);
+						while ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subItemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+						{
+							const UInt8 *descPDU;
+							UOSInt descLen;
+							if ((descPDU = ASN1Util.pduGetItem(subItemPDU, subItemPDU + subItemLen, "1", descLen, itemType)) != 0 && itemType == ASN1ItemType.OID)
+							{
+								sb.push(varName);
+								sb.push(".authorityInfoAccess["));
+								sb->AppendUOSInt(i);
+								sb.push("].accessMethod = "));
+								Net.ASN1Util.OIDToString(descPDU, descLen, sb);
+								sb.push(" ("));
+								Net.ASN1OIDDB.OIDToNameString(descPDU, descLen, sb);
+								sb.push(")\r\n"));
+							}
+							sptr = varName.ConcatTo(sbuff);
+							sptr = Text.StrConcatC(sptr, UTF8STRC(".authorityInfoAccess["));
+							sptr = Text.StrUOSInt(sptr, i);
+							sptr = Text.StrConcatC(sptr, UTF8STRC("].accessLocation"));
+							AppendGeneralName(subItemPDU, subItemPDU + subItemLen, "2", sb, CSTRP(sbuff, sptr));
+							
+							Text.StrUOSInt(sbuff, ++i);
+						}
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.14"))) //id-ce-subjectKeyIdentifier
+				{
+					sb.push(varName);
+					sb->AppendUTF8Char('.');
+					sb.push("subjectKeyId = "));
+					if (itemLen == 22 && itemPDU[1] == 20)
+					{
+						sb->AppendHexBuff(itemPDU + 2, itemLen - 2, ':', Text.LineBreakType.None);
+					}
+					else
+					{
+						sb->AppendHexBuff(itemPDU, itemLen, ':', Text.LineBreakType.None);
+					}
+					sb.push("\r\n"));
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.15"))) //id-ce-keyUsage
+				{
+					if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.BIT_STRING)
+					{
+						sb.push(varName);
+						sb->AppendUTF8Char('.');
+						sb.push("keyUsage ="));
+						if (subItemLen >= 2)
+						{
+							if (subItemPDU[1] & 0x80) sb.push(" digitalSignature"));
+							if (subItemPDU[1] & 0x40) sb.push(" nonRepudiation"));
+							if (subItemPDU[1] & 0x20) sb.push(" keyEncipherment"));
+							if (subItemPDU[1] & 0x10) sb.push(" dataEncipherment"));
+							if (subItemPDU[1] & 0x8) sb.push(" keyAgreement"));
+							if (subItemPDU[1] & 0x4) sb.push(" keyCertSign"));
+							if (subItemPDU[1] & 0x2) sb.push(" cRLSign"));
+							if (subItemPDU[1] & 0x1) sb.push(" encipherOnly"));
+						}
+						if (subItemLen >= 3)
+						{
+							if (subItemPDU[2] & 0x80) sb.push(" decipherOnly"));
+						}
+						sb.push("\r\n"));
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.17"))) //id-ce-subjectAltName
+				{
+					sptr = varName.ConcatTo(sbuff);
+					sptr = Text.StrConcatC(sptr, UTF8STRC(".subjectAltName"));
+					AppendGeneralNames(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.19"))) //id-ce-basicConstraints
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+					{
+						if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.BOOLEAN)
+						{
+							sb.push(varName);
+							sb->AppendUTF8Char('.');
+							sb.push("basicConstraints.cA = "));
+							Net.ASN1Util.BooleanToString(subItemPDU, subItemLen, sb);
+							sb.push("\r\n"));
+						}
+						if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.INTEGER)
+						{
+							sb.push(varName);
+							sb->AppendUTF8Char('.');
+							sb.push("basicConstraints.pathLenConstraint = "));
+							Net.ASN1Util.IntegerToString(subItemPDU, subItemLen, sb);
+							sb.push("\r\n"));
+						}
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.20"))) //id-ce-cRLNumber
+				{
+					if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.INTEGER)
+					{
+						sb.push(varName);
+						sb->AppendUTF8Char('.');
+						sb.push("cRLNumber = "));
+						Net.ASN1Util.IntegerToString(subItemPDU, subItemLen, sb);
+						sb.push("\r\n"));
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.21"))) //id-ce-cRLReasons
+				{
+					if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.ENUMERATED && subItemLen == 1)
+					{
+						sb.push(varName);
+						sb->AppendUTF8Char('.');
+						sb.push("cRLReasons = "));
+						switch (subItemPDU[0])
+						{
+						case 0:
+							sb.push("unspecified"));
+							break;
+						case 1:
+							sb.push("keyCompromise"));
+							break;
+						case 2:
+							sb.push("cACompromise"));
+							break;
+						case 3:
+							sb.push("affiliationChanged"));
+							break;
+						case 4:
+							sb.push("superseded"));
+							break;
+						case 5:
+							sb.push("cessationOfOperation"));
+							break;
+						case 6:
+							sb.push("certificateHold"));
+							break;
+						case 8:
+							sb.push("removeFromCRL"));
+							break;
+						case 9:
+							sb.push("privilegeWithdrawn"));
+							break;
+						case 10:
+							sb.push("aACompromise"));
+							break;
+						default:
+							sb.push("unknown"));
+							break;
+						}
+						sb.push("\r\n"));
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.31"))) //id-ce-cRLDistributionPoints
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+					{
+						UOSInt i = 1;
+						Text.StrUOSInt(sbuff, i);
+						while (AppendDistributionPoint(itemPDU, itemPDU + itemLen, (const Char*)sbuff, sb, varName))
+						{
+							Text.StrUOSInt(sbuff, ++i);
+						}
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.32"))) //id-ce-certificatePolicies
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+					{
+						UOSInt i = 1;
+						Text.StrUOSInt(sbuff, i);
+						while (AppendPolicyInformation(itemPDU, itemPDU + itemLen, (const Char*)sbuff, sb, varName))
+						{
+							Text.StrUOSInt(sbuff, ++i);
+						}
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.35"))) //id-ce-authorityKeyIdentifier
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+					{
+						UOSInt i = 1;
+						Text.StrUOSInt(sbuff, i);
+						while ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subItemLen, itemType)) != 0)
+						{
+							if (itemType == 0x80)
+							{
+								sb.push(varName);
+								sb->AppendUTF8Char('.');
+								sb.push("authorityKey.keyId = "));
+								sb->AppendHexBuff(subItemPDU, subItemLen, ':', Text.LineBreakType.None);
+								sb.push("\r\n"));
+							}
+							else if (itemType == 0x81 || itemType == 0xa1)
+							{
+								sptr = varName.ConcatTo(sbuff);
+								sptr = Text.StrConcatC(sptr, UTF8STRC(".authorityKey.authorityCertIssuer"));
+								AppendGeneralName(subItemPDU, subItemPDU + subItemLen, "1", sb, CSTRP(sbuff, sptr));
+							}
+							else if (itemType == 0x82)
+							{
+								sb.push(varName);
+								sb->AppendUTF8Char('.');
+								sb.push("authorityKey.authorityCertSerialNumber = "));
+								sb->AppendHexBuff(subItemPDU, subItemLen, ':', Text.LineBreakType.None);
+								sb.push("\r\n"));
+							}
+							Text.StrUOSInt(sbuff, ++i);
+						}
+					}
+				}
+				else if (Net.ASN1Util.OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.37"))) //id-ce-extKeyUsage
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+					{
+						UOSInt i = 1;
+						const UInt8 *subItemPDU;
+						UOSInt subItemLen;
+						Text.StrUOSInt(sbuff, i);
+	
+						sb.push(varName);
+						sb->AppendUTF8Char('.');
+						sb.push("extKeyUsage ="));
+	
+						while ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subItemLen, itemType)) != 0)
+						{
+							if (itemType == ASN1ItemType.OID)
+							{
+								if (Net.ASN1Util.OIDEqualsText(subItemPDU, subItemLen, UTF8STRC("1.3.6.1.5.5.7.3.1")))
+								{
+									sb.push(" serverAuth"));
+								}
+								else if (Net.ASN1Util.OIDEqualsText(subItemPDU, subItemLen, UTF8STRC("1.3.6.1.5.5.7.3.2")))
+								{
+									sb.push(" clientAuth"));
+								}
+								else if (Net.ASN1Util.OIDEqualsText(subItemPDU, subItemLen, UTF8STRC("1.3.6.1.5.5.7.3.3")))
+								{
+									sb.push(" codeSigning"));
+								}
+								else if (Net.ASN1Util.OIDEqualsText(subItemPDU, subItemLen, UTF8STRC("1.3.6.1.5.5.7.3.4")))
+								{
+									sb.push(" emailProtection"));
+								}
+								else if (Net.ASN1Util.OIDEqualsText(subItemPDU, subItemLen, UTF8STRC("1.3.6.1.5.5.7.3.8")))
+								{
+									sb.push(" timeStamping"));
+								}
+								else if (Net.ASN1Util.OIDEqualsText(subItemPDU, subItemLen, UTF8STRC("1.3.6.1.5.5.7.3.9")))
+								{
+									sb.push(" OCSPSigning"));
+								}
+							}
+							Text.StrUOSInt(sbuff, ++i);
+						}
+						sb.push("\r\n"));
+					}
+				}
+			}
+		}
+	}
+
+	static appendMSOSVersion(reader, startOfst, endOfst, sb, varName)
+	{
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType);
+		if (itemType == Net.ASN1Util.ItemType.IT_IA5STRING)
+		{
+			sb.push(varName);
+			sb.push(".version = "));
+			sb->AppendC(itemPDU, itemLen);
+			sb.push("\r\n"));
+		}
+	}
+
+	static appendMSRequestClientInfo(reader, startOfst, endOfst, sb, varName)
+	{
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_SEQUENCE)
+		{
+			UOSInt subitemLen;
+			const UInt8 *subitemPDU;
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_INTEGER)
+			{
+				sb.push(varName);
+				sb.push(".unknown = "));
+				Net.ASN1Util.IntegerToString(subitemPDU, subitemLen, sb);
+				sb.push("\r\n"));
+			}
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_UTF8STRING)
+			{
+				sb.push(varName);
+				sb.push(".machine = "));
+				sb->AppendC(subitemPDU, subitemLen);
+				sb.push("\r\n"));
+			}
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "3", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_UTF8STRING)
+			{
+				sb.push(varName);
+				sb.push(".user = "));
+				sb->AppendC(subitemPDU, subitemLen);
+				sb.push("\r\n"));
+			}
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "4", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_UTF8STRING)
+			{
+				sb.push(varName);
+				sb.push(".software = "));
+				sb->AppendC(subitemPDU, subitemLen);
+				sb.push("\r\n"));
+			}
+		}
+	}
+
+	static appendMSEnrollmentCSPProvider(reader, startOfst, endOfst, sb, varName)
+	{
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_SEQUENCE)
+		{
+			UOSInt subitemLen;
+			const UInt8 *subitemPDU;
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_INTEGER)
+			{
+				sb.push(varName);
+				sb.push(".unknown = "));
+				Net.ASN1Util.IntegerToString(subitemPDU, subitemLen, sb);
+				sb.push("\r\n"));
+			}
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_BMPSTRING)
+			{
+				sb.push(varName);
+				sb.push(".provider = "));
+				sb->AppendUTF16BE(subitemPDU, subitemLen >> 1);
+				sb.push("\r\n"));
+			}
+		}
+	}
+
+	static appendGeneralNames(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[11];
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.SEQUENCE)
+			{
+				UOSInt i = 1;
+				Text.StrUOSInt(sbuff, i);
+				while (AppendGeneralName(itemPDU, itemPDU + itemLen, (const Char*)sbuff, sb, varName))
+				{
+					Text.StrUOSInt(sbuff, ++i);
+				}
+			}
+		}
+	}
+
+	static appendGeneralName(reader, startOfst, endOfst, path, sb, varName)
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		Net.ASN1Util.ItemType itemType;
+		const UInt8 *subItemPDU;
+		UOSInt subItemLen;
+		if ((subItemPDU = ASN1Util.pduGetItem(pdu, pduEnd, path, subItemLen, itemType)) != 0)
+		{
+			switch (0x8F & (UOSInt)itemType)
+			{
+			case 0x80:
+				sb.push(varName);
+				sb.push(".otherName = "));
+				sb->AppendC(subItemPDU, subItemLen);
+				sb.push("\r\n"));
+				return true;
+			case 0x81:
+				sb.push(varName);
+				sb.push(".rfc822Name = "));
+				sb->AppendC(subItemPDU, subItemLen);
+				sb.push("\r\n"));
+				return true;
+			case 0x82:
+				sb.push(varName);
+				sb.push(".dNSName = "));
+				sb->AppendC(subItemPDU, subItemLen);
+				sb.push("\r\n"));
+				return true;
+			case 0x83:
+				sb.push(varName);
+				sb.push(".x400Address = "));
+				sb->AppendC(subItemPDU, subItemLen);
+				sb.push("\r\n"));
+				return true;
+			case 0x84:
+				if ((subItemPDU = ASN1Util.pduGetItem(subItemPDU, subItemPDU + subItemLen, path, subItemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+				{
+					sptr = varName.ConcatTo(sbuff);
+					sptr = Text.StrConcatC(sptr, UTF8STRC(".directoryName"));
+					AppendName(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+				}
+				return true;
+			case 0x85:
+				sb.push(varName);
+				sb.push(".ediPartyName = "));
+				sb->AppendC(subItemPDU, subItemLen);
+				sb.push("\r\n"));
+				return true;
+			case 0x86:
+				sb.push(varName);
+				sb.push(".uniformResourceIdentifier = "));
+				sb->AppendC(subItemPDU, subItemLen);
+				sb.push("\r\n"));
+				return true;
+			case 0x87:
+				sb.push(varName);
+				sb.push(".iPAddress = "));
+				if (subItemLen == 4)
+				{
+					sptr = Net.SocketUtil.GetIPv4Name(sbuff, ReadNUInt32(subItemPDU));
+					sb->AppendP(sbuff, sptr);
+				}
+				else if (subItemLen == 16)
+				{
+					Net.SocketUtil.AddressInfo addr;
+					Net.SocketUtil.SetAddrInfoV6(addr, subItemPDU, 0);
+					sptr = Net.SocketUtil.GetAddrName(sbuff, addr);
+					sb->AppendP(sbuff, sptr);
+				}
+				sb.push("\r\n"));
+				return true;
+			case 0x88:
+				sb.push(varName);
+				sb.push(".registeredID = "));
+				Net.ASN1Util.OIDToString(subItemPDU, subItemLen, sb);
+				{
+					const Net.ASN1OIDDB.OIDInfo *ent = Net.ASN1OIDDB.OIDGetEntry(subItemPDU, subItemLen);
+					if (ent)
+					{
+						sb.push(" ("));
+						sb->AppendSlow((const UTF8Char*)ent->name);
+						sb->AppendUTF8Char(')');
+					}
+				}
+				sb.push("\r\n"));
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static appendDistributionPoint(reader, startOfst, endOfst, path, sb, varName)
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		const UInt8 *subItemPDU;
+		UOSInt subItemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, path, itemLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.SEQUENCE)
+			{
+				UOSInt i = 1;
+				Text.StrUOSInt(sbuff, i);
+				while ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subItemLen, itemType)) != 0)
+				{
+					switch ((UOSInt)itemType)
+					{
+					case ASN1ItemType.CONTEXT_SPECIFIC_0:
+						sptr = varName.ConcatTo(sbuff);
+						*sptr++ = '.';
+						sptr = Text.StrConcatC(sptr, UTF8STRC("distributionPoint"));
+						AppendDistributionPointName(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+						break;
+					case ASN1ItemType.CONTEXT_SPECIFIC_1:
+						if ((subItemPDU = ASN1Util.pduGetItem(subItemPDU, subItemPDU + subItemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.BIT_STRING)
+						{
+							sb.push(varName);
+							sb.push(".reasons ="));
+							if (subItemLen >= 2)
+							{
+								if (subItemPDU[1] & 0x80) sb.push("unused"));
+								if (subItemPDU[1] & 0x40) sb.push("keyCompromise"));
+								if (subItemPDU[1] & 0x20) sb.push("cACompromise"));
+								if (subItemPDU[1] & 0x10) sb.push("affiliationChanged"));
+								if (subItemPDU[1] & 0x8) sb.push("superseded"));
+								if (subItemPDU[1] & 0x4) sb.push("cessationOfOperation"));
+								if (subItemPDU[1] & 0x2) sb.push("certificateHold"));
+								if (subItemPDU[1] & 0x1) sb.push("privilegeWithdrawn"));
+							}
+							if (subItemLen >= 3)
+							{
+								if (subItemPDU[2] & 0x80) sb.push("aACompromise"));
+							}
+							sb.push("\r\n"));
+						}
+						break;
+					case ASN1ItemType.CONTEXT_SPECIFIC_2:
+						sptr = varName.ConcatTo(sbuff);
+						*sptr++ = '.';
+						sptr = Text.StrConcatC(sptr, UTF8STRC("cRLIssuer"));
+						AppendGeneralNames(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+						break;
+					}
+					Text.StrUOSInt(sbuff, ++i);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static appendIntegerppendDistributionPointName(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		UOSInt i;
+		Char pathBuff[16];
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0)
+		{
+			if (itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				sptr = varName.ConcatTo(sbuff);
+				*sptr++ = '.';
+				sptr = Text.StrConcatC(sptr, UTF8STRC("fullName"));
+				i = 0;
+				Text.StrUOSInt(pathBuff, ++i);
+				while (AppendGeneralName(itemPDU, itemPDU + itemLen, pathBuff, sb, CSTRP(sbuff, sptr)))
+				{
+					Text.StrUOSInt(pathBuff, ++i);
+				}
+			}
+			else if (itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
+			{
+				sptr = varName.ConcatTo(sbuff);
+				*sptr++ = '.';
+				sptr = Text.StrConcatC(sptr, UTF8STRC("nameRelativeToCRLIssuer"));
+				AppendRelativeDistinguishedName(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+			}
+		}
+	}
+
+	static appendPolicyInformation(reader, startOfst, endOfst, path, sb, varName)
+	{
+		UTF8Char sbuff[64];
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		const UInt8 *subItemPDU;
+		UOSInt subItemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, path, itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType);
+			if (subItemPDU != 0 && itemType == ASN1ItemType.OID)
+			{
+				sb.push(varName);
+				sb->AppendUTF8Char('.');
+				sb.push("policyIdentifier = "));
+				Net.ASN1Util.OIDToString(subItemPDU, subItemLen, sb);
+				sb.push(" ("));
+				Net.ASN1OIDDB.OIDToNameString(subItemPDU, subItemLen, sb);
+				sb->AppendUTF8Char(')');
+				sb.push("\r\n"));
+			}
+			subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subItemLen, itemType);
+			if (subItemPDU != 0 && itemType == ASN1ItemType.SEQUENCE)
+			{
+				const UInt8 *policyQualifierInfoPDU;
+				UOSInt policyQualifierInfoLen;
+				UOSInt i = 0;
+				Text.StrUOSInt(sbuff, ++i);
+				while ((policyQualifierInfoPDU = ASN1Util.pduGetItem(subItemPDU, subItemPDU + subItemLen, (const Char*)sbuff, policyQualifierInfoLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+				{
+					if ((itemPDU = ASN1Util.pduGetItem(policyQualifierInfoPDU, policyQualifierInfoPDU + policyQualifierInfoLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.OID)
+					{
+						sb.push(varName);
+						sb->AppendUTF8Char('.');
+						sb.push("policyQualifiers["));
+						sb->AppendUOSInt(i);
+						sb.push("].policyQualifierId = "));
+						Net.ASN1Util.OIDToString(itemPDU, itemLen, sb);
+						sb.push(" ("));
+						Net.ASN1OIDDB.OIDToNameString(itemPDU, itemLen, sb);
+						sb->AppendUTF8Char(')');
+						sb.push("\r\n"));
+					}
+					if ((itemPDU = ASN1Util.pduGetItem(policyQualifierInfoPDU, policyQualifierInfoPDU + policyQualifierInfoLen, "2", itemLen, itemType)) != 0)
+					{
+						if (itemType == ASN1ItemType.IA5STRING)
+						{
+							sb.push(varName);
+							sb->AppendUTF8Char('.');
+							sb.push("policyQualifiers["));
+							sb->AppendUOSInt(i);
+							sb.push("].qualifier = "));
+							sb->AppendC(itemPDU, itemLen);
+							sb.push("\r\n"));
+						}
+						else if (itemType == ASN1ItemType.SEQUENCE)
+						{
+							/////////////////////////////////// UserNotice
+						}
+					}
+					Text.StrUOSInt(sbuff, ++i);
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	static appendPKCS7SignedData(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[16];
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemOfst;
+		UOSInt itemLen;
+		const UInt8 *itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType);
+		if (itemPDU != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			UOSInt i;
+			UOSInt subItemLen;
+			const UInt8 *subItemPDU;
+			if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.INTEGER)
+			{
+				sb.push("signedData.version = "));
+				Net.ASN1Util.IntegerToString(subItemPDU, subItemLen, sb);
+				sb.push("\r\n"));
+			}
+			if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.SET)
+			{
+				AppendPKCS7DigestAlgorithmIdentifiers(subItemPDU, subItemPDU + subItemLen, sb, CSTR("signedData.digestAlgorithms"));
+			}
+			if ((subItemPDU = Net.ASN1Util.PDUGetItemRAW(itemPDU, itemPDU + itemLen, "3", subItemLen, itemOfst)) != 0 && subItemPDU[0] == ASN1ItemType.SEQUENCE)
+			{
+				AppendContentInfo(subItemPDU, subItemPDU + itemOfst + subItemLen, "1", sb, CSTR("signedData.contentInfo"), ContentDataType.Unknown);
+			}
+			i = 4;
+			subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "4", subItemLen, itemType);
+			if (subItemPDU != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				AppendCertificate(subItemPDU, subItemPDU + subItemLen, "1", sb, CSTR("signedData.certificates"));
+				Text.StrUOSInt(sbuff, ++i);
+				subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subItemLen, itemType);
+			}
+			if (subItemPDU != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
+			{
+				//AppendCertificate(subItemPDU, subItemPDU + subItemLen, "1", sb, CSTR("signedData.crls"));
+				Text.StrUOSInt(sbuff, ++i);
+				subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subItemLen, itemType);
+			}
+			if (subItemPDU != 0 && itemType == ASN1ItemType.SET)
+			{
+				AppendPKCS7SignerInfos(subItemPDU, subItemPDU + subItemLen, sb, CSTR("signedData.signerInfos"));
+			}
+		}
+	}
+
+	static appendPKCS7DigestAlgorithmIdentifiers(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[16];
+		UOSInt i;
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		i = 0;
+		while (true)
+		{
+			Text.StrUOSInt(sbuff, ++i);
+			if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, (const Char*)sbuff, itemLen, itemType)) == 0)
+			{
+				return;
+			}
+			if (itemType == ASN1ItemType.SEQUENCE)
+			{
+				AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, varName, false, 0);
+			}
+		}
+	}
+
+	static appendPKCS7SignerInfos(reader, startOfst, endOfst, sb, varName)
+	{
+		Char cbuff[32];
+		UOSInt i;
+		UOSInt itemOfst;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		i = 0;
+		while (true)
+		{
+			Text.StrUOSInt(cbuff, ++i);
+			itemPDU = Net.ASN1Util.PDUGetItemRAW(pdu, pduEnd, cbuff, itemLen, itemOfst);
+			if (itemPDU == 0)
+			{
+				break;
+			}
+			if (itemPDU[0] == ASN1ItemType.SEQUENCE)
+			{
+				AppendPKCS7SignerInfo(itemPDU, itemPDU + itemOfst + itemLen, sb, varName);
+			}
+		}
+	}
+
+	static appendPKCS7SignerInfo(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		Char cbuff[32];
+		UOSInt i;
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType);
+		if (itemPDU == 0 || itemType != ASN1ItemType.SEQUENCE)
+		{
+			return;
+		}
+		UOSInt subItemLen;
+		const UInt8 *subItemPDU;
+		if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.INTEGER)
+		{
+			sb.push(varName);
+			sb->AppendUTF8Char('.');
+			sb.push("version = "));
+			Net.ASN1Util.IntegerToString(subItemPDU, subItemLen, sb);
+			sb.push("\r\n"));
+		}
+		if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			*sptr++ = '.';
+			sptr = Text.StrConcatC(sptr, UTF8STRC("issuerAndSerialNumber"));
+			AppendIssuerAndSerialNumber(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+		}
+		if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "3", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			*sptr++ = '.';
+			sptr = Text.StrConcatC(sptr, UTF8STRC("digestAlgorithm"));
+			AppendAlgorithmIdentifier(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr), false, 0);
+		}
+		i = 4;
+		if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "4", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			*sptr++ = '.';
+			sptr = Text.StrConcatC(sptr, UTF8STRC("authenticatedAttributes"));
+			AppendPKCS7Attributes(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+			Text.StrUOSInt(cbuff, ++i);
+			subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, cbuff, subItemLen, itemType);
+		}
+		if (subItemPDU != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			*sptr++ = '.';
+			sptr = Text.StrConcatC(sptr, UTF8STRC("digestEncryptionAlgorithm"));
+			AppendAlgorithmIdentifier(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr), false, 0);
+		}
+		Text.StrUOSInt(cbuff, ++i);
+		if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, cbuff, subItemLen, itemType)) != 0 && itemType == ASN1ItemType.OCTET_STRING)
+		{
+			sb.push(varName);
+			sb->AppendUTF8Char('.');
+			sb.push("encryptedDigest = "));
+			sb->AppendHexBuff(subItemPDU, subItemLen, ':', Text.LineBreakType.None);
+			sb.push("\r\n"));
+		}
+		Text.StrUOSInt(cbuff, ++i);
+		if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, cbuff, subItemLen, itemType)) != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			*sptr++ = '.';
+			sptr = Text.StrConcatC(sptr, UTF8STRC("unauthenticatedAttributes"));
+			AppendPKCS7Attributes(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+		}
+	}
+
+	static appendIssuerAndSerialNumber(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			*sptr++ = '.';
+			sptr = Text.StrConcatC(sptr, UTF8STRC("issuer"));
+			AppendName(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "2", itemLen, itemType)) != 0 && itemType == ASN1ItemType.INTEGER)
+		{
+			sb.push(varName);
+			sb->AppendUTF8Char('.');
+			sb.push("serialNumber = "));
+			sb->AppendHexBuff(itemPDU, itemLen, ':', Text.LineBreakType.None);
+			sb.push("\r\n"));
+		}
+	}
+
+	static appendPKCS7Attributes(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		Char cbuff[16];
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		UOSInt oidLen;
+		const UInt8 *oidPDU;
+		Net.ASN1Util.ItemType oidType;
+		UOSInt valueLen;
+		const UInt8 *valuePDU;
+		UOSInt i = 0;
+		while (true)
+		{
+			Text.StrUOSInt(cbuff, ++i);
+			if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, cbuff, itemLen, itemType)) == 0)
+			{
+				return;
+			}
+			if (itemType == ASN1ItemType.SEQUENCE)
+			{
+				oidPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", oidLen, oidType);
+				valuePDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", valueLen, itemType);
+				if (oidPDU != 0 && oidType == ASN1ItemType.OID)
+				{
+					sb.push(varName);
+					sb->AppendUTF8Char('.');
+					sb.push("attributeType = "));
+					Net.ASN1Util.OIDToString(oidPDU, oidLen, sb);
+					const Net.ASN1OIDDB.OIDInfo *oid = Net.ASN1OIDDB.OIDGetEntry(oidPDU, oidLen);
+					if (oid)
+					{
+						sb.push(" ("));
+						sb->AppendSlow((const UTF8Char*)oid->name);
+						sb->AppendUTF8Char(')');
+					}
+					sb.push("\r\n"));
+				}
+				if (valuePDU && itemType == ASN1ItemType.SET)
+				{
+					if (Net.ASN1Util.OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.3"))) //contentType
+					{
+						if ((itemPDU = ASN1Util.pduGetItem(valuePDU, valuePDU + valueLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.OID)
+						{
+							sb.push(varName);
+							sb->AppendUTF8Char('.');
+							sb.push("contentType = "));
+							Net.ASN1Util.OIDToString(itemPDU, itemLen, sb);
+							const Net.ASN1OIDDB.OIDInfo *oid = Net.ASN1OIDDB.OIDGetEntry(itemPDU, itemLen);
+							if (oid)
+							{
+								sb.push(" ("));
+								sb->AppendSlow((const UTF8Char*)oid->name);
+								sb->AppendUTF8Char(')');
+							}
+							sb.push("\r\n"));
+						}
+					}
+					else if (Net.ASN1Util.OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.4"))) //messageDigest
+					{
+						if ((itemPDU = ASN1Util.pduGetItem(valuePDU, valuePDU + valueLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.OCTET_STRING)
+						{
+							sb.push(varName);
+							sb->AppendUTF8Char('.');
+							sb.push("messageDigest = "));
+							sb->AppendHexBuff(itemPDU, itemLen, ':', Text.LineBreakType.None);
+							sb.push("\r\n"));
+						}
+					}
+					else if (Net.ASN1Util.OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.5"))) //signing-time
+					{
+						if ((itemPDU = ASN1Util.pduGetItem(valuePDU, valuePDU + valueLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.UTCTIME)
+						{
+							sb.push(varName);
+							sb->AppendUTF8Char('.');
+							sb.push("signing-time = "));
+							Net.ASN1Util.UTCTimeToString(itemPDU, itemLen, sb);
+							sb.push("\r\n"));
+						}
+					}
+					else if (Net.ASN1Util.OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.15"))) //smimeCapabilities
+					{
+						/////////////////////////////////////
+					}
+					else if (Net.ASN1Util.OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.16.2.11"))) //id-aa-encrypKeyPref
+					{
+						if ((itemPDU = ASN1Util.pduGetItem(valuePDU, valuePDU + valueLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+						{
+							sptr = varName.ConcatTo(sbuff);
+							*sptr++ = '.';
+							sptr = Text.StrConcatC(sptr, UTF8STRC("encrypKeyPref"));
+							AppendIssuerAndSerialNumber(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+						}
+					}
+					else if (Net.ASN1Util.OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.3.6.1.4.1.311.16.4"))) //outlookExpress
+					{
+						if ((itemPDU = ASN1Util.pduGetItem(valuePDU, valuePDU + valueLen, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+						{
+							sptr = varName.ConcatTo(sbuff);
+							*sptr++ = '.';
+							sptr = Text.StrConcatC(sptr, UTF8STRC("outlookExpress"));
+							AppendIssuerAndSerialNumber(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+						}
+					}
+					
+				}
+			}
+		}
+	}
+
+	static appendMacData(reader, startOfst, endOfst, path, sb, varName)
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		const UInt8 *subItemPDU;
+		UOSInt subItemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, path, itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+			{
+				sptr = varName.ConcatTo(sbuff);
+				sptr = Text.StrConcatC(sptr, UTF8STRC(".mac"));
+				AppendDigestInfo(subItemPDU, subItemPDU + subItemLen, sb, CSTRP(sbuff, sptr));
+			}
+			if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.OCTET_STRING)
+			{
+				sb.push(varName);
+				sb->AppendUTF8Char('.');
+				sb.push("macSalt = "));
+				sb->AppendHexBuff(subItemPDU, subItemLen, ' ', Text.LineBreakType.None);
+				sb.push("\r\n"));
+			}
+			if ((subItemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "3", subItemLen, itemType)) != 0 && itemType == ASN1ItemType.INTEGER)
+			{
+				sb.push(varName);
+				sb->AppendUTF8Char('.');
+				sb.push("iterations = "));
+				Net.ASN1Util.IntegerToString(subItemPDU, subItemLen, sb);
+				sb.push("\r\n"));
+			}
+			return true;
+		}
+		return false;
+	}
+
+	static appendDigestInfo(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			sptr = varName.ConcatTo(sbuff);
+			sptr = Text.StrConcatC(sptr, UTF8STRC(".digestAlgorithm"));
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), false, 0);
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "2", itemLen, itemType)) != 0 && itemType == ASN1ItemType.OCTET_STRING)
+		{
+			sb.push(varName);
+			sb.push(".digest = "));
+			sb->AppendHexBuff(itemPDU, itemLen, ' ', Text.LineBreakType.None);
+			sb.push("\r\n"));
+		}
+	}
+
+	static appendData(reader, startOfst, endOfst, sb, varName, dataType)
+	{
+		switch (dataType)
+		{
+		case ContentDataType.AuthenticatedSafe:
+			AppendAuthenticatedSafe(pdu, pduEnd, sb, varName);
+			break;
+		case ContentDataType.Unknown:
+		default:
+			break;
+		}
+	}
+
+	static appendEncryptedData(reader, startOfst, endOfst, sb, varName, dataType)
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		const UInt8 *subitemPDU;
+		UOSInt subitemLen;
+		Net.ASN1Util.ItemType itemType;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			if (varName.v)
+			{
+				sb.push(varName);
+				sb->AppendUTF8Char('.');
+			}
+			sb.push("version = "));
+			AppendVersion(itemPDU, itemPDU + itemLen, "1", sb);
+			sb.push("\r\n"));
+	
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subitemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+			{
+				sptr = sbuff;
+				if (varName.v)
+				{
+					sptr = varName.ConcatTo(sptr);
+					*sptr++ = '.';
+				}
+				sptr = Text.StrConcatC(sptr, UTF8STRC("encryptedContentInfo"));
+				AppendEncryptedContentInfo(subitemPDU, subitemPDU + subitemLen, sb, CSTRP(sbuff, sptr), dataType);
+			}
+			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "3", subitemLen, itemType)) != 0 && itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				sptr = sbuff;
+				if (varName.v)
+				{
+					sptr = varName.ConcatTo(sptr);
+					*sptr++ = '.';
+				}
+				sptr = Text.StrConcatC(sptr, UTF8STRC("unprotectedAttributes"));
+				AppendPKCS7Attributes(subitemPDU, subitemPDU + subitemLen, sb, CSTRP(sbuff, sptr));
+			}
+		}
+	}
+
+	static appendAuthenticatedSafe(reader, startOfst, endOfst, sb, varName)
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		Char cbuff[16];
+		const UInt8 *itemPDU;
+		UOSInt itemLen;
+		Net.ASN1Util.ItemType itemType;
+		UOSInt i;
+		UOSInt j;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			i = 0;
+			j = ASN1Util.pduCountItem(itemPDU, itemPDU + itemLen, 0);
+			while (i < j)
+			{
+				sptr = varName.ConcatTo(sbuff);
+				*sptr++ = '[';
+				sptr = Text.StrUOSInt(sptr, i);
+				*sptr++ = ']';
+				*sptr = 0;
+				Text.StrUOSInt(cbuff, ++i);
+				AppendContentInfo(itemPDU, itemPDU + itemLen, cbuff, sb, CSTRP(sbuff, sptr), ContentDataType.Unknown);
+			}
+		}
+	}
+
+	static appendEncryptedContentInfo(reader, startOfst, endOfst, sb, varName, dataType)
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		Net.ASN1Util.ItemType itemType;
+		UOSInt itemLen;
+		const UInt8 *itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == ASN1ItemType.OID)
+		{
+			sb.push(varName);
+			sb.push(".contentType = "));
+			Net.ASN1Util.OIDToString(itemPDU, itemLen, sb);
+			const Net.ASN1OIDDB.OIDInfo *oid = Net.ASN1OIDDB.OIDGetEntry(itemPDU, itemLen);
+			if (oid)
+			{
+				sb.push(" ("));
+				sb->AppendSlow((const UTF8Char*)oid->name);
+				sb->AppendUTF8Char(')');
+			}
+			sb.push("\r\n"));
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "2", itemLen, itemType)) != 0 && itemType == ASN1ItemType.SEQUENCE)
+		{
+			sptr = sbuff;
+			if (varName.v)
+			{
+				sptr = varName.ConcatTo(sptr);
+				*sptr++ = '.';
+			}
+			sptr = Text.StrConcatC(sptr, UTF8STRC("contentEncryptionAlgorithm"));
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), false, 0);
+		}
+		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "3", itemLen, itemType)) != 0 && (itemType & 0x8F) == 0x80)
+		{
+			sb.push(varName);
+			sb.push(".encryptedContent = "));
+			sb->AppendHexBuff(itemPDU, itemLen, ' ', Text.LineBreakType.None);
+			sb.push("\r\n"));
+		}
+	}*/
+
+	static nameGetByOID(reader, startOfst, endOfst, oidText)
+	{
+		if (!(reader instanceof data.ByteReader))
+			return null;
+		let itemPDU;
+		let oidPDU;
+		let strPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+	
+			let path = i.toString()+".1";
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path)) != null)
+			{
+				if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+				{
+					oidPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+					if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID && ASN1Util.oidEqualsText(new Uint8Array(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen)), oidText))
+					{
+						strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "2");
+						if (strPDU)
+						{
+							if (strPDU.itemType == ASN1ItemType.BMPSTRING)
+							{
+								return reader.readUTF16(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen >> 1, false);
+							}
+							else
+							{
+								return reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	static nameGetCN(reader, startOfst, endOfst)
+	{
+		return X509File.nameGetByOID(reader, startOfst, endOfst, "2.5.4.3");
+	}
+
+	static namesGet(reader, startOfst, endOfst)
+	{
+		let names = {};
+		if (!(reader instanceof data.ByteReader))
+			return names;
+		let itemPDU;
+		let oidPDU;
+		let strPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+	
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, i.toString()+".1")) != null)
+			{
+				if (itemType == ASN1ItemType.SEQUENCE)
+				{
+					oidPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+					if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID)
+					{
+						strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "2");
+						if (strPDU)
+						{
+							let oid = new Uint8Array(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen));
+							if (ASN1Util.oidEqualsText(oid, "2.5.4.6"))
+							{
+								names.countryName = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.4.8"))
+							{
+								names.stateOrProvinceName = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.4.7"))
+							{
+								names.localityName = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.4.10"))
+							{
+								names.organizationName = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.4.11"))
+							{
+								names.organizationUnitName = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.4.3"))
+							{
+								names.commonName = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+							else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.9.1"))
+							{
+								names.emailAddress = reader.readUTF8(strPDU.rawOfst + strPDU.hdrLen, strPDU.contLen);
+							}
+						}
+					}
+				}
+			}
+		}
+		return names;
+	}
+
+	static extensionsGet(reader, startOfst, endOfst)
+	{
+		let ext = {};
+		if (!(reader instanceof data.ByteReader))
+			return ext;
+		let itemPDU;
+		let oidPDU;
+		let strPDU;
+		let subItemPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+	
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, i.toString())) != null)
+			{
+				if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+				{
+					oidPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+					if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID)
+					{
+						strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "2");
+						if (strPDU && strPDU.itemType == ASN1ItemType.BOOLEAN)
+						{
+							strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "3");
+						}
+						if (strPDU && strPDU.itemType == ASN1ItemType.OCTET_STRING)
+						{
+							let oid = new Uint8Array(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen));
+							if (ASN1Util.oidEqualsText(oid, "2.5.29.17")) //id-ce-subjectAltName
+							{
+								ext.subjectAltName = [];
+								let j = 0;
+								let k = ASN1Util.pduCountItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1");
+								while (j < k)
+								{
+									j++;
+									subItemPDU = ASN1Util.pduGetItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1."+j);
+									if (subItemPDU)
+									{
+										if (subItemPDU.itemType == 0x87)
+										{
+											ext.subjectAltName.push(net.getIPv4Name(reader.readInt32(subItemPDU.rawOfst + subItemPDU.hdrLen, false)));
+										}
+										else
+										{
+											ext.subjectAltName.push(reader.readUTF8(subItemPDU.rawOfst + subItemPDU.hdrLen, subItemPDU.contLen));
+										}
+									}
+								}
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.29.14")) //id-ce-subjectKeyIdentifier
+							{
+								subItemPDU = ASN1Util.pduGetItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1");
+								if (subItemPDU && subItemPDU.contLen == 20)
+								{
+									ext.subjKeyId = reader.getArrayBuffer(subItemPDU.rawOfst + subItemPDU.hdrLen, subItemPDU.contLen);
+								}
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.29.35")) //id-ce-authorityKeyIdentifier
+							{
+								subItemPDU = ASN1Util.pduGetItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1.1");
+								if (subItemPDU && subItemPDU.contLen == 20)
+								{
+									ext.authKeyId = reader.getArrayBuffer(subItemPDU.rawOfst + subItemPDU.hdrLen, subItemPDU.contLen);
+								}
+							}
+							else if (ASN1Util.oidEqualsText(oid, "2.5.29.15")) //id-ce-keyUsage
+							{
+								subItemPDU = ASN1Util.pduGetItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1");
+								if (subItemPDU && subItemPDU.itemType == ASN1ItemType.BIT_STRING && subItemPDU.contLen >= 2)
+								{
+									let v = reader.readUInt8(subItemPDU.rawOfst + subItemPDU.hdrLen + 1);
+									ext.caCert = (v & 6) != 0;
+									ext.digitalSign = (v & 0x80) != 0;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return ext;
+	}
+
+	static extensionsGetCRLDistributionPoints(reader, startOfst, endOfst)
+	{
+		let ret = [];
+		let itemPDU;
+		let oidPDU;
+		let strPDU;
+		let subItemPDU;
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		let i = 0;
+		while (i < cnt)
+		{
+			i++;
+	
+			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, i.toString())) != null)
+			{
+				if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
+				{
+					oidPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+					if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID)
+					{
+						strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "2");
+						if (strPDU && strPDU.itemType == ASN1ItemType.BOOLEAN)
+						{
+							strPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "3");
+						}
+						if (strPDU && strPDU.itemType == ASN1ItemType.OCTET_STRING)
+						{
+							if (ASN1Util.oidEqualsText(new Uint8Array(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen)), "2.5.29.31")) //id-ce-cRLDistributionPoints
+							{
+								let j = 0;
+								let k = ASN1Util.pduCountItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1");
+								while (j < k)
+								{
+									j++;
+									subItemPDU = ASN1Util.pduGetItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1."+j);
+									if (subItemPDU && subItemPDU.itemType == ASN1ItemType.SEQUENCE)
+									{
+										X509File.distributionPointAdd(reader, subItemPDU.rawOfst + subItemPDU.hdrLen, subItemPDU.rawOfst + subItemPDU.hdrLen + subItemPDU.contLen, ret);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return ret;
+	}
+
+	static distributionPointAdd(reader, startOfst, endOfst, distPoints)
+	{
+		let itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst, itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst, itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CHOICE_6)
+				{
+					distPoints.push(reader.readUTF8(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	static publicKeyGetNew(reader, startOfst, endOfst)
+	{
+		let oidPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1.1");
+		let bstrPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2");
+		if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID && bstrPDU != null && bstrPDU.itemType == ASN1ItemType.BIT_STRING)
+		{
+			let keyType = X509File.keyTypeFromOID(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen), true);
+			if (keyType == KeyType.ECPublic)
+			{
+				let paramPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1.2");
+				if (paramPDU != null && paramPDU.itemType == ASN1ItemType.OID)
+				{
+					return X509Key.fromECPublicKey(reader.getArrayBuffer(bstrPDU.rawOfst + bstrPDU.hdrLen + 1, bstrPDU.contLen - 1), reader.getArrayBuffer(paramPDU.rawOfst + paramPDU.hdrLen, paramPDU.contLen));
+				}
+			}
+			else if (keyType != KeyType.Unknown)
+			{
+				return new X509Key("public.key", reader.getArrayBuffer(bstrPDU.rawOfst + bstrPDU.hdrLen + 1, bstrPDU.contLen - 1), keyType);
+			}
+		}
+		return null;
+	}
+
+	static keyGetLeng(reader, startOfst, endOfst, keyType)
+	{
+		let keyPDU;
+		switch (keyType)
+		{
+		case KeyType.RSA:
+			keyPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
+			if (keyPDU && keyPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				let cnt = ASN1Util.pduCountItem(reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, null);
+				if (cnt > 4)
+				{
+					let modulus = ASN1Util.pduGetItem(reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, "2");
+					let privateExponent = ASN1Util.pduGetItem(reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, "4");
+					if (modulus && privateExponent)
+					{
+						return (modulus.contLen - 1) << 3;
+					}
+				}
+			}
+			return 0;
+		case KeyType.RSAPublic:
+			if (reader.readUInt8(startOfst) == 0)
+			{
+				startOfst++;
+			}
+			keyPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
+			if (keyPDU && keyPDU.itemType == ASN1ItemType.SEQUENCE)
+			{
+				let modulus = ASN1Util.pduGetItem(reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, "1");
+				if (modulus)
+				{
+					return (modulus.contLen - 1) << 3;
+				}
+			}
+			return 0;
+		case KeyType.ECPublic:
+			return 0;
+		case KeyType.DSA:
+		case KeyType.ECDSA:
+		case KeyType.ED25519:
+		case KeyType.Unknown:
+		default:
+			return 0;
+		}
+	}
+
+	static keyTypeFromOID(oid, pubKey)
+	{
+		let arr = new Uint8Array(oid);
+		if (ASN1Util.oidEqualsText(arr, "1.2.840.113549.1.1.1"))
+		{
+			if (pubKey)
+			{
+				return KeyType.RSAPublic;
+			}
+			else
+			{
+				return KeyType.RSA;
+			}
+		}
+		else if (ASN1Util.oidEqualsText(arr, "1.2.840.10045.2.1"))
+		{
+			return KeyType.ECPublic;
+		}
+		return KeyType.Unknown;
+	}
+
+	static algorithmIdentifierGet(reader, startOfst, endOfst)
+	{
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
+		if (cnt != 2 && cnt != 1)
+		{
+			return AlgType.Unknown;
+		}
+		let itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
+		if (itemPDU == null || itemPDU.itemType != ASN1ItemType.OID)
+		{
+			return AlgType.Unknown;
+		}
+		let oid = new Uint8Array(reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
+		if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.2")) //md2WithRSAEncryption
+		{
+			return AlgType.MD2WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.4")) //md5WithRSAEncryption
+		{
+			return AlgType.MD5WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.5")) //sha1WithRSAEncryption
+		{
+			return AlgType.SHA1WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.11")) //sha256WithRSAEncryption
+		{
+			return AlgType.SHA256WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.12")) //sha384WithRSAEncryption
+		{
+			return AlgType.SHA384WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.13")) //sha512WithRSAEncryption
+		{
+			return AlgType.SHA512WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.113549.1.1.14")) //sha224WithRSAEncryption
+		{
+			return AlgType.SHA224WithRSAEncryption;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.10045.4.3.2")) //ecdsa-with-SHA256
+		{
+			return AlgType.ECDSAWithSHA256;
+		}
+		else if (ASN1Util.oidEqualsText(oid, "1.2.840.10045.4.3.3")) //ecdsa-with-SHA384
+		{
+			return AlgType.ECDSAWithSHA384;
+		}
+		else
+		{
+			return AlgType.Unknown;
+		}
+	}
+}
+
+export class X509Cert extends X509File
+{
+	constructor(sourceName, buff)
+	{
+		super(sourceName, "application/x-pem-file", buff);
+	}
+
+	getSubjectCN()
+	{
+		let tmpBuff;
+		if (ASN1Util.pduGetItemType(this.reader, 0, this.reader.getLength(), "1.1.1") == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.6");
+		}
+		else
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.5");
+		}
+		if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
+		{
+			return X509File.nameGetCN(this.reader, tmpBuff.rawOfst + tmpBuff.hdrLen, tmpBuff.rawOfst + tmpBuff.hdrLen + tmpBuff.contLen);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	getIssuerCN()
+	{
+		let tmpBuff;
+		if (ASN1Util.pduGetItemType(this.reader, 0, this.reader.getLength(), "1.1.1") == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.4");
+		}
+		else
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.3");
+		}
+		if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
+		{
+			return X509File.nameGetCN(this.reader, tmpBuff.rawOfst + tmpBuff.hdrLen, tmpBuff.rawOfst + tmpBuff.hdrLen + tmpBuff.contLen);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	setDefaultSourceName()
+	{
+		let cn = this.getSubjectCN();
+		if (cn)
+		{
+			this.sourceName = cn+".crt";
+		}
+	}
+	
+	getFileType()
+	{
+		return X509FileType.Cert;	
+	}
+
+	toShortName()
+	{
+		return this.getSubjectCN();
+	}
+
+	getCertCount()
+	{
+		return 1;
+	}
+
+	getCertName(index)
+	{
+		if (index != 0)
+			return null;
+		return this.getSubjectCN();
+	}
+
+	getNewCert(index)
+	{
+		if (index != 0)
+			return null;
+		return this.clone();
+	}
+
+	isValid()
+	{
+		/*
+			if (trustStore == 0)
+			{
+				trustStore = ssl->GetTrustStore();
+			}*/
+		let issuerCN = this.getIssuerCN();
+		if (issuerCN == null)
+		{
+			return CertValidStatus.FileFormatInvalid;
+		}
+		let dt;
+		let currTime = new Date().getTime();
+		if ((dt = this.getNotBefore()) == null)
+		{
+			return CertValidStatus.FileFormatInvalid;
+		}
+		if (dt.toEpochMS() > currTime)
+		{
+			return CertValidStatus.Expired;
+		}
+		if ((dt = this.getNotAfter()) == null)
+		{
+			return CertValidStatus.FileFormatInvalid;
+		}
+		if (dt.toEpochMS() < currTime)
+		{
+			return CertValidStatus.Expired;
+		}
+		let signedInfo;
+		if ((signedInfo = this.getSignedInfo()) == null)
+		{
+			return CertValidStatus.FileFormatInvalid;
+		}
+		let hashType = algTypeGetHash(signedInfo.algType);
+		if (hashType == hash.HashType.Unknown)
+		{
+			return CertValidStatus.UnsupportedAlgorithm;
+		}
+
+		let issuer;// = trustStore.getCertByCN(issuerCN);
+		if (issuer == null)
+		{
+			if (!this.isSelfSigned())
+			{
+				return CertValidStatus.UnknownIssuer;
+			}
+			let key = this.getNewPublicKey();
+			if (key == null)
+			{
+				return CertValidStatus.FileFormatInvalid;
+			}
+			let signValid = key.signatureVerify(hashType, signedInfo.payload, signedInfo.signature);
+			if (signValid)
+			{
+				return CertValidStatus.SelfSigned;
+			}
+			else
+			{
+				return CertValidStatus.SignatureInvalid;
+			}
+		}
+
+		let key = issuer.getNewPublicKey();
+		if (key == null)
+		{
+			return CertValidStatus.FileFormatInvalid;
+		}
+		let signValid = key.signatureVerify(hashType, signedInfo.payload, signedInfo.signature);
+		if (!signValid)
+		{
+			return CertValidStatus.SignatureInvalid;
+		}
+
+		let crlDistributionPoints = this.getCRLDistributionPoints();
+		//////////////////////////
+		// CRL
+		return CertValidStatus.Valid;
+	}
+
+	clone()
+	{
+		return new X509Cert(this.sourceName, this.reader.getArrayBuffer());
+	}
+
+	createX509Cert()
+	{
+		return new X509Cert(this.sourceName, this.reader.getArrayBuffer());
+	}
+
+	toString()
+	{
+		let sb = [];
+		if (X509File.isCertificate(this.reader, 0, this.reader.getLength(), "1"))
+		{
+			X509File.appendCertificate(this.reader, 0, this.reader.getLength(), "1", sb, null);
+		}
+		return sb.join();
+	}
+
+	createNames()
+	{
+		return new ASN1Names().setCertificate();
+	}
+
+	getIssuerNames()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return null;
+		}
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.4");
+			if (pdu)
+			{
+				return X509File.namesGet(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.3");
+			if (pdu)
+			{
+				return X509File.namesGet(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		return null;
+	}
+
+	getSubjNames()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return null;
+		}
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.6");
+			if (pdu)
+			{
+				return X509File.namesGet(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.5");
+			if (pdu)
+			{
+				return X509File.namesGet(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		return null;
+	}
+
+	getExtensions()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return null;
+		}
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.8.1");
+			if (pdu)
+			{
+				return X509File.extensionsGet(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.7.1");
+			if (pdu)
+			{
+				return X509File.extensionsGet(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		return null;
+	}
+
+	getNewPublicKey()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return null;
+		}
+		if (pdu.itemType == ASN1Util.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.7");
+			if (pdu)
+			{
+				return X509File.publicKeyGetNew(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.6");
+			if (pdu)
+			{
+				return X509File.publicKeyGetNew(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		return null;
+	}
+
+	getKeyId()
+	{
+		let key = this.getNewPublicKey();
+		if (key == null)
+		{
+			return null;
+		}
+		return key.getKeyId();
+	}
+
+	getNotBefore()
+	{
+		let tmpBuff;
+		if (ASN1Util.pduGetItemType(this.reader, 0, this.reader.getLength(), "1.1.1") == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.5.1");
+		}
+		else
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.4.1");
+		}
+		if (tmpBuff == null)
+			return null;
+		if (tmpBuff.itemType == ASN1ItemType.UTCTIME || tmpBuff.itemType == ASN1ItemType.GENERALIZEDTIME)
+		{
+			return ASN1Util.pduParseUTCTimeCont(this.reader, tmpBuff.rawOfst + tmpBuff.hdrLen, tmpBuff.rawOfst + tmpBuff.hdrLen + tmpBuff.contLen);
+		}
+		return null;
+	}
+
+	getNotAfter()
+	{
+		let tmpBuff;
+		if (ASN1Util.pduGetItemType(this.reader, 0, this.reader.getLength(), "1.1.1") == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.5.2");
+		}
+		else
+		{
+			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.4.2");
+		}
+		if (tmpBuff == null)
+			return null;
+		if (tmpBuff.itemType == ASN1ItemType.UTCTIME || tmpBuff.itemType == ASN1ItemType.GENERALIZEDTIME)
+		{
+			return ASN1Util.pduParseUTCTimeCont(this.reader, tmpBuff.rawOfst + tmpBuff.hdrLen, tmpBuff.rawOfst + tmpBuff.hdrLen + tmpBuff.contLen);
+		}
+		return null;
+	}
+
+	domainValid(domain)
+	{
+		let valid = false;
+		let subjNames;
+		if (subjNames = this.getSubjNames())
+		{
+			if (subjNames.commonName)
+			{
+				if (subjNames.commonName.startsWith("*."))
+				{
+					valid = (domain.toUpperCase() == subjNames.commonName.substring(2).toUpperCase()) || domain.toUpperCase().endsWith(subjNames.commonName.substring(1).toUpperCase());
+				}
+				else
+				{
+					valid = domain.toUpperCase() == subjNames.commonName;
+				}
+			}
+			if (valid)
+			{
+				return true;
+			}
+		}
+	
+		let exts;
+		let s;
+		if (exts = this.getExtensions())
+		{
+			if (exts.subjectAltName)
+			{
+				let i = 0;
+				let j = exts.subjectAltName.length;
+				while (i < j)
+				{
+					s = exts.subjectAltName[i];
+					if (s.startsWith("*."))
+					{
+						valid = (domain.toUpperCase() == s.substring(2).toUpperCase()) || domain.toUpperCase().endsWith(s.substring(1).toUpperCase());
+					}
+					else
+					{
+						valid = domain.toUpperCase() == s.toUpperCase();
+					}
+					if (valid)
+						break;
+				}
+			}
+			if (valid)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	isSelfSigned()
+	{
+		let subjNames;
+		let issueNames;
+		if ((issueNames = this.getIssuerNames()) && (subjNames = this.getSubjNames()))
+		{
+			return issueNames.commonName == subjNames.commonName;
+		}
+		return false;
+	}
+
+	getCRLDistributionPoints()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return [];
+		}
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.8.1");
+			if (pdu)
+			{
+				return X509File.extensionsGetCRLDistributionPoints(reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.7.1");
+			if (pdu)
+			{
+				return X509File.extensionsGetCRLDistributionPoints(reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+			}
+		}
+		return [];
+	}
+
+	getIssuerNamesSeq()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return null;
+		}
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.4");
+			if (pdu && pdu.itemType == ASN1ItemType.SEQUENCE)
+			{
+				return this.reader.getArrayBuffer(pdu.rawOfst + pdu.hdrLen, pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.3");
+			if (pdu && pdu.itemType == ASN1ItemType.SEQUENCE)
+			{
+				return this.reader.getArrayBuffer(pdu.rawOfst + pdu.hdrLen, pdu.contLen);
+			}
+		}
+		return null;
+	}
+
+	getSerialNumber()
+	{
+		let pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (pdu == null)
+		{
+			return null;
+		}
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.2");
+			if (pdu && pdu.itemType == ASN1ItemType.INTEGER)
+			{
+				return this.reader.getArrayBuffer(pdu.rawOfst + pdu.hdrLen, pdu.contLen);
+			}
+		}
+		else
+		{
+			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+			if (pdu && pdu.itemType == ASN1ItemType.INTEGER)
+			{
+				return this.reader.getArrayBuffer(pdu.rawOfst + pdu.hdrLen, pdu.contLen);
+			}
+		}
+		return null;
 	}
 }
 
@@ -1875,6 +3513,7 @@ export class X509Key extends X509File
 		{
 			strs.push(this.sourceName+".KeyId = "+text.u8Arr2Hex(new Uint8Array(buff), ' ', null));
 		}
+		return strs.join("\r\n");
 	}
 
 	createNames()
@@ -1896,24 +3535,399 @@ export class X509Key extends X509File
 		}
 	}
 
-/*	KeyType GetKeyType() const;
-	UOSInt GetKeySizeBits() const;
-	Bool IsPrivateKey() const;
-	Crypto::Cert::X509Key *CreatePublicKey() const;
-	Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
+	getKeyType()
+	{
+		return this.keyType;
+	}
 
-	const UInt8 *GetRSAModulus(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSAPublicExponent(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSAPrivateExponent(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSAPrime1(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSAPrime2(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSAExponent1(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSAExponent2(OptOut<UOSInt> size) const;
-	const UInt8 *GetRSACoefficient(OptOut<UOSInt> size) const;
+	getKeySizeBits()
+	{
+		return X509File.keyGetLeng(this.reader, 0, this.reader.getLength(), this.keyType);
+	}
 
-	const UInt8 *GetECPrivate(OptOut<UOSInt> size) const;
-	const UInt8 *GetECPublic(OptOut<UOSInt> size) const;
-	ECName GetECName() const;*/
+	isPrivateKey()
+	{
+		switch (this.keyType)
+		{
+		case KeyType.DSA:
+		case KeyType.ECDSA:
+		case KeyType.ED25519:
+		case KeyType.RSA:
+			return true;
+		case KeyType.RSAPublic:
+		case KeyType.ECPublic:
+		case KeyType.Unknown:
+		default:
+			return false;
+		}
+	}
+
+	createPublicKey()
+	{
+		if (this.keyType == KeyType.RSAPublic)
+		{
+			return this.clone();
+		}
+		else if (this.keyType == KeyType.RSA)
+		{
+			let builder = new ASN1PDUBuilder();
+			let buff;
+			builder.beginSequence();
+			if ((buff = this.getRSAModulus()) == null) return null;
+			builder.appendOther(ASN1ItemType.INTEGER, buff);
+			if ((buff = this.getRSAPublicExponent()) == null) return null;
+			builder.appendOther(ASN1ItemType.INTEGER, buff);
+			builder.endLevel();
+			return new X509Key(this.sourceName, builder.getArrayBuffer(), KeyType.RSAPublic);
+		}
+		else if (this.keyType == KeyType.ECPublic)
+		{
+			return this.clone();
+		}
+		else
+		{
+			return null;
+		}		
+	}
+
+	getKeyId()
+	{
+		let pubKey = this.createPublicKey();
+		if (pubKey)
+		{
+			let sha1 = new hash.SHA1();
+			sha1.calc(pubKey.getASN1Buff().getArrayBuffer());
+			return sha1.getValue();
+		}
+		return null;
+	}
+
+	getRSAModulus()
+	{
+		let len = null;
+		if (this.keyType == KeyType.RSA)
+		{
+			len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+		}
+		else if (this.keyType == KeyType.RSAPublic)
+		{
+			len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1");
+		}
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSAPublicExponent()
+	{
+		let len = null;
+		if (this.keyType == KeyType.RSA)
+		{
+			len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3");
+		}
+		else if (this.keyType == KeyType.RSAPublic)
+		{
+			len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+		}
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSAPrivateExponent()
+	{
+		if (this.keyType != KeyType.RSA) return 0;
+		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.4");
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSAPrime1()
+	{
+		if (this.keyType != KeyType.RSA) return 0;
+		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.5");
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSAPrime2()
+	{
+		if (this.keyType != KeyType.RSA) return 0;
+		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.6");
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSAExponent1()
+	{
+		if (this.keyType != KeyType.RSA) return 0;
+		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.7");
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSAExponent2()
+	{
+		if (this.keyType != KeyType.RSA) return 0;
+		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.8");
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getRSACoefficient()
+	{
+		if (this.keyType != KeyType.RSA) return 0;
+		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.9");
+		if (len)
+		{
+			return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+		}
+		return null;
+	}
+
+	getECPrivate()
+	{
+		if (this.keyType == KeyType.ECDSA)
+		{
+			let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+			if (len)
+			{
+				return this.reader.getArrayBuffer(len.rawOfst + len.hdrLen, len.contLen);
+			}
+			return null;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	getECPublic()
+	{
+		let itemPDU;
+		if (this.keyType == KeyType.ECPublic)
+		{
+			itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+			if (itemPDU != null && itemPDU.itemType == ASN1ItemType.BIT_STRING)
+			{
+				return this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1);
+			}
+			return 0;
+		}
+		else if (this.keyType == KeyType.ECDSA)
+		{
+			itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3");
+			if (itemPDU != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
+			{
+				itemPDU = ASN1Util.pduGetItem(this.reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+				if (itemPDU != null && itemPDU.itemType == ASN1ItemType.BIT_STRING)
+				{
+					return this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1);
+				}
+				return 0;
+			}
+			itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.4");
+			if (itemPDU != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
+			{
+				itemPDU = ASN1Util.pduGetItem(this.reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+				if (itemPDU != null && itemPDU.itemType == ASN1ItemType.BIT_STRING)
+				{
+					return this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1);
+				}
+				return 0;
+			}
+			return 0;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	getECName()
+	{
+		if (this.keyType == KeyType.ECPublic)
+		{
+			let itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.2");
+			if (itemPDU != null && itemPDU.itemType == ASN1ItemType.OID)
+			{
+				return ecNameFromOID(this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
+			}
+		}
+		else if (this.keyType == KeyType.ECDSA)
+		{
+			let itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3");
+			if (itemPDU != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			{
+				itemPDU = ASN1Util.pduGetItem(this.reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
+				if (itemPDU != null && itemPDU.itemType == ASN1ItemType.OID)
+				{
+					return ecNameFromOID(this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
+				}
+			}
+		}
+		return ECName.Unknown;		
+	}
+
+	static fromECPublicKey(buff, paramOID)
+	{
+		let pdu = new ASN1PDUBuilder();
+		pdu.beginSequence();
+		pdu.beginSequence();
+		pdu.appendOIDString("1.2.840.10045.2.1");
+		pdu.appendOID(paramOID);
+		pdu.endLevel();
+		pdu.appendBitString(0, buff);
+		pdu.endLevel();
+		return new X509Key("ECPublic.key", pdu.getArrayBuffer(), KeyType.ECPublic);
+	}
+}
+
+export class X509PubKey extends X509File
+{
+	constructor(sourceName, buff)
+	{
+		super(sourceName, "application/x-pem-file", buff);
+	}
+
+	getFileType()
+	{
+		return X509FileType.PublicKey;
+	}
+
+	toShortName()
+	{
+		let oidPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		if (oidPDU == null || oidPDU.itemType != ASN1ItemType.OID)
+		{
+			return null;
+		}
+		let keyType = X509File.keyTypeFromOID(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen), true);
+		let keyPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+		if (keyPDU && keyPDU.itemType == ASN1ItemType.OCTET_STRING)
+		{
+			let sb = [];
+			sb.push(keyTypeGetName(keyType)+" ");
+			sb.push(keyGetLeng(reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, keyType));
+			sb.push(" bits");
+			return sb.join("");
+		}
+		return null;
+	}
+
+	isValid()
+	{
+		return CertValidStatus.SignatureInvalid;
+	}
+
+	clone()
+	{
+		return new X509PubKey(this.sourceName, this.reader.getArrayBuffer());
+	}
+
+	toString()
+	{
+		let sb = [];
+		if (X509File.isPublicKeyInfo(this.reader, 0, this.reader.getLength(), "1"))
+		{
+			X509File.appendPublicKeyInfo(this.reader, 0, this.reader.getLength(), "1", sb);
+		}
+		return sb.join("");
+	}
+
+	createNames()
+	{
+		return null;
+	}
+	
+	createKey()
+	{
+		let keyTypeOID = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1");
+		let keyData = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
+		if (keyTypeOID != null && keyData != null)
+		{
+			if (this.reader.readUInt8(keyData.rawOfst + keyData.hdrLen) == 0)
+			{
+				keyData.hdrLen++;
+				keyData.contLen--;
+			}
+			return new X509Key(this.sourceName, this.reader.getArrayBuffer(keyData.rawOfst + keyData.hdrLen, keyData.contLen), X509File.keyTypeFromOID(this.reader.getArrayBuffer(keyTypeOID.rawOfst + keyTypeOID.hdrLen, keyTypeOID.contLen), true));
+		}
+		return null;
+	}
+
+	static createFromKeyBuff(keyType, buff, sourceName)
+	{
+		let keyPDU = new ASN1PDUBuilder();
+		keyPDU.beginSequence();
+		keyPDU.beginSequence();
+		let oidStr = keyTypeGetOID(keyType);
+		keyPDU.appendOIDString(oidStr);
+		keyPDU.appendNull();
+		keyPDU.endLevel();
+		if (keyType == KeyType.RSAPublic)
+		{
+			keyPDU.appendBitString(0, buff);
+		}
+		else
+		{
+			keyPDU.appendBitString(0, buff);
+		}
+		keyPDU.endLevel();
+		return new X509PubKey(sourceName, keyPDU.getArrayBuffer());
+	}
+
+	static createFromKey(key)
+	{
+		return createFromKeyBuff(key.getKeyType(), key.getASN1Buff().getArrayBuffer(), key.sourceName);
+	}
+}
+
+export function algTypeGetHash(algType)
+{
+	switch (algType)
+	{
+	case AlgType.SHA1WithRSAEncryption:
+		return hash.HashType.SHA1;
+	case AlgType.SHA256WithRSAEncryption:
+		return hash.HashType.SHA256;
+	case AlgType.SHA512WithRSAEncryption:
+		return hash.HashType.SHA512;
+	case AlgType.SHA384WithRSAEncryption:
+		return hash.HashType.SHA384;
+	case AlgType.SHA224WithRSAEncryption:
+		return hash.HashType.SHA224;
+	case AlgType.MD2WithRSAEncryption:
+		return hash.HashType.Unknown;
+	case AlgType.MD5WithRSAEncryption:
+		return hash.HashType.MD5;
+	case AlgType.ECDSAWithSHA256:
+		return hash.HashType.SHA256;
+	case AlgType.ECDSAWithSHA384:
+		return hash.HashType.SHA384;
+	case AlgType.Unknown:
+	default:
+		return hash.HashType.Unknown;
+	}
 }
 
 export function fileTypeGetName(fileType)
@@ -1963,4 +3977,54 @@ export function keyTypeGetName(keyType)
 	default:
 		return "Unknown";
 	}
+}
+
+export function ecNameGetName(ecName)
+{
+	switch (ecName)
+	{
+	case ECName.secp256r1:
+		return "secp256r1";
+	case ECName.secp384r1:
+		return "secp384r1";
+	case ECName.secp521r1:
+		return "secp521r1";
+	case ECName.Unknown:
+	default:
+		return "Unknown";
+	}
+}
+
+export function ecNameGetOID(ecName)
+{
+	switch (ecName)
+	{
+	case ECName.secp256r1:
+		return "1.2.840.10045.3.1.7";
+	case ECName.secp384r1:
+		return "1.3.132.0.34";
+	case ECName.secp521r1:
+		return "1.3.132.0.35";
+	case ECName.Unknown:
+	default:
+		return "1.3.132.0.34";
+	}
+}
+
+export function ecNameFromOID(buff)
+{
+	let arr = new Uint8Array(buff);
+	if (ASN1Util.oidEqualsText(arr, "1.2.840.10045.3.1.7"))
+	{
+		return ECName.secp256r1;
+	}
+	else if (ASN1Util.oidEqualsText(arr, "1.3.132.0.34"))
+	{
+		return ECName.secp384r1;
+	}
+	else if (ASN1Util.oidEqualsText(arr, "1.3.132.0.35"))
+	{
+		return ECName.secp521r1;
+	}
+	return ECName.Unknown;
 }

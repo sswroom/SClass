@@ -259,9 +259,9 @@ void Net::ASN1PDUBuilder::AppendOctetString(NotNullPtr<Text::String> s)
 	this->AppendOther(4, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendOctetStringC(const UTF8Char *s, UOSInt len)
+void Net::ASN1PDUBuilder::AppendOctetStringC(Text::CStringNN s)
 {
-	if (s == 0)
+	if (s.leng == 0)
 	{
 		this->AllocateSize(2);
 		this->buff[this->currOffset] = 4;
@@ -269,7 +269,7 @@ void Net::ASN1PDUBuilder::AppendOctetStringC(const UTF8Char *s, UOSInt len)
 		this->currOffset += 2;
 		return;
 	}
-	this->AppendOther(4, s, len);
+	this->AppendOther(4, s.v, s.leng);
 }
 
 void Net::ASN1PDUBuilder::AppendNull()
@@ -289,10 +289,10 @@ void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, UOSInt len)
 	this->currOffset += len + 2;
 }
 
-void Net::ASN1PDUBuilder::AppendOIDString(const UTF8Char *oidStr, UOSInt oidStrLen)
+void Net::ASN1PDUBuilder::AppendOIDString(Text::CStringNN oidStr)
 {
 	UInt8 buff[32];
-	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr, oidStrLen, buff);
+	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr.v, oidStr.leng, buff);
 	this->AppendOID(buff, buffSize);
 }
 
@@ -332,17 +332,17 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendPrintableString(Text::String *s)
+void Net::ASN1PDUBuilder::AppendPrintableString(NotNullPtr<Text::String> s)
 {
 	this->AppendOther(0x13, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendUTF8String(Text::String *s)
+void Net::ASN1PDUBuilder::AppendUTF8String(NotNullPtr<Text::String> s)
 {
 	this->AppendOther(0x0C, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendIA5String(Text::String *s)
+void Net::ASN1PDUBuilder::AppendIA5String(NotNullPtr<Text::String> s)
 {
 	this->AppendOther(0x16, s->v, s->leng);
 }
