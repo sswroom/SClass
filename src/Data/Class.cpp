@@ -19,94 +19,105 @@ Data::Class::~Class()
 	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
 }
 
-UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType)
+UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull)
 {
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
 	field->name = Text::String::New(name);
 	field->ofst = ofst;
 	field->itemType = itemType;
+	field->notNull = notNull;
 	this->fields.Add(field);
 	return Data::VariItem::GetItemSize(itemType);
 }
 
 Bool Data::Class::AddField(Text::CString name, const UInt8 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U8) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U8, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Int8 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I8) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I8, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const UInt16 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U16) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U16, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Int16 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I16) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I16, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const UInt32 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U32) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U32, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Int32 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const UInt64 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U64) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U64, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Int64 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I64) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I64, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Single *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F32) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F32, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Double *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, Text::String *const *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str, false) != 0;
+}
+
+Bool Data::Class::AddField(Text::CString name, const Optional<Text::String> *val)
+{
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str, false) != 0;
+}
+
+Bool Data::Class::AddField(Text::CString name, const NotNullPtr<Text::String> *val)
+{
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Data::Timestamp *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Timestamp) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Timestamp, false) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Bool *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL, true) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, Data::ReadonlyArray<UInt8> *const *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr, false) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, Math::Geometry::Vector2D *const *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector, false) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, Data::UUID *const *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID, false) != 0;
 }
 
 UOSInt Data::Class::GetFieldCount()
@@ -143,6 +154,16 @@ Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 	}
 	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
 	return Data::VariItem::NewFromPtr(valPtr, field->itemType).Ptr();
+}
+
+Bool Data::Class::IsNotNull(UOSInt index)
+{
+	FieldInfo *field = this->fields.GetItem(index);
+	if (field)
+	{
+		return field->notNull;
+	}
+	return false;
 }
 
 Bool Data::Class::GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj)
@@ -218,7 +239,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	{
 		field = fieldList->GetItem(i);
 		sb->AppendChar('\t', tabLev + 1);
-		sb->Append(Text::CPPText::GetCppType(field->itemType));
+		sb->Append(Text::CPPText::GetCppType(field->itemType, field->notNull));
 		sb->AppendUTF8Char(' ');
 		sb->Append(field->name);
 		sb->AppendC(UTF8STRC(";\r\n"));
@@ -240,7 +261,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		Text::CString cppType = Text::CPPText::GetCppType(field->itemType);
+		Text::CStringNN cppType = Text::CPPText::GetCppType(field->itemType, field->notNull);
 		sb->AppendChar('\t', tabLev + 1);
 		sb->Append(cppType);
 		sb->AppendUTF8Char(' ');
@@ -263,9 +284,9 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->AppendC(UTF8STRC("Data::NamedClass<"));
+	sb->AppendC(UTF8STRC("NotNullPtr<Data::NamedClass<"));
 	sb->Append(clsName);
-	sb->AppendC(UTF8STRC("> *CreateClass() const;\r\n"));
+	sb->AppendC(UTF8STRC(">> CreateClass() const;\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
@@ -297,7 +318,14 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 		sb->AppendChar('\t', tabLev + 1);
 		sb->AppendC(UTF8STRC("this->"));
 		sb->Append(field->name);
-		sb->AppendC(UTF8STRC(" = 0;\r\n"));
+		if (field->itemType == Data::VariItem::ItemType::Str && field->notNull)
+		{
+			sb->AppendC(UTF8STRC(" = Text::String::NewEmpty();\r\n"));
+		}
+		else
+		{
+			sb->AppendC(UTF8STRC(" = 0;\r\n"));
+		}
 		i++;
 	}
 	sb->AppendChar('\t', tabLev);
@@ -321,9 +349,18 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 		{
 		case Data::VariItem::ItemType::Str:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("SDEL_STRING(this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(");\r\n"));
+			if (field->notNull)
+			{
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC("->Release();\r\n"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(");\r\n"));
+			}
 			break;
 		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
@@ -363,7 +400,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		Text::CString cppType = Text::CPPText::GetCppType(field->itemType);
+		Text::CStringNN cppType = Text::CPPText::GetCppType(field->itemType, field->notNull);
 		sb->AppendChar('\t', tabLev);
 		sb->Append(cppType);
 		sb->AppendUTF8Char(' ');
@@ -400,18 +437,34 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 		switch (field->itemType)
 		{
 		case Data::VariItem::ItemType::Str:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("SDEL_STRING(this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(");\r\n"));
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("?"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("->Clone():0"));
+			if (field->notNull)
+			{
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC("->Release();\r\n"));
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(" = "));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC("->Clone()"));
+			}
+			else
+			{
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(");\r\n"));
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(" = !"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(".IsNull()?"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(".OrNull()->Clone():Optional<Text::String>(0)"));
+			}
 			break;
 		case Data::VariItem::ItemType::Date:
 		case Data::VariItem::ItemType::Timestamp:
@@ -467,22 +520,22 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	}
 
 	sb->AppendChar('\t', tabLev);
-	sb->AppendC(UTF8STRC("Data::NamedClass<"));
+	sb->AppendC(UTF8STRC("NotNullPtr<Data::NamedClass<"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->AppendC(UTF8STRC("> *"));
+	sb->AppendC(UTF8STRC(">> "));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("::CreateClass() const\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->AppendC(UTF8STRC("Data::NamedClass<"));
+	sb->AppendC(UTF8STRC("NotNullPtr<Data::NamedClass<"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->AppendC(UTF8STRC("> *cls;\r\n"));
+	sb->AppendC(UTF8STRC(">> cls;\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->AppendC(UTF8STRC("NEW_CLASS(cls, Data::NamedClass<"));
+	sb->AppendC(UTF8STRC("NEW_CLASSNN(cls, Data::NamedClass<"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC(">(this));\r\n"));

@@ -14,6 +14,7 @@ namespace Data
 			NotNullPtr<Text::String> name;
 			OSInt ofst;
 			Data::VariItem::ItemType itemType;
+			Bool notNull;
 		};
 	private:
 		const void *refObj;
@@ -24,7 +25,7 @@ namespace Data
 		Class(const void *refObj);
 		virtual ~Class();
 
-		UOSInt AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType); //return field size
+		UOSInt AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull); //return field size
 		Bool AddField(Text::CString name, const UInt8 *val);
 		Bool AddField(Text::CString name, const Int8 *val);
 		Bool AddField(Text::CString name, const UInt16 *val);
@@ -36,6 +37,8 @@ namespace Data
 		Bool AddField(Text::CString name, const Single *val);
 		Bool AddField(Text::CString name, const Double *val);
 		Bool AddField(Text::CString name, Text::String *const *val);
+		Bool AddField(Text::CString name, const Optional<Text::String> *val);
+		Bool AddField(Text::CString name, const NotNullPtr<Text::String> *val);
 		Bool AddField(Text::CString name, const Data::Timestamp *val);
 		Bool AddField(Text::CString name, const Bool *val);
 		Bool AddField(Text::CString name, Data::ReadonlyArray<UInt8> *const *val);
@@ -46,6 +49,7 @@ namespace Data
 		Text::String *GetFieldName(UOSInt index);
 		Data::VariItem::ItemType GetFieldType(UOSInt index);
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
+		Bool IsNotNull(UOSInt index);
 		Bool GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj);
 		Bool SetField(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item);
 		Bool SetFieldClearItem(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item);

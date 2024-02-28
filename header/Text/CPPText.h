@@ -15,7 +15,7 @@ namespace Text
 		static void FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str);
 
 		static Bool ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CString cppEnumStr, NotNullPtr<Text::StringBuilderUTF8> sbPrefix);
-		static Text::CString GetCppType(Data::VariItem::ItemType itemType);
+		static Text::CStringNN GetCppType(Data::VariItem::ItemType itemType, Bool notNull);
 	};
 }
 #endif

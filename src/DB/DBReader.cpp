@@ -235,7 +235,7 @@ NotNullPtr<Data::Class> DB::DBReader::CreateClass()
 	while (i < j)
 	{
 		this->GetName(i, sbuff);
-		builder.AddItem(sbuff, this->GetColType(i, size));
+		builder.AddItem(sbuff, this->GetColType(i, size), false);
 		i++;
 	}
 	return builder.GetResultClass();

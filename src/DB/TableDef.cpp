@@ -221,7 +221,7 @@ NotNullPtr<Data::Class> DB::TableDef::CreateTableClass() const
 	while (it.HasNext())
 	{
 		NotNullPtr<DB::ColDef> col = it.Next();
-		builder.AddItem(col->GetColName()->v, col->GetColType());
+		builder.AddItem(col->GetColName()->v, col->GetColType(), col->IsNotNull());
 	}
 	return builder.GetResultClass();
 }

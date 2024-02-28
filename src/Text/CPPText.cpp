@@ -399,7 +399,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CStrin
 	}
 }
 
-Text::CString Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
+Text::CStringNN Text::CPPText::GetCppType(Data::VariItem::ItemType itemType, Bool notNull)
 {
 	switch (itemType)
 	{
@@ -426,9 +426,15 @@ Text::CString Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
 	case Data::VariItem::ItemType::BOOL:
 		return CSTR("Bool");
 	case Data::VariItem::ItemType::Str:
-		return CSTR("Text::String*");
+		if (notNull)
+			return CSTR("NotNullPtr<Text::String>");
+		else
+			return CSTR("Optional<Text::String>");
 	case Data::VariItem::ItemType::CStr:
-		return CSTR("Text::CString");
+		if (notNull)
+			return CSTR("Text::CStringNN");
+		else
+			return CSTR("Text::CString");
 	case Data::VariItem::ItemType::Timestamp:
 		return CSTR("Data::Timestamp");
 	case Data::VariItem::ItemType::Date:
