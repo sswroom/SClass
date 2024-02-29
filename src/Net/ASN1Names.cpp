@@ -344,6 +344,12 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetCertificationRequest()
 	return *this;
 }
 
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetCertificationList()
+{
+	Names::PKIX1Explicit88::CertificateList(*this);
+	return *this;
+}
+
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetPFX()
 {
 	Names::PKCS12::PFX(*this);

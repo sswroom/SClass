@@ -80,6 +80,23 @@ export function arrayBuffer2Base64(buff)
 	return btoa(String.fromCharCode.apply(null, new Uint8Array(buff)));
 }
 
+export function arrayBufferEquals(buff1, buff2)
+{
+	let arr1 = new Uint8Array(buff1);
+	let arr2 = new Uint8Array(buff2);
+	if (arr1.byteLength != arr2.byteLength)
+		return false;
+	let i = 0;
+	let j = arr1.length;
+	while (i < j)
+	{
+		if (arr1[i] != arr2[i])
+			return false;
+		i++;
+	}
+	return true;
+}
+
 export function compare(a, b)
 {
 	if (a == b)
@@ -505,12 +522,12 @@ export class DateTimeUtil
 
 	static timeValue2Secs(tval)
 	{
-		return DateTimeUtil.dateValue2TotalDays(tval) * 86400 + (tval.second + tval.minute * 60 + tval.hour * 3600 - tval.tzQhr * 900);
+		return BigInt(DateTimeUtil.dateValue2TotalDays(tval)) * 86400n + BigInt(tval.second + tval.minute * 60 + tval.hour * 3600 - tval.tzQhr * 900);
 	}
 
 	static timeValue2Ticks(t)
 	{
-		return DateTimeUtil.timeValue2Secs(t) * 1000 + Math.floor(t.nanosec / 1000000);
+		return DateTimeUtil.timeValue2Secs(t) * 1000n + Math.floor(t.nanosec / 1000000);
 	}
 
 	static ticks2TimeValue(ticks, tzQhr)
@@ -574,14 +591,14 @@ export class DateTimeUtil
 		}
 		else
 		{
-			totalDays -= 10957;
-			t.year = (2000 + (Math.floor(totalDays / 1461) * 4));
-			totalDays = totalDays % 1461;
-			if (totalDays >= 366)
+			totalDays -= 10957n;
+			t.year = (2000 + (Math.floor(Number(totalDays) / 1461) * 4));
+			totalDays = totalDays % 1461n;
+			if (totalDays >= 366n)
 			{
 				totalDays--;
-				t.year = (t.year + Math.floor(totalDays / 365));
-				totalDays = totalDays % 365;
+				t.year = (t.year + Math.floor(Number(totalDays) / 365));
+				totalDays = totalDays % 365n;
 			}
 		}
 
@@ -594,24 +611,24 @@ export class DateTimeUtil
 					if (totalDays < 31)
 					{
 						t.month = 1;
-						t.day = (totalDays + 1);
+						t.day = (Number(totalDays) + 1);
 					}
 					else
 					{
 						t.month = 2;
-						t.day = (totalDays - 31 + 1);
+						t.day = (Number(totalDays) - 31 + 1);
 					}
 				}
 				else
 					if (totalDays < 91)
 					{
 						t.month = 3;
-						t.day = (totalDays - 60 + 1);
+						t.day = (Number(totalDays) - 60 + 1);
 					}
 					else
 					{
 						t.month = 4;
-						t.day = (totalDays - 91 + 1);
+						t.day = (Number(totalDays) - 91 + 1);
 					}
 			}
 			else
@@ -623,24 +640,24 @@ export class DateTimeUtil
 						if (totalDays < 152)
 						{
 							t.month = 5;
-							t.day = (totalDays - 121 + 1);
+							t.day = (Number(totalDays) - 121 + 1);
 						}
 						else
 						{
 							t.month = 6;
-							t.day = (totalDays - 152 + 1);
+							t.day = (Number(totalDays) - 152 + 1);
 						}
 					}
 					else
 						if (totalDays < 213)
 						{
 							t.month = 7;
-							t.day = (totalDays - 182 + 1);
+							t.day = (Number(totalDays) - 182 + 1);
 						}
 						else
 						{
 							t.month = 8;
-							t.day = (totalDays - 213 + 1);
+							t.day = (Number(totalDays) - 213 + 1);
 						}
 				}
 				else
@@ -650,24 +667,24 @@ export class DateTimeUtil
 						if (totalDays < 274)
 						{
 							t.month = 9;
-							t.day = (totalDays - 244 + 1);
+							t.day = (Number(totalDays) - 244 + 1);
 						}
 						else
 						{
 							t.month = 10;
-							t.day = (totalDays - 274 + 1);
+							t.day = (Number(totalDays) - 274 + 1);
 						}
 					}
 					else
 						if (totalDays < 335)
 						{
 							t.month = 11;
-							t.day = (totalDays - 305 + 1);
+							t.day = (Number(totalDays) - 305 + 1);
 						}
 						else
 						{
 							t.month = 12;
-							t.day = (totalDays - 335 + 1);
+							t.day = (Number(totalDays) - 335 + 1);
 						}
 				}
 			}
@@ -681,24 +698,24 @@ export class DateTimeUtil
 					if (totalDays < 31)
 					{
 						t.month = 1;
-						t.day = (totalDays + 1);
+						t.day = (Number(totalDays) + 1);
 					}
 					else
 					{
 						t.month = 2;
-						t.day = (totalDays - 31 + 1);
+						t.day = (Number(totalDays) - 31 + 1);
 					}
 				}
 				else
 					if (totalDays < 90)
 					{
 						t.month = 3;
-						t.day = (totalDays - 59 + 1);
+						t.day = (Number(totalDays) - 59 + 1);
 					}
 					else
 					{
 						t.month = 4;
-						t.day = (totalDays - 90 + 1);
+						t.day = (Number(totalDays) - 90 + 1);
 					}
 			}
 			else
@@ -710,24 +727,24 @@ export class DateTimeUtil
 						if (totalDays < 151)
 						{
 							t.month = 5;
-							t.day = (totalDays - 120 + 1);
+							t.day = (Number(totalDays) - 120 + 1);
 						}
 						else
 						{
 							t.month = 6;
-							t.day = (totalDays - 151 + 1);
+							t.day = (Number(totalDays) - 151 + 1);
 						}
 					}
 					else
 						if (totalDays < 212)
 						{
 							t.month = 7;
-							t.day = (totalDays - 181 + 1);
+							t.day = (Number(totalDays) - 181 + 1);
 						}
 						else
 						{
 							t.month = 8;
-							t.day = (totalDays - 212 + 1);
+							t.day = (Number(totalDays) - 212 + 1);
 						}
 				}
 				else
@@ -737,24 +754,24 @@ export class DateTimeUtil
 						if (totalDays < 273)
 						{
 							t.month = 9;
-							t.day = (totalDays - 243 + 1);
+							t.day = (Number(totalDays) - 243 + 1);
 						}
 						else
 						{
 							t.month = 10;
-							t.day = (totalDays - 273 + 1);
+							t.day = (Number(totalDays) - 273 + 1);
 						}
 					}
 					else
 						if (totalDays < 334)
 						{
 							t.month = 11;
-							t.day = (totalDays - 304 + 1);
+							t.day = (Number(totalDays) - 304 + 1);
 						}
 						else
 						{
 							t.month = 12;
-							t.day = (totalDays - 334 + 1);
+							t.day = (Number(totalDays) - 334 + 1);
 						}
 				}
 			}
@@ -765,22 +782,22 @@ export class DateTimeUtil
 	{
 		if (tzQhr == null)
 			tzQhr = DateTimeUtil.getLocalTzQhr();
-		secs = secs + tzQhr * 900;
-		let totalDays = Math.floor(secs / 86400);
+		secs = BigInt(secs) + BigInt(tzQhr * 900);
+		let totalDays = secs / 86400n;
 		let minutes;
 		if (secs < 0)
 		{
-			secs -= totalDays * 86400;
+			secs -= totalDays * 86400n;
 			while (secs < 0)
 			{
 				totalDays -= 1;
-				secs += 86400;
+				secs += 86400n;
 			}
-			minutes = (secs % 86400);
+			minutes = Number(secs % 86400n);
 		}
 		else
 		{
-			minutes = (secs % 86400);
+			minutes = Number(secs % 86400n);
 		}
 
 		let t = new TimeValue();
@@ -1525,7 +1542,7 @@ export class Duration
 {
 	constructor(seconds, nanosec)
 	{
-		this.seconds = seconds;
+		this.seconds = BigInt(seconds);
 		this.nanosec = nanosec;
 	}
 
@@ -1533,8 +1550,8 @@ export class Duration
 	{
 		if (ticks < 0)
 		{
-			let ns = ticks % 1000;
-			let seconds = Math.floor(ticks / 1000);
+			let ns = Number(BigInt(ticks) % 1000n);
+			let seconds = BigInt(ticks) / 1000n;
 			if (ns != 0)
 			{
 				ns = (-ns) * 1000000;
@@ -1544,7 +1561,7 @@ export class Duration
 		}
 		else
 		{
-			return new Duration(Math.floor(ticks / 1000), (ticks % 1000) * 1000000);
+			return new Duration(BigInt(ticks) / 1000n, Number(BigInt(ticks) % 1000n) * 1000000);
 		}
 	}
 
@@ -1552,16 +1569,16 @@ export class Duration
 	{
 		if (us < 0)
 		{
-			let ns = us % 1000000;
-			let seconds = Math.floor(us / 1000000);
-			if (ns != 0)
+			let ns = Number(BigInt(us) % 1000000n);
+			let seconds = BigInt(us) / 1000000n;
+			if (ns == 0)
 				return new Duration(seconds, 0);
 			else
-				return new Duration(seconds - 1, (-ns) * 1000);
+				return new Duration(seconds - 1n, (-ns) * 1000);
 		}
 		else
 		{
-			return new Duration(Math.floor(us / 1000000), (us % 1000000) * 1000);
+			return new Duration(BigInt(us) / 1000000n, Number(BigInt(us) % 1000000n) * 1000);
 		}
 	}
 
@@ -1577,12 +1594,12 @@ export class Duration
 
 	getTotalMS()
 	{
-		return this.seconds * 1000 + Math.floor(this.ns / 1000000);
+		return Number(this.seconds) * 1000 + this.ns / 1000000n;
 	}
 
 	getTotalSec()
 	{
-		return this.seconds + (this.ns * 0.000000001);
+		return Number(this.seconds) + (this.ns * 0.000000001);
 	}
 
 	notZero()
@@ -1605,7 +1622,7 @@ export class Duration
 			txt.push('-');
 			if (ns > 0)
 			{
-				secs = -secs - 1;
+				secs = -secs - 1n;
 				ns = 1000000000 - ns;
 			}
 			else
@@ -1613,21 +1630,21 @@ export class Duration
 				secs = -secs;
 			}
 		}
-		txt.push(Math.floor(secs / 3600));
-		secs = secs % 3600;
+		txt.push((secs / 3600n).toString());
+		secs = secs % 3600n;
 		txt.push(':');
 		if (secs < 600)
 		{
 			txt.push('0');
 		}
-		txt.push(Math.floor(secs / 60));
-		secs = secs % 60;
+		txt.push((secs / 60n).toString());
+		secs = secs % 60n;
 		txt.push(':');
 		if (secs < 10)
 		{
 			txt.push('0');
 		}
-		txt.push(secs);
+		txt.push(secs.toString());
 		if (ns != 0)
 		{
 			txt.push('.');
@@ -1773,7 +1790,7 @@ export class TimeInstant
 {
 	constructor(sec, nanosec)
 	{
-		this.sec = sec;
+		this.sec = BigInt(sec)
 		this.nanosec = nanosec;
 	}
 
@@ -1800,7 +1817,7 @@ export class TimeInstant
 		let days = Math.floor(variTime);
 		let ds = (variTime - days);
 		let s = Math.floor(ds * 86400);
-		return new TimeInstant((days - 25569) * 86400000 + Math.floor(ds * 86400000), ((ds * 86400 - s) * 1000000000));
+		return new TimeInstant((days - 25569n) * 86400000n + Math.floor(ds * 86400000n), ((ds * 86400n - s) * 1000000000n));
 	}
 
 	static fromTicks(ticks)
@@ -1818,17 +1835,17 @@ export class TimeInstant
 
 	addDay(val)
 	{
-		return new TimeInstant(this.sec + val * 86400, this.nanosec);
+		return new TimeInstant(this.sec + val * 86400n, this.nanosec);
 	}
 
 	addHour(val)
 	{
-		return new TimeInstant(this.sec + val * 3600, this.nanosec);
+		return new TimeInstant(this.sec + val * 3600n, this.nanosec);
 	}
 
 	addMinute(val)
 	{
-		return new TimeInstant(this.sec + val * 60, this.nanosec);
+		return new TimeInstant(this.sec + val * 60n, this.nanosec);
 	}
 
 	addSecond(val)
@@ -1884,22 +1901,22 @@ export class TimeInstant
 
 	getMSPassedDate()
 	{
-		return (this.sec % 86400) * 1000 + Math.floor(this.nanosec / 1000000);
+		return Number(this.sec % 86400) * 1000 + Math.floor(this.nanosec / 1000000);
 	}
 
 	diffMS(ts)
 	{
-		return (this.sec - ts.sec) * 1000 + Math.floor((this.nanosec / 1000000) - (ts.nanosec / 1000000));
+		return Number(this.sec - ts.sec) * 1000 + Math.floor((this.nanosec / 1000000) - (ts.nanosec / 1000000));
 	}
 
 	diffSec(ts)
 	{
-		return this.sec - ts.sec;
+		return Number(this.sec - ts.sec);
 	}
 
 	diffSecDbl(ts)
 	{
-		return (this.sec - ts.sec) + (this.nanosec - ts.nanosec) / 1000000000.0;
+		return Number(this.sec - ts.sec) + (this.nanosec - ts.nanosec) / 1000000000.0;
 	}
 
 	diff(ts)
@@ -1910,22 +1927,22 @@ export class TimeInstant
 		if (ns1 >= ns2)
 			return new Duration(secs, ns1 - ns2);
 		else
-			return new Duration(secs - 1, 1000000000 + ns1 - ns2);
+			return new Duration(secs - 1n, 1000000000 + ns1 - ns2);
 	}
 
 	toTicks()
 	{
-		return this.sec * 1000 + Math.floor(this.nanosec / 1000000);
+		return Number(this.sec) * 1000 + Math.floor(this.nanosec / 1000000);
 	}
 
 	toDotNetTicks()
 	{
-		return this.sec * 10000000 + 621355968000000000 + Math.floor(this.nanosec / 100);
+		return this.sec * 10000000n + 621355968000000000n + BigInt(Math.floor(this.nanosec / 100));
 	}
 
 	toUnixTimestamp()
 	{
-		return this.sec;
+		return Number(this.sec);
 	}
 
 	toEpochSec()
@@ -1935,12 +1952,12 @@ export class TimeInstant
 
 	toEpochMS()
 	{
-		return this.sec * 1000 + Math.floor(this.nanosec / 1000000);
+		return this.sec * 1000 + BigInt(Math.floor(this.nanosec / 1000000));
 	}
 
 	toEpochNS()
 	{
-		return this.sec * 1000000000 + this.nanosec;
+		return this.sec * 1000000000 + BigInt(this.nanosec);
 	}
 }
 
@@ -2011,11 +2028,11 @@ export class Timestamp
 	{
 		if (epochUS < 0)
 		{
-			return new Timestamp(new TimeInstant(Math.floor(epochUS / 1000000) - 1, (epochUS % 1000000 + 1000000) * 1000), tzQhr);
+			return new Timestamp(new TimeInstant(epochUS / 1000000n - 1, Number(epochUS % 1000000 + 1000000) * 1000), tzQhr);
 		}
 		else
 		{
-			return new Timestamp(new TimeInstant(Math.floor(epochUS / 1000000), (epochUS % 1000000) * 1000), tzQhr);
+			return new Timestamp(new TimeInstant(epochUS / 1000000n, Number(epochUS % 1000000) * 1000), tzQhr);
 		}
 	}
 
@@ -2023,11 +2040,11 @@ export class Timestamp
 	{
 		if (epochNS < 0)
 		{
-			return new Timestamp(new TimeInstant(Math.floor(epochNS / 1000000000) - 1, (epochNS % 1000000000 + 1000000000)), tzQhr);
+			return new Timestamp(new TimeInstant(epochNS / 1000000000n - 1, Number(epochNS % 1000000000 + 1000000000)), tzQhr);
 		}
 		else
 		{
-			return new Timestamp(new TimeInstant(Math.floor(epochNS / 1000000000), (epochNS % 1000000000)), tzQhr);
+			return new Timestamp(new TimeInstant(epochNS / 1000000000n, Number(epochNS % 1000000000)), tzQhr);
 		}
 	}
 
@@ -2253,7 +2270,7 @@ export class Timestamp
 	{
 		if (this.inst.nanosec == 0)
 		{
-			if (((this.inst.sec + this.tzQhr * 900) % 86400) == 0)
+			if (((this.inst.sec + BigInt(this.tzQhr * 900)) % 86400n) == 0)
 			{
 				return this.toString("yyyy-MM-dd");
 			}

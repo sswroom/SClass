@@ -1,7 +1,8 @@
 export function isArray(o: any): boolean;
 export function isObject(o: any): boolean;
 export function toObjectString(o: any, lev: number): string;
-export function arrayBuffer2Base64(buff: any): string;
+export function arrayBuffer2Base64(buff: ArrayBuffer): string;
+export function arrayBufferEquals(buff1: ArrayBuffer, buff2: ArrayBuffer): boolean;
 export function compare(a: any, b: any): number;
 export function sort(arr: object[], compareFunc?: (val1: object, val2: object) => number, firstIndex?: number, lastIndex?: number): void;
 export function mergeOptions(options: object | null, defOptions: object): object;
@@ -45,12 +46,12 @@ export class DateTimeUtil
 	static timeValueSetTime(t: TimeValue, timeStrs: string[]): void;
 	static date2TotalDays(year: number, month: number, day: number): number;
 	static dateValue2TotalDays(d: DateValue): number;
-	static timeValue2Secs(tval: TimeValue): number;
-	static timeValue2Ticks(t: TimeValue): number;
+	static timeValue2Secs(tval: TimeValue): bigint;
+	static timeValue2Ticks(t: TimeValue): bigint;
 	static ticks2TimeValue(ticks: number, tzQhr?: number): TimeValue;
-	static secs2TimeValue(secs: number, tzQhr?: number): TimeValue;
+	static secs2TimeValue(secs: bigint, tzQhr?: number): TimeValue;
 	static totalDays2DateValue(totalDays: number, d: DateValue): void;
-	static instant2TimeValue(secs: number, nanosec: number, tzQhr?: number): TimeValue;
+	static instant2TimeValue(secs: bigint, nanosec: number, tzQhr?: number): TimeValue;
 	static toString(tval: TimeValue, pattern: string): string;
 	static string2TimeValue(dateStr: string, tzQhr?: number): TimeValue;
 	static isYearLeap(year: number): boolean;
@@ -61,12 +62,12 @@ export class DateTimeUtil
 
 export class Duration
 {
-	seconds: number;
+	seconds: bigint;
 	ns: number;
-	constructor(seconds: number, nanosec: number);
+	constructor(seconds: number | bigint, nanosec: number);
 	static fromTicks(ticks: number): Duration;
-	static fromUs(us: number): Duration;
-	getSeconds(): number;
+	static fromUs(us: bigint): Duration;
+	getSeconds(): bigint;
 	getNS(): number;
 	getTotalMS(): number;
 	getTotalSec(): number;
@@ -100,13 +101,13 @@ export class LocalDate
 
 export class TimeInstant
 {
-	sec: number;
+	sec: bigint;
 	nanosec: number;
 
-	constructor(sec: number, nanosec: number);
+	constructor(sec: bigint | number, nanosec: number);
 	static now(): TimeInstant;
-	static fromVariTime(variTime: number): TimeInstant;
-	static fromTicks(ticks: number): TimeInstant;
+	static fromVariTime(variTime: bigint | number): TimeInstant;
+	static fromTicks(ticks: bigint | number): TimeInstant;
 	addDay(val: number): TimeInstant;
 	addHour(val: number): TimeInstant;
 	addMinute(val: number): TimeInstant;
@@ -122,26 +123,26 @@ export class TimeInstant
 	diffSecDbl(ts: TimeInstant): number;
 	diff(ts: TimeInstant): Duration;
 	toTicks(): number;
-	toDotNetTicks(): number;
+	toDotNetTicks(): bigint;
 	toUnixTimestamp(): number;
-	toEpochSec(): number;
-	toEpochMS(): number;
-	toEpochNS(): number;
+	toEpochSec(): bigint;
+	toEpochMS(): bigint;
+	toEpochNS(): bigint;
 }
 
 export class Timestamp {
 	constructor(inst: TimeInstant, tzQhr?: number);
-	static fromTicks(ticks: number, tzQhr?: number): Timestamp;
+	static fromTicks(ticks: number | number, tzQhr?: number): Timestamp;
 	static fromStr(str: string, defTzQhr?: number): Timestamp;
 	static now(): Timestamp;
 	static utcNow(): Timestamp;
 	static fromVariTime(variTime: any): Timestamp;
 	static fromSecNS(unixTS: number, nanosec: number, tzQhr?: number): Timestamp;
-	static fromDotNetTicks(ticks: number, tzQhr?: number): Timestamp;
-	static fromEpochSec(epochSec: number, tzQhr?: number): Timestamp;
-	static fromEpochMS(epochMS: number, tzQhr?: number): Timestamp;
-	static fromEpochUS(epochUS: number, tzQhr?: number): Timestamp;
-	static fromEpochNS(epochNS: number, tzQhr?: number): Timestamp;
+	static fromDotNetTicks(ticks: bigint, tzQhr?: number): Timestamp;
+	static fromEpochSec(epochSec: number | bigint, tzQhr?: number): Timestamp;
+	static fromEpochMS(epochMS: number | bigint, tzQhr?: number): Timestamp;
+	static fromEpochUS(epochUS: number | bigint, tzQhr?: number): Timestamp;
+	static fromEpochNS(epochNS: number | bigint, tzQhr?: number): Timestamp;
 	static fromTimeValue(tval: TimeValue): Timestamp;
 	static fromYMDHMS(ymdhms: number, tzQhr?: number): Timestamp;
 	addMonth(val: number): Timestamp;
@@ -166,9 +167,9 @@ export class Timestamp {
 	toTicks(): number;
 	toDotNetTicks(): number;
 	toUnixTimestamp(): number;
-	toEpochSec(): number;
-	toEpochMS(): number;
-	toEpochNS(): number;
+	toEpochSec(): bigint;
+	toEpochMS(): bigint;
+	toEpochNS(): bigint;
 	toString(pattern?: string): string;
 	toStringISO8601(): string;
 	toStringNoZone(): string;

@@ -1,3 +1,4 @@
+import {ASN1Names} from "./certutil";
 import * as data from "./data";
 import * as hash from "./hash";
 
@@ -170,7 +171,7 @@ export abstract class X509File extends ASN1Data
 	static appendGeneralNames(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
 	static appendGeneralName(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
 	static appendDistributionPoint(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
-	static appendIntegerppendDistributionPointName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
+	static appendDistributionPointName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
 	static appendPolicyInformation(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
 	static appendPKCS7SignedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
 	static appendPKCS7DigestAlgorithmIdentifiers(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
@@ -234,6 +235,24 @@ export class X509Cert extends X509File
 	getSerialNumber(): ArrayBuffer | null;
 }
 
+export class X509CertReq extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+	isValid(): CertValidStatus;
+	
+	clone(): X509CertReq;
+	toString(): string;
+	createNames(): ASN1Names;
+
+	getNames(): CertNames;
+	getExtensions(): CertExtensions;
+	getNewPublicKey(): X509Key;
+	getKeyId(): ArrayBuffer | null; //20 bytes
+}
+
 export class X509Key extends X509File
 {
 	constructor(sourceName: string, buff: ArrayBuffer, keyType: KeyType);
@@ -266,6 +285,25 @@ export class X509Key extends X509File
 	static fromECPublicKey(buff: ArrayBuffer, paramOID: ArrayBuffer): X509Key;
 }
 
+export class X509PrivKey extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+	isValid(): CertValidStatus;
+
+	clone(): X509PrivKey;
+	toString(): string;
+	createNames(): ASN1Names;
+	
+	getKeyType(): KeyType;
+	createKey(): X509Key;
+
+	static createFromKeyBuff(keyType: KeyType, buff: ArrayBuffer, sourceName: string): X509PrivKey;
+	static createFromKey(key: X509Key): X509PrivKey;
+}
+
 export class X509PubKey extends X509File
 {
 	constructor(sourceName: string, buff: ArrayBuffer);
@@ -281,6 +319,88 @@ export class X509PubKey extends X509File
 
 	static createFromKeyBuff(keyType: KeyType, buff: ArrayBuffer, sourceName: string): X509PubKey;
 	static createFromKey(key: X509Key): X509PubKey;
+}
+
+export class X509PKCS7 extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+	
+	getCertCount(): number;
+	getCertName(index: number): string;
+	getNewCert(index: number): X509Cert;
+	isValid(): CertValidStatus;
+
+	clone(): X509PKCS7;
+	toString(): string;
+	createNames(): ASN1Names;
+
+	isSignData(): boolean;
+	getDigestType(): hash.HashType;
+	getMessageDigest(): ArrayBuffer;
+	getEncryptedDigest(): ArrayBuffer;
+}
+
+export class X509PKCS12 extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+	getCertCount(): number;
+	getCertName(index: number): string;
+	getNewCert(index: number): X509Cert;
+	isValid(): CertValidStatus;
+
+	clone(): X509PKCS12;
+	toString(): string;
+	createNames(): ASN1Names;
+}
+
+export class X509FileList extends X509File
+{
+	fileList: X509File[];
+
+	constructor(sourceName: string, cert: X509Cert);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+
+	getCertCount(): number;
+	getCertName(index: number): string | null;
+	getNewCert(index: number): X509Cert | null;
+	isValid(): CertValidStatus;
+
+	clone(): X509FileList;
+	createX509Cert(): X509Cert;
+	toString(): string;
+	createNames(): ASN1Names;
+
+	addFile(file: X509File): void;
+	getFileCount(): number;
+	getFile(index: number): X509File;
+	setDefaultSourceName(): void;
+}
+
+export class X509CRL extends X509File
+{
+	constructor(sourceName: string, buff: ArrayBuffer);
+
+	getFileType(): X509FileType;
+	toShortName(): string;
+	isValid(): CertValidStatus;
+	
+	clone(): X509CRL;
+	toString(): string;
+	createNames(): ASN1Names;
+
+	hasVersion(): boolean;
+	getIssuerCN(): string | null;
+	getThisUpdate(): data.Timestamp | null;
+	getNextUpdate(): data.Timestamp | null;
+	isRevoked(cert: X509Cert): boolean;
 }
 
 export function algTypeGetHash(algType: AlgType): hash.HashType;

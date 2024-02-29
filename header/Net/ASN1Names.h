@@ -84,6 +84,7 @@ namespace Net
 		NotNullPtr<ASN1Names> SetRSAPrivateKey(); //PKCS-1
 		NotNullPtr<ASN1Names> SetPKCS7ContentInfo(); //PKCS-7
 		NotNullPtr<ASN1Names> SetCertificationRequest(); //PKCS-10
+		NotNullPtr<ASN1Names> SetCertificationList(); //RFC5280
 		NotNullPtr<ASN1Names> SetPFX(); //PKCS-12
 	};
 }

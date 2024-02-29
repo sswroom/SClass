@@ -332,7 +332,7 @@ export class ASN1Util
 					sb.push("{");
 					outLines.push(sb.join(""));
 					if (names) names.readContainerBegin();
-					ASN1Util.pduToString(reader, len.nextOfst + 1, len.nextOfst + len.pduLen, outLines, level + 1, names);
+					ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
 					if (names) names.readContainerEnd();
 					outLines.push("\t".repeat(level)+"}");
 				}
@@ -630,18 +630,18 @@ export class ASN1Util
 				sb.push("CHOICE[");
 				sb.push((type - 0x80).toString());
 				sb.push("] ");
-				if (reader.readUTF8(startOfst + 1) == 0x80)
+				if (reader.readUInt8(startOfst + 1) == 0x80)
 				{
 					sb.push("{");
 					outLines.push(sb.join(""));
 					if (names) names.readContainerBegin();
-					if (ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names) == null)
+					startOfst = ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
+					if (startOfst == null)
 					{
 						return false;
 					}
 					if (names) names.readContainerEnd();
 					outLines.push("\t".repeat(level)+"}");
-					startOfst = len.nextOfst + len.pduLen;
 				}
 				else
 				{
@@ -685,18 +685,18 @@ export class ASN1Util
 				sb.push("CONTEXT SPECIFIC[");
 				sb.push((type - 0xA0).toString());
 				sb.push("] ");
-				if (reader.readUTF8(startOfst + 1) == 0x80)
+				if (reader.readUInt8(startOfst + 1) == 0x80)
 				{
 					sb.push("{");
 					outLines.push(sb.join(""));
 					if (names) names.readContainerBegin();
-					if (ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names) == null)
+					startOfst = ASN1Util.pduToString(reader, len.nextOfst, endOfst, outLines, level + 1, names);
+					if (startOfst == null)
 					{
 						return false;
 					}
 					if (names) names.readContainerEnd();
 					outLines.push("\t".repeat(level)+"}");
-					startOfst = len.nextOfst + len.pduLen;
 				}
 				else
 				{
@@ -749,7 +749,7 @@ export class ASN1Util
 			{
 				return startOfst + 2;
 			}
-			else if (pdu[1] == 0x80)
+			else if (reader.readUInt8(startOfst + 1) == 0x80)
 			{
 				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
 				if (startOfst == null)
@@ -1529,6 +1529,12 @@ export class ASN1Names
 	setCertificationRequest()
 	{
 		PKCS10.certificationRequest(this);
+		return this;
+	}
+
+	setCertificateList()
+	{
+		PKIX1Explicit88.certificateList(this);
 		return this;
 	}
 

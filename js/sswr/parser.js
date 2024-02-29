@@ -1,4 +1,5 @@
 import * as cert from "./cert.js";
+import { ASN1Util } from "./certutil.js";
 import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
@@ -1011,6 +1012,126 @@ function parseX509(reader, fileName, mime)
 				}
 				files.push(new cert.X509Key(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer, cert.KeyType.RSA));
 			}
+			else if (lines[i] == "-----BEGIN DSA PRIVATE KEY-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END DSA PRIVATE KEY-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509Key(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer, cert.KeyType.DSA));
+			}
+			else if (lines[i] == "-----BEGIN EC PRIVATE KEY-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END EC PRIVATE KEY-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509Key(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer, cert.KeyType.ECDSA));
+			}
+			else if (lines[i] == "-----BEGIN PRIVATE KEY-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END PRIVATE KEY-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509PrivKey(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer));
+			}
+			else if (lines[i] == "-----BEGIN PUBLIC KEY-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END PUBLIC KEY-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509PubKey(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer));
+			}
+			else if (lines[i] == "-----BEGIN CERTIFICATE REQUEST-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END CERTIFICATE REQUEST-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509CertReq(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer));
+			}
+			else if (lines[i] == "-----BEGIN NEW CERTIFICATE REQUEST-----")
+			{
+				let b64 = [];
+				i++;
+				while (true)
+				{
+					if (i >= j)
+						return null;
+					if (lines[i] == "-----END NEW CERTIFICATE REQUEST-----")
+					{
+						break;
+					}
+					else
+					{
+						b64.push(lines[i]);
+					}
+					i++;
+				}
+				files.push(new cert.X509CertReq(fileName, new text.Base64Enc().decodeBin(b64.join("")).buffer));
+			}
 			i++;
 		}
 		if (files.length == 1)
@@ -1019,14 +1140,37 @@ function parseX509(reader, fileName, mime)
 		}
 		else if (files.length > 1)
 		{
-			console.log("X509FileList");
-			return null;
+			let fileList = new cert.X509FileList(fileName, files[0]);
+			let i = 1;
+			while (i < files.length)
+			{
+				fileList.addFile(files[i]);
+				i++;
+			}
+			return fileList;
 		}
 		console.log("Unsupported file", fileName, mime);
 	}
-	else
+	else if (reader.readUInt8(0) == 0x30 && ASN1Util.pduIsValid(reader, 0, reader.getLength()))
 	{
-
+		fileName = fileName.toUpperCase();
+		console.log(mime);
+		if (mime == "application/x-pkcs12" || fileName.endsWith(".P12") || fileName.endsWith(".PFX"))
+		{
+			return new cert.X509PKCS12(fileName, reader.getArrayBuffer());
+		}
+		else if (mime == "application/x-x509-ca-cert" || mime == "application/x-x509-user-cert" || mime == "application/pkix-cert" || fileName.endsWith(".DER") || fileName.endsWith(".CER") || fileName.endsWith(".CRT"))
+		{
+			return new cert.X509Cert(fileName, reader.getArrayBuffer());
+		}
+		else if (mime == "application/x-pkcs7-certificates" || fileName.endsWith(".P7B") || fileName.endsWith(".P7S"))
+		{
+			return new cert.X509PKCS7(fileName, reader.getArrayBuffer());
+		}
+		else if (mime == "application/pkix-crl" || fileName.endsWith(".CRL"))
+		{
+			return new cert.X509CRL(fileName, reader.getArrayBuffer());
+		}
 	}
 	return null;
 }

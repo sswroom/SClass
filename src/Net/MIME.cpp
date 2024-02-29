@@ -89,6 +89,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("opus"), UTF8STRC("audio/opus")},
 	{UTF8STRC("otf"),  UTF8STRC("font/otf")},
 	{UTF8STRC("p10"),  UTF8STRC("application/pkcs10")},
+	{UTF8STRC("p12"),  UTF8STRC("application/x-pkcs12")},
 	{UTF8STRC("p7c"),  UTF8STRC("application/pkcs7-mime")},
 	{UTF8STRC("p7m"),  UTF8STRC("application/pkcs7-mime")},
 	{UTF8STRC("p7s"),  UTF8STRC("application/pkcs7-signature")},

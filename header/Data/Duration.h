@@ -271,7 +271,7 @@ namespace Data
 			{
 				Int32 ns = (Int32)us % 1000000;
 				Int64 seconds = us / 1000000;
-				if (ns != 0)
+				if (ns == 0)
 					return Data::Duration(seconds, 0);
 				else
 					return Data::Duration(seconds - 1, (UInt32)(-ns) * 1000);

@@ -156,6 +156,7 @@ export class ASN1Names
 	setRSAPrivateKey(): ASN1Names; //PKCS-1
 	setPKCS7ContentInfo(): ASN1Names; //PKCS-7
 	setCertificationRequest(): ASN1Names; //PKCS-10
+	setCertificateList(): ASN1Names; //RFC5280
 	setPFX(): ASN1Names; //PKCS-12
 }
 
