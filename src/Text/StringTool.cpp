@@ -205,7 +205,7 @@ Bool Text::StringTool::IsASCIIText(const Data::ByteArrayR &buff)
 Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 {
 	UOSInt atPos = INVALID_INDEX;
-	Bool dotFound = false;
+	const UTF8Char *dotPtr = 0;
 	const UTF8Char *startPtr = s;
 	UTF8Char c;
 	while ((c = *s++) != 0)
@@ -218,7 +218,7 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 		{
 			if (atPos != INVALID_INDEX)
 			{
-				dotFound = true;
+				dotPtr = s;
 			}
 		}
 		else if (c == '@')
@@ -228,7 +228,7 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 				return false;
 			}
 			atPos = (UOSInt)(s - startPtr - 1);
-			dotFound = false;
+			dotPtr = 0;
 
 		}
 		else
@@ -236,11 +236,146 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 			return false;
 		}
 	}
-	if (atPos == INVALID_INDEX || atPos == 0 || !dotFound)
+	if (atPos == INVALID_INDEX || atPos == 0 || dotPtr == 0 || (s - dotPtr) < 3)
 	{
 		return false;
 	}
 	return true;
+}
+
+Bool Text::StringTool::IsUInteger(const UTF8Char *s)
+{
+	UTF8Char c;
+	while ((c = *s++) != 0)
+	{
+		if (!Text::CharUtil::IsDigit(c))
+			return false;
+	}
+	return true;
+}
+
+Bool Text::StringTool::IsInteger(const UTF8Char *s)
+{
+	if (*s == '-')
+		s++;
+	return IsUInteger(s);
+}
+
+Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
+{
+	UTF8Char sbuff[9];
+	UOSInt idLen;
+	UTF8Char chk;
+	UOSInt ichk;
+	if (hkid.EndsWith(')'))
+	{
+		if (hkid.leng == 10)
+		{
+			if (hkid.v[7] == '(')
+			{
+				Text::StrConcatC(sbuff, hkid.v, 7);
+				idLen = 7;
+				chk = hkid.v[8];
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if (hkid.leng == 11)
+		{
+			if (hkid.v[8] == '(')
+			{
+				Text::StrConcatC(sbuff, hkid.v, 8);
+				idLen = 8;
+				chk = hkid.v[9];
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (hkid.leng == 8)
+		{
+			Text::StrConcatC(sbuff, hkid.v, 7);
+			idLen = 7;
+			chk = hkid.v[7];
+		}
+		else if (hkid.leng == 9)
+		{
+			Text::StrConcatC(sbuff, hkid.v, 8);
+			idLen = 8;
+			chk = hkid.v[8];
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (Text::CharUtil::IsDigit(chk))
+		ichk = chk - 0x30;
+	else if (chk == 'A')
+		ichk = 10;
+	else
+		return false;
+
+	UOSInt thisChk;
+	if (idLen == 8)
+	{
+		if (!Text::CharUtil::IsUpperCase(sbuff[0]) ||
+			!Text::CharUtil::IsUpperCase(sbuff[1]) ||
+			!Text::CharUtil::IsDigit(sbuff[2]) ||
+			!Text::CharUtil::IsDigit(sbuff[3]) ||
+			!Text::CharUtil::IsDigit(sbuff[4]) ||
+			!Text::CharUtil::IsDigit(sbuff[5]) ||
+			!Text::CharUtil::IsDigit(sbuff[6]) ||
+			!Text::CharUtil::IsDigit(sbuff[7]))
+				return false;
+		
+		thisChk = 0;
+		thisChk += (UOSInt)(sbuff[0] - 'A' + 10) * 9;
+		thisChk += (UOSInt)(sbuff[1] - 'A' + 10) * 8;
+		thisChk += (UOSInt)(sbuff[2] - '0') * 7;
+		thisChk += (UOSInt)(sbuff[3] - '0') * 6;
+		thisChk += (UOSInt)(sbuff[4] - '0') * 5;
+		thisChk += (UOSInt)(sbuff[5] - '0') * 4;
+		thisChk += (UOSInt)(sbuff[6] - '0') * 3;
+		thisChk += (UOSInt)(sbuff[7] - '0') * 2;
+		if (ichk != (thisChk % 11))
+			return false;
+		return true;
+	}
+	else
+	{
+		if (!Text::CharUtil::IsUpperCase(sbuff[0]) ||
+			!Text::CharUtil::IsDigit(sbuff[1]) ||
+			!Text::CharUtil::IsDigit(sbuff[2]) ||
+			!Text::CharUtil::IsDigit(sbuff[3]) ||
+			!Text::CharUtil::IsDigit(sbuff[4]) ||
+			!Text::CharUtil::IsDigit(sbuff[5]) ||
+			!Text::CharUtil::IsDigit(sbuff[6]))
+				return false;
+
+		thisChk = 0;
+		thisChk += (UOSInt)(sbuff[0] - 'A' + 10) * 8;
+		thisChk += (UOSInt)(sbuff[1] - '0') * 7;
+		thisChk += (UOSInt)(sbuff[2] - '0') * 6;
+		thisChk += (UOSInt)(sbuff[3] - '0') * 5;
+		thisChk += (UOSInt)(sbuff[4] - '0') * 4;
+		thisChk += (UOSInt)(sbuff[5] - '0') * 3;
+		thisChk += (UOSInt)(sbuff[6] - '0') * 2;
+		if (ichk != (thisChk % 11))
+			return false;
+		return true;
+	}
 }
 
 const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)

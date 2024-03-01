@@ -21,6 +21,7 @@ namespace Text
 		static Bool IsWS(const UTF8Char *sptr);
 		static Bool IsPunctuation(UTF8Char c);
 		static Bool IsAlphaNumeric(UTF8Char c);
+		static Bool IsDigit(UTF8Char c);
 		static Bool IsAlphabet(UTF8Char c);
 		static Bool UTF8CharValid(const UTF8Char *sptr);
 		static const UnicodeBlock *GetUnicodeBlock(UTF32Char c);

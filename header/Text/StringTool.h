@@ -28,6 +28,9 @@ namespace Text
 		static Bool IsNonASCII(const UTF8Char *s);
 		static Bool IsASCIIText(const Data::ByteArrayR &buff);
 		static Bool IsEmailAddress(const UTF8Char *s);
+		static Bool IsUInteger(const UTF8Char *s);
+		static Bool IsInteger(const UTF8Char *s);
+		static Bool IsHKID(Text::CStringNN hkid);
 		static const UTF8Char *Null2Empty(const UTF8Char *s);
 		static Bool SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayList<Double>> outArr);
 		static UOSInt SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayListStringNN> outArr);

@@ -375,6 +375,11 @@ Bool Text::CharUtil::IsAlphaNumeric(UTF8Char c)
 	return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
+Bool Text::CharUtil::IsDigit(UTF8Char c)
+{
+	return (c >= '0' && c <= '9');
+}
+
 Bool Text::CharUtil::IsAlphabet(UTF8Char c)
 {
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
