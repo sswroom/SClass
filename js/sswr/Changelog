@@ -12,6 +12,7 @@
 -Added hash.SHA1
 -Added net.getIPv4Name
 -Added text.splitLines
+-Added unit.Count.wellFormat, unit.Count.wellFormatBin
 -Added web.getCacheSize
 
 1.5.5

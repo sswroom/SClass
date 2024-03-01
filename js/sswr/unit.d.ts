@@ -83,6 +83,8 @@ export class Count
 	static getUnitInfo(u: Count.Unit): UnitInfo<Count.Unit> | null;
 	static getUnitRatio(u: Count.Unit) : number;
 	static convert(fromUnit: Count.Unit, toUnit: Count.Unit, fromValue: number): number;
+	static wellFormat(val: number, nDecimal?: number): string;
+	static wellFormatBin(val: number, nDecimal?: number): string;
 }
 
 module Distance

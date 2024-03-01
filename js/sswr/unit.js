@@ -1,3 +1,5 @@
+import * as math from "./math.js";
+
 export class UnitInfo
 {
 	constructor(unit, symbol, name, ratio, scale)
@@ -215,6 +217,114 @@ export class Count
 	static convert(fromUnit, toUnit, fromValue)
 	{
 		return fromValue * ApparentPower.getUnitRatio(fromUnit) / ApparentPower.getUnitRatio(toUnit);
+	}
+
+	static wellFormat(val, nDecimal)
+	{
+		if (nDecimal == null || nDecimal < 1)
+			nDecimal = 2;
+		let lval = Math.log10(val);
+		if (lval < 0)
+		{
+			if (lval >= -2)
+			{
+				return math.roundToStr(val * 100, nDecimal)+"c";
+			}
+			else if (lval >= -3)
+			{
+				return math.roundToStr(val * 1000, nDecimal)+"m";
+			}
+			else if (lval >= -6)
+			{
+				return math.roundToStr(val * 1000000, nDecimal)+"u";
+			}
+			else if (lval >= -9)
+			{
+				return math.roundToStr(val * 1.0e9, nDecimal)+"n";
+			}
+			else if (lval >= -12)
+			{
+				return math.roundToStr(val * 1.0e12, nDecimal)+"p";
+			}
+			else if (lval >= -15)
+			{
+				return math.roundToStr(val * 1.0e15, nDecimal)+"f";
+			}
+			else if (lval >= -18)
+			{
+				return math.roundToStr(val * 1.0e18, nDecimal)+"a";
+			}
+			else if (lval >= -21)
+			{
+				return math.roundToStr(val * 1.0e21, nDecimal)+"z";
+			}
+			else
+			{
+				return math.roundToStr(val * 1.0e24, nDecimal)+"y";
+			}
+		}
+		else if (lval < 3)
+		{
+			return math.roundToStr(val, nDecimal);
+		}
+		else if (lval < 6)
+		{
+			return math.roundToStr(val / 1.0e3, nDecimal)+"k";
+		}
+		else if (lval < 9)
+		{
+			return math.roundToStr(val / 1.0e6, nDecimal)+"M";
+		}
+		else if (val < 12)
+		{
+			return math.roundToStr(val / 1.0e9, nDecimal)+"G";
+		}
+		else if (val < 15)
+		{
+			return math.roundToStr(val / 1.0e12, nDecimal)+"T";
+		}
+		else if (val < 18)
+		{
+			return math.roundToStr(val / 1.0e15, nDecimal)+"P";
+		}
+		else if (val < 21)
+		{
+			return math.roundToStr(val / 1.0e18, nDecimal)+"E";
+		}
+		else if (val < 24)
+		{
+			return math.roundToStr(val / 1.0e21, nDecimal)+"Z";
+		}
+		else
+		{
+			return math.roundToStr(val / 1.0e24, nDecimal)+"Y";
+		}
+	}
+
+	static wellFormatBin(val, nDecimal)
+	{
+		if (nDecimal == null || nDecimal < 1)
+			nDecimal = 2;
+		if (val < 1024)
+		{
+			return math.roundToStr(val, nDecimal);
+		}
+		else if (val < 1048576)
+		{
+			return math.roundToStr(val / 1024, nDecimal)+"Ki";
+		}
+		else if (val < 1073741824)
+		{
+			return math.roundToStr(val / 1048576, nDecimal)+"Mi";
+		}
+		else if (val < 1099511627776)
+		{
+			return math.roundToStr(val / 1073741824, nDecimal)+"Gi";
+		}
+		else
+		{
+			return math.roundToStr(val / 1099511627776, nDecimal)+"Ti";
+		}
 	}
 }
 
