@@ -7,9 +7,12 @@
 -Added data.rol32, ror32, shl32, shr32, sar32
 -Added data.arrayBufferEquals
 -Change data.Duration, data.Timestamp, data.TimeInstant to bigint
+-Added cert.js
+-Added certutil.js
 -Added hash.SHA1
 -Added net.getIPv4Name
 -Added text.splitLines
+-Added web.getCacheSize
 
 1.5.5
 -Fixed web.Dialog in iframe

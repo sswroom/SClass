@@ -442,7 +442,7 @@ Text::CStringNN Text::CPPText::GetCppType(Data::VariItem::ItemType itemType, Boo
 	case Data::VariItem::ItemType::ByteArr:
 		return CSTR("Data::ReadonlyArr<UInt8>*");
 	case Data::VariItem::ItemType::Vector:
-		return CSTR("Math::Geometry::Vector2D*");
+		return CSTR("Optional<Math::Geometry::Vector2D>");
 	case Data::VariItem::ItemType::UUID:
 		return CSTR("Data::UUID*");
 	case Data::VariItem::ItemType::Unknown:

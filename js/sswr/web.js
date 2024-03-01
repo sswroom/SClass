@@ -742,6 +742,23 @@ export function propertiesToHTML(prop)
 	return ret.join("");
 }
 
+export async function getCacheSize(name)
+{
+	const cache = await caches.open(name);
+	const keys = await cache.keys();
+	let i;
+	let size = 0;
+	for (i in keys)
+	{
+		let resp = await cache.match(keys[i]);
+		if (resp)
+		{
+			size += (await resp.arrayBuffer()).byteLength;
+		}
+	}
+	return size;
+}
+
 export class Dialog
 {
 	constructor(content, options)

@@ -59,7 +59,7 @@ private:
 	Int16 rotation;
 	Text::String* routeno;
 	Text::String* secondSt;
-	Math::Geometry::Vector2D* shape;
+	Optional<Math::Geometry::Vector2D> shape;
 	Text::String* shielded;
 	Text::String* solarLtg;
 	Text::String* specMate;
@@ -161,8 +161,8 @@ public:
 	void SetRouteno(Text::String* routeno);
 	Text::String* GetSecondSt();
 	void SetSecondSt(Text::String* secondSt);
-	Math::Geometry::Vector2D* GetShape();
-	void SetShape(Math::Geometry::Vector2D* shape);
+	Optional<Math::Geometry::Vector2D> GetShape();
+	void SetShape(Optional<Math::Geometry::Vector2D> shape);
 	Text::String* GetShielded();
 	void SetShielded(Text::String* shielded);
 	Text::String* GetSolarLtg();
@@ -278,7 +278,7 @@ Lamppost::~Lamppost()
 	SDEL_STRING(this->remark3);
 	SDEL_STRING(this->routeno);
 	SDEL_STRING(this->secondSt);
-	SDEL_CLASS(this->shape);
+	this->shape.Delete();
 	SDEL_STRING(this->shielded);
 	SDEL_STRING(this->solarLtg);
 	SDEL_STRING(this->specMate);
@@ -735,15 +735,15 @@ void Lamppost::SetSecondSt(Text::String* secondSt)
 	this->secondSt = secondSt?secondSt->Clone().Ptr():0;
 }
 
-Math::Geometry::Vector2D* Lamppost::GetShape()
+Optional<Math::Geometry::Vector2D> Lamppost::GetShape()
 {
 	return this->shape;
 }
 
-void Lamppost::SetShape(Math::Geometry::Vector2D* shape)
+void Lamppost::SetShape(Optional<Math::Geometry::Vector2D> shape)
 {
-	SDEL_CLASS(this->shape);
-	this->shape = shape?shape->Clone().Ptr():0;
+	this->shape.Delete();
+	this->shape = shape.IsNull()?Optional<Math::Geometry::Vector2D>(0):shape.OrNull()->Clone();
 }
 
 Text::String* Lamppost::GetShielded()

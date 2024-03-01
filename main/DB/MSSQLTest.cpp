@@ -16,7 +16,7 @@ private:
 	Text::String* callsign;
 	Double latitude;
 	Double longitude;
-	Math::Geometry::Vector2D* geolocation;
+	Optional<Math::Geometry::Vector2D> geolocation;
 	Bool insideHkfir;
 	Bool insideAerodrome;
 	Bool insideApp;
@@ -55,8 +55,8 @@ public:
 	void SetLatitude(Double latitude);
 	Double GetLongitude() const;
 	void SetLongitude(Double longitude);
-	Math::Geometry::Vector2D* GetGeolocation() const;
-	void SetGeolocation(Math::Geometry::Vector2D* geolocation);
+	Optional<Math::Geometry::Vector2D> GetGeolocation() const;
+	void SetGeolocation(Optional<Math::Geometry::Vector2D> geolocation);
 	Bool GetInsideHkfir() const;
 	void SetInsideHkfir(Bool insideHkfir);
 	Bool GetInsideAerodrome() const;
@@ -167,7 +167,7 @@ AdsbMovementstatistics::~AdsbMovementstatistics()
 	SDEL_STRING(this->uploadId);
 	SDEL_STRING(this->finalUploadId);
 	SDEL_STRING(this->callsign);
-	SDEL_CLASS(this->geolocation);
+	this->geolocation.Delete();
 	SDEL_STRING(this->aircraftType);
 	SDEL_STRING(this->departure);
 	SDEL_STRING(this->destination);
@@ -240,15 +240,15 @@ void AdsbMovementstatistics::SetLongitude(Double longitude)
 	this->longitude = longitude;
 }
 
-Math::Geometry::Vector2D* AdsbMovementstatistics::GetGeolocation() const
+Optional<Math::Geometry::Vector2D> AdsbMovementstatistics::GetGeolocation() const
 {
 	return this->geolocation;
 }
 
-void AdsbMovementstatistics::SetGeolocation(Math::Geometry::Vector2D* geolocation)
+void AdsbMovementstatistics::SetGeolocation(Optional<Math::Geometry::Vector2D> geolocation)
 {
-	SDEL_CLASS(this->geolocation);
-	this->geolocation = geolocation?geolocation->Clone().Ptr():0;
+	this->geolocation.Delete();
+	this->geolocation = geolocation.IsNull()?Optional<Math::Geometry::Vector2D>(0):geolocation.OrNull()->Clone();
 }
 
 Bool AdsbMovementstatistics::GetInsideHkfir() const

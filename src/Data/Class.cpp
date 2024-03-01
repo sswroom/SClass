@@ -110,7 +110,7 @@ Bool Data::Class::AddField(Text::CString name, Data::ReadonlyArray<UInt8> *const
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr, false) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Math::Geometry::Vector2D *const *val)
+Bool Data::Class::AddField(Text::CString name, const Optional<Math::Geometry::Vector2D> *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector, false) != 0;
 }
@@ -362,8 +362,13 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 				sb->AppendC(UTF8STRC(");\r\n"));
 			}
 			break;
-		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(".Delete();\r\n"));
+			break;
+		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::UUID:
 			sb->AppendChar('\t', tabLev + 1);
 			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
@@ -474,8 +479,21 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(field->name);
 			break;
-		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(".Delete();\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(" = "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(".IsNull()?Optional<Math::Geometry::Vector2D>(0):"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(".OrNull()->Clone()"));
+			break;
+		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::UUID:
 			sb->AppendChar('\t', tabLev + 1);
 			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
