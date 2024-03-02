@@ -1147,56 +1147,52 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Ne
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
-	if (env.user && env.user->userType == UserType::Admin)
+	Sync::RWMutexUsage mutUsage;
+	Data::ArrayListNN<PeakInfo> peaks;
+	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
+	NotNullPtr<PeakInfo> peak;
+	Math::Vector3 pt;
+	me->env->PeakGetUnfin(mutUsage, peaks);
+	if (peaks.GetCount() > 0)
 	{
-		Sync::RWMutexUsage mutUsage;
-		Data::ArrayListNN<PeakInfo> peaks;
-		Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
-		NotNullPtr<PeakInfo> peak;
-		Math::Vector3 pt;
-		me->env->PeakGetUnfin(mutUsage, peaks);
-		if (peaks.GetCount() > 0)
+		Math::CoordinateSystem *csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+		Math::CoordinateSystem *csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
+		NotNullPtr<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+		NotNullPtr<Math::CoordinateSystem> csys;
+		Data::ArrayIterator<NotNullPtr<PeakInfo>> it = peaks.Iterator();
+		while (it.HasNext())
 		{
-			Math::CoordinateSystem *csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
-			Math::CoordinateSystem *csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
-			NotNullPtr<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateDefaultCsys();
-			NotNullPtr<Math::CoordinateSystem> csys;
-			Data::ArrayIterator<NotNullPtr<PeakInfo>> it = peaks.Iterator();
-			while (it.HasNext())
+			peak = it.Next();
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), peak->id);
+			json.ObjectAddStr(CSTR("refId"), peak->refId);
+			json.ObjectAddStr(CSTR("district"), peak->district);
+			if (peak->csys == 1 && csys.Set(csysHK))
 			{
-				peak = it.Next();
-				json.ArrayBeginObject();
-				json.ObjectAddInt32(CSTR("id"), peak->id);
-				json.ObjectAddStr(CSTR("refId"), peak->refId);
-				json.ObjectAddStr(CSTR("district"), peak->district);
-				if (peak->csys == 1 && csys.Set(csysHK))
-				{
-					pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
-				}
-				else if (peak->csys == 2 && csys.Set(csysMO))
-				{
-					pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
-				}
-				else
-				{
-					pt = Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight);
-				}
-				json.ObjectAddFloat64(CSTR("lon"), pt.GetLon());
-				json.ObjectAddFloat64(CSTR("lat"), pt.GetLat());
-				json.ObjectAddFloat64(CSTR("height"), pt.GetZ());
-				json.ObjectAddInt32(CSTR("status"), peak->status);
-				json.ObjectAddStrOpt(CSTR("name"), peak->name);
-				json.ObjectAddStrOpt(CSTR("type"), peak->type);
-				json.ObjectEnd();
+				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
 			}
-			SDEL_CLASS(csysHK);
-			SDEL_CLASS(csysMO);
-			csysWGS84.Delete();
+			else if (peak->csys == 2 && csys.Set(csysMO))
+			{
+				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+			}
+			else
+			{
+				pt = Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight);
+			}
+			json.ObjectAddFloat64(CSTR("lon"), pt.GetLon());
+			json.ObjectAddFloat64(CSTR("lat"), pt.GetLat());
+			json.ObjectAddFloat64(CSTR("height"), pt.GetZ());
+			json.ObjectAddInt32(CSTR("status"), peak->status);
+			json.ObjectAddStrOpt(CSTR("name"), peak->name);
+			json.ObjectAddStrOpt(CSTR("type"), peak->type);
+			json.ObjectEnd();
 		}
-		me->env->PeakFreeAll(peaks);
-		return me->ResponseJSON(req, resp, 0, json.Build());
+		SDEL_CLASS(csysHK);
+		SDEL_CLASS(csysMO);
+		csysWGS84.Delete();
 	}
-	return me->ResponseJSON(req, resp, 0, CSTR("[]"));
+	me->env->PeakFreeAll(peaks);
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUpdatePeak(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
