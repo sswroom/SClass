@@ -14,6 +14,7 @@ export enum LineBreakType
 
 export function zeroPad(val: string | number, ndigits: number): string;
 export function isInteger(s: string): boolean;
+export function isUInteger(s: string): boolean;
 export function toJSText(s: string): string;
 export function toXMLText(s: string): string;
 export function toAttrText(s: string): string;
@@ -25,6 +26,13 @@ export function toHex16(v: number): string;
 export function toHex32(v: number): string;
 export function u8Arr2Hex(buff: Uint8Array, byteSep: string, rowSep: string): string;
 export function splitLines(txt: string): string[];
+export function isEmailAddress(s: string): boolean;
+export function toUTF32Length(s: string): number;
+export function isHKID(s: string): boolean;
+export function charIsAlphaNumeric(s: string, index: number): boolean;
+export function charIsDigit(s: string, index: number): boolean;
+export function charIsUpperCase(s: string, index: number): boolean;
+export function charIsLowerCase(s: string, index: number): boolean;
 export function getEncList(): TextBinEnc[];
 
 export class TextBinEnc

@@ -364,7 +364,7 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 			!Text::CharUtil::IsDigit(sbuff[6]))
 				return false;
 
-		thisChk = 0;
+		thisChk = 36 * 9;
 		thisChk += (UOSInt)(sbuff[0] - 'A' + 10) * 8;
 		thisChk += (UOSInt)(sbuff[1] - '0') * 7;
 		thisChk += (UOSInt)(sbuff[2] - '0') * 6;

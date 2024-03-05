@@ -42,6 +42,25 @@ export function isInteger(s)
 	return true;
 }
 
+export function isUInteger(s)
+{
+	if (s === null)
+		return false;
+	let j = s.length;
+	if (j == 0)
+		return false;
+	let i = 0;
+	let c;
+	while (i < j)
+	{
+		c = s.charCodeAt(i);
+		if (c < 0x30 || c > 0x39)
+			return false;
+		i++;
+	}
+	return true;
+}
+
 export function toJSText(s)
 {
 	let out = "\"";
@@ -286,6 +305,228 @@ export function splitLines(txt)
 		}
 	}
 	return lines;
+}
+
+export function isEmailAddress(s)
+{
+	let atPos = -1;
+	let dotIndex = -1;
+	let c;
+	let i = 0;
+	let j = s.length;
+	while (i < j)
+	{
+		c = s.charAt(i);
+		if (charIsAlphaNumeric(s, i) || c == '-')
+		{
+
+		}
+		else if (c == '.')
+		{
+			if (atPos != -1)
+			{
+				dotIndex = i;
+			}
+		}
+		else if (c == '@')
+		{
+			if (atPos != -1)
+			{
+				return false;
+			}
+			atPos = i;
+			dotIndex = -1;
+		}
+		else
+		{
+			return false;
+		}
+		i++;
+	}
+	if (atPos == -1 || atPos == 0 || dotIndex == -1 || (j - dotIndex) < 2)
+	{
+		return false;
+	}
+	return true;
+}
+
+export function toUTF32Length(s)
+{
+	let i = 0;
+	let j = s.length;
+	let ret = 0;
+	while (i < j)
+	{
+		if (i + 1 < j)
+		{
+			let c1 = s.charCodeAt(i);
+			let c2 = s.charCodeAt(i + 1);
+			if (c1 >= 0xd800 && c1 < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
+			{
+				i += 2;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		else
+		{
+			i++;
+		}
+		ret++;
+	}
+	return ret;
+}
+
+export function isHKID(s)
+{
+	let hkid;
+	let chk;
+	let ichk;
+	if (s.endsWith(')'))
+	{
+		if (s.length == 10)
+		{
+			if (s.charAt(7) == '(')
+			{
+				hkid = s.substring(0, 7);
+				chk = s.charAt(8);
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if (s.length == 11)
+		{
+			if (s.charAt(8) == '(')
+			{
+				hkid = s.substring(0, 8);
+				chk = s.charAt(9);
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (s.length == 8)
+		{
+			hkid = s.substring(0, 7);
+			chk = s.charAt(7);
+		}
+		else if (s.length == 9)
+		{
+			hkid = s.substring(0, 8);
+			chk = s.charAt(8);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (charIsDigit(chk, 0))
+		ichk = Number.parseInt(chk);
+	else if (chk == 'A')
+		ichk = 10;
+	else
+	{
+		return false;
+	}
+
+	let thisChk;
+	if (hkid.length == 8)
+	{
+		if (!charIsUpperCase(hkid, 0) ||
+			!charIsUpperCase(hkid, 1) ||
+			!charIsDigit(hkid, 2) ||
+			!charIsDigit(hkid, 3) ||
+			!charIsDigit(hkid, 4) ||
+			!charIsDigit(hkid, 5) ||
+			!charIsDigit(hkid, 6) ||
+			!charIsDigit(hkid, 7))
+				return false;
+		
+		thisChk = 0;
+		thisChk += (hkid.charCodeAt(0) - 0x41 + 10) * 9;
+		thisChk += (hkid.charCodeAt(1) - 0x41 + 10) * 8;
+		thisChk += (hkid.charCodeAt(2) - 0x30) * 7;
+		thisChk += (hkid.charCodeAt(3) - 0x30) * 6;
+		thisChk += (hkid.charCodeAt(4) - 0x30) * 5;
+		thisChk += (hkid.charCodeAt(5) - 0x30) * 4;
+		thisChk += (hkid.charCodeAt(6) - 0x30) * 3;
+		thisChk += (hkid.charCodeAt(7) - 0x30) * 2;
+		if (ichk != (thisChk % 11))
+			return false;
+		return true;
+	}
+	else
+	{
+		if (!charIsUpperCase(hkid, 0) ||
+			!charIsDigit(hkid, 1) ||
+			!charIsDigit(hkid, 2) ||
+			!charIsDigit(hkid, 3) ||
+			!charIsDigit(hkid, 4) ||
+			!charIsDigit(hkid, 5) ||
+			!charIsDigit(hkid, 6))
+				return false;
+
+		thisChk = 36 * 9;
+		thisChk += (hkid.charCodeAt(0) - 0x41 + 10) * 8;
+		thisChk += (hkid.charCodeAt(1) - 0x30) * 7;
+		thisChk += (hkid.charCodeAt(2) - 0x30) * 6;
+		thisChk += (hkid.charCodeAt(3) - 0x30) * 5;
+		thisChk += (hkid.charCodeAt(4) - 0x30) * 4;
+		thisChk += (hkid.charCodeAt(5) - 0x30) * 3;
+		thisChk += (hkid.charCodeAt(6) - 0x30) * 2;
+		if (ichk != (thisChk % 11))
+			return false;
+		return true;
+	}
+}
+
+export function charIsAlphaNumeric(s, index)
+{
+	let c = s.charCodeAt(index);
+	if (c >= 0x30 && c <= 0x39)
+		return true;
+	if (c >= 0x41 && c <= 0x5A)
+		return true;
+	if (c >= 0x61 && c <= 0x7A)
+		return true;
+	return false;
+}
+
+export function charIsDigit(s, index)
+{
+	let c = s.charCodeAt(index);
+	if (c >= 0x30 && c <= 0x39)
+		return true;
+	return false;
+}
+
+export function charIsUpperCase(s, index)
+{
+	let c = s.charCodeAt(index);
+	if (c >= 0x41 && c <= 0x5A)
+		return true;
+	return false;
+}
+
+export function charIsLowerCase(s, index)
+{
+	let c = s.charCodeAt(index);
+	if (c >= 0x61 && c <= 0x7A)
+		return true;
+	return false;
 }
 
 export function getEncList()

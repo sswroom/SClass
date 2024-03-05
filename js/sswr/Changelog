@@ -1,3 +1,9 @@
+1.6.1
+-Added text.toUTF32Length
+-Added text.isUInteger
+-Added text.isEmailAddress, isHKID
+-Added text.charIsAlphaNumeric, text.charIsDigit, text.charIsUpperCase, text.charIsLowerCase
+
 1.6.0
 -Added data.ByteReader.readInt24/readUInt24
 -Added data.ByteReader.readUTF16
