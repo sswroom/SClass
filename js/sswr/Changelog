@@ -1,4 +1,5 @@
 1.6.1
+-Fixed parser: parseJpg and parseWebp problem
 -Added text.toUTF32Length
 -Added text.isUInteger
 -Added text.isEmailAddress, isHKID

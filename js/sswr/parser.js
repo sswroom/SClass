@@ -795,7 +795,7 @@ function parseKMLNode(kmlNode, doc)
 	}
 }
 
-async function parseJpg(reader)
+async function parseJpg(reader, sourceName)
 {
 	if (!(reader instanceof data.ByteReader))
 		return null;
@@ -933,7 +933,7 @@ async function parseJpg(reader)
 	return null;
 }
 
-async function parseWebp(reader)
+async function parseWebp(reader, sourceName)
 {
 	if (!(reader instanceof data.ByteReader))
 		return null;
