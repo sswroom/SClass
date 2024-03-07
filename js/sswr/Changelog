@@ -1,5 +1,8 @@
 1.6.1
 -Fixed parser: parseJpg and parseWebp problem
+-Modified data.Timestamp.fromStr to return null if error
+-Added data.LocalDate.fromStr
+-Added data.LocalDate.today
 -Added text.toUTF32Length
 -Added text.isUInteger
 -Added text.isEmailAddress, isHKID

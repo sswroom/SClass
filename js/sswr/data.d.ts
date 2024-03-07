@@ -97,6 +97,8 @@ export class LocalDate
 	toString(pattern: string | null): string;
 	compareTo(obj: Date): number;
 	isNull(): boolean;
+	static today(): LocalDate;
+	static fromStr(s: string): LocalDate | null;
 }
 
 export class TimeInstant
@@ -133,7 +135,7 @@ export class TimeInstant
 export class Timestamp {
 	constructor(inst: TimeInstant, tzQhr?: number);
 	static fromTicks(ticks: number | number, tzQhr?: number): Timestamp;
-	static fromStr(str: string, defTzQhr?: number): Timestamp;
+	static fromStr(str: string, defTzQhr?: number): Timestamp | null;
 	static now(): Timestamp;
 	static utcNow(): Timestamp;
 	static fromVariTime(variTime: any): Timestamp;

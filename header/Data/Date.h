@@ -132,6 +132,16 @@ namespace Data
 			return (this->dateVal < dt.dateVal);
 		}
 		
+		Bool operator>=(const Date &dt) const
+		{
+			return (this->dateVal >= dt.dateVal);
+		}
+
+		Bool operator<=(const Date &dt) const
+		{
+			return (this->dateVal <= dt.dateVal);
+		}
+		
 		OSInt CompareTo(NotNullPtr<const Data::Date> obj) const
 		{
 			if (this->dateVal > obj->dateVal)

@@ -1784,6 +1784,22 @@ export class LocalDate
 	{
 		return this.dateVal == LocalDate.DATE_NULL;
 	}
+
+	static today()
+	{
+		let d = new Date();
+		return new LocalDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+	}
+
+	static fromStr(s)
+	{
+		let timeVal = DateTimeUtil.string2TimeValue(s, 0);
+		if (timeVal)
+		{
+			return new LocalDate(timeVal.year, timeVal.month, timeVal.day);
+		}
+		return null;
+	}
 }
 
 export class TimeInstant
@@ -1979,9 +1995,9 @@ export class Timestamp
 	static fromStr(str, defTzQhr)
 	{
 		let tval = DateTimeUtil.string2TimeValue(str, defTzQhr);
-		if (tval == 0)
+		if (tval == null)
 		{
-			return new Timestamp(new TimeInstant(0, 0), defTzQhr);
+			return null;
 		}
 		else
 		{
