@@ -36,7 +36,7 @@ namespace SSWR
 			Bool UpdateRow();
 
 		public:
-			DiscDBDVDTypeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBDVDTypeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBDVDTypeForm();
 
 			virtual void OnMonitorChanged();

@@ -116,7 +116,7 @@ namespace SSWR
 			void UpdateProcHeaps();
 			void UpdateProcHeapDetail(Int32 heapId);
 		public:
-			AVIRCEProcInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCEProcInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCEProcInfoForm();
 		};
 	}

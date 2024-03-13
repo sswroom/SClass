@@ -49,7 +49,7 @@ namespace SSWR
 			static Text::TextBinEnc::ITextBinEnc *GetTextEncType(NotNullPtr<UI::GUIComboBox> cbo);
 			static void AddTextEncType(NotNullPtr<UI::GUIComboBox> cbo);
 		public:
-			AVIREncryptMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREncryptMsgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptMsgForm();
 
 			virtual void OnMonitorChanged();

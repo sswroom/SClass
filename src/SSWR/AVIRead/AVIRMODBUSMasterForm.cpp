@@ -550,7 +550,7 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream(Bool clearUI)
 	}
 }
 
-SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 576, 480, ui), recvBuff(4096), sendBuff(4096)
+SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 576, 480, ui), recvBuff(4096), sendBuff(4096)
 {
 	this->SetText(CSTR("MODBUS Master"));
 	this->SetFont(0, 0, 8.25, false);

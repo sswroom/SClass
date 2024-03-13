@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnSleepMSClicked(void *userObj);
 			static void __stdcall OnSleepUSClicked(void *userObj);
 		public:
-			AVIRTimeTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTimeTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimeTestForm();
 
 			virtual void OnMonitorChanged();

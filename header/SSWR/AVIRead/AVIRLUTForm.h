@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnChannelChg(void *userObj);
 			void UpdateValues();
 		public:
-			AVIRLUTForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut);
+			AVIRLUTForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut);
 			virtual ~AVIRLUTForm();
 
 			virtual void OnMonitorChanged();

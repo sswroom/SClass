@@ -34,7 +34,7 @@ namespace SSWR
 
 			void GenDestFileName(Text::CStringNN fileName, Bool decrypt);
 		public:
-			AVIRFileTextEncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRFileTextEncryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileTextEncryptForm();
 
 			virtual void OnMonitorChanged();

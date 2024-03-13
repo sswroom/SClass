@@ -50,7 +50,7 @@ namespace SSWR
 			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, Text::CString name);
 			void ClearDevices();
 		public:
-			AVIRBluetoothLEForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBluetoothLEForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothLEForm();
 
 			virtual void OnMonitorChanged();

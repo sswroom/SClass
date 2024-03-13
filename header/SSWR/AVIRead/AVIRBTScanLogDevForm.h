@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnCSVClicked(void *userObj);
 		public:
-			AVIRBTScanLogDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const IO::BTScanLog::DevEntry *entry);
+			AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const IO::BTScanLog::DevEntry *entry);
 			virtual ~AVIRBTScanLogDevForm();
 
 			virtual void OnMonitorChanged();

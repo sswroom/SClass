@@ -51,7 +51,7 @@ namespace SSWR
 			void LoadList();
 			void SaveList();
 		public:
-			DownMonMainForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core);
+			DownMonMainForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core);
 			virtual ~DownMonMainForm();
 		};
 	}

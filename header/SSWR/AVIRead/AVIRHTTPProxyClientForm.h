@@ -66,7 +66,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();
 		public:
-			AVIRHTTPProxyClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPProxyClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPProxyClientForm();
 
 			virtual void OnMonitorChanged();

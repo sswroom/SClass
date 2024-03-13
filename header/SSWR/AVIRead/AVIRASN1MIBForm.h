@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnObjectsSelChg(void *userObj);
 			void LoadFile(Text::CStringNN fileName);
 		public:
-			AVIRASN1MIBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRASN1MIBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1MIBForm();
 
 			virtual void OnMonitorChanged();

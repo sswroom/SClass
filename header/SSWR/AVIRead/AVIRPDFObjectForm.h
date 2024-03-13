@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnObjectSelChg(void *userObj);
 			static void __stdcall OnObjectDblClk(void *userObj);
 		public:
-			AVIRPDFObjectForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc);
+			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc);
 			virtual ~AVIRPDFObjectForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(void *userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPForwarderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPForwarderForm();
 
 			virtual void OnMonitorChanged();

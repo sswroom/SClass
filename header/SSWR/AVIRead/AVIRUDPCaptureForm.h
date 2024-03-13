@@ -83,7 +83,7 @@ namespace SSWR
 			static void __stdcall OnMulticastClicked(void *userObj);
 			static void __stdcall OnMulticastDoubleClk(void *userObj);
 		public:
-			AVIRUDPCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRUDPCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUDPCaptureForm();
 
 			virtual void OnMonitorChanged();

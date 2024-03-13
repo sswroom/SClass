@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnPublishClicked(void *userObj);
 
 		public:
-			AVIRMQTTPublishForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMQTTPublishForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTPublishForm();
 
 			virtual void OnMonitorChanged();

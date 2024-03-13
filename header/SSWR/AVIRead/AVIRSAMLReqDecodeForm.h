@@ -31,7 +31,7 @@ namespace SSWR
 		private:
 			static void __stdcall OnDecodeClicked(void *userObj);
 		public:
-			AVIRSAMLReqDecodeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSAMLReqDecodeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLReqDecodeForm();
 
 			virtual void OnMonitorChanged();

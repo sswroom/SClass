@@ -20,7 +20,7 @@ namespace SSWR
 			
 			static void __stdcall OnReloadClicked(void *userObj);
 		public:
-			OrganWebForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> eng);
+			OrganWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> eng);
 			virtual ~OrganWebForm();
 
 			Bool IsError();

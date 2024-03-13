@@ -458,7 +458,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVDefSMPTE240MChg(void *u
 	}
 }
 
-SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, MonitorHandle *hMon) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, MonitorHandle *hMon) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Monitor Color Setting"));
 	this->SetFont(0, 0, 8.25, false);

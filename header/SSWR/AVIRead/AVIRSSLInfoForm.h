@@ -50,7 +50,7 @@ namespace SSWR
 			static void __stdcall OnRAWClicked(void *userObj);
 			
 		public:
-			AVIRSSLInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSSLInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSSLInfoForm();
 
 			virtual void OnMonitorChanged();

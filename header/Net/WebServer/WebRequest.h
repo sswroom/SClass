@@ -51,13 +51,13 @@ namespace Net
 			virtual ~WebRequest();
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);
-			virtual Optional<Text::String> GetSHeader(Text::CStringNN name);
-			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen);
-			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name);
-			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names);
-			UOSInt GetHeaderCnt();
-			Text::String *GetHeaderName(UOSInt index);
-			Text::String *GetHeaderValue(UOSInt index);
+			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) const;
+			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const;
+			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) const;
+			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) const;
+			UOSInt GetHeaderCnt() const;
+			Text::String *GetHeaderName(UOSInt index) const;
+			Text::String *GetHeaderValue(UOSInt index) const;
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const;
 			virtual RequestProtocol GetProtocol() const;

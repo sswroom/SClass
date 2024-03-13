@@ -307,9 +307,21 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
-		if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+		NotNullPtr<Crypto::Cert::X509PrivKey> pkey = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(keyASN1);
+		Crypto::Cert::X509File::KeyType keyType = pkey->GetKeyType();
+		if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
 		{
-			return false;
+			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+			{
+				return false;
+			}
 		}
 		return true;
 	}
@@ -318,10 +330,22 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1));
 		if (privKey)
 		{
-			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+			Crypto::Cert::X509File::KeyType keyType = privKey->GetKeyType();
+			if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
 			{
-				DEL_CLASS(privKey);
-				return false;
+				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+				{
+					DEL_CLASS(privKey);
+					return false;
+				}
+			}
+			else
+			{
+				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+				{
+					DEL_CLASS(privKey);
+					return false;
+				}
 			}
 			DEL_CLASS(privKey);
 			return true;

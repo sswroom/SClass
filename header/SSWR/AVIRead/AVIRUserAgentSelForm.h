@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnUserAgentDblClk(void *userObj, UOSInt itemIndex);
 			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
-			AVIRUserAgentSelForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent);
+			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent);
 			virtual ~AVIRUserAgentSelForm();
 
 			virtual void OnMonitorChanged();

@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(void *userObj)
 	me->txtCacheCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::WebServer::WebListener> listener, NotNullPtr<Map::OSM::OSMCacheHandler> hdlr) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::WebServer::WebListener> listener, NotNullPtr<Map::OSM::OSMCacheHandler> hdlr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("OSM Cache"));
 	this->SetFont(0, 0, 8.25, false);

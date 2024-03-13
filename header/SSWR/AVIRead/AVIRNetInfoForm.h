@@ -194,7 +194,7 @@ namespace SSWR
 			void UpdateConns();
 			void UpdatePortStats();
 		public:
-			AVIRNetInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRNetInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetInfoForm();
 
 			virtual void OnMonitorChanged();

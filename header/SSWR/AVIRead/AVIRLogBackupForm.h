@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:
-			AVIRLogBackupForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogBackupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogBackupForm();
 
 			virtual void OnMonitorChanged();

@@ -27,7 +27,7 @@ namespace SSWR
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRGPIOStatusForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGPIOStatusForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPIOStatusForm();
 
 			virtual void OnMonitorChanged();

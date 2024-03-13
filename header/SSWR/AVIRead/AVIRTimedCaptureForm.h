@@ -80,7 +80,7 @@ namespace SSWR
 			void StopCapture();
 			void ReleaseFormats();
 		public:
-			AVIRTimedCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimedCaptureForm();
 
 			virtual void OnMonitorChanged();

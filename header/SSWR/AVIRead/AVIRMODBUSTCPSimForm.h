@@ -60,7 +60,7 @@ namespace SSWR
 			void UpdateDevList();
 			void UpdateDevValues();
 		public:
-			AVIRMODBUSTCPSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMODBUSTCPSimForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMODBUSTCPSimForm();
 
 			virtual void OnMonitorChanged();

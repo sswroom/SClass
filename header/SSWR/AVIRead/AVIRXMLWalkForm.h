@@ -28,7 +28,7 @@ namespace SSWR
 
 			void LoadFile(Text::CStringNN fileName);
 		public:
-			AVIRXMLWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRXMLWalkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRXMLWalkForm();
 
 			virtual void OnMonitorChanged();

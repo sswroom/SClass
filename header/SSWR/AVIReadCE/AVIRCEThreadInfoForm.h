@@ -55,7 +55,7 @@ namespace SSWR
 			static void __stdcall OnMyStackChg(void *userObj);
 			static void __stdcall OnMyStackDblClk(void *userObj, UOSInt index);
 		public:
-			AVIRCEThreadInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
+			AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
 			virtual ~AVIRCEThreadInfoForm();
 		};
 	}

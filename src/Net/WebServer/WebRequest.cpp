@@ -369,12 +369,12 @@ void Net::WebServer::WebRequest::AddHeader(Text::CStringNN name, Text::CStringNN
 	SDEL_STRING(s);
 }
 
-Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN name)
+Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN name) const
 {
 	return this->headers.GetC(name);
 }
 
-UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen)
+UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const
 {
 	Text::String *s = this->headers.GetC(name);
 	if (s)
@@ -387,7 +387,7 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN
 	}
 }
 
-Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name)
+Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) const
 {
 	Text::String *hdr = this->headers.GetC(name);
 	if (hdr == 0)
@@ -396,7 +396,7 @@ Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) const
 {
 	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
@@ -411,17 +411,17 @@ UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListStri
 	return j;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderCnt()
+UOSInt Net::WebServer::WebRequest::GetHeaderCnt() const
 {
 	return this->headers.GetCount();
 }
 
-Text::String *Net::WebServer::WebRequest::GetHeaderName(UOSInt index)
+Text::String *Net::WebServer::WebRequest::GetHeaderName(UOSInt index) const
 {
 	return this->headers.GetKey(index);
 }
 
-Text::String *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index)
+Text::String *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index) const
 {
 	return this->headers.GetItem(index);
 }

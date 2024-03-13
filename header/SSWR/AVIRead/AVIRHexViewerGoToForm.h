@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 
 		public:
-			AVIRHexViewerGoToForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileLen);
+			AVIRHexViewerGoToForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileLen);
 			virtual ~AVIRHexViewerGoToForm();
 
 			virtual void OnMonitorChanged();

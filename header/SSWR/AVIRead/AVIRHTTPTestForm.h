@@ -82,7 +82,7 @@ namespace SSWR
 			void ClearURLs();
 			Optional<Text::String> GetNextURL();
 		public:
-			AVIRHTTPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPTestForm();
 
 			virtual void OnMonitorChanged();

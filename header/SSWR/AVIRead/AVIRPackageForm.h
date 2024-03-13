@@ -143,7 +143,7 @@ namespace SSWR
 			void UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel);
 			void PasteFiles(NotNullPtr<Data::ArrayListStringNN> files, Bool move);
 		public:
-			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
+			AVIRPackageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

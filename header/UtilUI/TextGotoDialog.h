@@ -21,7 +21,7 @@ namespace UtilUI
 		static void __stdcall OnOKClicked(void *userObj);
 		static void __stdcall OnCancelClicked(void *userObj);
 	public:
-		TextGotoDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr);
+		TextGotoDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr);
 		virtual ~TextGotoDialog();
 
 		virtual void OnShow();

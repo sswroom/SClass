@@ -68,7 +68,7 @@ namespace SSWR
 			void UpdateSendDisp();
 
 		public:
-			AVIRStreamTermForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRStreamTermForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamTermForm();
 
 			virtual void OnMonitorChanged();

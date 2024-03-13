@@ -46,7 +46,7 @@ namespace SSWR
 			void RSSListLoad();
 			void RSSListStore();
 		public:
-			AVIRRSSReaderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRRSSReaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRSSReaderForm();
 
 			virtual void OnMonitorChanged();

@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnRandomClicked(void *userObj);
 
 		public:
-			AVIRGISRandomLocForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGISRandomLocForm();
 
 			virtual void OnMonitorChanged();

@@ -119,7 +119,7 @@ namespace SSWR
 			void ClearPOP3CACerts();
 			void ClearGCISCACerts();
 		public:
-			AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREmailServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailServerForm();
 
 			virtual void OnMonitorChanged();

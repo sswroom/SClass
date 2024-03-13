@@ -22,7 +22,7 @@ namespace SSWR
 			static void __stdcall OnOkClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			SHPConvGroupForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui);
+			SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui);
 			virtual ~SHPConvGroupForm();
 
 			virtual void OnMonitorChanged();

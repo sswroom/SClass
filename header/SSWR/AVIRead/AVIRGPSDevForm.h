@@ -150,7 +150,7 @@ namespace SSWR
 			void SendGetAlert(Int32 alertId);
 			void SendGetUser(Int32 userId);
 		public:
-			AVIRGPSDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGPSDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPSDevForm();
 
 			virtual void OnMonitorChanged();

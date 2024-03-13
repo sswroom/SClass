@@ -71,7 +71,7 @@ namespace SSWR
 			
 			void InitDB();
 		public:
-			AVIRRESTfulForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRRESTfulForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRESTfulForm();
 
 			virtual void OnMonitorChanged();

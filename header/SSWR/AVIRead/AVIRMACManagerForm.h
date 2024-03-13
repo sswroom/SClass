@@ -74,7 +74,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRMACManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMACManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACManagerForm();
 
 			virtual void OnMonitorChanged();

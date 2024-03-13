@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnGPSClick(void *userObj)
 //	SSWR::AVIRead::AVIRSetLocationSvcForm *me = (SSWR::AVIRead::AVIRSetLocationSvcForm*)userObj;
 }
 
-SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
+SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
 {
 	this->SetText(CSTR("Set Location Service"));
 	this->SetFont(0, 0, 8.25, false);

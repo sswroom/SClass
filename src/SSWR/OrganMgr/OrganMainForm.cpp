@@ -2496,7 +2496,7 @@ NotNullPtr<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetIm
 	return lyr;
 }
 
-SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

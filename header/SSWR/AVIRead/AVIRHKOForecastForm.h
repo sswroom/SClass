@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnReloadClicked(void *userObj);
 			void Reload(Net::HKOWeather::Language lang);
 		public:
-			AVIRHKOForecastForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHKOForecastForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHKOForecastForm();
 
 			virtual void OnMonitorChanged();

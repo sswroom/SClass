@@ -23,7 +23,7 @@ namespace SSWR
 
 			static void __stdcall OnExtractClicked(void *userObj);
 		public:
-			AVIRJSTextForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRJSTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJSTextForm();
 
 			virtual void OnMonitorChanged();

@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	enumList.FreeAll();
 }
 
-SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("C++ Enum to Switch case"));
 	this->SetFont(0, 0, 8.25, false);

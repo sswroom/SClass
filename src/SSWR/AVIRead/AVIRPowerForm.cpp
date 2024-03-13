@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnDisplayOffClicked(void *userObj)
 	me->ui->DisplayOff();
 }
 
-SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 168, ui)
+SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 168, ui)
 {
 	this->SetText(CSTR("Power Control"));
 	this->SetFont(0, 0, 8.25, false);

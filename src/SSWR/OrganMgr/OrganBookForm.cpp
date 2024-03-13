@@ -278,7 +278,7 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	}
 }
 
-SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->env = env;
 	this->changed = false;

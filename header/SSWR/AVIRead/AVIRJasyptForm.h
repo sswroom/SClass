@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnDecryptClicked(void *userObj);
 			static void __stdcall OnEncryptClicked(void *userObj);
 		public:
-			AVIRJasyptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRJasyptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJasyptForm();
 
 			virtual void OnMonitorChanged();

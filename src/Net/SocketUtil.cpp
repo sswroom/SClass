@@ -345,7 +345,22 @@ Bool Net::SocketUtil::SetAddrInfo(NotNullPtr<AddressInfo> addr, Text::CStringNN 
 	{
 		return false;
 	}
-	ipName.ConcatTo(sbuff);
+	if (ipName.StartsWith('['))
+	{
+		i = ipName.IndexOf(']');
+		if (i != INVALID_INDEX)
+		{
+			Text::StrConcatC(sbuff, ipName.v + 1, i - 2);
+		}
+		else
+		{
+			ipName.ConcatTo(sbuff);
+		}
+	}
+	else
+	{
+		ipName.ConcatTo(sbuff);
+	}
 
 	i = Text::StrSplit(sarr, 9, sbuff, ':');
 	if (i >= 9)

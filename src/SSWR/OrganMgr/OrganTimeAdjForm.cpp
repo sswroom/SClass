@@ -227,7 +227,7 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 	}
 }
 
-SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, DataFileInfo *dataFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, DataFileInfo *dataFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 	this->SetFont(0, 0, 10.5, false);

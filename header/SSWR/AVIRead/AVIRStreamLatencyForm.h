@@ -69,7 +69,7 @@ namespace SSWR
 			void StopStream();
 
 		public:
-			AVIRStreamLatencyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRStreamLatencyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamLatencyForm();
 
 			virtual void OnMonitorChanged();

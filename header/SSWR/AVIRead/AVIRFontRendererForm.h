@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnCharSelChg(void *userObj);
 		public:
-			AVIRFontRendererForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font);
+			AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font);
 			virtual ~AVIRFontRendererForm();
 
 			virtual void OnMonitorChanged();

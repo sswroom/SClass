@@ -34,7 +34,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static Bool IsImageFileName(Text::CString fileName);
 		public:
-			AVIRImageViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageViewerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

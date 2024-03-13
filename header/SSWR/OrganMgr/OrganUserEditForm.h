@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			OrganUserEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganWebUser *user);
+			OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganWebUser *user);
 			virtual ~OrganUserEditForm();
 
 			virtual void OnMonitorChanged();

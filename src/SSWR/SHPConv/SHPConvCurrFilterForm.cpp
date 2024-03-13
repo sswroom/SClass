@@ -35,7 +35,7 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnOkClicked(void *userObj)
 	me->Close();
 }
 
-SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
+SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
 {
 	this->SetText(CSTR("Current Filters"));
 	this->SetFont(0, 0, 8.25, false);

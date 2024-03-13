@@ -75,7 +75,7 @@ Net::WebServer::IWebRequest::~IWebRequest()
 	SDEL_TEXT(this->reqDevModel.v);
 }
 
-Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	NotNullPtr<Text::String> hdr;
 	UTF8Char domain[256];
@@ -96,7 +96,7 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilde
 	}
 }
 
-Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
+Bool Net::WebServer::IWebRequest::GetIfModifiedSince(NotNullPtr<Data::DateTime> dt) const
 {
 	NotNullPtr<Text::String> s;
 	if (this->GetSHeader(CSTR("If-Modified-Since")).SetTo(s))
@@ -109,7 +109,7 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 	return false;
 }
 
-Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	NotNullPtr<Text::String> cookie;
 	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
@@ -141,7 +141,7 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Tex
 	return found;
 }
 
-Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name)
+Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name) const
 {
 	NotNullPtr<Text::String> cookie;
 	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
@@ -391,6 +391,71 @@ UTF8Char *Net::WebServer::IWebRequest::BuildURLHost(UTF8Char *sbuff)
 		sbuff = Text::StrConcatC(sbuff, UTF8STRC("localhost"));
 	}
 	return sbuff;
+}
+
+void Net::WebServer::IWebRequest::GetRequestAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
+{
+	Text::StringBuilderUTF8 sb;
+	Text::PString s;
+	Text::PString nextStr;
+	UOSInt i;
+	if (this->GetHeaderC(sb, CSTR("Forwarded")))
+	{
+		s = sb;
+		while (true)
+		{
+			i = s.BranketSearch(0, ',');
+			if (i == INVALID_INDEX)
+				break;
+			s = s.SubstrTrim(i + 1);
+		}
+		while (true)
+		{
+			i = s.BranketSearch(0, ';');
+			if (i == INVALID_INDEX)
+				nextStr.v = 0;
+			else
+			{
+				nextStr = s.SubstrTrim(i + 1);
+				s.TrimToLength(i);
+			}
+
+			if (s.StartsWithICase(UTF8STRC("for=")))
+			{
+				if (s.v[4] == '"')
+				{
+					i = s.IndexOf(5, '"');
+					if (i != INVALID_INDEX)
+					{
+						s = s.Substring(5);
+						s.TrimToLength(i - 5);
+					}
+					else
+					{
+						s = s.Substring(4);
+					}
+				}
+				else
+				{
+					s = s.Substring(4);
+				}
+				if (Net::SocketUtil::SetAddrInfo(addr, s.ToCString()))
+					return;
+			}
+
+			if (nextStr.v == 0)
+				break;
+			s = nextStr;
+		}
+	}
+
+	sb.ClearStr();
+	if (this->GetHeaderC(sb, CSTR("X-Forwarded-For")))
+	{
+		if (Net::SocketUtil::SetAddrInfo(addr, sb.ToCString()))
+			return;
+	}
+	addr.SetVal(this->GetClientAddr().Ptr()[0]);
 }
 
 Text::CString Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)

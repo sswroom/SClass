@@ -50,7 +50,7 @@ namespace SSWR
 
 			void UpdateARPList();
 		public:
-			AVIRARPScanForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRARPScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRARPScanForm();
 
 			virtual void OnMonitorChanged();

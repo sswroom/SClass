@@ -50,7 +50,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRWiFiLogManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWiFiLogManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWiFiLogManagerForm();
 
 			virtual void OnMonitorChanged();

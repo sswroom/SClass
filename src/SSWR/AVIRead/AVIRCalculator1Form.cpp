@@ -150,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyEqual(void *userObj)
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-SSWR::AVIRead::AVIRCalculator1Form::AVIRCalculator1Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 412, 640, ui)
+SSWR::AVIRead::AVIRCalculator1Form::AVIRCalculator1Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 412, 640, ui)
 {
 	UTF8Char sbuff[32];
 	this->core = core;

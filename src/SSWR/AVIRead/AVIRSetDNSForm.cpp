@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnCancelClick(void *userObj)
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRSetDNSForm::AVIRSetDNSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 120, ui)
+SSWR::AVIRead::AVIRSetDNSForm::AVIRSetDNSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 120, ui)
 {
 	this->SetText(CSTR("Set DNS Server"));
 	this->SetFont(0, 0, 8.25, false);

@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnAXCANSerialClicked(void *userObj);
 			static void __stdcall OnAXCANFileClicked(void *userObj);
 		public:
-			AVIRSelCANForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr);
+			AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr);
 			virtual ~AVIRSelCANForm();
 
 			virtual void OnMonitorChanged();

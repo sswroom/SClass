@@ -25,7 +25,7 @@ namespace SSWR
 			static void __stdcall OnModifyClicked(void *userObj);
 			void UpdateUserList();
 		public:
-			OrganUserForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
+			OrganUserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			virtual ~OrganUserForm();
 
 			virtual void OnMonitorChanged();

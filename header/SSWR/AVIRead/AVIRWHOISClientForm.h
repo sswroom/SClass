@@ -31,7 +31,7 @@ namespace SSWR
 
 			static void __stdcall OnRequestClicked(void *userObj);
 		public:
-			AVIRWHOISClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWHOISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWHOISClientForm();
 
 			virtual void OnMonitorChanged();

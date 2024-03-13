@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnProcessClicked(void *userObj);
 			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 		public:
-			AVIRRNCryptorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRRNCryptorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRNCryptorForm();
 
 			virtual void OnMonitorChanged();

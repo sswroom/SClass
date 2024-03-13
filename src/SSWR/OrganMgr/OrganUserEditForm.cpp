@@ -64,7 +64,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganWebUser *user) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganWebUser *user) : UI::GUIForm(parent, 480, 160, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetNoResize(true);

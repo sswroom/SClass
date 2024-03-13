@@ -35,7 +35,7 @@ namespace SSWR
 			Text::TextBinEnc::TextBinEncList encList;
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIREncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREncryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptForm();
 
 			virtual void OnMonitorChanged();

@@ -122,7 +122,7 @@ void SSWR::AVIRead::AVIRGCISClientForm::ClearCliCACerts()
 	this->cliCACerts.Clear();
 }
 
-SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 640, ui)
+SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 640, ui)
 {
 	this->SetText(CSTR("GCIS Client"));
 	this->SetFont(0, 0, 8.25, false);

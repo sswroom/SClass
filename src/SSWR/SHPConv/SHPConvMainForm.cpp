@@ -1370,7 +1370,7 @@ NotNullPtr<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFi
 	return Text::String::NewNotNull(output.ToString());
 }
 
-SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
+SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
 {
 	this->SetText(CSTR("SHPConv"));
 	this->SetFont(0, 0, 8.25, false);

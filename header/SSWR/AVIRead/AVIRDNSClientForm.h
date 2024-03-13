@@ -53,7 +53,7 @@ namespace SSWR
 			static void __stdcall OnRequestClicked(void *userObj);
 			static void __stdcall OnAnswerSelChg(void *userObj);
 		public:
-			AVIRDNSClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDNSClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDNSClientForm();
 
 			virtual void OnMonitorChanged();

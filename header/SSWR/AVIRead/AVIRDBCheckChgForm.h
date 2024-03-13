@@ -107,7 +107,7 @@ namespace SSWR
 			Text::CString GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:
-			AVIRDBCheckChgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CStringNN table);
+			AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CStringNN table);
 			virtual ~AVIRDBCheckChgForm();
 
 			virtual void OnMonitorChanged();

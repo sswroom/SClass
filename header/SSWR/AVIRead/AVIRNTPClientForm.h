@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnGetTimeClicked(void *userObj);
 			static void __stdcall OnSyncTimeClicked(void *userObj);
 		public:
-			AVIRNTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRNTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNTPClientForm();
 
 			virtual void OnMonitorChanged();

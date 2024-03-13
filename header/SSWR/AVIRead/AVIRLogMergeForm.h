@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall OnOFileClicked(void *userObj);
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
-			AVIRLogMergeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogMergeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogMergeForm();
 
 			virtual void OnMonitorChanged();

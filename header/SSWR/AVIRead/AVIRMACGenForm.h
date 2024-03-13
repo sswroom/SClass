@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnAdapterSetClicked(void *userObj);
 			static OSInt __stdcall ListCompare(Data::ArrayList<Net::MACInfo::MACEntry*> *list1, Data::ArrayList<Net::MACInfo::MACEntry*> *list2);
 		public:
-			AVIRMACGenForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACGenForm();
 
 			virtual void OnMonitorChanged();

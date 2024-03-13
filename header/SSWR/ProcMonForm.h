@@ -62,7 +62,7 @@ namespace SSWR
 		static void __stdcall OnLogSelChg(void *userObj);
 		static void __stdcall OnTimerTick(void *userObj);
 	public:
-		ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui);
+		ProcMonForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui);
 		virtual ~ProcMonForm();
 	};
 }

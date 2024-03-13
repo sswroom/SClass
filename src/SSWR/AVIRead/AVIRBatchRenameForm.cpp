@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(void 
 	}
 }
 
-SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
+SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Batch Rename"));

@@ -71,7 +71,7 @@ namespace SSWR
 			void ClearGUIDs();
 			void UpdateDevList(BTStatus *btStatus);
 		public:
-			AVIRBluetoothForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBluetoothForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothForm();
 
 			virtual void OnMonitorChanged();

@@ -56,7 +56,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 	}
 }
 
-SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
+SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
 {
 	this->SetText(CSTR("Select Image"));
 	this->SetFont(0, 0, 8.25, false);

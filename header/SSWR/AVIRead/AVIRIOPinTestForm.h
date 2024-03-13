@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnPinLowClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRIOPinTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
+			AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
 			virtual ~AVIRIOPinTestForm();
 
 			virtual void OnMonitorChanged();

@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnOFileClicked(void *userObj);
 			static void __stdcall OnExtractClicked(void *userObj);
 		public:
-			AVIRLogExtractForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogExtractForm();
 
 			virtual void OnMonitorChanged();

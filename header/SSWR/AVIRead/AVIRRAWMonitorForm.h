@@ -211,7 +211,7 @@ namespace SSWR
 			static void __stdcall OnDeviceSelChg(void *userObj);
 
 		public:
-			AVIRRAWMonitorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::EthernetAnalyzer *analyzer);
+			AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::EthernetAnalyzer *analyzer);
 			virtual ~AVIRRAWMonitorForm();
 
 			virtual void OnMonitorChanged();

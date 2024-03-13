@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			OrganImageDetailForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, UserFileInfo *userFile);
+			OrganImageDetailForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, UserFileInfo *userFile);
 			virtual ~OrganImageDetailForm();
 
 			virtual void OnMonitorChanged();

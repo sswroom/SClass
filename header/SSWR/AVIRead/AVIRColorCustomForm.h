@@ -76,7 +76,7 @@ namespace SSWR
 			static void __stdcall OnWYUpClicked(void *userObj);
 			static void __stdcall OnCloseClicked(void *userObj);
 		public:
-			AVIRColorCustomForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::MonitorColorManager> monColor);
+			AVIRColorCustomForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::MonitorColorManager> monColor);
 			virtual ~AVIRColorCustomForm();
 
 			virtual void OnMonitorChanged();

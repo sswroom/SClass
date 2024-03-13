@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::RSSItem *rssItem) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::RSSItem *rssItem) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UOSInt i;
 	UTF8Char sbuff[128];

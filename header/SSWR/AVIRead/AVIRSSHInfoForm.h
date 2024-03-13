@@ -38,7 +38,7 @@ namespace SSWR
 			static void __stdcall OnQueryClicked(void *userObj);
 			
 		public:
-			AVIRSSHInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSSHInfoForm();
 
 			virtual void OnMonitorChanged();

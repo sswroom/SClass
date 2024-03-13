@@ -32,7 +32,7 @@ namespace SSWR
 
 			static void __stdcall OnGenerateClicked(void *userObj);
 		public:
-			AVIRTextHashForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTextHashForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTextHashForm();
 
 			virtual void OnMonitorChanged();

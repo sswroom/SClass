@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 			static void __stdcall FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 		public:
-			AVIROpenFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t);
+			AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t);
 			virtual ~AVIROpenFileForm();
 
 			virtual void OnMonitorChanged();

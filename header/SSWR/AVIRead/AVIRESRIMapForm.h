@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnOtherChanged(void *userObj);
 			static void __stdcall OnNoResourceChg(void *userObj, Bool newValue);
 		public:
-			AVIRESRIMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRESRIMapForm();
 
 			virtual void OnMonitorChanged();

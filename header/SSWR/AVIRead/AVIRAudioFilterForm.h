@@ -207,7 +207,7 @@ namespace SSWR
 			static void __stdcall OnAmplifierVolChg(void *userObj, UOSInt scrollPos);
 			void StopAudio();
 		public:
-			AVIRAudioFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool showMenu);
+			AVIRAudioFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool showMenu);
 			virtual ~AVIRAudioFilterForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

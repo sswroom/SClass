@@ -55,7 +55,7 @@ namespace SSWR
 
 			void StopStream();
 		public:
-			AVIRElectronicScaleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRElectronicScaleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRElectronicScaleForm();
 
 			virtual void OnMonitorChanged();

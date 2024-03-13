@@ -52,7 +52,7 @@ namespace SSWR
 			Bool OpenFile(Text::CStringNN fileName);
 			void ClearDecode();
 		public:
-			AVIRVideoInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRVideoInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVideoInfoForm();
 
 			virtual void OnMonitorChanged();

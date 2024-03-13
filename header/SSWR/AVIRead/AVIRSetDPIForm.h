@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnLaptopClicked(void *userObj);
 			void UpdatePreview();
 		public:
-			AVIRSetDPIForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSetDPIForm();
 
 			virtual void OnMonitorChanged();

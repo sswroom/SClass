@@ -58,7 +58,7 @@ namespace SSWR
 			static void __stdcall OnDestDBChg(void *userObj);
 			static void __stdcall OnCopyClicked(void *userObj);
 		public:
-			AVIRDBCopyTablesForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::ArrayList<DB::DBManagerCtrl*> *dbList);
+			AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::ArrayList<DB::DBManagerCtrl*> *dbList);
 			virtual ~AVIRDBCopyTablesForm();
 
 			virtual void OnMonitorChanged();

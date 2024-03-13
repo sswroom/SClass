@@ -66,7 +66,7 @@ namespace SSWR
 			void ExportTableXLSX();
 			void ExportTableExcelXML();
 		public:
-			AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease);
+			AVIRDBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease);
 			virtual ~AVIRDBForm();
 
 			void UpdateSchemas();

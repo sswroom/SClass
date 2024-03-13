@@ -55,7 +55,7 @@ namespace SSWR
 			void CloseFile();
 
 		public:
-			AVIRHQMPDSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
+			AVIRHQMPDSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
 			virtual ~AVIRHQMPDSForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

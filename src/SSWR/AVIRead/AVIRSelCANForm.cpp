@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Select CAN Bus"));
 	this->SetFont(0, 0, 8.25, false);

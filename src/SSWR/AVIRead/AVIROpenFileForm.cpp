@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::FileHandler(void *userObj, NotNu
 	}
 }
 
-SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
+SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText(CSTR("Open File"));
 	this->SetFont(0, 0, 8.25, false);

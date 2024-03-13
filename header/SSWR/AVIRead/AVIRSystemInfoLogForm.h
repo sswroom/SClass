@@ -40,7 +40,7 @@ namespace SSWR
 			IO::SystemInfoLog *sysInfo;
 
 		public:
-			AVIRSystemInfoLogForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo);
+			AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo);
 			virtual ~AVIRSystemInfoLogForm();
 
 			virtual void OnMonitorChanged();

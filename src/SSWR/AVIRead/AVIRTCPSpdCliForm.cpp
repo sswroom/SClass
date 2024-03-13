@@ -184,7 +184,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 	return 0;
 }
 
-SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 240, ui)
+SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("TCP Speed Client"));

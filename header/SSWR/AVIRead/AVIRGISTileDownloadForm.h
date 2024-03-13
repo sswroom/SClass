@@ -76,7 +76,7 @@ namespace SSWR
 			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
-			AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::TileMapLayer> lyr, IMapNavigator *navi);
+			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::TileMapLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISTileDownloadForm();
 
 			virtual void OnMonitorChanged();

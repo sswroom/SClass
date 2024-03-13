@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnDownloadLinkClicked(void *userObj);
 			static void __stdcall OnVideoNameClicked(void *userObj);
 		public:
-			AVIRWebSite48IdolForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWebSite48IdolForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSite48IdolForm();
 
 			virtual void OnMonitorChanged();

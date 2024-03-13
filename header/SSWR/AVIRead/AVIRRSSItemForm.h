@@ -39,7 +39,7 @@ namespace SSWR
 
 			static void __stdcall OnImageSelChg(void *userObj);
 		public:
-			AVIRRSSItemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::RSSItem *rssItem);
+			AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::RSSItem *rssItem);
 			virtual ~AVIRRSSItemForm();
 
 			virtual void OnMonitorChanged();

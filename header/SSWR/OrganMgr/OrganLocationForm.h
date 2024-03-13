@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnOkClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			OrganLocationForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, SelectMode selMode, Int32 initId);
+			OrganLocationForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, SelectMode selMode, Int32 initId);
 			virtual ~OrganLocationForm();
 
 			virtual void OnMonitorChanged();

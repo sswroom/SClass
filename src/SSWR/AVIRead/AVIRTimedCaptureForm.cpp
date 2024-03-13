@@ -285,7 +285,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::ReleaseFormats()
 	}
 }
 
-SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 480, ui)
+SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 480, ui)
 {
 	this->SetText(CSTR("Timed Capture"));
 	this->SetFont(0, 0, 8.25, false);

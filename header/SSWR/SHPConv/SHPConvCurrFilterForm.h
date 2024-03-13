@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnDeleteClicked(void *userObj);
 			static void __stdcall OnOkClicked(void *userObj);
 		public:
-			SHPConvCurrFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng);
+			SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SHPConvCurrFilterForm();
 
 			virtual void OnMonitorChanged();

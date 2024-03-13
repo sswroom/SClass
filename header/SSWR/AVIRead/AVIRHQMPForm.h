@@ -64,7 +64,7 @@ namespace SSWR
 			void SwitchAudio(OSInt audIndex);
 
 		public:
-			AVIRHQMPForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
+			AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
 			virtual ~AVIRHQMPForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

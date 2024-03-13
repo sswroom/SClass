@@ -62,7 +62,7 @@ namespace SSWR
 			void PBStop();
 			Bool PBIsPlaying();
 		public:
-			AVIRMediaForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile);
+			AVIRMediaForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile);
 			virtual ~AVIRMediaForm();
 		
 			virtual void EventMenuClicked(UInt16 cmdId);

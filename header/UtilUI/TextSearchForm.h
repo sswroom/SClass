@@ -22,7 +22,7 @@ namespace UtilUI
 		static void __stdcall OnSearchClicked(void *userObj);
 		static void __stdcall OnCloseClicked(void *userObj);
 	public:
-		TextSearchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm);
+		TextSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm);
 		virtual ~TextSearchForm();
 
 		virtual void OnShow();

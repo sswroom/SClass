@@ -27,7 +27,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(void *user
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 256, 152, ui)
+SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 256, 152, ui)
 {
 	this->SetText(CSTR("Value Filter"));
 	this->SetFont(0, 0, 8.25, false);

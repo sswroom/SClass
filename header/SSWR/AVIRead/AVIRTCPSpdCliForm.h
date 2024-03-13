@@ -49,7 +49,7 @@ namespace SSWR
 			static UInt32 __stdcall ProcThread(void *userObj);
 			static UInt32 __stdcall RecvThread(void *userObj);
 		public:
-			AVIRTCPSpdCliForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPSpdCliForm();
 
 			virtual void OnMonitorChanged();

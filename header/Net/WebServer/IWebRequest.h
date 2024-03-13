@@ -41,14 +41,14 @@ namespace Net
 			IWebRequest();
 			virtual ~IWebRequest();
 
-			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) = 0;
-			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) = 0;
-			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) = 0;
-			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) = 0;
-			Bool GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool GetIfModifiedSince(Data::DateTime *dt);
-			Bool GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
-			Optional<Text::String> GetCookieAsNew(Text::CStringNN name);
+			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) const = 0;
+			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const = 0;
+			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) const = 0;
+			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) const = 0;
+			Bool GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			Bool GetIfModifiedSince(NotNullPtr<Data::DateTime> dt) const;
+			Bool GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			Optional<Text::String> GetCookieAsNew(Text::CStringNN name) const;
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const = 0;
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
@@ -83,6 +83,7 @@ namespace Net
 			virtual Bool IsSecure() const = 0;
 			virtual Crypto::Cert::X509Cert *GetClientCert() = 0;
 			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize) = 0;
+			void GetRequestAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const;
 
 			Text::CString GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }
 			Net::BrowserInfo::BrowserType GetBrowser() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowser; }

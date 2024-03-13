@@ -222,7 +222,7 @@ namespace SSWR
 			void UpdateDNSList();
 			void UpdateBlackList();
 		public:
-			AVIRDNSProxyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDNSProxyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDNSProxyForm();
 
 			virtual void OnMonitorChanged();

@@ -47,7 +47,7 @@ namespace SSWR
 
 			static void __stdcall OnSendClicked(void *userObj);
 		public:
-			AVIRSMTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSMTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSMTPClientForm();
 
 			virtual void OnMonitorChanged();

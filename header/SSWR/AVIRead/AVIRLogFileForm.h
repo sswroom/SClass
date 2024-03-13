@@ -22,7 +22,7 @@ namespace SSWR
 			void UpdateLogMessages();
 			static void __stdcall OnLogsDblClk(void *userObj, UOSInt itemIndex);
 		public:
-			AVIRLogFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
+			AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
 			virtual ~AVIRLogFileForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(void *us
 	me->txtStatus->SetText(Net::Email::EmailValidator::StatusGetName(status));
 }
 
-SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->SetText(CSTR("Email Address Valid"));
 	this->SetFont(0, 0, 8.25, false);

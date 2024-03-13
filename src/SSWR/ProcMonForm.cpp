@@ -284,7 +284,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 	}
 }
 
-SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Process Monitor"));
 	this->SetFont(0, 0, 8.25, false);

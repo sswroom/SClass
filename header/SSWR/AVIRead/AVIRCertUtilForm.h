@@ -72,7 +72,7 @@ namespace SSWR
 			void DisplayExtensions(NotNullPtr<Crypto::Cert::CertExtensions> exts);
 			void ClearExtensions();
 		public:
-			AVIRCertUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCertUtilForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCertUtilForm();
 
 			virtual void OnMonitorChanged();

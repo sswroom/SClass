@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 	}
 }
 
-SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Program Links"));
 	this->SetFont(0, 0, 8.25, false);

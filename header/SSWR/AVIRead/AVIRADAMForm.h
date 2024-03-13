@@ -60,7 +60,7 @@ namespace SSWR
 			void StopStream(Bool clearUI);
 
 		public:
-			AVIRADAMForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRADAMForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRADAMForm();
 
 			virtual void OnMonitorChanged();

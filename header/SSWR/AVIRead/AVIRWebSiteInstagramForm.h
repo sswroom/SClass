@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnRequestUserClicked(void *userObj);
 			static void __stdcall OnPageClicked(void *userObj);
 		public:
-			AVIRWebSiteInstagramForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWebSiteInstagramForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSiteInstagramForm();
 
 			virtual void OnMonitorChanged();

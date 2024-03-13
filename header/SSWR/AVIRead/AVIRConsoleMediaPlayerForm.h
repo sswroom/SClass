@@ -53,7 +53,7 @@ namespace SSWR
 			void UpdateColorDisp();
 			Bool OpenICC(Text::CStringNN iccFile);
 		public:
-			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRConsoleMediaPlayerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRConsoleMediaPlayerForm();
 
 			virtual void OnMonitorChanged();

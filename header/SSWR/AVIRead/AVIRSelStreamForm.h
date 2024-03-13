@@ -100,7 +100,7 @@ namespace SSWR
 			static void __stdcall OnFileBrowseClick(void *userObj);
 			static void __stdcall OnStmTypeChg(void *userObj);
 		public:
-			AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log);
+			AVIRSelStreamForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log);
 			virtual ~AVIRSelStreamForm();
 
 			virtual void OnMonitorChanged();

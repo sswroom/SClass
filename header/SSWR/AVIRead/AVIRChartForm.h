@@ -19,7 +19,7 @@ namespace SSWR
 
 			static void __stdcall OnSizeChanged(void *userObj);
 		public:
-			AVIRChartForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart);
+			AVIRChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart);
 			virtual ~AVIRChartForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

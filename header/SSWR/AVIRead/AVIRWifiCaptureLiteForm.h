@@ -71,7 +71,7 @@ namespace SSWR
 			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
 		public:
-			AVIRWifiCaptureLiteForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWifiCaptureLiteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureLiteForm();
 
 			virtual void OnMonitorChanged();

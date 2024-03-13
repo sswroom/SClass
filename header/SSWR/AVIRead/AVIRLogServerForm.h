@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnClientLog(void *userObj, UInt32 ip, Text::CString message);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRLogServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogServerForm();
 
 			virtual void OnMonitorChanged();

@@ -96,7 +96,7 @@ void SSWR::AVIRead::AVIRStreamEchoForm::StopStream()
 	}
 }
 
-SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Stream Echo"));
 	this->SetFont(0, 0, 8.25, false);

@@ -17,7 +17,7 @@ namespace SSWR
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 
 		public:
-			DiscDBMainForm(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBMainForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

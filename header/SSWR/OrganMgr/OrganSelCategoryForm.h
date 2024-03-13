@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			OrganSelCategoryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, SSWR::OrganMgr::OrganEnv *env);
+			OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::OrganMgr::OrganEnv *env);
 			~OrganSelCategoryForm();
 
 			virtual void OnMonitorChanged();

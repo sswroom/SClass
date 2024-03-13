@@ -34,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnFilesDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnFilesSelChg(void *userObj);
 		public:
-			AVIRCameraControlForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
+			AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
 			virtual ~AVIRCameraControlForm();
 
 			virtual void OnMonitorChanged();

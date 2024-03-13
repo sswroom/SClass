@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnWingDownDown(void *userObj, Bool isDown);
 			static void __stdcall OnDevChanged(void *userObj);
 		public:
-			AVIRIBuddyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRIBuddyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRIBuddyForm();
 
 			virtual void OnMonitorChanged();

@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCancelClicked(void *userO
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 200, ui)
+SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 200, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

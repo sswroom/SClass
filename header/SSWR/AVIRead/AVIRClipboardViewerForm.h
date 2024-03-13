@@ -23,7 +23,7 @@ namespace SSWR
 
 			static void __stdcall OnTypeSelChg(void *userObj);
 		public:
-			AVIRClipboardViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRClipboardViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRClipboardViewerForm();
 
 			virtual void OnMonitorChanged();

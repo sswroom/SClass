@@ -266,7 +266,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(Char *ptr, Char *start)
 	return Text::StrHexByte(ptr, (UInt8)c);
 }
 
-SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)
+SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)
 {
 	this->core = core;
 	this->navi = navi;

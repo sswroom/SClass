@@ -53,7 +53,7 @@ namespace SSWR
 			void ClearRecords();
 			Bool LoadCSV(NotNullPtr<IO::SeekableStream> stm);
 		public:
-			AVIRCOVID19Form(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCOVID19Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCOVID19Form();
 
 			virtual void OnMonitorChanged();

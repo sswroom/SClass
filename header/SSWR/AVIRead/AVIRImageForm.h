@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnInfoICCClicked(void *userObj);
 			void UpdateInfo();
 		public:
-			AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList);
+			AVIRImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList);
 			virtual ~AVIRImageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

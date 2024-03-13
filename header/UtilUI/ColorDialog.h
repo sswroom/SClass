@@ -153,7 +153,7 @@ namespace UtilUI
 		void LoadColor();
 		void UpdateColor();
 	public:
-		ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, NotNullPtr<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr);
+		ColorDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, NotNullPtr<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr);
 		virtual ~ColorDialog();
 
 		void SetColor32(UInt32 color);

@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SensorAccelerometer> acc) : UI::GUIForm(parent, 240, 160, ui), motion(acc, true)
+SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SensorAccelerometer> acc) : UI::GUIForm(parent, 240, 160, ui), motion(acc, true)
 {
 	this->SetText(CSTR("Accelerometer"));
 	this->SetFont(0, 0, 8.25, false);

@@ -468,7 +468,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	MemFree(dataBuff);
 }
 
-SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Stream> stm) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Stream> stm) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SnB Dongle"));
 	this->SetFont(0, 0, 8.25, false);

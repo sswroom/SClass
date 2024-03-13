@@ -140,7 +140,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(void *userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPSvrForm();
 
 			virtual void OnMonitorChanged();

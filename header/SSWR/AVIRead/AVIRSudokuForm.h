@@ -20,7 +20,7 @@ namespace SSWR
 
 			static void __stdcall EventNumInput(void *userObj, UOSInt selX, UOSInt selY, UInt8 num);
 		public:
-			AVIRSudokuForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSudokuForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

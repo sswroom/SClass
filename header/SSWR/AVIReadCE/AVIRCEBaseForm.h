@@ -32,7 +32,7 @@ namespace SSWR
 
 			static MenuInfo *__stdcall NewMenuItem(const WChar *name, Int32 item);
 		public:
-			AVIRCEBaseForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCEBaseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCEBaseForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -2948,7 +2948,14 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UIn
 	}
 	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.10045.2.1")))
 	{
-		return KeyType::ECPublic;
+		if (pubKey)
+		{
+			return KeyType::ECPublic;
+		}
+		else
+		{
+			return KeyType::ECDSA;
+		}
 	}
 	return KeyType::Unknown;
 }

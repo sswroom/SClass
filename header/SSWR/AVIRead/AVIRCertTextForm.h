@@ -27,7 +27,7 @@ namespace SSWR
 
 			static void __stdcall OnLoadClicked(void *userObj);
 		public:
-			AVIRCertTextForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCertTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCertTextForm();
 
 			virtual void OnMonitorChanged();

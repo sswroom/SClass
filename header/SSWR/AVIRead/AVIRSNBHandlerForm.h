@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnTypeSelChg(void *userObj);
 
 		public:
-			AVIRSNBHandlerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SNBDongle::HandleType handType);
+			AVIRSNBHandlerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SNBDongle::HandleType handType);
 			virtual ~AVIRSNBHandlerForm();
 
 			virtual void OnMonitorChanged();

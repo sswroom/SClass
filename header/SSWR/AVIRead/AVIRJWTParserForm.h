@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnParseClicked(void *userObj);
 
 		public:
-			AVIRJWTParserForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRJWTParserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJWTParserForm();
 
 			virtual void OnMonitorChanged();

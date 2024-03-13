@@ -65,7 +65,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	}
 }
 
-SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

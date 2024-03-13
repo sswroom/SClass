@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(void *userObj);
 
 		public:
-			AVIRFileRenameForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Text::String> fileName);
+			AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Text::String> fileName);
 			virtual ~AVIRFileRenameForm();
 
 			virtual void OnMonitorChanged();

@@ -53,7 +53,7 @@ namespace SSWR
 			static void __stdcall OnSearchResultSelChg(void *userObj);
 
 		public:
-			AVIRLDAPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLDAPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLDAPClientForm();
 
 			virtual void OnMonitorChanged();

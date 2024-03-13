@@ -51,7 +51,7 @@ namespace SSWR
 			void ClearCliCACerts();
 
 		public:
-			AVIRGCISClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGCISClientForm();
 
 			virtual void OnMonitorChanged();

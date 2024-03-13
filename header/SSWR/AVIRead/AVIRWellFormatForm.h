@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnParseToFileClicked(void *userObj);
 
 		public:
-			AVIRWellFormatForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWellFormatForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWellFormatForm();
 
 			virtual void OnMonitorChanged();

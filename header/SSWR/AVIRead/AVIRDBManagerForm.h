@@ -139,7 +139,7 @@ namespace SSWR
 			void ExportTableXLSX();
 			void ExportTableExcelXML();
 		public:
-			AVIRDBManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDBManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDBManagerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

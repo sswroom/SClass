@@ -79,7 +79,7 @@ namespace SSWR
 			void ServerStop();
 			void ClearCACerts();
 		public:
-			AVIRMQTTBrokerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMQTTBrokerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTBrokerForm();
 
 			virtual void OnMonitorChanged();

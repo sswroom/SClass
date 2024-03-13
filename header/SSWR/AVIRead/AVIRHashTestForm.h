@@ -39,7 +39,7 @@ namespace SSWR
 			static void __stdcall OnCompareClicked(void *userObj);
 			static void __stdcall OnSpeedClicked(void *userObj);
 		public:
-			AVIRHashTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHashTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHashTestForm();
 
 			virtual void OnMonitorChanged();

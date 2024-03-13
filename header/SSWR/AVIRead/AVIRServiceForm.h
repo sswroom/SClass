@@ -53,7 +53,7 @@ namespace SSWR
 
 			void UpdateSvcList();
 		public:
-			AVIRServiceForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRServiceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRServiceForm();
 
 			virtual void OnMonitorChanged();

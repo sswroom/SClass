@@ -461,7 +461,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 		{
 			Data::DateTime dt2;
 			Data::Timestamp dt3;
-			if (req->GetIfModifiedSince(&dt2) && IO::Path::GetFileTime(CSTRP(sbuff2, sptr2), dt3, 0, 0))
+			if (req->GetIfModifiedSince(dt2) && IO::Path::GetFileTime(CSTRP(sbuff2, sptr2), dt3, 0, 0))
 			{
 				Int64 tdiff = dt2.ToTicks() - dt3.ToTicks();
 				if (tdiff >= -1000 && tdiff <= 1000)

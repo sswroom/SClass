@@ -39,7 +39,7 @@ namespace SSWR
 			static void __stdcall OnChannelAddClicked(void *userObj);
 			static void __stdcall OnChannelsSelChg(void *userObj);
 		public:
-			AVIRSNSManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSNSManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNSManagerForm();
 
 			virtual void OnMonitorChanged();
