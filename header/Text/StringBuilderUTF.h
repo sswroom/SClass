@@ -18,32 +18,32 @@ namespace Text
 		virtual void RemoveChars(UOSInt cnt) = 0;
 		virtual void RemoveChars(UOSInt index, UOSInt cnt) = 0;
 
-		virtual StringBuilderUTF *AppendI16(Int16 iVal) = 0;
-		virtual StringBuilderUTF *AppendU16(UInt16 iVal) = 0;
-		virtual StringBuilderUTF *AppendI32(Int32 iVal) = 0;
-		virtual StringBuilderUTF *AppendU32(UInt32 iVal) = 0;
-		virtual StringBuilderUTF *AppendI64(Int64 iVal) = 0;
-		virtual StringBuilderUTF *AppendU64(UInt64 iVal) = 0;
-		virtual StringBuilderUTF *AppendDate(Data::DateTime *dt) = 0;
-		virtual StringBuilderUTF *AppendOSInt(OSInt iVal) = 0;
-		virtual StringBuilderUTF *AppendUOSInt(UOSInt iVal) = 0;
-		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendI16(Int16 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendU16(UInt16 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendI32(Int32 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendU32(UInt32 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendI64(Int64 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendU64(UInt64 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendDate(NotNullPtr<Data::DateTime> dt) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendOSInt(OSInt iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendUOSInt(UOSInt iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendLB(Text::LineBreakType lbt) = 0;
 
-		virtual StringBuilderUTF *AppendHex8(UInt8 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex16(UInt16 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex24(UInt32 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex32(UInt32 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex32V(UInt32 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex64(UInt64 iVal) = 0;
-		virtual StringBuilderUTF *AppendHex64V(UInt64 iVal) = 0;
-		virtual StringBuilderUTF *AppendHexOS(UOSInt iVal) = 0;
-		virtual StringBuilderUTF *AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, Text::LineBreakType lineBreak) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex8(UInt8 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex16(UInt16 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex24(UInt32 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex32(UInt32 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex32V(UInt32 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex64(UInt64 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHex64V(UInt64 iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHexOS(UOSInt iVal) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, Text::LineBreakType lineBreak) = 0;
 
-		virtual StringBuilderUTF *Append(Text::PString *s) = 0;
-		virtual StringBuilderUTF *Append(const UTF8Char *s) = 0;
-		virtual StringBuilderUTF *AppendC(const UTF8Char *s, UOSInt charCnt) = 0;
-		virtual StringBuilderUTF *AppendS(const UTF8Char *s, UOSInt maxLen) = 0;
-		virtual StringBuilderUTF *AppendChar(UTF32Char c, UOSInt repCnt) = 0;
+		virtual NotNullPtr<StringBuilderUTF> Append(Text::PString *s) = 0;
+		virtual NotNullPtr<StringBuilderUTF> Append(const UTF8Char *s) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen) = 0;
+		virtual NotNullPtr<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt) = 0;
 	};
 
 	template <class T> class StringBuilderUTFText : public Text::StringBuilder<T>, public Text::StringBuilderUTF
@@ -56,26 +56,26 @@ namespace Text
 		virtual Bool EndsWith(const T *s) { UOSInt l = Text::StrCharCnt(s); if (this->GetLength() < l) return false; return Text::StrEquals((const T*)&this->buffEnd[-(OSInt)l], s); }
 		virtual void RemoveChars(UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(cnt); }
 		virtual void RemoveChars(UOSInt index, UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(index, cnt); }
-		virtual StringBuilderUTF *AppendI16(Int16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendI16(iVal); }
-		virtual StringBuilderUTF *AppendU16(UInt16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendU16(iVal); }
-		virtual StringBuilderUTF *AppendI32(Int32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendI32(iVal); }
-		virtual StringBuilderUTF *AppendU32(UInt32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendU32(iVal); }
-		virtual StringBuilderUTF *AppendI64(Int64 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendI64(iVal); }
-		virtual StringBuilderUTF *AppendU64(UInt64 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendU64(iVal); }
-		virtual StringBuilderUTF *AppendDate(Data::DateTime *dt) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendDate(dt); }
-		virtual StringBuilderUTF *AppendOSInt(OSInt iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendOSInt(iVal); }
-		virtual StringBuilderUTF *AppendUOSInt(UOSInt iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendUOSInt(iVal); }
-		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LineBreakType::CRLF) return AppendC(UTF8STRC("\r\n")); else if (lbt == Text::LineBreakType::CR) return AppendChar('\r', 1); else if (lbt == Text::LineBreakType::LF) return AppendChar('\n', 1); else return this; }
+		virtual NotNullPtr<StringBuilderUTF> AppendI16(Int16 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendI16(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendU16(UInt16 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendU16(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendI32(Int32 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendI32(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendU32(UInt32 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendU32(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendI64(Int64 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendI64(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendU64(UInt64 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendU64(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendDate(NotNullPtr<Data::DateTime> dt) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendDate(dt)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendOSInt(OSInt iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendOSInt(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendUOSInt(UOSInt iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendUOSInt(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LineBreakType::CRLF) return AppendC(UTF8STRC("\r\n")); else if (lbt == Text::LineBreakType::CR) return AppendChar('\r', 1); else if (lbt == Text::LineBreakType::LF) return AppendChar('\n', 1); else return *this; }
 
-		virtual StringBuilderUTF *AppendHex8(UInt8 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex8(iVal); }
-		virtual StringBuilderUTF *AppendHex16(UInt16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex16(iVal); }
-		virtual StringBuilderUTF *AppendHex24(UInt32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex24(iVal); }
-		virtual StringBuilderUTF *AppendHex32(UInt32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex32(iVal); }
-		virtual StringBuilderUTF *AppendHex32V(UInt32 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex32V(iVal); }
-		virtual StringBuilderUTF *AppendHex64(UInt64 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex64(iVal); }
-		virtual StringBuilderUTF *AppendHex64V(UInt64 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex64V(iVal); }
-		virtual StringBuilderUTF *AppendHexOS(UOSInt iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHexOS(iVal); }
-		virtual StringBuilderUTF *AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, ::Text::LineBreakType lineBreak) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex(buff, buffSize, (T)seperator, lineBreak); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex8(UInt8 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex8(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex16(UInt16 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex16(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex24(UInt32 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex24(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex32(UInt32 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex32(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex32V(UInt32 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex32V(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex64(UInt64 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex64(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHex64V(UInt64 iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex64V(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHexOS(UOSInt iVal) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHexOS(iVal)); }
+		virtual NotNullPtr<StringBuilderUTF> AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, ::Text::LineBreakType lineBreak) { return NotNullPtr<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex(buff, buffSize, (T)seperator, lineBreak)); }
 	};
 }
 #endif

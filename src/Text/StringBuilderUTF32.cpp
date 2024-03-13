@@ -12,7 +12,7 @@ Text::StringBuilderUTF32::~StringBuilderUTF32()
 {
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(Text::PString *s)
+NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF32::Append(Text::PString *s)
 {
 	UOSInt slen = Text::StrUTF8_UTF32CntC(s->v, s->leng);
 	if (slen > 0)
@@ -20,10 +20,10 @@ Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(Text::PString *s)
 		this->AllocLeng(slen);
 		this->buffEnd = Text::StrUTF8_UTF32C(this->buffEnd, s->v, s->leng, 0);
 	}
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(const UTF8Char *s)
+NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF32::Append(const UTF8Char *s)
 {
 	UOSInt slen = Text::StrUTF8_UTF32Cnt(s);
 	if (slen > 0)
@@ -31,10 +31,10 @@ Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(const UTF8Char *s)
 		this->AllocLeng(slen);
 		this->buffEnd = Text::StrUTF8_UTF32(this->buffEnd, s, 0);
 	}
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendC(const UTF8Char *s, UOSInt charCnt)
+NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendC(const UTF8Char *s, UOSInt charCnt)
 {
 	UOSInt slen = Text::StrUTF8_UTF32CntC(s, charCnt);
 	if (slen > 0)
@@ -42,10 +42,10 @@ Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendC(const UTF8Char *s, UOS
 		this->AllocLeng(slen);
 		this->buffEnd = Text::StrUTF8_UTF32C(this->buffEnd, s, charCnt, 0);
 	}
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendS(const UTF8Char *s, UOSInt maxLen)
+NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendS(const UTF8Char *s, UOSInt maxLen)
 {
 	UOSInt len = Text::StrCharCntS(s, maxLen);
 	UOSInt slen = Text::StrUTF8_UTF32CntC(s, len);
@@ -54,10 +54,10 @@ Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendS(const UTF8Char *s, UOS
 		this->AllocLeng(slen);
 		this->buffEnd = Text::StrUTF8_UTF32C(this->buffEnd, s, len, 0);
 	}
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendChar(UTF32Char c, UOSInt repCnt)
+NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendChar(UTF32Char c, UOSInt repCnt)
 {
 	this->AllocLeng(repCnt);
 	while (repCnt-- > 0)
@@ -65,10 +65,10 @@ Text::StringBuilderUTF *Text::StringBuilderUTF32::AppendChar(UTF32Char c, UOSInt
 		*this->buffEnd++ = c;
 	}
 	this->buffEnd[0] = 0;
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF32 *Text::StringBuilderUTF32::AppendCSV(const UTF32Char **sarr, UOSInt nStr)
+NotNullPtr<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendCSV(const UTF32Char **sarr, UOSInt nStr)
 {
 	const UTF32Char *csptr;
 	UOSInt i;
@@ -92,22 +92,22 @@ Text::StringBuilderUTF32 *Text::StringBuilderUTF32::AppendCSV(const UTF32Char **
 		Text::StrDelNew(csptr);
 		i++;
 	}
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF32 *Text::StringBuilderUTF32::AppendToUpper(const UTF32Char *s)
+NotNullPtr<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendToUpper(const UTF32Char *s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
 	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
-	return this;
+	return *this;
 }
 
-Text::StringBuilderUTF32 *Text::StringBuilderUTF32::AppendToLower(const UTF32Char *s)
+NotNullPtr<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendToLower(const UTF32Char *s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
 	this->buffEnd = Text::StrToLower(this->buffEnd, s);
-	return this;
+	return *this;
 }
 
