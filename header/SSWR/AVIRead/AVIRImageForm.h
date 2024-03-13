@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIListBox> lbImages;
 			NotNullPtr<UI::GUIHSplitter> hSplitter;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 			NotNullPtr<UI::GUITabControl> tcImage;
 
 			NotNullPtr<UI::GUITabPage> tpImage;

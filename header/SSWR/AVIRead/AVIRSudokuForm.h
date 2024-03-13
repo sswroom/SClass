@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUISudokuViewer *svMain;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Game::Sudoku::SudokuBoard *board;

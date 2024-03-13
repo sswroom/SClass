@@ -607,13 +607,13 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	this->HandleDropFiles(FileHandler, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	UI::GUIMenu *mnu;
-	UI::GUIMenu *mnu2;
-	UI::GUIMenu *mnu3;
+	NotNullPtr<UI::GUIMenu> mnu;
+	NotNullPtr<UI::GUIMenu> mnu2;
+	NotNullPtr<UI::GUIMenu> mnu3;
 
 	//RegisterDragDrop(this->hWnd, this);
 
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("M&isc"));
 	mnu->AddItem(CSTR("Open File"), MNU_OPEN_FILE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
 	mnu->AddSeperator();

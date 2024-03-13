@@ -900,10 +900,10 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->lvFiles->HandleDblClk(LVDblClick, this);
 	DisplayPackFile(this->packFile);
 
-	UI::GUIMainMenu *mnuMain;
-	UI::GUIMenu *mnu;
+	NotNullPtr<UI::GUIMainMenu> mnuMain;
+	NotNullPtr<UI::GUIMenu> mnu;
 //	UI::GUIMenu *mnu2;
-	NEW_CLASS(mnuMain, UI::GUIMainMenu());
+	NEW_CLASSNN(mnuMain, UI::GUIMainMenu());
 	mnu = mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("Save &As..."), MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu->AddItem(CSTR("Append Zip Content"), MNU_APPEND_ZIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -917,7 +917,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	mnu->AddItem(CSTR("Open Selected"), MNU_OPEN_SELECTED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ENTER);
 	mnu->AddItem(CSTR("Go Up Level"), MNU_GO_UP_LEVEL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_BACKSPACE);
 
-	NEW_CLASS(this->mnuPopup, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuPopup, UI::GUIPopupMenu());
 	this->mnuPopup->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuPopup->AddItem(CSTR("Open Text Viewer"), MNU_OPEN_TEXT_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuPopup->AddItem(CSTR("Open Hex Viewer"), MNU_OPEN_HEX_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1005,7 +1005,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	SDEL_CLASS(this->rootPackFile);
 	this->fileNames.FreeAll();
 	SDEL_STRING(this->statusFile);
-	DEL_CLASS(this->mnuPopup);
+	this->mnuPopup.Delete();
 	SDEL_STRING(this->progName);
 	SDEL_STRING(this->initSel);
 }

@@ -24,10 +24,10 @@ namespace SSWR
 		class AVIRDBManagerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPopupMenu *mnuTable;
-			UI::GUIPopupMenu *mnuSchema;
-			UI::GUIPopupMenu *mnuConn;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIPopupMenu> mnuTable;
+			NotNullPtr<UI::GUIPopupMenu> mnuSchema;
+			NotNullPtr<UI::GUIPopupMenu> mnuConn;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<UI::GUIListBox> lbConn;
 			NotNullPtr<UI::GUIHSplitter> hspConn;

@@ -458,12 +458,7 @@ UI::GUIMenu::~GUIMenu()
 	{
 		MemFree(this->keys.GetItem(i));
 	}
-	i = this->subMenus.GetCount();
-	while (i-- > 0)
-	{
-		item = this->subMenus.GetItem(i);
-		DEL_CLASS(item);
-	}
+	this->subMenus.DeleteAll();
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
@@ -530,10 +525,10 @@ void UI::GUIMenu::AddSeperator()
 	gtk_widget_show(menuItem);
 }
 
-UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
+NotNullPtr<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
 {
-	UI::GUIMenu *subMenu;
-	NEW_CLASS(subMenu, UI::GUIMenu(true));
+	NotNullPtr<UI::GUIMenu> subMenu;
+	NEW_CLASSNN(subMenu, UI::GUIMenu(true));
 	this->subMenus.Add(subMenu);
 
 	Char buff[128];
@@ -580,11 +575,15 @@ UOSInt UI::GUIMenu::GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
+	NotNullPtr<GUIMenu> menu;
 	UOSInt j = this->subMenus.GetCount();
 	UOSInt i = 0;
 	while (i < j)
 	{
-		keyCnt += this->subMenus.GetItem(i)->GetAllKeys(keys);
+		if (this->subMenus.GetItem(i).SetTo(menu))
+		{
+			keyCnt += menu->GetAllKeys(keys);
+		}
 		i++;
 	}
 	return keyCnt;
@@ -606,13 +605,7 @@ void UI::GUIMenu::ClearItems()
 		MemFree(this->keys.GetItem(i));
 	}
 	this->keys.Clear();
-	i = this->subMenus.GetCount();
-	while (i-- > 0)
-	{
-		item = this->subMenus.GetItem(i);
-		DEL_CLASS(item);
-	}
-	this->subMenus.Clear();
+	this->subMenus.DeleteAll();
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
@@ -631,14 +624,16 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 {
-	UI::GUIMenu *item;
+	NotNullPtr<UI::GUIMenu> item;
 	UOSInt i;
 	this->mnuForm = mnuForm;
 	i = this->subMenus.GetCount();
 	while (i-- > 0)
 	{
-		item = this->subMenus.GetItem(i);
-		item->SetMenuForm(mnuForm);
+		if (this->subMenus.GetItem(i).SetTo(item))
+		{
+			item->SetMenuForm(mnuForm);
+		}
 	}
 }
 

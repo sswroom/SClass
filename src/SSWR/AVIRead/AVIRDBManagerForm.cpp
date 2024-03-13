@@ -1379,9 +1379,9 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 
-	UI::GUIMenu *mnu;
-	UI::GUIMenu *mnu2;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NotNullPtr<UI::GUIMenu> mnu2;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Connection"));
 	mnu2 = mnu->AddSubMenu(CSTR("&New Connection"));
 	mnu2->AddItem(CSTR("ODBC DSN"), MNU_CONN_ODBCDSN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1394,15 +1394,15 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	mnu->AddItem(CSTR("Copy Tables"), MNU_TOOL_COPY_TABLES, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
-	NEW_CLASS(this->mnuConn, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuConn, UI::GUIPopupMenu());
 	this->mnuConn->AddItem(CSTR("Remove"), MNU_CONN_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuConn->AddItem(CSTR("Copy Conn String"), MNU_CONN_COPY_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
-	NEW_CLASS(this->mnuSchema, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuSchema, UI::GUIPopupMenu());
 	this->mnuSchema->AddItem(CSTR("New"), MNU_SCHEMA_NEW, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuSchema->AddItem(CSTR("Delete"), MNU_SCHEMA_DELETE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
-	NEW_CLASS(this->mnuTable, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuTable, UI::GUIPopupMenu());
 	this->mnuTable->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Source"), MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1457,9 +1457,9 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	this->ClearChildren();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	DEL_CLASS(this->mnuTable);
-	DEL_CLASS(this->mnuSchema);
-	DEL_CLASS(this->mnuConn);
+	this->mnuTable.Delete();
+	this->mnuSchema.Delete();
+	this->mnuConn.Delete();
 	this->mapEnv.Delete();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 	UTF8Char sbuff[512];

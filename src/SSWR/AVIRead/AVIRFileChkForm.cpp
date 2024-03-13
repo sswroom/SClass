@@ -18,8 +18,8 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 	sptr = fileChk->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("File Check - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	
-	NEW_CLASS(this->mnu, UI::GUIMainMenu());
-	UI::GUIMenu *mnu = this->mnu->AddSubMenu(CSTR("&File"));
+	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu = this->mnu->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Save"), MNU_FILE_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Validate"), MNU_FILE_VALIDATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnu);

@@ -245,8 +245,8 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientCo
 	this->hideCursor = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &Monitor Color"), MNU_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));

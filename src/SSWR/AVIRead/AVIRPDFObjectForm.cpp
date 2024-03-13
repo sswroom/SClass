@@ -74,8 +74,8 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	this->lvParameter->AddColumn(CSTR("Type"), 100);
 	this->lvParameter->AddColumn(CSTR("Value"), 400);
 
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	UI::GUIMenu *mnu = this->mnuMain->AddSubMenu(CSTR("Objects"));
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("Objects"));
 	mnu->AddItem(CSTR("Save all images..."), MNU_SAVE_ALL_IMAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Save Selected"), MNU_SAVE_SELECTED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);

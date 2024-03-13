@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRFileChkForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIMainMenu *mnu;
+			NotNullPtr<UI::GUIMainMenu> mnu;
 			NotNullPtr<UI::GUIListView> lvFileChk;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -706,13 +706,13 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->mapCtrl->HandleMouseUp(OnMapMouseUp, this);
 	this->mapCtrl->HandleMapUpdated(OnMapUpdated, this);
 
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	UI::GUIMenu *mnu = this->mnuMain->AddSubMenu(CSTR("&Map"));
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("&Map"));
 	mnu->AddItem(CSTR("&Save"), MNU_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu->AddItem(CSTR("&Copy Lat/Lon"), MNU_COPY_LATLON, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
 	mnu->AddItem(CSTR("&Print..."), MNU_PRINT, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_P);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Add Layer"));
-	UI::GUIMenu *mnu2 = mnu->AddSubMenu(CSTR("&MTK GPS Tracker"));
+	NotNullPtr<UI::GUIMenu> mnu2 = mnu->AddSubMenu(CSTR("&MTK GPS Tracker"));
 	mnu2->AddItem(CSTR("From &Device"), MNU_MTK_GPS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("From &File"), MNU_MTK_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("From Google Polyline String"), MNU_GOOGLE_POLYLINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -729,11 +729,11 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	mnu2->AddItem(CSTR("HKE EV Charging Station (EN)"), MNU_HK_HKE_EV_CHARGING_EN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HK Parking Vacancy"), MNU_HK_PARKING_VACANCY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HK Geodata WMS"), MNU_HK_GEODATA_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	UI::GUIMenu *mnu3 = mnu2->AddSubMenu(CSTR("HKTD"));
+	NotNullPtr<UI::GUIMenu> mnu3 = mnu2->AddSubMenu(CSTR("HKTD"));
 	mnu3->AddItem(CSTR("Traffic"), MNU_HKTD_TRAFFIC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("Tonnes Sign"), MNU_HKTD_TONNES_SIGN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3 = mnu2->AddSubMenu(CSTR("HKO"));
-	UI::GUIMenu *mnu4 = mnu3->AddSubMenu(CSTR("Radar"));
+	NotNullPtr<UI::GUIMenu> mnu4 = mnu3->AddSubMenu(CSTR("Radar"));
 	mnu4->AddItem(CSTR("64km"), MNU_HKO_RADAR_64, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu4->AddItem(CSTR("128km"), MNU_HKO_RADAR_128, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu4->AddItem(CSTR("256km"), MNU_HKO_RADAR_256, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -756,7 +756,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	mnu->AddItem(CSTR("Random Loc"), MNU_RANDOMLOC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
-	NEW_CLASS(this->mnuLayer, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuLayer, UI::GUIPopupMenu());
 	this->mnuLayer->SetMenuForm(this);
 	this->mnuLayer->AddItem(CSTR("&Add Group"), MNU_LAYER_ADD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("&Remove"), MNU_LAYER_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -782,7 +782,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->mnuLayer->AddItem(CSTR("Optimize File"), MNU_LAYER_OPTIMIZE_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Query"), MNU_LAYER_QUERY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
-	NEW_CLASS(this->mnuGroup, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuGroup, UI::GUIPopupMenu());
 	this->mnuGroup->AddItem(CSTR("&Add Group"), MNU_GROUP_ADD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuGroup->AddItem(CSTR("&Remove"), MNU_GROUP_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuGroup->SetMenuForm(this);
@@ -816,8 +816,8 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	{
 		this->subForms.GetItem(i)->Close();
 	}
-	DEL_CLASS(this->mnuLayer);
-	DEL_CLASS(this->mnuGroup);
+	this->mnuLayer.Delete();
+	this->mnuGroup.Delete();
 	DEL_CLASS(this->envRenderer);
 	this->env.Delete();
 	this->wgs84CSys.Delete();

@@ -66,9 +66,9 @@ SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(NotNullPtr<UI::GUICore> ui, Optiona
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	UI::GUIMenu *mnu;
+	NotNullPtr<UI::GUIMenu> mnu;
 
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Maintain"));
 	mnu->AddItem(CSTR("&DVDType"), MNU_DVDTYPE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 

@@ -2781,8 +2781,8 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, Optiona
 	this->mcMap->HandleMouseMove(OnMapMouseMove, this);
 	this->mcMap->HandleCustomDraw(OnMapDraw, this);
 
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(CSTR("MainFormMenuManage")));
 	mnu->AddItem(this->env->GetLang(CSTR("MainFormMenuManageGroup")), MNU_MANAGE_GROUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(this->env->GetLang(CSTR("MainFormMenuManageFind")), MNU_MANAGE_FIND, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);

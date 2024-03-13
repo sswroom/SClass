@@ -442,12 +442,7 @@ UI::GUIMenu::~GUIMenu()
 	{
 		MemFree(this->keys.GetItem(i));
 	}
-	i = this->subMenus.GetCount();
-	while (i-- > 0)
-	{
-		item = this->subMenus.GetItem(i);
-		DEL_CLASS(item);
-	}
+	this->subMenus.DeleteAll();
 	DestroyMenu((HMENU)this->hMenu);
 }
 
@@ -485,10 +480,10 @@ void UI::GUIMenu::AddSeperator()
 	AppendMenuW((HMENU)this->hMenu, MF_SEPARATOR, id, 0);
 }
 
-UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
+NotNullPtr<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
 {
-	UI::GUIMenu *subMenu;
-	NEW_CLASS(subMenu, UI::GUIMenu(true));
+	NotNullPtr<UI::GUIMenu> subMenu;
+	NEW_CLASSNN(subMenu, UI::GUIMenu(true));
 	this->subMenus.Add(subMenu);
 	
 	const WChar *wptr = Text::StrToWCharNew(name.v);
@@ -507,11 +502,15 @@ UOSInt UI::GUIMenu::GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
+	NotNullPtr<GUIMenu> menu;
 	UOSInt j = this->subMenus.GetCount();
 	UOSInt i = 0;
 	while (i < j)
 	{
-		keyCnt += this->subMenus.GetItem(i)->GetAllKeys(keys);
+		if (this->subMenus.GetItem(i).SetTo(menu))
+		{
+			keyCnt += menu->GetAllKeys(keys);
+		}
 		i++;
 	}
 	return keyCnt;
@@ -532,13 +531,7 @@ void UI::GUIMenu::ClearItems()
 		MemFree(this->keys.GetItem(i));
 	}
 	this->keys.Clear();
-	i = this->subMenus.GetCount();
-	while (i-- > 0)
-	{
-		item = this->subMenus.GetItem(i);
-		DEL_CLASS(item);
-	}
-	this->subMenus.Clear();
+	this->subMenus.DeleteAll();
 
 #ifdef _WIN32_WCE
 	i = 0;

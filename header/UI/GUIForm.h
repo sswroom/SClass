@@ -57,7 +57,7 @@ namespace UI
 		void *closingHdlrObj;
 		Bool exitOnClose;
 		UInt32 nextTmrId;
-		UI::GUIMainMenu *menu;
+		Optional<UI::GUIMainMenu> menu;
 		Optional<UI::GUIButton> okBtn;
 		Optional<UI::GUIButton> cancelBtn;
 
@@ -104,8 +104,8 @@ namespace UI
 		virtual void SetNoResize(Bool noResize);
 		virtual NotNullPtr<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);
 		virtual void RemoveTimer(NotNullPtr<UI::GUITimer> tmr);
-		virtual void SetMenu(UI::GUIMainMenu *menu);
-		virtual UI::GUIMainMenu *GetMenu();
+		virtual void SetMenu(NotNullPtr<UI::GUIMainMenu> menu);
+		virtual Optional<UI::GUIMainMenu> GetMenu();
 		virtual void UpdateMenu();
 		virtual void SetDefaultButton(NotNullPtr<UI::GUIButton> btn);
 		virtual void SetCancelButton(NotNullPtr<UI::GUIButton> btn);

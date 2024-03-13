@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			UI::GUIHexFileView *hexView;
 			NotNullPtr<UI::GUITabControl> tcMain;

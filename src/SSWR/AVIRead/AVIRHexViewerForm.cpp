@@ -483,8 +483,8 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientContro
 	this->btnExtract->SetRect(104, 52, 75, 23, false);
 	this->btnExtract->HandleButtonClick(OnExtractClicked, this);
 	
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	UI::GUIMenu *mnu = this->mnuMain->AddSubMenu(CSTR("Navigate"));
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("Navigate"));
 	mnu->AddItem(CSTR("Go To..."), MNU_GOTO, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
 	this->SetMenu(this->mnuMain);
 

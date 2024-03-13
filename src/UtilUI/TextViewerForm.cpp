@@ -32,7 +32,7 @@ void __stdcall UtilUI::TextViewerForm::OnSearchClosed(void *userObj, UI::GUIForm
 
 UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, NotNullPtr<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	UI::GUIMenu *mnu;
+	NotNullPtr<UI::GUIMenu> mnu;
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Text Viewer"));
 
@@ -50,7 +50,7 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, No
 	this->txtView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->HandleDropFiles(OnFileDrop, this);
 	this->txtView->HandleTextPosUpdate(OnTextPosUpd, this);
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Open..."), MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Edit"));

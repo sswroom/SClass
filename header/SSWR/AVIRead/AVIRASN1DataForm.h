@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::ASN1Data> asn1;
 
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<UI::GUIPanel> pnlStatus;
 			NotNullPtr<UI::GUILabel> lblStatus;

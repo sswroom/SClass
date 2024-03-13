@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIListView> lvLogs;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogFile *logFile;

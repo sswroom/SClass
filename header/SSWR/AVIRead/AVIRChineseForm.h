@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<Text::String> currFont;
 			UInt32 currRadical;
 
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<UI::GUILabel> lblCharCode;
 			NotNullPtr<UI::GUITextBox> txtCharCode;

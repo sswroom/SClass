@@ -85,12 +85,13 @@ void UI::GUIForm::UpdateHAcc()
 	{
 		accel_group = (GtkAccelGroup*)this->hAcc;
 	}
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
 		UOSInt i;
 		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
 		UI::GUIMenu::ShortcutKey *key;
-		this->menu->GetAllKeys(keys);
+		menu->GetAllKeys(keys);
 		i = keys.GetCount();
 		while (i-- > 0)
 		{
@@ -205,11 +206,7 @@ UI::GUIForm::~GUIForm()
 	{
 		gtk_widget_destroy(widget);
 	}
-	if (this->menu)
-	{
-		DEL_CLASS(this->menu);
-		this->menu = 0;
-	}
+	this->menu.Delete();
 }
 
 /*void UI::GUIForm::SetText(const WChar *text)
@@ -361,12 +358,9 @@ void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 	}
 }
 
-void UI::GUIForm::SetMenu(UI::GUIMainMenu *menu)
+void UI::GUIForm::SetMenu(NotNullPtr<UI::GUIMainMenu> menu)
 {
-	if (this->menu)
-	{
-		DEL_CLASS(this->menu);
-	}
+	this->menu.Delete();
 	if (this->container == 0) this->InitContainer();
 	ClientControlData *data = (ClientControlData*)this->container;
 	GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
@@ -378,11 +372,11 @@ void UI::GUIForm::SetMenu(UI::GUIMainMenu *menu)
 	g_object_unref(data->scrolledWin);
 	gtk_widget_show(menuBar);
 	this->menu = menu;
-	this->menu->SetMenuForm(this);
+	menu->SetMenuForm(this);
 	this->UpdateHAcc();
 }
 
-UI::GUIMainMenu *UI::GUIForm::GetMenu()
+Optional<UI::GUIMainMenu> UI::GUIForm::GetMenu()
 {
 	return this->menu;
 }
@@ -418,9 +412,10 @@ Math::Size2DDbl UI::GUIForm::GetClientSize()
 	int width;
 	int height;
 	gtk_window_get_size((GtkWindow*)this->hwnd, &width, &height);
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
-		GtkWidget *menuBar = (GtkWidget*)this->menu->GetHMenu();
+		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
 		if (gtk_widget_get_visible(menuBar))
 		{
 			gint iheight = gtk_widget_get_allocated_height(menuBar);
@@ -645,9 +640,10 @@ void UI::GUIForm::OnFileDrop(NotNullPtr<Text::String> *files, UOSInt nFiles)
 
 void UI::GUIForm::ToFullScn()
 {
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
-		GtkWidget *menuBar = (GtkWidget*)this->menu->GetHMenu();
+		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
 		gtk_widget_set_visible(menuBar, FALSE);
 	}
 	gtk_window_fullscreen((GtkWindow*)this->hwnd);
@@ -656,9 +652,10 @@ void UI::GUIForm::ToFullScn()
 void UI::GUIForm::FromFullScn()
 {
 	gtk_window_unfullscreen((GtkWindow*)this->hwnd);
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
-		GtkWidget *menuBar = (GtkWidget*)this->menu->GetHMenu();
+		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
 		gtk_widget_show(menuBar);
 	}
 }

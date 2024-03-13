@@ -12,7 +12,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::DiscDB::DiscDBEnv *env;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 

@@ -25,10 +25,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
-			UI::GUIMainMenu *mnu;
-			UI::GUIMenu *mnuChapters;
-			UI::GUIPopupMenu *mnuAudio;
-			UI::GUIPopupMenu *mnuVideo;
+			NotNullPtr<UI::GUIMainMenu> mnu;
+			NotNullPtr<UI::GUIMenu> mnuChapters;
+			NotNullPtr<UI::GUIPopupMenu> mnuAudio;
+			NotNullPtr<UI::GUIPopupMenu> mnuVideo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

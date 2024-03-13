@@ -613,9 +613,9 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, Not
 		this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
 	}
 
-	UI::GUIMenu *mnu;
-	UI::GUIMenu *mnu2;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NotNullPtr<UI::GUIMenu> mnu2;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Save as"), MNU_FILE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Table"));

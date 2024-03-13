@@ -26,8 +26,8 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 	NEW_CLASS(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), board));
 	this->svMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->svMain->HandleNumberInput(EventNumInput, this);
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Board"));
 	mnu->AddItem(CSTR("&Clear"), MNU_CLEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Solve"), MNU_SOLVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);

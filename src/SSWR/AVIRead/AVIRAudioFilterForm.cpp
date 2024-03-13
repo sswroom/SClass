@@ -1244,9 +1244,9 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 
 	if (showMenu)
 	{
-		UI::GUIMainMenu *mmnu;
-		UI::GUIMenu *mnu;
-		NEW_CLASS(mmnu, UI::GUIMainMenu());
+		NotNullPtr<UI::GUIMainMenu> mmnu;
+		NotNullPtr<UI::GUIMenu> mnu;
+		NEW_CLASSNN(mmnu, UI::GUIMainMenu());
 		mnu = mmnu->AddSubMenu(CSTR("Setting"));
 		mnu->AddItem(CSTR("&Set Audio Device"), MNU_SET_DEVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		this->SetMenu(mmnu);

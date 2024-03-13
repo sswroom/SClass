@@ -65,8 +65,8 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> p
 	this->lvLogs->AddColumn(CSTR("Message"), 812);
 	this->lvLogs->HandleDblClk(OnLogsDblClk, this);
 
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Save As..."), MNU_LOG_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);

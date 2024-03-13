@@ -250,8 +250,8 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 	this->fftImg = 0;
 	this->audSrc->GetFormat(this->format);
 
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnu, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&Navigate"));
 	mnu->AddItem(CSTR("&Next Sample"), MNU_NEXT_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
 	mnu->AddItem(CSTR("&Prev Sample"), MNU_PREV_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);

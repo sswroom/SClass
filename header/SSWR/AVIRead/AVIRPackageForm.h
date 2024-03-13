@@ -85,7 +85,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpTest;
 			NotNullPtr<UI::GUITextBox> txtTest;
 
-			UI::GUIPopupMenu *mnuPopup;
+			NotNullPtr<UI::GUIPopupMenu> mnuPopup;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::PackageFile> packFile;

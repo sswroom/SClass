@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSQL;
 			NotNullPtr<UI::GUITextBox> txtSQL;
 
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN dbNames;

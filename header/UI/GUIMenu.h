@@ -28,7 +28,7 @@ namespace UI
 		} ShortcutKey;
 
 	private:
-		Data::ArrayList<GUIMenu*> subMenus;
+		Data::ArrayListNN<GUIMenu> subMenus;
 		UOSInt itemCnt;
 		Data::ArrayList<ShortcutKey*> keys;
 		Data::ArrayList<void *> items;
@@ -47,11 +47,11 @@ namespace UI
 
 		UOSInt AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
 		void AddSeperator();
-		GUIMenu *AddSubMenu(Text::CString name);
+		NotNullPtr<GUIMenu> AddSubMenu(Text::CString name);
 		void *GetHMenu();
 		UOSInt GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys);
 		UOSInt GetShortcutKeyCnt();
-		ShortcutKey *GetShortcutKey(UOSInt index);
+		Optional<ShortcutKey> GetShortcutKey(UOSInt index);
 		void SetItemEnabled(UInt16 cmdId, Bool enabled); /////////////////////////
 		void ClearItems();
 		void SetDPI(Double hdpi, Double ddpi);

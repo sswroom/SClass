@@ -516,8 +516,8 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 	this->asn1 = asn1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("Save"), MNU_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu->AddItem(CSTR("View Hex"), MNU_VIEW_HEX, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_H);
@@ -525,7 +525,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 	{
 		NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->asn1);
 		Text::StringBuilderUTF8 sb;
-		UI::GUIMenu *mnu2;
+		NotNullPtr<UI::GUIMenu> mnu2;
 		UOSInt i;
 		UOSInt j;
 		mnu2 = mnu->AddSubMenu(CSTR("Certs"));

@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPictureBoxDD> pbImage;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

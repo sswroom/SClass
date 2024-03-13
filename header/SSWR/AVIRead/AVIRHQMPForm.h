@@ -46,8 +46,8 @@ namespace SSWR
 			Media::ImageFilter::BGImgFilter *bgFilter;
 
 			UI::GUIVideoBoxDD *vbox;
-			UI::GUIMainMenu *mnu;
-			UI::GUIMenu *mnuChapters;
+			NotNullPtr<UI::GUIMainMenu> mnu;
+			NotNullPtr<UI::GUIMenu> mnuChapters;
 
 			UI::GUIForm *dbgFrm;
 			NotNullPtr<UI::GUITextBox> txtDebug;

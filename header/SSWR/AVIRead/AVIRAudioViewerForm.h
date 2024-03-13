@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRAudioViewerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIMainMenu *mnu;
+			NotNullPtr<UI::GUIMainMenu> mnu;
 			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpSample;
 			NotNullPtr<UI::GUIPictureBoxSimple> pbsSample;

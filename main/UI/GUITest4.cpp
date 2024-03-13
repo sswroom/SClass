@@ -55,12 +55,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NotNullPtr<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		UI::GUIMainMenu *mainMenu;
+		NotNullPtr<UI::GUIMainMenu> mainMenu;
 		UI::GUIForm *frm;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 4 - Menu and file drop"));
-		NEW_CLASS(mainMenu, UI::GUIMainMenu());
-		UI::GUIMenu *mnu = mainMenu->AddSubMenu(CSTR("&File"));
+		NEW_CLASSNN(mainMenu, UI::GUIMainMenu());
+		NotNullPtr<UI::GUIMenu> mnu = mainMenu->AddSubMenu(CSTR("&File"));
 		mnu->AddItem(CSTR("E&xit"), MNU_EXIT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_X);
 		mnu = mainMenu->AddSubMenu(CSTR("&Item"));
 		mnu->AddItem(CSTR("Item &1"), MNU_ITEM1, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_1);

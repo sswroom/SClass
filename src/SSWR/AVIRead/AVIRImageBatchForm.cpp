@@ -326,9 +326,9 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 /*	this->btnCrop = ui->NewButton(this->pnlImage, L"Crop");
 	this->btnCrop->SetRect(632, 72, 75, 23, false);*/
 
-	UI::GUIMainMenu *mmnu;
-	UI::GUIMenu *mnu;
-	NEW_CLASS(mmnu, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMainMenu> mmnu;
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(mmnu, UI::GUIMainMenu());
 	mnu = mmnu->AddSubMenu(CSTR("&Export"));
 	mnu->AddItem(CSTR("Export Selected"), MNU_EXPORT_SEL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu->AddItem(CSTR("Export as TIF"), MNU_EXPORT_TIF, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);

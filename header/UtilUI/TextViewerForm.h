@@ -16,7 +16,7 @@ namespace UtilUI
 		UI::GUITextFileView *txtView;
 		NotNullPtr<UI::GUIPanel> pnlStatus;
 		NotNullPtr<UI::GUITextBox> txtStatus;
-		UI::GUIMainMenu *mnuMain;
+		NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 		UI::GUIForm *srchFrm;
 		Media::MonitorMgr *monMgr;

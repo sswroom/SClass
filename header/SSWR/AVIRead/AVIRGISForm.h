@@ -41,9 +41,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtUTMGrid;
 			NotNullPtr<UI::GUITextBox> txtTimeUsed;
 			NotNullPtr<UI::GUITrackBar> tbScale;
-			UI::GUIMainMenu *mnuMain;
-			UI::GUIPopupMenu *mnuLayer;
-			UI::GUIPopupMenu *mnuGroup;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NotNullPtr<UI::GUIPopupMenu> mnuLayer;
+			NotNullPtr<UI::GUIPopupMenu> mnuGroup;
 			NotNullPtr<UI::GUITrackBar> tbTimeRange;
 			NotNullPtr<UI::GUICheckBox> chkTime;
 			NotNullPtr<UI::GUILabel> lblVAngle;

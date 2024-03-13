@@ -637,8 +637,8 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtInfo->SetReadOnly(true);
 	
-	UI::GUIMenu *mnu;
-	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));
 	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_RENAME, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_M);

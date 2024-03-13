@@ -337,9 +337,9 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	UI::GUIMenu *mnu;
-	UI::GUIMenu *mnu2;
-	NEW_CLASS(this->mnu, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NotNullPtr<UI::GUIMenu> mnu2;
+	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&Playback"));
 	mnu->AddItem(CSTR("&Start"), MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
 	mnu->AddItem(CSTR("S&top"), MNU_PB_STOP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
@@ -367,10 +367,10 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 
 	this->SetMenu(this->mnu);
 
-	NEW_CLASS(this->mnuVideo, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuVideo, UI::GUIPopupMenu());
 	this->mnuVideo->AddItem(CSTR("&Remove"), MNU_POPV_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuVideo->AddItem(CSTR("&Save Timecode file"), MNU_POPV_SAVE_TIMECODE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	NEW_CLASS(this->mnuAudio, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuAudio, UI::GUIPopupMenu());
 	this->mnuAudio->AddItem(CSTR("&Remove"), MNU_POPA_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuAudio->AddItem(CSTR("Frequency Graph"), MNU_POPA_FREQ_GRAPH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
@@ -403,8 +403,8 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 	DEL_CLASS(this->files);
 	DEL_CLASS(this->clk);
 
-	DEL_CLASS(this->mnuAudio);
-	DEL_CLASS(this->mnuVideo);
+	this->mnuAudio.Delete();
+	this->mnuVideo.Delete();
 	if (this->audRenderer)
 	{
 		this->core->BindAudio(0);

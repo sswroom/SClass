@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 			Optional<Net::SSLEngine> ssl;
 
 		private:

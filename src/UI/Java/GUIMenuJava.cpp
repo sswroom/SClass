@@ -533,13 +533,13 @@ void UI::GUIMenu::AddSeperator()
 	gtk_widget_show(menuItem);*/
 }
 
-UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
+NotNullPtr<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
 {
-/*	UI::GUIMenu *subMenu;
-	NEW_CLASS(subMenu, UI::GUIMenu(true));
-	this->subMenus->Add(subMenu);
+	NotNullPtr<UI::GUIMenu> subMenu;
+	NEW_CLASSNN(subMenu, UI::GUIMenu(true));
+	this->subMenus.Add(subMenu);
 
-	Char buff[128];
+/*	Char buff[128];
 	Char *sptr = buff;
 	Char c;
 	Bool hasUL = false;
@@ -567,7 +567,7 @@ UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
 	gtk_menu_shell_append(GTK_MENU_SHELL(this->hMenu), menuItem);
 	gtk_widget_show(menuItem);
 	return subMenu;*/
-	return 0;
+	return subMenu;
 }
 
 void *UI::GUIMenu::GetHMenu()
@@ -583,7 +583,11 @@ UOSInt UI::GUIMenu::GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys)
 	UOSInt i = 0;
 	while (i < j)
 	{
-		keyCnt += this->subMenus.GetItem(i)->GetAllKeys(keys);
+		NotNullPtr<UI::GUIMenu> menu;
+		if (this->subMenus.GetItem(i).SetTo(menu))
+		{
+			keyCnt += menu->GetAllKeys(keys);
+		}
 		i++;
 	}
 	return keyCnt;
@@ -628,24 +632,27 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 	this->ddpi = ddpi;
 }
 
-void UI::GUIMenu::SetMenuForm(GUIForm *mnuForm)
+void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 {
-	UI::GUIMenu *item;
+	NotNullPtr<UI::GUIMenu> item;
 	OSInt i;
 	this->mnuForm = mnuForm;
 	i = this->subMenus.GetCount();
 	while (i-- > 0)
 	{
-		item = this->subMenus.GetItem(i);
-		item->SetMenuForm(mnuForm);
+		if (this->subMenus.GetItem(i).SetTo(item))
+		{
+			item->SetMenuForm(mnuForm);
+		}
 	}
 }
 
 void UI::GUIMenu::EventMenuClick(UInt16 cmdId)
 {
-	if (this->mnuForm)
+	NotNullPtr<GUIForm> form;
+	if (this->mnuForm.SetTo(form))
 	{
-		this->mnuForm->EventMenuClicked(cmdId);
+		form->EventMenuClicked(cmdId);
 	}
 }
 

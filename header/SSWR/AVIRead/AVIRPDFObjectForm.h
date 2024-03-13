@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpParameter;
 			NotNullPtr<UI::GUIListView> lvParameter;
 
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			static void __stdcall OnObjectSelChg(void *userObj);
 			static void __stdcall OnObjectDblClk(void *userObj);

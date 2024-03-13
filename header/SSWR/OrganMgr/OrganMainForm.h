@@ -115,7 +115,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtMapScale;
 			UI::GUIMapControl *mcMap;
 
-			UI::GUIMainMenu *mnuMain;
+			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
 			Media::ColorManager *colorMgr;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
