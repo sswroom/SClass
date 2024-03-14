@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "UI/GUITimer.h"
 
-UI::GUITimer::GUITimer(UI::UIEvent handler, void *userObj)
+UI::GUITimer::GUITimer(UI::UIEvent handler, AnyType userObj)
 {
 	this->handler = handler;
 	this->userObj = userObj;

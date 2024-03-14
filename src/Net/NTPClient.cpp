@@ -8,9 +8,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::NTPClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::NTPClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::NTPClient *me = (Net::NTPClient*)userData;
+	NotNullPtr<Net::NTPClient> me = userData.GetNN<Net::NTPClient>();
 //	UInt8 li = buff[0] >> 6;
 //	UInt8 vn = (buff[0] >> 3) & 7;
 	UInt8 mode = buff[0] & 7;

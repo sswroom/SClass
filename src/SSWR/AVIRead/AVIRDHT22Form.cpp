@@ -4,15 +4,15 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRDHT22Form::OnReadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDHT22Form::OnReadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDHT22Form *me = (SSWR::AVIRead::AVIRDHT22Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDHT22Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDHT22Form>();
 	me->ReadData();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDHT22Form::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDHT22Form::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDHT22Form *me = (SSWR::AVIRead::AVIRDHT22Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDHT22Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDHT22Form>();
 	if (me->chkAutoRead->IsChecked())
 	{
 		me->ReadData();

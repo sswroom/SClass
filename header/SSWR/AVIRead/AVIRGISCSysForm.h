@@ -31,10 +31,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
-			static void __stdcall OnGeoSelChg(void *userObj);
-			static void __stdcall OnProjSelChg(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnGeoSelChg(AnyType userObj);
+			static void __stdcall OnProjSelChg(AnyType userObj);
 		public:
 			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
 			virtual ~AVIRGISCSysForm();

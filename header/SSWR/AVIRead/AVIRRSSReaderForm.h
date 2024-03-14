@@ -39,9 +39,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnRequestClicked(void *userObj);
-			static void __stdcall OnRecentSelChg(void *userObj);
-			static void __stdcall OnItemsDblClick(void *userObj, UOSInt index);
+			static void __stdcall OnRequestClicked(AnyType userObj);
+			static void __stdcall OnRecentSelChg(AnyType userObj);
+			static void __stdcall OnItemsDblClick(AnyType userObj, UOSInt index);
 
 			void RSSListLoad();
 			void RSSListStore();

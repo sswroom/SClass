@@ -89,7 +89,6 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	this->errWriter = errWriter;
 	this->isFirst = true;
 	this->pingv4ReqHdlr = 0;
-	this->pingv4ReqObj = 0;
 }
 
 Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CStringNN name) : IO::ParsedObject(name), tcp4synList(128)
@@ -100,7 +99,6 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	this->errWriter = errWriter;
 	this->isFirst = true;
 	this->pingv4ReqHdlr = 0;
-	this->pingv4ReqObj = 0;
 }
 
 Net::EthernetAnalyzer::~EthernetAnalyzer()
@@ -1031,9 +1029,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 
 				if (ipData[0] == 8)
 				{
-					if (this->pingv4ReqHdlr)
+					if (this->pingv4ReqHdlr.func)
 					{
-						this->pingv4ReqHdlr(this->pingv4ReqObj, ip->srcIP, ip->destIP, packet[8], ipDataSize);
+						this->pingv4ReqHdlr.func(this->pingv4ReqHdlr.userObj, ip->srcIP, ip->destIP, packet[8], ipDataSize);
 					}
 				}
 			}
@@ -1862,8 +1860,7 @@ Net::EthernetAnalyzer::AnalyzeType Net::EthernetAnalyzer::GetAnalyzeType()
 	return this->atype;
 }
 
-void Net::EthernetAnalyzer::HandlePingv4Request(Pingv4Handler pingv4Hdlr, void *userObj)
+void Net::EthernetAnalyzer::HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj)
 {
-	this->pingv4ReqObj = userObj;
-	this->pingv4ReqHdlr = pingv4Hdlr;
+	this->pingv4ReqHdlr = {pingv4Hdlr, userObj};
 }

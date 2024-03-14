@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSetDNSForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDNSForm *me = (SSWR::AVIRead::AVIRSetDNSForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDNSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDNSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDNSServer->GetText(sb);
 	if (sb.leng > 0)
@@ -19,9 +19,9 @@ void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnOKClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDNSForm *me = (SSWR::AVIRead::AVIRSetDNSForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDNSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDNSForm>();
 	me->Close();
 }
 

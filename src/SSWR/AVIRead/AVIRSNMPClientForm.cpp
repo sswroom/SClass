@@ -5,9 +5,9 @@
 #include "Net/SNMPInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNMPClientForm *me = (SSWR::AVIRead::AVIRSNMPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPClientForm>();
 	Text::StringBuilderUTF8 sbComm;
 	Text::StringBuilderUTF8 sbOID;
 	Net::SocketUtil::AddressInfo addr;
@@ -88,9 +88,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnTimerTick(AnyType userObj)
 {
-//	SSWR::AVIRead::AVIRSNMPClientForm *me = (SSWR::AVIRead::AVIRSNMPClientForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRSNMPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPClientForm>();
 }
 
 SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

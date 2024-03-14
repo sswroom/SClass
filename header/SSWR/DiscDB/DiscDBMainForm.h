@@ -14,7 +14,7 @@ namespace SSWR
 			SSWR::DiscDB::DiscDBEnv *env;
 			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 		public:
 			DiscDBMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, SSWR::DiscDB::DiscDBEnv *env);

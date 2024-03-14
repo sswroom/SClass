@@ -9,9 +9,9 @@ struct ClientStatus
 	NotNullPtr<Net::TCPClient> cli;
 };
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
 	if (me->svr)
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 	me->btnStart->SetText(CSTR("Stop"));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	NotNullPtr<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
 	cli->SetNoDelay(true);
@@ -73,25 +73,25 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-//	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		cli.Delete();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	SSWR::AVIRead::AVIRTCPSpdSvrForm *me = (SSWR::AVIRead::AVIRTCPSpdSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	if (me->echo)
 	{
 		cli->Write(buff.GetPtr(), buff.GetSize());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 

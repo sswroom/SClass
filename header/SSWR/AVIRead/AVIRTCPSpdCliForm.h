@@ -44,8 +44,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblRecvSpeed;
 			NotNullPtr<UI::GUITextBox> txtRecvSpeed;
 
-			static void __stdcall OnConnClick(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnConnClick(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall ProcThread(void *userObj);
 			static UInt32 __stdcall RecvThread(void *userObj);
 		public:
@@ -54,6 +54,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

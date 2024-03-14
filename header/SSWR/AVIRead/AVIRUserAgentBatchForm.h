@@ -27,9 +27,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtOutput;
 
 			static void UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb);
-			static void __stdcall OnParseClicked(void *userObj);
-			static void __stdcall OnUpdateClicked(void *userObj);
-			static void __stdcall OnUpdateCBClicked(void *userObj);
+			static void __stdcall OnParseClicked(AnyType userObj);
+			static void __stdcall OnUpdateClicked(AnyType userObj);
+			static void __stdcall OnUpdateCBClicked(AnyType userObj);
 			void UpdateByText(Text::PString txt);
 		public:
 			AVIRUserAgentBatchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

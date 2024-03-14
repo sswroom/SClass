@@ -4,9 +4,9 @@
 #include "Net/NetBIOSUtil.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall Net::NetBIOSScanner::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::NetBIOSScanner::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::NetBIOSScanner *me = (Net::NetBIOSScanner*)userData;
+	NotNullPtr<Net::NetBIOSScanner> me = userData.GetNN<Net::NetBIOSScanner>();
 	UInt32 sortableIP = ReadMUInt32(addr->addr);
 	if (dataSize < 56)
 	{
@@ -50,9 +50,9 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(NotNullPtr<const Net::SocketUtil
 				namePtr += 18;
 				ent++;
 			}
-			if (me->hdlr)
+			if (me->hdlr.func)
 			{
-				me->hdlr(me->hdlrObj, sortableIP);
+				me->hdlr.func(me->hdlr.userObj, sortableIP);
 			}
 		}
 	}
@@ -71,7 +71,6 @@ Net::NetBIOSScanner::NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf, NotNul
 {
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR_NULL, 2, false));
 	this->hdlr = 0;
-	this->hdlrObj = 0;
 	if (!this->svr->IsError())
 	{
 		this->svr->SetBroadcast(true);
@@ -109,10 +108,9 @@ void Net::NetBIOSScanner::SendRequest(UInt32 ip)
 	this->svr->SendTo(addr, 137, buff, 50);
 }
 
-void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, void *userObj)
+void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, AnyType userObj)
 {
-	this->hdlrObj = userObj;
-	this->hdlr = hdlr;
+	this->hdlr = {hdlr, userObj};
 }
 
 NotNullPtr<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> Net::NetBIOSScanner::GetAnswers(NotNullPtr<Sync::MutexUsage> mutUsage) const

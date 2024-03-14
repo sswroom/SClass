@@ -3,9 +3,9 @@
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSiteInstagramForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSiteInstagramForm *me = (SSWR::AVIRead::AVIRWebSiteInstagramForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(voi
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSiteInstagramForm *me = (SSWR::AVIRead::AVIRWebSiteInstagramForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtShortCode->GetText(sb);
 	me->lbImageURL->ClearItems();

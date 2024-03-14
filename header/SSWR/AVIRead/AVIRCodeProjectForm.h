@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITextBox> txtMessage;
 
-			static void __stdcall OnItemSelected(void *userObj);
+			static void __stdcall OnItemSelected(AnyType userObj);
 			void DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);
 			void AddTreeObj(UI::GUITreeView::TreeItem *parent, Text::CodeContainer *container);
 		public:
@@ -37,6 +37,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

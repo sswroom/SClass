@@ -17,7 +17,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::Chart *chart;
 
-			static void __stdcall OnSizeChanged(void *userObj);
+			static void __stdcall OnSizeChanged(AnyType userObj);
 		public:
 			AVIRChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart);
 			virtual ~AVIRChartForm();

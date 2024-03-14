@@ -1,7 +1,9 @@
 #ifndef _SM_NET_DNSPROXY
 #define _SM_NET_DNSPROXY
+#include "AnyType.h"
 #include "Data/ArrayListICaseString.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/CallbackStorage.h"
 #include "Data/ICaseStringMap.h"
 #include "Net/DNSClient.h"
 #include "Net/DNSServer.h"
@@ -44,7 +46,7 @@ namespace Net
 			Sync::Event finEvt;
 		} CliRequestStatus;
 	public:
-		typedef void (__stdcall *DNSProxyRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+		typedef void (__stdcall *DNSProxyRequest)(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *cli;
@@ -80,8 +82,7 @@ namespace Net
 		Data::FastMap<UInt32, CliRequestStatus*> cliReqMap;
 
 		Sync::Mutex hdlrMut;
-		Data::ArrayList<DNSProxyRequest> hdlrList;
-		Data::ArrayList<void *> hdlrObjs;
+		Data::ArrayList<Data::CallbackStorage<DNSProxyRequest>> hdlrList;
 
 		Sync::Mutex blackListMut;
 		Data::ArrayListStringNN blackList;
@@ -89,8 +90,8 @@ namespace Net
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayList<const UTF8Char *> *whiteList;
 
-		static void __stdcall ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-		static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
+		static void __stdcall ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
 		void RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 reqClass, RequestResult *req);
 		UInt32 NextId();
 		CliRequestStatus *NewCliReq(UInt32 id);
@@ -124,7 +125,7 @@ namespace Net
 		UOSInt GetBlackList(NotNullPtr<Data::ArrayListNN<Text::String>> blackList);
 		Bool AddBlackList(NotNullPtr<Text::String> blackList);
 		Bool AddBlackList(Text::CStringNN blackList);
-		void HandleDNSRequest(DNSProxyRequest hdlr, void *userObj);
+		void HandleDNSRequest(DNSProxyRequest hdlr, AnyType userObj);
 		void SetCustomAnswer(Text::CString name, const Net::SocketUtil::AddressInfo *addr);
 		void SetWebProxyAutoDiscovery(const Net::SocketUtil::AddressInfo *addr);
 	};

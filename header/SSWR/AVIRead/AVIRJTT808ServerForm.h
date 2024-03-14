@@ -41,12 +41,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbLog;
 			NotNullPtr<UI::GUITextBox> txtLog;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
-			static void __stdcall OnClientConn(Socket *s, void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 
 			void ServerStop();
 		public:
@@ -55,8 +55,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		};
 	}
 }

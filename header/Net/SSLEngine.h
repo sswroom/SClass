@@ -1,5 +1,6 @@
 #ifndef _SM_NET_SSLENGINE
 #define _SM_NET_SSLENGINE
+#include "AnyType.h"
 #include "Crypto/Cert/CertStore.h"
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509File.h"
@@ -59,7 +60,7 @@ namespace Net
 			MustExist
 		};
 
-		typedef void (__stdcall *ClientReadyHandler)(NotNullPtr<Net::TCPClient> cli, void *userObj);
+		typedef void (__stdcall *ClientReadyHandler)(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
 
 		struct ThreadState
 		{
@@ -67,7 +68,7 @@ namespace Net
 			Socket *s;
 			UOSInt index;
 			ClientReadyHandler clientReady;
-			void *clientReadyObj;
+			AnyType clientReadyObj;
 			Sync::Event *evt;
 			SSLEngine *me;
 		};
@@ -97,7 +98,7 @@ namespace Net
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile, Text::CString caFile);
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
-		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
+		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, AnyType userObj);
 
 		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1) = 0;
 		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout) = 0;

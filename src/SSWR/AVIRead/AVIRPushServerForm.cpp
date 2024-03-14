@@ -3,9 +3,9 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRPushServerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPushServerForm *me = (SSWR::AVIRead::AVIRPushServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPushServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPushServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);

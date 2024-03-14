@@ -28,9 +28,9 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnSRIDClicked(void *userObj);
-			static void __stdcall OnSRIDPrevClicked(void *userObj);
-			static void __stdcall OnSRIDNextClicked(void *userObj);
+			static void __stdcall OnSRIDClicked(AnyType userObj);
+			static void __stdcall OnSRIDPrevClicked(AnyType userObj);
+			static void __stdcall OnSRIDNextClicked(AnyType userObj);
 
 			void ShowInfo(const Math::CoordinateSystemManager::SpatialRefInfo *srinfo);
 		public:

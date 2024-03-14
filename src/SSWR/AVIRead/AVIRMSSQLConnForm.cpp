@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMSSQLConnForm *me = (SSWR::AVIRead::AVIRMSSQLConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
 	Text::StringBuilderUTF8 sb;
 	if (UI::Clipboard::GetString(me->GetHandle(), sb))
 	{
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMSSQLConnForm *me = (SSWR::AVIRead::AVIRMSSQLConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
 	Text::StringBuilderUTF8 sbServer;
 	Text::StringBuilderUTF8 sbPort;
 	Text::StringBuilderUTF8 sbDatabase;
@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMSSQLConnForm *me = (SSWR::AVIRead::AVIRMSSQLConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

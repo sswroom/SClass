@@ -45,7 +45,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUITextBox> txtLog;
 
-			static void __stdcall OnSendClicked(void *userObj);
+			static void __stdcall OnSendClicked(AnyType userObj);
 		public:
 			AVIRSMTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSMTPClientForm();

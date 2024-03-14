@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblOutlook;
 			NotNullPtr<UI::GUITextBox> txtOutlook;
 
-			static void __stdcall OnReloadClicked(void *userObj);
+			static void __stdcall OnReloadClicked(AnyType userObj);
 			void Reload(Net::HKOWeather::Language lang);
 		public:
 			AVIRHKOLocalForecastForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

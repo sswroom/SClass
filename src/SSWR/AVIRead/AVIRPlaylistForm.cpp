@@ -29,11 +29,12 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	Bool changed = false;
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 	i = 0;
 	while (i < nFiles)
 	{

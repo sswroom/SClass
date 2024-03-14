@@ -53,9 +53,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCommand;
 			NotNullPtr<UI::GUITextBox> txtCommand;
 
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnSendCommandClicked(void *userObj);
-			static void __stdcall OnCmdChanged(void *userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnSendCommandClicked(AnyType userObj);
+			static void __stdcall OnCmdChanged(AnyType userObj);
 		public:
 			AVIRTVControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTVControlForm();

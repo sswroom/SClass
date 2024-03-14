@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRNetRAWCaptureForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)(OSInt)me->cboFormat->GetSelectedItem();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -22,9 +22,9 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *user
 	me->txtFileName->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
@@ -40,9 +40,9 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userO
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	if (me->capture)
 	{
 		DEL_CLASS(me->capture);
@@ -76,9 +76,9 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt64 val;

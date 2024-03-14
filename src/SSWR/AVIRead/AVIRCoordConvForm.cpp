@@ -376,9 +376,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(void *userObj, UO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	Bool listUpdated = false;
 	Text::StringBuilderUTF8 sb;
@@ -387,6 +387,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNu
 	Double altitude;
 	Int64 gpsTimeTick;
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	UOSInt j;
 	while (i < nFiles)
 	{

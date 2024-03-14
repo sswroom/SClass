@@ -337,7 +337,7 @@ Bool Net::RTPH264Handler::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutPar
 	return true;
 }
 
-Bool Net::RTPH264Handler::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Net::RTPH264Handler::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	this->cbData = userData;
 	this->cb = cb;
@@ -399,7 +399,7 @@ Data::Duration Net::RTPH264Handler::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Net::RTPH264Handler::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Net::RTPH264Handler::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 

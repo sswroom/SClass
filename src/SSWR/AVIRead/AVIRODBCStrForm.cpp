@@ -4,10 +4,10 @@
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
@@ -19,10 +19,10 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
@@ -49,10 +49,10 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->txtConnStr->GetText(sb);
 
 	DB::ODBCConn *conn;
@@ -70,9 +70,9 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRODBCStrForm *me = (SSWR::AVIRead::AVIRODBCStrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

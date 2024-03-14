@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRASN1ParseForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1ParseForm *me = (SSWR::AVIRead::AVIRASN1ParseForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1ParseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1ParseForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtData->GetText(sb);
 	if (sb.GetLength() == 0)

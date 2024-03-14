@@ -13,12 +13,12 @@ namespace Media
 			Media::FrameInfo videoInfo;
 			FrameCallback videoCb;
 			FrameChangeCallback fcCb;
-			void *userData;
+			AnyType userData;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
 
-			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
+			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
 			virtual void OnFrameChange(Media::IVideoSource::FrameChange fc);
 		public:
 			VideoFilterBase(Media::IVideoSource *srcVideo);
@@ -31,7 +31,7 @@ namespace Media
 			virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
 			virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom);
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
-			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
+			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start(); //true = succeed
 			virtual void Stop();
 			virtual Bool IsRunning();
@@ -47,7 +47,7 @@ namespace Media
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 		};

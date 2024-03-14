@@ -65,11 +65,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnLogWifiSave;
 			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnLogWifiDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnLogWifiSaveClicked(void *userObj);
-			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
-			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnLogWifiSaveClicked(AnyType userObj);
+			static void __stdcall OnLogWifiSaveFClicked(AnyType userObj);
+			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
 		public:
 			AVIRWifiCaptureLiteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureLiteForm();

@@ -28,8 +28,8 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIMainMenu> mnuMain;
 
-			static void __stdcall OnObjectSelChg(void *userObj);
-			static void __stdcall OnObjectDblClk(void *userObj);
+			static void __stdcall OnObjectSelChg(AnyType userObj);
+			static void __stdcall OnObjectDblClk(AnyType userObj);
 		public:
 			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc);
 			virtual ~AVIRPDFObjectForm();

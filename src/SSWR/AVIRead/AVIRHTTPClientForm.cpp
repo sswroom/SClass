@@ -23,9 +23,9 @@
 #include "Text/TextBinEnc/FormEncoding.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	SSWR::AVIRead::AVIRUserAgentSelForm frm(0, me->ui, me->core, me->userAgent->ToCString());
 	if (frm.ShowDialog(me))
 	{
@@ -35,9 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	UTF8Char sbuffLocal[512];
 	UTF8Char *sbuff = sbuffLocal;
 	UTF8Char *sbuffPtr = 0;
@@ -306,9 +306,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	if (me->respData == 0)
 	{
 		return;
@@ -377,9 +377,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Sync::MutexUsage mutUsage(me->respMut);
 	if (me->respData)
 	{
@@ -406,9 +406,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 	UTF8Char *sbuff;
@@ -470,9 +470,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSelect", false);
 	dlg->SetAllowMultiSel(true);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -503,25 +503,25 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	me->ClearFiles();
 	me->lblFileStatus->SetText(CSTR("No files selected"));
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	if (me->respCert)
 	{
 		me->core->OpenObject(me->respCert->Clone());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -842,9 +842,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 	SDEL_STRING(me->reqBodyType);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	NotNullPtr<Text::String> hdr;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

@@ -13,9 +13,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"COVID19", false);
 	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	dlg->SetAllowMultiSel(false);
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
 	UInt8 buff[2048];
 	UOSInt i;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -50,14 +50,14 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnCountrySelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnCountrySelChg(AnyType userObj)
 {
 	OnNewCasesSizeChanged(userObj);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country = (SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*)me->lvCountry->GetSelectedItem();
 	if (country == 0)
 		return;

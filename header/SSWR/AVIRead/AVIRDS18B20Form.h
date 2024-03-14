@@ -31,9 +31,9 @@ namespace SSWR
 			IO::OneWireGPIO *oneWire;
 			IO::Device::DS18B20 *ds18b20;
 
-			static void __stdcall OnSNClicked(void *userObj);
-			static void __stdcall OnReadClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnSNClicked(AnyType userObj);
+			static void __stdcall OnReadClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void ReadData();
 		public:
 			AVIRDS18B20Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin);

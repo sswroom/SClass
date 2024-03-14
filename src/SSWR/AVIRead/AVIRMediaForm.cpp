@@ -179,10 +179,10 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NotNullPtr<Media::IAudioSource
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm *)userObj;
-	me->popMedia = (Media::IMediaSource*)me->lbFiles->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
+	me->popMedia = (Media::IMediaSource*)me->lbFiles->GetSelectedItem().p;
 	if (me->popMedia == 0)
 	{
 	}
@@ -201,10 +201,10 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(void *userObj, Math:
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
-	Media::IMediaSource *mediaSrc = (Media::IMediaSource*)me->lbFiles->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
+	Media::IMediaSource *mediaSrc = (Media::IMediaSource*)me->lbFiles->GetSelectedItem().p;
 	if (mediaSrc == 0)
 	{
 	}
@@ -216,9 +216,9 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
+void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
 {
-	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	UOSInt w = img->info.dispSize.x;
 	UOSInt h = img->info.dispSize.y;
 	UInt8 *yptr = img->data;
@@ -248,11 +248,11 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, Data:
 	me->vbdMain->UpdateCrop();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
+Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	IO::Writer *writer = (IO::Writer *)userData;
+	NotNullPtr<IO::Writer> writer = userData.GetNN<IO::Writer>();
 	sptr = Text::StrInt64(sbuff, frameTime.GetTotalMS());
 	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;

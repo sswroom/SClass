@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_DRAWMAPSERVICELAYER
 #define _SM_MAP_DRAWMAPSERVICELAYER
+#include "Data/CallbackStorage.h"
 #include "Data/SyncLinkedList.h"
 #include "Map/DrawMapService.h"
 #include "Map/MapDrawLayer.h"
@@ -32,8 +33,7 @@ namespace Map
 		Text::String *lastImageURL;
 
 		Sync::Mutex updMut;
-		Data::ArrayList<UpdatedHandler> updHdlrs;
-		Data::ArrayList<void *> updObjs;
+		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		static UInt32 __stdcall TaskThread(void *userObj);
 		void ClearDisp();
@@ -68,8 +68,8 @@ namespace Map
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList);
 
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		Map::DrawMapService *GetDrawMapService();
 	};
 }

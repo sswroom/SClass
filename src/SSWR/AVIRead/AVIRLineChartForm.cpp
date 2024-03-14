@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	OSInt xCol;
 	UOSInt i;
 	UOSInt j;
@@ -229,15 +229,15 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i = me->cboYAxis->GetSelectedIndex();
@@ -253,13 +253,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 	me->yCols->Add((UInt32)col);
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
-		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
+		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
 		me->strTypes[colInd] = DB::DBUtil::CT_Double;
 		NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
@@ -269,13 +269,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
-		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
+		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
 		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
 		NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);

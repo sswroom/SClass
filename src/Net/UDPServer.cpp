@@ -73,7 +73,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					}
 					mutUsage.EndUse();
 				}
-				stat->me->hdlr(recvAddr, recvPort, buff, recvSize, stat->me->userData);
+				stat->me->hdlr.func(recvAddr, recvPort, buff, recvSize, stat->me->hdlr.userObj);
 			}
 		}
 		MemFree(buff);
@@ -149,7 +149,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					}
 					mutUsage.EndUse();
 				}
-				stat->me->hdlr(recvAddr, recvPort, buff, recvSize, stat->me->userData);
+				stat->me->hdlr.func(recvAddr, recvPort, buff, recvSize, stat->me->hdlr.userObj);
 			}
 		}
 		MemFree(buff);
@@ -159,7 +159,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, void *userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = 0;
@@ -169,8 +169,7 @@ Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil:
 
 	this->sockf = sockf;
 	this->logPrefix = Text::String::NewOrNull(logPrefix);
-	this->hdlr = hdlr;
-	this->userData = userData;
+	this->hdlr = {hdlr, userData};
 	this->logFileR = 0;
 	this->logFileS = 0;
 	this->msgLog = msgLog;

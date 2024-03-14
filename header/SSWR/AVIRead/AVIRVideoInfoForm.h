@@ -43,12 +43,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspStream;
 			NotNullPtr<UI::GUITextBox> txtStream;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);
-			static void __stdcall OnAudioEnd(void *userData);
-			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnStreamChg(void *userObj);
-			static void __stdcall OnDecodeClicked(void *userObj);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
+			static void __stdcall OnAudioEnd(AnyType userData);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnStreamChg(AnyType userObj);
+			static void __stdcall OnDecodeClicked(AnyType userObj);
 			Bool OpenFile(Text::CStringNN fileName);
 			void ClearDecode();
 		public:

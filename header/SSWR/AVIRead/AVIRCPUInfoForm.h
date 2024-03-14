@@ -33,8 +33,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnUploadClick(void *userObj);
-			static void __stdcall OnCopyInfoClick(void *userObj);
+			static void __stdcall OnUploadClick(AnyType userObj);
+			static void __stdcall OnCopyInfoClick(AnyType userObj);
 		public:
 			AVIRCPUInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCPUInfoForm();

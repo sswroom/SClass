@@ -139,9 +139,9 @@ OSInt UI::GUIMapTreeView::EventEndLabelEdit(TreeItem *item, const UTF8Char *newL
 
 void UI::GUIMapTreeView::EventDragItem(TreeItem *dragItem, TreeItem *dropItem)
 {
-	if (this->dragHdlr)
+	if (this->dragHdlr.func)
 	{
-		this->dragHdlr(this->dragObj, (UI::GUIMapTreeView::ItemIndex*)dragItem->GetItemObj(), (UI::GUIMapTreeView::ItemIndex*)dropItem->GetItemObj());
+		this->dragHdlr.func(this->dragHdlr.userObj, (UI::GUIMapTreeView::ItemIndex*)dragItem->GetItemObj(), (UI::GUIMapTreeView::ItemIndex*)dropItem->GetItemObj());
 	}
 }
 
@@ -150,10 +150,9 @@ Text::CStringNN UI::GUIMapTreeView::GetObjectClass() const
 	return CSTR("MapTreeView");
 }
 
-void UI::GUIMapTreeView::SetDragHandler(TreeDragHandler dragHdlr, void *dragObj)
+void UI::GUIMapTreeView::SetDragHandler(TreeDragHandler dragHdlr, AnyType dragObj)
 {
-	this->dragHdlr = dragHdlr;
-	this->dragObj = dragObj;
+	this->dragHdlr = {dragHdlr, dragObj};
 }
 
 void UI::GUIMapTreeView::SetEnv(NotNullPtr<Map::MapEnv> env)

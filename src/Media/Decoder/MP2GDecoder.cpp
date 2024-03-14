@@ -223,7 +223,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		endOfst = frames.GetItem(i);
 		if (this->finfoMode)
 		{
-			this->finfoCb(ftime, frameNum, endOfst - startOfst, outFrameStruct, outFrameType, this->finfoData, ycOfst);
+			this->finfoCb.func(ftime, frameNum, endOfst - startOfst, outFrameStruct, outFrameType, this->finfoCb.userObj, ycOfst);
 		}
 		else
 		{
@@ -302,7 +302,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	endOfst = dataSize;
 	if (this->finfoMode)
 	{
-		this->finfoCb(ftime, frameNum, endOfst - startOfst, frameStruct, ftype, this->finfoData, ycOfst);
+		this->finfoCb.func(ftime, frameNum, endOfst - startOfst, frameStruct, ftype, this->finfoCb.userObj, ycOfst);
 	}
 	else
 	{
@@ -372,11 +372,10 @@ Data::Duration Media::Decoder::MP2GDecoder::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	this->finfoMode = true;
-	this->finfoCb = cb;
-	this->finfoData = userData;
+	this->finfoCb = {cb, userData};
 	this->Init(Media::Decoder::VDecoderBase::OnVideoFrame, 0, this);
 	this->Start();
 	while (this->sourceVideo->IsRunning())

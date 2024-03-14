@@ -10,9 +10,9 @@
 #include "Text/StringUtil.h"
 #include "UtilUI/ColorDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	Map::MapEnv::LayerItem setting;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -81,15 +81,15 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 	}	
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -106,9 +106,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, Math
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-//	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		OnLineModifyClicked(userObj);
@@ -116,9 +116,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(void *userObj, Math::C
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISLineForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -145,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISLineStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
@@ -173,9 +173,9 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		SSWR::AVIRead::AVIRGISImageForm frm(0, me->ui, me->core, me->env, me->imgIndex);
@@ -188,9 +188,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, Math
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-//	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		OnFontModifyClicked(userObj);
@@ -198,9 +198,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(void *userObj, M
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISFontForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -229,9 +229,9 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISFontStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{

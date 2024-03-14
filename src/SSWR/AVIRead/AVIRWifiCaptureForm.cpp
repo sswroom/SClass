@@ -726,9 +726,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(void *userObj, CloseReason reason)
+Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(AnyType userObj, CloseReason reason)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Manage::HiResClock clk;
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{

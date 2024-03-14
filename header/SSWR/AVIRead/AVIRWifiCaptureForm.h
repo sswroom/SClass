@@ -110,7 +110,7 @@ namespace SSWR
 			static void __stdcall OnLogWifiDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnLogWifiSaveClicked(void *userObj);
 			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
-			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
+			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
 			static void __stdcall OnGPSData(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
 		public:
 			AVIRWifiCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

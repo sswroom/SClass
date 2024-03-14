@@ -55,12 +55,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspPlate;
 			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
 
-			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnPlateSelChg(void *userObj);
-			static void __stdcall OnSelPlateClicked(void *userObj);
-			static void __stdcall OnSelCornersClicked(void *userObj);
-			static Bool __stdcall OnImgDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnANPRResult(void *userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnPlateSelChg(AnyType userObj);
+			static void __stdcall OnSelPlateClicked(AnyType userObj);
+			static void __stdcall OnSelCornersClicked(AnyType userObj);
+			static Bool __stdcall OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnANPRResult(AnyType userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg);
 			void ClearResults();
 		public:
 			AVIRANPRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -29,9 +29,9 @@ void __stdcall Net::MQTTStaticClient::KAThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-void __stdcall Net::MQTTStaticClient::OnDisconnect(void *userObj)
+void __stdcall Net::MQTTStaticClient::OnDisconnect(AnyType userObj)
 {
-	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)userObj;
+	NotNullPtr<Net::MQTTStaticClient> me = userObj.GetNN<Net::MQTTStaticClient>();
 	if (!me->kaThread.IsRunning())
 	{
 		return;

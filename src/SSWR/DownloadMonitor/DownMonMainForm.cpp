@@ -10,9 +10,9 @@
 #include "UI/Clipboard.h"
 #include <stdio.h>
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	SSWR::DownloadMonitor::DownMonCore::CheckStatus status = me->core->GetCurrStatus();
 	if (status != me->currStatus)
 	{
@@ -97,9 +97,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj
 	}
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard::GetString(me->GetHandle(), sb);
 	UTF8Char sbuff[32];
@@ -147,9 +147,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	}
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Data::ArrayList<UInt32> formats;
 	UOSInt i;
 	UOSInt j;
@@ -273,9 +273,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	}
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -315,9 +315,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 	UI::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(itemIndex);
 	if (id)
 	{
@@ -325,9 +325,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *use
 	}
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 id = (Int32)(OSInt)me->lvFiles->GetSelectedItem();
 	if (id > 0)
 	{
@@ -341,9 +341,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(void *us
 	}
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 webType = 4;
 	Int32 maxId = me->core->FileGetMaxId(webType);
 	OSInt currPage = 1;
@@ -417,9 +417,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	DEL_CLASS(encFact);
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(void *userObj)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(AnyType userObj)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -431,9 +431,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(void *
 	me->lblAlarm->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(void *userObj, Int32 fileId, Int32 webType)
+void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(AnyType userObj, Int32 fileId, Int32 webType)
 {
-	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
+	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Sync::MutexUsage mutUsage(me->endedMut);
 	me->endedList.Add((webType << 24) | fileId);
 	mutUsage.EndUse();

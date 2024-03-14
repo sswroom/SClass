@@ -20,12 +20,12 @@ void UI::GUITrackBar::EventScrolled(UOSInt scrollPos)
 	i = this->scrollHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->scrollHandlers.GetItem(i)(this->scrollHandlersObj.GetItem(i), scrollPos);
+		Data::CallbackStorage<ScrollEvent> cb = this->scrollHandlers.GetItem(i);
+		cb.func(cb.userObj, scrollPos);
 	}
 }
 
-void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, void *userObj)
+void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, AnyType userObj)
 {
-	this->scrollHandlers.Add(hdlr);
-	this->scrollHandlersObj.Add(userObj);
+	this->scrollHandlers.Add({hdlr, userObj});
 }

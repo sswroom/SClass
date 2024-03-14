@@ -29,8 +29,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITextBox> txtDest;
 
-			static void __stdcall OnConvClicked(void *userObj);
-			static void __stdcall OnConv2Clicked(void *userObj);
+			static void __stdcall OnConvClicked(AnyType userObj);
+			static void __stdcall OnConv2Clicked(AnyType userObj);
 			void ConvEnum();
 		public:
 			AVIRCppEnumForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

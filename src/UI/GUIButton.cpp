@@ -28,7 +28,8 @@ void UI::GUIButton::EventFocusLost()
 	i = this->btnFocusLostHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnFocusLostHandlers.GetItem(i)(this->btnFocusLostHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UIEvent> cb = this->btnFocusLostHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -38,7 +39,8 @@ void UI::GUIButton::EventButtonClick()
 	i = this->btnClkHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnClkHandlers.GetItem(i)(this->btnClkHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UIEvent> cb = this->btnClkHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -48,7 +50,8 @@ void UI::GUIButton::EventButtonDown()
 	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnUpDownHandlers.GetItem(i)(this->btnUpDownHandlersObjs.GetItem(i), true);
+		Data::CallbackStorage<UpDownEvent> cb = this->btnUpDownHandlers.GetItem(i);
+		cb.func(cb.userObj, true);
 	}
 }
 
@@ -58,24 +61,22 @@ void UI::GUIButton::EventButtonUp()
 	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnUpDownHandlers.GetItem(i)(this->btnUpDownHandlersObjs.GetItem(i), false);
+		Data::CallbackStorage<UpDownEvent> cb = this->btnUpDownHandlers.GetItem(i);
+		cb.func(cb.userObj, false);
 	}
 }
 
-void UI::GUIButton::HandleFocusLost(UIEvent handler, void *userObj)
+void UI::GUIButton::HandleFocusLost(UIEvent handler, AnyType userObj)
 {
-	this->btnFocusLostHandlers.Add(handler);
-	this->btnFocusLostHandlersObjs.Add(userObj);
+	this->btnFocusLostHandlers.Add({handler, userObj});
 }
 
-void UI::GUIButton::HandleButtonClick(UIEvent handler, void *userObj)
+void UI::GUIButton::HandleButtonClick(UIEvent handler, AnyType userObj)
 {
-	this->btnClkHandlers.Add(handler);
-	this->btnClkHandlersObjs.Add(userObj);
+	this->btnClkHandlers.Add({handler, userObj});
 }
 
-void UI::GUIButton::HandleButtonUpDown(UpDownEvent handler, void *userObj)
+void UI::GUIButton::HandleButtonUpDown(UpDownEvent handler, AnyType userObj)
 {
-	this->btnUpDownHandlers.Add(handler);
-	this->btnUpDownHandlersObjs.Add(userObj);
+	this->btnUpDownHandlers.Add({handler, userObj});
 }

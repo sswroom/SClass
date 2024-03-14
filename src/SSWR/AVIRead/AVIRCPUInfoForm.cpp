@@ -8,10 +8,10 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 {
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
@@ -60,10 +60,10 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 #endif
 }
 
-void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(AnyType userObj)
 {
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;

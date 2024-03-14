@@ -41,10 +41,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			Map::ESRI::ESRIMapServer *esriMap;
 
-			static void __stdcall OKClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
-			static void __stdcall OnOtherChanged(void *userObj);
-			static void __stdcall OnNoResourceChg(void *userObj, Bool newValue);
+			static void __stdcall OKClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
+			static void __stdcall OnOtherChanged(AnyType userObj);
+			static void __stdcall OnNoResourceChg(AnyType userObj, Bool newValue);
 		public:
 			AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRESRIMapForm();

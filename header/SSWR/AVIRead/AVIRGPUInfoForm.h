@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::GPUManager *gpuMgr;
 
-			static void __stdcall OnGPUSelChange(void *userObj);
+			static void __stdcall OnGPUSelChange(AnyType userObj);
 		public:
 			AVIRGPUInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPUInfoForm();

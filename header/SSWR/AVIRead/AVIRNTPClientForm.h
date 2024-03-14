@@ -25,8 +25,8 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnGetTimeClicked(void *userObj);
-			static void __stdcall OnSyncTimeClicked(void *userObj);
+			static void __stdcall OnGetTimeClicked(AnyType userObj);
+			static void __stdcall OnSyncTimeClicked(AnyType userObj);
 		public:
 			AVIRNTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNTPClientForm();

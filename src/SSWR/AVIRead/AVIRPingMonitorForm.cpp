@@ -5,9 +5,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	IPInfo *ipInfo;
@@ -61,15 +61,15 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	me->analyzer.PacketIPv4(rawData, packetSize, 0, 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	if (me->listener)
 	{
 		DEL_CLASS(me->listener);
@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 	me->txtInfo->SetReadOnly(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	if (me->socMon)
 	{
 		DEL_CLASS(me->socMon);
@@ -131,9 +131,9 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -142,10 +142,10 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
-	me->currIP = (IPInfo*)me->lbIP->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	me->currIP = (IPInfo*)me->lbIP->GetSelectedItem().p;
 	me->ipContUpdated = false;
 	if (me->currIP)
 	{
@@ -173,9 +173,9 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->ipContUpdated)

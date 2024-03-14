@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRSMTPClientForm.h"
 #include "Text/StringBuilderWriter.h"
 
-void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSMTPClientForm *me = (SSWR::AVIRead::AVIRSMTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSMTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMTPClientForm>();
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	UInt16 port;

@@ -72,10 +72,10 @@ typedef enum
 	MNU_TABLE_CHECK_CHANGE
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem().p;
 	if (ctrl == 0)
 	{
 		me->currDB = 0;
@@ -90,9 +90,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 	me->UpdateSchemaList();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UOSInt i = me->lbConn->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -101,10 +101,10 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, M
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnDblClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnDblClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->lbConn->GetSelectedItem().p;
 	if (ctrl)
 	{
 		if (ctrl->Connect())
@@ -118,15 +118,15 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnDblClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	me->UpdateTableList();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UOSInt i = me->lbSchema->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -135,9 +135,9 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(void *userObj,
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	Optional<Text::String> tableName = me->lbTable->GetSelectedItemTextNew();
 	Optional<Text::String> schemaName = me->lbSchema->GetSelectedItemTextNew();
 	me->UpdateTableData(OPTSTR_CSTR(schemaName), tableName);
@@ -145,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 	OPTSTR_DEL(tableName);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UOSInt i = me->lbTable->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -156,15 +156,15 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, 
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapSchemaSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapSchemaSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	me->UpdateMapTableList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB == 0)
 	{
 		return;
@@ -197,9 +197,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 	OPTSTR_DEL(tableName);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (button == MBTN_LEFT)
 	{
 		me->mapDownPos = scnPos;
@@ -207,9 +207,9 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(void *userObj, M
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (button == MBTN_LEFT)
 	{
 		if (me->mapDownPos == scnPos)
@@ -259,9 +259,9 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB)
 	{
 		NotNullPtr<Text::String> dbName;
@@ -277,9 +277,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB)
 	{
 		if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
@@ -317,9 +317,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB)
 	{
 		if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
@@ -351,9 +351,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB)
 	{
 		if (me->currDB->IsDBTool())
@@ -393,9 +393,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB && me->currDB->IsDBTool())
 	{
 		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
@@ -412,28 +412,28 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnLayerUpdated(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnLayerUpdated(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	me->mapMain->UpdateMap();
 	me->mapMain->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnVariableClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnVariableClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	me->UpdateVariableList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	me->UpdateSvrConnList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
 	{
 		UOSInt index = me->lvSvrConn->GetSelectedIndex();
@@ -448,9 +448,9 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	DB::ReadingDBTool *db = 0;
 	if (me->currDB && me->currDB->IsDBTool())
 	{
@@ -458,6 +458,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 	}
 	Bool isSQLTab = (me->tcMain->GetSelectedPage().OrNull() == me->tpSQL.Ptr());
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (isSQLTab && db && files[i]->EndsWith(UTF8STRC(".sql")))
@@ -1571,8 +1572,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CONN_COPY_STR:
 		{
 			Text::StringBuilderUTF8 sb;
-			DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)this->lbConn->GetSelectedItem();
-			if (ctrl)
+			NotNullPtr<DB::DBManagerCtrl> ctrl;
+			if (this->lbConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl))
 			{
 				Text::String *connStr = ctrl->GetConnStr();
 				if (connStr)

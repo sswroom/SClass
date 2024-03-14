@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #define _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
+#include "AnyType.h"
 #include "Handles.h"
 #include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
@@ -45,7 +46,7 @@ namespace SSWR
 				Sync::Mutex mut;
 			};
 
-			typedef void (__stdcall *FileEndHandler)(void *userObj, Int32 fileId, Int32 webType);
+			typedef void (__stdcall *FileEndHandler)(AnyType userObj, Int32 fileId, Int32 webType);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;

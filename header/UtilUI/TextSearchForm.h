@@ -19,8 +19,8 @@ namespace UtilUI
 		Media::MonitorMgr *monMgr;
 		UtilUI::TextViewerForm *mainFrm;
 
-		static void __stdcall OnSearchClicked(void *userObj);
-		static void __stdcall OnCloseClicked(void *userObj);
+		static void __stdcall OnSearchClicked(AnyType userObj);
+		static void __stdcall OnCloseClicked(AnyType userObj);
 	public:
 		TextSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm);
 		virtual ~TextSearchForm();

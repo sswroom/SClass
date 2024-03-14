@@ -24,8 +24,8 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnSleepMSClicked(void *userObj);
-			static void __stdcall OnSleepUSClicked(void *userObj);
+			static void __stdcall OnSleepMSClicked(AnyType userObj);
+			static void __stdcall OnSleepUSClicked(AnyType userObj);
 		public:
 			AVIRTimeTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimeTestForm();

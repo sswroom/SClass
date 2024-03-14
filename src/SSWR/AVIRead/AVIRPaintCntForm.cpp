@@ -2,9 +2,9 @@
 #include "SSWR/AVIRead/AVIRPaintCntForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRPaintCntForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPaintCntForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPaintCntForm *me = (SSWR::AVIRead::AVIRPaintCntForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPaintCntForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPaintCntForm>();
 	if (me->dispCnt != me->paintCnt)
 	{
 		UTF8Char sbuff[32];

@@ -61,9 +61,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRImageControl::FolderThread(void *userObj)
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageControl *me = (SSWR::AVIRead::AVIRImageControl*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageControl> me = userObj.GetNN<SSWR::AVIRead::AVIRImageControl>();
 	if (me->imgMapUpdated)
 	{
 		UOSInt imgCnt;
@@ -938,13 +938,13 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	return true;
 }
 
-void SSWR::AVIRead::AVIRImageControl::SetDispImageHandler(DispImageChanged hdlr, void *userObj)
+void SSWR::AVIRead::AVIRImageControl::SetDispImageHandler(DispImageChanged hdlr, AnyType userObj)
 {
 	this->dispHdlr = hdlr;
 	this->dispHdlrObj = userObj;
 }
 
-void SSWR::AVIRead::AVIRImageControl::SetProgressHandler(ProgressUpdated hdlr, void *userObj)
+void SSWR::AVIRead::AVIRImageControl::SetProgressHandler(ProgressUpdated hdlr, AnyType userObj)
 {
 	this->progHdlr = hdlr;
 	this->progHdlrObj = userObj;

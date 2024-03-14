@@ -30,8 +30,8 @@ namespace SSWR
 			Bool dataFileNoHeader;
 			Int8 dataFileTz;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::TableDef> dbTable, NotNullPtr<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NotNullPtr<Data::ArrayList<UOSInt>> colInd);
 			virtual ~AVIRDBAssignColumnForm();

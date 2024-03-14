@@ -3,9 +3,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UtilUI/TextSearchForm.h"
 
-void __stdcall UtilUI::TextSearchForm::OnSearchClicked(void *userObj)
+void __stdcall UtilUI::TextSearchForm::OnSearchClicked(AnyType userObj)
 {
-	UtilUI::TextSearchForm *me = (UtilUI::TextSearchForm*)userObj;
+	NotNullPtr<UtilUI::TextSearchForm> me = userObj.GetNN<UtilUI::TextSearchForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSearch->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -14,9 +14,9 @@ void __stdcall UtilUI::TextSearchForm::OnSearchClicked(void *userObj)
 	}
 }
 
-void __stdcall UtilUI::TextSearchForm::OnCloseClicked(void *userObj)
+void __stdcall UtilUI::TextSearchForm::OnCloseClicked(AnyType userObj)
 {
-	UtilUI::TextSearchForm *me = (UtilUI::TextSearchForm*)userObj;
+	NotNullPtr<UtilUI::TextSearchForm> me = userObj.GetNN<UtilUI::TextSearchForm>();
 	me->Close();
 }
 

@@ -1,5 +1,6 @@
 #ifndef _SM_IO_SNBDONGLE
 #define _SM_IO_SNBDONGLE
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "IO/SNBProtocol.h"
 #include "Sync/RWMutex.h"
@@ -111,14 +112,14 @@ namespace IO
 	public:
 		IO::SNBProtocol *proto;
 		IO::SNBProtocol::ProtocolHandler protoHdlr;
-		void *protoObj;
+		AnyType protoObj;
 		SNBHandler *hdlr;
 		Data::FastMap<UInt64, DeviceInfo*> devMap;
 		Sync::RWMutex devMut;
 		UInt64 dongleId;
 		UInt32 dongleBaudRate;
 
-		static void __stdcall OnProtocolRecv(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
+		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 		DeviceInfo *GetDevice(UInt64 devId);
 	public:
 		SNBDongle(NotNullPtr<IO::Stream> stm, SNBHandler *hdlr);
@@ -129,7 +130,7 @@ namespace IO
 		UInt64 GetDongleId();
 		UInt32 GetBaudRate();
 
-		void HandleProtocolReceived(IO::SNBProtocol::ProtocolHandler protoHdlr, void *userObj);
+		void HandleProtocolReceived(IO::SNBProtocol::ProtocolHandler protoHdlr, AnyType userObj);
 		void SendCheckDongle();
 		void SendGetDongleInfo();
 		void SendCheckDevices();

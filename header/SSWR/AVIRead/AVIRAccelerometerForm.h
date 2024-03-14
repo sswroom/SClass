@@ -26,7 +26,7 @@ namespace SSWR
 			IO::MotionDetectorAccelerometer motion;
 			Bool currMoving;
 
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRAccelerometerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SensorAccelerometer> acc);
 			virtual ~AVIRAccelerometerForm();

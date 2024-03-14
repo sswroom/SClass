@@ -53,8 +53,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspFile;
 			NotNullPtr<UI::GUIListBox> lbFileDir;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnMoveClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnMoveClicked(AnyType userObj);
 
 			void ReleaseObjects();
 			void GenList();

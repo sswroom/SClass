@@ -20,12 +20,12 @@ namespace Media
 			virtual Text::CStringNN GetFilterName();
 
 			void AddDecoder(NotNullPtr<Media::IVideoSource> decoder);
-			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
+			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};

@@ -17,21 +17,21 @@ void SSWR::AVIRead::AVIROTPForm::RandBytes(UOSInt len)
 	this->txtKey->SetText(sb.ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand80Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand80Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	me->RandBytes(10);
 }
 
-void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand160Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand160Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	me->RandBytes(20);
 }
 
-void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbKey;
 	me->txtName->GetText(sbName);
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	me->lvEntry->SetSubItem(i, 1, CSTR("-"));
 }
 
-void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	EntryInfo *entry = me->entryList->GetItem(index);
@@ -94,9 +94,9 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(void *userObj, UOSI
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	EntryInfo *entry;

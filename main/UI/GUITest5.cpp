@@ -7,9 +7,9 @@
 
 NotNullPtr<UI::GUIListBox> lb;
 
-void __stdcall OnLBDblClick(void *userObj)
+void __stdcall OnLBDblClick(AnyType userObj)
 {
-	UI::GUIForm *me = (UI::GUIForm*)userObj;
+	NotNullPtr<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
 	NotNullPtr<Text::String> s;
 	if (lb->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -35,7 +35,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		lb->AddItem(CSTR("Item 1"), 0);
 		lb->AddItem(CSTR("Item 2"), 0);
 		lb->AddItem(CSTR("Item 3"), 0);
-		lb->HandleDoubleClicked(OnLBDblClick, frm.Ptr());
+		lb->HandleDoubleClicked(OnLBDblClick, frm);
 		frm->SetExitOnClose(true);
 		frm->Show();
 		core->Run();

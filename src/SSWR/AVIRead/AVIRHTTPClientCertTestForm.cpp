@@ -11,9 +11,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientCertTestForm *me = (SSWR::AVIRead::AVIRHTTPClientCertTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (me->svr || !me->ssl.SetTo(ssl))
 	{
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, *me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;
@@ -131,9 +131,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientCertTestForm *me = (SSWR::AVIRead::AVIRHTTPClientCertTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -145,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(void *user
 	me->txtClientCA->SetReadOnly(false);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPClientCertTestForm *me = (SSWR::AVIRead::AVIRHTTPClientCertTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{

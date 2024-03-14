@@ -45,9 +45,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtServerCert;
 			NotNullPtr<UI::GUIButton> btnServerCert;
 
-			static void __stdcall OnClientCertClicked(void *userObj);
-			static void __stdcall OnSendClicked(void *userObj);
-			static void __stdcall OnServerCertClicked(void *userObj);
+			static void __stdcall OnClientCertClicked(AnyType userObj);
+			static void __stdcall OnSendClicked(AnyType userObj);
+			static void __stdcall OnServerCertClicked(AnyType userObj);
 			void ClearCliCACerts();
 
 		public:

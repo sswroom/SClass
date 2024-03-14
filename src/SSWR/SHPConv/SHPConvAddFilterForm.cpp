@@ -4,9 +4,9 @@
 #include "SSWR/SHPConv/SHPConvRangeFilterForm.h"
 #include "SSWR/SHPConv/SHPConvValueFilterForm.h"
 
-void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvAddFilterForm *me = (SSWR::SHPConv::SHPConvAddFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
 	UOSInt i = me->cboFilter->GetSelectedIndex();
 	if (i == 0)
 	{
@@ -37,9 +37,9 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvAddFilterForm *me = (SSWR::SHPConv::SHPConvAddFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

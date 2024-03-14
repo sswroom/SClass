@@ -11,7 +11,7 @@ Int32 UI::GTK::GTKTimer::OnTick(void *userObj)
 	return 1;
 }
 
-UI::GTK::GTKTimer::GTKTimer(UInt32 interval, UI::UIEvent handler, void *userObj) : UI::GUITimer(handler, userObj)
+UI::GTK::GTKTimer::GTKTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj) : UI::GUITimer(handler, userObj)
 {
 	this->interval = interval;
 	this->id = g_timeout_add(interval, OnTick, this);

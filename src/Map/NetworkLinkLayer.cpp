@@ -14,15 +14,16 @@
 #include <stdio.h>
 #endif
 
-void __stdcall Map::NetworkLinkLayer::InnerUpdated(void *userObj)
+void __stdcall Map::NetworkLinkLayer::InnerUpdated(AnyType userObj)
 {
-	Map::NetworkLinkLayer *me = (Map::NetworkLinkLayer*)userObj;
+	NotNullPtr<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(me->linkMut, false);
 	i = me->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		me->updHdlrs.GetItem(i)(me->updObjs.GetItem(i));
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = me->updHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -151,7 +152,8 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 			j = this->updHdlrs.GetCount();
 			while (j-- > 0)
 			{
-				link->innerLayer->AddUpdatedHandler(this->updHdlrs.GetItem(j), this->updObjs.GetItem(j));
+				Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(j);
+				link->innerLayer->AddUpdatedHandler(cb.func, cb.userObj);
 			}
 			mutUsage.EndUse();
 			if (this->innerLayerType != link->innerLayerType)
@@ -173,7 +175,8 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 			j = this->updHdlrs.GetCount();
 			while (j-- > 0)
 			{
-				this->updHdlrs.GetItem(j)(this->updObjs.GetItem(j));
+				Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(j);
+				cb.func(cb.userObj);
 			}
 			mutUsage.EndUse();
 		}
@@ -697,13 +700,12 @@ void Map::NetworkLinkLayer::SetCoordinateSystem(NotNullPtr<Math::CoordinateSyste
 	this->csys = csys;
 }
 
-void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	LinkInfo *link;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
-	this->updHdlrs.Add(hdlr);
-	this->updObjs.Add(obj);
+	this->updHdlrs.Add({hdlr, obj});
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -715,7 +717,7 @@ void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	}
 }
 
-void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	LinkInfo *link;
@@ -724,10 +726,10 @@ void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == obj)
 		{
 			this->updHdlrs.RemoveAt(i);
-			this->updObjs.RemoveAt(i);
 			chg = true;
 		}
 	}

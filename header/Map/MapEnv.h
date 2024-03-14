@@ -135,8 +135,8 @@ namespace Map
 	private:
 		UInt8 GetRandomColor();
 		UOSInt GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, const Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType) const;
-		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
-		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
+		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
+		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 	public:
 		MapEnv(Text::CStringNN fileName, UInt32 bgColor, NotNullPtr<Math::CoordinateSystem> csys);
 		virtual ~MapEnv();
@@ -201,8 +201,8 @@ namespace Map
 		UOSInt GetImageFileIndex(UOSInt index) const;
 
 		UOSInt GetLayersOfType(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, Map::DrawLayerType lyrType) const;
-		void AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
-		void RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
+		void AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
+		void RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 
 		Int64 GetTimeEndTS(GroupItem *group) const;
 		Int64 GetTimeStartTS(GroupItem *group) const;

@@ -9,9 +9,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtOriFile->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtLossyFile->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtOriFile->GetText(sb);

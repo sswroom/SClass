@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUITIMER
 #define _SM_UI_GUITIMER
+#include "AnyType.h"
 #include "UI/GUIForm.h"
 
 namespace UI
@@ -8,10 +9,10 @@ namespace UI
 	{
 	private:
 		UI::UIEvent handler;
-		void *userObj;
+		AnyType userObj;
 
 	public:
-		GUITimer(UI::UIEvent handler, void *userObj);
+		GUITimer(UI::UIEvent handler, AnyType userObj);
 		virtual ~GUITimer();
 
 		void EventTick();

@@ -45,10 +45,10 @@ namespace SSWR
 			Bool threadToStop;
 			Sync::Event threadEvt;
 
-			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFilesj);
-			static void __stdcall OnCancelClicked(void *userObj);
-			static void __stdcall OnAllowTimeSkipChange(void *userObj, Bool newVal);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> filesj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnAllowTimeSkipChange(AnyType userObj, Bool newVal);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			void CancelQueues();
 		public:

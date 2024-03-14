@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_EGAUGEHANDLER
 #define _SM_NET_WEBSERVER_EGAUGEHANDLER
+#include "AnyType.h"
 #include "Parser/ParserList.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Sync/Mutex.h"
@@ -11,9 +12,9 @@ namespace Net
 		class EGaugeHandler : public Net::WebServer::WebStandardHandler
 		{
 		public:
-			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, UOSInt dataSize);
+			typedef void (__stdcall *DataHandler)(AnyType userObj, const UInt8 *data, UOSInt dataSize);
 		private:
-			void *dataHdlrObj;
+			AnyType dataHdlrObj;
 			DataHandler dataHdlr;
 		public:
 			EGaugeHandler();
@@ -21,7 +22,7 @@ namespace Net
 
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
-			void HandleEGaugeData(DataHandler dataHdlr, void *userObj);
+			void HandleEGaugeData(DataHandler dataHdlr, AnyType userObj);
 		};
 	}
 }

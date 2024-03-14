@@ -884,7 +884,7 @@ Media::Decoder::FFMPEGDecoder::~FFMPEGDecoder()
 	MemFree(data);
 }
 
-Bool Media::Decoder::FFMPEGDecoder::CaptureImage(ImageCallback imgCb, void *userData)
+Bool Media::Decoder::FFMPEGDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
 	return false;
 }
@@ -1174,7 +1174,7 @@ Data::Duration Media::Decoder::FFMPEGDecoder::GetFrameTime(UOSInt frameIndex)
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
 
-void Media::Decoder::FFMPEGDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::FFMPEGDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }

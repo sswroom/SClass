@@ -9,9 +9,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRIPScanForm *me = (SSWR::AVIRead::AVIRIPScanForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -53,9 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnTimerTick(AnyType userObj)
 {
-//	SSWR::AVIRead::AVIRIPScanForm *me = (SSWR::AVIRead::AVIRIPScanForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
 }
 
 SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpOIDText;
 			NotNullPtr<UI::GUITextBox> txtOIDText;
 
-			static void __stdcall OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDroped(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnBrowseClicked(void *userObj);
 			static void __stdcall OnObjectsSelChg(void *userObj);
 			void LoadFile(Text::CStringNN fileName);

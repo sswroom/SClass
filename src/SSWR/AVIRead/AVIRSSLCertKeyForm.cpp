@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
 	if (me->dialogResult != DR_OK)
 	{
 		SDEL_CLASS(me->cert);
@@ -92,10 +92,10 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	}	
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
-	UOSInt i = nFiles;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
+	UOSInt i = files.GetCount();
 	while (i-- > 0)
 	{
 		me->LoadFile(files[i]->ToCString());

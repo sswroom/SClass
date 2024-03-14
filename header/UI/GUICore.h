@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUICORE
 #define _SM_UI_GUICORE
+#include "AnyType.h"
 #include "Math/Coord2D.h"
 #include "Math/Size2D.h"
 #include "Media/ColorManager.h"
@@ -8,8 +9,8 @@
 
 namespace UI
 {
-	typedef void (__stdcall *UIEvent)(void *userObj);
-	typedef Bool (__stdcall *KeyEvent)(void *userObj, UInt32 osKey);
+	typedef void (__stdcall *UIEvent)(AnyType userObj);
+	typedef Bool (__stdcall *KeyEvent)(AnyType userObj, UInt32 osKey);
 
 	class GUIButton;
 	class GUICheckBox;

@@ -74,15 +74,15 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnExtractEnd;
 			NotNullPtr<UI::GUIButton> btnExtract;
 
-			static void __stdcall OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnEndianChg(void *userObj, Bool newState);
-			static void __stdcall OnOffsetChg(void *userObj, UInt64 ofst);
-			static void __stdcall OnFontClicked(void *userObj);
-			static void __stdcall OnNextUnkClicked(void *userObj);
-			static void __stdcall OnOpenFileClicked(void *userObj);
-			static void __stdcall OnExtractBeginClicked(void *userObj);
-			static void __stdcall OnExtractEndClicked(void *userObj);
-			static void __stdcall OnExtractClicked(void *userObj);
+			static void __stdcall OnFilesDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnEndianChg(AnyType userObj, Bool newState);
+			static void __stdcall OnOffsetChg(AnyType userObj, UInt64 ofst);
+			static void __stdcall OnFontClicked(AnyType userObj);
+			static void __stdcall OnNextUnkClicked(AnyType userObj);
+			static void __stdcall OnOpenFileClicked(AnyType userObj);
+			static void __stdcall OnExtractBeginClicked(AnyType userObj);
+			static void __stdcall OnExtractEndClicked(AnyType userObj);
+			static void __stdcall OnExtractClicked(AnyType userObj);
 			Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
 		public:
 			AVIRHexViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

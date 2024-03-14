@@ -33,7 +33,6 @@ Media::Decoder::VFWDecoder::VFWDecoder(NotNullPtr<Media::IVideoSource> sourceVid
 	this->frameCbData = 0;
 	this->frameBuff = 0;
 	this->imgCb = 0;
-	this->imgCbData = 0;
 	this->frameChg = false;
 	this->endProcessing = false;
 
@@ -55,10 +54,9 @@ Media::Decoder::VFWDecoder::~VFWDecoder()
 	this->Stop();
 }
 
-Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, void *userData)
+Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
-	this->imgCb = imgCb;
-	this->imgCbData = userData;
+	this->imgCb = {imgCb, userData};
 	return true;
 }
 
@@ -106,7 +104,7 @@ Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UOSInt frameIndex)
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
 
-void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }

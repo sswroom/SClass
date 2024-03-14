@@ -6,9 +6,9 @@
 #include "Net/NetBIOSUtil.h"
 #include "SSWR/AVIRead/AVIRNetBIOSScannerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetBIOSScannerForm *me = (SSWR::AVIRead::AVIRNetBIOSScannerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	me->txtTargetAddr->GetText(sb);
@@ -36,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetBIOSScannerForm *me = (SSWR::AVIRead::AVIRNetBIOSScannerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	Sync::MutexUsage mutUsage;
 	me->netbios->GetAnswers(mutUsage);
 	Net::NetBIOSScanner::NameAnswer *ans = (Net::NetBIOSScanner::NameAnswer*)me->lvAnswers->GetSelectedItem();
@@ -62,9 +62,9 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetBIOSScannerForm *me = (SSWR::AVIRead::AVIRNetBIOSScannerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	if (me->tableUpdated)
 	{
 		UTF8Char sbuff[32];
@@ -106,9 +106,9 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerUpdated(void *userObj, UInt32 sortableIP)
+void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerUpdated(AnyType userObj, UInt32 sortableIP)
 {
-	SSWR::AVIRead::AVIRNetBIOSScannerForm *me = (SSWR::AVIRead::AVIRNetBIOSScannerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	me->tableUpdated = true;
 }
 

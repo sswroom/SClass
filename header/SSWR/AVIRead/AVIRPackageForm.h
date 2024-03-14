@@ -129,11 +129,11 @@ namespace SSWR
 			Bool progEnd;
 
 			static UInt32 __stdcall ProcessThread(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall LVDblClick(void *userObj, UOSInt index);
-			static void __stdcall OnStatusDblClick(void *userObj, UOSInt index);
-			static void __stdcall OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index);
-			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall LVDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnStatusDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UOSInt index);
+			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			void GoUpLevel();
 			void OpenItem(UOSInt index);

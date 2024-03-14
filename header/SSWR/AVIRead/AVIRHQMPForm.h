@@ -52,11 +52,11 @@ namespace SSWR
 			UI::GUIForm *dbgFrm;
 			NotNullPtr<UI::GUITextBox> txtDebug;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnVideoEnd(void *userObj);
-			static void __stdcall OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnVideoEnd(AnyType userObj);
+			static void __stdcall OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos);
 
 			virtual void OnMediaOpened();
 			virtual void OnMediaClosed();

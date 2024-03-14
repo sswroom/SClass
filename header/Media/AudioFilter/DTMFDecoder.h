@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_AUDIOFILTER_DTMFDECODER
 #define _SM_MEDIA_AUDIOFILTER_DTMFDECODER
+#include "AnyType.h"
 #include "Media/IAudioFilter.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -12,10 +13,10 @@ namespace Media
 		class DTMFDecoder : public IAudioFilter
 		{
 		public:
-			typedef void (__stdcall *ToneChangeEvent)(void *userObj, WChar newTone);
+			typedef void (__stdcall *ToneChangeEvent)(AnyType userObj, WChar newTone);
 		private:
 			ToneChangeEvent toneChgHdlr;
-			void *toneChgObj;
+			AnyType toneChgObj;
 
 			WChar currTone;
 			UInt8 *sampleBuff;
@@ -44,7 +45,7 @@ namespace Media
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
-			void HandleToneChange(ToneChangeEvent hdlr, void *userObj);
+			void HandleToneChange(ToneChangeEvent hdlr, AnyType userObj);
 		};
 	}
 }

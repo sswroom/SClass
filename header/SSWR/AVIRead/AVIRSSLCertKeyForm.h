@@ -49,12 +49,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtGenCommonName;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 
-			static void __stdcall OnFormClosed(void *userObj, UI::GUIForm *frm);
+			static void __stdcall OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
 			static void __stdcall OnFileCertClicked(void *userObj);
 			static void __stdcall OnFileKeyClicked(void *userObj);
 			static void __stdcall OnFileConfirmClicked(void *userObj);
 			static void __stdcall OnGenerateClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			void LoadFile(Text::CStringNN fileName);
 			void ClearCACerts();

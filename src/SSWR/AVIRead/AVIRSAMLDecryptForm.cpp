@@ -5,12 +5,13 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSAMLDecryptForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRSAMLDecryptForm *me = (SSWR::AVIRead::AVIRSAMLDecryptForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	IO::ParsedObject *pobj;
 	while (i < nFiles)
 	{

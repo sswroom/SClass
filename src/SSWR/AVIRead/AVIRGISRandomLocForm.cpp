@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRGISRandomLocForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISRandomLocForm *me = (SSWR::AVIRead::AVIRGISRandomLocForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (!me->selecting)
 		return false;
 	me->isDown = true;
@@ -15,9 +15,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(void *userObj, M
 	return true;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISRandomLocForm *me = (SSWR::AVIRead::AVIRGISRandomLocForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
 	{
 		me->isDown = false;
@@ -61,9 +61,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISRandomLocForm *me = (SSWR::AVIRead::AVIRGISRandomLocForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
 	{
 		Math::Coord2DDbl mapPt1;
@@ -104,15 +104,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnAreaClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnAreaClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISRandomLocForm *me = (SSWR::AVIRead::AVIRGISRandomLocForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	me->selecting = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISRandomLocForm *me = (SSWR::AVIRead::AVIRGISRandomLocForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->selPt1 != me->selPt2)
 	{
 		Data::DateTime dt;

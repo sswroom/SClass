@@ -5,9 +5,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 
-void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamEchoForm *me = (SSWR::AVIRead::AVIRStreamEchoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	if (me->stm)
 	{
 		me->StopStream();
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(void *userObj)
 	else
 	{
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me, 0, false);
+		me->stm = me->core->OpenStream(&st, me.Ptr(), 0, false);
 		if (me->stm)
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(void *userObj)
 			me->recvCount = 0;
 			me->recvUpdated = false;
 
-			Sync::ThreadUtil::Create(RecvThread, me);
+			Sync::ThreadUtil::Create(RecvThread, me.Ptr());
 			while (!me->threadRunning && !me->remoteClosed)
 			{
 				Sync::SimpleThread::Sleep(10);
@@ -35,9 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamEchoForm *me = (SSWR::AVIRead::AVIRStreamEchoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;

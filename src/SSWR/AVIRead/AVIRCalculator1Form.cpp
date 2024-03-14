@@ -30,122 +30,122 @@ typedef enum
 	MNU_KEY_CANCEL
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMC(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMC(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMR(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMR(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMMinus(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMMinus(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMPlus(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMPlus(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyDiv(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyDiv(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeySqrt(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeySqrt(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey7(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey7(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey8(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey8(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey9(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey9(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMul(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMul(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyPercent(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyPercent(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey4(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey4(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey5(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey5(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey6(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey6(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMinus(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyMinus(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyNeg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyNeg(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey1(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey1(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey2(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey2(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey3(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey3(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyPlus(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyPlus(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyCancel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyCancel(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey0(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKey0(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyDot(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyDot(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }
 
-void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyEqual(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCalculator1Form::OnKeyEqual(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRCalculator1Form *me = (SSWR::AVIRead::AVIRCalculator1Form*)userObj;
 }

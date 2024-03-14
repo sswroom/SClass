@@ -31,8 +31,8 @@ namespace SSWR
 			Int32 flags;
 
 		private:
-			static void __stdcall OnTextChg(void *userObj);
-			static void __stdcall OnResultSelChg(void *userObj);
+			static void __stdcall OnTextChg(AnyType userObj);
+			static void __stdcall OnResultSelChg(AnyType userObj);
 //			System::Void txtSearchStr_KeyPress(System::Object *  sender, System::Windows::Forms::KeyPressEventArgs *  e);
 			void UpdateResults();
 

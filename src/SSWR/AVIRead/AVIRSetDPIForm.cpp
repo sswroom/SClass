@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	Text::StringBuilderUTF8 sb;
 	Double hdpi;
 	Double ddpi;
@@ -33,21 +33,21 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnPreviewChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnPreviewChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->UpdatePreview();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(void *userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(AnyType userObj, UOSInt newVal)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrDouble(sbuff, UOSInt2Double(newVal) * 0.1);
@@ -55,24 +55,24 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(void *userObj, UOSInt
 	me->UpdatePreview();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnStandardClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnStandardClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->txtDesktopDPI->SetText(CSTR("96.0"));
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::On1xClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::On1xClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = me->lblDPIV->GetText(sbuff);
 	me->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->txtDesktopDPI->SetText(CSTR("144.0"));
 }
 

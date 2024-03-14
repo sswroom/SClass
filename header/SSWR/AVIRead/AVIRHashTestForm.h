@@ -36,14 +36,14 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static Double __stdcall HashTestSpeed(Crypto::Hash::IHash *hash);
-			static void __stdcall OnCompareClicked(void *userObj);
-			static void __stdcall OnSpeedClicked(void *userObj);
+			static void __stdcall OnCompareClicked(AnyType userObj);
+			static void __stdcall OnSpeedClicked(AnyType userObj);
 		public:
 			AVIRHashTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHashTestForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

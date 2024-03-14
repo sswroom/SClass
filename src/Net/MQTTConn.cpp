@@ -22,7 +22,7 @@
 #endif
 #endif
 
-void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
@@ -91,7 +91,7 @@ void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 c
 	}
 }
 
-void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
@@ -133,9 +133,9 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	MemFree(buff);
 	me->recvRunning = false;
 	me->packetEvt.Set();
-	if (me->discHdlr)
+	if (me->discHdlr.func)
 	{
-		me->discHdlr(me->discHdlrObj);
+		me->discHdlr.func(me->discHdlr.userObj);
 	}
 	return 0;
 }
@@ -145,7 +145,8 @@ void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, 
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrList.GetItem(i)(this->hdlrObjList.GetItem(i), topic, Data::ByteArrayR(message, msgSize));
+		Data::CallbackStorage<PublishMessageHdlr> cb = this->hdlrList.GetItem(i);
+		cb.func(cb.userObj, topic, Data::ByteArrayR(message, msgSize));
 	}
 }
 
@@ -197,14 +198,13 @@ void Net::MQTTConn::InitStream(NotNullPtr<IO::Stream> stm)
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
+Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
 	this->totalDownload = 0;
 	this->totalUpload = 0;
-	this->discHdlr = discHdlr;
-	this->discHdlrObj = discHdlrObj;
+	this->discHdlr = {discHdlr, discHdlrObj};
 	this->cliData = 0;
 	this->stm = 0;
 
@@ -240,14 +240,13 @@ Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLE
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(*this)
+Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
 	this->totalDownload = 0;
 	this->totalUpload = 0;
-	this->discHdlr = discHdlr;
-	this->discHdlrObj = discHdlrObj;
+	this->discHdlr = {discHdlr, discHdlrObj};
 	this->cliData = 0;
 	this->stm = 0;
 	this->InitStream(stm);
@@ -278,10 +277,9 @@ Net::MQTTConn::~MQTTConn()
 	}
 }
 
-void Net::MQTTConn::HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj)
+void Net::MQTTConn::HandlePublishMessage(PublishMessageHdlr hdlr, AnyType userObj)
 {
-	this->hdlrObjList.Add(userObj);
-	this->hdlrList.Add(hdlr);
+	this->hdlrList.Add({hdlr, userObj});
 }
 
 Bool Net::MQTTConn::IsError()

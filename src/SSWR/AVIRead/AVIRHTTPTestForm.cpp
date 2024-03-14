@@ -10,9 +10,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	if (me->threadCurrCnt > 0)
 	{
 		me->StopThreads();
@@ -75,14 +75,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("HTTPTest"));
 		sb.AppendUOSInt(i);
-		NEW_CLASS(me->threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
+		NEW_CLASS(me->threads[i], Sync::Thread(ProcessThread, me.Ptr(), sb.ToCString()));
 		me->threads[i]->Start();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	Text::StringBuilderUTF8 sb;
 	if (me->threadCurrCnt > 0)
 	{
@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	if (me->threadCurrCnt > 0)
 	{
 		me->ui->ShowMsgOK(CSTR("You cannot add URL while running"), CSTR("Add"), me);
@@ -236,9 +236,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);

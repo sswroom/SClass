@@ -1,15 +1,15 @@
 #include "Stdafx.h"
 #include "SSWR/SHPConv/SHPConvGroupForm.h"
 
-void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnOkClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnOkClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvGroupForm *me = (SSWR::SHPConv::SHPConvGroupForm *)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvGroupForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvGroupForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvGroupForm *me = (SSWR::SHPConv::SHPConvGroupForm *)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvGroupForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvGroupForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

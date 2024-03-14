@@ -75,11 +75,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSentFailCnt;
 			NotNullPtr<UI::GUITextBox> txtSentFailCntRate;
 
-			static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-			static void __stdcall OnAutoReplyChanged(void *userObj, Bool newVal);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnSendClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnAutoReplyChanged(AnyType userObj, Bool newVal);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnSendClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
@@ -88,6 +88,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

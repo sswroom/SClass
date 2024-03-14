@@ -2,9 +2,9 @@
 #include "Text/MyString.h"
 #include "UtilUI/TextInputDialog.h"
 
-void __stdcall UtilUI::TextInputDialog::OnOKClicked(void *userObj)
+void __stdcall UtilUI::TextInputDialog::OnOKClicked(AnyType userObj)
 {
-	UtilUI::TextInputDialog *me = (UtilUI::TextInputDialog*)userObj;
+	NotNullPtr<UtilUI::TextInputDialog> me = userObj.GetNN<UtilUI::TextInputDialog>();
 	Text::StringBuilderUTF8 sb;
 	if (me->txtInput->GetText(sb) && sb.GetLength() > 0)
 	{
@@ -13,9 +13,9 @@ void __stdcall UtilUI::TextInputDialog::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall UtilUI::TextInputDialog::OnCancelClicked(void *userObj)
+void __stdcall UtilUI::TextInputDialog::OnCancelClicked(AnyType userObj)
 {
-	UtilUI::TextInputDialog *me = (UtilUI::TextInputDialog*)userObj;
+	NotNullPtr<UtilUI::TextInputDialog> me = userObj.GetNN<UtilUI::TextInputDialog>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -13,9 +13,9 @@ CB8E9D52EB0C2DFB39B5D82A5315E433
 19A2854144B63A8F7617A6F225019B12
 */
 
-void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBruteForceForm *me = (SSWR::AVIRead::AVIRBruteForceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
 	Crypto::Hash::IHash *hash;
 	Text::StringBuilderUTF8 sb;
 	UInt32 minLeng;
@@ -79,9 +79,9 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBruteForceForm *me = (SSWR::AVIRead::AVIRBruteForceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->bforce)

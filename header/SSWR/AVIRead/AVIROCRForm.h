@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspText;
 			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
 
-			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnTextSelChg(void *userObj);
 			static void __stdcall OnOCRResult(void *userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
 			void ClearResults();

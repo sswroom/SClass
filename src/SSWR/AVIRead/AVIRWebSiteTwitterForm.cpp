@@ -3,9 +3,9 @@
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSiteTwitterForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSiteTwitterForm *me = (SSWR::AVIRead::AVIRWebSiteTwitterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSiteTwitterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteTwitterForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

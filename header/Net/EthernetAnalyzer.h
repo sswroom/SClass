@@ -1,6 +1,8 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
+#include "AnyType.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/CallbackStorage.h"
 #include "Data/FastMap.h"
 #include "Data/FixedCircularBuff.h"
 #include "Data/ICaseStringMap.h"
@@ -15,7 +17,7 @@ namespace Net
 	class EthernetAnalyzer : public IO::ParsedObject
 	{
 	public:
-		typedef void (__stdcall *Pingv4Handler)(void *userData, UInt32 fromIP, UInt32 toIP, UInt8 ttl, UOSInt packetSize);
+		typedef void (__stdcall *Pingv4Handler)(AnyType userData, UInt32 fromIP, UInt32 toIP, UInt8 ttl, UOSInt packetSize);
 
 		typedef enum
 		{
@@ -178,8 +180,7 @@ namespace Net
 		Sync::Mutex tcp4synMut;
 		Data::FixedCircularBuff<TCP4SYNInfo> tcp4synList;
 
-		Pingv4Handler pingv4ReqHdlr;
-		void *pingv4ReqObj;
+		Data::CallbackStorage<Pingv4Handler> pingv4ReqHdlr;
 
 		UInt64 packetCnt;
 		UInt64 packetTotalSize;
@@ -238,7 +239,7 @@ namespace Net
 		Bool PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
 
 		AnalyzeType GetAnalyzeType();
-		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, void *userObj);
+		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj);
 	};
 }
 #endif

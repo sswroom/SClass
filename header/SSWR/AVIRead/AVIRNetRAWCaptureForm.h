@@ -37,10 +37,10 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDataSize;
 			NotNullPtr<UI::GUITextBox> txtDataSize;
 
-			static void __stdcall OnAutoGenClicked(void *userObj);
-			static void __stdcall OnBrowseClicked(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnAutoGenClicked(AnyType userObj);
+			static void __stdcall OnBrowseClicked(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 
 		public:
 			AVIRNetRAWCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -40,10 +40,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIListView> lvUserAgent;
 
-			static void __stdcall OnOkClicked(void *userObj);
-			static void __stdcall OnFilterChg(void *userObj);
-			static void __stdcall OnUserAgentSelChg(void *userObj);
-			static void __stdcall OnUserAgentDblClk(void *userObj, UOSInt itemIndex);
+			static void __stdcall OnOkClicked(AnyType userObj);
+			static void __stdcall OnFilterChg(AnyType userObj);
+			static void __stdcall OnUserAgentSelChg(AnyType userObj);
+			static void __stdcall OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex);
 			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
 			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent);

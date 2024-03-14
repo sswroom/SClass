@@ -10,9 +10,9 @@
 #define SENDBUFFSIZE 65536//9000
 #define RECVBUFFSIZE 65536//9000
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -75,9 +75,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->connected)

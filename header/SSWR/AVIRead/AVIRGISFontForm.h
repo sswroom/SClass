@@ -39,10 +39,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnFontClicked(void *userObj);
-			static Bool __stdcall OnColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnFontClicked(AnyType userObj);
+			static Bool __stdcall OnColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 
 			void UpdateFontText();
 			void UpdateFontPreview();

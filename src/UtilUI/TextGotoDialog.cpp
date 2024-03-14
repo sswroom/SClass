@@ -2,10 +2,10 @@
 #include "Text/MyString.h"
 #include "UtilUI/TextGotoDialog.h"
 
-void __stdcall UtilUI::TextGotoDialog::OnOKClicked(void *userObj)
+void __stdcall UtilUI::TextGotoDialog::OnOKClicked(AnyType userObj)
 {
 	UTF8Char sbuff[20];
-	UtilUI::TextGotoDialog *me = (UtilUI::TextGotoDialog*)userObj;
+	NotNullPtr<UtilUI::TextGotoDialog> me = userObj.GetNN<UtilUI::TextGotoDialog>();
 
 	UOSInt lineNum;
 	me->txtLine->GetText(sbuff);
@@ -19,9 +19,9 @@ void __stdcall UtilUI::TextGotoDialog::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall UtilUI::TextGotoDialog::OnCancelClicked(void *userObj)
+void __stdcall UtilUI::TextGotoDialog::OnCancelClicked(AnyType userObj)
 {
-	UtilUI::TextGotoDialog *me = (UtilUI::TextGotoDialog*)userObj;
+	NotNullPtr<UtilUI::TextGotoDialog> me = userObj.GetNN<UtilUI::TextGotoDialog>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnParse;
 
-			static void __stdcall OnParseClicked(void *userObj);
+			static void __stdcall OnParseClicked(AnyType userObj);
 		public:
 			AVIRASN1ParseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1ParseForm();

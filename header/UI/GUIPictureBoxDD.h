@@ -63,7 +63,7 @@ namespace UI
 		void UpdateZoomRange();
 		void UpdateMinScale();
 		void CreateResizer();
-		static void __stdcall OnSizeChg(void *userObj);
+		static void __stdcall OnSizeChg(AnyType userObj);
 		void DrawFromBG();
 		virtual void OnPaint();
 	public:

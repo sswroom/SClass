@@ -28,7 +28,7 @@ Bool Net::RTPVSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<U
 	return this->hdlr->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }
 
-Bool Net::RTPVSource::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Net::RTPVSource::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	return this->hdlr->Init(cb, fcCb, userData);
 }
@@ -97,7 +97,7 @@ Data::Duration Net::RTPVSource::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Net::RTPVSource::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Net::RTPVSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 

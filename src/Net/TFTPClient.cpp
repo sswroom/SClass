@@ -4,9 +4,9 @@
 #include "Net/TFTPClient.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::TFTPClient::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::TFTPClient::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::TFTPClient *me = (Net::TFTPClient*)userData;
+	NotNullPtr<Net::TFTPClient> me = userData.GetNN<Net::TFTPClient>();
 	UInt16 opcode = ReadMUInt16(buff);
 	if (opcode == 4)
 	{

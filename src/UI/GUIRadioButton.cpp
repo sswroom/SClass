@@ -19,12 +19,12 @@ void UI::GUIRadioButton::EventSelectedChange(Bool newState)
 	UOSInt i = this->selectedChangeHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selectedChangeHdlrs.GetItem(i)(this->selectedChangeObjs.GetItem(i), newState);
+		Data::CallbackStorage<SelectedChangeHandler> cb = this->selectedChangeHdlrs.GetItem(i);
+		cb.func(cb.userObj, newState);
 	}
 }
 
-void UI::GUIRadioButton::HandleSelectedChange(SelectedChangeHandler hdlr, void *userObj)
+void UI::GUIRadioButton::HandleSelectedChange(SelectedChangeHandler hdlr, AnyType userObj)
 {
-	this->selectedChangeHdlrs.Add(hdlr);
-	this->selectedChangeObjs.Add(userObj);
+	this->selectedChangeHdlrs.Add({hdlr, userObj});
 }

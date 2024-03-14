@@ -172,10 +172,11 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 
 	me->player->StopPlayback();
 	i = 0;
@@ -187,9 +188,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, NotNullPtr
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -368,21 +369,21 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnDebugClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	me->dbgFrm = 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnVideoEnd(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnVideoEnd(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	me->pbEnd = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(void *userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	if (ma == UI::GUIVideoBoxDD::MA_START)
 	{
 		me->PBStart();

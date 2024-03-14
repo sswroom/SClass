@@ -53,9 +53,9 @@ namespace SSWR
 			} CameraCorr;
 
 		public:
-			typedef void (__stdcall *DispImageChanged)(void *userObj, Text::CString fileName, const ImageSetting *setting);
-			typedef void (__stdcall *ProgressUpdated)(void *userObj, UOSInt finCnt);
-			typedef void (__stdcall *KeyDownHandler)(void *userObj, UI::GUIControl::GUIKey key);
+			typedef void (__stdcall *DispImageChanged)(AnyType userObj, Text::CString fileName, const ImageSetting *setting);
+			typedef void (__stdcall *ProgressUpdated)(AnyType userObj, UOSInt finCnt);
+			typedef void (__stdcall *KeyDownHandler)(AnyType userObj, UI::GUIControl::GUIKey key);
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
@@ -78,15 +78,15 @@ namespace SSWR
 			Sync::Mutex filterMut;
 			Media::RGBColorFilter filter;
 			DispImageChanged dispHdlr;
-			void *dispHdlrObj;
+			AnyType dispHdlrObj;
 			ProgressUpdated progHdlr;
-			void *progHdlrObj;
+			AnyType progHdlrObj;
 			Data::SyncLinkedList exportList;
 			UOSInt exportCurrCnt;
 			Sync::Mutex exportMut;
 			ExportFormat exportFmt;
 			KeyDownHandler keyHdlr;
-			void *keyObj;
+			AnyType keyObj;
 
 			Sync::Mutex cameraMut;
 			Data::StringMap<CameraCorr*> cameraMap;
@@ -95,7 +95,7 @@ namespace SSWR
 			Int32 threadCtrlCode; //0 = no control, 1 = initDir, 2 = stop thread, 3 = force idle
 
 			static UInt32 __stdcall FolderThread(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 
 			void InitDir();
 			void ExportQueued();
@@ -123,8 +123,8 @@ namespace SSWR
 			void SetFolder(Text::CString folderPath);
 			Text::String *GetFolder();
 			Bool SaveSetting();
-			void SetDispImageHandler(DispImageChanged hdlr, void *userObj);
-			void SetProgressHandler(ProgressUpdated hdlr, void *userObj);
+			void SetDispImageHandler(DispImageChanged hdlr, AnyType userObj);
+			void SetProgressHandler(ProgressUpdated hdlr, AnyType userObj);
 			Media::StaticImage *LoadImage(const UTF8Char *fileName);
 			Media::StaticImage *LoadOriImage(const UTF8Char *fileName);
 			void ApplySetting(NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<ImageSetting> setting);

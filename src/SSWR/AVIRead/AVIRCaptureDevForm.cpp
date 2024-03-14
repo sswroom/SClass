@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCaptureDevForm *me = (SSWR::AVIRead::AVIRCaptureDevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
 	if (me->currCapture == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
@@ -25,22 +25,22 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCaptureDevForm *me = (SSWR::AVIRead::AVIRCaptureDevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCaptureDevForm *me = (SSWR::AVIRead::AVIRCaptureDevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
 	if (me->currCapture)
 	{
 		DEL_CLASS(me->currCapture);
 	}
 	me->ReleaseFormats();
 
-	Media::VideoCaptureMgr::DeviceInfo *devInfo = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem();
+	Media::VideoCaptureMgr::DeviceInfo *devInfo = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem().p;
 	if (devInfo)
 	{
 		me->currCapture = me->captureMgr.CreateDevice(devInfo->devType, devInfo->devId);

@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnSendClicked(void *userObj);
+			static void __stdcall OnSendClicked(AnyType userObj);
 		public:
 			AVIRFCMForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFCMForm();

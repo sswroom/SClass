@@ -16,10 +16,10 @@ namespace Net
 		NotNullPtr<Text::String> remoteHost;
 		UInt16 remotePort;
 
-		static void __stdcall OnClientEvent(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-		static void __stdcall OnClientTimeout(NotNullPtr<TCPClient> cli, void *userObj, void *cliData);
-		static void __stdcall OnClientConn(Socket *s, void *userObj);
+		static void __stdcall OnClientEvent(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall OnClientTimeout(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData);
+		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 	public:
 		SSHForwarder(NotNullPtr<Net::SSHConn> conn, UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort);
 		~SSHForwarder();

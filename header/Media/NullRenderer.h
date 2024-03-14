@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_NULLRENDERER
 #define _SM_MEDIA_NULLRENDERER
+#include "Data/CallbackStorage.h"
 #include "Media/IAudioRenderer.h"
 
 namespace Media
@@ -13,8 +14,7 @@ namespace Media
 		Bool stopPlay;
 		Sync::Event *playEvt;
 		Media::RefClock *clk;
-		EndNotifier endHdlr;
-		void *endHdlrObj;
+		Data::CallbackStorage<EndNotifier> endHdlr;
 		UInt32 buffTime;
 		UInt64 sampleCnt;
 
@@ -29,7 +29,7 @@ namespace Media
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();
-		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
+		virtual void SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj);
 		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();

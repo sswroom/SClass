@@ -34,8 +34,8 @@ namespace SSWR
 			Text::CString schema;
 			Text::CString table;
 
-			static void __stdcall OnTablesDblClk(void *userObj, UOSInt itemIndex);
-			static void __stdcall OnExportClicked(void *userObj);
+			static void __stdcall OnTablesDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnExportClicked(AnyType userObj);
 		public:
 			AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CString table);
 			virtual ~AVIRDBExportForm();

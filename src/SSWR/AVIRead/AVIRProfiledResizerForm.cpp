@@ -8,10 +8,11 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(void *userOb
 	me->ChangeProfile();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		me->resizer->ProcessFile(files[i]->ToCString());

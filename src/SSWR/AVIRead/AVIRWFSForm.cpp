@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRWFSForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWFSForm *me = (SSWR::AVIRead::AVIRWFSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWFSURL->GetText(sb);
 	SDEL_CLASS(me->wfs);
@@ -31,18 +31,18 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWFSForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWFSForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWFSForm *me = (SSWR::AVIRead::AVIRWFSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
 	if (me->wfs && !me->wfs->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWFSForm::OnFeatureSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWFSForm::OnFeatureSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWFSForm *me = (SSWR::AVIRead::AVIRWFSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
 	if (me->wfs && !me->wfs->IsError())
 	{
 		me->wfs->SetFeature(me->cboFeature->GetSelectedIndex());

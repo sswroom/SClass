@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
 	me->LoadFile(files[0]->ToCString());
 }
 

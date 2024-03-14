@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::Email::SMTPServer::ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
+void __stdcall Net::Email::SMTPServer::ClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
 {
-	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
+	NotNullPtr<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
 	MailStatus *cliStatus;
 	NEW_CLASS(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
@@ -31,9 +31,9 @@ void __stdcall Net::Email::SMTPServer::ClientReady(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, AnyType userObj)
 {
-	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
+	NotNullPtr<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
 	NotNullPtr<Net::TCPClient> cli;
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (me->connType == Net::Email::SMTPConn::ConnType::SSL && me->ssl.SetTo(ssl))
@@ -47,13 +47,12 @@ void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		MailStatus *cliStatus;
+		NotNullPtr<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 		UOSInt i;
-		cliStatus = (MailStatus*)cliData;
 		SDEL_STRING(cliStatus->cliName);
 		SDEL_STRING(cliStatus->mailFrom);
 		i = cliStatus->rcptTo.GetCount();
@@ -65,7 +64,7 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cl
 		{
 			DEL_CLASS(cliStatus->dataStm);
 		}
-		DEL_CLASS(cliStatus);
+		cliStatus.Delete();
 		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
@@ -73,12 +72,12 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &srcBuff)
+void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
 {
-	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
+	NotNullPtr<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
 	NotNullPtr<Net::Email::SMTPServer::MailStatus> cliStatus;
 	Data::ByteArrayR buff = srcBuff;
-	if (!cliStatus.Set((Net::Email::SMTPServer::MailStatus*)cliData))
+	if (!cliData.GetOpt<MailStatus>().SetTo(cliStatus))
 		return;
 	while (buff.GetSize() > 0)
 	{
@@ -152,7 +151,7 @@ void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::Email::SMTPServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
@@ -470,7 +469,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NotNullPtr<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::SMTPServer::SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NotNullPtr<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, AnyType userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

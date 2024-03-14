@@ -38,12 +38,12 @@ namespace SSWR
 			Net::MACInfoList *macList;
 			Text::String *filterText;
 
-			static void __stdcall OnFileClicked(void *userObj);
-			static void __stdcall OnStoreClicked(void *userObj);
-			static void __stdcall OnContentDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnContentSelChg(void *userObj);
-			static void __stdcall OnUnkOnlyChkChg(void *userObj, Bool checked);
-			static void __stdcall OnFilterClicked(void *userObj);
+			static void __stdcall OnFileClicked(AnyType userObj);
+			static void __stdcall OnStoreClicked(AnyType userObj);
+			static void __stdcall OnContentDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnContentSelChg(AnyType userObj);
+			static void __stdcall OnUnkOnlyChkChg(AnyType userObj, Bool checked);
+			static void __stdcall OnFilterClicked(AnyType userObj);
 			Bool LogFileStore();
 			void LogUIUpdate();
 			void EntryUpdated(const Net::MACInfo::MACEntry *entry);

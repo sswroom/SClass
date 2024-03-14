@@ -5,15 +5,15 @@
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConvClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConvClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCppEnumForm *me = (SSWR::AVIRead::AVIRCppEnumForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCppEnumForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCppEnumForm>();
 	me->ConvEnum();
 }
 
-void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCppEnumForm *me = (SSWR::AVIRead::AVIRCppEnumForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCppEnumForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCppEnumForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), sb))

@@ -3,9 +3,9 @@
 #include "Math/SROGCWKTWriter.h"
 #include "SSWR/AVIRead/AVIRCoordInfoForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
@@ -17,9 +17,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(void *userObj)
 	me->ShowInfo(srinfo);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
@@ -37,9 +37,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(void *userObj
 	me->ShowInfo(srinfo);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordInfoForm *me = (SSWR::AVIRead::AVIRCoordInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;

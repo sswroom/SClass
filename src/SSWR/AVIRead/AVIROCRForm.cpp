@@ -2,11 +2,12 @@
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIROCRForm.h"
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);

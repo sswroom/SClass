@@ -1,5 +1,6 @@
 #ifndef _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #define _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
+#include "AnyType.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/FastMap.h"
 #include "IO/BTScanner.h"
@@ -23,7 +24,7 @@ namespace IO
 			Sync::Mutex lastCmdMut;
 			Text::String *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
-			void *recHdlrObj;
+			AnyType recHdlrObj;
 			Sync::Thread thread;
 			Bool agentOn;
 			Bool scanOn;
@@ -38,7 +39,7 @@ namespace IO
 			BluetoothCtlProgCtrl();
 			virtual ~BluetoothCtlProgCtrl();
 
-			virtual void HandleRecordUpdate(RecordHandler hdlr, void *userObj);
+			virtual void HandleRecordUpdate(RecordHandler hdlr, AnyType userObj);
 			
 			virtual Bool IsScanOn();
 			virtual void ScanOn();

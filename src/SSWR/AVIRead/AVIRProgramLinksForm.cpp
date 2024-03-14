@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRProgramLinksForm.h"
 #include "Text/StringComparatorFastNN.h"
 
-void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProgramLinksForm *me = (SSWR::AVIRead::AVIRProgramLinksForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbItems->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -65,9 +65,9 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProgramLinksForm *me = (SSWR::AVIRead::AVIRProgramLinksForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbItems->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -94,9 +94,9 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnCreateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnCreateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProgramLinksForm *me = (SSWR::AVIRead::AVIRProgramLinksForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
 	SSWR::AVIRead::AVIRProgramLinksCreateForm frm(0, me->ui, me->core, &me->progMgr);
 	if (frm.ShowDialog(me))
 	{

@@ -54,9 +54,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ProgramLinkManager progMgr;
 
-			static void __stdcall OnItemsSelChg(void *userObj);
-			static void __stdcall OnDeleteClicked(void *userObj);
-			static void __stdcall OnCreateClicked(void *userObj);
+			static void __stdcall OnItemsSelChg(AnyType userObj);
+			static void __stdcall OnDeleteClicked(AnyType userObj);
+			static void __stdcall OnCreateClicked(AnyType userObj);
 
 			void UpdateLinkList();
 		public:

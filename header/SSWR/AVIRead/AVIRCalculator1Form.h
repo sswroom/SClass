@@ -45,34 +45,34 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnKeyDot;
 			NotNullPtr<UI::GUIButton> btnKeyEqual;
 
-			static void __stdcall OnKeyMC(void *userObj);
-			static void __stdcall OnKeyMR(void *userObj);
-			static void __stdcall OnKeyMMinus(void *userObj);
-			static void __stdcall OnKeyMPlus(void *userObj);
-			static void __stdcall OnKeyDiv(void *userObj);
+			static void __stdcall OnKeyMC(AnyType userObj);
+			static void __stdcall OnKeyMR(AnyType userObj);
+			static void __stdcall OnKeyMMinus(AnyType userObj);
+			static void __stdcall OnKeyMPlus(AnyType userObj);
+			static void __stdcall OnKeyDiv(AnyType userObj);
 
-			static void __stdcall OnKeySqrt(void *userObj);
-			static void __stdcall OnKey7(void *userObj);
-			static void __stdcall OnKey8(void *userObj);
-			static void __stdcall OnKey9(void *userObj);
-			static void __stdcall OnKeyMul(void *userObj);
+			static void __stdcall OnKeySqrt(AnyType userObj);
+			static void __stdcall OnKey7(AnyType userObj);
+			static void __stdcall OnKey8(AnyType userObj);
+			static void __stdcall OnKey9(AnyType userObj);
+			static void __stdcall OnKeyMul(AnyType userObj);
 
-			static void __stdcall OnKeyPercent(void *userObj);
-			static void __stdcall OnKey4(void *userObj);
-			static void __stdcall OnKey5(void *userObj);
-			static void __stdcall OnKey6(void *userObj);
-			static void __stdcall OnKeyMinus(void *userObj);
+			static void __stdcall OnKeyPercent(AnyType userObj);
+			static void __stdcall OnKey4(AnyType userObj);
+			static void __stdcall OnKey5(AnyType userObj);
+			static void __stdcall OnKey6(AnyType userObj);
+			static void __stdcall OnKeyMinus(AnyType userObj);
 
-			static void __stdcall OnKeyNeg(void *userObj);
-			static void __stdcall OnKey1(void *userObj);
-			static void __stdcall OnKey2(void *userObj);
-			static void __stdcall OnKey3(void *userObj);
-			static void __stdcall OnKeyPlus(void *userObj);
+			static void __stdcall OnKeyNeg(AnyType userObj);
+			static void __stdcall OnKey1(AnyType userObj);
+			static void __stdcall OnKey2(AnyType userObj);
+			static void __stdcall OnKey3(AnyType userObj);
+			static void __stdcall OnKeyPlus(AnyType userObj);
 
-			static void __stdcall OnKeyCancel(void *userObj);
-			static void __stdcall OnKey0(void *userObj);
-			static void __stdcall OnKeyDot(void *userObj);
-			static void __stdcall OnKeyEqual(void *userObj);
+			static void __stdcall OnKeyCancel(AnyType userObj);
+			static void __stdcall OnKey0(AnyType userObj);
+			static void __stdcall OnKeyDot(AnyType userObj);
+			static void __stdcall OnKeyEqual(AnyType userObj);
 		public:
 			AVIRCalculator1Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCalculator1Form();

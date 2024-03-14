@@ -40,10 +40,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIButton> btnLastValue;
 
-			static void __stdcall OnColorChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnOKClick(void *userObj);
-			static void __stdcall OnCancelClick(void *userObj);
-			static void __stdcall OnLastValueClick(void *userObj);
+			static void __stdcall OnColorChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnOKClick(AnyType userObj);
+			static void __stdcall OnCancelClick(AnyType userObj);
+			static void __stdcall OnLastValueClick(AnyType userObj);
 		public:
 			AVIRImageColorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl);
 			virtual ~AVIRImageColorForm();

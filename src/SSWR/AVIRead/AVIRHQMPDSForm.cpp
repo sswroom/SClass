@@ -129,7 +129,7 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
 	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
 	UOSInt i;

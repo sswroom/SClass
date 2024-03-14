@@ -77,10 +77,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 		private:
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnPredefClicked(void *userObj);
-			static void __stdcall OnSendULDataClick(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnPredefClicked(AnyType userObj);
+			static void __stdcall OnSendULDataClick(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
 		public:
 			AVIRLoraGWSimForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLoraGWSimForm();

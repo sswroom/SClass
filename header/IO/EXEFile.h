@@ -158,7 +158,7 @@ namespace IO
 		static Bool GetFileTime(Text::CStringNN fileName, Data::DateTime *fileTimeOut);
 		static Data::Timestamp GetFileTime(Text::CStringNN fileName);
 		static Text::CString GetResourceTypeName(ResourceType rt);
-		static void GetResourceDesc(const ResourceInfo *res, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void GetResourceDesc(NotNullPtr<const ResourceInfo> res, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 

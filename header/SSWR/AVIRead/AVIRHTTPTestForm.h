@@ -73,11 +73,11 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblTimeUsed;
 			NotNullPtr<UI::GUITextBox> txtTimeUsed;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnURLAddClicked(void *userObj);
-			static void __stdcall OnURLClearClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnURLAddClicked(AnyType userObj);
+			static void __stdcall OnURLClearClicked(AnyType userObj);
 			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void StopThreads();
 			void ClearURLs();
 			Optional<Text::String> GetNextURL();

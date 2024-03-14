@@ -2,9 +2,9 @@
 #include "Crypto/Hash/Bcrypt.h"
 #include "SSWR/AVIRead/AVIRBCryptForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBCryptForm *me = (SSWR::AVIRead::AVIRBCryptForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBCryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBCryptForm>();
 	UInt32 cost;
 	Text::StringBuilderUTF8 sbCost;
 	Text::StringBuilderUTF8 sbPassword;
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	me->txtGenHash->SetText(sbCost.ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBCryptForm *me = (SSWR::AVIRead::AVIRBCryptForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBCryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBCryptForm>();
 	Text::StringBuilderUTF8 sbHash;
 	Text::StringBuilderUTF8 sbPassword;
 	me->txtCheckHash->GetText(sbHash);

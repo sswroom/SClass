@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnProcess;
 
 			static void __stdcall OnProcessClicked(void *userObj);
-			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 		public:
 			AVIRRNCryptorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRNCryptorForm();

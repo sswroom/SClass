@@ -19,9 +19,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(void *userObj)
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRThreadSpeedForm *me = (SSWR::AVIRead::AVIRThreadSpeedForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRThreadSpeedForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadSpeedForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Double t;
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	me->mainEvt.Clear();
 	me->t = 0;
 	me->clk.Start();
-	Sync::ThreadUtil::Create(TestThread, me);
+	Sync::ThreadUtil::Create(TestThread, me.Ptr());
 	me->mainEvt.Wait(1000);
 	t = me->clk.GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Thread Create"), 0);

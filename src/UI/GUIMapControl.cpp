@@ -19,9 +19,9 @@
 
 #include <stdio.h>
 
-void __stdcall UI::GUIMapControl::ImageUpdated(void *userObj)
+void __stdcall UI::GUIMapControl::ImageUpdated(AnyType userObj)
 {
-	UI::GUIMapControl *me = (UI::GUIMapControl*)userObj;
+	NotNullPtr<UI::GUIMapControl> me = userObj.GetNN<UI::GUIMapControl>();
 	me->bgUpdated = true;
 	if (!me->pauseUpdate)
 	{
@@ -34,9 +34,9 @@ Bool UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->SetCapture();
-		if (this->mouseDownHdlr)
+		if (this->mouseDownHdlr.func)
 		{
-			Bool done = this->mouseDownHdlr(this->mouseDownObj, scnPos, btn);
+			Bool done = this->mouseDownHdlr.func(this->mouseDownHdlr.userObj, scnPos, btn);
 			if (done)
 			{
 				return true;
@@ -83,9 +83,9 @@ Bool UI::GUIMapControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->ReleaseCapture();
-		if (this->mouseUpHdlr)
+		if (this->mouseUpHdlr.func)
 		{
-			Bool done = this->mouseUpHdlr(this->mouseUpObj, scnPos, btn);
+			Bool done = this->mouseUpHdlr.func(this->mouseUpHdlr.userObj, scnPos, btn);
 			if (done)
 			{
 				return true;
@@ -117,7 +117,8 @@ void UI::GUIMapControl::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 		UOSInt i = this->mouseMoveHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), scnPos);
+			Data::CallbackStorage<MouseMoveHandler> cb = this->mouseMoveHdlrs.GetItem(i);
+			cb.func(cb.userObj, scnPos);
 		}
 	}
 /*	if (me->IsFormFocused())
@@ -292,12 +293,12 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		Math::Size2D<UOSInt> sz;
 
 		Sync::MutexUsage mutUsage(this->drawMut);
-		if (this->drawHdlr)
+		if (this->drawHdlr.func)
 		{
 			NotNullPtr<Media::DrawImage> tmpImg;
 			if (tmpImg.Set(this->eng->CloneImage(bgImg)))
 			{
-				this->drawHdlr(this->drawHdlrObj, tmpImg, 0, 0);
+				this->drawHdlr.func(this->drawHdlr.userObj, tmpImg, 0, 0);
 				srcImg = tmpImg->ToStaticImage();
 				this->eng->DeleteImage(tmpImg);
 			}
@@ -407,12 +408,12 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		img->DelBrush(bgBrush);
 
 		Sync::MutexUsage mutUsage(this->drawMut);
-		if (this->drawHdlr)
+		if (this->drawHdlr.func)
 		{
 			NotNullPtr<Media::DrawImage> drawImg;
 			if (drawImg.Set(this->eng->CloneImage(bgImg)))
 			{
-				this->drawHdlr(this->drawHdlrObj, drawImg, 0, 0);
+				this->drawHdlr.func(this->drawHdlr.userObj, drawImg, 0, 0);
 				this->DrawScnObjects(drawImg, Math::Coord2DDbl(0, 0));
 				img->DrawImagePt(drawImg, tl);
 				this->eng->DeleteImage(drawImg);
@@ -500,7 +501,6 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	this->mouseDownHdlr = 0;
 	this->mouseUpHdlr = 0;
 	this->drawHdlr = 0;
-	this->drawHdlrObj = 0;
 	this->mapEnv = 0;
 	this->imgTimeoutTick = 0;
 
@@ -537,7 +537,6 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClien
 	this->mouseDownHdlr = 0;
 	this->mouseUpHdlr = 0;
 	this->drawHdlr = 0;
-	this->drawHdlrObj = 0;
 	this->mapEnv = mapEnv.Ptr();
 	this->imgTimeoutTick = 0;
 
@@ -609,7 +608,8 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -649,7 +649,8 @@ void UI::GUIMapControl::EventScaleChanged(Double newScale)
 	UOSInt i = this->scaleChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->scaleChgHdlrs.GetItem(i)(this->scaleChgObjs.GetItem(i), newScale);
+		Data::CallbackStorage<ScaleChangedHandler> cb = this->scaleChgHdlrs.GetItem(i);
+		cb.func(cb.userObj, newScale);
 	}
 }
 
@@ -714,7 +715,8 @@ void UI::GUIMapControl::UpdateMap()
 		i = this->mapUpdHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->mapUpdHdlrs.GetItem(i)(this->mapUpdObjs.GetItem(i), center, t);
+			Data::CallbackStorage<MapUpdatedHandler> cb = this->mapUpdHdlrs.GetItem(i);
+			cb.func(cb.userObj, center, t);
 		}
 	}
 }
@@ -858,41 +860,35 @@ void UI::GUIMapControl::SetVAngle(Double angleRad)
 	this->view->SetVAngle(angleRad);
 }
 
-void UI::GUIMapControl::HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj)
+void UI::GUIMapControl::HandleScaleChanged(ScaleChangedHandler hdlr, AnyType userObj)
 {
-	this->scaleChgHdlrs.Add(hdlr);
-	this->scaleChgObjs.Add(userObj);
+	this->scaleChgHdlrs.Add({hdlr, userObj});
 	hdlr(userObj, this->view->GetMapScale());
 }
 
-void UI::GUIMapControl::HandleMapUpdated(MapUpdatedHandler hdlr, void *userObj)
+void UI::GUIMapControl::HandleMapUpdated(MapUpdatedHandler hdlr, AnyType userObj)
 {
-	this->mapUpdHdlrs.Add(hdlr);
-	this->mapUpdObjs.Add(userObj);
+	this->mapUpdHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIMapControl::HandleMouseMove(MouseMoveHandler hdlr, void *userObj)
+void UI::GUIMapControl::HandleMouseMove(MouseMoveHandler hdlr, AnyType userObj)
 {
-	this->mouseMoveHdlrs.Add(hdlr);
-	this->mouseMoveObjs.Add(userObj);
+	this->mouseMoveHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIMapControl::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
+void UI::GUIMapControl::HandleMouseUp(MouseEventHandler hdlr, AnyType userObj)
 {
-	this->mouseUpHdlr = hdlr;
-	this->mouseUpObj = userObj;
+	this->mouseUpHdlr = {hdlr, userObj};
 }
 
-void UI::GUIMapControl::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
+void UI::GUIMapControl::HandleMouseDown(MouseEventHandler hdlr, AnyType userObj)
 {
-	this->mouseDownHdlr = hdlr;
-	this->mouseDownObj = userObj;
+	this->mouseDownHdlr = {hdlr, userObj};
 }
 
-void UI::GUIMapControl::HandleCustomDraw(DrawHandler hdlr, void *userObj)
+void UI::GUIMapControl::HandleCustomDraw(DrawHandler hdlr, AnyType userObj)
 {
-	this->drawHdlr = hdlr;
-	this->drawHdlrObj = userObj;
+	this->drawHdlr = {hdlr, userObj};
 }
 
 void UI::GUIMapControl::SetMapUpdated()

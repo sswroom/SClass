@@ -577,12 +577,13 @@ void UI::GUIForm::SetFormState(UI::GUIForm::FormState fs)
 	}
 }
 
-UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
+UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 {
-	if (owner)
+	NotNullPtr<UI::GUIForm> frm;
+	if (owner.SetTo(frm))
 	{
-		owner->SetEnabled(false);
-		owner->currDialog = this;
+		frm->SetEnabled(false);
+		frm->currDialog = this;
 	}
 	this->isDialog = true;
 	this->Show();
@@ -591,11 +592,11 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
 		ui->WaitForMessages();
 		ui->ProcessMessages();
 	}
-	if (owner)
+	if (owner.SetTo(frm))
 	{
-		owner->currDialog = 0;
-		owner->SetEnabled(true);
-		owner->MakeForeground();
+		frm->currDialog = 0;
+		frm->SetEnabled(true);
+		frm->MakeForeground();
 	}
 	return this->dialogResult;
 }

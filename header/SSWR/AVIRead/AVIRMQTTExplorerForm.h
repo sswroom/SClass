@@ -85,14 +85,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnCliCertClicked(void *userObj);
-			static void __stdcall OnCliKeyClicked(void *userObj);
-			static void __stdcall OnPublishClicked(void *userObj);
-			static void __stdcall OnTopicSelChg(void *userObj);
-			static void __stdcall OnPingTimerTick(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnCliCertClicked(AnyType userObj);
+			static void __stdcall OnCliKeyClicked(AnyType userObj);
+			static void __stdcall OnPublishClicked(AnyType userObj);
+			static void __stdcall OnTopicSelChg(AnyType userObj);
+			static void __stdcall OnPingTimerTick(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message);
 
 			void UpdateTopicChart();
 			void ServerStop();

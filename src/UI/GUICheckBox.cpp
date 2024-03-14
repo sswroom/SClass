@@ -19,12 +19,12 @@ void UI::GUICheckBox::EventCheckedChange(Bool newState)
 	UOSInt i = this->checkedChangeHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->checkedChangeHdlrs.GetItem(i)(this->checkedChangeObjs.GetItem(i), newState);
+		Data::CallbackStorage<CheckedChangeHandler> cb = this->checkedChangeHdlrs.GetItem(i);
+		cb.func(cb.userObj, newState);
 	}
 }
 
-void UI::GUICheckBox::HandleCheckedChange(UI::GUICheckBox::CheckedChangeHandler hdlr, void *obj)
+void UI::GUICheckBox::HandleCheckedChange(UI::GUICheckBox::CheckedChangeHandler hdlr, AnyType obj)
 {
-	this->checkedChangeHdlrs.Add(hdlr);
-	this->checkedChangeObjs.Add(obj);
+	this->checkedChangeHdlrs.Add({hdlr, obj});
 }

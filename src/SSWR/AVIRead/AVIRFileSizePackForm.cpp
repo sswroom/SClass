@@ -44,15 +44,15 @@ OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(Data::IComparable *
 		return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileSizePackForm *me = (SSWR::AVIRead::AVIRFileSizePackForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
 	me->GenList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileSizePackForm *me = (SSWR::AVIRead::AVIRFileSizePackForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;

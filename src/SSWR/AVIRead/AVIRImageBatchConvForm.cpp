@@ -12,9 +12,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFolderDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageBatchConvForm *me = (SSWR::AVIRead::AVIRImageBatchConvForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDir->GetText(sb);
 	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
@@ -29,9 +29,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *user
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageBatchConvForm *me = (SSWR::AVIRead::AVIRImageBatchConvForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;

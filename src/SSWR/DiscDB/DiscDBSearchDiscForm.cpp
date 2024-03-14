@@ -2,9 +2,9 @@
 #include "SSWR/DiscDB/DiscDBSearchDiscForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj)
+void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userObj)
 {
-	SSWR::DiscDB::DiscDBSearchDiscForm *me = (SSWR::DiscDB::DiscDBSearchDiscForm*)userObj;
+	NotNullPtr<SSWR::DiscDB::DiscDBSearchDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBSearchDiscForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDiscId->GetText(sb);
 	if (sb.GetLength() <= 0)

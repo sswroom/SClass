@@ -34,7 +34,7 @@ namespace SSWR
 			Media::MediaPlayer *player;
 			const WChar *currFileName;
 		private:
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnPlaylistDblClk(void *userObj, UOSInt itemIndex);
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnEndClicked(void *userObj);

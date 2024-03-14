@@ -3,9 +3,9 @@
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1OIDForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1OIDForm *me = (SSWR::AVIRead::AVIRASN1OIDForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1OIDForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1OIDForm>();
 	Text::StringBuilderUTF8 sbCPP;
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);

@@ -143,7 +143,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 			fs = Media::IVideoSource::FS_P;
 			ft = Media::FT_NON_INTERLACE;
 		}
-		this->finfoCb(this->thisFrameTime + fieldAdd, this->frameNum, frameSize, fs, ft, this->finfoData, Media::YCOFST_C_CENTER_LEFT);
+		this->finfoCb.func(this->thisFrameTime + fieldAdd, this->frameNum, frameSize, fs, ft, this->finfoCb.userObj, Media::YCOFST_C_CENTER_LEFT);
 		this->frameNum++;
 	}
 	else if (this->frameCb)
@@ -482,7 +482,7 @@ Bool Media::M2VStreamSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, Out
 	return true;
 }
 
-Bool Media::M2VStreamSource::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::M2VStreamSource::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	this->frameCb = cb;
 	this->fcCb = fcCb;
@@ -595,11 +595,10 @@ Data::Duration Media::M2VStreamSource::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Media::M2VStreamSource::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::M2VStreamSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	this->finfoMode = true;
-	this->finfoCb = cb;
-	this->finfoData = userData;
+	this->finfoCb = {cb, userData};
 	this->SeekToTime(0);
 	this->pbc->StartVideo();
 	while (this->pbc->IsRunning())

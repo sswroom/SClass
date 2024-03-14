@@ -94,15 +94,15 @@ namespace SSWR
 			Text::HKSCSFix hkscsConv;
 			Bool isGrid80;
 
-			static void __stdcall OnDirectoryClicked(void *userObj);
-			static void __stdcall OnSBrowseClicked(void *userObj);
-			static void __stdcall OnLangSelChg(void *userObj);
-			static void __stdcall OnRecordsSelChg(void *userObj);
-			static void __stdcall OnGroupClicked(void *userObj);
-			static void __stdcall OnFilterClicked(void *userObj);
-			static void __stdcall OnPreviewClicked(void *userObj);
-			static void __stdcall OnConvertClicked(void *userObj);
-			static void __stdcall OnFile(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnDirectoryClicked(AnyType userObj);
+			static void __stdcall OnSBrowseClicked(AnyType userObj);
+			static void __stdcall OnLangSelChg(AnyType userObj);
+			static void __stdcall OnRecordsSelChg(AnyType userObj);
+			static void __stdcall OnGroupClicked(AnyType userObj);
+			static void __stdcall OnFilterClicked(AnyType userObj);
+			static void __stdcall OnPreviewClicked(AnyType userObj);
+			static void __stdcall OnConvertClicked(AnyType userObj);
+			static void __stdcall OnFile(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
 			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);

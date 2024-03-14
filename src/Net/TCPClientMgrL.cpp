@@ -315,7 +315,7 @@ void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientSta
 	}
 }
 
-Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
+Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, AnyType userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
 {
 	this->timeout = Data::Duration::FromSecNS(timeOutSeconds, 0);
 	this->evtHdlr = evtHdlr;
@@ -442,7 +442,7 @@ void Net::TCPClientMgr::SetLogFile(Text::CStringNN logFile)
 	NEW_CLASS(this->logWriter, IO::SMTCWriter(logFile));
 }
 
-void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
+void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, AnyType cliData)
 {
 //	printf("Client added and set timeout to %d\r\n", this->timeOutSeconds);
 	cli->SetNoDelay(true);
@@ -546,12 +546,12 @@ void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
 	}
 }
 
-Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, void **cliData)
+Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, OutParam<AnyType> cliData)
 {
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliMap.GetItem(index);
 	if (cliStat)
 	{
-		*cliData = cliStat->cliData;
+		cliData.Set(cliStat->cliData);
 		return cliStat->cli.Ptr();
 	}
 	return 0;

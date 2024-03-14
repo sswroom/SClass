@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblBinBuff;
 			UI::GUIHexFileView *hfvBinBuff;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> filesles);
 			Bool LoadFile(NotNullPtr<Text::String> fileName);
 			Bool LoadData(NotNullPtr<IO::StreamData> jsonFD, NotNullPtr<IO::StreamData> binBuffFD);
 		public:

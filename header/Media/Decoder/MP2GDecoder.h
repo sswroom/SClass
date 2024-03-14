@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_MP2GDECODER
 #define _SM_MEDIA_DECODER_MP2GDECODER
+#include "Data/CallbackStorage.h"
 #include "Media/Decoder/VDecoderBase.h"
 
 namespace Media
@@ -15,8 +16,7 @@ namespace Media
 			Bool toRelease;
 
 			Bool finfoMode;
-			void *finfoData;
-			FrameInfoCallback finfoCb;
+			Data::CallbackStorage<FrameInfoCallback> finfoCb;
 
 			Bool hasBFrame;
 			Data::Duration lastFrameTime;
@@ -37,7 +37,7 @@ namespace Media
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};

@@ -39,8 +39,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnRequestUserClicked(void *userObj);
-			static void __stdcall OnPageClicked(void *userObj);
+			static void __stdcall OnRequestUserClicked(AnyType userObj);
+			static void __stdcall OnPageClicked(AnyType userObj);
 		public:
 			AVIRWebSiteInstagramForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSiteInstagramForm();

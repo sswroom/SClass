@@ -19,9 +19,9 @@
 
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 			me->txtContent->SetReadOnly(true);
 			me->lblStatus->SetText(CSTR("Connected"));
 			me->btnStart->SetText(CSTR("Stop"));
-			Sync::ThreadUtil::Create(SendThread, me);
+			Sync::ThreadUtil::Create(SendThread, me.Ptr());
 			while (!me->threadRunning)
 			{
 				Sync::SimpleThread::Sleep(1);
@@ -172,9 +172,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
@@ -215,9 +215,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(void *us
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
 	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
@@ -250,9 +250,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(void *use
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -277,9 +277,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -329,7 +329,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(void *userObj
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
 //	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
 }

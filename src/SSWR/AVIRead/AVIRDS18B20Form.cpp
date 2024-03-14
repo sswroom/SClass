@@ -4,9 +4,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnSNClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnSNClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDS18B20Form *me = (SSWR::AVIRead::AVIRDS18B20Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -17,15 +17,15 @@ void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnSNClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnReadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnReadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDS18B20Form *me = (SSWR::AVIRead::AVIRDS18B20Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	me->ReadData();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDS18B20Form *me = (SSWR::AVIRead::AVIRDS18B20Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	if (me->chkAutoRead->IsChecked())
 	{
 		me->ReadData();

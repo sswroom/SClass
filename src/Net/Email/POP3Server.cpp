@@ -13,9 +13,9 @@
 #include <stdio.h>
 #endif
 
-void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
+void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
 {
-	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
+	NotNullPtr<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
 #if defined(VERBOSE)
 	printf("POP3Server: %lld, ConnReady\r\n", cli->GetCliId());
 #endif
@@ -32,9 +32,9 @@ void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli,
 	me->WriteMessage(cli, true, me->greeting->ToCString());
 }
 
-void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, AnyType userObj)
 {
-	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
+	NotNullPtr<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (me->sslConn && me->ssl.SetTo(ssl))
 	{
@@ -48,13 +48,12 @@ void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		MailStatus *cliStatus;
+		NotNullPtr<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 		UOSInt i;
-		cliStatus = (MailStatus*)cliData;
 		if (cliStatus->cliName)
 		{
 			Text::StrDelNew(cliStatus->cliName);
@@ -69,7 +68,7 @@ void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cl
 		{
 			DEL_CLASS(cliStatus->dataStm);
 		}
-		DEL_CLASS(cliStatus);
+		cliStatus.Delete();
 		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
@@ -77,11 +76,10 @@ void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::Email::POP3Server::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
-	MailStatus *cliStatus;
-	cliStatus = (MailStatus*)cliData;
+	NotNullPtr<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
+	NotNullPtr<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 	if (me->rawLog)
 	{
 		me->rawLog->Write(buff.Ptr(), buff.GetSize());
@@ -132,7 +130,7 @@ void __stdcall Net::Email::POP3Server::ClientData(NotNullPtr<Net::TCPClient> cli
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::Email::POP3Server::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
@@ -177,7 +175,7 @@ UOSInt Net::Email::POP3Server::WriteRAW(NotNullPtr<Net::TCPClient> cli, const UT
 	return buffSize;
 }
 
-void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
+void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
 {
 #if defined(VERBOSE)
 	printf("%s\r\n", cmd);

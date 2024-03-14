@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_WEBIMAGELAYER
 #define _SM_MAP_WEBIMAGELAYER
 #include "Data/ArrayList.h"
+#include "Data/CallbackStorage.h"
 #include "Data/IComparable.h"
 #include "Map/MapDrawLayer.h"
 #include "Media/SharedImage.h"
@@ -57,8 +58,7 @@ namespace Map
 		Int64 maxTime;
 		Int64 currTime;
 		Sync::Mutex updMut;
-		Data::ArrayList<UpdatedHandler> updHdlrs;
-		Data::ArrayList<void *> updObjs;
+		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		Bool threadRunning;
 		Bool threadToStop;
@@ -96,8 +96,8 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 		void AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude);
 	};

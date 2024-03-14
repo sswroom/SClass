@@ -109,9 +109,9 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFile)
+void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWellFormatForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWellFormatForm>();
 	me->txtFile->SetText(files[0]->ToCString());
 }
 

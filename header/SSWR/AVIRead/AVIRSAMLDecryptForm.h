@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtResult;
 
 		private:
-			static void __stdcall OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnDecryptClicked(void *userObj);
 		public:
 			AVIRSAMLDecryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

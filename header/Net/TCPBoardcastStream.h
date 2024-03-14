@@ -1,5 +1,6 @@
 #ifndef _SM_NET_TCPBOARDCASTSTREAM
 #define _SM_NET_TCPBOARDCASTSTREAM
+#include "AnyType.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
 #include "Net/TCPClientMgr.h"
@@ -22,10 +23,10 @@ namespace Net
 		UInt8 *writeBuff;
 		UOSInt writeBuffSize;
 
-		static void __stdcall ConnHandler(Socket *s, void *userObj);
-		static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+		static void __stdcall ConnHandler(Socket *s, AnyType userObj);
+		static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 	public:
 		TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		~TCPBoardcastStream();

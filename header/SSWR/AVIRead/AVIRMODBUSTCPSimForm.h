@@ -51,12 +51,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbDevice;
 			NotNullPtr<UI::GUIListView> lvDeviceValues;
 
-			static void __stdcall OnListenClicked(void *userObj);
-			static void __stdcall OnDevAddClicked(void *userObj);
-			static void __stdcall OnDelayClicked(void *userObj);
-			static void __stdcall OnDeviceChanged(void *userObj);
-			static void __stdcall OnDeviceValuesDblClk(void *userObj, UOSInt index);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnListenClicked(AnyType userObj);
+			static void __stdcall OnDevAddClicked(AnyType userObj);
+			static void __stdcall OnDelayClicked(AnyType userObj);
+			static void __stdcall OnDeviceChanged(AnyType userObj);
+			static void __stdcall OnDeviceValuesDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateDevList();
 			void UpdateDevValues();
 		public:

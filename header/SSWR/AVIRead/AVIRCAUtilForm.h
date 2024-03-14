@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtValidDays;
 			NotNullPtr<UI::GUIButton> btnIssue;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnKeyViewClicked(void *userObj);
 			static void __stdcall OnCACertViewClicked(void *userObj);
 			static void __stdcall OnCSRViewClicked(void *userObj);

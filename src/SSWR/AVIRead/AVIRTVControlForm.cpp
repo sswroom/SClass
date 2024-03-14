@@ -3,9 +3,9 @@
 #include "IO/StreamLogger.h"
 #include "SSWR/AVIRead/AVIRTVControlForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTVControlForm *me = (SSWR::AVIRead::AVIRTVControlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->port)
 	{
 		me->port->Close();
@@ -78,9 +78,9 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	
 }
 
-void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTVControlForm *me = (SSWR::AVIRead::AVIRTVControlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->tvCtrl)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -161,9 +161,9 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTVControlForm *me = (SSWR::AVIRead::AVIRTVControlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->tvCtrl)
 	{
 		CommandInfo *cmdInfo = (CommandInfo*)me->cboCommand->GetSelectedItem();

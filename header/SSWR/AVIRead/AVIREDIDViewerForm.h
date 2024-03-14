@@ -21,9 +21,9 @@ namespace SSWR
 			UOSInt edidSize;
 			
 			void UpdateEDIDDisp();
-			static void __stdcall OnSaveClicked(void *userObj);
-			static void __stdcall OnHexClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt);
+			static void __stdcall OnSaveClicked(AnyType userObj);
+			static void __stdcall OnHexClicked(AnyType userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames);
 		public:
 			AVIREDIDViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREDIDViewerForm();

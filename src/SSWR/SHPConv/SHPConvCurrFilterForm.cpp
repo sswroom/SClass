@@ -2,9 +2,9 @@
 #include "SSWR/SHPConv/SHPConvAddFilterForm.h"
 #include "SSWR/SHPConv/SHPConvCurrFilterForm.h"
 
-void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvCurrFilterForm *me = (SSWR::SHPConv::SHPConvCurrFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	SSWR::SHPConv::SHPConvAddFilterForm frm(0, me->ui, me->dbf, me->deng);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -17,9 +17,9 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvCurrFilterForm *me = (SSWR::SHPConv::SHPConvCurrFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	UOSInt i = me->lbFilters->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -29,9 +29,9 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnOkClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnOkClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvCurrFilterForm *me = (SSWR::SHPConv::SHPConvCurrFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	me->Close();
 }
 

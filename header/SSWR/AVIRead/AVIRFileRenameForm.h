@@ -22,8 +22,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnRename;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnRenameClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnRenameClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 
 		public:
 			AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Text::String> fileName);

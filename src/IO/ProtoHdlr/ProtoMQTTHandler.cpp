@@ -20,7 +20,7 @@ IO::ProtoHdlr::ProtoMQTTHandler::~ProtoMQTTHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	ClientData *cliData = MemAlloc(ClientData, 1);
 	cliData->packetBuff = 0;
@@ -30,20 +30,20 @@ void *IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NotNullPtr<IO::Stream> s
 	return cliData;
 }
 
-void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
-	ClientData *cliData = (ClientData*)stmData;
+	NotNullPtr<ClientData> cliData = stmData.GetNN<ClientData>();
 	if (cliData->packetBuff)
 	{
 		MemFree(cliData->packetBuff);
 		cliData->packetBuff = 0;
 	}
-	MemFree(cliData);
+	MemFree(cliData.Ptr());
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
-	ClientData *cliData = (ClientData*)stmData;
+	NotNullPtr<ClientData> cliData = stmData.GetNN<ClientData>();
 	Data::ByteArrayR buff = srcBuff;
 	if (cliData->packetBuff)
 	{
@@ -120,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	buff[0] = (UInt8)(cmdType & 0xff);
 	if (cmdSize < 128)

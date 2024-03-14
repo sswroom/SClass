@@ -37,15 +37,15 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btn30Minutes;
 			NotNullPtr<UI::GUIListView> lvFiles;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPasteTableClicked(void *userObj);
-			static void __stdcall OnPasteHTMLClicked(void *userObj);
-			static void __stdcall OnCopyTableClicked(void *userObj);
-			static void __stdcall OnFilesDblClick(void *userObj, UOSInt itemIndex);
-			static void __stdcall OnFileEndClicked(void *userObj);
-			static void __stdcall OnWebUpdateClicked(void *userObj);
-			static void __stdcall On30MinutesClicked(void *userObj);
-			static void __stdcall OnFileEnd(void *userObj, Int32 fileId, Int32 webType);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnPasteTableClicked(AnyType userObj);
+			static void __stdcall OnPasteHTMLClicked(AnyType userObj);
+			static void __stdcall OnCopyTableClicked(AnyType userObj);
+			static void __stdcall OnFilesDblClick(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnFileEndClicked(AnyType userObj);
+			static void __stdcall OnWebUpdateClicked(AnyType userObj);
+			static void __stdcall On30MinutesClicked(AnyType userObj);
+			static void __stdcall OnFileEnd(AnyType userObj, Int32 fileId, Int32 webType);
 
 			static Int32 ParseURL(Text::CString url, Int32 *webType);
 			void LoadList();

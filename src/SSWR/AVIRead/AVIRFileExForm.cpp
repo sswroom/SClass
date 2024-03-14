@@ -132,9 +132,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	DEL_CLASS(srcFS);
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	me->txtSrc->SetText(files[0]->ToCString());
 }
 

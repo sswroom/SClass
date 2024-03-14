@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDelete;
 			NotNullPtr<UI::GUIButton> btnStartTime;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnFilesDblClk(void *userObj, UOSInt itemIndex);
 			static void __stdcall OnDeleteClicked(void *userObj);
 			static void __stdcall OnStartTimeClicked(void *userObj);

@@ -116,11 +116,11 @@ void Map::MapDrawLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 
 }
 
-void Map::MapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::MapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
-void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 

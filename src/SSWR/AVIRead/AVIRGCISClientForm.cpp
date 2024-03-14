@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRGCISClientForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGCISClientForm *me = (SSWR::AVIRead::AVIRGCISClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, me->cliCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -25,9 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGCISClientForm *me = (SSWR::AVIRead::AVIRGCISClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
 	NotNullPtr<Crypto::Cert::X509Cert> cliCert;
 	NotNullPtr<Crypto::Cert::X509File> cliKey;
 	if (!cliCert.Set(me->cliCert) || !cliKey.Set(me->cliKey))
@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnServerCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnServerCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGCISClientForm *me = (SSWR::AVIRead::AVIRGCISClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
 	if (me->svrCert)
 	{
 		me->core->OpenObject(me->svrCert->Clone());

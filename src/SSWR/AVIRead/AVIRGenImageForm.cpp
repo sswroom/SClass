@@ -3,9 +3,9 @@
 #include "Text/MyString.h"
 #include "UI/GUILabel.h"
 
-void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGenImageForm *me = (SSWR::AVIRead::AVIRGenImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGenImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGenImageForm>();
 	UTF8Char sbuff[256];
 	UInt32 width;
 	UInt32 height;
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGenImageForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGenImageForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGenImageForm *me = (SSWR::AVIRead::AVIRGenImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGenImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGenImageForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

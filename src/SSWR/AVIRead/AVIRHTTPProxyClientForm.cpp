@@ -8,9 +8,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPProxyClientForm *me = (SSWR::AVIRead::AVIRHTTPProxyClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	UInt16 port;
@@ -101,9 +101,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPProxyClientForm *me = (SSWR::AVIRead::AVIRHTTPProxyClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

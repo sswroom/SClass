@@ -5,9 +5,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt32 ip = me->proxy->GetServerIP();
@@ -124,9 +124,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Net::DNSClient::FreeAnswers(me->v4ansList);
 	UOSInt i;
 	UOSInt j;
@@ -172,11 +172,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbV4Answer->GetSelectedItem();
-	if (ans)
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	if (me->lbV4Answer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
@@ -207,9 +207,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Net::DNSClient::FreeAnswers(me->v6ansList);
 	UOSInt i;
 	UOSInt j;
@@ -255,11 +255,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbV6Answer->GetSelectedItem();
-	if (ans)
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	if (me->lbV6Answer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
@@ -290,9 +290,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Net::DNSClient::FreeAnswers(me->othansList);
 	UOSInt i;
 	UOSInt j;
@@ -338,11 +338,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbOthAnswer->GetSelectedItem();
-	if (ans)
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	if (me->lbOthAnswer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
@@ -373,10 +373,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSProxy::TargetInfo *target = (Net::DNSProxy::TargetInfo*)me->lbTarget->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
+	Net::DNSProxy::TargetInfo *target = (Net::DNSProxy::TargetInfo*)me->lbTarget->GetSelectedItem().p;
 	me->currTarget = target;
 	if (target)
 	{
@@ -433,15 +433,15 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSwitchClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSwitchClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	me->proxy->SwitchDNS();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDNSServer2->GetText(sb);
 	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
@@ -457,9 +457,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSetClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDNSServer2->GetText(sb);
 	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
@@ -475,9 +475,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Data::ArrayList<Text::String *> nameList;
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
@@ -527,9 +527,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Net::DNSClient::FreeAnswers(me->v4sansList);
 	UOSInt i;
 	UOSInt j;
@@ -575,11 +575,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbSAnswer->GetSelectedItem();
-	if (ans)
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	if (me->lbSAnswer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
@@ -610,12 +610,12 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	ClientInfo *cli = (ClientInfo*)me->lbClientIP->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
+	NotNullPtr<ClientInfo> cli;
 	me->lvClient->ClearItems();
-	if (cli)
+	if (me->lbClientIP->GetSelectedItem().GetOpt<ClientInfo>().SetTo(cli))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -643,15 +643,15 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDisableV6Chg(void *userObj, Bool isChecked)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDisableV6Chg(AnyType userObj, Bool isChecked)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	me->proxy->SetDisableV6(isChecked);
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtBlackList->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -664,9 +664,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWPAD->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -683,9 +683,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
-	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;

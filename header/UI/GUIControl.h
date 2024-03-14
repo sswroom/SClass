@@ -1,7 +1,9 @@
 #ifndef _SM_UI_GUICONTROL
 #define _SM_UI_GUICONTROL
+#include "AnyType.h"
 #include "Handles.h"
 #include "Data/ArrayList.h"
+#include "Data/CallbackStorage.h"
 #include "Math/Size2D.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorInfo.h"
@@ -211,12 +213,11 @@ namespace UI
 			DET_ALREADYREGISTER
 		} DragErrorType;
 
-		typedef Bool (__stdcall *MouseEventHandler)(void *userObj, Math::Coord2D<OSInt> scnCoord, MouseButton btn);
+		typedef Bool (__stdcall *MouseEventHandler)(AnyType userObj, Math::Coord2D<OSInt> scnCoord, MouseButton btn);
 
 
 	protected:
-		Data::ArrayList<UIEvent> resizeHandlers;
-		Data::ArrayList<void *> resizeHandlersObjs;
+		Data::ArrayList<Data::CallbackStorage<UIEvent>> resizeHandlers;
 		Bool inited;
 		ControlHandle *hwnd;
 		void *hFont;
@@ -287,7 +288,7 @@ namespace UI
 		virtual void OnShow();
 		virtual void OnMonitorChanged();
 
-		virtual void HandleSizeChanged(UIEvent handler, void *userObj);
+		virtual void HandleSizeChanged(UIEvent handler, AnyType userObj);
 
 		virtual void UpdateFont();
 		virtual void UpdatePos(Bool redraw);

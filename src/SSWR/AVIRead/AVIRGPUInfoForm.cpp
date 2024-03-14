@@ -4,10 +4,10 @@
 #include "SSWR/AVIRead/AVIRGPUInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPUInfoForm *me = (SSWR::AVIRead::AVIRGPUInfoForm*)userObj;
-	IO::IGPUControl *gpu = (IO::IGPUControl*)me->lbGPU->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRGPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPUInfoForm>();
+	IO::IGPUControl *gpu = (IO::IGPUControl*)me->lbGPU->GetSelectedItem().p;
 	if (gpu == 0)
 	{
 		me->lvMain->ClearItems();

@@ -2,30 +2,30 @@
 #include "Net/SSHForwarder.h"
 #include "Net/SSHTCPChannel.h"
 
-void __stdcall Net::SSHForwarder::OnClientEvent(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::SSHForwarder::OnClientEvent(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		Net::SSHTCPChannel *channel = (Net::SSHTCPChannel*)cliData;
-		DEL_CLASS(channel);
+		NotNullPtr<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
+		channel.Delete();
 		cli.Delete();
 	}
 }
 
-void __stdcall Net::SSHForwarder::OnClientData(NotNullPtr<TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::SSHForwarder::OnClientData(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Net::SSHTCPChannel *channel = (Net::SSHTCPChannel*)cliData;
+	NotNullPtr<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
 	channel->WriteCont(buff.Ptr(), buff.GetSize());
 }
 
-void __stdcall Net::SSHForwarder::OnClientTimeout(NotNullPtr<TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::SSHForwarder::OnClientTimeout(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 
 }
 
-void __stdcall Net::SSHForwarder::OnClientConn(Socket *s, void *userObj)
+void __stdcall Net::SSHForwarder::OnClientConn(Socket *s, AnyType userObj)
 {
-	Net::SSHForwarder *me = (Net::SSHForwarder*)userObj;
+	NotNullPtr<Net::SSHForwarder> me = userObj.GetNN<Net::SSHForwarder>();
 	NotNullPtr<Net::SSHTCPChannel> channel;
 	if (me->conn->RemoteConnect(s, me->remoteHost->ToCString(), me->remotePort).SetTo(channel))
 	{
@@ -67,7 +67,7 @@ UInt16 Net::SSHForwarder::GetListenPort() const
 
 void Net::SSHForwarder::DoEvents()
 {
-	void *cliData;
+	AnyType cliData;
 	UInt8 buff[8192];
 	UOSInt size;
 	Sync::MutexUsage mutUsage;
@@ -76,9 +76,9 @@ void Net::SSHForwarder::DoEvents()
 	UOSInt i = this->cliMgr.GetClientCount();
 	while (i-- > 0)
 	{
-		if ((cli = this->cliMgr.GetClient(i, &cliData)) != 0)
+		if ((cli = this->cliMgr.GetClient(i, cliData)) != 0)
 		{
-			if (((Net::SSHTCPChannel*)cliData)->TryRead(buff, sizeof(buff), size))
+			if (cliData.GetNN<Net::SSHTCPChannel>()->TryRead(buff, sizeof(buff), size))
 			{
 				if (size == 0)
 				{

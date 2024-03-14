@@ -38,10 +38,11 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->LoadDataFile(files[i]->ToCString()))

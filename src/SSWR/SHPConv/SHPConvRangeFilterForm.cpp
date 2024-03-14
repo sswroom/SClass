@@ -4,9 +4,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvRangeFilterForm *me = (SSWR::SHPConv::SHPConvRangeFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvRangeFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvRangeFilterForm>();
 	Double x1;
 	Double y1;
 	Double x2;
@@ -65,9 +65,9 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvRangeFilterForm *me = (SSWR::SHPConv::SHPConvRangeFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvRangeFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvRangeFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

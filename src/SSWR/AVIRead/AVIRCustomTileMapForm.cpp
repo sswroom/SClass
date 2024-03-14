@@ -4,9 +4,9 @@
 #include "Map/CustomTileMap.h"
 #include "SSWR/AVIRead/AVIRCustomTileMapForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCustomTileMapForm *me = (SSWR::AVIRead::AVIRCustomTileMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCustomTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCustomTileMapForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Int32 minLevel;

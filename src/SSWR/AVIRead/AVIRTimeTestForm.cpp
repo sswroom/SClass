@@ -4,9 +4,9 @@
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimeTestForm *me = (SSWR::AVIRead::AVIRTimeTestForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimeTestForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 t;
 	Double tDiff;
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimeTestForm *me = (SSWR::AVIRead::AVIRTimeTestForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimeTestForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 t;
 	Double tDiff;

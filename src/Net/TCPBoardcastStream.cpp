@@ -5,9 +5,9 @@
 #include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
+void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, AnyType userObj)
 {
-	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
+	NotNullPtr<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	NotNullPtr<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	me->cliMgr->AddClient(cli, 0);
@@ -31,7 +31,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	switch (evtType)
 	{
@@ -46,9 +46,9 @@ void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> c
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
+	NotNullPtr<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -101,9 +101,9 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
-	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
+	NotNullPtr<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	if (me->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -223,14 +223,14 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	void *cliData;
+	AnyType cliData;
 	Sync::MutexUsage mutUsage;
 	this->cliMgr->UseGetClient(mutUsage);
 	i = this->cliMgr->GetClientCount();
 	while (i-- > 0)
 	{
 		
-		cli = this->cliMgr->GetClient(i, &cliData);
+		cli = this->cliMgr->GetClient(i, cliData);
 		cli->Write(buff, size);
 
 		if (this->log->HasHandler())

@@ -2,9 +2,9 @@
 #include "IO/WindowsError.h"
 #include "SSWR/AVIRead/AVIRWindowsErrorForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWindowsErrorForm::OnErrorCodeChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWindowsErrorForm::OnErrorCodeChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWindowsErrorForm *me = (SSWR::AVIRead::AVIRWindowsErrorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWindowsErrorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWindowsErrorForm>();
 	UInt32 errCode;
 	Text::StringBuilderUTF8 sb;
 	me->txtErrorCode->GetText(sb);

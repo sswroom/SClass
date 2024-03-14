@@ -803,9 +803,9 @@ void Media::VideoRenderer::CreateThreadResizer(ThreadStat *tstat)
 	tstat->resizer10Bit = this->curr10Bit;
 }
 
-void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Media::VideoRenderer *me = (Media::VideoRenderer*)userData;
+	NotNullPtr<Media::VideoRenderer> me = userData.GetNN<Media::VideoRenderer>();
 	if (me->ignoreFrameTime)
 	{
 		frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
@@ -1145,9 +1145,9 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 	}
 }
 
-void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData)
+void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
 {
-	Media::VideoRenderer *me = (Media::VideoRenderer*)userData;
+	NotNullPtr<Media::VideoRenderer> me = userData.GetNN<Media::VideoRenderer>();
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt frameSize;
@@ -2097,7 +2097,7 @@ void Media::VideoRenderer::ClearBuff()
 	}
 }
 
-void Media::VideoRenderer::SetEndNotify(EndNotifier endHdlr, void *userObj)
+void Media::VideoRenderer::SetEndNotify(EndNotifier endHdlr, AnyType userObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = userObj;

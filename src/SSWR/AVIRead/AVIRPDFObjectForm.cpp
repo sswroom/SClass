@@ -10,12 +10,12 @@ typedef enum
 	MNU_SAVE_SELECTED
 } MenuItem;
 
-void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPDFObjectForm *me = (SSWR::AVIRead::AVIRPDFObjectForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
 	me->lvParameter->ClearItems();
-	Media::PDFObject *obj = (Media::PDFObject*)me->lbObject->GetSelectedItem();
-	if (obj)
+	NotNullPtr<Media::PDFObject> obj;
+	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj))
 	{
 		Media::PDFParameter *param = obj->GetParameter();
 		if (param)
@@ -36,11 +36,11 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPDFObjectForm *me = (SSWR::AVIRead::AVIRPDFObjectForm*)userObj;
-	Media::PDFObject *obj = (Media::PDFObject*)me->lbObject->GetSelectedItem();
-	if (obj && obj->IsImage())
+	NotNullPtr<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
+	NotNullPtr<Media::PDFObject> obj;
+	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->IsImage())
 	{
 		NotNullPtr<Media::ImageList> imgList;
 		if (imgList.Set(me->doc->CreateImage(obj->GetId(), me->core->GetParserList())))
@@ -158,7 +158,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 	}
 	case MNU_SAVE_SELECTED:
 	{
-		Media::PDFObject *obj = (Media::PDFObject*)this->lbObject->GetSelectedItem();
+		Media::PDFObject *obj = (Media::PDFObject*)this->lbObject->GetSelectedItem().p;
 		if (obj == 0)
 			break;
 		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PDFObjectSelected", true);

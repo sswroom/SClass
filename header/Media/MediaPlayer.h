@@ -32,12 +32,12 @@ namespace Media
 		UOSInt pbLastChapter;
 
 		PBEndHandler endHdlr;
-		void *endObj;
+		AnyType endObj;
 
 		void PlayTime(Data::Duration time);
-		static void __stdcall OnVideoEnd(void *userObj);
-		static void __stdcall OnAudioEnd(void *userObj);
-		static void __stdcall VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
+		static void __stdcall OnVideoEnd(AnyType userObj);
+		static void __stdcall OnAudioEnd(AnyType userObj);
+		static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
 
 		void ReleaseAudio();
 		Bool SwitchAudioSource(NotNullPtr<Media::IAudioSource> asrc, Int32 syncTime);
@@ -45,7 +45,7 @@ namespace Media
 		MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDevice *audioDev);
 		virtual ~MediaPlayer();
 
-		virtual void SetEndHandler(PBEndHandler hdlr, void *userObj);
+		virtual void SetEndHandler(PBEndHandler hdlr, AnyType userObj);
 		virtual Bool LoadMedia(Media::MediaFile *file);
 		virtual Bool SeekTo(Data::Duration time);
 		virtual Bool SwitchAudio(UOSInt index);

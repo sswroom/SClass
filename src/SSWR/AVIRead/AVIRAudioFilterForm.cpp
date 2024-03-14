@@ -21,9 +21,9 @@ typedef enum
 	MNU_SET_DEVICE = 101
 } MenuEvents;
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->audSrc == 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -226,18 +226,18 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostChg(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostChg(AnyType userObj, Bool newState)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->volBooster)
 	{
 		me->volBooster->SetEnabled(newState);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(void *userObj, UOSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(AnyType userObj, UOSInt scrollPos)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	if (me->volBooster)
@@ -248,18 +248,18 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(void *userObj
 	me->lblVolBoostBGVol->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	Sync::MutexUsage mutUsage(me->dtmfMut);
 	me->dtmfSb.ClearStr();
 	me->dtmfMod = true;
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF1UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF1UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -273,9 +273,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF1UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF2UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF2UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -289,9 +289,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF2UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF3UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF3UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -305,9 +305,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF3UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF4UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF4UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -321,9 +321,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF4UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF5UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF5UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -337,9 +337,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF5UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF6UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF6UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -353,9 +353,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF6UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF7UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF7UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -369,9 +369,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF7UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF8UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF8UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -385,9 +385,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF8UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF9UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF9UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -401,9 +401,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF9UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFStarUpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFStarUpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -417,9 +417,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFStarUpDown(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF0UpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF0UpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -433,9 +433,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMF0UpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFSharpUpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFSharpUpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -449,9 +449,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFSharpUpDown(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFAUpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFAUpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -465,9 +465,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFAUpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFBUpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFBUpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -481,9 +481,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFBUpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFCUpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFCUpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -497,9 +497,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFCUpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFDUpDown(void *userObj, Bool isDown)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFDUpDown(AnyType userObj, Bool isDown)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen)
 	{
 		if (isDown)
@@ -513,9 +513,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFDUpDown(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(void *userObj, UOSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(AnyType userObj, UOSInt scrollPos)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendDouble(OSInt2Double((OSInt)scrollPos - 960) * 0.1);
 	sb.AppendC(UTF8STRC("dB"));
@@ -526,9 +526,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(void *userObj, U
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->dtmfGen == 0)
 	{
 		return;
@@ -575,9 +575,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->audioLevel)
 	{
 		Double v[2];
@@ -801,9 +801,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFToneChange(void *userObj, WChar tone)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFToneChange(AnyType userObj, WChar tone)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (tone == 0)
 	{
 
@@ -817,9 +817,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFToneChange(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->fileMix)
 	{
 		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AudioFilterFileMix", false);
@@ -835,27 +835,27 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->fileMix)
 	{
 		me->fileMix->StartMix();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixStopClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixStopClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->fileMix)
 	{
 		me->fileMix->StopMix();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->audioCapture)
 	{
 		UTF8Char sbuff[512];
@@ -870,27 +870,27 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStartClicked(void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStopClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStopClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->audioCapture)
 	{
 		me->audioCapture->StopCapture();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSoundGenBellClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSoundGenBellClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	if (me->sndGen)
 	{
 		me->sndGen->GenSound(Media::AudioFilter::SoundGen::ISoundGen::ST_BELL, 1.0);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(void *userObj, UOSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(AnyType userObj, UOSInt scrollPos)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendDouble(OSInt2Double((OSInt)scrollPos - 960) * 0.1);
 	sb.AppendC(UTF8STRC("dB"));
@@ -901,9 +901,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	Double startFreq;
 	Double endFreq;
@@ -932,9 +932,9 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *use
 	me->sweepFilter->StartSweep(startFreq, endFreq, timeSeconds);
 }
 
-void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnAmplifierVolChg(void *userObj, UOSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnAmplifierVolChg(AnyType userObj, UOSInt scrollPos)
 {
-	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(scrollPos);
 	sb.AppendC(UTF8STRC("%"));

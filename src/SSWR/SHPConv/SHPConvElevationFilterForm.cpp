@@ -3,9 +3,9 @@
 #include "SSWR/SHPConv/SHPConvElevationFilterForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvElevationFilterForm *me = (SSWR::SHPConv::SHPConvElevationFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvElevationFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvElevationFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 height;
 	me->txtHeight->GetText(sb);
@@ -19,9 +19,9 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(void *user
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvElevationFilterForm *me = (SSWR::SHPConv::SHPConvElevationFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvElevationFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvElevationFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

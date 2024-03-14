@@ -38,10 +38,10 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIROpenFileForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIROpenFileForm::FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
-	if (nFiles > 0)
+	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
+	if (files.GetCount() > 0)
 	{
 		me->txtName->SetText(files[0]->ToCString());
 	}

@@ -773,8 +773,8 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			}
 			if (chart)
 			{
-				SSWR::AVIRead::AVIRChartForm *chartFrm;
-				NEW_CLASS(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, chart));
+				NotNullPtr<SSWR::AVIRead::AVIRChartForm> chartFrm;
+				NEW_CLASSNN(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, chart));
 				this->core->ShowForm(chartFrm);
 			}
 		}

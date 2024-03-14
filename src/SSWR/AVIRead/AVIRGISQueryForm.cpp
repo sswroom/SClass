@@ -6,16 +6,16 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->downPos = scnPos;
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->downPos == scnPos)
 	{
 		Map::GetObjectSess *sess;
@@ -148,9 +148,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->currVec)
 	{
 		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
@@ -175,9 +175,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NotNullPtr<Math::Geometry::Vector2D> vec;
 	if (vec.Set(me->currVec))
 	{
@@ -188,9 +188,9 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	UOSInt index = me->cboObj->GetSelectedIndex();
 	if (index != INVALID_INDEX)
 	{

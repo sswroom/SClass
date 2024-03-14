@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRBYDC9RForm.h"
 #include "SSWR/AVIRead/AVIRSelCANForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBYDC9RForm *me = (SSWR::AVIRead::AVIRBYDC9RForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
 	if (me->listener)
 	{
 		DEL_CLASS(me->listener);
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBYDC9RForm *me = (SSWR::AVIRead::AVIRBYDC9RForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
 	IO::Device::BYDC9R::DeviceStatus currStatus;
 	me->c9r.GetStatus(&currStatus);
 	UTF8Char sbuff[64];

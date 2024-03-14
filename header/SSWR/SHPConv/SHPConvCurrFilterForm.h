@@ -24,9 +24,9 @@ namespace SSWR
 			Media::MonitorMgr *monMgr;
 			Data::ArrayList<MapFilter*> *filters;
 
-			static void __stdcall OnAddClicked(void *userObj);
-			static void __stdcall OnDeleteClicked(void *userObj);
-			static void __stdcall OnOkClicked(void *userObj);
+			static void __stdcall OnAddClicked(AnyType userObj);
+			static void __stdcall OnDeleteClicked(AnyType userObj);
+			static void __stdcall OnOkClicked(AnyType userObj);
 		public:
 			SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SHPConvCurrFilterForm();

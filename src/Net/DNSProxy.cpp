@@ -8,9 +8,9 @@
 
 #define REQTIMEOUT 10000
 
-void __stdcall Net::DNSProxy::ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DNSProxy::ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::DNSProxy *me = (Net::DNSProxy*)userData;
+	NotNullPtr<Net::DNSProxy> me = userData.GetNN<Net::DNSProxy>();
 	CliRequestStatus *req;
 	Sync::MutexUsage mutUsage(me->cliReqMut);
 	req = me->cliReqMap.Get(ReadMUInt16(buff));
@@ -23,9 +23,9 @@ void __stdcall Net::DNSProxy::ClientPacket(NotNullPtr<const Net::SocketUtil::Add
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId)
+void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId)
 {
-	Net::DNSProxy *me = (Net::DNSProxy*)userObj;
+	NotNullPtr<Net::DNSProxy> me = userObj.GetNN<Net::DNSProxy>();
 	RequestResult *req;
 	UInt8 buff[512];
 	UOSInt buffSize;
@@ -323,7 +323,8 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 	i = me->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), reqName, reqType, reqClass, reqAddr, reqPort, reqId, t);
+		Data::CallbackStorage<DNSProxyRequest> cb = me->hdlrList.GetItem(i);
+		cb.func(cb.userObj, reqName, reqType, reqClass, reqAddr, reqPort, reqId, t);
 	}
 	hdlrMutUsage.EndUse();
 }
@@ -980,12 +981,10 @@ Bool Net::DNSProxy::AddBlackList(Text::CStringNN blackList)
 	return true;
 }
 
-void Net::DNSProxy::HandleDNSRequest(DNSProxyRequest hdlr, void *userObj)
+void Net::DNSProxy::HandleDNSRequest(DNSProxyRequest hdlr, AnyType userObj)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	this->hdlrList.Add(hdlr);
-	this->hdlrObjs.Add(userObj);
-	mutUsage.EndUse();
+	this->hdlrList.Add({hdlr, userObj});
 }
 
 void Net::DNSProxy::SetCustomAnswer(Text::CString name, const Net::SocketUtil::AddressInfo *addr)

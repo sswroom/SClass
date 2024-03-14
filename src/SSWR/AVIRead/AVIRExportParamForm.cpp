@@ -4,9 +4,9 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRExportParamForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExportParamForm *me = (SSWR::AVIRead::AVIRExportParamForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -48,9 +48,9 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExportParamForm *me = (SSWR::AVIRead::AVIRExportParamForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

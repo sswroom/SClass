@@ -10,9 +10,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -104,9 +104,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -125,9 +125,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -136,16 +136,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTopicSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTopicSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	me->currTopic = (TopicStatus*)me->lvTopic->GetSelectedItem();
 	me->UpdateTopicChart();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		Text::StringBuilderUTF8 sbTopic;
@@ -162,9 +162,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -183,9 +183,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	NotNullPtr<const Data::ArrayList<TopicStatus*>> topicList;
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
@@ -250,9 +250,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);

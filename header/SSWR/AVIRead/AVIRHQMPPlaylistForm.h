@@ -25,12 +25,12 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::Playlist *playlist;
 		private:
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnAddClicked(void *userObj);
-			static void __stdcall OnAddDirClicked(void *userObj);
-			static void __stdcall OnClearClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnAddClicked(AnyType userObj);
+			static void __stdcall OnAddDirClicked(AnyType userObj);
+			static void __stdcall OnClearClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 			Bool AddFolder(UTF8Char *folderBuff, UTF8Char *folderBuffEnd);
 			void UpdatePlaylist();
 		public:

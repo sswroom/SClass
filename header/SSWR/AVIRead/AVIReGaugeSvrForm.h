@@ -46,10 +46,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpLog;
 
 		private:
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnLogSel(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnLogSel(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnEGaugeData(AnyType userObj, const UInt8 *data, UOSInt dataSize);
 		public:
 			AVIReGaugeSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIReGaugeSvrForm();

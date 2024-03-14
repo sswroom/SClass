@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRFontSelector.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRFontSelector::OnResized(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFontSelector::OnResized(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFontSelector *me = (SSWR::AVIRead::AVIRFontSelector*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFontSelector> me = userObj.GetNN<SSWR::AVIRead::AVIRFontSelector>();
 	me->UpdateFontStyles();
 }
 

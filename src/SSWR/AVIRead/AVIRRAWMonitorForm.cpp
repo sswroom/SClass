@@ -11,9 +11,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	PingIPInfo *pingIPInfo;
@@ -67,9 +67,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	{
 		Sync::MutexUsage mutUsage(me->plogMut);
 		if (me->plogWriter)
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(void *userData, cons
 	me->analyzer->PacketEthernet(rawData, packetSize);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(void *userData, const UInt8 *rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	{
 		Sync::MutexUsage mutUsage(me->plogMut);
 		if (me->plogWriter)
@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(void *userData, con
 	me->analyzer->PacketIPv4(rawData, packetSize, 0, 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	if (me->listener)
 	{
 		DEL_CLASS(me->listener);
@@ -129,15 +129,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
 	me->txtInfo->SetReadOnly(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	if (me->socMon)
 	{
 		DEL_CLASS(me->socMon);
 		me->socMon = 0;
 		me->cboIP->SetEnabled(true);
-		OnPLogClicked(me);
+		OnPLogClicked(me.Ptr());
 		return;
 	}
 
@@ -166,9 +166,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
@@ -212,9 +212,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
 	if (ip)
 	{
@@ -223,10 +223,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	IPTranInfo *ipTran = (IPTranInfo*)me->lbIPTran->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	IPTranInfo *ipTran = (IPTranInfo*)me->lbIPTran->GetSelectedItem().p;
 	if (ipTran)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -244,9 +244,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -255,10 +255,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	me->currPingIP = (PingIPInfo*)me->lbPingIP->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	me->currPingIP = (PingIPInfo*)me->lbPingIP->GetSelectedItem().p;
 	me->pingIPContUpdated = false;
 	if (me->currPingIP)
 	{
@@ -286,10 +286,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Text::String *name = (Text::String*)me->lbDNSReqv4->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Text::String *name = (Text::String*)me->lbDNSReqv4->GetSelectedItem().p;
 	if (name)
 	{
 		UTF8Char sbuff[64];
@@ -328,10 +328,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Text::String *name = (Text::String*)me->lbDNSReqv6->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Text::String *name = (Text::String*)me->lbDNSReqv6->GetSelectedItem().p;
 	if (name)
 	{
 		UTF8Char sbuff[64];
@@ -370,10 +370,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Text::String *name = (Text::String*)me->lbDNSReqOth->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Text::String *name = (Text::String*)me->lbDNSReqOth->GetSelectedItem().p;
 	if (name)
 	{
 		UTF8Char sbuff[64];
@@ -412,10 +412,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Net::EthernetAnalyzer::DNSTargetInfo *target = (Net::EthernetAnalyzer::DNSTargetInfo*)me->lbDNSTarget->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Net::EthernetAnalyzer::DNSTargetInfo *target = (Net::EthernetAnalyzer::DNSTargetInfo*)me->lbDNSTarget->GetSelectedItem().p;
 	me->lbDNSTargetDomain->ClearItems();
 	if (target)
 	{
@@ -450,10 +450,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem().p;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (ans)
@@ -495,10 +495,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Net::EthernetAnalyzer::DNSClientInfo *cli = (Net::EthernetAnalyzer::DNSClientInfo*)me->lbDNSClient->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Net::EthernetAnalyzer::DNSClientInfo *cli = (Net::EthernetAnalyzer::DNSClientInfo*)me->lbDNSClient->GetSelectedItem().p;
 	UOSInt i;
 	UOSInt j;
 	Net::EthernetAnalyzer::DNSCliHourInfo *hourInfo;
@@ -530,10 +530,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Net::EthernetAnalyzer::IPLogInfo *ipLog = (Net::EthernetAnalyzer::IPLogInfo*)me->lbIPLog->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	Net::EthernetAnalyzer::IPLogInfo *ipLog = (Net::EthernetAnalyzer::IPLogInfo*)me->lbIPLog->GetSelectedItem().p;
 	UOSInt i;
 	UOSInt j;
 	me->lbIPLogVal->ClearItems();
@@ -551,9 +551,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->pingIPContUpdated)
@@ -588,7 +588,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	if (me->analyzer->DNSReqv4GetCount() != me->lbDNSReqv4->GetCount())
 	{
 		Data::ArrayList<Text::String *> nameList;
-		Text::String *selName = (Text::String*)me->lbDNSReqv4->GetSelectedItem();
+		Text::String *selName = (Text::String*)me->lbDNSReqv4->GetSelectedItem().p;
 		NotNullPtr<Text::String> s;
 		UOSInt i;
 		UOSInt j;
@@ -612,7 +612,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	if (me->analyzer->DNSReqv6GetCount() != me->lbDNSReqv6->GetCount())
 	{
 		Data::ArrayList<Text::String *> nameList;
-		Text::String *selName = (Text::String*)me->lbDNSReqv6->GetSelectedItem();
+		Text::String *selName = (Text::String*)me->lbDNSReqv6->GetSelectedItem().p;
 		NotNullPtr<Text::String> s;
 		UOSInt i;
 		UOSInt j;
@@ -636,7 +636,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	if (me->analyzer->DNSReqOthGetCount() != me->lbDNSReqOth->GetCount())
 	{
 		Data::ArrayList<Text::String *> nameList;
-		Text::String *selName = (Text::String*)me->lbDNSReqOth->GetSelectedItem();
+		Text::String *selName = (Text::String*)me->lbDNSReqOth->GetSelectedItem().p;
 		NotNullPtr<Text::String> s;
 		UOSInt i;
 		UOSInt j;
@@ -661,7 +661,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> targetList;
 		Net::EthernetAnalyzer::DNSTargetInfo *target;
-		Net::EthernetAnalyzer::DNSTargetInfo *currSel = (Net::EthernetAnalyzer::DNSTargetInfo*)me->lbDNSTarget->GetSelectedItem();
+		Net::EthernetAnalyzer::DNSTargetInfo *currSel = (Net::EthernetAnalyzer::DNSTargetInfo*)me->lbDNSTarget->GetSelectedItem().p;
 		UOSInt i;
 		UOSInt j;
 		me->analyzer->DNSTargetGetList(&targetList);
@@ -684,7 +684,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	{
 		Data::ArrayList<Net::DNSClient::RequestAnswer *> mdnsList;
 		Net::DNSClient::RequestAnswer *ans;
-		Net::DNSClient::RequestAnswer *currSel = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem();
+		Net::DNSClient::RequestAnswer *currSel = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem().p;
 		UOSInt i;
 		UOSInt j;
 		me->analyzer->MDNSGetList(&mdnsList);
@@ -705,7 +705,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	if (me->analyzer->DNSCliGetCount() != me->lbDNSClient->GetCount())
 	{
 		Net::EthernetAnalyzer::DNSClientInfo *cli;
-		Net::EthernetAnalyzer::DNSClientInfo *currSel = (Net::EthernetAnalyzer::DNSClientInfo*)me->lbDNSClient->GetSelectedItem();
+		Net::EthernetAnalyzer::DNSClientInfo *currSel = (Net::EthernetAnalyzer::DNSClientInfo*)me->lbDNSClient->GetSelectedItem().p;
 		Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> cliList;
 		UOSInt i;
 		UOSInt j;
@@ -731,7 +731,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	if (me->analyzer->IPLogGetCount() != me->lbIPLog->GetCount())
 	{
 		Net::EthernetAnalyzer::IPLogInfo *ipLog;
-		Net::EthernetAnalyzer::IPLogInfo *currSel = (Net::EthernetAnalyzer::IPLogInfo*)me->lbIPLog->GetSelectedItem();
+		Net::EthernetAnalyzer::IPLogInfo *currSel = (Net::EthernetAnalyzer::IPLogInfo*)me->lbIPLog->GetSelectedItem().p;
 		Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> ipLogList;
 		UOSInt i;
 		UOSInt j;
@@ -812,7 +812,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 
 		if (listChg)
 		{
-			IPTranInfo *currSel = (IPTranInfo*)me->lbIPTran->GetSelectedItem();
+			IPTranInfo *currSel = (IPTranInfo*)me->lbIPTran->GetSelectedItem().p;
 			me->lbIPTran->ClearItems();
 			i = 0;
 			j = me->ipTranMap.GetCount();
@@ -855,11 +855,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 
 	if (me->socMon || me->dataUpdated)
 	{
-		IPTranInfo *currSel = (IPTranInfo*)me->lbIPTran->GetSelectedItem();
+		NotNullPtr<IPTranInfo> currSel;
 		UOSInt i;
 		UOSInt j;
 		me->dataUpdated = false;
-		if (currSel)
+		if (me->lbIPTran->GetSelectedItem().GetOpt<IPTranInfo>().SetTo(currSel))
 		{
 			if (currSel->recvStatus)
 			{
@@ -1091,9 +1091,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	Net::EthernetAnalyzer::MACStatus *mac = (Net::EthernetAnalyzer::MACStatus *)me->lvDevice->GetSelectedItem();
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;

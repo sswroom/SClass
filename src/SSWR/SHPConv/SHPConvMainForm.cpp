@@ -54,9 +54,9 @@ Text::CStringNN SSWR::SHPConv::SHPConvMainForm::typeName[] = {
 	CSTR(""),
 	CSTR("MultiPatch")};
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(AnyType userObj)
 {
-//	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+//	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 /*
         If Me.txtOutput.Text <> "" Then
             Dim frm As New frmDirectory(Me.txtOutput.Text, Me)
@@ -64,9 +64,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(void *userObj)
         End If*/
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"SHPConv", L"Source", false);
 	ofd->AddFilter(CSTR("*.shp"), CSTR("Shape File"));
 	if (ofd->ShowDialog(me->GetHandle()))
@@ -79,18 +79,18 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(void *userObj)
 	ofd.Delete();
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	sptr = Text::StrOSInt(sbuff, (OSInt)me->lstLang->GetSelectedItem());
+	sptr = Text::StrOSInt(sbuff, (OSInt)me->lstLang->GetSelectedItem().p);
 	me->txtCodePage->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Data::ArrayList<UInt32> indices;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -123,9 +123,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
@@ -149,9 +149,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
 	if (sb.GetLength() <= 0)
@@ -159,7 +159,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(void *userObj)
 		return;
 	}
 	IO::StmData::FileData fd(sb.ToCString(), false);
-	DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem());
+	DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem().p);
 	if (!dbf.IsError())
 	{
 		SSWR::SHPConv::SHPConvCurrFilterForm frm(0, me->ui, &dbf, &me->globalFilters, me->deng);
@@ -167,9 +167,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
 	UOSInt i = sb.LastIndexOf('.');
@@ -178,20 +178,20 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 	IO::StmData::FileData fd(sb.ToCString(), false);
 	if (fd.GetDataSize() > 0)
 	{
-		DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem());
+		DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem().p);
 		if (!dbf.IsError())
 		{
 			sb.ClearStr();
 			me->txtLabel->GetText(sb);
-			SSWR::SHPConv::SHPConvDBFViewForm frm(0, me->ui, &dbf, me, sb.ToCString());
+			SSWR::SHPConv::SHPConvDBFViewForm frm(0, me->ui, &dbf, me.Ptr(), sb.ToCString());
 			frm.ShowDialog(me);
 		}
 	}
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 blkScale;
 	me->txtBlkScale->GetText(sb);
@@ -219,11 +219,11 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	sb.RemoveChars(4);
 	if (me->currGroup == (UOSInt)-1)
 	{
-		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me, dbCols2);
+		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me.Ptr(), dbCols2);
 	}
 	else
 	{
-		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me, me->currGroup, 0, dbCols2);
+		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me.Ptr(), me->currGroup, 0, dbCols2);
 	}
 	srcFile->Release();
 	me->FreeLabelStr(&dbCols, &dbCols2);
@@ -236,9 +236,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->btnSBrowse->SetEnabled(true);
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrInt32(sbuff, me->LoadShape(files[0]->ToCString(), true));
@@ -261,7 +261,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	sb.AppendC(UTF8STRC("dbf"));
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
-		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
 		if (dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			while (r->ReadNext())
@@ -404,7 +404,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			}
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
-			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
 			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 			StrRecord *strRec;
 
@@ -812,7 +812,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			}
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
-			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
 			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 
 			StrRecord *strRec;
@@ -1183,7 +1183,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CStringNN fileName, Bool u
 
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
+		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
 		if (!dbf.IsError())
 		{
 			this->lstRecords->ClearItems();

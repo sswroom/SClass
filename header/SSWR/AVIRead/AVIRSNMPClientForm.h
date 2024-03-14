@@ -37,8 +37,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUIListView> lvResults;
 
-			static void __stdcall OnRequestClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnRequestClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 
 		public:
 			AVIRSNMPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -48,6 +48,6 @@ namespace SSWR
 
 			Bool IsError();
 		};
-	};
-};
+	}
+}
 #endif

@@ -9,9 +9,9 @@
 
 #define NETTIMEOUT 30000
 
-void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	IO::StreamType st = (IO::StreamType)(OSInt)me->cboStreamType->GetSelectedItem();
 	UTF8Char sbuff[256];
 
@@ -231,7 +231,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		break;
 	case IO::StreamType::HID:
 		{
-			IO::DeviceInfo *dev = (IO::DeviceInfo*)me->lbHIDDevice->GetSelectedItem();
+			IO::DeviceInfo *dev = (IO::DeviceInfo*)me->lbHIDDevice->GetSelectedItem().p;
 			if (dev)
 			{
 				me->stm = dev->CreateStream();
@@ -345,15 +345,15 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
@@ -369,9 +369,9 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 	ofd.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	UOSInt i = me->cboStreamType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{

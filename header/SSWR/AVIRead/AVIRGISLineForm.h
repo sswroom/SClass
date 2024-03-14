@@ -38,10 +38,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnThickChanged(void *userObj, UOSInt newPos);
-			static Bool __stdcall OnColorDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnThickChanged(AnyType userObj, UOSInt newPos);
+			static Bool __stdcall OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 			void UpdatePreview();
 		public:
 			AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor);

@@ -57,7 +57,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCSRGenerate;
 			NotNullPtr<UI::GUIButton> btnSelfSignedCert;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnKeyGenerateClicked(void *userObj);
 			static void __stdcall OnKeyViewClicked(void *userObj);
 			static void __stdcall OnKeySaveClicked(void *userObj);

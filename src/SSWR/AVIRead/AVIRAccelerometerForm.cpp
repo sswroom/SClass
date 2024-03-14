@@ -3,9 +3,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAccelerometerForm *me = (SSWR::AVIRead::AVIRAccelerometerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAccelerometerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccelerometerForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Math::Vector3 acc;

@@ -45,9 +45,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnRequestPageClicked(void *userObj);
-			static void __stdcall OnDownloadLinkClicked(void *userObj);
-			static void __stdcall OnVideoNameClicked(void *userObj);
+			static void __stdcall OnRequestPageClicked(AnyType userObj);
+			static void __stdcall OnDownloadLinkClicked(AnyType userObj);
+			static void __stdcall OnVideoNameClicked(AnyType userObj);
 		public:
 			AVIRWebSite48IdolForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSite48IdolForm();

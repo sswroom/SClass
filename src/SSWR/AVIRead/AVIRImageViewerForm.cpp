@@ -21,10 +21,11 @@ typedef enum
 	MNU_IMAGE_INFO
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	UOSInt i;
+	UOSInt fileCnt = files.GetCount();
 	Bool succ;
 	i = 0;
 	while (i < fileCnt)

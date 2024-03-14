@@ -14,9 +14,9 @@ typedef enum
 	MNU_ITEM3
 } MenuItems;
 
-void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
+void __stdcall OnMenuEvent(AnyType userObj, UInt16 cmdId)
 {
-	UI::GUIForm *me = (UI::GUIForm*)userObj;
+	NotNullPtr<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
 	switch (cmdId)
 	{
 	case MNU_EXIT:
@@ -34,10 +34,11 @@ void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
 	}
 }
 
-void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	UI::GUIForm *me = (UI::GUIForm*)userObj;
+	NotNullPtr<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 	Text::StringBuilderUTF8 sb;
 	i = 0;
 	while (i < nFiles)

@@ -18,9 +18,9 @@
 
 #include <stdio.h>
 
-void __stdcall Net::RTPCliChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPCliChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	ChannelData *chData = (ChannelData*)userData;
+	NotNullPtr<ChannelData> chData = userData.GetNN<ChannelData>();
 //	WChar wbuff[32];
 
 	if (dataSize < 12)
@@ -114,9 +114,9 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	ChannelData *chData = (ChannelData*)userData;
+	NotNullPtr<ChannelData> chData = userData.GetNN<ChannelData>();
 	UInt8 tmpBuff[100];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

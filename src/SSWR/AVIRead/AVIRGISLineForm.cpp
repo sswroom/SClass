@@ -6,20 +6,20 @@
 
 #define MNU_SET_DEFAULT 101
 
-void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->lineThick = UOSInt2Double(newPos) * 0.1;
 	sptr = Text::StrDouble(sbuff, me->lineThick);
 	me->lblThickV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -36,15 +36,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(void *userObj, Math::
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -8,9 +8,9 @@
 #include "Text/UTF8Reader.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtExtensions->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 	me->lbExtensions->AddItem(sb.ToCString(), 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	UOSInt i = me->lbExtensions->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -38,15 +38,15 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(voi
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	me->ClearExts(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
 	if (me->extList.GetCount() <= 0)
@@ -99,9 +99,9 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	me->txtCode->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	if (me->resList.GetCount() == 0)
 		return;
 

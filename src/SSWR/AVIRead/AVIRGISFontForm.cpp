@@ -4,9 +4,9 @@
 #include "UtilUI/ColorDialog.h"
 #include "UI/GUIFontDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->fontName, me->fontSizePt, false, false);
 	if (dlg->ShowDialog(me->hwnd))
 	{
@@ -23,9 +23,9 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 	dlg.Delete();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -42,15 +42,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, Mat
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -414,7 +414,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 	SDEL_STRING(this->lastCmd);
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::HandleRecordUpdate(RecordHandler hdlr, AnyType userObj)
 {
 	this->recHdlrObj = userObj;
 	this->recHdlr = hdlr;

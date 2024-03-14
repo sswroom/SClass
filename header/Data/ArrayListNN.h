@@ -3,6 +3,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/ArrayCollection.h"
+#include "Data/DataArray.h"
 #include "Data/ReadingList.h"
 
 namespace Data
@@ -51,6 +52,7 @@ namespace Data
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 		void DeleteAll();
 		void FreeAll(FreeFunc freeFunc);
+		Data::DataArray<NotNullPtr<T>> ToArray() const;
 	};
 
 
@@ -413,6 +415,11 @@ namespace Data
 			freeFunc(this->arr[i]);
 		}
 		this->objCnt = 0;
+	}
+
+	template <class T> Data::DataArray<NotNullPtr<T>> ArrayListNN<T>::ToArray() const
+	{
+		return Data::DataArray<NotNullPtr<T>>(this->arr, this->objCnt);
 	}
 }
 

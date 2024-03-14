@@ -8,12 +8,13 @@
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "Text/StringTool.h"
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	IO::ParsedObject *pobj;
 	while (i < nFiles)
 	{

@@ -15,9 +15,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -169,9 +169,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
@@ -209,9 +209,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
 	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
@@ -242,9 +242,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	if (me->client == 0)
 	{
 		return;
@@ -271,16 +271,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	me->currTopic = (SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*)me->lvRecvTopic->GetSelectedItem();
 	me->UpdateTopicChart();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPingTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPingTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -303,9 +303,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPingTimerTick(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>> topicList;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -387,9 +387,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
-	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);

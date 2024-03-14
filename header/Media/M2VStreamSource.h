@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_M2VSTREAMSOURCE
 #define _SM_MEDIA_M2VSTREAMSOURCE
+#include "Data/CallbackStorage.h"
 #include "IO/Writer.h"
 #include "Media/IMediaStream.h"
 #include "Media/IStreamControl.h"
@@ -28,7 +29,7 @@ namespace Media
 		NotNullPtr<Media::IStreamControl> pbc;
 		FrameCallback frameCb;
 		FrameChangeCallback fcCb;
-		void *frameCbData;
+		AnyType frameCbData;
 		Media::FrameInfo info;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
@@ -61,8 +62,7 @@ namespace Media
 		UInt64 bitRate;
 
 		Bool finfoMode;
-		void *finfoData;
-		FrameInfoCallback finfoCb;
+		Data::CallbackStorage<FrameInfoCallback> finfoCb;
 
 		IO::Stream *debugFS;
 		IO::Writer *debugLog;
@@ -79,7 +79,7 @@ namespace Media
 		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
-		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();
 		virtual Bool IsRunning();
@@ -95,7 +95,7 @@ namespace Media
 		virtual Bool HasFrameCount();
 		virtual UOSInt GetFrameCount();
 		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
 		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
 

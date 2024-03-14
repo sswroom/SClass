@@ -58,8 +58,8 @@ namespace SSWR
 
 			IO::Device::BYDC9R::DeviceStatus dispStatus;
 
-			static void __stdcall OnCANBusClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnCANBusClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRBYDC9RForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBYDC9RForm();

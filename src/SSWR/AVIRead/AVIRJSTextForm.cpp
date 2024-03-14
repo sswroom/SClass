@@ -3,9 +3,9 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRJSTextForm::OnExtractClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJSTextForm::OnExtractClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJSTextForm *me = (SSWR::AVIRead::AVIRJSTextForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJSTextForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJSTextForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::String *s;
 	me->txtJSText->GetText(sb);

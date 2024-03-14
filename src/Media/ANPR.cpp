@@ -16,9 +16,9 @@ struct ParseStatus
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
-void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
-	ParseStatus *status = (ParseStatus*)userObj;
+	NotNullPtr<ParseStatus> status = userObj.GetNN<ParseStatus>();
 	Math::RectArea<UOSInt> area;
 	Math::RectArea<UOSInt>::GetRectArea(&area, rect, 4);
 	UOSInt confidence;
@@ -114,7 +114,7 @@ Media::ANPR::~ANPR()
 
 }
 
-void Media::ANPR::SetResultHandler(NumPlateResult hdlr, void *userObj)
+void Media::ANPR::SetResultHandler(NumPlateResult hdlr, AnyType userObj)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

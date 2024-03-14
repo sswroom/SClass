@@ -7,10 +7,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISEditImageForm *me = (SSWR::AVIRead::AVIRGISEditImageForm*)userObj;
-	me->currImage = (OSInt)me->lbImages->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
+	me->currImage = (OSInt)me->lbImages->GetSelectedItem().p;
 	me->UpdateImgStat();
 	if (me->chkAutoPan->IsChecked())
 	{
@@ -48,9 +48,9 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	this->lyr->EndGetObject(sess);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISEditImageForm *me = (SSWR::AVIRead::AVIRGISEditImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 		return false;
 	if (!me->chkEdit->IsChecked())
@@ -87,9 +87,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(void *userObj, M
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISEditImageForm *me = (SSWR::AVIRead::AVIRGISEditImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 	{
 		return false;
@@ -412,9 +412,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISEditImageForm *me = (SSWR::AVIRead::AVIRGISEditImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 		return false;
 	if (me->downType == 1)

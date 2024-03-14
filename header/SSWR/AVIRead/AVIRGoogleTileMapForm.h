@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::MapDrawLayer *layer;
 
-			static void __stdcall OnOKClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
 			AVIRGoogleTileMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRGoogleTileMapForm();

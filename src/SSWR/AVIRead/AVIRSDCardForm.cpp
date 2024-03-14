@@ -7,11 +7,11 @@
 #include "SSWR/AVIRead/AVIRSDCardForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSDCardForm *me = (SSWR::AVIRead::AVIRSDCardForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSDCardForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSDCardForm>();
 	IO::SDCardInfo *sdCard;
-	sdCard = (IO::SDCardInfo*)me->lbDevices->GetSelectedItem();
+	sdCard = (IO::SDCardInfo*)me->lbDevices->GetSelectedItem().p;
 	if (sdCard == 0)
 	{
 		me->txtName->SetText(CSTR(""));

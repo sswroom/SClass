@@ -98,10 +98,10 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRRNCryptorForm *me = (SSWR::AVIRead::AVIRRNCryptorForm*)userObj;
-	if (nFiles > 0)
+	NotNullPtr<SSWR::AVIRead::AVIRRNCryptorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRNCryptorForm>();
+	if (files.GetCount() > 0)
 	{
 		me->txtSourceFile->SetText(files[0]->ToCString());
 		Text::StringBuilderUTF8 sb;

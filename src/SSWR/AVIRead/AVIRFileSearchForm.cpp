@@ -6,9 +6,9 @@
 
 #define FILEBUFFSIZE 65536
 
-void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileSearchForm *me = (SSWR::AVIRead::AVIRFileSearchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
 	Text::TextBinEnc::ITextBinEnc *enc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncoding->GetSelectedItem();
 	Text::StringBuilderUTF8 sbText;
 	Text::StringBuilderUTF8 sbDir;
@@ -49,10 +49,11 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(void *userObj)
 	me->FindDir(sbuff, sptr, dataBuff, dataSize);
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRFileSearchForm *me = (SSWR::AVIRead::AVIRFileSearchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (IO::Path::GetPathType(files[i]->ToCString()) == IO::Path::PathType::Directory)
@@ -64,14 +65,14 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(void *userObj,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::AVIRead::AVIRFileSearchForm *me = (SSWR::AVIRead::AVIRFileSearchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
 	NotNullPtr<Text::String> filePath;
 	if (!filePath.Set((Text::String*)me->lvFiles->GetItem(itemIndex)))
 		return;
-	UtilUI::TextViewerForm *frm;
-	NEW_CLASS(frm, UtilUI::TextViewerForm(0, me->ui, me->core->GetMonitorMgr(), me->core->GetDrawEngine(), me->core->GetCurrCodePage()));
+	NotNullPtr<UtilUI::TextViewerForm> frm;
+	NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, me->ui, me->core->GetMonitorMgr(), me->core->GetDrawEngine(), me->core->GetCurrCodePage()));
 	me->core->ShowForm(frm);
 	if (frm->LoadFile(filePath))
 	{

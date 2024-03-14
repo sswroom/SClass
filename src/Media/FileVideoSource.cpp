@@ -270,7 +270,7 @@ Bool Media::FileVideoSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, Out
 	return true;
 }
 
-Bool Media::FileVideoSource::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::FileVideoSource::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	if (this->playing)
 	{
@@ -438,7 +438,7 @@ Data::Duration Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
 	return frameTime;
 }
 
-void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	UOSInt frameSize;
 	UOSInt currPart;

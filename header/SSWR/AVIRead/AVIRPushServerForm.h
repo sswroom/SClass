@@ -25,7 +25,7 @@ namespace SSWR
 			Net::PushServer *svr;
 			IO::LogTool log;
 
-			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
 		public:
 			AVIRPushServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPushServerForm();

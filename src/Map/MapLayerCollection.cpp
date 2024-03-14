@@ -3,15 +3,16 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Sync/RWMutexUsage.h"
 
-void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
+void __stdcall Map::MapLayerCollection::InnerUpdated(AnyType userObj)
 {
-	Map::MapLayerCollection *me = (Map::MapLayerCollection*)userObj;
+	NotNullPtr<Map::MapLayerCollection> me = userObj.GetNN<Map::MapLayerCollection>();
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(me->mut, false);
 	i = me->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		me->updHdlrs.GetItem(i)(me->updObjs.GetItem(i));
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = me->updHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -392,24 +393,23 @@ Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSes
 	return vec;
 }
 
-void Map::MapLayerCollection::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::MapLayerCollection::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, true);
-	this->updHdlrs.Add(hdlr);
-	this->updObjs.Add(obj);
+	this->updHdlrs.Add({hdlr, obj});
 }
 
-void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->mut, true);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == obj)
 		{
 			this->updHdlrs.RemoveAt(i);
-			this->updObjs.RemoveAt(i);
 		}
 	}
 }
@@ -457,10 +457,10 @@ UOSInt Map::MapLayerCollection::GetUpdatedHandlerCnt() const
 
 Map::MapDrawLayer::UpdatedHandler Map::MapLayerCollection::GetUpdatedHandler(UOSInt index) const
 {
-	return this->updHdlrs.GetItem(index);
+	return this->updHdlrs.GetItem(index).func;
 }
 
-void *Map::MapLayerCollection::GetUpdatedObject(UOSInt index) const
+AnyType Map::MapLayerCollection::GetUpdatedObject(UOSInt index) const
 {
-	return this->updObjs.GetItem(index);
+	return this->updHdlrs.GetItem(index).userObj;
 }

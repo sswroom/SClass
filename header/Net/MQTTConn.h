@@ -1,7 +1,9 @@
 #ifndef _SM_NET_MQTTCONN
 #define _SM_NET_MQTTCONN
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Data/ByteArray.h"
+#include "Data/CallbackStorage.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
 #include "Net/SSLEngine.h"
 #include "Net/TCPClient.h"
@@ -32,19 +34,17 @@ namespace Net
 			UInt8 content[1];
 		} PacketInfo;
 
-		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, Text::CString topic, const Data::ByteArrayR &buff);
-		typedef void (__stdcall *DisconnectHdlr)(void *userObj);
+		typedef void (__stdcall *PublishMessageHdlr)(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff);
+		typedef void (__stdcall *DisconnectHdlr)(AnyType userObj);
 	private:
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
 		IO::Stream *stm;
-		void *cliData;
+		AnyType cliData;
 		Bool recvRunning;
 		Bool recvStarted;
 
-		Data::ArrayList<PublishMessageHdlr> hdlrList;
-		Data::ArrayList<void *> hdlrObjList;
-		DisconnectHdlr discHdlr;
-		void *discHdlrObj;
+		Data::ArrayList<Data::CallbackStorage<PublishMessageHdlr>> hdlrList;
+		Data::CallbackStorage<DisconnectHdlr> discHdlr;
 
 		Data::ArrayList<PacketInfo *> packetList;
 		Sync::Mutex packetMut;
@@ -53,8 +53,8 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(void *userObj);
 
 		void OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize);
@@ -63,11 +63,11 @@ namespace Net
 
 		void InitStream(NotNullPtr<IO::Stream> stm);
 	public:
-		MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout);
-		MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, void *discHdlrObj);
+		MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout);
+		MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj);
 		virtual ~MQTTConn();
 
-		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);
+		void HandlePublishMessage(PublishMessageHdlr hdlr, AnyType userObj);
 		Bool IsError();
 
 		Bool SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString clientId, Text::CString userName, Text::CString password);

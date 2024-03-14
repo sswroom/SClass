@@ -10,11 +10,12 @@
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	Bool changed = false;
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 	i = 0;
 	while (i < nFiles)
 	{
@@ -31,9 +32,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, No
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j;
@@ -62,9 +63,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	UTF8Char sbuff[512];
 	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
@@ -78,25 +79,25 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(void *userOb
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	me->playlist->ClearFiles();
 	me->UpdatePlaylist();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	if (me->playlist->GetCount() > 0)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	SDEL_CLASS(me->playlist);
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }

@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblErrorName;
 			NotNullPtr<UI::GUITextBox> txtErrorName;
 
-			static void __stdcall OnErrorCodeChanged(void *userObj);
+			static void __stdcall OnErrorCodeChanged(AnyType userObj);
 
 		public:
 			AVIRWindowsErrorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRFontRendererForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFontRendererForm *me = (SSWR::AVIRead::AVIRFontRendererForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFontRendererForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFontRendererForm>();
 	Math::Size2D<UOSInt> sz = me->pbChar->GetSizeP();
-	Optional<Media::StaticImage> newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem(), sz);
+	Optional<Media::StaticImage> newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem().p, sz);
 	me->pbChar->SetImage(newImg, false);
 	me->pbChar->ZoomToFit();
 	me->currImg.Delete();

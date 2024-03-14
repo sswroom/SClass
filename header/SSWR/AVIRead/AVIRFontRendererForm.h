@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<Media::FontRenderer> font;
 			Optional<Media::StaticImage> currImg;
 
-			static void __stdcall OnCharSelChg(void *userObj);
+			static void __stdcall OnCharSelChg(AnyType userObj);
 		public:
 			AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font);
 			virtual ~AVIRFontRendererForm();

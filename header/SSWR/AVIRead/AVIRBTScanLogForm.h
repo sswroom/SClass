@@ -29,10 +29,10 @@ namespace SSWR
 			IO::BTScanLog *btLog;
 			Net::MACInfoList *macList;
 
-			static void __stdcall OnFileClicked(void *userObj);
-			static void __stdcall OnStoreClicked(void *userObj);
-			static void __stdcall OnContentDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnContentSelChg(void *userObj);
+			static void __stdcall OnFileClicked(AnyType userObj);
+			static void __stdcall OnStoreClicked(AnyType userObj);
+			static void __stdcall OnContentDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnContentSelChg(AnyType userObj);
 			Bool LogFileStore();
 			void LogUIUpdate();
 

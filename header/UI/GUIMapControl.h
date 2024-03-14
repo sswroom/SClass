@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUIMAPCONTROL
 #define _SM_UI_GUIMAPCONTROL
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/MapView.h"
 #include "Math/Geometry/Vector2D.h"
@@ -13,10 +15,10 @@ namespace UI
 	class GUIMapControl : public GUICustomDraw, public Media::IColorHandler
 	{
 	public:
-		typedef void (__stdcall *MapUpdatedHandler)(void *userObj, Math::Coord2DDbl center, Double drawTime);
-		typedef void (__stdcall *ScaleChangedHandler)(void *userObj, Double newScale);
-		typedef void (__stdcall *MouseMoveHandler)(void *userObj, Math::Coord2D<OSInt> scnPos);
-		typedef void (__stdcall *DrawHandler)(void *userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
+		typedef void (__stdcall *MapUpdatedHandler)(AnyType userObj, Math::Coord2DDbl center, Double drawTime);
+		typedef void (__stdcall *ScaleChangedHandler)(AnyType userObj, Double newScale);
+		typedef void (__stdcall *MouseMoveHandler)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+		typedef void (__stdcall *DrawHandler)(AnyType userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 	private:
 		Media::DrawImage *bgImg;
 		NotNullPtr<Media::ColorManagerSess> colorSess;
@@ -47,23 +49,17 @@ namespace UI
 		Bool showMarker;
 		Data::ArrayListNN<Math::Geometry::Vector2D> selVecList;
 
-		Data::ArrayList<ScaleChangedHandler> scaleChgHdlrs;
-		Data::ArrayList<void *> scaleChgObjs;
-		Data::ArrayList<MouseMoveHandler> mouseMoveHdlrs;
-		Data::ArrayList<void *> mouseMoveObjs;
-		Data::ArrayList<MapUpdatedHandler> mapUpdHdlrs;
-		Data::ArrayList<void *> mapUpdObjs;
-		MouseEventHandler mouseDownHdlr;
-		void *mouseDownObj;
-		MouseEventHandler mouseUpHdlr;
-		void *mouseUpObj;
-		DrawHandler drawHdlr;
-		void *drawHdlrObj;
+		Data::ArrayList<Data::CallbackStorage<ScaleChangedHandler>> scaleChgHdlrs;
+		Data::ArrayList<Data::CallbackStorage<MouseMoveHandler>> mouseMoveHdlrs;
+		Data::ArrayList<Data::CallbackStorage<MapUpdatedHandler>> mapUpdHdlrs;
+		Data::CallbackStorage<MouseEventHandler> mouseDownHdlr;
+		Data::CallbackStorage<MouseEventHandler> mouseUpHdlr;
+		Data::CallbackStorage<DrawHandler> drawHdlr;
 		Sync::Mutex drawMut;
 		Int64 imgTimeoutTick;
 
 	private:
-		static void __stdcall ImageUpdated(void *userObj);
+		static void __stdcall ImageUpdated(AnyType userObj);
 
 		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
 		virtual Bool OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
@@ -116,12 +112,12 @@ namespace UI
 		void SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 		void SetVAngle(Double angleRad);
 
-		void HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj);
-		void HandleMapUpdated(MapUpdatedHandler hdlr, void *userObj);
-		void HandleMouseMove(MouseMoveHandler hdlr, void *userObj);
-		void HandleMouseUp(MouseEventHandler hdlr, void *userObj);
-		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
-		void HandleCustomDraw(DrawHandler hdlr, void *userObj);
+		void HandleScaleChanged(ScaleChangedHandler hdlr, AnyType userObj);
+		void HandleMapUpdated(MapUpdatedHandler hdlr, AnyType userObj);
+		void HandleMouseMove(MouseMoveHandler hdlr, AnyType userObj);
+		void HandleMouseUp(MouseEventHandler hdlr, AnyType userObj);
+		void HandleMouseDown(MouseEventHandler hdlr, AnyType userObj);
+		void HandleCustomDraw(DrawHandler hdlr, AnyType userObj);
 		void SetMapUpdated();
 		void UpdateMapView(NotNullPtr<Map::MapView> view);
 		NotNullPtr<Map::MapView> CloneMapView();

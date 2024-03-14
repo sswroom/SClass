@@ -1,5 +1,7 @@
 #ifndef _SM_NET_TCPSERVER
 #define _SM_NET_TCPSERVER
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "Data/SyncLinkedList.h"
 #include "IO/LogTool.h"
 #include "Net/SocketFactory.h"
@@ -10,7 +12,7 @@ namespace Net
 	class TCPServer
 	{
 	public:
-		typedef void (__stdcall *TCPServerConn)(Socket *s, void *userObj);
+		typedef void (__stdcall *TCPServerConn)(Socket *s, AnyType userObj);
 		typedef struct
 		{
 			TCPServer *me;
@@ -25,14 +27,13 @@ namespace Net
 	public:
 		UInt16 port;
 		NotNullPtr<IO::LogTool> log;
-		TCPServerConn hdlr;
+		Data::CallbackStorage<TCPServerConn> hdlr;
 		Bool toStop;
 		Bool errorv4;
 		Bool errorv6;
 		Optional<Text::String> logPrefix;
 		Socket *svrSocv4;
 		Socket *svrSocv6;
-		void *userObj;
 		Int32 threadRunning;
 		Data::SyncLinkedList socs;
 		Sync::Event socsEvt;
@@ -46,7 +47,7 @@ namespace Net
 		static UInt32 __stdcall WorkerThread(void *o);
 		void AcceptSocket(Socket *svrSoc);
 	public:
-		TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart);
+		TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart);
 		~TCPServer();
 
 		Bool Start();

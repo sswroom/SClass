@@ -153,7 +153,7 @@ Data::Duration Media::Decoder::VP09Decoder::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Media::Decoder::VP09Decoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::VP09Decoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 

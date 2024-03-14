@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSectorForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSectorForm *me = (SSWR::AVIRead::AVIRSectorForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSectorForm>();
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	NotNullPtr<IO::ParsedObject> pobj;
 	if (pobj.Set(parsers->ParseObject(me->data)))

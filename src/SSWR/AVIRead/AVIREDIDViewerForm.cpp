@@ -94,9 +94,9 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
 	if (me->edid == 0)
 	{
 		return;
@@ -128,9 +128,9 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
 	if (me->edid == 0)
 	{
 		return;
@@ -139,11 +139,12 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(void *userObj)
 	me->core->OpenHex(fd, 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames)
 {
-	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
 	UOSInt fileSize;
 	UOSInt i;
+	UOSInt fileCnt = fileNames.GetCount();
 	Bool found = false;
 	i = 0;
 	while (i < fileCnt)

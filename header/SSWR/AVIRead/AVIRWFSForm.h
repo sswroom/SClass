@@ -29,9 +29,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Map::WebFeatureService *wfs;
 
-			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnFeatureSelChg(void *userObj);
+			static void __stdcall OnLoadClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnFeatureSelChg(AnyType userObj);
 		public:
 			AVIRWFSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWFSForm();

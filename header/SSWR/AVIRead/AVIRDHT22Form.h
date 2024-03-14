@@ -31,8 +31,8 @@ namespace SSWR
 			NotNullPtr<IO::IOPin> pin;
 			IO::Device::DHT22 *dht22;
 
-			static void __stdcall OnReadClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnReadClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void ReadData();
 		public:
 			AVIRDHT22Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin);

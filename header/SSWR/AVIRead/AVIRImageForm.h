@@ -37,9 +37,9 @@ namespace SSWR
 			Media::RasterImage *currImg;
 			UInt32 currImgDelay;
 
-			static void __stdcall ImagesSelChg(void *userObj);
-			static Bool __stdcall OnImageMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnInfoICCClicked(void *userObj);
+			static void __stdcall ImagesSelChg(AnyType userObj);
+			static Bool __stdcall OnImageMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnInfoICCClicked(AnyType userObj);
 			void UpdateInfo();
 		public:
 			AVIRImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList);

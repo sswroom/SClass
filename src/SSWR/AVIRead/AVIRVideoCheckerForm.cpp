@@ -13,11 +13,12 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	UOSInt i = 0;
 	UOSInt j;
+	UOSInt nFiles = files.GetCount();
 	FileQueue *file;
 	while (i < nFiles)
 	{
@@ -35,21 +36,21 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	me->CancelQueues();
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnAllowTimeSkipChange(void *userObj, Bool newVal)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnAllowTimeSkipChange(AnyType userObj, Bool newVal)
 {
-	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	me->checker.SetAllowTimeSkip(newVal);
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	while (me->updateList.GetCount() > 0)
 	{
 		UpdateQueue *update;

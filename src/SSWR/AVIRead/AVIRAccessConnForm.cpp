@@ -4,9 +4,9 @@
 #include "Text/MyString.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AccessConn", false);
@@ -21,9 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
 	Text::StringBuilderUTF8 sbFileName;
 	me->txtFileName->GetText(sbFileName);
 	if (sbFileName.GetCharCnt() == 0)
@@ -46,9 +46,9 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

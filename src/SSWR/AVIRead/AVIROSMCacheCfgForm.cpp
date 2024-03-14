@@ -7,9 +7,9 @@
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheForm.h"
 
-void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROSMCacheCfgForm *me = (SSWR::AVIRead::AVIROSMCacheCfgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROSMCacheCfgForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheCfgForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt16 port;
@@ -93,15 +93,15 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 		return;
 	}
 
-	SSWR::AVIRead::AVIROSMCacheForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIROSMCacheForm(0, me->ui, me->core, listener, hdlr));
+	NotNullPtr<SSWR::AVIRead::AVIROSMCacheForm> frm;
+	NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheForm(0, me->ui, me->core, listener, hdlr));
 	me->core->ShowForm(frm);
 	me->Close();
 }
 
-void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROSMCacheCfgForm *me = (SSWR::AVIRead::AVIROSMCacheCfgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROSMCacheCfgForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheCfgForm>();
 	me->Close();
 }
 

@@ -44,11 +44,11 @@ namespace SSWR
 			NotNullPtr<Map::VectorLayer> lyr;
 			IMapNavigator *navi;
 
-			static void __stdcall OnImageChg(void *userObj);
+			static void __stdcall OnImageChg(AnyType userObj);
 			void UpdateImgStat();
-			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:
 			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::VectorLayer> lyr, IMapNavigator *navi);

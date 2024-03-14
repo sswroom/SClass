@@ -227,7 +227,7 @@ Bool Media::V4LVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, Out
 	return true;
 }
 
-Bool Media::V4LVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::V4LVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	this->cb = cb;
 	this->fcCb = fcCb;

@@ -15,11 +15,12 @@ typedef enum
 	MNU_GOTO = 101,
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	Bool dynamicSize = me->chkDynamicSize->IsChecked();
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->LoadFile(files[i]->ToCString(), dynamicSize))
@@ -30,15 +31,15 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, NotN
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnEndianChg(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnEndianChg(AnyType userObj, Bool newState)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	OnOffsetChg(userObj, me->hexView->GetCurrOfst());
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt64 ofst)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UInt64 ofst)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UInt8 buff[8];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -204,9 +205,9 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->fontName, me->fontHeightPt, me->fontIsBold, false);
 	NotNullPtr<Text::String> fontName;
 	if (dlg->ShowDialog(me->GetHandle()) && dlg->GetFontName().SetTo(fontName))
@@ -217,18 +218,18 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	if (!me->hexView->GoToNextUnkField())
 	{
 		me->ui->ShowMsgOK(CSTR("No unknown field found"), CSTR("Hex Viewer"), me);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOpenFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOpenFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HexViewerOpen", false);
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -238,27 +239,27 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOpenFileClicked(void *userObj
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractBeginClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractBeginClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UTF8Char sbuff[17];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal64V(sbuff, me->hexView->GetCurrOfst());
 	me->txtExtractBegin->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractEndClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractEndClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UTF8Char sbuff[17];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal64V(sbuff, me->hexView->GetCurrOfst());
 	me->txtExtractEnd->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UTF8Char sbuff[17];
 	UInt64 beginOfst;
 	UInt64 endOfst;

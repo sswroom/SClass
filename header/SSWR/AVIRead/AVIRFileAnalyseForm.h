@@ -40,12 +40,12 @@ namespace SSWR
 			IO::FileAnalyse::IFileAnalyse *file;
 			UOSInt lastPackCount;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnFileClicked(void *userObj);
-			static void __stdcall OnTrimPaddingClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPackListChanged(void *userObj);
-			static void __stdcall OnPackItemChanged(void *userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileClicked(AnyType userObj);
+			static void __stdcall OnTrimPaddingClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnPackListChanged(AnyType userObj);
+			static void __stdcall OnPackItemChanged(AnyType userObj);
 			Bool OpenFile(Text::CStringNN fileName);
 		public:
 			AVIRFileAnalyseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -21,7 +21,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnExtractClicked(void *userObj);
+			static void __stdcall OnExtractClicked(AnyType userObj);
 		public:
 			AVIRJSTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJSTextForm();

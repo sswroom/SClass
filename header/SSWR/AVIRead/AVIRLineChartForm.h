@@ -50,11 +50,11 @@ namespace SSWR
 			Optional<Text::String> schemaName;
 			DB::DBUtil::ColType *strTypes;
 
-			static void __stdcall OnPlotClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
-			static void __stdcall OnYAxisClicked(void *userObj);
-			static void __stdcall OnStrColsDblClicked(void *userObj);
-			static void __stdcall OnStrColsInt32Clicked(void *userObj);
+			static void __stdcall OnPlotClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnYAxisClicked(AnyType userObj);
+			static void __stdcall OnStrColsDblClicked(AnyType userObj);
+			static void __stdcall OnStrColsInt32Clicked(AnyType userObj);
 		public:
 			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
 			virtual ~AVIRLineChartForm();

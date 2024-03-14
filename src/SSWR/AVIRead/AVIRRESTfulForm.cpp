@@ -8,9 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	SSWR::AVIRead::AVIRMySQLConnForm frm(0, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -23,9 +23,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	SSWR::AVIRead::AVIRODBCDSNForm frm(0, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	if (me->svr)
 	{
 		return;
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 				me->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
 				NotNullPtr<UI::ListBoxLogger> logger;
-				NEW_CLASSNN(logger, UI::ListBoxLogger(*me, me->lbLog, 500, true));
+				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log.AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
@@ -142,9 +142,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -161,9 +161,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(void *userObj)
 	me->btnDatabaseODBCDSN->SetEnabled(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);

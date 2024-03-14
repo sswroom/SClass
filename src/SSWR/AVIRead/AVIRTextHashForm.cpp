@@ -4,9 +4,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTextHashForm *me = (SSWR::AVIRead::AVIRTextHashForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTextHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTextHashForm>();
 	UInt8 buff[64];
 	Text::StringBuilderUTF8 sb;
 	me->txtText->GetText(sb);

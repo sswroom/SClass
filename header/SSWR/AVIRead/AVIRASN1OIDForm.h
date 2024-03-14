@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpCPP;
 			NotNullPtr<UI::GUITextBox> txtCPP;
 
-			static void __stdcall OnConvertClicked(void *userObj);
+			static void __stdcall OnConvertClicked(AnyType userObj);
 		public:
 			AVIRASN1OIDForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1OIDForm();

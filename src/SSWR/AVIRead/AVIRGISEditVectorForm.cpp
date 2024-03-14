@@ -5,31 +5,31 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-//	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-//	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-//	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISEditVectorForm *me = (SSWR::AVIRead::AVIRGISEditVectorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	UOSInt selInd = me->lbObjects->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
-		Int64 objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd);
+		Int64 objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
 		Math::Geometry::Vector2D *vec = me->lyr->GetNewVectorById(sess, objId);

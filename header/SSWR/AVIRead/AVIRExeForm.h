@@ -59,11 +59,11 @@ namespace SSWR
 
 			void ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStringNN *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partIndex, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize);
 			void InitSess16();
-			static void __stdcall On16BitFuncsChg(void *userObj);
-			static void __stdcall OnImportSelChg(void *userObj);
-			static void __stdcall OnExportDblClk(void *userObj);
-			static void __stdcall OnResourceSelChg(void *userObj);
-			static void __stdcall OnResourceDblClk(void *userObj);
+			static void __stdcall On16BitFuncsChg(AnyType userObj);
+			static void __stdcall OnImportSelChg(AnyType userObj);
+			static void __stdcall OnExportDblClk(AnyType userObj);
+			static void __stdcall OnResourceSelChg(AnyType userObj);
+			static void __stdcall OnResourceDblClk(AnyType userObj);
 		public:
 			AVIRExeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile);
 			virtual ~AVIRExeForm();

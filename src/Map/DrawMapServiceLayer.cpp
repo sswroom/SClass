@@ -46,7 +46,8 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
-							me->updHdlrs.GetItem(i)(me->updObjs.GetItem(i));
+							Data::CallbackStorage<Map::MapRenderer::UpdatedHandler> cb = me->updHdlrs.GetItem(i);
+							cb.func(cb.userObj);
 						}
 					}
 					else
@@ -63,7 +64,8 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
-							me->updHdlrs.GetItem(i)(me->updObjs.GetItem(i));
+							Data::CallbackStorage<Map::MapRenderer::UpdatedHandler> cb = me->updHdlrs.GetItem(i);
+							cb.func(cb.userObj);
 						}
 					}
 				}
@@ -121,7 +123,6 @@ Map::DrawMapServiceLayer::~DrawMapServiceLayer()
 {
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
-	this->updObjs.Clear();
 	mutUsage.EndUse();
 
 	this->threadToStop = true;
@@ -327,24 +328,22 @@ Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Dat
 	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
 
-void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
+void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs.Add(hdlr);
-	this->updObjs.Add(obj);
-	mutUsage.EndUse();
+	this->updHdlrs.Add({hdlr, obj});
 }
 
-void Map::DrawMapServiceLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
+void Map::DrawMapServiceLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
+		Data::CallbackStorage<Map::MapRenderer::UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == obj)
 		{
-			this->updObjs.RemoveAt(i);
 			this->updHdlrs.RemoveAt(i);
 		}
 	}

@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	if (me->svr)
 	{
 		SDEL_CLASS(me->svr);
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 				NEW_CLASS(me->log, IO::LogTool());
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
 				NotNullPtr<UI::ListBoxLogger> logger;
-				NEW_CLASSNN(logger, UI::ListBoxLogger(*me, me->lbLog, 500, true));
+				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 				if (!me->svr->Start())
@@ -67,17 +67,17 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	if (me->reqUpdated)
 	{
 		Sync::MutexUsage mutUsage(me->reqMut);
@@ -86,9 +86,9 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(AnyType userObj, const UInt8 *data, UOSInt dataSize)
 {
-	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	Sync::MutexUsage mutUsage(me->reqMut);
 	if (me->reqLast)
 	{

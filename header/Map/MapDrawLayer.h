@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_MAPDRAWLAYER
 #define _SM_MAP_MAPDRAWLAYER
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListNN.h"
@@ -86,7 +87,7 @@ namespace Map
 			OC_OTHER
 		} ObjectClass;
 
-		typedef void (__stdcall *UpdatedHandler)(void *userObj);
+		typedef void (__stdcall *UpdatedHandler)(AnyType userObj);
 
 		MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NotNullPtr<Math::CoordinateSystem> csys);
 		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NotNullPtr<Math::CoordinateSystem> csys);
@@ -117,8 +118,8 @@ namespace Map
 		virtual GetObjectSess *BeginGetObject() = 0;
 		virtual void EndGetObject(GetObjectSess *session) = 0;
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id) = 0;
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);

@@ -299,7 +299,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 	if (this->finfoMode)
 	{
-		if (!this->finfoCb(frameTime, frameNum, frameSize, frameStruct, frameType, this->finfoData, ycOfst))
+		if (!this->finfoCb.func(frameTime, frameNum, frameSize, frameStruct, frameType, this->finfoCb.userObj, ycOfst))
 		{
 			this->sourceVideo->Stop();
 		}
@@ -461,10 +461,9 @@ Data::Duration Media::Decoder::RAVCDecoder::GetFrameTime(UOSInt frameIndex)
 	}
 	return 0;
 }
-void Media::Decoder::RAVCDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::RAVCDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	this->finfoCb = cb;
-	this->finfoData = userData;
+	this->finfoCb = {cb, userData};
 	if (this->sourceVideo)
 	{
 		this->finfoMode = true;

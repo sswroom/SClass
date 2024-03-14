@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	ProtocolItem *item = (ProtocolItem*)me->lvLogs->GetSelectedItem();
 	if (item && me->currFile)
 	{
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFile->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ProtoDec", false);
@@ -44,9 +44,9 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
 	IO::ProtoDec::IProtocolDecoder *protoDec;
 	me->txtFile->GetText(sb);
@@ -94,9 +94,9 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName)
 {
-	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	ProtocolItem *item;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

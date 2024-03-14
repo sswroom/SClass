@@ -8,9 +8,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SNMPClient::OnSNMPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::SNMPClient::OnSNMPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::SNMPClient *me = (Net::SNMPClient*)userData;
+	NotNullPtr<Net::SNMPClient> me = userData.GetNN<Net::SNMPClient>();
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Int32 reqId;
 	Net::SNMPUtil::ErrorStatus err;

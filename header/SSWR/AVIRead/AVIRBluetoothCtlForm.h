@@ -28,11 +28,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStoreList;
 			NotNullPtr<UI::GUIListView> lvDevices;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnStoreListClicked(void *userObj);
-			static void __stdcall OnDevicesDblClick(void *userObj, UOSInt index);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnStoreListClicked(AnyType userObj);
+			static void __stdcall OnDevicesDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
 			UOSInt UpdateList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex);
 		public:
 			AVIRBluetoothCtlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

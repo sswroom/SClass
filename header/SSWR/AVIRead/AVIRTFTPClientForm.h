@@ -25,8 +25,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSend;
 
 		private:
-			static void __stdcall OnRecvClick(void *userObj);
-			static void __stdcall OnSendClick(void *userObj);
+			static void __stdcall OnRecvClick(AnyType userObj);
+			static void __stdcall OnSendClick(AnyType userObj);
 		public:
 			AVIRTFTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTFTPClientForm();

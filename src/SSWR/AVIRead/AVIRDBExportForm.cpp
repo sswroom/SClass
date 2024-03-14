@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::AVIRead::AVIRDBExportForm *me = (SSWR::AVIRead::AVIRDBExportForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
 	UOSInt currVal = (UOSInt)me->lvTables->GetItem(itemIndex);
 	if (currVal == 0)
 	{
@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(void *userObj, UO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBExportForm *me = (SSWR::AVIRead::AVIRDBExportForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sbSchema;

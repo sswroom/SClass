@@ -2,9 +2,9 @@
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRLDAPExplorerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	if (me->cli)
 	{
 		Net::LDAPClient::SearchResultsFree(me->dispResults);
@@ -122,9 +122,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	me->btnConnect->SetText(CSTR("Disconnect"));
 }
 
-void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	UOSInt i = me->lbPath->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
@@ -231,10 +231,10 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
-	Net::LDAPClient::SearchResObject *obj = (Net::LDAPClient::SearchResObject*)me->lbObjects->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
+	Net::LDAPClient::SearchResObject *obj = (Net::LDAPClient::SearchResObject*)me->lbObjects->GetSelectedItem().p;
 	me->lvValues->ClearItems();
 	if (obj && obj->items)
 	{
@@ -257,9 +257,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i = me->lbObjects->GetSelectedIndex();

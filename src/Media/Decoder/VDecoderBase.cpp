@@ -2,15 +2,15 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderBase.h"
 
-void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Media::Decoder::VDecoderBase *me = (Media::Decoder::VDecoderBase*)userData;
+	NotNullPtr<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->ProcVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
 }
 
-void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData)
+void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
 {
-	Media::Decoder::VDecoderBase *me = (Media::Decoder::VDecoderBase*)userData;
+	NotNullPtr<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->OnFrameChanged(fc);
 	me->fcCb(fc, me->frameCbData);
 }
@@ -44,7 +44,7 @@ UTF8Char *Media::Decoder::VDecoderBase::GetSourceName(UTF8Char *buff)
 	return 0;
 }
 
-Bool Media::Decoder::VDecoderBase::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::Decoder::VDecoderBase::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	if (this->sourceVideo == 0)
 		return false;

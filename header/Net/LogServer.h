@@ -1,5 +1,6 @@
 #ifndef _SM_NET_LOGSERVER
 #define _SM_NET_LOGSERVER
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
@@ -27,7 +28,7 @@ namespace Net
 			IPStatus *status;
 		} ClientStatus;
 
-		typedef void (__stdcall *ClientLogHandler)(void *userObj, UInt32 ip, Text::CString logMessage);
+		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CString logMessage);
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
@@ -39,12 +40,12 @@ namespace Net
 		Sync::Mutex ipMut;
 		Data::FastMap<UInt32, IPStatus*> ipMap;
 		ClientLogHandler logHdlr;
-		void *logHdlrObj;
+		AnyType logHdlrObj;
 
-		static void __stdcall ConnHdlr(Socket *s, void *userObj);
-		static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+		static void __stdcall ConnHdlr(Socket *s, AnyType userObj);
+		static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
 		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
 	public:
@@ -53,10 +54,10 @@ namespace Net
 
 		Bool Start();
 		Bool IsError();
-		void HandleClientLog(ClientLogHandler hdlr, void *userObj);
+		void HandleClientLog(ClientLogHandler hdlr, AnyType userObj);
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

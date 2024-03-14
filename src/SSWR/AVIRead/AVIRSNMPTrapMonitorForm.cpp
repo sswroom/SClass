@@ -6,10 +6,10 @@
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
-	SNMPPacket *packet = (SNMPPacket*)me->lbResults->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
+	SNMPPacket *packet = (SNMPPacket*)me->lbResults->GetSelectedItem().p;
 	me->lvResults->ClearItems();
 	if (packet == 0)
 	{
@@ -78,9 +78,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
 	UOSInt i = me->lbResults->GetCount();
 	UOSInt j = me->packetList.GetCount();
 	SNMPPacket *packet;
@@ -102,9 +102,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *userObj, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
+Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(AnyType userObj, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
 {
-	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
 	SNMPPacket *packet;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

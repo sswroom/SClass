@@ -36,13 +36,13 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::StaticImage *pimg;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
-			static void __stdcall OnPreviewChanged(void *userObj);
-			static void __stdcall OnDPIChanged(void *userObj, UOSInt newVal);
-			static void __stdcall OnStandardClicked(void *userObj);
-			static void __stdcall On1xClicked(void *userObj);
-			static void __stdcall OnLaptopClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnPreviewChanged(AnyType userObj);
+			static void __stdcall OnDPIChanged(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnStandardClicked(AnyType userObj);
+			static void __stdcall On1xClicked(AnyType userObj);
+			static void __stdcall OnLaptopClicked(AnyType userObj);
 			void UpdatePreview();
 		public:
 			AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

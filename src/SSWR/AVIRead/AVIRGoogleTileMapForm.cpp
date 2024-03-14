@@ -2,9 +2,9 @@
 #include "Map/BaseMapLayer.h"
 #include "SSWR/AVIRead/AVIRGoogleTileMapForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGoogleTileMapForm *me = (SSWR::AVIRead::AVIRGoogleTileMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGoogleTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGoogleTileMapForm>();
 	switch (me->cboMapType->GetSelectedIndex())
 	{
 	case 0:

@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnRequestPageClicked(void *userObj);
+			static void __stdcall OnRequestPageClicked(AnyType userObj);
 		public:
 			AVIRWebSite7gogoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSite7gogoForm();

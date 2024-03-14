@@ -2,6 +2,7 @@
 #define _SM_MAP_GPSTRACK
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListString.h"
+#include "Data/CallbackStorage.h"
 #include "Data/TimeInstant.h"
 #include "IO/ParsedObject.h"
 #include "Map/MapDrawLayer.h"
@@ -76,8 +77,7 @@ namespace Map
 		GPSExtraParser *extraParser;
 
 		Sync::Mutex updMut;
-		Data::ArrayList<Map::MapDrawLayer::UpdatedHandler> updHdlrs;
-		Data::ArrayList<void *> updObjs;
+		Data::ArrayList<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
 
 	public:
 		GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName);
@@ -101,8 +101,8 @@ namespace Map
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names); // no need to release
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);

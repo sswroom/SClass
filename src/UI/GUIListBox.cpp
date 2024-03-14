@@ -19,7 +19,8 @@ void UI::GUIListBox::EventSelectionChange()
 	UOSInt i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->selChgHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -28,7 +29,8 @@ void UI::GUIListBox::EventDoubleClick()
 	UOSInt i = this->dblClickHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClickHdlrs.GetItem(i)(this->dblClickObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->dblClickHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -37,24 +39,22 @@ void UI::GUIListBox::EventRightClick(Math::Coord2D<OSInt> pos)
 	UOSInt i = this->rightClickHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), pos, UI::GUIControl::MBTN_RIGHT);
+		Data::CallbackStorage<MouseEventHandler> cb = this->rightClickHdlrs.GetItem(i);
+		cb.func(cb.userObj, pos, UI::GUIControl::MBTN_RIGHT);
 	}
 }
 
-void UI::GUIListBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
+void UI::GUIListBox::HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->selChgHdlrs.Add(hdlr);
-	this->selChgObjs.Add(userObj);
+	this->selChgHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIListBox::HandleDoubleClicked(UI::UIEvent hdlr, void *userObj)
+void UI::GUIListBox::HandleDoubleClicked(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->dblClickHdlrs.Add(hdlr);
-	this->dblClickObjs.Add(userObj);
+	this->dblClickHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIListBox::HandleRightClicked(UI::GUIControl::MouseEventHandler hdlr, void *userObj)
+void UI::GUIListBox::HandleRightClicked(UI::GUIControl::MouseEventHandler hdlr, AnyType userObj)
 {
-	this->rightClickHdlrs.Add(hdlr);
-	this->rightClickObjs.Add(userObj);
+	this->rightClickHdlrs.Add({hdlr, userObj});
 }

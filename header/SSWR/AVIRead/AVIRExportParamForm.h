@@ -23,8 +23,8 @@ namespace SSWR
 			UOSInt ctrlsCnt;
 
 		private:
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			AVIRExportParamForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::FileExporter *exporter, void *param);
 			virtual ~AVIRExportParamForm();

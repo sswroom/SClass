@@ -269,7 +269,7 @@ UInt32 __stdcall Net::TCPServer::WorkerThread(void *o)
 			str = Text::StrConcatC(buff, UTF8STRC("Client connected: "));
 			str = svr->socf->GetRemoteName(str, s);
 			svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Action);
-			svr->hdlr(s, svr->userObj);
+			svr->hdlr.func(s, svr->hdlr.userObj);
 		}
 		svr->socsEvt.Wait(100);
 	}
@@ -310,7 +310,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }
-Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart)
+Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart)
 {
 	Net::SocketUtil::AddressInfo addrTmp;
 	NotNullPtr<Net::SocketUtil::AddressInfo> addr;
@@ -325,8 +325,7 @@ Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUt
 	this->svrSocv4 = 0;
 	this->svrSocv6 = 0;
 	this->logPrefix = Text::String::NewOrNull(logPrefix);
-	this->hdlr = hdlr;
-	this->userObj = userObj;
+	this->hdlr = {hdlr, userObj};
 	this->threadRunning = 0;
 
 	UInt32 bindIP = 0;

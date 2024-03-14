@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUICUSTOMDRAWVSCROLL
 #define _SM_UI_GUICUSTOMDRAWVSCROLL
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "Media/DrawEngine.h"
 #include "UI/GUIClientControl.h"
 
@@ -18,10 +20,8 @@ namespace UI
 		} KeyButton;
 	private:
 		static Int32 useCnt;
-		Data::ArrayList<UI::UIEvent> selChgHdlrs;
-		Data::ArrayList<void *> selChgObjs;
-		Data::ArrayList<UI::UIEvent> dblClkHdlrs;
-		Data::ArrayList<void *> dblClkObjs;
+		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
+		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> dblClkHdlrs;
 
 	private:
 		static OSInt __stdcall CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
@@ -44,8 +44,8 @@ namespace UI
 		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 		virtual void OnKeyDown(UInt32 keyCode);
 
-		void HandleSelChg(UI::UIEvent hdlr, void *userObj);
-		void HandleDblClk(UI::UIEvent hdlr, void *userObj);
+		void HandleSelChg(UI::UIEvent hdlr, AnyType userObj);
+		void HandleDblClk(UI::UIEvent hdlr, AnyType userObj);
 		void EventSelChg();
 		void EventDblClk();
 		void SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize);

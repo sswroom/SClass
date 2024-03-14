@@ -213,9 +213,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->statusChg)
@@ -381,15 +381,15 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	me->OpenItem(index);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	Sync::MutexUsage mutUsage(me->fileMut);
 	if (me->fileAction.GetItem(index) == AT_COPYFAIL)
 	{
@@ -403,15 +403,16 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, U
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UOSInt index)
 {
-	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	me->mnuPopup->ShowMenu(me->lvFiles, Math::Coord2D<OSInt>(Double2OSInt(coord.x), Double2OSInt(coord.y)));
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	UOSInt nFiles = files.GetCount();
 	Data::ArrayListStringNN fileNames(nFiles);
 	UOSInt i = 0;
 	while (i < nFiles)
@@ -1097,8 +1098,8 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						SSWR::AVIRead::AVIRHexViewerForm *frm;
-						NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
+						NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> frm;
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
 						frm->SetData(fd, IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd));
 						fd.Delete();
 						this->core->ShowForm(frm);
@@ -1147,8 +1148,8 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 							fd.Delete();
 							return;
 						}
-						UtilUI::TextViewerForm *frm;
-						NEW_CLASS(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), 0));
+						NotNullPtr<UtilUI::TextViewerForm> frm;
+						NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), 0));
 						frm->LoadStreamData(fd);
 						fd.Delete();
 						this->core->ShowForm(frm);

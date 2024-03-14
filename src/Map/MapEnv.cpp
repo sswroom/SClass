@@ -55,7 +55,7 @@ UOSInt Map::MapEnv::GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLay
 	return retCnt;
 }
 
-void Map::MapEnv::AddGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj)
+void Map::MapEnv::AddGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Data::ArrayList<Map::MapEnv::MapItem *> *objs;
 	Map::MapEnv::MapItem *item;
@@ -85,7 +85,7 @@ void Map::MapEnv::AddGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::Map
 	
 }
 
-void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj)
+void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Data::ArrayList<Map::MapEnv::MapItem *> *objs;
 	Map::MapEnv::MapItem *item;
@@ -1241,13 +1241,13 @@ UOSInt Map::MapEnv::GetLayersOfType(NotNullPtr<Data::ArrayListNN<Map::MapDrawLay
 	return this->GetLayersInList(layers, &this->mapLayers, lyrType);
 }
 
-void Map::MapEnv::AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj)
+void Map::MapEnv::AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->AddGroupUpdatedHandler(0, hdlr, obj);
 }
 
-void Map::MapEnv::RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, void *obj)
+void Map::MapEnv::RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->RemoveGroupUpdatedHandler(0, hdlr, obj);

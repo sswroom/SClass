@@ -6,9 +6,9 @@
 #include "IO/ZIPMTBuilder.h"
 #include "SSWR/AVIRead/AVIRLogBackupForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogBackupForm *me = (SSWR::AVIRead::AVIRLogBackupForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogBackupForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogBackupForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[64];
 	UOSInt logNameSize;

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ARPHANDLER
 #define _SM_NET_ARPHANDLER
+#include "AnyType.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 
@@ -8,7 +9,7 @@ namespace Net
 	class ARPHandler
 	{
 	public:
-		typedef void (__stdcall *ARPResponseHdlr)(const UInt8 *hwAddr, UInt32 ipv4, void *userData);
+		typedef void (__stdcall *ARPResponseHdlr)(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData);
 
 		typedef struct
 		{
@@ -25,7 +26,7 @@ namespace Net
 		UInt32 ipAddr;
 		Socket *soc;
 		ARPResponseHdlr hdlr;
-		void *userData;
+		AnyType userData;
 
 		ThreadStat *threadStats;
 		UOSInt threadCnt;
@@ -36,7 +37,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(void *obj);
 
 	public:
-		ARPHandler(NotNullPtr<Net::SocketFactory> sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, void *userData, UOSInt workerCnt);
+		ARPHandler(NotNullPtr<Net::SocketFactory> sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt workerCnt);
 		~ARPHandler();
 
 		Bool IsError();

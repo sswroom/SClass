@@ -8,10 +8,11 @@
 
 #define PER_PAGE 10000
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 	i = 0;
 	while (i < nFiles)
 	{
@@ -21,9 +22,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, Not
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTool", false);
 	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -33,9 +34,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
 	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
@@ -54,9 +55,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->file)
@@ -114,9 +115,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -139,9 +140,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = (UOSInt)me->lbPackItems->GetSelectedIndex();
 	if (i == (UOSInt)-1)
@@ -149,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 		me->txtPack->SetText(CSTR(""));
 		return;
 	}
-	i = (UOSInt)me->lbPackItems->GetItem(i);
+	i = (UOSInt)me->lbPackItems->GetItem(i).p;
 	sb.ClearStr();
 	me->file->GetFrameDetail(i, sb);
 	me->txtPack->SetText(sb.ToCString());

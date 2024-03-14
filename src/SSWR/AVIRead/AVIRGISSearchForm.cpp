@@ -4,10 +4,10 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
-	SSWR::AVIRead::AVIRGISSearchForm *me = (SSWR::AVIRead::AVIRGISSearchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
 	me->txtSearchStr->GetText(sbuff);
 
 	me->layer->ReleaseSearchStr(me->dispList);
@@ -16,9 +16,9 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(void *userObj)
 	me->UpdateResults();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISSearchForm *me = (SSWR::AVIRead::AVIRGISSearchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
 	NotNullPtr<Text::String> s;
 	UOSInt i = me->lbResults->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->lbResults->GetItemTextNew(i).SetTo(s))

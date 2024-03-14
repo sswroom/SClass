@@ -2,9 +2,9 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHKOLocalForecastForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRHKOLocalForecastForm::OnReloadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHKOLocalForecastForm::OnReloadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHKOLocalForecastForm *me = (SSWR::AVIRead::AVIRHKOLocalForecastForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHKOLocalForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOLocalForecastForm>();
 	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)(OSInt)me->cboLang->GetSelectedItem();
 	me->Reload(lang);
 }

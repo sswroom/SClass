@@ -60,7 +60,7 @@ namespace SSWR
 			Media::ProfiledResizer *resizer;
 
 			static void __stdcall OnChgClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnClickedDelProfile(void *userObj);
 			static void __stdcall OnClickedAddProfile(void *userObj);
 			void ChangeProfile();

@@ -46,10 +46,10 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 							if (me->portList[i] == 0)
 							{
 								me->portList[i] = 2;
-								if (me->hdlr)
+								if (me->hdlr.func)
 								{
 									mutUsage.EndUse();
-									me->hdlr(me->hdlrObj, (UInt16)i);
+									me->hdlr.func(me->hdlr.userObj, (UInt16)i);
 									mutUsage.BeginUse();
 								}
 							}
@@ -73,14 +73,13 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	return 0;
 }
 
-Net::TCPPortScanner::TCPPortScanner(NotNullPtr<Net::SocketFactory> sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, void *userObj)
+Net::TCPPortScanner::TCPPortScanner(NotNullPtr<Net::SocketFactory> sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj)
 {
 	this->sockf = sockf;
 	this->portList = MemAlloc(UInt8, 65536);
 	MemClear(this->portList, 65536);
 	this->addr.addrType = Net::AddrType::Unknown;
-	this->hdlr = hdlr;
-	this->hdlrObj = userObj;
+	this->hdlr = {hdlr, userObj};
 	this->threadCnt = 0;
 	this->threadToStop = false;
 	UOSInt i = threadCnt;

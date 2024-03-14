@@ -540,7 +540,8 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrList.GetItem(i)(this->hdlrObjList.GetItem(i), ofst);
+		Data::CallbackStorage<OffsetChgHandler> cb = this->hdlrList.GetItem(i);
+		cb.func(cb.userObj, ofst);
 	}
 }
 
@@ -571,10 +572,9 @@ UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, Data::ByteArray
 	}
 }
 
-void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)
+void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, AnyType hdlrObj)
 {
-	this->hdlrObjList.Add(hdlrObj);
-	this->hdlrList.Add(hdlr);
+	this->hdlrList.Add({hdlr, hdlrObj});
 }
 
 Text::CString UI::GUIHexFileView::GetAnalyzerName()

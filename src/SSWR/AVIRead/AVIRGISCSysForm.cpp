@@ -4,9 +4,9 @@
 #include "Math/ProjectedCoordinateSystem.h"
 #include "SSWR/AVIRead/AVIRGISCSysForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCSysForm *me = (SSWR::AVIRead::AVIRGISCSysForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	if (me->radGeo->IsSelected())
 	{
 		UOSInt i = me->cboGeo->GetSelectedIndex();
@@ -31,21 +31,21 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 		}
 	}
 }
-void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCSysForm *me = (SSWR::AVIRead::AVIRGISCSysForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnGeoSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnGeoSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCSysForm *me = (SSWR::AVIRead::AVIRGISCSysForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	me->radGeo->Select();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCSysForm *me = (SSWR::AVIRead::AVIRGISCSysForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	me->radProj->Select();
 }
 

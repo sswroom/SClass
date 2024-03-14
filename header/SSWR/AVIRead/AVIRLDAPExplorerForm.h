@@ -43,10 +43,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspObjects;
 			NotNullPtr<UI::GUIListView> lvValues;
 		
-			static void __stdcall OnConnectClicked(void *userObj);
-			static void __stdcall OnPathSelChg(void *userObj);
-			static void __stdcall OnObjectsSelChg(void *userObj);
-			static void __stdcall OnObjectsDblClk(void *userObj);
+			static void __stdcall OnConnectClicked(AnyType userObj);
+			static void __stdcall OnPathSelChg(AnyType userObj);
+			static void __stdcall OnObjectsSelChg(AnyType userObj);
+			static void __stdcall OnObjectsDblClk(AnyType userObj);
 
 		public:
 			AVIRLDAPExplorerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

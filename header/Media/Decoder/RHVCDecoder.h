@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_RHVCDECODER
 #define _SM_MEDIA_DECODER_RHVCDECODER
+#include "Data/CallbackStorage.h"
 #include "Media/H264Parser.h"
 #include "Media/Decoder/VDecoderBase.h"
 #include "Sync/Mutex.h"
@@ -28,8 +29,7 @@ namespace Media
 			Bool discontTime;
 
 			Bool finfoMode;
-			void *finfoData;
-			Media::IVideoSource::FrameInfoCallback finfoCb;
+			Data::CallbackStorage<Media::IVideoSource::FrameInfoCallback> finfoCb;
 
 			static UOSInt CalcNALSize(const UInt8 *buff, UOSInt buffSize);
 			static UInt8 *AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UOSInt srcBuffSize);
@@ -43,7 +43,7 @@ namespace Media
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
 			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
 

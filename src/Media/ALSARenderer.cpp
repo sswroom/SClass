@@ -822,7 +822,7 @@ Bool Media::ALSARenderer::IsPlaying()
 	return this->thread.IsRunning();
 }
 
-void Media::ALSARenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::ALSARenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

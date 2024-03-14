@@ -39,7 +39,7 @@ void Media::Decoder::VDecoderChain::AddDecoder(NotNullPtr<Media::IVideoSource> d
 	this->srcFilters.Add(decoder.Ptr());
 }
 
-Bool Media::Decoder::VDecoderChain::CaptureImage(ImageCallback imgCb, void *userData)
+Bool Media::Decoder::VDecoderChain::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
 	return this->sourceVideo->CaptureImage(imgCb, userData);
 }
@@ -59,7 +59,7 @@ Data::Duration Media::Decoder::VDecoderChain::GetFrameTime(UOSInt frameIndex)
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
 
-void Media::Decoder::VDecoderChain::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::VDecoderChain::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	this->sourceVideo->EnumFrameInfos(cb, userData);
 }

@@ -10,9 +10,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetData, UOSInt packetSize)
+void __stdcall Net::RAWCapture::DataHandler(AnyType userData, const UInt8 *packetData, UOSInt packetSize)
 {
-	Net::RAWCapture *me = (Net::RAWCapture*)userData;
+	NotNullPtr<Net::RAWCapture> me = userData.GetNN<Net::RAWCapture>();
 	{
 		Sync::MutexUsage mutUsage(me->mut);
 		me->packetCnt++;

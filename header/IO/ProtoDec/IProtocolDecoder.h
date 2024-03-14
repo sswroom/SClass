@@ -1,5 +1,6 @@
 #ifndef _SM_IO_PROTODEC_IPROTOCOLDECODER
 #define _SM_IO_PROTODEC_IPROTOCOLDECODER
+#include "AnyType.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -10,12 +11,12 @@ namespace IO
 		class IProtocolDecoder
 		{
 		public:
-			typedef void (__stdcall *ProtocolInfo)(void *userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
+			typedef void (__stdcall *ProtocolInfo)(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
 		public:
 			virtual ~IProtocolDecoder(){};
 
 			virtual Text::CStringNN GetName() const = 0;
-			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize) = 0;
+			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize) = 0;
 			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize) = 0;
 		};

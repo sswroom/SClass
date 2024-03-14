@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUIHSCROLLBAR
 #define _SM_UI_GUIHSCROLLBAR
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "UI/GUIControl.h"
 
 namespace UI
@@ -7,12 +9,11 @@ namespace UI
 	class GUIHScrollBar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *PosChgEvent)(void *userObj, UOSInt newPos);
+		typedef void (__stdcall *PosChgEvent)(AnyType userObj, UOSInt newPos);
 
 	private:
-		Data::ArrayList<PosChgEvent> posChgHdlrs;
-		Data::ArrayList<void *> posChgObjs;
-
+		Data::ArrayList<Data::CallbackStorage<PosChgEvent>> posChgHdlrs;
+	
 	public:
 		GUIHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIHScrollBar();
@@ -27,7 +28,7 @@ namespace UI
 		
 		virtual Text::CStringNN GetObjectClass() const;
 		void EventPosChanged(UOSInt newPos);
-		void HandlePosChanged(PosChgEvent hdlr, void *userObj);
+		void HandlePosChanged(PosChgEvent hdlr, AnyType userObj);
 	};
 }
 #endif

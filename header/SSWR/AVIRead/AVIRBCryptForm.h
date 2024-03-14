@@ -34,8 +34,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCheckResult;
 			NotNullPtr<UI::GUITextBox> txtCheckResult;
 
-			static void __stdcall OnGenHashClicked(void *userObj);
-			static void __stdcall OnCheckClicked(void *userObj);
+			static void __stdcall OnGenHashClicked(AnyType userObj);
+			static void __stdcall OnCheckClicked(AnyType userObj);
 		public:
 			AVIRBCryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBCryptForm();

@@ -50,8 +50,8 @@ namespace SSWR
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 			NotNullPtr<Net::SocketFactory> sockf;
 
-			static void __stdcall OnRequestClicked(void *userObj);
-			static void __stdcall OnAnswerSelChg(void *userObj);
+			static void __stdcall OnRequestClicked(AnyType userObj);
+			static void __stdcall OnAnswerSelChg(AnyType userObj);
 		public:
 			AVIRDNSClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDNSClientForm();

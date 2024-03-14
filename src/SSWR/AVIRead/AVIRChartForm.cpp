@@ -7,9 +7,9 @@ typedef enum
 	MNU_LOG_SAVE = 101
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRChartForm *me = (SSWR::AVIRead::AVIRChartForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChartForm>();
 	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
 	if (sz.x == 0 || sz.y == 0)
 		return;

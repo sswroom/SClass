@@ -21,17 +21,17 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRCore *me = (SSWR::AVIRead::AVIRCore *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCore> me = userObj.GetNN<SSWR::AVIRead::AVIRCore>();
 	me->frms.RemoveAt(me->frms.IndexOf(frm));
-	if (me->gisForm == frm)
+	if (me->gisForm == frm.Ptr())
 	{
 		me->gisForm = 0;
 	}
 }
 
-void SSWR::AVIRead::AVIRCore::InitForm(UI::GUIForm *frm)
+void SSWR::AVIRead::AVIRCore::InitForm(NotNullPtr<UI::GUIForm> frm)
 {
 	frm->HandleFormClosed(FormClosed, this);
 	this->frms.Add(frm);
@@ -120,8 +120,8 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 
 void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, *this, modemPort));
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> frm;
+	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, *this, modemPort));
 	InitForm(frm);
 	frm->Show();
 }
@@ -147,8 +147,8 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 
 void SSWR::AVIRead::AVIRCore::OpenHex(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
-	SSWR::AVIRead::AVIRHexViewerForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> frm;
+	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
 	InitForm(frm);
 	frm->SetData(fd, fileAnalyse);
 	frm->Show();
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	this->batchLoad = false;
 	if (this->batchLyrs)
 	{
-		AVIRead::AVIRGISForm *gisForm;
+		NotNullPtr<AVIRead::AVIRGISForm> gisForm;
 		NotNullPtr<Map::MapEnv> env;
 		NotNullPtr<Map::MapView> view;
 		NotNullPtr<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		{
 			view = env->CreateMapView(Math::Size2DDbl(320, 240));
 		}
-		NEW_CLASS(gisForm, AVIRead::AVIRGISForm(0, this->ui, *this, env, view));
+		NEW_CLASSNN(gisForm, AVIRead::AVIRGISForm(0, this->ui, *this, env, view));
 		gisForm->AddLayers(this->batchLyrs);
 		DEL_CLASS(this->batchLyrs);
 		this->batchLyrs = 0;
@@ -532,7 +532,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, N
 	return true;
 }
 
-void SSWR::AVIRead::AVIRCore::ShowForm(UI::GUIForm *frm)
+void SSWR::AVIRead::AVIRCore::ShowForm(NotNullPtr<UI::GUIForm> frm)
 {
 	frm->Show();
 	this->InitForm(frm);
@@ -540,10 +540,14 @@ void SSWR::AVIRead::AVIRCore::ShowForm(UI::GUIForm *frm)
 
 void SSWR::AVIRead::AVIRCore::CloseAllForm()
 {
+	NotNullPtr<UI::GUIForm> frm;
 	UOSInt i = this->frms.GetCount();
 	while (i-- > 0)
 	{
-		this->frms.GetItem(i)->Close();
+		if (this->frms.GetItem(i).SetTo(frm))
+		{
+			frm->Close();
+		}
 	}
 }
 

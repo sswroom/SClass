@@ -43,10 +43,10 @@ namespace SSWR
 			IO::ProtoDec::ProtoDecList *decList;
 			Data::ArrayList<ProtocolItem*> *itemList;
 
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnFileClicked(void *userObj);
-			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnFileClicked(AnyType userObj);
+			static void __stdcall OnLoadClicked(AnyType userObj);
+			static void __stdcall OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
 			void ClearList();
 		public:
 			AVIRProtoDecForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

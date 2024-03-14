@@ -4,9 +4,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSClientForm *me = (SSWR::AVIRead::AVIRDNSClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
 	Net::SocketUtil::AddressInfo dnsAddr;
 	UInt32 reqIP;
 	Text::StringBuilderUTF8 sb;
@@ -79,10 +79,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	DEL_CLASS(dnsCli);
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDNSClientForm *me = (SSWR::AVIRead::AVIRDNSClientForm*)userObj;
-	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbAnswer->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
+	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbAnswer->GetSelectedItem().p;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::CString cstr;

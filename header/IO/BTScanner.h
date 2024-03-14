@@ -1,5 +1,6 @@
 #ifndef _SM_IO_BTSCANNER
 #define _SM_IO_BTSCANNER
+#include "AnyType.h"
 #include "IO/BTScanLog.h"
 #include "Sync/MutexUsage.h"
 
@@ -25,11 +26,11 @@ namespace IO
 			SM_PASSIVE
 		} ScanMode;
 		
-		typedef void (__stdcall *RecordHandler)(IO::BTScanLog::ScanRecord3 *rec, UpdateType updateType, void *userObj);
+		typedef void (__stdcall *RecordHandler)(IO::BTScanLog::ScanRecord3 *rec, UpdateType updateType, AnyType userObj);
 	public:
 		virtual ~BTScanner() {};
 
-		virtual void HandleRecordUpdate(RecordHandler hdlr, void *userObj) = 0;
+		virtual void HandleRecordUpdate(RecordHandler hdlr, AnyType userObj) = 0;
 		
 		virtual Bool IsScanOn() = 0;
 		virtual void ScanOn() = 0;

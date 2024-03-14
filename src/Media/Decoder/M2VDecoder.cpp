@@ -167,7 +167,7 @@ Data::Duration Media::Decoder::M2VDecoder::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Media::Decoder::M2VDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::M2VDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 /*	this->finfoCb = cb;
 	this->finfoData = userData;

@@ -58,7 +58,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	i = files.GetCount();
 	if (i > 0)
 	{
-		me->OnFileDrop(files.Ptr(), i);
+		me->OnFileDrop(files.ToArray());
 		while (i-- > 0)
 		{
 			OPTSTR_DEL(files.GetItem(i));
@@ -116,7 +116,6 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	this->okBtn = 0;
 	this->cancelBtn = 0;
 	this->closingHdlr = 0;
-	this->closingHdlrObj = 0;
 	this->menu = 0;
 	this->hAcc = 0;
 
@@ -233,11 +232,12 @@ void UI::GUIForm::SetFormState(FormState fs)
 	}
 }
 
-UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
+UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 {
-	if (owner)
+	NotNullPtr<UI::GUIForm> frm;
+	if (owner.SetTo(frm))
 	{
-		owner->SetEnabled(false);
+		frm->SetEnabled(false);
 	}
 	this->isDialog = true;
 	this->Show();
@@ -246,10 +246,10 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
 		gtk_main_iteration();
 	}
 	this->hwnd = 0;
-	if (owner)
+	if (owner.SetTo(frm))
 	{
-		owner->SetEnabled(true);
-		owner->MakeForeground();
+		frm->SetEnabled(true);
+		frm->MakeForeground();
 	}
 	return this->dialogResult;
 }
@@ -280,10 +280,10 @@ void UI::GUIForm::Close()
 	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->closeHandlers.GetItem(i)(this->closeHandlersObj.GetItem(i), this);
+		Data::CallbackStorage<FormClosedEvent> cb = this->closeHandlers.GetItem(i);
+		cb.func(cb.userObj, *this);
 	}
 	this->closeHandlers.Clear();
-	this->closeHandlersObj.Clear();
 }
 
 void UI::GUIForm::SetText(Text::CStringNN text)
@@ -335,7 +335,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
+NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
 {
 	NotNullPtr<UI::GTK::GTKTimer> tmr;
 	NEW_CLASSNN(tmr, UI::GTK::GTKTimer(interval, handler, userObj));
@@ -496,7 +496,8 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		UOSInt i = this->resizeHandlers.GetCount();
 		while (i-- > 0)
 		{
-			this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+			Data::CallbackStorage<UIEvent> cb = this->resizeHandlers.GetItem(i);
+			cb.func(cb.userObj);
 		}
 		this->selfResize = false;
 	}
@@ -513,7 +514,8 @@ void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 	i = this->menuClickedHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->menuClickedHandlers.GetItem(i)(this->menuClickedHandlersObj.GetItem(i), cmdId);
+		Data::CallbackStorage<MenuEvent> cb = this->menuClickedHandlers.GetItem(i);
+		cb.func(cb.userObj, cmdId);
 	}
 }
 
@@ -523,16 +525,14 @@ void UI::GUIForm::ShowMouseCursor(Bool toShow)
 	gdk_window_set_cursor(gtk_widget_get_window((GtkWidget*)this->hwnd), cursor);
 }
 
-void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, void *userObj)
+void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, AnyType userObj)
 {
-	this->closeHandlers.Add(handler);
-	this->closeHandlersObj.Add(userObj);
+	this->closeHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
+void UI::GUIForm::HandleDropFiles(FileEvent handler, AnyType userObj)
 {
-	this->dropFileHandlers.Add(handler);
-	this->dropFileHandlersObj.Add(userObj);
+	this->dropFileHandlers.Add({handler, userObj});
 	static GtkTargetEntry target_table[] = {
 	{ (gchar*)"text/uri-list", 0, 0 }
 	};
@@ -541,28 +541,24 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
 	g_signal_connect((GtkWindow*)this->hwnd, "drag-data-received", G_CALLBACK(GUIForm_OnFileDrop), this);
 }
 
-void UI::GUIForm::HandleMenuClicked(MenuEvent handler, void *userObj)
+void UI::GUIForm::HandleMenuClicked(MenuEvent handler, AnyType userObj)
 {
-	this->menuClickedHandlers.Add(handler);
-	this->menuClickedHandlersObj.Add(userObj);
+	this->menuClickedHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleKeyDown(KeyEvent handler, void *userObj)
+void UI::GUIForm::HandleKeyDown(KeyEvent handler, AnyType userObj)
 {
-	this->keyDownHandlers.Add(handler);
-	this->keyDownHandlersObj.Add(userObj);
+	this->keyDownHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleKeyUp(KeyEvent handler, void *userObj)
+void UI::GUIForm::HandleKeyUp(KeyEvent handler, AnyType userObj)
 {
-	this->keyUpHandlers.Add(handler);
-	this->keyUpHandlersObj.Add(userObj);
+	this->keyUpHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, void *userObj)
+void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, AnyType userObj)
 {
-	this->closingHdlr = handler;
-	this->closingHdlrObj = userObj;
+	this->closingHdlr = {handler, userObj};
 }
 
 void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
@@ -597,10 +593,10 @@ void UI::GUIForm::EventClosed()
 	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->closeHandlers.GetItem(i)(this->closeHandlersObj.GetItem(i), this);
+		Data::CallbackStorage<FormClosedEvent> cb = this->closeHandlers.GetItem(i);
+		cb.func(cb.userObj, *this);
 	}
 	this->closeHandlers.Clear();
-	this->closeHandlersObj.Clear();
 	if (this->exitOnClose)
 	{
 		gtk_main_quit();
@@ -628,13 +624,14 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(NotNullPtr<Text::String> *files, UOSInt nFiles)
+void UI::GUIForm::OnFileDrop(Data::DataArray<NotNullPtr<Text::String>> files)
 {
 	UOSInt i;
 	i = this->dropFileHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->dropFileHandlers.GetItem(i)(this->dropFileHandlersObj.GetItem(i), files, nFiles);
+		Data::CallbackStorage<FileEvent> cb = this->dropFileHandlers.GetItem(i);
+		cb.func(cb.userObj, files);
 	}
 }
 

@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_OPENCV_OCVNUMPLATEFINDER
 #define _SM_MEDIA_OPENCV_OCVNUMPLATEFINDER
+#include "AnyType.h"
 #include "Media/OpenCV/OCVFrame.h"
 
 namespace Media
@@ -15,7 +16,7 @@ namespace Media
 				DoubleRow //440x220
 			};
 
-			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double tileAngle, Double area, PlateSize psize);
+			typedef void (__stdcall *PossibleAreaFunc)(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double tileAngle, Double area, PlateSize psize);
 		private:
 			Double maxTiltAngle;
 			Double minArea;
@@ -26,7 +27,7 @@ namespace Media
 			
 			void SetMaxTiltAngle(Double maxTiltAngleDegree);
 			void SetAreaRange(Double minArea, Double maxArea);
-			void Find(NotNullPtr<Media::OpenCV::OCVFrame> frame, PossibleAreaFunc func, void *userObj);
+			void Find(NotNullPtr<Media::OpenCV::OCVFrame> frame, PossibleAreaFunc func, AnyType userObj);
 		};
 	}
 }

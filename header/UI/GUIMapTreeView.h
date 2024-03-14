@@ -1,7 +1,9 @@
 #ifndef _SM_UI_GUIMAPTREEVIEW
 #define _SM_UI_GUIMAPTREEVIEW
-#include "UI/GUITreeView.h"
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "Map/MapEnv.h"
+#include "UI/GUITreeView.h"
 
 namespace UI
 {
@@ -16,12 +18,11 @@ namespace UI
 			Map::MapEnv::MapItem *item;
 		} ItemIndex;
 
-		typedef void (__stdcall *TreeDragHandler)(void *userObj, ItemIndex *dragItem, ItemIndex *dropItem);
+		typedef void (__stdcall *TreeDragHandler)(AnyType userObj, ItemIndex *dragItem, ItemIndex *dropItem);
 
 	private:
 		NotNullPtr<Map::MapEnv> env;
-		TreeDragHandler dragHdlr;
-		void *dragObj;
+		Data::CallbackStorage<TreeDragHandler> dragHdlr;
 
 	private:
 		void RemoveItems();
@@ -37,7 +38,7 @@ namespace UI
 		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
 		virtual Text::CStringNN GetObjectClass() const;
 
-		void SetDragHandler(TreeDragHandler dragHdlr, void *dragObj);
+		void SetDragHandler(TreeDragHandler dragHdlr, AnyType dragObj);
 		void SetEnv(NotNullPtr<Map::MapEnv> env);
 		void UpdateTree();
 		void AddSubGroup(UI::GUITreeView::TreeItem *item);

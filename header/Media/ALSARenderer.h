@@ -15,7 +15,7 @@ namespace Media
 		void *hand;
 		Media::RefClock *clk;
 		EndNotifier endHdlr;
-		void *endHdlrObj;
+		AnyType endHdlrObj;
 		Bool dataConv;
 		UInt16 dataBits;
 		UInt16 dataNChannel;
@@ -44,7 +44,7 @@ namespace Media
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();
-		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
+		virtual void SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj);
 		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();

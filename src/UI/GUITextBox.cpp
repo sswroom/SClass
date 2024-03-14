@@ -19,7 +19,8 @@ void UI::GUITextBox::EventTextChange()
 	UOSInt i = this->txtChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->txtChgHdlrs.GetItem(i)(this->txtChgObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->txtChgHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -30,7 +31,8 @@ Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
 	UOSInt i = this->keyDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if ((ret = this->keyDownHdlrs.GetItem(i)(this->keyDownObjs.GetItem(i), osKey)))
+		Data::CallbackStorage<UI::KeyEvent> cb = this->keyDownHdlrs.GetItem(i);
+		if ((ret = cb.func(cb.userObj, osKey)))
 		{
 			break;
 		}
@@ -38,14 +40,12 @@ Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
 	return ret;
 }
 
-void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
+void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->txtChgHdlrs.Add(hdlr);
-	this->txtChgObjs.Add(userObj);
+	this->txtChgHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, void *userObj)
+void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, AnyType userObj)
 {
-	this->keyDownHdlrs.Add(hdlr);
-	this->keyDownObjs.Add(userObj);
+	this->keyDownHdlrs.Add({hdlr, userObj});
 }

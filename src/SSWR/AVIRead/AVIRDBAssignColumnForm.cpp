@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRDBAssignColumnForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBAssignColumnForm *me = (SSWR::AVIRead::AVIRDBAssignColumnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
 	if (me->colsCbo == 0 || me->dbTable->GetColCnt() != me->colInd->GetCount() || me->colInd->GetCount() == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Database is not valid"), CSTR("DB Assign Column"), me);
@@ -41,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBAssignColumnForm *me = (SSWR::AVIRead::AVIRDBAssignColumnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

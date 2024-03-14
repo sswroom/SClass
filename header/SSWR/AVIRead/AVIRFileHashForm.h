@@ -72,7 +72,7 @@ namespace SSWR
 			UInt64 progLastCount;
 			Crypto::Hash::HashType currHashType;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnCheckTypeChg(void *userObj);
 			static UInt32 __stdcall HashThread(void *userObj);

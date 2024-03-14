@@ -18,9 +18,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderWriter.h"
 
-void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
 	UOSInt i = me->lbMyStack->GetSelectedIndex();
 	const UTF8Char *s = me->stacks.GetItem(i).OrNull();
 	const UTF8Char *sMem = me->stacksMem.GetItem(i).OrNull();
@@ -149,9 +149,9 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
 	UTF8Char sbuff[18];
 	UOSInt i;
 	Int64 funcOfst;

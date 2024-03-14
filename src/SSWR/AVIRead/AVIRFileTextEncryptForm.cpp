@@ -3,19 +3,19 @@
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRFileTextEncryptForm *me = (SSWR::AVIRead::AVIRFileTextEncryptForm *)userObj;
-	if (nFiles > 0)
+	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
+	if (files.GetCount() > 0)
 	{
 		me->txtSrcFile->SetText(files[0]->ToCString());
 		me->GenDestFileName(files[0]->ToCString(), me->chkDecrypt->IsChecked());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileTextEncryptForm *me = (SSWR::AVIRead::AVIRFileTextEncryptForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
 	Text::StringBuilderUTF8 sbSrc;
 	Text::StringBuilderUTF8 sbDest;
 	Text::TextBinEnc::ITextBinEnc *destEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncrypt->GetSelectedItem();
@@ -84,9 +84,9 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnDecryptChange(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnDecryptChange(AnyType userObj, Bool newState)
 {
-	SSWR::AVIRead::AVIRFileTextEncryptForm *me = (SSWR::AVIRead::AVIRFileTextEncryptForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSrcFile->GetText(sb);
 	if (sb.leng > 0)

@@ -72,9 +72,9 @@ void Media::MediaPlayer::PlayTime(Data::Duration time)
 	}
 }
 
-void __stdcall Media::MediaPlayer::OnVideoEnd(void *userObj)
+void __stdcall Media::MediaPlayer::OnVideoEnd(AnyType userObj)
 {
-	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
+	NotNullPtr<Media::MediaPlayer> me = userObj.GetNN<Media::MediaPlayer>();
 	Bool audPlaying = me->audioPlaying;
 	me->videoPlaying = false;
 	if (!audPlaying)
@@ -86,9 +86,9 @@ void __stdcall Media::MediaPlayer::OnVideoEnd(void *userObj)
 	}
 }
 
-void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
+void __stdcall Media::MediaPlayer::OnAudioEnd(AnyType userObj)
 {
-	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
+	NotNullPtr<Media::MediaPlayer> me = userObj.GetNN<Media::MediaPlayer>();
 	Bool vidPlaying = me->videoPlaying;
 	me->audioPlaying = false;
 	if (!vidPlaying)
@@ -100,9 +100,9 @@ void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
 	}
 }
 
-void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
+void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
 {
-	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
+	NotNullPtr<Media::MediaPlayer> me = userObj.GetNN<Media::MediaPlayer>();
 	UOSInt w = img->info.dispSize.x;
 	UOSInt h = img->info.dispSize.y;
 	UInt8 *yptr = img->data;
@@ -198,7 +198,7 @@ Media::MediaPlayer::~MediaPlayer()
 	}
 }
 
-void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, void *userObj)
+void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, AnyType userObj)
 {
 	this->endHdlr = hdlr;
 	this->endObj = userObj;

@@ -1,6 +1,7 @@
 #ifndef _SM_UI_GUIFORM
 #define _SM_UI_GUIFORM
 #include "Data/ArrayListNN.h"
+#include "Data/CallbackStorage.h"
 #include "Text/String.h"
 #include "UI/GUICore.h"
 #include "UI/GUIClientControl.h"
@@ -12,8 +13,8 @@ namespace UI
 	class GUIButton;
 	class GUIIcon;
 
-	typedef void (__stdcall *FileEvent)(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-	typedef void (__stdcall *MenuEvent)(void *userObj, UInt16 cmdId);
+	typedef void (__stdcall *FileEvent)(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+	typedef void (__stdcall *MenuEvent)(AnyType userObj, UInt16 cmdId);
 
 	class GUIForm : public GUIClientControl
 	{
@@ -36,25 +37,19 @@ namespace UI
 		{
 			CR_USER
 		} CloseReason;
-		typedef Bool (__stdcall *FormClosingEvent)(void *userObj, CloseReason reason); //true to cancel
-		typedef void (__stdcall *FormClosedEvent)(void *userObj, UI::GUIForm *frm);
-		typedef void (__stdcall *KeyEvent)(void *userObj, UOSInt keyCode, Bool extendedKey);
+		typedef Bool (__stdcall *FormClosingEvent)(AnyType userObj, CloseReason reason); //true to cancel
+		typedef void (__stdcall *FormClosedEvent)(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+		typedef void (__stdcall *KeyEvent)(AnyType userObj, UOSInt keyCode, Bool extendedKey);
 
 	private:
 		Bool virtualMode;
-		Data::ArrayList<FormClosedEvent> closeHandlers;
-		Data::ArrayList<void*> closeHandlersObj;
-		Data::ArrayList<FileEvent> dropFileHandlers;
-		Data::ArrayList<void*> dropFileHandlersObj;
-		Data::ArrayList<MenuEvent> menuClickedHandlers;
-		Data::ArrayList<void*> menuClickedHandlersObj;
-		Data::ArrayList<KeyEvent> keyDownHandlers;
-		Data::ArrayList<void*> keyDownHandlersObj;
-		Data::ArrayList<KeyEvent> keyUpHandlers;
-		Data::ArrayList<void*> keyUpHandlersObj;
+		Data::ArrayList<Data::CallbackStorage<FormClosedEvent>> closeHandlers;
+		Data::ArrayList<Data::CallbackStorage<FileEvent>> dropFileHandlers;
+		Data::ArrayList<Data::CallbackStorage<MenuEvent>> menuClickedHandlers;
+		Data::ArrayList<Data::CallbackStorage<KeyEvent>> keyDownHandlers;
+		Data::ArrayList<Data::CallbackStorage<KeyEvent>> keyUpHandlers;
 		Data::ArrayListNN<GUITimer> timers;
-		FormClosingEvent closingHdlr;
-		void *closingHdlrObj;
+		Data::CallbackStorage<FormClosingEvent> closingHdlr;
 		Bool exitOnClose;
 		UInt32 nextTmrId;
 		Optional<UI::GUIMainMenu> menu;
@@ -90,7 +85,7 @@ namespace UI
 		virtual ~GUIForm();
 
 		void SetFormState(FormState fs);
-		DialogResult ShowDialog(UI::GUIForm *owner);
+		DialogResult ShowDialog(Optional<UI::GUIForm> owner);
 		void SetDialogResult(DialogResult dr);
 		void ShowTitleBar(Bool show);
 		void SetAlwaysOnTop(Bool alwaysOnTop);
@@ -102,7 +97,7 @@ namespace UI
 		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
-		virtual NotNullPtr<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);
+		virtual NotNullPtr<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj);
 		virtual void RemoveTimer(NotNullPtr<UI::GUITimer> tmr);
 		virtual void SetMenu(NotNullPtr<UI::GUIMainMenu> menu);
 		virtual Optional<UI::GUIMainMenu> GetMenu();
@@ -125,12 +120,12 @@ namespace UI
 		void SetLargeIcon(UI::GUIIcon *icon);
 		void ShowMouseCursor(Bool toShow);
 
-		virtual void HandleFormClosed(FormClosedEvent handler, void *userObj);
-		virtual void HandleDropFiles(FileEvent handler, void *userObj);
-		virtual void HandleMenuClicked(MenuEvent handler, void *userObj);
-		virtual void HandleKeyDown(KeyEvent handler, void *userObj);
-		virtual void HandleKeyUp(KeyEvent handler, void *userObj);
-		void SetClosingHandler(FormClosingEvent handler, void *userObj);
+		virtual void HandleFormClosed(FormClosedEvent handler, AnyType userObj);
+		virtual void HandleDropFiles(FileEvent handler, AnyType userObj);
+		virtual void HandleMenuClicked(MenuEvent handler, AnyType userObj);
+		virtual void HandleKeyDown(KeyEvent handler, AnyType userObj);
+		virtual void HandleKeyUp(KeyEvent handler, AnyType userObj);
+		void SetClosingHandler(FormClosingEvent handler, AnyType userObj);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void EventClosed();
@@ -138,7 +133,7 @@ namespace UI
 		virtual void OnFocus();
 		virtual void OnFocusLost();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
-		void OnFileDrop(NotNullPtr<Text::String> *files, UOSInt nFiles);
+		void OnFileDrop(Data::DataArray<NotNullPtr<Text::String>> files);
 
 		void ToFullScn();
 		void FromFullScn();

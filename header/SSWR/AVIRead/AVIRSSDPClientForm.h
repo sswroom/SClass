@@ -63,9 +63,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDeviceURL;
 			NotNullPtr<UI::GUITextBox> txtDeviceURL;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDeviceSelChg(void *userObj);
-			static void __stdcall OnServiceSelChg(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDeviceSelChg(AnyType userObj);
+			static void __stdcall OnServiceSelChg(AnyType userObj);
 		public:
 			AVIRSSDPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSSDPClientForm();

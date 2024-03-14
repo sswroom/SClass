@@ -3,11 +3,12 @@
 #include "SSWR/OrganMgr/OrganTimeAdjForm.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
+	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	Bool chg = false;
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->env->AddDataFile(files[i]->ToCString()))

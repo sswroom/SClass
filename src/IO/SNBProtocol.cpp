@@ -64,7 +64,7 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::SNBProtocol::SNBProtocol(NotNullPtr<IO::Stream> stm, ProtocolHandler protoHdlr, void *userObj)
+IO::SNBProtocol::SNBProtocol(NotNullPtr<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj)
 {
 	this->stm = stm;
 	this->protoHdlr = protoHdlr;

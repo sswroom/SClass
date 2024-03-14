@@ -11,9 +11,9 @@
 #define MTU 2048
 #define BUFFSIZE (MAXSIZE + MTU)
 
-void __stdcall Net::LogServer::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::LogServer::ConnHdlr(Socket *s, AnyType userObj)
 {
-	Net::LogServer *me = (Net::LogServer*)userObj;
+	NotNullPtr<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
 	NotNullPtr<Net::TCPClient> cli;
 	ClientStatus *cliStatus;
 	Net::SocketUtil::AddressInfo addr;
@@ -26,16 +26,15 @@ void __stdcall Net::LogServer::ConnHdlr(Socket *s, void *userObj)
 	me->cliMgr->AddClient(cli, cliStatus);
 }
 
-void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	Net::LogServer *me = (Net::LogServer*)userObj;
+	NotNullPtr<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		ClientStatus *cliStatus;
+		NotNullPtr<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
 		me->log->LogMessage(CSTR("Client Disconnected"), IO::LogHandler::LogLevel::Command);
-		cliStatus = (ClientStatus*)cliData;
 		MemFree(cliStatus->buff);
-		MemFree(cliStatus);
+		MemFree(cliStatus.Ptr());
 		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
@@ -43,11 +42,10 @@ void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void 
 	}
 }
 
-void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Net::LogServer *me = (Net::LogServer*)userObj;
-	ClientStatus *cliStatus;
-	cliStatus = (ClientStatus*)cliData;
+	NotNullPtr<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
+	NotNullPtr<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
 	if (buff.GetSize() > BUFFSIZE)
 	{
 		MemCopyNO(cliStatus->buff, &buff[buff.GetSize() - BUFFSIZE], BUFFSIZE);
@@ -77,7 +75,7 @@ void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *
 	}
 }
 
-void __stdcall Net::LogServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::LogServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
@@ -154,20 +152,19 @@ Bool Net::LogServer::IsError()
 	return this->svr->IsV4Error();
 }
 
-void Net::LogServer::HandleClientLog(ClientLogHandler hdlr, void *userObj)
+void Net::LogServer::HandleClientLog(ClientLogHandler hdlr, AnyType userObj)
 {
 	this->logHdlrObj = userObj;
 	this->logHdlr = hdlr;
 }
 
-void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	UInt8 reply[18];
 	UOSInt replySize;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	ClientStatus *cliStatus;
-	cliStatus = (ClientStatus*)stmObj;
+	NotNullPtr<ClientStatus> cliStatus = stmObj.GetNN<ClientStatus>();
 	switch (cmdType)
 	{
 	case 0: //KA
@@ -235,7 +232,7 @@ void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 
 	}
 }
 
-void Net::LogServer::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogServer::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 
 }

@@ -20,12 +20,12 @@ void UI::GUIHScrollBar::EventPosChanged(UOSInt newPos)
 	i = this->posChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->posChgHdlrs.GetItem(i)(this->posChgObjs.GetItem(i), newPos);
+		Data::CallbackStorage<PosChgEvent> cb = this->posChgHdlrs.GetItem(i);
+		cb.func(cb.userObj, newPos);
 	}
 }
 
-void UI::GUIHScrollBar::HandlePosChanged(PosChgEvent hdlr, void *userObj)
+void UI::GUIHScrollBar::HandlePosChanged(PosChgEvent hdlr, AnyType userObj)
 {
-	this->posChgHdlrs.Add(hdlr);
-	this->posChgObjs.Add(userObj);
+	this->posChgHdlrs.Add({hdlr, userObj});
 }

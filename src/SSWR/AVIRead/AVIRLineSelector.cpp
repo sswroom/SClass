@@ -2,9 +2,9 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRLineSelector.h"
 
-void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLineSelector *me = (SSWR::AVIRead::AVIRLineSelector*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLineSelector> me = userObj.GetNN<SSWR::AVIRead::AVIRLineSelector>();
 	me->UpdateLineStyles();
 }
 

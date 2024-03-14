@@ -48,9 +48,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboSearchResult;
 			NotNullPtr<UI::GUIListView> lvSearch;
 		
-			static void __stdcall OnConnectClicked(void *userObj);
-			static void __stdcall OnSearchClicked(void *userObj);
-			static void __stdcall OnSearchResultSelChg(void *userObj);
+			static void __stdcall OnConnectClicked(AnyType userObj);
+			static void __stdcall OnSearchClicked(AnyType userObj);
+			static void __stdcall OnSearchResultSelChg(AnyType userObj);
 
 		public:
 			AVIRLDAPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

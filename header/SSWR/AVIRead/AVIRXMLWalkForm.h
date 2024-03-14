@@ -23,8 +23,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUIListView> lvXML;
 
-			static void __stdcall OnBrowseClick(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt nFiles);
+			static void __stdcall OnBrowseClick(AnyType userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames);
 
 			void LoadFile(Text::CStringNN fileName);
 		public:

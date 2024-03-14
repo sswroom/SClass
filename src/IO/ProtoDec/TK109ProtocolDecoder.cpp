@@ -18,7 +18,7 @@ Text::CStringNN IO::ProtoDec::TK109ProtocolDecoder::GetName() const
 	return CSTR("TK109");
 }
 
-UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
 {
 	UOSInt i;
 	UOSInt j;

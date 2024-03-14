@@ -43,11 +43,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStoreList;
 			NotNullPtr<UI::GUIListView> lvDevices;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnStoreListClicked(void *userObj);
-			static void __stdcall OnDevicesDblClick(void *userObj, UOSInt index);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, Text::CString name);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnStoreListClicked(AnyType userObj);
+			static void __stdcall OnDevicesDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnLEScanItem(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name);
 			void ClearDevices();
 		public:
 			AVIRBluetoothLEForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

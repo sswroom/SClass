@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblHashValue;
 			NotNullPtr<UI::GUITextBox> txtHashValue;
 
-			static void __stdcall OnGenerateClicked(void *userObj);
+			static void __stdcall OnGenerateClicked(AnyType userObj);
 		public:
 			AVIRTextHashForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTextHashForm();

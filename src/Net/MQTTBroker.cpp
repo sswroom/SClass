@@ -11,7 +11,7 @@
 
 typedef struct
 {
-	void *cliData;
+	AnyType cliData;
 	Text::String *cliId;
 	UOSInt buffSize;
 	UInt8 recvBuff[20000];
@@ -19,10 +19,9 @@ typedef struct
 	Bool connected;
 } ClientData;
 
-void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	Listener *listener = (Listener*)userObj;
-	ClientData *data = (ClientData*)cliData;
+	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		if (listener->me->log->HasHandler())
@@ -34,24 +33,24 @@ void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, vo
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
 			listener->me->log->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 		}
-		listener->me->StreamClosed(cli, data);
+		listener->me->StreamClosed(cli, cliData);
 		cli.Delete();
 	}
 }
 
-void __stdcall Net::MQTTBroker::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::MQTTBroker::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Listener *listener = (Listener*)userObj;
+	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
 	listener->me->StreamData(cli, cliData, buff);
 }
 
-void __stdcall Net::MQTTBroker::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::MQTTBroker::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-void __stdcall Net::MQTTBroker::OnClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
+void __stdcall Net::MQTTBroker::OnClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
 {
-	Listener *listener = (Listener*)userObj;
+	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
 	listener->cliMgr->AddClient(cli, listener->me->StreamCreated(cli));
 	UOSInt cnt = listener->cliMgr->GetClientCount();
 	if (cnt > listener->me->infoCliMax)
@@ -60,9 +59,9 @@ void __stdcall Net::MQTTBroker::OnClientReady(NotNullPtr<Net::TCPClient> cli, vo
 	}
 }
 
-void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
+void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, AnyType userObj)
 {
-	Listener *listener = (Listener*)userObj;
+	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (listener->ssl.SetTo(ssl))
 	{
@@ -154,9 +153,9 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
 	return 0;
 }
 
-void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
-	ClientData *data = (ClientData*)stmObj;
+	NotNullPtr<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
 	UInt8 packet2[256];
 	UOSInt i;
@@ -763,7 +762,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 	}
 }
 
-void Net::MQTTBroker::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTBroker::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
@@ -834,13 +833,13 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 		if (Net::MQTTUtil::TopicMatch(topic.v, topic.leng, subscribe->topic->v, subscribe->topic->leng))
 		{
 			topicMutUsage.BeginUse();
-			this->TopicSend(subscribe->stm, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
+			this->TopicSend(subscribe->stm, subscribe->cliData.GetNN<ClientData>()->cliData, topicInfo);
 			topicMutUsage.EndUse();
 		}
 	}
 }
 
-Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, void *stmData, const TopicInfo *topic)
+Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, AnyType stmData, const TopicInfo *topic)
 {
 	UInt8 packet1[128];
 	UInt8 packet2[128];
@@ -889,9 +888,9 @@ void *Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
 	return data;
 }
 
-void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff)
+void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff)
 {
-	ClientData *data = (ClientData*)stmData;
+	NotNullPtr<ClientData> data = stmData.GetNN<ClientData>();
 	Sync::Interlocked::AddI64(this->infoTotalRecv, (OSInt)buff.GetSize());
 
 	if (this->log->HasHandler())
@@ -929,12 +928,12 @@ void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, cons
 	}
 }
 
-void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData)
+void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
-	ClientData *data = (ClientData*)stmData;
+	NotNullPtr<ClientData> data = stmData.GetNN<ClientData>();
 	this->protoHdlr.DeleteStreamData(stm, data->cliData);
 	SDEL_STRING(data->cliId);
-	MemFree(data);
+	MemFree(data.Ptr());
 
 	UOSInt i;
 	SubscribeInfo *subscribe;
@@ -1111,25 +1110,25 @@ Bool Net::MQTTBroker::IsError()
 	return this->listeners.GetCount() == 0;
 }
 
-void Net::MQTTBroker::HandleConnect(ConnectHandler connHdlr, void *userObj)
+void Net::MQTTBroker::HandleConnect(ConnectHandler connHdlr, AnyType userObj)
 {
 	this->connHdlr = connHdlr;
 	this->connObj = userObj;
 }
 
-void Net::MQTTBroker::HandlePublish(PublishHandler publishHdlr, void *userObj)
+void Net::MQTTBroker::HandlePublish(PublishHandler publishHdlr, AnyType userObj)
 {
 	this->publishHdlr = publishHdlr;
 	this->publishObj = userObj;
 }
 
-void Net::MQTTBroker::HandleSubscribe(SubscribeHandler subscribeHdlr, void *userObj)
+void Net::MQTTBroker::HandleSubscribe(SubscribeHandler subscribeHdlr, AnyType userObj)
 {
 	this->subscribeHdlr = subscribeHdlr;
 	this->subscribeObj = userObj;
 }
 
-void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *userObj)
+void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, AnyType userObj)
 {
 	this->topicUpdHdlr = topicUpdHdlr;
 	this->topicUpdObj = userObj;

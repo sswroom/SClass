@@ -11,9 +11,9 @@
 #include "UI/Clipboard.h"
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	if (me->bt)
 	{
 		if (me->bt->IsScanOn())
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -53,9 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	IO::BTScanLog::ScanRecord3 *dev = (IO::BTScanLog::ScanRecord3*)me->lvDevices->GetItem(index);
@@ -66,17 +66,17 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	Sync::MutexUsage mutUsage;
 	UOSInt i = me->UpdateList(me->bt->GetPublicMap(mutUsage), &me->pubDevMap, 0);
 	me->UpdateList(me->bt->GetRandomMap(mutUsage), &me->randDevMap, i);
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	Sync::MutexUsage mutUsage(me->devMut);
 	if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 	{

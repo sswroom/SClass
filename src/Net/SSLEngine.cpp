@@ -235,7 +235,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	return ServerSetCerts(certFile, keyFile, CSTR_NULL);
 }
 
-void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj)
+void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, AnyType userObj)
 {
 	UOSInt i = 0;
 	UOSInt j = INVALID_INDEX;

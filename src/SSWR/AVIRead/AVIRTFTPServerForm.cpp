@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTFTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -44,17 +44,17 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTFTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPServerForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnTimerTick(AnyType userObj)
 {
-//	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRTFTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPServerForm>();
 }
 
 SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

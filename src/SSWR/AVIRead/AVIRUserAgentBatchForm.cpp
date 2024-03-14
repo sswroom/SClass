@@ -78,9 +78,9 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	SDEL_TEXT(ent.devName);
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb3;
 	Text::PString sarr[2];
@@ -110,17 +110,17 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 	me->txtOutput->Focus();
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
 	me->UpdateByText(sb);
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard::GetString(me->GetHandle(), sb);
 	if (sb.GetLength() > 0)

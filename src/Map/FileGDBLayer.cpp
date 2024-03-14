@@ -328,11 +328,11 @@ Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(GetObjectSess *ses
 	return 0;
 }
 
-void Map::FileGDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::FileGDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
-void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 

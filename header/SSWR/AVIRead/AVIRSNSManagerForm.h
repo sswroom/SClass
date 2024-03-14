@@ -36,8 +36,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			static void __stdcall OnChannelAddClicked(void *userObj);
-			static void __stdcall OnChannelsSelChg(void *userObj);
+			static void __stdcall OnChannelAddClicked(AnyType userObj);
+			static void __stdcall OnChannelsSelChg(AnyType userObj);
 		public:
 			AVIRSNSManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNSManagerForm();

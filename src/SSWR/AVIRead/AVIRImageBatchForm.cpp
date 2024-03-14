@@ -101,9 +101,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, UOSI
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(void *userObj, CloseReason reason)
+Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(AnyType userObj, CloseReason reason)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (me->icMain->IsLoadingDir())
 	{
 		return !me->ui->ShowMsgYesNo(CSTR("Still loading directory, setting will be lost. Continue?"), CSTR("Question"), me);
@@ -176,10 +176,10 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(void *user
 	me->hsbGamma->SetPos(100);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
-	if (nFiles == 1 && IO::Path::GetPathType(files[0]->ToCString()) == IO::Path::PathType::Directory)
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	if (files.GetCount() == 1 && IO::Path::GetPathType(files[0]->ToCString()) == IO::Path::PathType::Directory)
 	{
 		me->OpenFolder(files[0]);
 	}

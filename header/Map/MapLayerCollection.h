@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_MAPLAYERCOLLECTION
 #define _SM_MAP_MAPLAYERCOLLECTION
 #include "Data/ArrayList.h"
+#include "Data/CallbackStorage.h"
 #include "Map/MapDrawLayer.h"
 #include "Sync/RWMutex.h"
 #include "Sync/RWMutexUsage.h"
@@ -12,10 +13,9 @@ namespace Map
 	private:
 		Sync::RWMutex mut;
 		Data::ArrayListNN<Map::MapDrawLayer> layerList;
-		Data::ArrayList<Map::MapDrawLayer::UpdatedHandler> updHdlrs;
-		Data::ArrayList<void *> updObjs;
+		Data::ArrayList<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
 
-		static void __stdcall InnerUpdated(void *userObj);
+		static void __stdcall InnerUpdated(AnyType userObj);
 	public:
 		MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName);
 		MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName);
@@ -51,8 +51,8 @@ namespace Map
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 		virtual ObjectClass GetObjectClass() const;
 		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
@@ -61,7 +61,7 @@ namespace Map
 		void ReleaseAll();
 		UOSInt GetUpdatedHandlerCnt() const;
 		UpdatedHandler GetUpdatedHandler(UOSInt index) const;
-		void *GetUpdatedObject(UOSInt index) const;
+		AnyType GetUpdatedObject(UOSInt index) const;
 	};
 }
 #endif

@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRUserAgentParseForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentParseForm *me = (SSWR::AVIRead::AVIRUserAgentParseForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentParseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentParseForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtUserAgent->GetText(sb);
 	if (sb.GetLength() > 0)

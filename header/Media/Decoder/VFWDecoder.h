@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_DECODER_VFWDECODER
 #define _SM_MEDIA_DECODER_VFWDECODER
 #include "Data/ArrayListUInt32.h"
+#include "Data/CallbackStorage.h"
 #include "Media/IVideoSource.h"
 #include "Media/Decoder/VDecoderBase.h"
 //require vfw32.lib
@@ -35,8 +36,7 @@ namespace Media
 			void *hic;
 			UInt8 *frameBuff;
 
-			ImageCallback imgCb;
-			void *imgCbData;
+			Data::CallbackStorage<ImageCallback> imgCb;
 			EncodingType encType;
 			Bool frameChg;
 			UInt32 sourceFCC;
@@ -64,7 +64,7 @@ namespace Media
 			VFWDecoder(NotNullPtr<IVideoSource> sourceAudio);
 			virtual ~VFWDecoder();
 
-			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
+			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
@@ -73,7 +73,7 @@ namespace Media
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
 		};

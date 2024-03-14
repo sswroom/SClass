@@ -31,9 +31,9 @@ SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvr
 	{UTF8STRC("Soil Survey Map"), UTF8STRC("https://server.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer")}
 };
 
-void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRESRIMapForm *me = (SSWR::AVIRead::AVIRESRIMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	Map::ESRI::ESRIMapServer *esriMap = 0;
 	if (me->radPredefine->IsSelected())
 	{
@@ -91,21 +91,21 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRESRIMapForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRESRIMapForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRESRIMapForm *me = (SSWR::AVIRead::AVIRESRIMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRESRIMapForm *me = (SSWR::AVIRead::AVIRESRIMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	me->radOther->Select();
 }
 
-void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnNoResourceChg(void *userObj, Bool newValue)
+void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnNoResourceChg(AnyType userObj, Bool newValue)
 {
-	SSWR::AVIRead::AVIRESRIMapForm *me = (SSWR::AVIRead::AVIRESRIMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	me->radOther->Select();
 	me->txtSRID->SetReadOnly(!newValue);
 }

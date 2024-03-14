@@ -14,9 +14,9 @@
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (!me->selecting)
 		return false;
 	me->isDown = true;
@@ -25,9 +25,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(void *userObj
 	return true;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
 	{
 		me->isDown = false;
@@ -87,9 +87,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
 	{
 		Double tmpV;
@@ -128,15 +128,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnAreaClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnAreaClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	me->selecting = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	UOSInt minLevel;
 	UOSInt maxLevel;
 	if (!me->GetLevels(minLevel, maxLevel))
@@ -152,9 +152,9 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	UOSInt minLevel;
 	UOSInt maxLevel;
 	if (!me->GetLevels(minLevel, maxLevel))
@@ -173,9 +173,9 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	me->stopDownload = true;
 }
 

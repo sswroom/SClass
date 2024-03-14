@@ -1,20 +1,20 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelPrinterForm *me = (SSWR::AVIRead::AVIRSelPrinterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	if (me->currPrinter)
 	{
 		me->currPrinter->ShowPrintSettings(0);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRSelPrinterForm *me = (SSWR::AVIRead::AVIRSelPrinterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	if ((sptr = me->cboPrinter->GetSelectedItemText(sbuff)) != 0)
 	{
 		SDEL_CLASS(me->currPrinter);
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelPrinterForm *me = (SSWR::AVIRead::AVIRSelPrinterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	if (me->currPrinter)
 	{
 		me->printer = me->currPrinter;
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelPrinterForm *me = (SSWR::AVIRead::AVIRSelPrinterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

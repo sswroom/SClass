@@ -129,14 +129,14 @@ namespace SSWR
 			Data::ArrayList<Int64> userContDevs;
 
 			static UInt32 __stdcall ClientThread(void *userObj);
-			static void __stdcall OnConnClicked(void *userObj);
-			static void __stdcall OnDeviceRClicked(void *userObj);
-			static void __stdcall OnUserRClicked(void *userObj);
-			static void __stdcall OnAlertRClicked(void *userObj);
-			static void __stdcall OnDeviceSelChg(void *userObj);
-			static void __stdcall OnAlertSelChg(void *userObj);
-			static void __stdcall OnUserSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnConnClicked(AnyType userObj);
+			static void __stdcall OnDeviceRClicked(AnyType userObj);
+			static void __stdcall OnUserRClicked(AnyType userObj);
+			static void __stdcall OnAlertRClicked(AnyType userObj);
+			static void __stdcall OnDeviceSelChg(AnyType userObj);
+			static void __stdcall OnAlertSelChg(AnyType userObj);
+			static void __stdcall OnUserSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 
 			void ToStop();
 			void ClearDevConts();
@@ -155,8 +155,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		};
 	}
 }

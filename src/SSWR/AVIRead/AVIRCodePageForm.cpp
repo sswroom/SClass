@@ -6,20 +6,20 @@
 #include "UI/GUIButton.h"
 #include "SSWR/AVIRead/AVIRCodePageForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCodePageForm *me = (SSWR::AVIRead::AVIRCodePageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
 	UOSInt selInd = me->lbCodePages->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
-		me->core->SetCodePage((UInt32)(UOSInt)me->lbCodePages->GetItem(selInd));
+		me->core->SetCodePage((UInt32)(UOSInt)me->lbCodePages->GetItem(selInd).p);
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCodePageForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCodePageForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCodePageForm *me = (SSWR::AVIRead::AVIRCodePageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

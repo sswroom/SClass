@@ -25,10 +25,10 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ICCProfile *icc;
 
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt);
-			static void __stdcall OnRLUTClicked(void *userObj);
-			static void __stdcall OnGLUTClicked(void *userObj);
-			static void __stdcall OnBLUTClicked(void *userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnRLUTClicked(AnyType userObj);
+			static void __stdcall OnGLUTClicked(AnyType userObj);
+			static void __stdcall OnBLUTClicked(AnyType userObj);
 		public:
 			AVIRICCInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRICCInfoForm();

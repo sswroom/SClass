@@ -3,9 +3,9 @@
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRSNSManagerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNSManagerForm *me = (SSWR::AVIRead::AVIRSNSManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
 	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)(OSInt)me->cboChannel->GetSelectedItem();
 	Text::StringBuilderUTF8 sb;
 	me->txtChannelId->GetText(sb);
@@ -16,10 +16,10 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNSManagerForm *me = (SSWR::AVIRead::AVIRSNSManagerForm*)userObj;
-	Net::SNS::SNSControl *ctrl = (Net::SNS::SNSControl*)me->lbChannels->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
+	Net::SNS::SNSControl *ctrl = (Net::SNS::SNSControl*)me->lbChannels->GetSelectedItem().p;
 	me->lvCurrItems->ClearItems();
 	if (ctrl)
 	{

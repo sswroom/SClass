@@ -18,7 +18,7 @@ IO::ProtoHdlr::ProtoJTT808Handler::~ProtoJTT808Handler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	JTT808StreamData *data = MemAlloc(JTT808StreamData, 1);
 	UInt64 devId = this->devId;
@@ -36,15 +36,15 @@ void *IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NotNullPtr<IO::Stream>
 	return data;
 }
 
-void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
-	JTT808StreamData *data = (JTT808StreamData*)stmData;
-	MemFree(data);
+	NotNullPtr<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
+	MemFree(data.Ptr());
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
-	JTT808StreamData *data = (JTT808StreamData*)stmData;
+	NotNullPtr<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
 	UInt8 packetBuff[1044];
 	UOSInt firstIndex = (UOSInt)-1;
 	UOSInt parseOfst = 0;
@@ -136,16 +136,16 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 	return buff.GetSize() - parseOfst;
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
-	JTT808StreamData *data = (JTT808StreamData*)stmData;
+	NotNullPtr<JTT808StreamData> data;
 	UInt8 hdr[12];
 	if (cmdSize >= 1024)
 		return 0;
 	WriteMInt16(&hdr[0], cmdType);
 	WriteMInt16(&hdr[2], cmdSize);
 	WriteMInt16(&hdr[10], seqId);
-	if (data)
+	if (stmData.GetOpt<JTT808StreamData>().SetTo(data))
 	{
 		hdr[4] = data->devId[0];
 		hdr[5] = data->devId[1];

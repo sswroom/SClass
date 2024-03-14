@@ -22,9 +22,9 @@ Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(Crypto::Hash::IH
 	return t;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
@@ -49,9 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i = me->cboAlgorithm->GetSelectedIndex();

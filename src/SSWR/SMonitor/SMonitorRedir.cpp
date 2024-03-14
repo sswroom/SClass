@@ -3,9 +3,9 @@
 #include "SSWR/SMonitor/SMonitorRedir.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	SSWR::SMonitor::SMonitorRedir *me = (SSWR::SMonitor::SMonitorRedir*)userData;
+	NotNullPtr<SSWR::SMonitor::SMonitorRedir> me = userData.GetNN<SSWR::SMonitor::SMonitorRedir>();
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
 	{
 		UInt8 calcVal[2];
@@ -246,7 +246,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersio
 	return true;
 }
 
-void SSWR::SMonitor::SMonitorRedir::HandleRecReply(RecordReplyHandler hdlr, void *userObj)
+void SSWR::SMonitor::SMonitorRedir::HandleRecReply(RecordReplyHandler hdlr, AnyType userObj)
 {
 	this->recReplyObj = userObj;
 	this->recReplyHdlr = hdlr;

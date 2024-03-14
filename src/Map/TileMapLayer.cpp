@@ -54,7 +54,8 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 						UOSInt i = stat->me->updHdlrs.GetCount();
 						while (i-- > 0)
 						{
-							stat->me->updHdlrs.GetItem(i)(stat->me->updObjs.GetItem(i));
+							Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = stat->me->updHdlrs.GetItem(i);
+							cb.func(cb.userObj);
 						}
 						mutUsage.EndUse();
 					}
@@ -210,7 +211,6 @@ Map::TileMapLayer::~TileMapLayer()
 	Bool running;
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
-	this->updObjs.Clear();
 	mutUsage.EndUse();
 
 	i = this->threadCnt;
@@ -602,24 +602,22 @@ Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::Arra
 	return this->tileMap->QueryInfos(coord, level, vecList, valueOfstList, nameList, valueList);
 }
 
-void Map::TileMapLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
+void Map::TileMapLayer::AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs.Add(hdlr);
-	this->updObjs.Add(obj);
-	mutUsage.EndUse();
+	this->updHdlrs.Add({hdlr, obj});
 }
 
-void Map::TileMapLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
+void Map::TileMapLayer::RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == obj)
 		{
-			this->updObjs.RemoveAt(i);
 			this->updHdlrs.RemoveAt(i);
 		}
 	}

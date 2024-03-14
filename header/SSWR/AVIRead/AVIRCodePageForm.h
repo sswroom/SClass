@@ -16,14 +16,14 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OKClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
+			static void __stdcall OKClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
 		public:
 			AVIRCodePageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCodePageForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

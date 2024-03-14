@@ -7,10 +7,8 @@ namespace UI
 	class GUITextBox : public GUIControl
 	{
 	private:
-		Data::ArrayList<UI::UIEvent> txtChgHdlrs;
-		Data::ArrayList<void *> txtChgObjs;
-		Data::ArrayList<UI::KeyEvent> keyDownHdlrs;
-		Data::ArrayList<void *> keyDownObjs;
+		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> txtChgHdlrs;
+		Data::ArrayList<Data::CallbackStorage<UI::KeyEvent>> keyDownHdlrs;
 
 	public:
 		GUITextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
@@ -19,8 +17,8 @@ namespace UI
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual void EventTextChange();
 		virtual Bool EventKeyDown(UInt32 osKey);
-		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);
-		virtual void HandleKeyDown(UI::KeyEvent hdlr, void *userObj);
+		virtual void HandleTextChanged(UI::UIEvent hdlr, AnyType userObj);
+		virtual void HandleKeyDown(UI::KeyEvent hdlr, AnyType userObj);
 
 		virtual void SetReadOnly(Bool isReadOnly) = 0;
 		virtual void SetPasswordChar(UTF32Char c) = 0;

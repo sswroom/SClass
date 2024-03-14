@@ -72,11 +72,11 @@ namespace SSWR
 			static UOSInt AddHash(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
 			static void AddHashTypes(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType);
 			static Bool FileIsSign(NotNullPtr<Text::String> fileName);
-			static void __stdcall OnVerifyClicked(void *userObj);
-			static void __stdcall OnVerifySignInfoClicked(void *userObj);
-			static void __stdcall OnEncryptEncryptClicked(void *userObj);
-			static void __stdcall OnEncryptDecryptClicked(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnVerifyClicked(AnyType userObj);
+			static void __stdcall OnVerifySignInfoClicked(AnyType userObj);
+			static void __stdcall OnEncryptEncryptClicked(AnyType userObj);
+			static void __stdcall OnEncryptDecryptClicked(AnyType userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			UOSInt ParseSignature(Text::PString *s, UInt8 *sign);
 			Crypto::Cert::X509Key *GetNewKey();
 		public:

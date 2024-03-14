@@ -12,7 +12,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(AnyType userObj)
 {
 /*	SSWR::AVIRead::AVIRBTScanLogForm *me = (SSWR::AVIRead::AVIRBTScanLogForm*)userObj;
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BTScanLogFile", false);
@@ -32,9 +32,9 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(void *userObj)
 	}*/
 }
 
-void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBTScanLogForm *me = (SSWR::AVIRead::AVIRBTScanLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
 	if (me->macList->Store())
 	{
 		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRBTScanLogForm *me = (SSWR::AVIRead::AVIRBTScanLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
 	const IO::BTScanLog::DevEntry *log = (const IO::BTScanLog::DevEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(void *userO
 	DEL_CLASS(frm);*/
 }
 
-void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentSelChg(AnyType userObj)
 {
 }
 

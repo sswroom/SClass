@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUIBUTTON
 #define _SM_UI_GUIBUTTON
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -7,14 +9,11 @@ namespace UI
 	class GUIButton : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *UpDownEvent)(void *userObj, Bool isDown);
+		typedef void (__stdcall *UpDownEvent)(AnyType userObj, Bool isDown);
 	private:
-		Data::ArrayList<UIEvent> btnClkHandlers;
-		Data::ArrayList<void *> btnClkHandlersObjs;
-		Data::ArrayList<UpDownEvent> btnUpDownHandlers;
-		Data::ArrayList<void *> btnUpDownHandlersObjs;
-		Data::ArrayList<UIEvent> btnFocusLostHandlers;
-		Data::ArrayList<void *> btnFocusLostHandlersObjs;
+		Data::ArrayList<Data::CallbackStorage<UIEvent>> btnClkHandlers;
+		Data::ArrayList<Data::CallbackStorage<UpDownEvent>> btnUpDownHandlers;
+		Data::ArrayList<Data::CallbackStorage<UIEvent>> btnFocusLostHandlers;
 	public:
 		GUIButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIButton();
@@ -31,9 +30,9 @@ namespace UI
 		void EventButtonDown();
 		void EventButtonUp();
 
-		void HandleFocusLost(UIEvent handler, void *userObj);
-		void HandleButtonClick(UIEvent handler, void *userObj);
-		void HandleButtonUpDown(UpDownEvent handler, void *userObj);
+		void HandleFocusLost(UIEvent handler, AnyType userObj);
+		void HandleButtonClick(UIEvent handler, AnyType userObj);
+		void HandleButtonUpDown(UpDownEvent handler, AnyType userObj);
 	};
 }
 #endif

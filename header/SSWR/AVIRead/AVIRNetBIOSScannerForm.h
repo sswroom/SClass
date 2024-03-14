@@ -30,10 +30,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspAnswers;
 			NotNullPtr<UI::GUIListView> lvEntries;
 
-			static void __stdcall OnRequestClicked(void *userObj);
-			static void __stdcall OnAnswerSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnAnswerUpdated(void *userObj, UInt32 sortableIP);
+			static void __stdcall OnRequestClicked(AnyType userObj);
+			static void __stdcall OnAnswerSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnAnswerUpdated(AnyType userObj, UInt32 sortableIP);
 
 		public:
 			AVIRNetBIOSScannerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

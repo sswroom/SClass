@@ -13,7 +13,7 @@ struct IO::RAWBTScanner::ClassData
 	UOSInt devCnt;
 	IO::RAWBTMonitor *btMon;
 	RecordHandler hdlr;
-	void *hdlrObj;
+	AnyType hdlrObj;
 	Bool noCtrl;
 	IO::ProgCtrl::BluetoothCtlProgCtrl *btCtrl;
 };
@@ -77,7 +77,7 @@ Bool IO::RAWBTScanner::IsError()
 	return this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0);
 }
 
-void IO::RAWBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
+void IO::RAWBTScanner::HandleRecordUpdate(RecordHandler hdlr, AnyType userObj)
 {
 	this->clsData->hdlrObj = userObj;
 	this->clsData->hdlr = hdlr;

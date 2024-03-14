@@ -359,11 +359,11 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(GetObjectSes
 	return 0;
 }
 
-void Map::ESRI::ESRIMDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::ESRI::ESRIMDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
-void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 

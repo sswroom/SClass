@@ -2,19 +2,19 @@
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetLocationSvcForm *me = (SSWR::AVIRead::AVIRSetLocationSvcForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetLocationSvcForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetLocationSvcForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetLocationSvcForm *me = (SSWR::AVIRead::AVIRSetLocationSvcForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetLocationSvcForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetLocationSvcForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnGPSClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnGPSClick(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRSetLocationSvcForm *me = (SSWR::AVIRead::AVIRSetLocationSvcForm*)userObj;
 }

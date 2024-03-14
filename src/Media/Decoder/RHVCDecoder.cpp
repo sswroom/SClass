@@ -131,7 +131,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 	if (this->finfoMode)
 	{
-		if (!this->finfoCb(frameTime, frameNum, (UOSInt)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoData, ycOfst))
+		if (!this->finfoCb.func(frameTime, frameNum, (UOSInt)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoCb.userObj, ycOfst))
 		{
 			this->sourceVideo->Stop();
 		}
@@ -301,10 +301,9 @@ Data::Duration Media::Decoder::RHVCDecoder::GetFrameTime(UOSInt frameIndex)
 	}
 	return 0;
 }
-void Media::Decoder::RHVCDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::RHVCDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	this->finfoCb = cb;
-	this->finfoData = userData;
+	this->finfoCb = {cb, userData};
 	if (this->sourceVideo)
 	{
 		this->finfoMode = true;

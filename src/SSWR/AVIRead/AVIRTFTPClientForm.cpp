@@ -7,9 +7,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTFTPClientForm *me = (SSWR::AVIRead::AVIRTFTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTFTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPClientForm>();
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
@@ -88,9 +88,9 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTFTPClientForm *me = (SSWR::AVIRead::AVIRTFTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTFTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPClientForm>();
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;

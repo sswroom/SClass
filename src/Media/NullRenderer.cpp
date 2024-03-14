@@ -62,9 +62,9 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 
 	if (needNotify)
 	{
-		if (me->endHdlr)
+		if (me->endHdlr.func)
 		{
-			me->endHdlr(me->endHdlrObj);
+			me->endHdlr.func(me->endHdlr.userObj);
 		}
 	}
 	return 0;
@@ -164,10 +164,9 @@ Bool Media::NullRenderer::IsPlaying()
 	return this->playing;
 }
 
-void Media::NullRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::NullRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
-	this->endHdlr = endHdlr;
-	this->endHdlrObj = endHdlrObj;
+	this->endHdlr = {endHdlr, endHdlrObj};
 }
 
 Int32 Media::NullRenderer::GetDeviceVolume()

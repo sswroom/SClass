@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 
-			static void __stdcall OnOKClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
 			AVIRCustomTileMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRCustomTileMapForm();

@@ -3,12 +3,12 @@
 #include "SSWR/AVIRead/AVIRODBCDSNForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
-	SSWR::AVIRead::AVIRODBCDSNForm *me = (SSWR::AVIRead::AVIRODBCDSNForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRODBCDSNForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCDSNForm>();
 	me->txtDSN->GetText(sb);
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRODBCDSNForm *me = (SSWR::AVIRead::AVIRODBCDSNForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRODBCDSNForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCDSNForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

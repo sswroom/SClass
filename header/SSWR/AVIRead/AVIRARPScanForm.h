@@ -44,9 +44,9 @@ namespace SSWR
 			Data::FastMap<UInt32, IPMapInfo *> arpMap;
 			Bool arpUpdated;
 
-			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnScanClicked(void *userObj);
+			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnScanClicked(AnyType userObj);
 
 			void UpdateARPList();
 		public:

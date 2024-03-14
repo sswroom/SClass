@@ -104,7 +104,7 @@ namespace Map
 		virtual ~DrawMapRenderer();
 
 		virtual void DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, OptOut<UInt32> imgDurMS);
-		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, void *userObj);
+		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, AnyType userObj);
 		Bool GetLastsLayerEmpty();
 		void SetEnv(NotNullPtr<Map::MapEnv> env);
 		NotNullPtr<Map::MapEnv> GetEnv() const;

@@ -8,9 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPForwarderForm *me = (SSWR::AVIRead::AVIRHTTPForwarderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
 	if (me->svr)
 	{
 		return;
@@ -96,9 +96,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPForwarderForm *me = (SSWR::AVIRead::AVIRHTTPForwarderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -113,9 +113,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(void *userObj)
 	me->btnSSLCert->SetEnabled(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPForwarderForm *me = (SSWR::AVIRead::AVIRHTTPForwarderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{

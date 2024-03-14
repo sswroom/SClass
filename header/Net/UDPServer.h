@@ -1,5 +1,7 @@
 #ifndef _SM_NET_UDPSERVER
 #define _SM_NET_UDPSERVER
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "IO/LogTool.h"
 #include "IO/FileStream.h"
 #include "Data/Timestamp.h"
@@ -12,7 +14,7 @@ namespace Net
 	class UDPServer
 	{
 	public:
-		typedef void (__stdcall *UDPPacketHdlr)(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		typedef void (__stdcall *UDPPacketHdlr)(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
 		typedef struct
 		{
@@ -27,9 +29,8 @@ namespace Net
 		Net::AddrType addrType;
 		Socket *socV4;
 		Socket *socV6;
-		UDPPacketHdlr hdlr;
+		Data::CallbackStorage<UDPPacketHdlr> hdlr;
 		Optional<Text::String> logPrefix;
-		void *userData;
 		Int32 recvCnt;
 
 		ThreadStat *v4threadStats;
@@ -52,7 +53,7 @@ namespace Net
 		static UInt32 __stdcall DataV6Thread(void *obj);
 
 	public:
-		UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, void *userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
+		UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
 		virtual ~UDPServer();
 
 		UInt16 GetPort();

@@ -10,7 +10,7 @@ struct UI::GTK::GTKListBox::ItemData
 	GtkListBoxRow *row;
 	GtkWidget *lbl;
 	NotNullPtr<Text::String> txt;
-	void *userData;
+	AnyType userData;
 };
 
 void UI::GTK::GTKListBox::SignalSelChange(GtkListBox *listBox, GtkListBoxRow *row, gpointer data)
@@ -94,7 +94,7 @@ UI::GTK::GTKListBox::~GTKListBox()
 	}
 }
 
-UOSInt UI::GTK::GTKListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::GTK::GTKListBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -119,7 +119,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(NotNullPtr<Text::String> itemText, void *ite
 	return ret;
 }
 
-UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -144,7 +144,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
 {
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -177,7 +177,7 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, voi
 	return (UOSInt)i;
 }
 
-UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -210,20 +210,20 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, v
 	return (UOSInt)i;
 }
 
-void *UI::GTK::GTKListBox::RemoveItem(UOSInt index)
+AnyType UI::GTK::GTKListBox::RemoveItem(UOSInt index)
 {
 	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
 	gtk_container_remove(GTK_CONTAINER(this->listbox), (GtkWidget*)item->row);
-	void *ret = item->userData;
+	AnyType ret = item->userData;
 	item->txt->Release();
 	MemFree(item);
 	this->items.RemoveAt(index);
 	return ret;
 }
 
-void *UI::GTK::GTKListBox::GetItem(UOSInt index)
+AnyType UI::GTK::GTKListBox::GetItem(UOSInt index)
 {
 	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
@@ -309,7 +309,7 @@ Bool UI::GTK::GTKListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 	return true;
 }
 
-void *UI::GTK::GTKListBox::GetSelectedItem()
+AnyType UI::GTK::GTKListBox::GetSelectedItem()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)

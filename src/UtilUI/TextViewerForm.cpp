@@ -9,9 +9,9 @@
 #define MNU_EDIT_GOTO 102
 #define MNU_EDIT_SEARCH 103
 
-void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall UtilUI::TextViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
+	NotNullPtr<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	me->LoadFile(files[0]);
 }
 
@@ -24,9 +24,9 @@ void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(void *userObj, UInt32 textPo
 	me->txtStatus->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall UtilUI::TextViewerForm::OnSearchClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall UtilUI::TextViewerForm::OnSearchClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
+	NotNullPtr<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	me->srchFrm = 0;
 }
 

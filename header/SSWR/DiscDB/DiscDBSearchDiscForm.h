@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtBurntDate;
 			NotNullPtr<UI::GUIListView> lvFiles;
 
-			static void __stdcall OnSearchClicked(void *userObj);
+			static void __stdcall OnSearchClicked(AnyType userObj);
 		public:
 			DiscDBSearchDiscForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBSearchDiscForm();

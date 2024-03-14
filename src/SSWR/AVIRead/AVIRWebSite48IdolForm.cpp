@@ -3,9 +3,9 @@
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSite48IdolForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSite48IdolForm *me = (SSWR::AVIRead::AVIRWebSite48IdolForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -40,9 +40,9 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSite48IdolForm *me = (SSWR::AVIRead::AVIRWebSite48IdolForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
 	me->txtVideoId->GetText(sb);
@@ -61,9 +61,9 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(void 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSite48IdolForm *me = (SSWR::AVIRead::AVIRWebSite48IdolForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
 	me->txtNameVideoId->GetText(sb);

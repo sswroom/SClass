@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIForm *ctrlForm;
 			UI::GUITreeView::TreeItem *ctrlItem;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Data::ArrayList<UI::GUIForm *> subForms;
+			Data::ArrayListNN<UI::GUIForm> subForms;
 			UI::GUIMapControl *mapCtrl;
 			UI::GUIMapTreeView *mapTree;
 			NotNullPtr<UI::GUIHSplitter> splitter;
@@ -64,34 +64,31 @@ namespace SSWR
 			Double mapUpdT;
 			Bool pauseUpdate;
 
-			Data::ArrayList<MouseEvent> mouseDownHdlrs;
-			Data::ArrayList<void*> mouseDownObjs;
-			Data::ArrayList<MouseEvent> mouseUpHdlrs;
-			Data::ArrayList<void *> mouseUpObjs;
-			Data::ArrayList<MouseEvent> mouseMoveHdlrs;
-			Data::ArrayList<void *> mouseMoveObjs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseDownHdlrs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseUpHdlrs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseMoveHdlrs;
 
 			Media::Printer *printer;
 
 			CursorType currCursor;
 
 		private:
-			static void __stdcall FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
-			static Bool __stdcall OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
-			static void __stdcall OnMapScaleChanged(void *userObj, Double newScale);
-			static void __stdcall OnMapUpdated(void *userObj, Math::Coord2DDbl center, Double timeUsed);
-			static void __stdcall OnScaleScrolled(void *userObj, UOSInt newVal);
-			static void __stdcall OnTreeRightClick(void *userObj);
-			static void __stdcall OnCtrlFormClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnSubFormClosed(void *userObj, UI::GUIForm *frm);
-			static void __stdcall OnMapLayerUpdated(void *userObj);
-			static void __stdcall OnTimeScrolled(void *userObj, UOSInt newVal);
-			static void __stdcall OnTimeChecked(void *userObj, Bool newState);
-			static void __stdcall OnTreeDrag(void *userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem);
-			static void __stdcall OnVAngleScrolled(void *userObj, UOSInt newVal);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static Bool __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static void __stdcall OnMapScaleChanged(AnyType userObj, Double newScale);
+			static void __stdcall OnMapUpdated(AnyType userObj, Math::Coord2DDbl center, Double timeUsed);
+			static void __stdcall OnScaleScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnTreeRightClick(AnyType userObj);
+			static void __stdcall OnCtrlFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnSubFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnMapLayerUpdated(AnyType userObj);
+			static void __stdcall OnTimeScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnTimeChecked(AnyType userObj, Bool newState);
+			static void __stdcall OnTreeDrag(AnyType userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem);
+			static void __stdcall OnVAngleScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
 			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
@@ -110,7 +107,7 @@ namespace SSWR
 			void AddLayer(NotNullPtr<Map::MapDrawLayer> layer);
 			void AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers);
 //			void AddLayerColl(Map::MapLayerCollection *lyrColl);
-			void AddSubForm(UI::GUIForm *frm);
+			void AddSubForm(NotNullPtr<UI::GUIForm> frm);
 
 			virtual UInt32 GetSRID();
 			virtual Bool InMap(Math::Coord2DDbl pos);
@@ -126,10 +123,10 @@ namespace SSWR
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
 			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType);
-			virtual void HandleMapMouseDown(MouseEvent evt, void *userObj);
-			virtual void HandleMapMouseUp(MouseEvent evt, void *userObj);
-			virtual void HandleMapMouseMove(MouseEvent evt, void *userObj);
-			virtual void UnhandleMapMouse(void *userObj);
+			virtual void HandleMapMouseDown(MouseEvent evt, AnyType userObj);
+			virtual void HandleMapMouseUp(MouseEvent evt, AnyType userObj);
+			virtual void HandleMapMouseMove(MouseEvent evt, AnyType userObj);
+			virtual void UnhandleMapMouse(AnyType userObj);
 
 			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid);
 			virtual Bool HasKMap();

@@ -59,15 +59,15 @@ namespace SSWR
 			IO::GPIOControl *gpioCtrl;
 			Bool forwardedUI;
 
-			Data::ArrayList<UI::GUIForm *> frms;
+			Data::ArrayListNN<UI::GUIForm> frms;
 			SSWR::AVIRead::AVIRGISForm *gisForm;
 
 			Bool batchLoad;
 			Data::ArrayList<Map::MapDrawLayer*> *batchLyrs;
 
 		protected:
-			static void __stdcall FormClosed(void *userObj, UI::GUIForm *frm);
-			void InitForm(UI::GUIForm *frm);
+			static void __stdcall FormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			void InitForm(NotNullPtr<UI::GUIForm> frm);
 
 			AVIRCore(NotNullPtr<UI::GUICore> ui);
 		public:
@@ -116,7 +116,7 @@ namespace SSWR
 			Bool GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt lineStyle, NotNullPtr<Media::ColorConv> colorConv);
 			Bool GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt fontStyle, NotNullPtr<Media::ColorConv> colorConv);
 			Bool GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NotNullPtr<Media::ColorConv> colorConv);
-			void ShowForm(UI::GUIForm *frm);
+			void ShowForm(NotNullPtr<UI::GUIForm> frm);
 			void CloseAllForm();
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
 			SSWR::AVIRead::AVIRGISForm *GetGISForm();

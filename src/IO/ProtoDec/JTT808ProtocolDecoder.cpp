@@ -18,7 +18,7 @@ Text::CStringNN IO::ProtoDec::JTT808ProtocolDecoder::GetName() const
 	return CSTR("JTT808");
 }
 
-UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 proto[1024];
 	UOSInt i;

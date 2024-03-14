@@ -177,11 +177,11 @@ namespace SSWR
 			Net::WirelessLAN *wlan;
 			OSInt wlanScanCnt;
 
-			static void __stdcall OnAdaptorSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPortClicked(void *userObj);
-			static void __stdcall OnAdaptorEnableClicked(void *userObj);
-			static void __stdcall OnAdaptorDisableClicked(void *userObj);
+			static void __stdcall OnAdaptorSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnPortClicked(AnyType userObj);
+			static void __stdcall OnAdaptorEnableClicked(AnyType userObj);
+			static void __stdcall OnAdaptorDisableClicked(AnyType userObj);
 
 			void UpdateIPStats();
 			void UpdateTCPStats();

@@ -13,12 +13,13 @@ typedef enum
 	MNU_SEARCH_DISC
 } MenuItems;
 
-void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::DiscDB::DiscDBMainForm *me = (SSWR::DiscDB::DiscDBMainForm *)userObj;
+	NotNullPtr<SSWR::DiscDB::DiscDBMainForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBMainForm>();
 	Bool succ;
 	Bool failed = false;
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		succ = false;

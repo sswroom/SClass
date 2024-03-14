@@ -63,8 +63,8 @@ namespace SSWR
 			Bool threadToStop;
 			Sync::Event threadEvt;
 
-			static void __stdcall OnBrowseClicked(void *userObj);
-			static void __stdcall OnConvertClicked(void *userObj);
+			static void __stdcall OnBrowseClicked(AnyType userObj);
+			static void __stdcall OnConvertClicked(AnyType userObj);
 			static UInt32 __stdcall ThreadFunc(void *userObj);
 
 			void StartThreads();

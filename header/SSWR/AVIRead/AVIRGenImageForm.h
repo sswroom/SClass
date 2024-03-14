@@ -27,8 +27,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ImageGen::ImageGenMgr *imgGenMgr;
 
-			static void __stdcall GenerateClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
+			static void __stdcall GenerateClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
 		public:
 			AVIRGenImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGenImageForm();

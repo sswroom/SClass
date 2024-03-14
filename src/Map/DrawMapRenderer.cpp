@@ -3802,7 +3802,7 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 	imgDurMS.Set(denv.imgDurMS);
 }
 
-void Map::DrawMapRenderer::SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, void *userObj)
+void Map::DrawMapRenderer::SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, AnyType userObj)
 {
 }
 

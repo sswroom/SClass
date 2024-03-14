@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_IREALTIMEVIDEOSOURCE
 #define _SM_MEDIA_IREALTIMEVIDEOSOURCE
+#include "AnyType.h"
 #include "Media/IVideoSource.h"
 
 namespace Media
@@ -21,7 +22,7 @@ namespace Media
 		virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom);
 
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
-		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData) = 0;
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData) = 0;
 		virtual Bool Start() = 0; //true = succeed
 		virtual void Stop() = 0;
 		virtual Bool IsVideoCapture();
@@ -35,7 +36,7 @@ namespace Media
 		virtual Bool HasFrameCount();
 		virtual UOSInt GetFrameCount();
 		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 	};

@@ -3,9 +3,9 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileRenameForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileRenameForm *me = (SSWR::AVIRead::AVIRFileRenameForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileRenameForm>();
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbExt;
 	Text::StringBuilderUTF8 sbPath;
@@ -42,9 +42,9 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileRenameForm *me = (SSWR::AVIRead::AVIRFileRenameForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileRenameForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -74,7 +74,7 @@ Data::Duration Media::IRealtimeVideoSource::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Media::IRealtimeVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::IRealtimeVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 

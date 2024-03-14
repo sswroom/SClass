@@ -3,9 +3,9 @@
 #include "Net/DNSServer.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::DNSServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DNSServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::DNSServer *me = (Net::DNSServer*)userData;
+	NotNullPtr<Net::DNSServer> me = userData.GetNN<Net::DNSServer>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -69,7 +69,7 @@ Bool Net::DNSServer::IsError()
 	return this->svr->IsError();
 }
 
-void Net::DNSServer::HandleRequest(DNSRequest hdlr, void *userObj)
+void Net::DNSServer::HandleRequest(DNSRequest hdlr, AnyType userObj)
 {
 	this->reqHdlr = hdlr;
 	this->reqObj = userObj;

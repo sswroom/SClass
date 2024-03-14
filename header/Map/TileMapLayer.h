@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_TILEMAPLAYER
 #define _SM_MAP_TILEMAPLAYER
+#include "Data/CallbackStorage.h"
 #include "Data/SyncLinkedList.h"
 #include "Media/SharedImage.h"
 #include "Map/MapRenderer.h"
@@ -52,8 +53,7 @@ namespace Map
 		Sync::Event taskEvt;
 		Sync::Mutex taskMut;
 		Sync::Mutex updMut;
-		Data::ArrayList<UpdatedHandler> updHdlrs;
-		Data::ArrayList<void *> updObjs;
+		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		static UInt32 __stdcall TaskThread(void *userObj);
 		static Math::Coord2D<Int32> IdToCoord(Int64 id);
@@ -90,8 +90,8 @@ namespace Map
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList);
 
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		Bool IsCaching(UOSInt level, Int64 imgId);
 		void WaitCache();
 		NotNullPtr<Map::TileMap> GetTileMap();

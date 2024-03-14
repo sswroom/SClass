@@ -19,7 +19,7 @@ namespace SSWR
 			Int64 paintCnt;
 			Int64 dispCnt;
 
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRPaintCntForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPaintCntForm();

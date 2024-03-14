@@ -1,5 +1,6 @@
 #ifndef _SM_NET_NETBIOSSCANNER
 #define _SM_NET_NETBIOSSCANNER
+#include "Data/CallbackStorage.h"
 #include "Data/FastMap.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
@@ -26,15 +27,14 @@ namespace Net
 			UOSInt namesCnt;
 		};
 
-		typedef void (__stdcall *AnswerUpdated)(void *userObj, UInt32 sortableIP);
+		typedef void (__stdcall *AnswerUpdated)(AnyType userObj, UInt32 sortableIP);
 	private:
 		Net::UDPServer *svr;
 		Sync::Mutex ansMut;
 		Data::FastMap<UInt32, NameAnswer*> answers;
-		AnswerUpdated hdlr;
-		void *hdlrObj;
+		Data::CallbackStorage<AnswerUpdated> hdlr;
 
-		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static void FreeAnswer(NameAnswer *ans);
 	public:
 		NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
@@ -42,7 +42,7 @@ namespace Net
 
 		Bool IsError() const;
 		void SendRequest(UInt32 ip);
-		void SetAnswerHandler(AnswerUpdated hdlr, void *userObj);
+		void SetAnswerHandler(AnswerUpdated hdlr, AnyType userObj);
 		NotNullPtr<const Data::ReadingList<NameAnswer*>> GetAnswers(NotNullPtr<Sync::MutexUsage> mutUsage) const;
 	};
 }

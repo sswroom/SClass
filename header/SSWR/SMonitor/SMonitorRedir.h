@@ -12,7 +12,7 @@ namespace SSWR
 		class SMonitorRedir
 		{
 		public:
-			typedef void (__stdcall *RecordReplyHandler)(void *userObj, Int64 recTime, Int64 svrTime);
+			typedef void (__stdcall *RecordReplyHandler)(AnyType userObj, Int64 recTime, Int64 svrTime);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::UDPServer *svr;
@@ -21,9 +21,9 @@ namespace SSWR
 			Crypto::Hash::CRC16 dataCRC;
 			Sync::Mutex dataCRCMut;
 			RecordReplyHandler recReplyHdlr;
-			void *recReplyObj;
+			AnyType recReplyObj;
 
-			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal);
 		public:
 			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
@@ -39,7 +39,7 @@ namespace SSWR
 			Bool SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName, UOSInt nameLen);
 			Bool SendDevVersion(Int64 cliId, Int64 progVersion);
 
-			void HandleRecReply(RecordReplyHandler hdlr, void *userObj);
+			void HandleRecReply(RecordReplyHandler hdlr, AnyType userObj);
 		};
 	}
 }

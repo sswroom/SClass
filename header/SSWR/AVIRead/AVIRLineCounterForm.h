@@ -49,11 +49,11 @@ namespace SSWR
 			Data::ArrayListStringNN extList;
 			Data::ArrayList<FileInfo *> resList;
 
-			static void __stdcall OnExtensionsAddClicked(void *userObj);
-			static void __stdcall OnExtensionsRemoveClicked(void *userObj);
-			static void __stdcall OnExtensionsClearClicked(void *userObj);
-			static void __stdcall OnCalcClicked(void *userObj);
-			static void __stdcall OnResultSaveClicked(void *userObj);
+			static void __stdcall OnExtensionsAddClicked(AnyType userObj);
+			static void __stdcall OnExtensionsRemoveClicked(AnyType userObj);
+			static void __stdcall OnExtensionsClearClicked(AnyType userObj);
+			static void __stdcall OnCalcClicked(AnyType userObj);
+			static void __stdcall OnResultSaveClicked(AnyType userObj);
 
 			void CalcDir(UTF8Char *pathBuff, UTF8Char *pathBuffEnd);
 			void ClearExts(Bool inclDisp);

@@ -74,9 +74,9 @@ namespace SSWR
 			Double respTimeTotal;
 			Data::ArrayListStringNN respHeaders;
 
-			static void __stdcall OnRequestClicked(void *userObj);
+			static void __stdcall OnRequestClicked(AnyType userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 		public:
 			AVIRHTTPDownloaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -84,6 +84,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

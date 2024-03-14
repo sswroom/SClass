@@ -155,9 +155,9 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedGoClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRChineseForm::OnFormClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRChineseForm::OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	me->SaveChar();
 }
 

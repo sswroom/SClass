@@ -6,15 +6,15 @@
 
 typedef struct
 {
-	void *cliData;
+	AnyType cliData;
 	UOSInt buffSize;
 	UInt16 seqId;
 	UInt8 recvBuff[4096];
 } ClientData;
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
 	if (me->svr)
 	{
 		me->ServerStop();
@@ -49,9 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -60,10 +60,10 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
-	ClientData *data = (ClientData*)cliData;
+	NotNullPtr<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
+	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		UTF8Char sbuff[256];
@@ -74,15 +74,15 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(NotNullPtr<Net
 		me->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
-		MemFree(data);
+		MemFree(data.Ptr());
 		cli.Delete();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
-	ClientData *data = (ClientData*)cliData;
+	NotNullPtr<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
+	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -106,13 +106,13 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NotNullPtr<Net:
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(Socket *s, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(Socket *s, AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
 	NotNullPtr<Net::TCPClient> cli;
 	ClientData *data;
 	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
@@ -184,9 +184,9 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
-	ClientData *data = (ClientData*)stmObj;
+	NotNullPtr<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
 	UInt8 tmpPacket[64];
 	UTF8Char sbuff[512];
@@ -409,7 +409,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NotNullPtr<IO::Stream> stm,
 	}
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

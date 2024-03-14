@@ -4,15 +4,15 @@
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConvClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConvClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAsmConvForm *me = (SSWR::AVIRead::AVIRAsmConvForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAsmConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAsmConvForm>();
 	me->ConvAsm();
 }
 
-void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAsmConvForm *me = (SSWR::AVIRead::AVIRAsmConvForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAsmConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAsmConvForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), sb))

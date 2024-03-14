@@ -27,12 +27,12 @@ namespace SSWR
 
 			IMapNavigator *navi;
 
-			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 
-			static void __stdcall OnAreaClicked(void *userObj);
-			static void __stdcall OnRandomClicked(void *userObj);
+			static void __stdcall OnAreaClicked(AnyType userObj);
+			static void __stdcall OnRandomClicked(AnyType userObj);
 
 		public:
 			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);

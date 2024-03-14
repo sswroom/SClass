@@ -528,7 +528,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 	return readSize;
 }
 
-void Media::AudioFilter::DTMFDecoder::HandleToneChange(ToneChangeEvent hdlr, void *userObj)
+void Media::AudioFilter::DTMFDecoder::HandleToneChange(ToneChangeEvent hdlr, AnyType userObj)
 {
 	this->toneChgHdlr = hdlr;
 	this->toneChgObj = userObj;

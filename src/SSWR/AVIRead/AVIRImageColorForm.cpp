@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UOSInt newPos)
 {
-	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
@@ -39,9 +39,9 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 	me->previewCtrl->SetImage(me->destPrevImg.Ptr(), true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	NotNullPtr<const Media::ColorProfile> color;
 	color = me->srcImg->info.color;
 	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
@@ -67,15 +67,15 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
 	{

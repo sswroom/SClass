@@ -4,9 +4,9 @@
 #include "Net/TraceRoute.h"
 #include "SSWR/AVIRead/AVIRTraceRouteForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTraceRouteForm *me = (SSWR::AVIRead::AVIRTraceRouteForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 targetIP;
 	UTF8Char sbuff[32];
@@ -54,10 +54,10 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTraceRouteForm *me = (SSWR::AVIRead::AVIRTraceRouteForm*)userObj;
-	UInt32 ip = (UInt32)(UOSInt)me->lbIP->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
+	UInt32 ip = (UInt32)(UOSInt)me->lbIP->GetSelectedItem().p;
 	if (ip)
 	{
 		Text::StringBuilderUTF8 sb;

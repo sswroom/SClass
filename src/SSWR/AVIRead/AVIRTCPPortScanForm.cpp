@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRTCPPortScanForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPPortScanForm *me = (SSWR::AVIRead::AVIRTCPPortScanForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
 	if (me->scanner)
 	{
 		SDEL_CLASS(me->scanner);
@@ -43,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPPortScanForm *me = (SSWR::AVIRead::AVIRTCPPortScanForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
 	if (me->scanner)
 	{
 		if (me->listUpdated)
@@ -86,9 +86,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnPortUpdated(void *userObj, UInt16 port)
+void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnPortUpdated(AnyType userObj, UInt16 port)
 {
-	SSWR::AVIRead::AVIRTCPPortScanForm *me = (SSWR::AVIRead::AVIRTCPPortScanForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
 	me->listUpdated = true;
 }
 

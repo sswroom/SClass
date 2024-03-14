@@ -5,10 +5,11 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRGLBViewerForm *me = (SSWR::AVIRead::AVIRGLBViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGLBViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGLBViewerForm>();
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		if (me->LoadFile(files[i]))

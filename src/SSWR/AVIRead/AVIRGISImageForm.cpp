@@ -2,9 +2,9 @@
 #include "SSWR/AVIRead/AVIRGISImageForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISImageForm *me = (SSWR::AVIRead::AVIRGISImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	UOSInt selIndex = me->plIcons->GetSelectedIndex();
 	if (selIndex != INVALID_INDEX)
 	{
@@ -17,17 +17,18 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISImageForm *me = (SSWR::AVIRead::AVIRGISImageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames)
 {
-	SSWR::AVIRead::AVIRGISImageForm *me = (SSWR::AVIRead::AVIRGISImageForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	Bool loaded = false;
 	UOSInt i;
+	UOSInt fileCnt = fileNames.GetCount();
 	i = 0;
 	while (i < fileCnt)
 	{

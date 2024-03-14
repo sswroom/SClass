@@ -46,9 +46,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStop;
 
 		private:
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnStopClick(void *userObj);
-			static void __stdcall OnSSLCertClicked(void *userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnStopClick(AnyType userObj);
+			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
 			AVIRHTTPForwarderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

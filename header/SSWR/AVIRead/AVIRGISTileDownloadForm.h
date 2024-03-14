@@ -61,14 +61,14 @@ namespace SSWR
 			NotNullPtr<Map::TileMapLayer> lyr;
 			IMapNavigator *navi;
 
-			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 
-			static void __stdcall OnAreaClicked(void *userObj);
-			static void __stdcall OnSaveDirClicked(void *userObj);
-			static void __stdcall OnSaveFileClicked(void *userObj);
-			static void __stdcall OnStopClicked(void *userObj);
+			static void __stdcall OnAreaClicked(AnyType userObj);
+			static void __stdcall OnSaveDirClicked(AnyType userObj);
+			static void __stdcall OnSaveFileClicked(AnyType userObj);
+			static void __stdcall OnStopClicked(AnyType userObj);
 
 			void SaveTilesDir(Text::CStringNN folderName, UOSInt userMinLevel, UOSInt userMaxLevel);
 			void SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel);

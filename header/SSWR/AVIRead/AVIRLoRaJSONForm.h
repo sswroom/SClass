@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtInfo;
 
 		private:
-			static void __stdcall OnJSONParseClick(void *userObj);
+			static void __stdcall OnJSONParseClick(AnyType userObj);
 			static void PHYPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize);
 			static void MACPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, Bool downLink, const UInt8 *buff, UOSInt buffSize);
 		public:

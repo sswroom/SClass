@@ -32,9 +32,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSearch;
 			NotNullPtr<UI::GUIListView> lvFiles;
 
-			static void __stdcall OnSearchClicked(void *userObj);
-			static void __stdcall OnDirectoryDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnFilesDblClk(void *userObj, UOSInt itemIndex);
+			static void __stdcall OnSearchClicked(AnyType userObj);
+			static void __stdcall OnDirectoryDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFilesDblClk(AnyType userObj, UOSInt itemIndex);
 
 			void ClearFiles();
 			void FindDir(UTF8Char *dir, UTF8Char *dirEnd, const UInt8 *searchBuff, UOSInt searchLen);

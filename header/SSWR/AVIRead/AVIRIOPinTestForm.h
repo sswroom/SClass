@@ -29,13 +29,13 @@ namespace SSWR
 			IO::IOPin *pin;
 			Bool isOutput;
 
-			static void __stdcall OnPullUpClicked(void *userObj);
-			static void __stdcall OnPullDownClicked(void *userObj);
-			static void __stdcall OnPinModeInputClicked(void *userObj);
-			static void __stdcall OnPinModeOutputClicked(void *userObj);
-			static void __stdcall OnPinHighClicked(void *userObj);
-			static void __stdcall OnPinLowClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnPullUpClicked(AnyType userObj);
+			static void __stdcall OnPullDownClicked(AnyType userObj);
+			static void __stdcall OnPinModeInputClicked(AnyType userObj);
+			static void __stdcall OnPinModeOutputClicked(AnyType userObj);
+			static void __stdcall OnPinHighClicked(AnyType userObj);
+			static void __stdcall OnPinLowClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
 			virtual ~AVIRIOPinTestForm();

@@ -19,7 +19,7 @@ namespace Media
 	class VideoRenderer
 	{
 	public:
-		typedef void (__stdcall *EndNotifier)(void *userObj);
+		typedef void (__stdcall *EndNotifier)(AnyType userObj);
 
 		enum DeinterlaceType
 		{
@@ -194,7 +194,7 @@ namespace Media
 
 		Int32 picCnt;
 		EndNotifier endHdlr;
-		void *endHdlrObj;
+		AnyType endHdlrObj;
 
 		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 
@@ -203,8 +203,8 @@ namespace Media
 		virtual void CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(ThreadStat *tstat);
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
 
 		static UInt32 __stdcall ProcessThread(void *userObj);
 		static UInt32 __stdcall DisplayThread(void *userObj);
@@ -240,7 +240,7 @@ namespace Media
 		void SetDeintType(DeinterlaceType deintType);
 		void ClearBuff();
 
-		void SetEndNotify(EndNotifier endHdlr, void *userObj);
+		void SetEndNotify(EndNotifier endHdlr, AnyType userObj);
 		void SetSrcRGBType(Media::CS::TransferType rgbType);
 		void SetSrcRGBTransfer(NotNullPtr<const Media::CS::TransferParam> transf);
 		void SetSrcPrimaries(Media::ColorProfile::ColorType colorType);

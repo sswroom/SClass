@@ -21,17 +21,17 @@ namespace Media
 			Media::IAudioSource *adecoder;
 			Media::NullRenderer *renderer;
 			Media::IVideoSource *vdecoder;
-			Sync::Event *evt;
+			NotNullPtr<Sync::Event> evt;
 		} DecodeStatus;
 	private:
-		Media::Decoder::VideoDecoderFinder *vdecoders;
-		Media::Decoder::AudioDecoderFinder *adecoders;
+		Media::Decoder::VideoDecoderFinder vdecoders;
+		Media::Decoder::AudioDecoderFinder adecoders;
 		Bool allowTimeSkip;
-		Sync::Event *evt;
+		Sync::Event evt;
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);
-		static void __stdcall OnAudioEnd(void *userData);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
+		static void __stdcall OnAudioEnd(AnyType userData);
 	public:
 		VideoChecker(Bool allowTimeSkip);
 		~VideoChecker();

@@ -12,11 +12,11 @@ namespace Media
 			Media::IVideoSource *sourceVideo;
 			FrameCallback frameCb;
 			FrameChangeCallback fcCb;
-			void *frameCbData;
+			AnyType frameCbData;
 			Bool started;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
 		public:
@@ -30,7 +30,7 @@ namespace Media
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
 
-			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
+			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start();
 			virtual void Stop();
 			virtual Bool IsRunning();

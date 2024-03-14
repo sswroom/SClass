@@ -11,9 +11,9 @@
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -386,9 +386,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
 	if (s)
 	{
@@ -397,9 +397,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -505,9 +505,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -575,9 +575,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(void *userObj, CloseReason reason)
+Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(AnyType userObj, CloseReason reason)
 {
-	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Manage::HiResClock clk;
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{

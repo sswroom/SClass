@@ -142,7 +142,8 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 			UOSInt i = this->updHdlrs.GetCount();
 			while (i-- > 0)
 			{
-				this->updHdlrs.GetItem(i)(this->updObjs.GetItem(i));
+				Data::CallbackStorage<UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+				cb.func(cb.userObj);
 			}
 			mutUsage.EndUse();
 		}
@@ -198,7 +199,8 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 					UOSInt j = me->updHdlrs.GetCount();
 					while (j-- > 0)
 					{
-						me->updHdlrs.GetItem(j)(me->updObjs.GetItem(j));
+						Data::CallbackStorage<UpdatedHandler> cb = me->updHdlrs.GetItem(j);
+						cb.func(cb.userObj);
 					}
 					mutUsage.EndUse();
 				}
@@ -241,7 +243,6 @@ Map::WebImageLayer::~WebImageLayer()
 	ImageStat *stat;
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
-	this->updObjs.Clear();
 	mutUsage.EndUse();
 
 	this->threadToStop = true;
@@ -333,7 +334,8 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 		i = this->updHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->updHdlrs.GetItem(i)(this->updObjs.GetItem(i));
+			Data::CallbackStorage<UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+			cb.func(cb.userObj);
 		}
 		mutUsage.EndUse();
 	}
@@ -577,27 +579,25 @@ Map::MapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_WEB_IMAGE_LAYER;
 }
 
-void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::WebImageLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs.Add(hdlr);
-	this->updObjs.Add(obj);
+	this->updHdlrs.Add({hdlr, obj});
 }
 
-void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
+		Data::CallbackStorage<UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == obj)
 		{
 			this->updHdlrs.RemoveAt(i);
-			this->updObjs.RemoveAt(i);
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)

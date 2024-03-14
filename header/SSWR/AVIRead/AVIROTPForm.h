@@ -42,11 +42,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvEntry;
 
 			void RandBytes(UOSInt len);
-			static void __stdcall OnKeyRand80Clicked(void *userObj);
-			static void __stdcall OnKeyRand160Clicked(void *userObj);
-			static void __stdcall OnNewClicked(void *userObj);
-			static void __stdcall OnEntryDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnKeyRand80Clicked(AnyType userObj);
+			static void __stdcall OnKeyRand160Clicked(AnyType userObj);
+			static void __stdcall OnNewClicked(AnyType userObj);
+			static void __stdcall OnEntryDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIROTPForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROTPForm();

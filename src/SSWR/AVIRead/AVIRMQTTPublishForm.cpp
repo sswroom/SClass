@@ -4,9 +4,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishForm *me = (SSWR::AVIRead::AVIRMQTTPublishForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishForm>();
 	Net::SocketUtil::AddressInfo addr;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbHost;

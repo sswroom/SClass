@@ -24,8 +24,8 @@ namespace SSWR
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SHPConvAddFilterForm();

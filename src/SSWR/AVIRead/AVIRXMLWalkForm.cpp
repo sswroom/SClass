@@ -4,9 +4,9 @@
 #include "Text/XMLReader.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRXMLWalkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRXMLWalkForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false);
 	dlg->SetAllowMultiSel(false);
 	dlg->AddFilter(CSTR("*.xml"), CSTR("XML File"));
@@ -18,10 +18,10 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames)
 {
-	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
-	if (nFiles > 0)
+	NotNullPtr<SSWR::AVIRead::AVIRXMLWalkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRXMLWalkForm>();
+	if (fileNames.GetCount() > 0)
 	{
 		me->LoadFile(fileNames[0]->ToCString());
 	}

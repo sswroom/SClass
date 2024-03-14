@@ -57,8 +57,8 @@ namespace SSWR
 			Manage::SymbolResolver *symbol;
 			Manage::ThreadContext::ContextType contextType;
 
-			static void __stdcall OnMyStackChg(void *userObj);
-			static void __stdcall OnMyStackDblClk(void *userObj, UOSInt index);
+			static void __stdcall OnMyStackChg(AnyType userObj);
+			static void __stdcall OnMyStackDblClk(AnyType userObj, UOSInt index);
 		public:
 			AVIRThreadInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId);
 			virtual ~AVIRThreadInfoForm();

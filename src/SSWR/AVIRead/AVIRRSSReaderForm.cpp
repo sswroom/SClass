@@ -9,9 +9,9 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -129,9 +129,9 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	NotNullPtr<Text::String> s;
 	UOSInt i = me->cboRecent->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->rssList.GetItem(i).SetTo(s))
@@ -140,9 +140,9 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem(index);
 	if (item)
 	{

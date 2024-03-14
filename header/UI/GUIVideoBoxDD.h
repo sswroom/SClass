@@ -17,7 +17,7 @@ namespace UI
 			MA_START,
 			MA_PAUSE
 		} MouseAction;
-		typedef void (__stdcall *MouseActionHandler)(void *userObj, MouseAction ma, Math::Coord2D<OSInt> pos);
+		typedef void (__stdcall *MouseActionHandler)(AnyType userObj, MouseAction ma, Math::Coord2D<OSInt> pos);
 	protected:
 		IO::Writer *debugLog;
 		IO::Stream *debugFS;
@@ -25,7 +25,7 @@ namespace UI
 		IO::Stream *debugFS2;
 
 		MouseActionHandler maHdlr;
-		void *maHdlrObj;
+		AnyType maHdlrObj;
 		Bool maDown;
 		Math::Coord2D<OSInt> maDownPos;
 		Int64 maDownTime;
@@ -56,7 +56,7 @@ namespace UI
 		virtual void OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton button);
 		virtual void OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button);
 
-		void HandleMouseActon(MouseActionHandler hdlr, void *userObj);
+		void HandleMouseActon(MouseActionHandler hdlr, AnyType userObj);
 
 		virtual void DestroyObject();
 		virtual void SetRotateType(Media::RotateType rotateType);

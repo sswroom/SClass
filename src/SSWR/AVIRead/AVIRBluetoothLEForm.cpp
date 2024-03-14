@@ -9,9 +9,9 @@
 #include "UI/Clipboard.h"
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	if (me->btCtrl)
 	{
 		me->btCtrl->LEScanEnd();
@@ -38,15 +38,15 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(void *userObj)
 	
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStoreListClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStoreListClicked(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt8 mac[8];
@@ -59,9 +59,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	UOSInt i;
 	UOSInt j;
 	UInt8 buff[8];
@@ -107,9 +107,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, Text::CString name)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name)
 {
-	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	BTDevice *dev;
 	Sync::MutexUsage mutUsage(me->devMut);
 	dev = me->devMap.Get(mac);

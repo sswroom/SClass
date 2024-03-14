@@ -3,15 +3,15 @@
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt8 buff[16];
 	UInt32 ipAddr;
 	UOSInt i;
-	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm*)userObj;
-	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	Net::ConnectionInfo::ConnectionType connType;
 	if (connInfo)
 	{
@@ -124,9 +124,9 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	UOSInt i = me->tcMain->GetSelectedIndex();
 	if (i == 1)
 	{
@@ -153,16 +153,16 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnPortClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnPortClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	me->UpdatePortStats();
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm*)userObj;
-	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (connInfo)
@@ -181,10 +181,10 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm*)userObj;
-	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (connInfo)
@@ -511,7 +511,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFIIFs()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 {
-	Net::WirelessLAN::Interface *interf = (Net::WirelessLAN::Interface*)this->lbWIFIIFs->GetSelectedItem();
+	Net::WirelessLAN::Interface *interf = (Net::WirelessLAN::Interface*)this->lbWIFIIFs->GetSelectedItem().p;
 	if (interf == 0)
 	{
 		this->lvWIFINetwork->ClearItems();

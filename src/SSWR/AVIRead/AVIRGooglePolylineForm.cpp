@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRGooglePolylineForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGooglePolylineForm *me = (SSWR::AVIRead::AVIRGooglePolylineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGooglePolylineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGooglePolylineForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtPolylineText->GetText(sb);
 	me->polyline = Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(sb.ToString());
@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGooglePolylineForm *me = (SSWR::AVIRead::AVIRGooglePolylineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGooglePolylineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGooglePolylineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -37,8 +37,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUITextBox> txtStatus;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRBruteForceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBruteForceForm();

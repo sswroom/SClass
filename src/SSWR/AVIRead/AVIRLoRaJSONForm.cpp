@@ -3,9 +3,9 @@
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLoRaJSONForm *me = (SSWR::AVIRead::AVIRLoRaJSONForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLoRaJSONForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoRaJSONForm>();
 	UInt8 buff[256];
 	UOSInt buffSize;
 	Text::StringBuilderUTF8 sb;

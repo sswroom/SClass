@@ -100,20 +100,20 @@ namespace SSWR
 			MovieCols *MovieColsNew(Text::CString fileName); //
 			void MovieColsFree(MovieCols *anime);
 
-			static void __stdcall OnBrowseClicked(void *userObj);
-			static void __stdcall OnFileNameSelChg(void *userObj); //
-			static void __stdcall OnBrandSelChg(void *userObj);
-			static void __stdcall OnDVDNameSelChg(void *userObj);
-			static void __stdcall OnCboDVDNameSelChg(void *userObj);
-			static void __stdcall OnCboDVDNameTextChg(void *userObj);
-			static void __stdcall OnSeriesSelChg(void *userObj);
-			static void __stdcall OnFinishClicked(void *userObj);
-			static void __stdcall OnVolumeSelChg(void *userObj);
-			static void __stdcall OnRemoveFileClicked(void *userObj);
-			static void __stdcall OnCategorySelChg(void *userObj);
-			static void __stdcall OnDiscIdTextChg(void *userObj);
-			static void __stdcall OnSectorSizeClicked(void *userObj);
-			static void __stdcall OnAllFileClicked(void *userObj);
+			static void __stdcall OnBrowseClicked(AnyType userObj);
+			static void __stdcall OnFileNameSelChg(AnyType userObj); //
+			static void __stdcall OnBrandSelChg(AnyType userObj);
+			static void __stdcall OnDVDNameSelChg(AnyType userObj);
+			static void __stdcall OnCboDVDNameSelChg(AnyType userObj);
+			static void __stdcall OnCboDVDNameTextChg(AnyType userObj);
+			static void __stdcall OnSeriesSelChg(AnyType userObj);
+			static void __stdcall OnFinishClicked(AnyType userObj);
+			static void __stdcall OnVolumeSelChg(AnyType userObj);
+			static void __stdcall OnRemoveFileClicked(AnyType userObj);
+			static void __stdcall OnCategorySelChg(AnyType userObj);
+			static void __stdcall OnDiscIdTextChg(AnyType userObj);
+			static void __stdcall OnSectorSizeClicked(AnyType userObj);
+			static void __stdcall OnAllFileClicked(AnyType userObj);
 
 		public:
 			DiscDBBurntDiscForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);

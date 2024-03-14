@@ -27,7 +27,7 @@ namespace Net
 				IO::MemoryStream *dataStm;
 			} MailStatus;
 
-			typedef WChar *(__stdcall *MailHandler)(WChar *queryId, void *userObj, Net::TCPClient *cli, MailStatus *mail);
+			typedef WChar *(__stdcall *MailHandler)(WChar *queryId, AnyType userObj, Net::TCPClient *cli, MailStatus *mail);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
@@ -40,15 +40,15 @@ namespace Net
 			Net::Email::MailController *mailCtrl;
 			IO::FileStream *rawLog;
 
-			static void __stdcall ConnReady(NotNullPtr<Net::TCPClient> cli, void *userObj);
-			static void __stdcall ConnHdlr(Socket *s, void *userObj);
-			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+			static void __stdcall ConnReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
+			static void __stdcall ConnHdlr(Socket *s, AnyType userObj);
+			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 			UOSInt WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool success, Text::CString msg);
 			UOSInt WriteRAW(NotNullPtr<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
+			void ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
 			POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart);
 			~POP3Server();

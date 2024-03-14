@@ -129,9 +129,9 @@ typedef enum
 	MNU_HK_GEODATA_WMS
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISForm>();
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	IO::ParsedObject *pobj;
 	NotNullPtr<IO::ParsedObject> nnpobj;
@@ -153,6 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 
 	NEW_CLASS(layers, Data::ArrayList<Map::MapDrawLayer*>());
 	UOSInt i = 0;
+	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
 		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]->ToCString());
@@ -254,12 +255,12 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 	DEL_CLASS(layers);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Math::Coord2DDbl latLon;
-	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	Math::Coord2DDbl mapPos = me->mapCtrl->ScnXY2MapXY(scnPos);
 
 	sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, mapPos.x), UTF8STRC(", ")), mapPos.y);
@@ -276,43 +277,46 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, Math::C
 	i = me->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		me->mouseMoveHdlrs.GetItem(i)(me->mouseMoveObjs.GetItem(i), scnPos);
+		Data::CallbackStorage<MouseEvent> cb = me->mouseMoveHdlrs.GetItem(i);
+		cb.func(cb.userObj, scnPos);
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
-	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	Bool ret = false;
 	UOSInt i;
 	i = me->mouseDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		ret = me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), scnPos);
+		Data::CallbackStorage<MouseEvent> cb = me->mouseDownHdlrs.GetItem(i);
+		ret = cb.func(cb.userObj, scnPos);
 		if (ret)
 			return true;
 	}
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
-	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	Bool ret = false;
 	UOSInt i;
 	i = me->mouseUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		ret = me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), scnPos);
+		Data::CallbackStorage<MouseEvent> cb = me->mouseUpHdlrs.GetItem(i);
+		ret = cb.func(cb.userObj, scnPos);
 		if (ret)
 			return true;
 	}
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Double newScale)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(AnyType userObj, Double newScale)
 {
-	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->scaleChanging)
@@ -328,16 +332,16 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 	me->txtScale->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapUpdated(void *userObj, Math::Coord2DDbl center, Double timeUsed)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapUpdated(AnyType userObj, Math::Coord2DDbl center, Double timeUsed)
 {
-	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	me->mapUpdT = timeUsed;
 	me->mapUpdTChanged = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(void *userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(AnyType userObj, UOSInt newVal)
 {
-	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (me->scaleChanging)
 		return;
 	me->scaleChanging = true;
@@ -346,9 +350,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(void *userObj, UOSInt
 	me->scaleChanging = false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UI::GUITreeView::TreeItem *item = me->mapTree->GetHighlightItem();
 	if (item)
 	{
@@ -377,20 +381,20 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(void *userObj)
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_TILEDOWN, ((Map::MapEnv::LayerItem*)ind->item)->layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER);
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_IMPORT_TILES, canImport);
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_OPTIMIZE_FILE, canImport);
-			me->mnuLayer->ShowMenu(*me, cursorPos);
+			me->mnuLayer->ShowMenu(me, cursorPos);
 		}
 		else if (ind->itemType == Map::MapEnv::IT_GROUP)
 		{
 			me->popNode = item;
 			me->mnuGroup->SetItemEnabled(MNU_GROUP_REMOVE, (ind->item != 0));
-			me->mnuGroup->ShowMenu(*me, cursorPos);
+			me->mnuGroup->ShowMenu(me, cursorPos);
 		}
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISForm>();
 	me->ctrlForm = 0;
 	if (!me->pauseUpdate)
 	{
@@ -399,23 +403,23 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::G
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISForm>();
 	me->subForms.RemoveAt(me->subForms.IndexOf(frm));
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	me->mapLyrUpdated = true;
 	me->mapCtrl->UpdateMap();
 	me->mapCtrl->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(void *userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(AnyType userObj, UOSInt newVal)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (me->useTime)
 	{
 		me->currTime = (OSInt)newVal + me->timeRangeStart;
@@ -424,9 +428,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(void *userObj, UOSInt 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeChecked(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeChecked(AnyType userObj, Bool newState)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (newState != me->useTime)
 	{
 		me->useTime = newState;
@@ -442,9 +446,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeChecked(void *userObj, Bool new
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeDrag(void *userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeDrag(AnyType userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (dragItem->group == 0 && dragItem->index == (UOSInt)-1)
 		return;
 	if (dropItem->itemType == Map::MapEnv::IT_GROUP)
@@ -460,15 +464,15 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeDrag(void *userObj, UI::GUIMapT
 	me->mapCtrl->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnVAngleScrolled(void *userObj, UOSInt newVal)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnVAngleScrolled(AnyType userObj, UOSInt newVal)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	me->mapCtrl->SetVAngle(UOSInt2Double(newVal) * Math::PI / 180);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	NotNullPtr<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	if (me->mapUpdTChanged)
 	{
 		me->mapUpdTChanged = false;
@@ -811,10 +815,14 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	UOSInt i;
 	this->pauseUpdate = true;
 	this->CloseCtrlForm(true);
+	NotNullPtr<UI::GUIForm> frm;
 	i = this->subForms.GetCount();
 	while (i-- > 0)
 	{
-		this->subForms.GetItem(i)->Close();
+		if (this->subForms.GetItem(i).SetTo(frm))
+		{
+			frm->Close();
+		}
 	}
 	this->mnuLayer.Delete();
 	this->mnuGroup.Delete();
@@ -832,6 +840,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
+	NotNullPtr<UI::GUIForm> frm;
 	NotNullPtr<Math::CoordinateSystem> csys;
 	switch (cmdId)
 	{
@@ -1125,7 +1134,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LAYER_OPENDB:
 		{
 			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
-			this->AddSubForm(NEW_CLASS_D(AVIRDBForm(0, ui, this->core, lyr, false)));
+			NEW_CLASSNN(frm, AVIRDBForm(0, ui, this->core, lyr, false));
+			this->AddSubForm(frm);
 		}
 		break;
 	case MNU_LAYER_ASSIGN_CSYS:
@@ -1327,11 +1337,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			frm.SetText(CSTR("Select GPS Tracker"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
+				NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
 				IO::GPSNMEA *gps;
 				NotNullPtr<Map::GPSTrack> trk;
 				NEW_CLASS(gps, IO::GPSNMEA(frm.GetStream(), true));
-				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
+				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
 				gpsFrm->SetGPSTrack(trk.Ptr());
@@ -1347,11 +1357,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			frm.SetInitSerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort());
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
+				NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
 				IO::GPSNMEA *gps;
 				NotNullPtr<Map::GPSTrack> trk;
 				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
-				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
+				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
 				gpsFrm->SetGPSTrack(trk.Ptr());
@@ -1484,7 +1494,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, this)), 0);
 		break;
 	case MNU_DISTANCE:
-		this->AddSubForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, this)));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, this));
+		this->AddSubForm(frm);
 		break;
 	case MNU_HKTD_TRAFFIC:
 		{
@@ -1513,7 +1524,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_RANDOMLOC:
-		this->AddSubForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, this)));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, this));
+		this->AddSubForm(frm);
 		break;
 	case MNU_HK_WASTELESS:
 		this->OpenCSV(CSTR("https://www.wastereduction.gov.hk/sites/default/files/wasteless.csv"),
@@ -1765,7 +1777,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*>
 	DEL_CLASS(lyrColl);
 }*/
 
-void SSWR::AVIRead::AVIRGISForm::AddSubForm(UI::GUIForm *frm)
+void SSWR::AVIRead::AVIRGISForm::AddSubForm(NotNullPtr<UI::GUIForm> frm)
 {
 	frm->HandleFormClosed(OnSubFormClosed, this);
 	this->subForms.Add(frm);
@@ -1848,52 +1860,46 @@ void SSWR::AVIRead::AVIRGISForm::SetMapCursor(UI::GUIControl::CursorType curType
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::HandleMapMouseDown(MouseEvent evt, void *userObj)
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseDown(MouseEvent evt, AnyType userObj)
 {
-	this->mouseDownHdlrs.Add(evt);
-	this->mouseDownObjs.Add(userObj);
+	this->mouseDownHdlrs.Add({evt, userObj});
 }
 
-void SSWR::AVIRead::AVIRGISForm::HandleMapMouseUp(MouseEvent evt, void *userObj)
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseUp(MouseEvent evt, AnyType userObj)
 {
-	this->mouseUpHdlrs.Add(evt);
-	this->mouseUpObjs.Add(userObj);
+	this->mouseUpHdlrs.Add({evt, userObj});
 }
 
-void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, void *userObj)
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, AnyType userObj)
 {
-	this->mouseMoveHdlrs.Add(evt);
-	this->mouseMoveObjs.Add(userObj);
+	this->mouseMoveHdlrs.Add({evt, userObj});
 }
 
-void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(void *userObj)
+void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(AnyType userObj)
 {
 	UOSInt i;
-	i = this->mouseDownObjs.GetCount();
+	i = this->mouseDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseDownObjs.GetItem(i))
+		if (userObj == this->mouseDownHdlrs.GetItem(i).userObj)
 		{
 			this->mouseDownHdlrs.RemoveAt(i);
-			this->mouseDownObjs.RemoveAt(i);
 		}
 	}
-	i = this->mouseUpObjs.GetCount();
+	i = this->mouseUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseUpObjs.GetItem(i))
+		if (userObj == this->mouseUpHdlrs.GetItem(i).userObj)
 		{
 			this->mouseUpHdlrs.RemoveAt(i);
-			this->mouseUpObjs.RemoveAt(i);
 		}
 	}
-	i = this->mouseMoveObjs.GetCount();
+	i = this->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseMoveObjs.GetItem(i))
+		if (userObj == this->mouseMoveHdlrs.GetItem(i).userObj)
 		{
 			this->mouseMoveHdlrs.RemoveAt(i);
-			this->mouseMoveObjs.RemoveAt(i);
 		}
 	}
 	if (this->currCursor != UI::GUIControl::CT_ARROW)

@@ -9,9 +9,9 @@
 //RFC 1034, RFC 1035, RFC 3596
 extern Char MyString_STRhexarr[];
 
-void __stdcall Net::DNSClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DNSClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::DNSClient *me = (Net::DNSClient*)userData;
+	NotNullPtr<Net::DNSClient> me = userData.GetNN<Net::DNSClient>();
 	RequestStatus *req;
 	Sync::MutexUsage mutUsage(me->reqMut);
 	req = me->reqMap.Get(ReadMUInt16(buff));

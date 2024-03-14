@@ -6,12 +6,13 @@
 #include "SSWR/AVIRead/AVIRICCInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	UOSInt i;
 	Data::ByteBuffer buff(1048576);
 	UOSInt fileSize;
+	UOSInt fileCnt = files.GetCount();
 	i = 0;
 	while (i < fileCnt)
 	{
@@ -35,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNull
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	if (me->icc)
 	{
 		NotNullPtr<Media::LUT> lut;
@@ -48,9 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	if (me->icc)
 	{
 		NotNullPtr<Media::LUT> lut;
@@ -61,9 +62,9 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	if (me->icc)
 	{
 		NotNullPtr<Media::LUT> lut;

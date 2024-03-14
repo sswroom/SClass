@@ -161,17 +161,17 @@ namespace SSWR
 			Data::ArrayListStringNN fileList;
 			Sync::Thread procThread;
 
-			static void __stdcall OnUserAgentClicked(void *userObj);
-			static void __stdcall OnRequestClicked(void *userObj);
-			static void __stdcall OnSaveClicked(void *userObj);
-			static void __stdcall OnViewClicked(void *userObj);
-			static void __stdcall OnDataStrClicked(void *userObj);
-			static void __stdcall OnFileSelectClicked(void *userObj);
-			static void __stdcall OnFileClearClicked(void *userObj);
-			static void __stdcall OnCertClicked(void *userObj);
-			static void __stdcall OnClientCertClicked(void *userObj);
+			static void __stdcall OnUserAgentClicked(AnyType userObj);
+			static void __stdcall OnRequestClicked(AnyType userObj);
+			static void __stdcall OnSaveClicked(AnyType userObj);
+			static void __stdcall OnViewClicked(AnyType userObj);
+			static void __stdcall OnDataStrClicked(AnyType userObj);
+			static void __stdcall OnFileSelectClicked(AnyType userObj);
+			static void __stdcall OnFileClearClicked(AnyType userObj);
+			static void __stdcall OnCertClicked(AnyType userObj);
+			static void __stdcall OnClientCertClicked(AnyType userObj);
 			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 			void ClearParams();
 			void ClearCookie();

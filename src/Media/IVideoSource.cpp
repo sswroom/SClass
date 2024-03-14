@@ -24,7 +24,7 @@ Media::IVideoSource::~IVideoSource()
 	}
 }
 
-Bool Media::IVideoSource::CaptureImage(ImageCallback imgCb, void *userData)
+Bool Media::IVideoSource::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
 	return false;
 }

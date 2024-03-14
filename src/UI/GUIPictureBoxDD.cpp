@@ -299,9 +299,9 @@ void UI::GUIPictureBoxDD::CreateResizer()
 	}
 }
 
-void __stdcall UI::GUIPictureBoxDD::OnSizeChg(void *userObj)
+void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 {
-	UI::GUIPictureBoxDD *me = (UI::GUIPictureBoxDD*)userObj;
+	NotNullPtr<UI::GUIPictureBoxDD> me = userObj.GetNN<UI::GUIPictureBoxDD>();
 	if (me->switching)
 		return;
 	Bool new10Bit = false;

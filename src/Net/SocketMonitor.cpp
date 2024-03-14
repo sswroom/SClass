@@ -22,9 +22,9 @@ void __stdcall Net::SocketMonitor::DataThread(NotNullPtr<Sync::Thread> thread)
 			logTime.SetCurrTimeUTC();
 			if (recvSize > 0)
 			{
-				if (me->hdlr)
+				if (me->hdlr.func)
 				{
-					me->hdlr(me->userData, buff, recvSize);
+					me->hdlr.func(me->hdlr.userObj, buff, recvSize);
 				}
 			}
 		}
@@ -32,7 +32,7 @@ void __stdcall Net::SocketMonitor::DataThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-Net::SocketMonitor::SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, void *userData, UOSInt threadCnt)
+Net::SocketMonitor::SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -41,8 +41,7 @@ Net::SocketMonitor::SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *
 	UOSInt i;
 
 	this->sockf = sockf;
-	this->hdlr = hdlr;
-	this->userData = userData;
+	this->hdlr = {hdlr, userData};
 
 	this->soc = soc;
 	if (this->soc)

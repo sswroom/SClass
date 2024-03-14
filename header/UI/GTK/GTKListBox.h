@@ -25,18 +25,18 @@ namespace UI
 			GTKListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect);
 			virtual ~GTKListBox();
 
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
-			virtual void *RemoveItem(UOSInt index);
-			virtual void *GetItem(UOSInt index);
+			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
+			virtual AnyType RemoveItem(UOSInt index);
+			virtual AnyType GetItem(UOSInt index);
 			virtual void ClearItems();
 			virtual UOSInt GetCount();
 			virtual void SetSelectedIndex(UOSInt index);
 			virtual UOSInt GetSelectedIndex();
 			virtual Bool GetSelectedIndices(Data::ArrayList<UInt32> *indices);
-			virtual void *GetSelectedItem();
+			virtual AnyType GetSelectedItem();
 			virtual UTF8Char *GetSelectedItemText(UTF8Char *buff);
 			virtual Optional<Text::String> GetSelectedItemTextNew();
 			virtual UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);

@@ -63,11 +63,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
-			static void __stdcall OnDatabaseMySQLClicked(void *userObj);
-			static void __stdcall OnDatabaseODBCDSNClicked(void *userObj);
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnStopClick(void *userObj);
-			static void __stdcall OnLogSel(void *userObj);
+			static void __stdcall OnDatabaseMySQLClicked(AnyType userObj);
+			static void __stdcall OnDatabaseODBCDSNClicked(AnyType userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnStopClick(AnyType userObj);
+			static void __stdcall OnLogSel(AnyType userObj);
 			
 			void InitDB();
 		public:

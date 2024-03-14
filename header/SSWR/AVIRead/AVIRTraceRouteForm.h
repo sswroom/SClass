@@ -37,8 +37,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspIP;
 			NotNullPtr<UI::GUITextBox> txtIPWhois;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnIPSelChg(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnIPSelChg(AnyType userObj);
 
 		public:
 			AVIRTraceRouteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

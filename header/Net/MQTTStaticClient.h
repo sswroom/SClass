@@ -38,7 +38,7 @@ namespace Net
 		Bool webSocket;
 
 		static void __stdcall KAThread(NotNullPtr<Sync::Thread> thread);
-		static void __stdcall OnDisconnect(void *user);
+		static void __stdcall OnDisconnect(AnyType userObj);
 		void Connect();
 		UInt16 GetNextPacketId();
 

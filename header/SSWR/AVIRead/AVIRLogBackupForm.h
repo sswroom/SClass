@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLogName;
 			NotNullPtr<UI::GUIButton> btnStart;
 
-			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
 		public:
 			AVIRLogBackupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogBackupForm();

@@ -11,9 +11,9 @@ SSWR::AVIRead::AVIRLoraGWSimForm::PredefData SSWR::AVIRead::AVIRLoraGWSimForm::p
 	{UTF8STRC("Arwin LRS2060x Close"), 10, UTF8STRC("040064010001")},
 };
 
-void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	if (me->lora)
 	{
 		DEL_CLASS(me->lora);
@@ -63,9 +63,9 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	PredefData *data = (PredefData*)me->cboPredef->GetSelectedItem();
 	if (data && data->data)
 	{
@@ -77,9 +77,9 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	if (me->lora == 0)
 	{
 		return;
@@ -172,9 +172,9 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->lbLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);

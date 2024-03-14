@@ -28,11 +28,11 @@ namespace SSWR
 			NotNullPtr<UI::GUICheckBox> chkEcho;
 			NotNullPtr<UI::GUIButton> btnStart;
 
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnClientConn(Socket *s, void *userObj);
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnClientConn(Socket *s, AnyType userObj);
+			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 			static UInt32 __stdcall RecvThread(void *userObj);
 		public:
 			AVIRTCPSpdSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

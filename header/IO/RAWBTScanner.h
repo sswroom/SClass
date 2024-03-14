@@ -23,7 +23,7 @@ namespace IO
 		virtual ~RAWBTScanner();
 
 		Bool IsError();
-		virtual void HandleRecordUpdate(RecordHandler hdlr, void *userObj);
+		virtual void HandleRecordUpdate(RecordHandler hdlr, AnyType userObj);
 		
 		virtual Bool IsScanOn();
 		virtual void ScanOn();

@@ -5,30 +5,30 @@
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnOkClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnOkClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
 	SSWR::AVIRead::AVIRUserAgentSelForm::OSItem *osItem = (SSWR::AVIRead::AVIRUserAgentSelForm::OSItem*)me->cboFilterOS->GetSelectedItem();
 	me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)(OSInt)me->cboFilterBrowser->GetSelectedItem());
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
 	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetSelectedItem();
 	me->currUserAgent = uaList->userAgent;
 	me->currUserAgentLen = uaList->userAgentLen;
 }
 
-void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
 	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetItem(itemIndex);
 	me->currUserAgent = uaList->userAgent;
 	me->currUserAgentLen = uaList->userAgentLen;

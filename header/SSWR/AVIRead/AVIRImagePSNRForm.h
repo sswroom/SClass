@@ -29,9 +29,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtPSNR;
 			NotNullPtr<UI::GUILabel> lblPSNRDB;
 
-			static void __stdcall OnOriFileClicked(void *userObj);
-			static void __stdcall OnLossyFileClicked(void *userObj);
-			static void __stdcall OnCompareClicked(void *userObj);
+			static void __stdcall OnOriFileClicked(AnyType userObj);
+			static void __stdcall OnLossyFileClicked(AnyType userObj);
+			static void __stdcall OnCompareClicked(AnyType userObj);
 		public:
 			AVIRImagePSNRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImagePSNRForm();

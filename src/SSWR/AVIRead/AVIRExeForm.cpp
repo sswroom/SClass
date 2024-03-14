@@ -198,12 +198,13 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
-	ExeB16Addr *addr = (ExeB16Addr*)me->lb16BitFuncs->GetSelectedItem();
-	if (addr)
+	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	AnyType item = me->lb16BitFuncs->GetSelectedItem();
+	if (item.NotNull())
 	{
+		NotNullPtr<ExeB16Addr> addr = item.GetNN<ExeB16Addr>();
 		UOSInt i;
 		UOSInt j;
 		me->lb16BitCont->ClearItems();
@@ -221,10 +222,10 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
-	UOSInt modIndex = (UOSInt)me->lbImport->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	UOSInt modIndex = (UOSInt)me->lbImport->GetSelectedItem().p;
 	me->lvImport->ClearItems();
 	UOSInt i;
 	UOSInt j;
@@ -237,9 +238,9 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbExport->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -248,12 +249,13 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
-	const IO::EXEFile::ResourceInfo *res = (const IO::EXEFile::ResourceInfo*)me->lbResource->GetSelectedItem();
-	if (res)
+	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	AnyType item = me->lbResource->GetSelectedItem();
+	if (item.NotNull())
 	{
+		NotNullPtr<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Size = "));
 		sb.AppendUOSInt(res->dataSize);
@@ -271,12 +273,13 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
-	const IO::EXEFile::ResourceInfo *res = (const IO::EXEFile::ResourceInfo*)me->lbResource->GetSelectedItem();
-	if (res)
+	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	AnyType item = me->lbResource->GetSelectedItem();
+	if (item.NotNull())
 	{
+		NotNullPtr<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
 		if (res->rt == IO::EXEFile::RT_BITMAP)
 		{
 			Media::StaticImage *simg = Media::BitmapUtil::ParseDIBBuffer(res->data, res->dataSize);

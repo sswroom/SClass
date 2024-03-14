@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUIHEXFILEVIEW
 #define _SM_UI_GUIHEXFILEVIEW
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "IO/StmData/FileData.h"
 #include "UI/GUITextView.h"
@@ -9,7 +11,7 @@ namespace UI
 	class GUIHexFileView : public GUITextView
 	{
 	public:
-		typedef void (__stdcall *OffsetChgHandler)(void *userObj, UInt64 offset);
+		typedef void (__stdcall *OffsetChgHandler)(AnyType userObj, UInt64 offset);
 	private:
 		IO::FileStream *fs;
 		IO::StreamData *fd;
@@ -17,8 +19,7 @@ namespace UI
 		Optional<IO::FileAnalyse::FrameDetail> frame;
 		UInt64 fileSize;
 		UInt64 currOfst;
-		Data::ArrayList<OffsetChgHandler> hdlrList;
-		Data::ArrayList<void *> hdlrObjList;
+		Data::ArrayList<Data::CallbackStorage<OffsetChgHandler>> hdlrList;
 		UInt32 frameColor;
 		UInt32 fieldColor;
 
@@ -52,7 +53,7 @@ namespace UI
 		UInt64 GetFileSize();
 		UOSInt GetFileData(UInt64 ofst, UOSInt size, Data::ByteArray outBuff);
 
-		void HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj);
+		void HandleOffsetChg(OffsetChgHandler hdlr, AnyType hdlrObj);
 
 		Text::CString GetAnalyzerName();
 		Bool GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb);

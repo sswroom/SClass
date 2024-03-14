@@ -9,9 +9,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::NTPServer *me = (Net::NTPServer*)userData;
+	NotNullPtr<Net::NTPServer> me = userData.GetNN<Net::NTPServer>();
 	UInt8 repBuff[48];
 	if (dataSize >= 48)
 	{

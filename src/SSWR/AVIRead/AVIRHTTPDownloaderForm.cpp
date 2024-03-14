@@ -12,9 +12,9 @@
 #include "Text/PString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDownloadDir->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
@@ -166,9 +166,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;

@@ -23,8 +23,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspAsm;
 			NotNullPtr<UI::GUITextBox> txtGNUAsm;
 
-			static void __stdcall OnConvClicked(void *userObj);
-			static void __stdcall OnConv2Clicked(void *userObj);
+			static void __stdcall OnConvClicked(AnyType userObj);
+			static void __stdcall OnConv2Clicked(AnyType userObj);
 			void ConvAsm();
 		public:
 			AVIRAsmConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

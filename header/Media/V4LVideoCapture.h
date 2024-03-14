@@ -18,7 +18,7 @@ namespace Media
 
 		FrameCallback cb;
 		FrameChangeCallback fcCb;
-		void *userData;
+		AnyType userData;
 		Sync::Thread thread;
 
 		static void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread);
@@ -29,7 +29,7 @@ namespace Media
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Text::CStringNN GetFilterName();
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
-		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start();
 		virtual void Stop();
 		virtual Bool IsRunning();

@@ -2,10 +2,9 @@
 #include "MyMemory.h"
 #include "Media/VideoChecker.h"
 
-void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	DecodeStatus *status = (DecodeStatus *)userData;
-
+	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	if (frameType != Media::FT_DISCARD)
 	{
 		status->sampleCnt++;
@@ -13,9 +12,9 @@ void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt3
 	}
 }
 
-void __stdcall Media::VideoChecker::OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData)
+void __stdcall Media::VideoChecker::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-	DecodeStatus *status = (DecodeStatus *)userData;
+	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	if (frChg == Media::IVideoSource::FC_ENDPLAY)
 	{
 		status->isEnd = true;
@@ -23,9 +22,9 @@ void __stdcall Media::VideoChecker::OnVideoChange(Media::IVideoSource::FrameChan
 	}
 }
 
-void __stdcall Media::VideoChecker::OnAudioEnd(void *userData)
+void __stdcall Media::VideoChecker::OnAudioEnd(AnyType userData)
 {
-	DecodeStatus *status = (DecodeStatus *)userData;
+	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	status->isEnd = true;
 	status->evt->Set();
 }
@@ -33,16 +32,10 @@ void __stdcall Media::VideoChecker::OnAudioEnd(void *userData)
 Media::VideoChecker::VideoChecker(Bool allowTimeSkip)
 {
 	this->allowTimeSkip = allowTimeSkip;
-	NEW_CLASS(this->evt, Sync::Event(true));
-	NEW_CLASS(this->vdecoders, Media::Decoder::VideoDecoderFinder());
-	NEW_CLASS(this->adecoders, Media::Decoder::AudioDecoderFinder());
 }
 
 Media::VideoChecker::~VideoChecker()
 {
-	DEL_CLASS(this->adecoders);
-	DEL_CLASS(this->vdecoders);
-	DEL_CLASS(this->evt);
 }
 
 void Media::VideoChecker::SetAllowTimeSkip(Bool allowTimeSkip)
@@ -76,7 +69,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			status->vdecoder = vdecoders->DecodeVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc));
+			status->vdecoder = vdecoders.DecodeVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc));
 			if (status->vdecoder)
 			{
 				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
@@ -88,7 +81,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		}
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			status->adecoder = adecoders->DecodeAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc));
+			status->adecoder = adecoders.DecodeAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc));
 			if (status->adecoder)
 			{
 				NEW_CLASS(status->renderer, Media::NullRenderer());
@@ -139,7 +132,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 			}
 			if (isEnd)
 				break;
-			evt->Wait(1000);
+			evt.Wait(1000);
 		}
 
 		i = statusList.GetCount();

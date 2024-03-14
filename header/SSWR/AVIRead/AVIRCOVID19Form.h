@@ -45,10 +45,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspNewCases;
 			NotNullPtr<UI::GUIListView> lvCountry;
 
-			static void __stdcall OnFileClicked(void *userObj);
-			static void __stdcall OnDownloadClicked(void *userObj);
-			static void __stdcall OnCountrySelChg(void *userObj);
-			static void __stdcall OnNewCasesSizeChanged(void *userObj);
+			static void __stdcall OnFileClicked(AnyType userObj);
+			static void __stdcall OnDownloadClicked(AnyType userObj);
+			static void __stdcall OnCountrySelChg(AnyType userObj);
+			static void __stdcall OnNewCasesSizeChanged(AnyType userObj);
 
 			void ClearRecords();
 			Bool LoadCSV(NotNullPtr<IO::SeekableStream> stm);

@@ -5,9 +5,9 @@
 #include "Text/Cpp/CppEnv.h"
 
 
-void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCodeProjectForm *me = (SSWR::AVIRead::AVIRCodeProjectForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCodeProjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeProjectForm>();
 	UI::GUITreeView::TreeItem *tvi = me->tvMain->GetSelectedItem();
 	Text::CodeProjectCfg *cfg = (Text::CodeProjectCfg*)me->cboConfig->GetSelectedItem();
 	if (tvi)

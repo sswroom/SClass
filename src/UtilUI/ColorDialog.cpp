@@ -7,22 +7,22 @@
 #include "Text/MyStringFloat.h"
 #include "UtilUI/ColorDialog.h"
 
-void __stdcall UtilUI::ColorDialog::OnOKClicked(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnOKClicked(AnyType userObj)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->StoreColor();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall UtilUI::ColorDialog::OnCancelClicked(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnCancelClicked(AnyType userObj)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -49,9 +49,9 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, Math::Coord2D<OSInt
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -76,9 +76,9 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, Math::Coord2D<OSInt
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->pbSub->ReleaseCapture();
@@ -108,9 +108,9 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, Math::Coord2D<OSInt> 
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->subDowned = true;
@@ -149,9 +149,9 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, Math::Coord2D<OSIn
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -187,9 +187,9 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, Math::Coord2D<OSIn
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->pbMain->ReleaseCapture();
@@ -230,9 +230,9 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, Math::Coord2D<OSInt>
 	return false;
 }
 
-void __stdcall UtilUI::ColorDialog::OnRedChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnRedChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -242,9 +242,9 @@ void __stdcall UtilUI::ColorDialog::OnRedChange(void *userObj, Bool newState)
 }
 
 
-void __stdcall UtilUI::ColorDialog::OnGreenChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnGreenChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -253,9 +253,9 @@ void __stdcall UtilUI::ColorDialog::OnGreenChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnBlueChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnBlueChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -264,9 +264,9 @@ void __stdcall UtilUI::ColorDialog::OnBlueChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnYIQYChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnYIQYChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -275,9 +275,9 @@ void __stdcall UtilUI::ColorDialog::OnYIQYChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnYIQIChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnYIQIChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -286,9 +286,9 @@ void __stdcall UtilUI::ColorDialog::OnYIQIChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnYIQQChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnYIQQChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -297,9 +297,9 @@ void __stdcall UtilUI::ColorDialog::OnYIQQChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnHSVHChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnHSVHChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -308,9 +308,9 @@ void __stdcall UtilUI::ColorDialog::OnHSVHChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnHSVSChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnHSVSChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -319,9 +319,9 @@ void __stdcall UtilUI::ColorDialog::OnHSVSChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnHSVVChange(void *userObj, Bool newState)
+void __stdcall UtilUI::ColorDialog::OnHSVVChange(AnyType userObj, Bool newState)
 {
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -330,10 +330,10 @@ void __stdcall UtilUI::ColorDialog::OnHSVVChange(void *userObj, Bool newState)
 	}
 }
 
-void __stdcall UtilUI::ColorDialog::OnRedTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnRedTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_RED;
@@ -352,10 +352,10 @@ void __stdcall UtilUI::ColorDialog::OnRedTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnGreenTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnGreenTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_GREEN;
@@ -374,10 +374,10 @@ void __stdcall UtilUI::ColorDialog::OnGreenTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnBlueTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnBlueTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_BLUE;
@@ -396,10 +396,10 @@ void __stdcall UtilUI::ColorDialog::OnBlueTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnYIQYTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnYIQYTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_YIQY;
@@ -418,10 +418,10 @@ void __stdcall UtilUI::ColorDialog::OnYIQYTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnYIQITChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnYIQITChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_YIQI;
@@ -440,10 +440,10 @@ void __stdcall UtilUI::ColorDialog::OnYIQITChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnYIQQTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnYIQQTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_YIQQ;
@@ -462,10 +462,10 @@ void __stdcall UtilUI::ColorDialog::OnYIQQTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnHSVHTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnHSVHTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_HSVH;
@@ -484,10 +484,10 @@ void __stdcall UtilUI::ColorDialog::OnHSVHTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnHSVSTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnHSVSTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_HSVS;
@@ -506,10 +506,10 @@ void __stdcall UtilUI::ColorDialog::OnHSVSTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnHSVVTChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnHSVVTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_HSVV;
@@ -528,10 +528,10 @@ void __stdcall UtilUI::ColorDialog::OnHSVVTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
-void __stdcall UtilUI::ColorDialog::OnAlphaChange(void *userObj)
+void __stdcall UtilUI::ColorDialog::OnAlphaChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->txtAlpha->GetText(sbuff);
 	me->aVal = Text::StrToDouble(sbuff) / 255.0;
 }

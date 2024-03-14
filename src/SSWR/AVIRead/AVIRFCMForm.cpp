@@ -3,9 +3,9 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRFCMForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFCMForm *me = (SSWR::AVIRead::AVIRFCMForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFCMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFCMForm>();
 	Text::StringBuilderUTF8 sbAPIKey;
 	Text::StringBuilderUTF8 sbDeviceToken;
 	Text::StringBuilderUTF8 sbMessage;

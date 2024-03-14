@@ -10,9 +10,9 @@
 
 //#include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
 {
-	SSWR::AVIRead::AVIRARPScanForm *me = (SSWR::AVIRead::AVIRARPScanForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
 	Sync::MutexUsage mutUsage(me->arpMut);
 	ipInfo = me->arpMap.Get(ipAddr);
@@ -37,9 +37,9 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 	printf("%s\r\n", sb.ToString());*/
 }
 
-void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRARPScanForm *me = (SSWR::AVIRead::AVIRARPScanForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
 	if (me->arpUpdated)
 	{
 		me->arpUpdated = false;
@@ -47,9 +47,9 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRARPScanForm *me = (SSWR::AVIRead::AVIRARPScanForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
 	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
 	adapter = (SSWR::AVIRead::AVIRARPScanForm::AdapterInfo*)me->cboAdapter->GetSelectedItem();

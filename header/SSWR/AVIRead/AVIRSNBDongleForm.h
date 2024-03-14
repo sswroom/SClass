@@ -82,22 +82,22 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			static void __stdcall OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
-			static void __stdcall OnDongleInfoClicked(void *userObj);
-			static void __stdcall OnCheckDongleClicked(void *userObj);
-			static void __stdcall OnCheckDevicesClicked(void *userObj);
-			static void __stdcall OnResetNetworkClicked(void *userObj);
-			static void __stdcall OnAddDeviceClicked(void *userObj);
-			static void __stdcall OnLogClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnCopyDevIdClicked(void *userObj);
-			static void __stdcall OnDevReportTimeClicked(void *userObj);
-			static void __stdcall OnDevSetReportTimeClicked(void *userObj);
-			static void __stdcall OnDevOnClicked(void *userObj);
-			static void __stdcall OnDevOffClicked(void *userObj);
-			static void __stdcall OnDevStatusClicked(void *userObj);
-			static void __stdcall OnDeviceDblClk(void *userObj, UOSInt index);
-			static void __stdcall OnUploadClicked(void *userObj);
+			static void __stdcall OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
+			static void __stdcall OnDongleInfoClicked(AnyType userObj);
+			static void __stdcall OnCheckDongleClicked(AnyType userObj);
+			static void __stdcall OnCheckDevicesClicked(AnyType userObj);
+			static void __stdcall OnResetNetworkClicked(AnyType userObj);
+			static void __stdcall OnAddDeviceClicked(AnyType userObj);
+			static void __stdcall OnLogClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnCopyDevIdClicked(AnyType userObj);
+			static void __stdcall OnDevReportTimeClicked(AnyType userObj);
+			static void __stdcall OnDevSetReportTimeClicked(AnyType userObj);
+			static void __stdcall OnDevOnClicked(AnyType userObj);
+			static void __stdcall OnDevOffClicked(AnyType userObj);
+			static void __stdcall OnDevStatusClicked(AnyType userObj);
+			static void __stdcall OnDeviceDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnUploadClicked(AnyType userObj);
 
 			void LoadFile();
 			void SaveFile();

@@ -272,10 +272,10 @@ Net::MySQLServer::CharsetInfo Net::MySQLServer::charsets[] = {
 {738, "utf32_thai_520_w2",            "utf32"},
 };
 
-void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
-	ClientData *data = (ClientData*)cliData;
+	NotNullPtr<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
+	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 	UOSInt i;
 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
@@ -301,15 +301,15 @@ void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, v
 		}
 		DEL_CLASS(data->attrMap);
 		MemFree(data->buff);
-		MemFree(data);
+		MemFree(data.Ptr());
 		cli.Delete();
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
-	ClientData *data = (ClientData*)cliData;
+	NotNullPtr<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
+	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 
 	#if defined(VERBOSE)
 	{
@@ -766,13 +766,13 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::MySQLServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
+void __stdcall Net::MySQLServer::OnClientConn(Socket *s, AnyType userObj)
 {
-	Net::MySQLServer *me = (Net::MySQLServer*)userObj;
+	NotNullPtr<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
 	UInt8 buff[128];
 	UInt8 *bptr;
 	OSInt i;

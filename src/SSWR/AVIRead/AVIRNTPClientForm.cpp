@@ -2,9 +2,9 @@
 #include "Net/NTPClient.h"
 #include "SSWR/AVIRead/AVIRNTPClientForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNTPClientForm *me = (SSWR::AVIRead::AVIRNTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -39,9 +39,9 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNTPClientForm *me = (SSWR::AVIRead::AVIRNTPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];

@@ -2,15 +2,15 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/VideoFilterBase.h"
 
-void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Media::VideoFilter::VideoFilterBase *me = (Media::VideoFilter::VideoFilterBase*)userData;
+	NotNullPtr<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->ProcessVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, userData, frameType, flags, ycOfst);
 }
 
-void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData)
+void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
 {
-	Media::VideoFilter::VideoFilterBase *me = (Media::VideoFilter::VideoFilterBase*)userData;
+	NotNullPtr<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->OnFrameChange(fc);
 	if (me->fcCb)
 	{
@@ -99,7 +99,7 @@ Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NotNullPtr<Media::FrameIn
 	return false;
 }
 
-Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	if (this->srcVideo)
 	{
@@ -216,7 +216,7 @@ Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameInd
 	return 0;
 }
 
-void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	if (this->srcVideo)
 	{

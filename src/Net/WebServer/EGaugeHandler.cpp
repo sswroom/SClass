@@ -43,7 +43,7 @@ Bool Net::WebServer::EGaugeHandler::ProcessRequest(NotNullPtr<Net::WebServer::IW
 	return true;
 }
 
-void Net::WebServer::EGaugeHandler::HandleEGaugeData(DataHandler dataHdlr, void *userObj)
+void Net::WebServer::EGaugeHandler::HandleEGaugeData(DataHandler dataHdlr, AnyType userObj)
 {
 	this->dataHdlrObj = userObj;
 	this->dataHdlr = dataHdlr;

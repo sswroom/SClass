@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUITRACKBAR
 #define _SM_UI_GUITRACKBAR
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -7,11 +9,10 @@ namespace UI
 	class GUITrackBar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *ScrollEvent)(void *userObj, UOSInt scrollPos);
+		typedef void (__stdcall *ScrollEvent)(AnyType userObj, UOSInt scrollPos);
 
 	private:
-		Data::ArrayList<ScrollEvent> scrollHandlers;
-		Data::ArrayList<void *> scrollHandlersObj;
+		Data::ArrayList<Data::CallbackStorage<ScrollEvent>> scrollHandlers;
 
 	public:
 		GUITrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
@@ -19,7 +20,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		void EventScrolled(UOSInt scrollPos);
-		void HandleScrolled(ScrollEvent hdlr, void *userObj);
+		void HandleScrolled(ScrollEvent hdlr, AnyType userObj);
 
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void SetPos(UOSInt pos) = 0;

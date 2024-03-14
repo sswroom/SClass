@@ -468,25 +468,24 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 	}
 }
 
-void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs.Add(hdlr);
-	this->updObjs.Add(obj);
+	this->updHdlrs.Add({hdlr, obj});
 	mutUsage.EndUse();
 }
 
-void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
+void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->updMut);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == obj)
 		{
 			this->updHdlrs.RemoveAt(i);
-			this->updObjs.RemoveAt(i);
 		}
 	}
 	mutUsage.EndUse();
@@ -674,7 +673,8 @@ UOSInt Map::GPSTrack::AddRecord(NotNullPtr<Map::GPSTrack::GPSRecord3> rec)
 	j = this->updHdlrs.GetCount();
 	while (j-- > 0)
 	{
-		this->updHdlrs.GetItem(j)(this->updObjs.GetItem(j));
+		Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler> cb = this->updHdlrs.GetItem(j);
+		cb.func(cb.userObj);
 	}
 	updMutUsage.EndUse();
 	return i;

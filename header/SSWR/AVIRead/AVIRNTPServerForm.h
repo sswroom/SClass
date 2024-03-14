@@ -39,9 +39,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnLogSel(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnLogSel(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRNTPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNTPServerForm();

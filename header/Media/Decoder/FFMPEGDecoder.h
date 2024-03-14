@@ -22,7 +22,7 @@ namespace Media
 			FFMPEGDecoder(NotNullPtr<IVideoSource> sourceVideo);
 			virtual ~FFMPEGDecoder();
 
-			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
+			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
@@ -31,7 +31,7 @@ namespace Media
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
 

@@ -18,8 +18,8 @@ namespace UtilUI
 		Media::MonitorMgr *monMgr;
 		UOSInt currLine;
 
-		static void __stdcall OnOKClicked(void *userObj);
-		static void __stdcall OnCancelClicked(void *userObj);
+		static void __stdcall OnOKClicked(AnyType userObj);
+		static void __stdcall OnCancelClicked(AnyType userObj);
 	public:
 		TextGotoDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr);
 		virtual ~TextGotoDialog();

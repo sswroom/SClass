@@ -22,7 +22,7 @@ namespace SSWR
 			UInt8 *sectorData;
 			UOSInt sectorSize;
 
-			static void __stdcall OnParseClicked(void *userObj);
+			static void __stdcall OnParseClicked(AnyType userObj);
 		public:
 			AVIRSectorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::ISectorData> data);
 			virtual ~AVIRSectorForm();

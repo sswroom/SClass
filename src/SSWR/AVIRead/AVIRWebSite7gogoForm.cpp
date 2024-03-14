@@ -3,9 +3,9 @@
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRWebSite7gogoForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWebSite7gogoForm *me = (SSWR::AVIRead::AVIRWebSite7gogoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWebSite7gogoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite7gogoForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

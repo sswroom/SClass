@@ -61,7 +61,7 @@ namespace SSWR
 			static void __stdcall OnCopyAllClicked(void *userObj);
 			static void __stdcall OnConvFileClicked(void *userObj);
 			static void __stdcall OnCoordDblClk(void *userObj, UOSInt itemIndex);
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			void ClearItems(Bool updateList);
 			void UpdateList();

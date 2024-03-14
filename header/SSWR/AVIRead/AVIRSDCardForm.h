@@ -48,7 +48,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCapacity;
 			NotNullPtr<UI::GUITextBox> txtCapacity;
 			
-			static void __stdcall OnDevicesSelChg(void *userObj);
+			static void __stdcall OnDevicesSelChg(AnyType userObj);
 			static OSInt __stdcall ItemCompare(IO::SDCardInfo *item1, IO::SDCardInfo *item2);
 		public:
 			AVIRSDCardForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

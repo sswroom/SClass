@@ -3,9 +3,9 @@
 #include "SSWR/SHPConv/SHPConvValueFilterForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvValueFilterForm *me = (SSWR::SHPConv::SHPConvValueFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvValueFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvValueFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 typ;
 	me->txtValue->GetText(sb);
@@ -21,9 +21,9 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::SHPConv::SHPConvValueFilterForm *me = (SSWR::SHPConv::SHPConvValueFilterForm*)userObj;
+	NotNullPtr<SSWR::SHPConv::SHPConvValueFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvValueFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -12,7 +12,7 @@ namespace Net
 		Int32 payloadType;
 		FrameCallback cb;
 		FrameChangeCallback fcCb;
-		void *cbData;
+		AnyType cbData;
 
 		UInt32 frameNum;
 		Media::FrameInfo frameInfo;
@@ -42,7 +42,7 @@ namespace Net
 		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
-		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();
 		virtual Bool IsRunning();
@@ -58,7 +58,7 @@ namespace Net
 		virtual Bool HasFrameCount();
 		virtual UOSInt GetFrameCount();
 		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 

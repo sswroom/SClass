@@ -19,8 +19,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			Media::MonitorMgr *monMgr;
 
-			static void __stdcall OnOkClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOkClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui);
 			virtual ~SHPConvGroupForm();

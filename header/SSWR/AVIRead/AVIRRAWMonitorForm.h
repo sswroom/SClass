@@ -190,25 +190,25 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
-			static void __stdcall OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize);
-			static void __stdcall OnIPv4Data(void *userData, const UInt8 *rawData, UOSInt packetSize);
-			static void __stdcall OnInfoClicked(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnPLogClicked(void *userObj);
-			static void __stdcall OnIPSelChg(void *userObj);
-			static void __stdcall OnIPTranSelChg(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnPingIPSelChg(void *userObj);
-			static void __stdcall OnDNSReqv4SelChg(void *userObj);
-			static void __stdcall OnDNSReqv6SelChg(void *userObj);
-			static void __stdcall OnDNSReqOthSelChg(void *userObj);
-			static void __stdcall OnDNSTargetSelChg(void *userObj);
-			static void __stdcall OnMDNSSelChg(void *userObj);
-			static void __stdcall OnDNSClientSelChg(void *userObj);
-			static void __stdcall OnIPLogSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDeviceSelChg(void *userObj);
+			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
+			static void __stdcall OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize);
+			static void __stdcall OnIPv4Data(AnyType userData, const UInt8 *rawData, UOSInt packetSize);
+			static void __stdcall OnInfoClicked(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnPLogClicked(AnyType userObj);
+			static void __stdcall OnIPSelChg(AnyType userObj);
+			static void __stdcall OnIPTranSelChg(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnPingIPSelChg(AnyType userObj);
+			static void __stdcall OnDNSReqv4SelChg(AnyType userObj);
+			static void __stdcall OnDNSReqv6SelChg(AnyType userObj);
+			static void __stdcall OnDNSReqOthSelChg(AnyType userObj);
+			static void __stdcall OnDNSTargetSelChg(AnyType userObj);
+			static void __stdcall OnMDNSSelChg(AnyType userObj);
+			static void __stdcall OnDNSClientSelChg(AnyType userObj);
+			static void __stdcall OnIPLogSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDeviceSelChg(AnyType userObj);
 
 		public:
 			AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::EthernetAnalyzer *analyzer);

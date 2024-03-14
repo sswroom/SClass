@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUILISTVIEW
 #define _SM_UI_GUILISTVIEW
+#include "AnyType.h"
 #include "Media/DrawEngine.h"
 #include "Text/String.h"
 #include "UI/GUIClientControl.h"
@@ -9,17 +10,14 @@ namespace UI
 	class GUIListView : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *ItemEvent)(void *userObj, UOSInt itemIndex);
-		typedef void (__stdcall *MouseEvent)(void *userObj, Math::Coord2DDbl pos, UOSInt index);
+		typedef void (__stdcall *ItemEvent)(AnyType userObj, UOSInt itemIndex);
+		typedef void (__stdcall *MouseEvent)(AnyType userObj, Math::Coord2DDbl pos, UOSInt index);
 	protected:
 		void *clsData;
 	private:
-		Data::ArrayList<UI::UIEvent> selChgHdlrs;
-		Data::ArrayList<void*> selChgObjs;
-		Data::ArrayList<ItemEvent> dblClkHdlrs;
-		Data::ArrayList<void*> dblClkObjs;
-		Data::ArrayList<MouseEvent> rClkHdlrs;
-		Data::ArrayList<void*> rClkObjs;
+		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
+		Data::ArrayList<Data::CallbackStorage<ItemEvent>> dblClkHdlrs;
+		Data::ArrayList<Data::CallbackStorage<MouseEvent>> rClkHdlrs;
 		void *himgList;
 		UInt32 imgW;
 		UInt32 imgH;
@@ -87,9 +85,9 @@ namespace UI
 		void EventMouseClick(Math::Coord2DDbl coord, MouseButton btn);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
-		void HandleSelChg(UI::UIEvent hdlr, void *userObj);
-		void HandleDblClk(ItemEvent hdlr, void *userObj);
-		void HandleRightClick(MouseEvent hdlr, void *userObj);
+		void HandleSelChg(UI::UIEvent hdlr, AnyType userObj);
+		void HandleDblClk(ItemEvent hdlr, AnyType userObj);
+		void HandleRightClick(MouseEvent hdlr, AnyType userObj);
 	};
 }
 #endif

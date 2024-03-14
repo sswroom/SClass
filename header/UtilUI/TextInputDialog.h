@@ -18,8 +18,8 @@ namespace UtilUI
 		Media::MonitorMgr *monMgr;
 		Text::String *retInput;
 
-		static void __stdcall OnOKClicked(void *userObj);
-		static void __stdcall OnCancelClicked(void *userObj);
+		static void __stdcall OnOKClicked(AnyType userObj);
+		static void __stdcall OnCancelClicked(AnyType userObj);
 	public:
 		TextInputDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CStringNN title, Text::CStringNN message);
 		virtual ~TextInputDialog();

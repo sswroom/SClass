@@ -67,9 +67,9 @@ Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(NotNullPtr<Text::String> fileNa
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	UInt8 signBuff[256];
 	UOSInt signLen = 128;
 	Text::StringBuilderUTF8 sb;
@@ -122,9 +122,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 	key.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	UInt8 signBuff[384];
 	UOSInt signLen = 128;
 	UInt8 decBuff[256];
@@ -179,9 +179,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 	key.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtEncryptInput->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -267,9 +267,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtEncryptInput->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -354,11 +354,12 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
 	NotNullPtr<UI::GUITabPage> tp;
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 	Bool isSign;
 	if (!me->tcMain->GetSelectedPage().SetTo(tp))
 	{

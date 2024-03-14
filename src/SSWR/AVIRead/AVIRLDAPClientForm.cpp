@@ -2,9 +2,9 @@
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPClientForm *me = (SSWR::AVIRead::AVIRLDAPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
 	if (me->cli)
 	{
 		me->cli->Unbind();
@@ -69,9 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPClientForm *me = (SSWR::AVIRead::AVIRLDAPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
 	if (me->cli == 0)
 	{
 		return;
@@ -109,9 +109,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLDAPClientForm *me = (SSWR::AVIRead::AVIRLDAPClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
 	Net::LDAPClient::SearchResObject *obj = (Net::LDAPClient::SearchResObject*)me->cboSearchResult->GetSelectedItem();
 	me->lvSearch->ClearItems();
 	if (obj && obj->items)

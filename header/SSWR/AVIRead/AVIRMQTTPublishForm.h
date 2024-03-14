@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUITextBox> txtStatus;
 
-			static void __stdcall OnPublishClicked(void *userObj);
+			static void __stdcall OnPublishClicked(AnyType userObj);
 
 		public:
 			AVIRMQTTPublishForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -46,6 +46,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -21,9 +21,9 @@ namespace UtilUI
 		UI::GUIForm *srchFrm;
 		Media::MonitorMgr *monMgr;
 		
-		static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+		static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 		static void __stdcall OnTextPosUpd(void *userObj, UInt32 textPosX, UOSInt textPosY);
-		static void __stdcall OnSearchClosed(void *userObj, UI::GUIForm *frm);
+		static void __stdcall OnSearchClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
 	public:
 		TextViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, NotNullPtr<Media::DrawEngine> deng, UInt32 codePage);
 		virtual ~TextViewerForm();

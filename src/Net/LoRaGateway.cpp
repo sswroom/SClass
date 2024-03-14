@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-void __stdcall Net::LoRaGateway::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::LoRaGateway::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseUDPMessage(sb, false, buff, dataSize);

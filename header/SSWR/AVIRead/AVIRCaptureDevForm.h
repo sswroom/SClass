@@ -42,9 +42,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnOKClick(void *userObj);
-			static void __stdcall OnCancelClick(void *userObj);
-			static void __stdcall OnDevChg(void *userObj);
+			static void __stdcall OnOKClick(AnyType userObj);
+			static void __stdcall OnCancelClick(AnyType userObj);
+			static void __stdcall OnDevChg(AnyType userObj);
 
 			void ReleaseFormats();
 		public:

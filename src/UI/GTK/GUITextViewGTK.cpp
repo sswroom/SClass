@@ -198,9 +198,9 @@ gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpointer use
 	return true;
 }
 
-void __stdcall UI::GUITextView::OnResize(void *userObj)
+void __stdcall UI::GUITextView::OnResize(AnyType userObj)
 {
-	UI::GUITextView *me = (UI::GUITextView*)userObj;
+	NotNullPtr<UI::GUITextView> me = userObj.GetNN<UI::GUITextView>();
 	Math::Size2D<UOSInt> scnSize;
 	NotNullPtr<Media::DrawImage> img;
 	if (img.Set(me->drawBuff))

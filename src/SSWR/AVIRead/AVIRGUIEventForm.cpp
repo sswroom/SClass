@@ -17,9 +17,9 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(void *userOb
 	me->ui->DisplayOff();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(void *userObj, UOSInt keyCode, Bool extendedKey)
+void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(AnyType userObj, UOSInt keyCode, Bool extendedKey)
 {
-	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Key Down - "));
 	sb.Append(GUIKeyGetName(OSKey2GUIKey((UInt32)keyCode)));

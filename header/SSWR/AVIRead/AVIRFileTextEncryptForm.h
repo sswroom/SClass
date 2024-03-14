@@ -28,9 +28,9 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
-			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
-			static void __stdcall OnConvertClicked(void *userObj);
-			static void __stdcall OnDecryptChange(void *userObj, Bool newState);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnConvertClicked(AnyType userObj);
+			static void __stdcall OnDecryptChange(AnyType userObj, Bool newState);
 
 			void GenDestFileName(Text::CStringNN fileName, Bool decrypt);
 		public:

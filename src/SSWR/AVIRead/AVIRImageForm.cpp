@@ -25,9 +25,9 @@ typedef enum
 	MNU_FILTER_RESIZE
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	UOSInt selInd = me->lbImages->GetSelectedIndex();
 	Media::RasterImage *img = me->imgList->GetImage(selInd, me->currImgDelay);
 	me->pbImage->SetImage(img, false);
@@ -35,9 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(void *userObj)
 	me->UpdateInfo();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	if (me->currImg)
 	{
 		Double dR;
@@ -544,9 +544,9 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	if (me->currImg)
 	{
 		const UInt8 *iccBuff = me->currImg->info.color.rawICC;
@@ -555,8 +555,8 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 			NotNullPtr<Media::ICCProfile> icc;
 			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff))).SetTo(icc))
 			{
-				SSWR::AVIRead::AVIRICCInfoForm *frm;
-				NEW_CLASS(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
+				NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> frm;
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
 				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj()->ToCString());
 				me->core->ShowForm(frm);
 			}

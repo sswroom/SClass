@@ -90,7 +90,7 @@ namespace SSWR
 			Int8 dataFileTz;
 
 			static void __stdcall OnDataFileClk(void *userObj);
-			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnDataCheckClk(void *userObj);
 			static void __stdcall OnSQLClicked(void *userObj);
 			static void __stdcall OnExecuteClicked(void *userObj);

@@ -78,13 +78,13 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
-			static void __stdcall OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize);
-			static void __stdcall OnInfoClicked(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnIPSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
+			static void __stdcall OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize);
+			static void __stdcall OnInfoClicked(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnIPSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 
 		public:
 			AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

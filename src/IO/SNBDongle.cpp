@@ -3,9 +3,9 @@
 #include "Data/ByteTool.h"
 #include "IO/SNBDongle.h"
 
-void __stdcall IO::SNBDongle::OnProtocolRecv(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
+void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
-	IO::SNBDongle *me = (IO::SNBDongle*)userObj;
+	NotNullPtr<IO::SNBDongle> me = userObj.GetNN<IO::SNBDongle>();
 	DeviceInfo *dev;
 	UOSInt i;
 	UOSInt j;
@@ -473,7 +473,7 @@ UInt32 IO::SNBDongle::GetBaudRate()
 	return this->dongleBaudRate;
 }
 
-void IO::SNBDongle::HandleProtocolReceived(IO::SNBProtocol::ProtocolHandler protoHdlr, void *userObj)
+void IO::SNBDongle::HandleProtocolReceived(IO::SNBProtocol::ProtocolHandler protoHdlr, AnyType userObj)
 {
 	this->protoHdlr = protoHdlr;
 	this->protoObj = userObj;

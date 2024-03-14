@@ -450,7 +450,6 @@ UI::GUIMenu::GUIMenu(Bool isPopup)
 
 UI::GUIMenu::~GUIMenu()
 {
-	UI::GUIMenu *item;
 	MenuItemInfo *menuItem;
 	UOSInt i;
 	i = this->keys.GetCount();
@@ -596,7 +595,6 @@ void UI::GUIMenu::SetItemEnabled(UInt16 cmdId, Bool enabled)
 
 void UI::GUIMenu::ClearItems()
 {
-	UI::GUIMenu *item;
 	MenuItemInfo *menuItem;
 	UOSInt i;
 	i = this->keys.GetCount();

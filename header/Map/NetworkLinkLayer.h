@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_NETWORKLINKLAYER
 #define _SM_MAP_NETWORKLINKLAYER
+#include "Data/CallbackStorage.h"
 #include "Map/MapDrawLayer.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
@@ -39,8 +40,7 @@ namespace Map
 
 		Double currScale;
 		Int64 currTime;
-		Data::ArrayList<UpdatedHandler> updHdlrs;
-		Data::ArrayList<void *> updObjs;
+		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		Sync::Mutex dispMut;
 		Math::Size2DDbl dispSize;
@@ -55,7 +55,7 @@ namespace Map
 		Bool ctrlRunning;
 		Bool ctrlToStop;
 
-		static void __stdcall InnerUpdated(void *userObj);
+		static void __stdcall InnerUpdated(AnyType userObj);
 		static UInt32 __stdcall ControlThread(void *userObj);
 		void CheckLinks(Bool manualRequest);
 		void LoadLink(LinkInfo *link);
@@ -93,8 +93,8 @@ namespace Map
 		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
 		virtual void SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys);
 
-		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
-		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
+		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 		UOSInt AddLink(Text::CString name, Text::CStringNN url, Text::CString viewFormat, RefreshMode mode, Int32 seconds);
 		void SetBounds(Math::RectAreaDbl bounds);
