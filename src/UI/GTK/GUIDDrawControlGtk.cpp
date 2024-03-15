@@ -208,9 +208,9 @@ void UI::GUIDDrawControl::Deinit(void *hInst)
 {
 }
 
-void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
+void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 {
-	ResizedData *data = (ResizedData*)userObj;
+	NotNullPtr<ResizedData> data = userObj.GetNN<ResizedData>();
 	if (data->me->switching)
 		return;
 	if (data->me->currScnMode == SM_FS)
