@@ -98,12 +98,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSitePower;
 			NotNullPtr<UI::GUIPictureBox> pbSitePower;
 
-			static void __stdcall OnAPIKeyClicked(void *userObj);
-			static void __stdcall OnSiteListSelChg(void *userObj);
-			static void __stdcall OnSiteEnergyClicked(void *userObj);
-			static void __stdcall OnSiteEnergySizeChg(void *userObj);
-			static void __stdcall OnSitePowerClicked(void *userObj);
-			static void __stdcall OnSitePowerSizeChg(void *userObj);
+			static void __stdcall OnAPIKeyClicked(AnyType userObj);
+			static void __stdcall OnSiteListSelChg(AnyType userObj);
+			static void __stdcall OnSiteEnergyClicked(AnyType userObj);
+			static void __stdcall OnSiteEnergySizeChg(AnyType userObj);
+			static void __stdcall OnSitePowerClicked(AnyType userObj);
+			static void __stdcall OnSitePowerSizeChg(AnyType userObj);
 
 			static Data::Timestamp GetDefaultStartTime(const Data::Timestamp &startTime, Net::SolarEdgeAPI::TimeUnit timeUnit);
 			static Data::Timestamp GetDefaultEndTime(const Data::Timestamp &startTime, Net::SolarEdgeAPI::TimeUnit timeUnit);

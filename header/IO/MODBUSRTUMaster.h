@@ -16,7 +16,7 @@ namespace IO
 		{
 			ReadResultFunc readFunc;
 			SetResultFunc setFunc;
-			void *userObj;
+			AnyType userObj;
 		} AddrResultCb;
 		
 	private:
@@ -44,7 +44,7 @@ namespace IO
 		virtual Bool WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UInt16 val);
 		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UInt8 *val);
 
-		virtual void HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, void *userObj);
+		virtual void HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj);
 	};
 }
 #endif

@@ -4,9 +4,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenFile", false);
 	me->txtName->GetText(sb);
@@ -22,9 +22,9 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(sb);
 	me->fileName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -32,9 +32,9 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

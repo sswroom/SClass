@@ -31,7 +31,7 @@ public:
 
 void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::DWGFileAnalyse *me = (IO::FileAnalyse::DWGFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::DWGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::DWGFileAnalyse>();
 	UInt8 buff[256];
 	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)

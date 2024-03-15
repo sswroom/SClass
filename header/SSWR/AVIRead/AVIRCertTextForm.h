@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtText;
 			NotNullPtr<UI::GUIButton> btnLoad;
 
-			static void __stdcall OnLoadClicked(void *userObj);
+			static void __stdcall OnLoadClicked(AnyType userObj);
 		public:
 			AVIRCertTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCertTextForm();

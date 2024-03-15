@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRSAMLReqDecodeForm.h"
 #include "Text/XMLReader.h"
 
-void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSAMLReqDecodeForm *me = (SSWR::AVIRead::AVIRSAMLReqDecodeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLReqDecodeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLReqDecodeForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRAWRequest->GetText(sb);
 	if (sb.GetLength() == 0)

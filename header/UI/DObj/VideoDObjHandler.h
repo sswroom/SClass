@@ -26,8 +26,8 @@ namespace UI
 			Media::MediaFile *mf;
 			Media::MediaPlayer *player;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPBEnd(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnPBEnd(AnyType userObj);
 		protected:
 			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg);
 			void DrawVideo(NotNullPtr<Media::DrawImage> dimg);

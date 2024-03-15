@@ -119,12 +119,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 {
 	Double values[5];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 
 	if (me->initStrs)
 	{
@@ -306,27 +306,27 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPhoneRClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPhoneRClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port)
 	{
 		me->LoadPhoneBook();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSRClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSRClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port)
 	{
 		me->LoadSMS();
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	IO::GSMModemController::SMSMessage *sms;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -373,9 +373,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port == 0)
 	{
 		return;
@@ -394,9 +394,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	IO::GSMModemController::SMSMessage *sms;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -450,9 +450,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NotNullPtr<IO::SerialPort> port;
 	NEW_CLASSNN(port, IO::SerialPort((UOSInt)me->cboDeviceSerial->GetSelectedItem(), 115200, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
@@ -466,9 +466,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceOtherClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceOtherClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port)
 	{
 		me->CloseStream(true);
@@ -477,16 +477,16 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceOtherClk(void *userObj)
 	{
 		IO::StreamType st;
 		NotNullPtr<IO::Stream> port;
-		if (port.Set(me->core->OpenStream(&st, me, 115200, false)))
+		if (port.Set(me->core->OpenStream(st, me, 115200, false)))
 		{
 			me->InitStream(port, true);
 		}
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -499,9 +499,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port == 0)
 	{
 		return;
@@ -522,9 +522,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(void *userObj
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandKeyDown(void *userObj, UInt32 osKey)
+Bool __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandKeyDown(AnyType userObj, UInt32 osKey)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
 	if (key == UI::GUIControl::GK_ENTER)
 	{
@@ -534,9 +534,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandKeyDown(void *userObj
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port == 0)
 	{
 		return;
@@ -544,9 +544,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextLoadClicked(void *us
 	me->LoadPDPContext();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPAttachClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPAttachClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port == 0)
 	{
 		return;
@@ -561,9 +561,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPAttachClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPDetachClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPDetachClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port == 0)
 	{
 		return;
@@ -578,9 +578,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPDetachClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->port == 0)
 	{
 		return;
@@ -617,9 +617,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveAllClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveAllClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->modem)
 	{
 		if (me->modem->GPRSSetPDPActive(true))
@@ -633,9 +633,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveAllClicked(voi
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveAllClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveAllClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->modem)
 	{
 		if (me->modem->GPRSSetPDPActive(false))
@@ -649,9 +649,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveAllClicked(v
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveSelectedClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveSelectedClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->modem)
 	{
 		UOSInt i = me->lvPDPContext->GetSelectedIndex();
@@ -673,9 +673,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveSelectedClicke
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->modem)
 	{
 		UOSInt i = me->lvPDPContext->GetSelectedIndex();
@@ -697,9 +697,9 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClic
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	if (me->huawei)
 	{
 		UTF8Char sbuff[256];

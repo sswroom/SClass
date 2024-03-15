@@ -12,7 +12,7 @@ UInt32 __stdcall Sync::Thread::InnerThread(void *userObj)
 	return 0;
 }
 
-Sync::Thread::Thread(ThreadFunc func, void *userObj, Text::CStringNN name)
+Sync::Thread::Thread(ThreadFunc func, AnyType userObj, Text::CStringNN name)
 {
 	this->running = 0;
 	this->stopping = 0;
@@ -117,7 +117,7 @@ Bool Sync::Thread::IsWaiting() const
 	return this->waiting != 0;
 }
 
-void *Sync::Thread::GetUserObj() const
+AnyType Sync::Thread::GetUserObj() const
 {
 	return this->userObj;
 }

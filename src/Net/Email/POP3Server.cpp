@@ -562,7 +562,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 	}
 }
 
-Net::Email::POP3Server::POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::POP3Server::POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, NotNullPtr<Net::Email::MailController> mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

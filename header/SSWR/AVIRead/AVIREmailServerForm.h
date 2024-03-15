@@ -99,20 +99,20 @@ namespace SSWR
 			UOSInt recvSize;
 			Bool mailChanged;
 
-			static void __stdcall OnSMTPStartClicked(void *userObj);
-			static void __stdcall OnPOP3StartClicked(void *userObj);
-			static void __stdcall OnGCISStartClicked(void *userObj);
-			static void __stdcall OnLogFileClicked(void *userObj);
-			static void __stdcall OnEmailDblClicked(void *userObj, UOSInt index);
-			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail);
-			static void __stdcall OnGCISMailReceived(void *userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> mail);
-			static Bool __stdcall OnMailLogin(void *userObj, Text::CString userName, Text::CString pwd);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnSMTPCertKeyClicked(void *userObj);
-			static void __stdcall OnPOP3CertKeyClicked(void *userObj);
-			static void __stdcall OnGCISCertKeyClicked(void *userObj);
-			static void __stdcall OnSMTPTypeSelChg(void *userObj);
-			static void __stdcall OnPOP3SSLChanged(void *userObj, Bool isChecked);
+			static void __stdcall OnSMTPStartClicked(AnyType userObj);
+			static void __stdcall OnPOP3StartClicked(AnyType userObj);
+			static void __stdcall OnGCISStartClicked(AnyType userObj);
+			static void __stdcall OnLogFileClicked(AnyType userObj);
+			static void __stdcall OnEmailDblClicked(AnyType userObj, UOSInt index);
+			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, AnyType userObj, NotNullPtr<Net::TCPClient> cli, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail);
+			static void __stdcall OnGCISMailReceived(AnyType userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> mail);
+			static Bool __stdcall OnMailLogin(AnyType userObj, Text::CString userName, Text::CString pwd);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnSMTPCertKeyClicked(AnyType userObj);
+			static void __stdcall OnPOP3CertKeyClicked(AnyType userObj);
+			static void __stdcall OnGCISCertKeyClicked(AnyType userObj);
+			static void __stdcall OnSMTPTypeSelChg(AnyType userObj);
+			static void __stdcall OnPOP3SSLChanged(AnyType userObj, Bool isChecked);
 
 			Optional<Text::String> GetUserName(Int32 userId);
 			void ClearSMTPCACerts();

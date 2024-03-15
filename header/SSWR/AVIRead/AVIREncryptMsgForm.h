@@ -44,8 +44,8 @@ namespace SSWR
 			UInt8 *InitInput(UOSInt blockSize, UOSInt *dataSize);
 			UInt8 *InitIV(Crypto::Encrypt::ICrypto *crypto, UInt8 *dataBuff, UOSInt *buffSize, UOSInt blockSize, Bool enc);
 			void ShowOutput(const UInt8 *buff, UOSInt buffSize);
-			static void __stdcall OnEncryptClicked(void *userObj);
-			static void __stdcall OnDecryptClicked(void *userObj);
+			static void __stdcall OnEncryptClicked(AnyType userObj);
+			static void __stdcall OnDecryptClicked(AnyType userObj);
 			static Text::TextBinEnc::ITextBinEnc *GetTextEncType(NotNullPtr<UI::GUIComboBox> cbo);
 			static void AddTextEncType(NotNullPtr<UI::GUIComboBox> cbo);
 		public:

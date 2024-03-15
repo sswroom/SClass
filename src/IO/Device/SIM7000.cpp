@@ -6,12 +6,12 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen)
+Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen)
 {
 	UTF8Char sbuff[256];
 	Text::PString sarr[4];
 	UOSInt i;
-	IO::Device::SIM7000 *me = (IO::Device::SIM7000*)userObj;
+	NotNullPtr<IO::Device::SIM7000> me = userObj.GetNN<IO::Device::SIM7000>();
 	if (me->nextReceive)
 	{
 		me->nextReceive = false;
@@ -145,7 +145,7 @@ IO::Device::SIM7000::~SIM7000()
 	}
 }
 
-void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userObj)
+void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, AnyType userObj)
 {
 	this->recvHdlrObj = userObj;
 	this->recvHdlr = recvHdlr;

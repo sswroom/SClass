@@ -7,9 +7,9 @@
 #include "Text/UTF8Writer.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeFile1", false);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeFile2", false);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeOFile", true);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
@@ -63,9 +63,9 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	UTF8Char sbuff[16];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;

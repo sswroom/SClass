@@ -32,8 +32,8 @@ namespace IO
 
 		Bool IsError();
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		
 		Bool GetFWVersion(Int32 *majorVer, Int32 *minorVer);
 		Bool ReadDIO(Int32 *dioValues); //bit 0-9 = IN1-10, bit10-11 = OUT1-2

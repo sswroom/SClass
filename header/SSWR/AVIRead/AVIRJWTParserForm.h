@@ -53,7 +53,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIListView> lvPayload;
 		
-			static void __stdcall OnParseClicked(void *userObj);
+			static void __stdcall OnParseClicked(AnyType userObj);
 
 		public:
 			AVIRJWTParserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

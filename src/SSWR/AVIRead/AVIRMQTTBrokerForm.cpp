@@ -9,9 +9,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	if (me->broker)
 	{
 		me->ServerStop();
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	if (me->broker)
 	{
 		me->ui->ShowMsgOK(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
@@ -105,9 +105,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -116,9 +116,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList;
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Text::StringBuilderUTF8 sb;
@@ -187,9 +187,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
-	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

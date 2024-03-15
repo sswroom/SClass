@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &buff)
+void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff)
 {
-	SSWR::AVIRead::AVIREWDTU01Form *me = (SSWR::AVIRead::AVIREWDTU01Form *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Ptr(), buff.GetSize());
 	Text::JSONObject *obj;
 	Text::JSONBase *baseObj;
@@ -85,9 +85,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 	jsonObj->EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREWDTU01Form *me = (SSWR::AVIRead::AVIREWDTU01Form *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	if (me->cli)
 	{
 		SDEL_CLASS(me->cli);
@@ -119,9 +119,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 	me->cli->Subscribe(CSTR("/+/connect_packet/adv_publish"));
 }
 
-void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREWDTU01Form *me = (SSWR::AVIRead::AVIREWDTU01Form *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->dataChg)

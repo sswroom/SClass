@@ -29,8 +29,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::DBConn *conn;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			AVIRPostgreSQLForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPostgreSQLForm();

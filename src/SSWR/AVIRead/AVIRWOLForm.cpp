@@ -3,9 +3,9 @@
 #include "Net/WOLClient.h"
 #include "SSWR/AVIRead/AVIRWOLForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWOLForm *me = (SSWR::AVIRead::AVIRWOLForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWOLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWOLForm>();
 	UInt8 macBuff[16];
 	Net::WOLClient *cli;
 	Text::StringBuilderUTF8 sb;

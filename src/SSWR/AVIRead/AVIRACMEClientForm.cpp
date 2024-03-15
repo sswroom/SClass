@@ -2,9 +2,9 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRACMEClientForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRACMEClientForm *me = (SSWR::AVIRead::AVIRACMEClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRACMEClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRACMEClientForm>();
 	if (me->client)
 	{
 		DEL_CLASS(me->client);

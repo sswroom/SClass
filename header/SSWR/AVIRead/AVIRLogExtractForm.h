@@ -29,15 +29,15 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSuffix;
 			NotNullPtr<UI::GUIButton> btnExtract;
 
-			static void __stdcall OnSFileClicked(void *userObj);
-			static void __stdcall OnOFileClicked(void *userObj);
-			static void __stdcall OnExtractClicked(void *userObj);
+			static void __stdcall OnSFileClicked(AnyType userObj);
+			static void __stdcall OnOFileClicked(AnyType userObj);
+			static void __stdcall OnExtractClicked(AnyType userObj);
 		public:
 			AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogExtractForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

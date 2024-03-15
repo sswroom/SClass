@@ -37,7 +37,7 @@ namespace Net
 			NotNullPtr<IO::LogTool> log;
 			NotNullPtr<Text::String> greeting;
 
-			Net::Email::MailController *mailCtrl;
+			NotNullPtr<Net::Email::MailController> mailCtrl;
 			IO::FileStream *rawLog;
 
 			static void __stdcall ConnReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
@@ -50,7 +50,7 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart);
+			POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, NotNullPtr<Net::Email::MailController> mailCtrl, Bool autoStart);
 			~POP3Server();
 
 			Bool Start();

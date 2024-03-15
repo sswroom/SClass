@@ -115,7 +115,7 @@ void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, 
 
 void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::FLVFileAnalyse *me = (IO::FileAnalyse::FLVFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::FLVFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FLVFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;

@@ -126,7 +126,7 @@ void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 	frm->Show();
 }
 
-IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
+IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
 	IO::Stream *retStm = 0;
 	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, *this, allowReadOnly, this->ssl, this->GetLog());
@@ -137,10 +137,7 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 	if (frm.ShowDialog(ownerFrm) == UI::GUIForm::DR_OK)
 	{
 		retStm = frm.GetStream().Ptr();
-		if (st)
-		{
-			*st = frm.GetStreamType();
-		}
+		st.Set(frm.GetStreamType());
 	}
 	return retStm;
 }

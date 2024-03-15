@@ -131,43 +131,43 @@ namespace SSWR
 			NotNullPtr<UI::GUIHScrollBar> hsbYUVCGamma;
 			NotNullPtr<UI::GUILabel> lblYUVCGammaV;
 
-			static void __stdcall OnMonProfileChg(void *userObj);
-			static void __stdcall OnMonProfileClicked(void *userObj);
-			static void __stdcall OnMonCustomClicked(void *userObj);
-			static void __stdcall OnDefVProfileChg(void *userObj);
-			static void __stdcall OnDefPProfileChg(void *userObj);
-			static void __stdcall On10BitChanged(void *userObj, Bool newVal);
+			static void __stdcall OnMonProfileChg(AnyType userObj);
+			static void __stdcall OnMonProfileClicked(AnyType userObj);
+			static void __stdcall OnMonCustomClicked(AnyType userObj);
+			static void __stdcall OnDefVProfileChg(AnyType userObj);
+			static void __stdcall OnDefPProfileChg(AnyType userObj);
+			static void __stdcall On10BitChanged(AnyType userObj, Bool newVal);
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 
-			static void __stdcall OnCalRedBChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalRedCChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalRedGChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalGreenBChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalGreenCChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalGreenGChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalBlueBChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalBlueCChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnCalBlueGChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnCalRedBChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalRedCChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalRedGChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalGreenBChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalGreenCChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalGreenGChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalBlueBChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalBlueCChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnCalBlueGChg(AnyType userObj, UOSInt newPos);
 
-			static void __stdcall OnMonVBrigChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnMonPBrigChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnMonRBrigChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnMonGBrigChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnMonBBrigChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnMonVBrigChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnMonPBrigChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnMonRBrigChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnMonGBrigChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnMonBBrigChg(AnyType userObj, UOSInt newPos);
 
-			static void __stdcall OnYUVBrigChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnYUVContChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnYUVSatChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnYUVYGammaChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnYUVCGammaChg(void *userObj, UOSInt newPos);
-			static void __stdcall OnYUVDefBT601Chg(void *userObj, Bool checked);
-			static void __stdcall OnYUVDefBT709Chg(void *userObj, Bool checked);
-			static void __stdcall OnYUVDefFCCChg(void *userObj, Bool checked);
-			static void __stdcall OnYUVDefBT470BGChg(void *userObj, Bool checked);
-			static void __stdcall OnYUVDefSMPTE170MChg(void *userObj, Bool checked);
-			static void __stdcall OnYUVDefSMPTE240MChg(void *userObj, Bool checked);
+			static void __stdcall OnYUVBrigChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnYUVContChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnYUVSatChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnYUVYGammaChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnYUVCGammaChg(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnYUVDefBT601Chg(AnyType userObj, Bool checked);
+			static void __stdcall OnYUVDefBT709Chg(AnyType userObj, Bool checked);
+			static void __stdcall OnYUVDefFCCChg(AnyType userObj, Bool checked);
+			static void __stdcall OnYUVDefBT470BGChg(AnyType userObj, Bool checked);
+			static void __stdcall OnYUVDefSMPTE170MChg(AnyType userObj, Bool checked);
+			static void __stdcall OnYUVDefSMPTE240MChg(AnyType userObj, Bool checked);
 			
 		public:
 			AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, MonitorHandle *hMon);

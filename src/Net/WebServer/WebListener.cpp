@@ -7,10 +7,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall Net::WebServer::WebListener::ClientReady(NotNullPtr<Net::TCPClient> cli, void *userObj)
+void __stdcall Net::WebServer::WebListener::ClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
 {
 	NotNullPtr<Net::WebServer::WebListener> me;
-	if (me.Set((Net::WebServer::WebListener*)userObj))
+	if (userObj.GetOpt<Net::WebServer::WebListener>().SetTo(me))
 	{
 		UOSInt i = me->nextCli;
 		NotNullPtr<Net::TCPClientMgr> cliMgr;
@@ -30,9 +30,9 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NotNullPtr<Net::TCPClien
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, AnyType userObj)
 {
-	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
+	NotNullPtr<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
 	NotNullPtr<Net::TCPClient> cli;
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl))
@@ -47,33 +47,33 @@ void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, void *userObj)
 	Interlocked_IncrementU32(&me->status.connCnt);
 }
 
-void __stdcall Net::WebServer::WebListener::ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::WebServer::WebListener::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 //	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
-		DEL_CLASS(conn);
+		NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
+		conn.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_SHUTDOWN)
 	{
-		Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
+		NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
 		conn->ProxyShutdown();
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::WebServer::WebListener::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
-	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
+	NotNullPtr<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
+	NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
 	conn->ReceivedData(buff);
 	Interlocked_AddU64(&me->status.totalRead, buff.GetSize());
 }
 
-void __stdcall Net::WebServer::WebListener::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::WebServer::WebListener::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
-	Net::WebServer::WebListener *me = (Net::WebServer::WebListener *)userObj;
-	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
+	NotNullPtr<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
+	NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
 	conn->ProcessTimeout();
 	if (me->timeoutHdlr)
 	{
@@ -81,36 +81,36 @@ void __stdcall Net::WebServer::WebListener::ClientTimeout(NotNullPtr<Net::TCPCli
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ProxyClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::WebServer::WebListener::ProxyClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-//	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
+//	NotNullPtr<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
+		NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
 		conn->EndProxyConn();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_SHUTDOWN)
 	{
-		Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
+		NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
 		conn->ShutdownSend();
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ProxyClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::WebServer::WebListener::ProxyClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-//	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
-	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
+//	NotNullPtr<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
+	NotNullPtr<Net::WebServer::WebConnection> conn = cliData.GetNN<Net::WebServer::WebConnection>();
 	conn->ProxyData(buff);
 }
 
-void __stdcall Net::WebServer::WebListener::ProxyTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::WebServer::WebListener::ProxyTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 
 }
 
-void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buffSize)
+void __stdcall Net::WebServer::WebListener::OnDataSent(AnyType userObj, UOSInt buffSize)
 {
-	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
+	NotNullPtr<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
@@ -309,7 +309,7 @@ void Net::WebServer::WebListener::AddProxyConn(Net::WebServer::WebConnection *co
 	}
 }
 
-void Net::WebServer::WebListener::HandleTimeout(TimeoutHandler hdlr, void *userObj)
+void Net::WebServer::WebListener::HandleTimeout(TimeoutHandler hdlr, AnyType userObj)
 {
 	this->timeoutObj = userObj;
 	this->timeoutHdlr = hdlr;

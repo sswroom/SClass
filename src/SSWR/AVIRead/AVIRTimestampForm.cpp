@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRTimestampForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimestampForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimestampForm>();
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochMSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochMSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimestampForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimestampForm>();
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
@@ -39,9 +39,9 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochMSClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochUSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochUSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimestampForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimestampForm>();
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
@@ -51,9 +51,9 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochUSClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochNSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochNSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimestampForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimestampForm>();
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
@@ -63,9 +63,9 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochNSClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnDotNetTicksClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnDotNetTicksClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimestampForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimestampForm>();
 	Text::StringBuilderUTF8 sb;
 	Int64 v;
 	me->txtValue->GetText(sb);
@@ -75,9 +75,9 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnDotNetTicksClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnStrConvClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnStrConvClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimestampForm *me = (SSWR::AVIRead::AVIRTimestampForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimestampForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimestampForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtStr->GetText(sb);
 	Data::Timestamp ts = Data::Timestamp::FromStr(sb.ToCString(), 0);

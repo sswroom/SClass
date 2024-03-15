@@ -17,7 +17,7 @@
 
 void __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::AudioFilter::DTMFDecoder *me = (Media::AudioFilter::DTMFDecoder *)thread->GetUserObj();
+	NotNullPtr<Media::AudioFilter::DTMFDecoder> me = thread->GetUserObj().GetNN<Media::AudioFilter::DTMFDecoder>();
 
 	Double *avgData = MemAlloc(Double, me->sampleCnt);
 	UInt8 *tmpBuff = MemAlloc(UInt8, me->sampleBuffSize);

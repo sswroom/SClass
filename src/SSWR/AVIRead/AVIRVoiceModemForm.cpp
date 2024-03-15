@@ -9,9 +9,9 @@
 #include "Sync/ThreadUtil.h"
 #include "UI/GUITabPage.h"
 
-void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVoiceModemForm *me = (SSWR::AVIRead::AVIRVoiceModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	if (me->toneChg)
 	{
 		me->toneChg = false;
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVoiceModemForm *me = (SSWR::AVIRead::AVIRVoiceModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	if (!me->isConnected)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -110,9 +110,9 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnHangUpClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnHangUpClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVoiceModemForm *me = (SSWR::AVIRead::AVIRVoiceModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	if (me->isConnected)
 	{
 		if (me->modem->HangUp())
@@ -127,9 +127,9 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnHangUpClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(void *userObj, UInt8 evtType)
+void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(AnyType userObj, UInt8 evtType)
 {
-	SSWR::AVIRead::AVIRVoiceModemForm *me = (SSWR::AVIRead::AVIRVoiceModemForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	switch (evtType)
 	{
 	case 'b':

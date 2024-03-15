@@ -6,16 +6,16 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	if (me->currCapture)
 	{
 		DEL_CLASS(me->currCapture);
 	}
 	me->ReleaseFormats();
 
-	Media::VideoCaptureMgr::DeviceInfo *dev = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem();
+	Media::VideoCaptureMgr::DeviceInfo *dev = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem().p;
 	if (dev)
 	{
 		me->currCapture = me->captureMgr->CreateDevice(dev->devType, dev->devId);
@@ -132,9 +132,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	if (me->isStarted)
 	{
 		me->StopCapture();
@@ -215,9 +215,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(sbuff, me->frameCnt);
@@ -226,9 +226,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(void *userObj)
 	me->txtSaveCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
 	if (me->lastSaveTime + me->interval <= frameTime)
 	{
@@ -260,9 +260,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-//	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userData;
+//	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 }
 
 void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()

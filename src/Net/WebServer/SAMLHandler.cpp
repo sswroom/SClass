@@ -251,13 +251,13 @@ Bool Net::WebServer::SAMLHandler::GetSSOURL(NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-void Net::WebServer::SAMLHandler::HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *userObj)
+void Net::WebServer::SAMLHandler::HandleRAWSAMLResponse(SAMLStrFunc hdlr, AnyType userObj)
 {
 	this->rawRespHdlr = hdlr;
 	this->rawRespObj = userObj;
 }
 
-void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, void *userObj)
+void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj)
 {
 	this->loginHdlr = hdlr;
 	this->loginObj = userObj;

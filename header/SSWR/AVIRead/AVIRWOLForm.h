@@ -22,7 +22,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnSendClicked(void *userObj);
+			static void __stdcall OnSendClicked(AnyType userObj);
 		public:
 			AVIRWOLForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWOLForm();

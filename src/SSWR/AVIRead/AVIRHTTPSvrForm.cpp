@@ -123,9 +123,9 @@ SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(UOSIn
 	return &this->entries[index];
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	if (me->svr)
 	{
 		return;
@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
 				me->svr->SetRequestLog(me->reqLog);
 				NotNullPtr<UI::ListBoxLogger> logger;
-				NEW_CLASSNN(logger, UI::ListBoxLogger(*me, me->lbLog, 500, true));
+				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
@@ -274,9 +274,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -302,18 +302,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 	me->btnSSLCert->SetEnabled(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	Optional<Text::String> s;
 	s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
@@ -392,15 +392,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	me->reqLog->Use(mutUsage);
-	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem();
+	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem().p;
 	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 	log = me->reqLog->GetEntry(i);
@@ -424,9 +424,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	me->txtAccess->SetText(sb.ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{

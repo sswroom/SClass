@@ -5,7 +5,7 @@
 
 void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 {
-	UI::GUIDObjArea *me = (UI::GUIDObjArea*)thread->GetUserObj();
+	NotNullPtr<UI::GUIDObjArea> me = thread->GetUserObj().GetNN<UI::GUIDObjArea>();
 	me->mainEvt.Set();
 	while (!thread->IsStopping())
 	{
@@ -141,7 +141,7 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 
 void __stdcall UI::GUIDObjArea::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	UI::GUIDObjArea *me = (UI::GUIDObjArea*)thread->GetUserObj();
+	NotNullPtr<UI::GUIDObjArea> me = thread->GetUserObj().GetNN<UI::GUIDObjArea>();
 	NotNullPtr<Media::DrawImage> img;
 	me->mainEvt.Set();
 	while (!thread->IsStopping())
@@ -170,9 +170,9 @@ void __stdcall UI::GUIDObjArea::ProcessThread(NotNullPtr<Sync::Thread> thread)
 	me->mainEvt.Set();
 }
 
-void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
+void __stdcall UI::GUIDObjArea::OnUpdateSize(AnyType userObj)
 {
-	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
+	NotNullPtr<UI::GUIDObjArea> me = userObj.GetNN<UI::GUIDObjArea>();
 	Sync::MutexUsage mutUsage(me->dobjMut);
 	if (me->dobjHdlr)
 	{

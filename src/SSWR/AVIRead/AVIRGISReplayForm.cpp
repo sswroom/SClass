@@ -50,17 +50,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 	return 0;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	me->StopThread();
 	me->currTrackId = (UOSInt)me->cboName->GetSelectedIndex();
 	me->UpdateRecList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	UOSInt i = me->lbRecord->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -143,10 +143,10 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
-	me->mnuRecord->ShowMenu(*me, scnPos);
+	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	me->mnuRecord->ShowMenu(me, scnPos);
 	return false;
 }
 

@@ -5,9 +5,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, void *userObj)
+void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, AnyType userObj)
 {
-	Net::TCPServerStream *me = (Net::TCPServerStream*)userObj;
+	NotNullPtr<Net::TCPServerStream> me = userObj.GetNN<Net::TCPServerStream>();
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 	Sync::MutexUsage connMutUsage(me->connMut);

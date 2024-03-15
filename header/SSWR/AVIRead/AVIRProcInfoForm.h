@@ -116,18 +116,18 @@ namespace SSWR
 			Data::Timestamp lastKernelTime;
 			UOSInt threadCnt;
 
-			static void __stdcall OnSumDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnProcSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnTimerCPUTick(void *userObj);
-			static void __stdcall OnDetailCurrClicked(void* userObj);
-			static void __stdcall OnDetModuleRefClicked(void *userObj);
-			static void __stdcall OnDetThreadRefClicked(void *userObj);
-			static void __stdcall OnDetThreadDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnDetHeapRefClicked(void *userObj);
-			static void __stdcall OnDetHeapSelChg(void *userObj);
-			static void __stdcall OnDetHeapItemSelChg(void *userObj);
-			static void __stdcall OnDetHandleClicked(void *userObj);
+			static void __stdcall OnSumDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnProcSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnTimerCPUTick(AnyType userObj);
+			static void __stdcall OnDetailCurrClicked(AnyType userObj);
+			static void __stdcall OnDetModuleRefClicked(AnyType userObj);
+			static void __stdcall OnDetThreadRefClicked(AnyType userObj);
+			static void __stdcall OnDetThreadDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnDetHeapRefClicked(AnyType userObj);
+			static void __stdcall OnDetHeapSelChg(AnyType userObj);
+			static void __stdcall OnDetHeapItemSelChg(AnyType userObj);
+			static void __stdcall OnDetHandleClicked(AnyType userObj);
 
 			void UpdateProcModules();
 			void UpdateProcThreads();

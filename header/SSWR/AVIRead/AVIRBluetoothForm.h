@@ -61,12 +61,12 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnCtrlChanged(void *userObj);
-			static void __stdcall OnDeviceSrchClicked(void *userObj);
-			static void __stdcall OnDeviceUpdateClicked(void *userObj);
-			static void __stdcall OnDeviceSelChg(void *userObj);
-			static void __stdcall OnDevAuthenClicked(void *userObj);
-			static void __stdcall OnDevUnauthenClicked(void *userObj);
+			static void __stdcall OnCtrlChanged(AnyType userObj);
+			static void __stdcall OnDeviceSrchClicked(AnyType userObj);
+			static void __stdcall OnDeviceUpdateClicked(AnyType userObj);
+			static void __stdcall OnDeviceSelChg(AnyType userObj);
+			static void __stdcall OnDevAuthenClicked(AnyType userObj);
+			static void __stdcall OnDevUnauthenClicked(AnyType userObj);
 
 			void ClearGUIDs();
 			void UpdateDevList(BTStatus *btStatus);

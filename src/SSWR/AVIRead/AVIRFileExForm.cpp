@@ -6,9 +6,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt64 fileSize;
 	IO::Path::PathType pt;
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExSrc", false);
 	me->txtSrc->GetText(sb);
@@ -42,9 +42,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
 	ofd.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExDest", true);
 	me->txtDest->GetText(sb);
@@ -56,9 +56,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
 	ofd.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt64 startOfst;
 	UInt64 endOfst;

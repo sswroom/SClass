@@ -48,7 +48,7 @@ namespace Net
 		Sync::Mutex mut;
 		Data::FastMap<UInt32, SSDPDevice *> devMap;
 
-		static void __stdcall OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
 		void SSDPServiceFree(SSDPService *svc);
 		void SSDPDeviceFree(SSDPDevice *dev);

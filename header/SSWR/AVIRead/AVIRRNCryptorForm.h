@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUICheckBox> chkBase64;
 			NotNullPtr<UI::GUIButton> btnProcess;
 
-			static void __stdcall OnProcessClicked(void *userObj);
+			static void __stdcall OnProcessClicked(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 		public:
 			AVIRRNCryptorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

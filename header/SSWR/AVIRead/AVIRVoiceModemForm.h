@@ -52,10 +52,10 @@ namespace SSWR
 			Bool hasEvt;
 			UInt8 evtType;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDialClicked(void *userObj);
-			static void __stdcall OnHangUpClicked(void *userObj);
-			static void __stdcall OnModemEvent(void *userObj, UInt8 evtType);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDialClicked(AnyType userObj);
+			static void __stdcall OnHangUpClicked(AnyType userObj);
+			static void __stdcall OnModemEvent(AnyType userObj, UInt8 evtType);
 
 		public:
 			AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::Device::RockwellModemController *modem, IO::ATCommandChannel *channel, NotNullPtr<IO::Stream> port);

@@ -10,7 +10,7 @@
 
 void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::ProgCtrl::BluetoothCtlProgCtrl *me = (IO::ProgCtrl::BluetoothCtlProgCtrl*)thread->GetUserObj();
+	NotNullPtr<IO::ProgCtrl::BluetoothCtlProgCtrl> me = thread->GetUserObj().GetNN<IO::ProgCtrl::BluetoothCtlProgCtrl>();
 	UInt8 buff[512];
 	UOSInt readSize;
 	Text::PString sarr[2];

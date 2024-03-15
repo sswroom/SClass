@@ -3,9 +3,9 @@
 #include "IO/RadioSignalLogger.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bss, const Data::Timestamp &scanTime, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bss, const Data::Timestamp &scanTime, AnyType userObj)
 {
-	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
+	NotNullPtr<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
 	if (me->fs)
 	{
 		UTF8Char sbuff[64];
@@ -27,9 +27,9 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
-	IO::RadioSignalLogger *me = (IO::RadioSignalLogger*)userObj;
+	NotNullPtr<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
 	if (updateType == IO::BTScanner::UT_RSSI)
 	{
 		UTF8Char sbuff[64];

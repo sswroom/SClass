@@ -8,9 +8,9 @@
 
 #define NMEAMAXSIZE 128
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Double dist;
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
@@ -33,11 +33,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Not
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Data::DateTime dt;
 
 	if (me->locSvc->IsDown() != me->lastDown)
@@ -161,9 +161,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (mtk->QueryFirmware())
 	{
@@ -174,9 +174,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (me->mapNavi)
 	{
@@ -194,9 +194,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(void *
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to delete GPS log data?"), CSTR("MTK GPS Tracker"), me))
 	{
@@ -211,16 +211,16 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKTestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKTestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	mtk->GetLogFormat();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to factory reset the device?"), CSTR("Question"), me))
 	{
 		IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
@@ -228,9 +228,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(void 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnDispOffClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnDispOffClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	me->dispOffTime = dt.ToTicks();
@@ -238,15 +238,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnDispOffClicked(void *userObj
 	me->ui->DisplayOff();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(AnyType userObj, Bool newState)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	me->SetAlwaysOnTop(newState);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(AnyType userObj, const UTF8Char *line, UOSInt lineLen)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Sync::MutexUsage mutUsage(me->nmeaMut);
 	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
 	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen).Ptr();
@@ -254,9 +254,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, cons
 	me->nmeaUpdated = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::SignalFocusLost(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::SignalFocusLost(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	me->DispOffFocusLost();
 }
 

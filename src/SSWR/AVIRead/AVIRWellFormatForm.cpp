@@ -97,9 +97,9 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NotN
 	return succ;
 }
 
-void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWellFormatForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWellFormatForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"WellFormat", false);
 	AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -115,9 +115,9 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(AnyType userObj, Da
 	me->txtFile->SetText(files[0]->ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWellFormatForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWellFormatForm>();
 	Text::StringBuilderUTF8 sbFile;
 	Text::StringBuilderUTF8 sbOutput;
 	me->txtFile->GetText(sbFile);
@@ -131,9 +131,9 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWellFormatForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWellFormatForm>();
 	Text::StringBuilderUTF8 sbFile;
 	Text::StringBuilderUTF8 sbOutput;
 	me->txtFile->GetText(sbFile);

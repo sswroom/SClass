@@ -12,9 +12,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->devStm)
 	{
 		me->StopStream(true);
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 	else
 	{
 		IO::StreamType st;
-		me->devStm = me->core->OpenStream(&st, me, 0, false);
+		me->devStm = me->core->OpenStream(st, me, 0, false);
 		if (me->devStm)
 		{
 			me->recvBuff.Clear();
@@ -47,9 +47,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -113,9 +113,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -146,9 +146,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -179,9 +179,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -209,9 +209,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -239,9 +239,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		UInt8 devAddr;
@@ -276,9 +276,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->modbusCtrl == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("You must open the stream first"), CSTR("MODBUS Master"), me);
@@ -299,9 +299,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	if (me->stm)
 	{
 		UTF8Char sbuff[64];
@@ -481,9 +481,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, const UInt8 *data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, const UInt8 *data, UOSInt dataSize)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Data Received: "));
 	sb.AppendUOSInt(dataSize);
@@ -495,9 +495,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(void *userObj, co
 	me->recvUpdated = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(void *userObj, const UInt8 *data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(AnyType userObj, const UInt8 *data, UOSInt dataSize)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Data Sent: "));
 	sb.AppendUOSInt(dataSize);
@@ -509,9 +509,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(void *userObj, co
 	me->sendUpdated = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(AnyType userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm)
 {
-	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	MODBUSEntry *entry = MemAlloc(MODBUSEntry, 1);

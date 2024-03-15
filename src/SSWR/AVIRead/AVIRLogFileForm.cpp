@@ -37,9 +37,9 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::AVIRead::AVIRLogFileForm *me = (SSWR::AVIRead::AVIRLogFileForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogFileForm>();
 	Text::StringBuilderUTF8 sb;
 	me->logFile->GetLogDescription(me->logLevel, itemIndex, sb);
 	me->ui->ShowMsgOK(sb.ToCString(), CSTR("Log Detail"), me);

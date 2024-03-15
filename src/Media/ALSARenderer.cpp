@@ -68,7 +68,7 @@ snd_pcm_state_t ALSARenderer_GetState(void *hand)
 
 void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::ALSARenderer *me = (Media::ALSARenderer *)thread->GetUserObj();
+	NotNullPtr<Media::ALSARenderer> me = thread->GetUserObj().GetNN<Media::ALSARenderer>();
 	Media::AudioFormat af;
 	Int32 i;
 	Data::Duration refStart;
@@ -117,7 +117,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 			printf("Error: snd_pcm_reset, %d, %s\r\n", err, snd_strerror(err));
 		}
 		snd_async_handler_t *ahandler;
-		err = snd_async_add_pcm_handler(&ahandler, (snd_pcm_t*)me->hand, ALSARenderer_Event, me);
+		err = snd_async_add_pcm_handler(&ahandler, (snd_pcm_t*)me->hand, ALSARenderer_Event, me.Ptr());
 		if (err < 0)
 		{
 			printf("Error: snd_async_add_pcm_handler, %d, %s\r\n", err, snd_strerror(err));

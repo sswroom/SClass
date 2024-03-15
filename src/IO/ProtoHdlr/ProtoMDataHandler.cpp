@@ -17,16 +17,16 @@ IO::ProtoHdlr::ProtoMDataHandler::~ProtoMDataHandler()
 	this->crc.Delete();
 }
 
-void *IO::ProtoHdlr::ProtoMDataHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoMDataHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoMDataHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoMDataHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMDataHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoMDataHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
@@ -61,7 +61,7 @@ UOSInt IO::ProtoHdlr::ProtoMDataHandler::ParseProtocol(NotNullPtr<IO::Stream> st
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMDataHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoMDataHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)buff = *(Int16*)"MD";
 	WriteInt16(&buff[2], (cmdSize + 8));

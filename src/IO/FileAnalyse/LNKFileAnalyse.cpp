@@ -8,7 +8,7 @@
 
 void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::LNKFileAnalyse* me = (IO::FileAnalyse::LNKFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::LNKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::LNKFileAnalyse>();
 	UInt64 ofst;
 	UInt8 tagHdr[24];
 	UInt32 linkFlags;

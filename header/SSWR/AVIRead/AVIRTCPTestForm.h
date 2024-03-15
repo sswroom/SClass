@@ -53,9 +53,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFailCnt;
 			NotNullPtr<UI::GUITextBox> txtFailCnt;
 
-			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void StopThreads();
 		public:
 			AVIRTCPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

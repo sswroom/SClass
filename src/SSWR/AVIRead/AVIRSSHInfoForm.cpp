@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRSSHInfoForm.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSHInfoForm *me = (SSWR::AVIRead::AVIRSSHInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSHInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSHInfoForm>();
 	Text::StringBuilderUTF8 sbHost;
 	Text::StringBuilderUTF8 sbTmp;
 	Text::PString hostName;

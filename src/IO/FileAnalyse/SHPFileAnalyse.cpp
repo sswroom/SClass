@@ -44,7 +44,7 @@ Text::CString IO::FileAnalyse::SHPFileAnalyse::ShapeTypeGetName(UInt32 shapeType
 
 void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SHPFileAnalyse *me = (IO::FileAnalyse::SHPFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::SHPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SHPFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[12];

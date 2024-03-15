@@ -4,9 +4,9 @@
 #include "Text/StringBuilder.h"
 #include "Win32/WMIQuery.h"
 
-void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
 	NotNullPtr<Text::String> ns;
 	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
@@ -28,15 +28,15 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMIForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMIForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
 	NotNullPtr<Text::String> ns;
 	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{

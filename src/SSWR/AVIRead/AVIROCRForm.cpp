@@ -35,9 +35,9 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	ResultInfo *res = (ResultInfo*)me->lvText->GetSelectedItem();
 	if (res)
 	{
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
 {
-	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (boundary.GetArea() >= 1000)

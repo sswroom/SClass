@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTimedFileCopyForm *me = (SSWR::AVIRead::AVIRTimedFileCopyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTimedFileCopyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedFileCopyForm>();
 	Data::DateTime dt1;
 	Data::DateTime dt2;
 	Text::StringBuilderUTF8 sb;

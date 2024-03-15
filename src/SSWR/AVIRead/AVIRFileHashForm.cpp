@@ -24,9 +24,9 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(AnyType userObj, Data
 	me->fileListChg = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	me->UpdateUI();
@@ -69,9 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->lastTimerTime.SetValue(currTime);
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	me->currHashType = (Crypto::Hash::HashType)(OSInt)me->cboCheckType->GetSelectedItem();
 }
 

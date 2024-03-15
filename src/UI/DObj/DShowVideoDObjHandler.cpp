@@ -8,9 +8,9 @@
 #include "UI/DObj/DirectObject.h"
 #include "UI/DObj/DShowVideoDObjHandler.h"
 
-void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(void *userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH)
+void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH)
 {
-	UI::DObj::DShowVideoDObjHandler *me = (UI::DObj::DShowVideoDObjHandler*)userObj;
+	NotNullPtr<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
 	Media::DrawImage *dimg = me->frameImg;
 	Int32 dbpl = (Int32)me->videoSize.x << 2;
 	UOSInt outW;
@@ -44,9 +44,9 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(void *userObj, UInt
 	me->shown = false;
 }
 
-void __stdcall UI::DObj::DShowVideoDObjHandler::OnTimerTick(void *userObj)
+void __stdcall UI::DObj::DShowVideoDObjHandler::OnTimerTick(AnyType userObj)
 {
-/*	UI::DObj::DShowVideoDObjHandler *me = (UI::DObj::DShowVideoDObjHandler*)userObj;
+/*	NotNullPtr<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
 	me->graph->CheckStatus();
 	if (me->graph->IsCompleted())
 	{

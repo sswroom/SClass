@@ -63,22 +63,22 @@ typedef enum
 	MNU_EXPORT_LITE
 } MenuItems;
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupEnterClick(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupEnterClick(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->lastGroupObj != 0 && me->inputMode == IM_GROUP)
 	{
 		OnObjDblClicked(userObj);
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 
 	if (me->GroupFormValid())
 	{
-		OrganGroup *grp = (OrganGroup*)me->lbDir->GetSelectedItem();
+		OrganGroup *grp = (OrganGroup*)me->lbDir->GetSelectedItem().p;
 		Int32 parDir = grp->GetGroupId();
 
 		if (me->inputMode == IM_GROUP || me->inputMode == IM_EMPTY)
@@ -118,7 +118,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 			i = me->lbObj->GetCount();
 			while (i-- > 0)
 			{
-				gi = (OrganGroupItem*)me->lbObj->GetItem(i);
+				gi = (OrganGroupItem*)me->lbObj->GetItem(i).p;
 				if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 				{
 					grp = (OrganGroup*)gi;
@@ -138,9 +138,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	i = me->lbObj->GetSelectedIndex();
@@ -149,7 +149,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 
 	if (me->inputMode == IM_GROUP)
 	{
-		OrganGroup *obj = (OrganGroup*)me->lbObj->GetItem(i);;
+		OrganGroup *obj = (OrganGroup*)me->lbObj->GetItem(i).p;
 		i = me->env->GetGroupCount(obj->GetGroupId());
 
 		if (i == 0)
@@ -183,18 +183,18 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnDirChanged(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnDirChanged(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	me->lastDirIndex = me->lbDir->GetSelectedIndex();
 	me->UpdateDir();
 	SDEL_STRING(me->initSelImg);
 	me->UpdateImgDir();
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i = me->lbObj->GetSelectedIndex();
@@ -206,7 +206,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 	if (me->ToSaveSpecies())
 		return;
 
-	OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem(i);
+	OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem(i).p;
 	if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 	{
 		me->lastSpeciesObj = 0;
@@ -225,7 +225,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 	{
 		if (me->lbDir->GetSelectedIndex() != INVALID_INDEX && me->lbDir->GetSelectedIndex() > 0)
 		{
-			OrganGroup *groupO = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
+			OrganGroup *groupO = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex()).p;
 			SDEL_STRING(me->initSelObj);
 			me->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone().Ptr();
             me->lbDir->SetSelectedIndex(me->lbDir->GetSelectedIndex() - 1);
@@ -233,9 +233,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> s;
@@ -266,7 +266,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 	}
 	me->lastObjIndex = me->lbObj->GetSelectedIndex();
 
-	OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
+	OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetSelectedItem().p;
 	me->indexChanged = true;
 	me->lastSpeciesObj = 0;
 	me->lastGroupObj = 0;
@@ -331,9 +331,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 
 //	StopAudio();
 	me->dispImageToCrop = false;
@@ -368,7 +368,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(void *userObj)
 
 		if (me->inputMode == IM_SPECIES)
 		{
-			OrganImageItem *img = (OrganImageItem*)me->lbImage->GetSelectedItem();
+			OrganImageItem *img = (OrganImageItem*)me->lbImage->GetSelectedItem().p;
 			me->dispImage = me->env->ParseImage(img, &me->dispImageUF, &me->dispImageWF);
 			if (me->dispImage)
 			{
@@ -377,7 +377,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(void *userObj)
 		}
 		else if (me->inputMode == IM_GROUP)
 		{
-			OrganGroup *o = (OrganGroup*)me->lbImage->GetSelectedItem();
+			OrganGroup *o = (OrganGroup*)me->lbImage->GetSelectedItem().p;
 			if (o == 0 || o->GetPhotoSpecies() == -1)
 				return;
 			OrganSpecies *sp = me->env->GetSpecies(o->GetPhotoSpecies());
@@ -396,9 +396,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		UOSInt index = me->lbImage->GetSelectedIndex();
@@ -409,16 +409,16 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math:
 		{
 			showDef = true;
 		}
-		else if (((OrganGroupItem*)me->lbObj->GetSelectedItem())->GetItemType() == OrganGroupItem::IT_PARENT)
+		else if (((OrganGroupItem*)me->lbObj->GetSelectedItem().p)->GetItemType() == OrganGroupItem::IT_PARENT)
 		{
 			showDef = true;
 		}
 		if (showDef)
 		{
-			OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
+			OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index).p;
 			if (imgItem->GetIsCoverPhoto())
 				return false;
-			OrganGroup *go = (OrganGroup*)me->lbDir->GetSelectedItem();
+			OrganGroup *go = (OrganGroup*)me->lbDir->GetSelectedItem().p;
 			me->env->SetGroupDefSp(go, imgItem);
 			SDEL_STRING(me->initSelImg);
 			me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
@@ -426,7 +426,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math:
 		}
 		else
 		{
-			OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
+			OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index).p;
 			if (imgItem->GetIsCoverPhoto())
 				return false;
 			me->env->SetSpeciesImg(me->lastSpeciesObj, imgItem);
@@ -478,9 +478,9 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math:
 	return false;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if ((me->dispImageUF == 0 && me->dispImageWF == 0) || !me->dispImageToCrop)
 	{
 		return false;
@@ -492,9 +492,9 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(void *userObj, Math
 	return true;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->dispImageToCrop && me->dispImageDown)
 	{
 		Math::Coord2D<OSInt> rect[2];
@@ -523,9 +523,9 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, Math::
 	return false;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->dispImageDown)
 	{
 		me->dispImageCurrPos = scnPos;
@@ -534,9 +534,9 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, Math
 	return false;
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Math::Coord2DDbl pos1;
 	Math::Coord2DDbl pos2;
 	if (me->dispImage)
@@ -600,9 +600,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		UOSInt index = me->lbImage->GetSelectedIndex();
@@ -613,7 +613,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 		{
 			showDef = true;
 		}
-		else if (((OrganGroupItem*)me->lbObj->GetSelectedItem())->GetItemType() == OrganGroupItem::IT_PARENT)
+		else if (((OrganGroupItem*)me->lbObj->GetSelectedItem().p)->GetItemType() == OrganGroupItem::IT_PARENT)
 		{
 			showDef = true;
 		}
@@ -622,7 +622,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 		}
 		else
 		{
-			OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
+			OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index).p;
 			UserFileInfo *userFile = imgItem->GetUserFile();
 			WebFileInfo *wfile = imgItem->GetWebFile();
 			if (userFile)
@@ -644,7 +644,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 						Text::String *location = frm.GetLocation();
 						if (!Text::StringTool::Equals(wfile->srcUrl.Ptr(), sURL) || !Text::StringTool::Equals(wfile->location.Ptr(), location))
 						{
-							OrganGroupItem *item = ((OrganGroupItem*)me->lbObj->GetSelectedItem());
+							OrganGroupItem *item = ((OrganGroupItem*)me->lbObj->GetSelectedItem().p);
 							me->env->UpdateSpeciesWebFile((OrganSpecies*)item, wfile, sURL, location);
 							SDEL_STRING(me->initSelImg);
 							me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
@@ -669,9 +669,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -687,7 +687,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
 		}
 		else
 		{
-            gi = (OrganGroupItem*)me->lbObj->GetItem(i);
+            gi = (OrganGroupItem*)me->lbObj->GetItem(i).p;
 			if (gi->GetItemType() == OrganGroupItem::ItemType::IT_PARENT)
 				return;
 		}
@@ -698,15 +698,15 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageRotateClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageRotateClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		UOSInt index = me->lbImage->GetSelectedIndex();
 		if (index == INVALID_INDEX)
 			return;
-		OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
+		OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index).p;
 		if (imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 		{
 			UserFileInfo *userFile = imgItem->GetUserFile();
@@ -717,24 +717,24 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageRotateClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageCropClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageCropClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->dispImageUF != 0 || me->dispImageWF != 0)
 	{
 		me->dispImageToCrop = !me->dispImageToCrop;
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		UOSInt index = me->lbImage->GetSelectedIndex();
 		if (index == INVALID_INDEX)
 			return;
-		OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
+		OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index).p;
 		if (imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -754,9 +754,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
@@ -795,15 +795,15 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		UOSInt i = me->lbObj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem(i);
+			OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem(i).p;
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				UI::Clipboard clipboard(me->hwnd);
@@ -935,9 +935,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UOSInt i;
 	if (me->SpeciesFormValid())
 	{
@@ -946,7 +946,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
 			Text::StringBuilderUTF8 sb3;
-			OrganGroup *grp = (OrganGroup*)me->lbDir->GetSelectedItem();
+			OrganGroup *grp = (OrganGroup*)me->lbDir->GetSelectedItem().p;
 			OrganGroupItem *gi;
 			Int32 id = grp->GetGroupId();
 			sb.ClearStr();
@@ -1020,10 +1020,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(AnyType userObj)
 {
 	UOSInt i;
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES)
 	{
 		i = me->lbObj->GetSelectedIndex();
@@ -1031,7 +1031,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(void *userObj)
 		{
 			if (me->ui->ShowMsgYesNo(CSTR("Are you sure to remove the species?"), CSTR("Remove Species"), me))
 			{
-				OrganSpecies *o = (OrganSpecies*)me->lbObj->GetItem(i);;
+				OrganSpecies *o = (OrganSpecies*)me->lbObj->GetItem(i).p;
 				if (me->env->DelSpecies(o))
 				{
 					me->UpdateDir();
@@ -1041,9 +1041,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->inputMode == IM_SPECIES || me->inputMode == IM_EMPTY)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1114,9 +1114,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 spBkYr;
 	OrganBook *book;
@@ -1147,9 +1147,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Text::StringBuilderUTF8 sb;
 
 	if (me->lastSpeciesObj == 0)
@@ -1189,9 +1189,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookSelChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookSelChg(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Text::String *s = me->lvSpBook->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -1200,9 +1200,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesSNameChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesSNameChg(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->newDirName)
 	{
 		Text::StringBuilderUTF8 sb;;
@@ -1214,9 +1214,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesSNameChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesColorClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesColorClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->lastSpeciesObj == 0)
 		return;
 	if (me->inputMode == IM_SPECIES)
@@ -1231,9 +1231,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesColorClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnTabSelChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnTabSelChg(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->tcMain->GetSelectedIndex() == 2 || me->tcMain->GetSelectedIndex() == 3)
 	{
 		if (me->indexChanged)
@@ -1251,9 +1251,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTabSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[512];
 	Data::ArrayListUInt32 sels;
 	UOSInt i;
@@ -1267,7 +1267,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickClicked(void *userObj)
 		Bool showDef = false;
 		OrganGroupItem *gi;
 		me->ClearPicks();
-        gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
+        gi = (OrganGroupItem*)me->lbObj->GetSelectedItem().p;
 		if (gi->GetItemType() == OrganGroupItem::IT_PARENT)
 		{
 			showDef = true;
@@ -1292,9 +1292,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[512];
 	Data::ArrayListUInt32 sels;
 	OrganGroupItem *gi;
@@ -1315,7 +1315,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(void *userOb
 	if (me->inputMode == IM_SPECIES)
 	{
 		Bool showDef = false;
-        gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
+        gi = (OrganGroupItem*)me->lbObj->GetSelectedItem().p;
 		if (gi->GetItemType() == OrganGroupItem::IT_PARENT)
 		{
 			showDef = true;
@@ -1340,9 +1340,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAllClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAllClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[512];
 	UOSInt i;
 	UOSInt j;
@@ -1352,7 +1352,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAllClicked(void *userOb
 	{
 		Bool showDef = false;
 		me->ClearPicks();
-        gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
+        gi = (OrganGroupItem*)me->lbObj->GetSelectedItem().p;
 		if (gi->GetItemType() == OrganGroupItem::IT_PARENT)
 		{
 			showDef = true;
@@ -1377,9 +1377,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAllClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPickClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPickClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	OrganGroupItem *gi;
 	Data::ArrayListUInt32 sels;
 	Data::ArrayList<OrganGroupItem*> newList;
@@ -1405,9 +1405,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPickClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	OrganGroupItem *gi;
 	if (me->pickObjs.GetCount() == 0)
 		return;
@@ -1423,7 +1423,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
-		gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
+		gi = (OrganGroupItem*)me->lbObj->GetSelectedItem().p;
 		if (gi->GetItemType() != OrganGroupItem::IT_SPECIES)
 		{
 			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorGroupNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
@@ -1447,7 +1447,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			imgList.Add((OrganImages*)me->pickObjs.GetItem(i));
 			i++;
 		}
-		me->env->MoveImages(&imgList, (OrganSpecies*)gi, me);
+		me->env->MoveImages(&imgList, (OrganSpecies*)gi, me.Ptr());
 
 		me->ClearPicks();
 		me->UpdatePicks();
@@ -1463,7 +1463,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			return;
 		}
 
-		OrganGroup *grp = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
+		OrganGroup *grp = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex()).p;
 		Data::ArrayList<OrganSpecies*> spList;
 		UOSInt i;
 		UOSInt j;
@@ -1493,7 +1493,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			return;
 		}
 
-		OrganGroup *grp = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
+		OrganGroup *grp = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex()).p;
 		Data::ArrayList<OrganGroup*> grpList;
 		UOSInt i;
 		UOSInt j;
@@ -1517,9 +1517,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->pickObjs.GetCount() == 0)
 		return;
 	if (me->lastSpeciesObj == 0 || me->pickObjs.GetCount() != 1)
@@ -1555,9 +1555,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnTimerTick(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->mapUpdated)
 	{
 		me->mapUpdated = false;
@@ -1566,21 +1566,21 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapScaleScroll(void *userObj, UOSInt newVal)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapScaleScroll(AnyType userObj, UOSInt newVal)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	me->mcMap->SetMapScale(Double2Int32(me->mapTile->GetLevelScale(newVal)));
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnTileUpdated(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnTileUpdated(AnyType userObj)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	me->mapUpdated = true;
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Bool updated = false;
 	Math::Coord2D<OSInt> dispPos;
 	NotNullPtr<Media::DrawImage> img;
@@ -1657,9 +1657,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(AnyType userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst)
 {
-	OrganMainForm *me = (OrganMainForm*)userObj;
+	NotNullPtr<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	NotNullPtr<Media::DrawImage> img;
 	if (img.Set(me->mapCurrImage))
 	{
@@ -1812,7 +1812,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 		NEW_CLASS(item, OrganParentItem());
 		this->groupItems.Add(item);
 		this->lbObj->ClearItems();
-		grp = (OrganGroup*)this->lbDir->GetItem(this->lbDir->GetSelectedIndex());
+		grp = (OrganGroup*)this->lbDir->GetItem(this->lbDir->GetSelectedIndex()).p;
 		i = this->env->GetGroupItems(&this->groupItems, grp);
 		if (i == 0)
 		{
@@ -1916,7 +1916,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 
 		if (this->lbObj->GetSelectedIndex() != INVALID_INDEX)
 		{
-            gi = (OrganGroupItem*)this->lbObj->GetSelectedItem();
+            gi = (OrganGroupItem*)this->lbObj->GetSelectedItem().p;
 			if (gi->GetItemType() == OrganGroupItem::IT_PARENT)
 				showDef = true;
 		}
@@ -2090,7 +2090,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		UOSInt j = this->lbObj->GetCount();
 		while (i < j)
 		{
-			gi = (OrganGroupItem*)this->lbObj->GetItem(i);
+			gi = (OrganGroupItem*)this->lbObj->GetItem(i).p;
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				o = (OrganGroup*)gi;
@@ -2898,7 +2898,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_MANAGE_LIST:
 		{
 			OrganGroupItem *item;
-			OrganGroup *selObj = (OrganGroup*)this->lbDir->GetSelectedItem();
+			OrganGroup *selObj = (OrganGroup*)this->lbDir->GetSelectedItem().p;
 			OrganGroup *g;
 			UOSInt i;
 			UOSInt j;
@@ -3121,7 +3121,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			i = this->lbDir->GetSelectedIndex();
 			if (i != INVALID_INDEX && i > 0)
 			{
-				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i);
+				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i).p;
 				SDEL_STRING(this->initSelObj);
 				this->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone().Ptr();
 				this->lbDir->SetSelectedIndex(i - 1);
@@ -3231,7 +3231,7 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 		UOSInt i = this->lbObj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem((UOSInt)i);
+			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem((UOSInt)i).p;
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				const UTF8Char *name;
@@ -3310,7 +3310,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 		UOSInt i = this->lbObj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem(i);
+			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem(i).p;
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				const UTF8Char *fmtSURL = 0;

@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
 
-DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	this->str = Text::String::New(sql, sqlLen);
 	this->hdlr = hdlr;
@@ -38,7 +38,7 @@ NotNullPtr<Text::String> DB::DBQueue::SQLCmd::GetSQL() const
 	return this->str;
 }
 
-DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	UOSInt i = 0;
 	UOSInt j = strs->GetCount();
@@ -68,7 +68,7 @@ Int32 DB::DBQueue::SQLGroup::GetProgId() const
 	return this->progId;
 }
 
-DB::DBQueue::SQLTrans::SQLTrans(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLTrans::SQLTrans(Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	this->hdlr = hdlr;
 	this->userData = userData;
@@ -90,7 +90,7 @@ Int32 DB::DBQueue::SQLTrans::GetProgId() const
 	return this->progId;
 };
 
-DB::DBQueue::SQLGetDB::SQLGetDB(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLGetDB::SQLGetDB(Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	this->hdlr = hdlr;
 	this->userData = userData;
@@ -295,7 +295,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen)
 	this->AddSQL(sql, sqlLen, Priority::Lowest, 0, 0, 0, 0);
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	if (priority > DB::DBQueue::Priority::Highest)
 		priority = DB::DBQueue::Priority::Highest;
@@ -345,7 +345,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, 
 	mutUsage.EndUse();
 }
 
-void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	if (priority > DB::DBQueue::Priority::Highest)
 		priority = DB::DBQueue::Priority::Highest;
@@ -361,7 +361,7 @@ void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, voi
 	mutUsage.EndUse();
 }
 
-void DB::DBQueue::GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	if (priority > DB::DBQueue::Priority::Highest)
 		priority = DB::DBQueue::Priority::Highest;

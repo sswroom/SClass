@@ -804,7 +804,7 @@ void Net::WebServer::WebConnection::ShutdownSend()
 	this->cli->ShutdownSend();
 }
 
-Bool Net::WebServer::WebConnection::ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj)
+Bool Net::WebServer::WebConnection::ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj)
 {
 	if (this->sseHdlr)
 	{
@@ -984,7 +984,7 @@ IO::StreamType Net::WebServer::WebConnection::GetStreamType() const
 	return IO::StreamType::WebConnection;
 }
 
-void Net::WebServer::WebConnection::SetSendLogger(SendLogger logger, void *userObj)
+void Net::WebServer::WebConnection::SetSendLogger(SendLogger logger, AnyType userObj)
 {
 	this->logger = logger;
 	this->loggerObj = userObj;

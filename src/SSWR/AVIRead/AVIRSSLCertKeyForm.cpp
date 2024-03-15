@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(AnyType userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRSSLCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userOb
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRSSLKey", false);
 	dlg->AddFilter(CSTR("*.kye"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
@@ -41,18 +41,18 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileConfirmClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileConfirmClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
 	if (me->cert && me->key)
 	{
 		me->SetDialogResult(DR_OK);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
 	Text::StringBuilderUTF8 sbCountry;
 	Text::StringBuilderUTF8 sbCompany;
 	Text::StringBuilderUTF8 sbCommonName;

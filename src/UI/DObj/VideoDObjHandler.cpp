@@ -12,9 +12,9 @@
 #include <stdio.h>
 #endif
 
-void __stdcall UI::DObj::VideoDObjHandler::OnTimerTick(void *userObj)
+void __stdcall UI::DObj::VideoDObjHandler::OnTimerTick(AnyType userObj)
 {
-/*	UI::DObj::DShowVideoDObjHandler *me = (UI::DObj::DShowVideoDObjHandler*)userObj;
+/*	NotNullPtr<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
 	me->graph->CheckStatus();
 	if (me->graph->IsCompleted())
 	{
@@ -22,9 +22,9 @@ void __stdcall UI::DObj::VideoDObjHandler::OnTimerTick(void *userObj)
 	}*/
 }
 
-void __stdcall UI::DObj::VideoDObjHandler::OnPBEnd(void *userObj)
+void __stdcall UI::DObj::VideoDObjHandler::OnPBEnd(AnyType userObj)
 {
-	UI::DObj::VideoDObjHandler *me = (UI::DObj::VideoDObjHandler*)userObj;
+	NotNullPtr<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
 	me->player->SeekTo(0);
 	me->player->StartPlayback();
 }

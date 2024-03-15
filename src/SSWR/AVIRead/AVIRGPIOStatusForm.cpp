@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRGPIOStatusForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPIOStatusForm *me = (SSWR::AVIRead::AVIRGPIOStatusForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPIOStatusForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPIOStatusForm>();
 	if (me->states)
 	{
 		Bool isHigh;

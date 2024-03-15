@@ -52,9 +52,9 @@ namespace SSWR
 			IO::Writer *debugWriter;
 			IO::LogHandler *logHdlr;
 
-			static void __stdcall OnSchemaSelChg(void *userObj);
-			static void __stdcall OnTableSelChg(void *userObj);
-			static void __stdcall OnSQLClicked(void *userObj);
+			static void __stdcall OnSchemaSelChg(AnyType userObj);
+			static void __stdcall OnTableSelChg(AnyType userObj);
+			static void __stdcall OnSQLClicked(AnyType userObj);
 
 			void UpdateResult(NotNullPtr<DB::DBReader> r);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);

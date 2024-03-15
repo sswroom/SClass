@@ -61,13 +61,13 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPronun4;
 			NotNullPtr<UI::GUITextBox> txtPronun4;
 			
-			static void __stdcall OnCharChg(void *userObj);
-			static Bool __stdcall OnCharMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
-			static void __stdcall OnCharPrevClicked(void *userObj);
-			static void __stdcall OnCharNextClicked(void *userObj);
-			static void __stdcall OnRadicalChg(void *userObj);
-			static void __stdcall OnRelatedAddChg(void *userObj);
-			static void __stdcall OnRelatedGoClicked(void *userObj);
+			static void __stdcall OnCharChg(AnyType userObj);
+			static Bool __stdcall OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static void __stdcall OnCharPrevClicked(AnyType userObj);
+			static void __stdcall OnCharNextClicked(AnyType userObj);
+			static void __stdcall OnRadicalChg(AnyType userObj);
+			static void __stdcall OnRelatedAddChg(AnyType userObj);
+			static void __stdcall OnRelatedGoClicked(AnyType userObj);
 			static void __stdcall OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
 
 			Bool SaveChar();

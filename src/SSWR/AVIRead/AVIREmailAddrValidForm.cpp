@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIREmailAddrValidForm.h"
 
-void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREmailAddrValidForm *me = (SSWR::AVIRead::AVIREmailAddrValidForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREmailAddrValidForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailAddrValidForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtAddr->GetText(sb);
 	Net::Email::EmailValidator::Status status = me->validator->Validate(sb.ToCString());

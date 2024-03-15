@@ -41,9 +41,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnOKClick(void *userObj);
-			static void __stdcall OnCancelClick(void *userObj);
-			static void __stdcall OnPinTypeChg(void *userObj);
+			static void __stdcall OnOKClick(AnyType userObj);
+			static void __stdcall OnCancelClick(AnyType userObj);
+			static void __stdcall OnPinTypeChg(AnyType userObj);
 		public:
 			AVIRSelIOPinForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSelIOPinForm();

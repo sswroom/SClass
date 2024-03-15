@@ -27,11 +27,11 @@ namespace SSWR
 			UOSInt noMoveCount;
 			
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnMoveToNext(void *userObj);
-			static void __stdcall OnMoveToPrev(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnAniTimerTick(void *userObj);
-			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnMoveToNext(AnyType userObj);
+			static void __stdcall OnMoveToPrev(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnAniTimerTick(AnyType userObj);
+			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static Bool IsImageFileName(Text::CString fileName);
 		public:
 			AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

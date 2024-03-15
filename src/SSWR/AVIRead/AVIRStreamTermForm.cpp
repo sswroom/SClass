@@ -6,9 +6,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 
-void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	if (me->stm)
 	{
 		me->StopStream(true);
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 	else
 	{
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me, 0, false);
+		me->stm = me->core->OpenStream(st, me, 0, false);
 		if (me->stm)
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 			me->UpdateSendDisp();
 			me->UpdateRecvDisp();
 
-			Sync::ThreadUtil::Create(RecvThread, me);
+			Sync::ThreadUtil::Create(RecvThread, me.Ptr());
 			while (!me->threadRunning && !me->remoteClosed)
 			{
 				Sync::SimpleThread::Sleep(10);
@@ -39,9 +39,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -100,21 +100,21 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnRecvTypeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnRecvTypeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	me->UpdateRecvDisp();
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendTypeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendTypeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	me->UpdateSendDisp();
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;

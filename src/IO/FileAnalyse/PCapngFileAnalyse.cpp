@@ -8,7 +8,7 @@
 
 void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::PCapngFileAnalyse *me = (IO::FileAnalyse::PCapngFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::PCapngFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapngFileAnalyse>();
 	UInt64 ofst;
 	UInt64 dataSize;
 	UInt32 thisSize;

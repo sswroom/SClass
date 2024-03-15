@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRVBoxManagerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRVBoxManagerForm::OnVMSSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRVBoxManagerForm::OnVMSSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVBoxManagerForm *me = (SSWR::AVIRead::AVIRVBoxManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVBoxManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVBoxManagerForm>();
 	me->UpdateVMInfo();
 }
 
@@ -12,7 +12,7 @@ void SSWR::AVIRead::AVIRVBoxManagerForm::UpdateVMInfo()
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i = this->lbVMS->GetSelectedIndex();
-	IO::VBoxManager::VMId *vm = (IO::VBoxManager::VMId*)this->lbVMS->GetItem(i);
+	IO::VBoxManager::VMId *vm = (IO::VBoxManager::VMId*)this->lbVMS->GetItem(i).p;
 	IO::VBoxVMInfo *info;
 	if (vm)
 	{

@@ -17,10 +17,10 @@ namespace Net
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 
-		static void __stdcall OnClientConn(Socket *s, void *userObj);
-		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
+		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
 	public:
 		ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Bool autoStart);

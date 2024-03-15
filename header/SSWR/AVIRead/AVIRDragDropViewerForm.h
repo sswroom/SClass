@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUITextBox> txtMain;
 
-			static void __stdcall OnTypeSelChg(void *userObj);
+			static void __stdcall OnTypeSelChg(AnyType userObj);
 			void ClearDrops();
 		public:
 			AVIRDragDropViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

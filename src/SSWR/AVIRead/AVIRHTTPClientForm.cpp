@@ -540,7 +540,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)thread->GetUserObj();
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Text::String *currURL;
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;

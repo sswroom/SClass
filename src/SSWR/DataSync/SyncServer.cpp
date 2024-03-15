@@ -10,14 +10,14 @@
 typedef struct
 {
 	Int32 serverId;
-	void *stmData;
+	AnyType stmData;
 	UOSInt buffSize;
 	UInt8 buff[BUFFSIZE];
 } ClientData;
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, void *userObj)
+void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, AnyType userObj)
 {
-	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
+	NotNullPtr<SSWR::DataSync::SyncServer> me = userObj.GetNN<SSWR::DataSync::SyncServer>();
 	NotNullPtr<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	ClientData *data = MemAlloc(ClientData, 1);
@@ -27,12 +27,12 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, void *userObj
 	me->cliMgr->AddClient(cli, data);
 }
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
+	NotNullPtr<SSWR::DataSync::SyncServer> me = userObj.GetNN<SSWR::DataSync::SyncServer>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		ClientData *data = (ClientData*)cliData;
+		NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 		if (data->serverId != 0)
 		{
 			ServerInfo *svr;
@@ -49,15 +49,15 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClie
 				mutUsage.EndUse();
 			}
 		}
-		MemFree(data);
+		MemFreeNN(data);
 		cli.Delete();
 	}
 }
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &srcBuff)
+void __stdcall SSWR::DataSync::SyncServer::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
 {
-	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
-	ClientData *data = (ClientData*)cliData;
+	NotNullPtr<SSWR::DataSync::SyncServer> me = userObj.GetNN<SSWR::DataSync::SyncServer>();
+	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 	Data::ByteArrayR buff = srcBuff;
 	UOSInt sizeLeft;
 	while (data->buffSize + buff.GetSize() > BUFFSIZE)
@@ -91,12 +91,12 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(NotNullPtr<Net::TCPClien
 	}
 }
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 
 }
 
-SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout) : protoHdlr(*this)
+SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, AnyType dataObj, Bool autoStart, Data::Duration cliTimeout) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->dataHdlr = dataHdlr;
@@ -193,9 +193,9 @@ void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UOSInt data
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
-	ClientData *data = (ClientData*)stmObj;
+	NotNullPtr<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 replyBuff[20];
 	UOSInt replySize;
 	switch (cmdType)
@@ -251,6 +251,6 @@ void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, void *st
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::DataSync::SyncServer::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

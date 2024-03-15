@@ -1,5 +1,6 @@
 #ifndef _SM_MANAGE_MONCONN
 #define _SM_MANAGE_MONCONN
+#include "AnyType.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"
 #include "Data/SyncArrayList.h"
@@ -13,7 +14,7 @@ namespace Manage
 		MON_EVT_STOP_PROCESS,
 		MON_EVT_PROCESS_START_ERR
 	} MonEvent;
-	typedef void (__stdcall *EventHandler)(MonEvent evt, Int32 eventStatus, void *userObj);
+	typedef void (__stdcall *EventHandler)(MonEvent evt, Int32 eventStatus, AnyType userObj);
 	class MonConn
 	{
 	public:
@@ -43,14 +44,14 @@ namespace Manage
 		Data::DateTime lastReqTime;
 		Data::DateTime lastKATime;
 		Data::Duration timeout;
-		void *userObj;
+		AnyType userObj;
 		IO::Writer *msgWriter;
 
 		static UInt32 __stdcall ConnTThread(void *conn);
 		static UInt32 __stdcall ConnRThread(void *conn);
 		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
-		MonConn(EventHandler hdlr, void *userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout);
+		MonConn(EventHandler hdlr, AnyType userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout);
 		~MonConn();
 
 		Bool IsError();

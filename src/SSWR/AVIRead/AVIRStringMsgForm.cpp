@@ -6,9 +6,9 @@
 #include "UI/GUIButton.h"
 #include "UI/GUILabel.h"
 
-void __stdcall SSWR::AVIRead::AVIRStringMsgForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStringMsgForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStringMsgForm *me = (SSWR::AVIRead::AVIRStringMsgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStringMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStringMsgForm>();
 	me->Close();
 }
 

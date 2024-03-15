@@ -98,7 +98,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAna
 
 void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::RAR5FileAnalyse *me = (IO::FileAnalyse::RAR5FileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::RAR5FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RAR5FileAnalyse>();
 	UInt8 buff[128];
 	const UInt8 *buffPtr;
 	UInt64 iVal;

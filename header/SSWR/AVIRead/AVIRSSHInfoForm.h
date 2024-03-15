@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDesc;
 
 		private:
-			static void __stdcall OnQueryClicked(void *userObj);
+			static void __stdcall OnQueryClicked(AnyType userObj);
 			
 		public:
 			AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

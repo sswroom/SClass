@@ -30,10 +30,10 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnSrcChanged(void *userObj);
-			static void __stdcall OnSrcClicked(void *userObj);
-			static void __stdcall OnDestClicked(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnSrcChanged(AnyType userObj);
+			static void __stdcall OnSrcClicked(AnyType userObj);
+			static void __stdcall OnDestClicked(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 		public:
 			AVIRFileExForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -33,17 +33,17 @@ void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 		gettimeofday (&tNow, 0) ;
 }
 
-void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, AnyType userObj)
 {
 	CloseHandle(CreateWithHandle(tProc, userObj));
 }
 
-void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, AnyType userObj, UInt32 threadSize)
 {
 	CloseHandle(CreateWithHandle(tProc, userObj, threadSize));
 }
 
-Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj)
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, AnyType userObj)
 {
 	pthread_t tid;
 	pthread_attr_t attr;
@@ -51,7 +51,7 @@ Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, v
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	while (true)
 	{
-		int ret = pthread_create(&tid, &attr, (void*(*)(void*))tProc, userObj);
+		int ret = pthread_create(&tid, &attr, (void*(*)(void*))tProc, userObj.p);
 		if (ret == 0)
 		{
 			break;
@@ -69,7 +69,7 @@ Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, v
 	return (ThreadHandle*)tid;
 }
 
-Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, AnyType userObj, UInt32 threadSize)
 {
 	pthread_t pthread;
 	pthread_attr_t attr;
@@ -79,7 +79,7 @@ Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, v
 	pthread_attr_setstacksize(&attr, threadSize);
 	while (true)
 	{
-		int ret = pthread_create(&pthread, &attr, (void*(*)(void*))tProc, userObj);
+		int ret = pthread_create(&pthread, &attr, (void*(*)(void*))tProc, userObj.p);
 		if (ret == 0)
 		{
 			break;

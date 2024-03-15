@@ -17,16 +17,16 @@ IO::ProtoHdlr::ProtoRevGeoHandler::~ProtoRevGeoHandler()
 	this->crc.Delete();
 }
 
-void *IO::ProtoHdlr::ProtoRevGeoHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoRevGeoHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoRevGeoHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoRevGeoHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
@@ -61,7 +61,7 @@ UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(NotNullPtr<IO::Stream> s
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)buff = *(Int16*)"RG";
 	WriteInt16(&buff[2], (cmdSize + 8));

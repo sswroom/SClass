@@ -2,9 +2,9 @@
 #include "Map/RegionalMapSource.h"
 #include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRegionalMapForm *me = (SSWR::AVIRead::AVIRRegionalMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
 	const Map::RegionalMapSource::MapInfo *map = (const Map::RegionalMapSource::MapInfo*)me->lvMaps->GetSelectedItem();
 	if (map)
 	{
@@ -16,9 +16,9 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRRegionalMapForm *me = (SSWR::AVIRead::AVIRRegionalMapForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
 	const Map::RegionalMapSource::MapInfo *map = (const Map::RegionalMapSource::MapInfo*)me->lvMaps->GetItem(index);
 	me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
 	if (me->layer)

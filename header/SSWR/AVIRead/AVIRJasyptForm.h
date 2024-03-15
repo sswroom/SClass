@@ -29,8 +29,8 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnDecryptClicked(void *userObj);
-			static void __stdcall OnEncryptClicked(void *userObj);
+			static void __stdcall OnDecryptClicked(AnyType userObj);
+			static void __stdcall OnEncryptClicked(AnyType userObj);
 		public:
 			AVIRJasyptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJasyptForm();

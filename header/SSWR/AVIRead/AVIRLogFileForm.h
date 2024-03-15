@@ -20,7 +20,7 @@ namespace SSWR
 			IO::LogHandler::LogLevel logLevel;
 
 			void UpdateLogMessages();
-			static void __stdcall OnLogsDblClk(void *userObj, UOSInt itemIndex);
+			static void __stdcall OnLogsDblClk(AnyType userObj, UOSInt itemIndex);
 		public:
 			AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
 			virtual ~AVIRLogFileForm();

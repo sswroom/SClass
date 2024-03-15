@@ -17,7 +17,7 @@
 	Media::OpenCV::OCVFrame *frame;
 };
 
-void PossibleArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect)
+void PossibleArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect)
 {
 	ParseStatus *status = (ParseStatus*)userObj;
 	Math::RectArea<UOSInt> area;
@@ -92,7 +92,7 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 	}
 }*/
 
-void __stdcall OnNumberPlate(void *userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg)
+void __stdcall OnNumberPlate(AnyType userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg)
 {
 	printf("Parsed Number Plate: %s\r\n", result->v);
 }

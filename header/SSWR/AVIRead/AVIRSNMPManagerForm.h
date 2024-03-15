@@ -58,10 +58,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtAgentModel;
 			NotNullPtr<UI::GUIListView> lvAgentReading;
 
-			static void __stdcall OnAgentAddClicked(void *userObj);
-			static void __stdcall OnAgentSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnAgentWalkClicked(void *userObj);
+			static void __stdcall OnAgentAddClicked(AnyType userObj);
+			static void __stdcall OnAgentSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnAgentWalkClicked(AnyType userObj);
 			void SendAgentValues(NotNullPtr<Data::ArrayList<Net::SNMPManager::AgentInfo *>> agentList);
 
 		public:

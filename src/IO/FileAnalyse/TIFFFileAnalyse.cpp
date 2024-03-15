@@ -12,7 +12,7 @@
 
 void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::TIFFFileAnalyse *me = (IO::FileAnalyse::TIFFFileAnalyse *)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::TIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TIFFFileAnalyse>();
 	UInt8 buff[256];
 	PackInfo *pack;
 

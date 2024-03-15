@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize)
+void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize)
 {
-	IO::Device::SIM7000SocketFactory *me = (IO::Device::SIM7000SocketFactory*)userObj;
+	NotNullPtr<IO::Device::SIM7000SocketFactory> me = userObj.GetNN<IO::Device::SIM7000SocketFactory>();
 	DataPacket *packet;
 	UTF8Char sbuff[32];
 	Net::SocketUtil::GetIPv4Name(sbuff, remoteIP, remotePort);

@@ -190,7 +190,7 @@ Bool IO::Device::SDM120M::SetBaudRate(Int32 baudRate)
 	return this->WriteHoldingF32(0x1C, brId);
 }
 
-void IO::Device::SDM120M::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
+void IO::Device::SDM120M::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj)
 {
 	dataHdlr(userObj, CSTR("Voltage"),                addr, 30001, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ElectricPotential, Math::Unit::ElectricPotential::EPU_VOLT, 1);
 	dataHdlr(userObj, CSTR("Current"),                addr, 30007, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ElectricCurrent,   Math::Unit::ElectricCurrent::ECU_AMPERE, 1);

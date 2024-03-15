@@ -36,7 +36,7 @@ namespace IO
 			Bool SetNetworkNode(UInt8 id);
 			Bool SetBaudRate(Int32 baudRate);
 
-			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj);
+			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj);
 		};
 	}
 }

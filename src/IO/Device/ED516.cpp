@@ -69,7 +69,7 @@ Bool IO::Device::ED516::ClearDICount(UInt16 diNum)
 	return this->WriteDOutput((UInt16)(0x200 + diNum), true);
 }
 
-void IO::Device::ED516::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
+void IO::Device::ED516::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj)
 {
 	dataHdlr(userObj, CSTR("Din 0"),        addr, 10001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
 	dataHdlr(userObj, CSTR("Din 1"),        addr, 10002, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);

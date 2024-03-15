@@ -228,7 +228,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(const UInt8 *buff, UOSInt buf
 
 void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::ZIPFileAnalyse *me = (IO::FileAnalyse::ZIPFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::ZIPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::ZIPFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[64];

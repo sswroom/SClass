@@ -11,8 +11,8 @@ namespace DB
 	class DBQueue
 	{
 	public:
-		typedef void (__stdcall *DBReadHdlr)(void *userData, void *userData2, NotNullPtr<DB::DBTool> db, Optional<DB::DBReader> r);
-		typedef Bool (__stdcall *DBToolHdlr)(void *userData, void *userData2, NotNullPtr<DB::DBTool> db);
+		typedef void (__stdcall *DBReadHdlr)(AnyType userData, AnyType userData2, NotNullPtr<DB::DBTool> db, Optional<DB::DBReader> r);
+		typedef Bool (__stdcall *DBToolHdlr)(AnyType userData, AnyType userData2, NotNullPtr<DB::DBTool> db);
 
 		enum class Priority
 		{
@@ -56,10 +56,10 @@ namespace DB
 
 			Int32 progId;
 
-			void *userData;
-			void *userData2;
+			AnyType userData;
+			AnyType userData2;
 
-			SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
+			SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLCmd();			
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -72,10 +72,10 @@ namespace DB
 			Data::ArrayListStringNN strs;
 			DBReadHdlr hdlr;
 			Int32 progId;
-			void *userData;
-			void *userData2;
+			AnyType userData;
+			AnyType userData2;
 
-			SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
+			SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLGroup();
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -85,11 +85,11 @@ namespace DB
 		{
 		public:
 			DBToolHdlr hdlr;
-			void *userData;
-			void *userData2;
+			AnyType userData;
+			AnyType userData2;
 			Int32 progId;
 
-			SQLTrans(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
+			SQLTrans(Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLTrans();
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -99,11 +99,11 @@ namespace DB
 		{
 		public:
 			DBToolHdlr hdlr;
-			void *userData;
-			void *userData2;
+			AnyType userData;
+			AnyType userData2;
 			Int32 progId;
 
-			SQLGetDB(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
+			SQLGetDB(Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLGetDB();
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -141,9 +141,9 @@ namespace DB
 
 		void ToStop();
 		void AddSQL(const UTF8Char *sql, UOSInt sqlLen);
-		void AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
-		void AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
-		void GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
+		void AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+		void AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
+		void GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 		void RemoveSQLs(Int32 progId);
 		UOSInt GetDataCnt() const;
 		UOSInt GetQueueCnt() const;

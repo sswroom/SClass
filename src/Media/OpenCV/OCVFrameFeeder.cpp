@@ -10,9 +10,9 @@
 
 #include <stdio.h>
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Media::OpenCV::OCVFrameFeeder *me = (Media::OpenCV::OCVFrameFeeder*)userData;
+	NotNullPtr<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispSize, me->info.storeSize.x, me->info.storeBPP, me->info.pf);
 	if (frame)
 	{
@@ -29,10 +29,9 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, 
 	}
 }
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::IVideoSource::FrameChange frChg, void *userData)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-//	Media::OpenCV::OCVFrameFeeder *me = (Media::OpenCV::OCVFrameFeeder*)userData;
-
+//	NotNullPtr<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 }
 
 Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NotNullPtr<Media::IVideoSource> src)

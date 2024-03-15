@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSMakeForm *me = (SSWR::AVIRead::AVIRSMakeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSMakeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMakeForm>();
 	NotNullPtr<Text::String> progName;
 	me->lbProgHeader->ClearItems();
 	me->lbProgObject->ClearItems();
@@ -65,9 +65,9 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSMakeForm *me = (SSWR::AVIRead::AVIRSMakeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSMakeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMakeForm>();
 	NotNullPtr<Text::String> progName;
 	me->lbProgGroupItems->ClearItems();
 	if (me->lbProgGroup->GetSelectedItemTextNew().SetTo(progName))

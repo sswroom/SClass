@@ -35,7 +35,7 @@ Bool IO::Device::AMGU4241::ReadTemperature(OutParam<Double> temp)
 	return false;
 }
 
-void IO::Device::AMGU4241::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
+void IO::Device::AMGU4241::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj)
 {
 	dataHdlr(userObj, CSTR("Number of people"),       addr, 40001, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,              Math::Unit::Count::CU_UNIT, 1);
 	dataHdlr(userObj, CSTR("Human Coordinates"),      addr, 40002, IO::MODBUSController::DT_IU32, Math::Unit::UnitBase::ValueType::Count,              Math::Unit::Count::CU_UNIT, 0);

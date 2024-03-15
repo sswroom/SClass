@@ -9,7 +9,7 @@
 
 void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SSLFileAnalyse *me = (IO::FileAnalyse::SSLFileAnalyse *)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::SSLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SSLFileAnalyse>();
 	PackInfo *pack;
 	UInt8 buff[16];
 	UInt64 ofst = 0;

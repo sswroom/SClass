@@ -366,13 +366,13 @@ void IO::ATCommandChannel::Close()
 	}
 }
 
-void IO::ATCommandChannel::SetEventHandler(EventHandler evtHdlr, void *userObj)
+void IO::ATCommandChannel::SetEventHandler(EventHandler evtHdlr, AnyType userObj)
 {
 	this->evtHdlrObj = userObj;
 	this->evtHdlr = evtHdlr;
 }
 
-void IO::ATCommandChannel::SetCommandHandler(CommandHandler cmdHdlr, void *userObj)
+void IO::ATCommandChannel::SetCommandHandler(CommandHandler cmdHdlr, AnyType userObj)
 {
 	this->cmdHdlrObj = userObj;
 	this->cmdHdlr = cmdHdlr;

@@ -7,7 +7,7 @@
 
 void __stdcall IO::BTCapturer::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::BTCapturer *me = (IO::BTCapturer*)thread->GetUserObj();
+	NotNullPtr<IO::BTCapturer> me = thread->GetUserObj().GetNN<IO::BTCapturer>();
 	Int64 currTime;
 	Int64 lastTime;
 	lastTime = Data::DateTimeUtil::GetCurrTimeMillis();

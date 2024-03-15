@@ -2,9 +2,9 @@
 #include "IO/PowerInfo.h"
 #include "SSWR/AVIRead/AVIRPowerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPowerForm *me = (SSWR::AVIRead::AVIRPowerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	IO::PowerInfo::PowerStatus power;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -36,15 +36,15 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPowerForm::OnSleepClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPowerForm::OnSleepClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPowerForm *me = (SSWR::AVIRead::AVIRPowerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	me->ui->Suspend();
 }
 
-void __stdcall SSWR::AVIRead::AVIRPowerForm::OnDisplayOffClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPowerForm::OnDisplayOffClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPowerForm *me = (SSWR::AVIRead::AVIRPowerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	me->ui->DisplayOff();
 }
 

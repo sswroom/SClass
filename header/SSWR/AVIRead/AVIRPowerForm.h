@@ -25,15 +25,15 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSleep;
 			NotNullPtr<UI::GUIButton> btnDisplayOff;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnSleepClicked(void *userObj);
-			static void __stdcall OnDisplayOffClicked(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnSleepClicked(AnyType userObj);
+			static void __stdcall OnDisplayOffClicked(AnyType userObj);
 		public:
 			AVIRPowerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPowerForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

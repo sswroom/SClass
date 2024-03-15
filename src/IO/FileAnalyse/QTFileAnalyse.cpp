@@ -62,7 +62,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 
 void __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::QTFileAnalyse *me = (IO::FileAnalyse::QTFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::QTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::QTFileAnalyse>();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
 }
 

@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnHex;
 			NotNullPtr<UI::GUITextBox> txtSMBIOS;
 
-			static void __stdcall OnHexClicked(void *userObj);
+			static void __stdcall OnHexClicked(AnyType userObj);
 		public:
 			AVIRSMBIOSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSMBIOSForm();

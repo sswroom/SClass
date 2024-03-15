@@ -25,8 +25,8 @@ namespace SSWR
 			IO::LogTool *log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnDisplayOffClicked(void *userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnDisplayOffClicked(AnyType userObj);
 			static void __stdcall OnKeyDown(AnyType userObj, UOSInt keyCode, Bool extendedKey);
 		public:
 			AVIRGUIEventForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -38,6 +38,6 @@ namespace SSWR
 			virtual void OnFocusLost();
 			virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
 		};
-	};
-};
+	}
+}
 #endif

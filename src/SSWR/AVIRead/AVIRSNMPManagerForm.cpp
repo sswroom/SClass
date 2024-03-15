@@ -9,9 +9,9 @@
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNMPManagerForm *me = (SSWR::AVIRead::AVIRSNMPManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[128];
@@ -109,12 +109,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRSNMPManagerForm *me = (SSWR::AVIRead::AVIRSNMPManagerForm*)userObj;
-	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
 		sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr);
@@ -210,9 +210,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 	}	
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNMPManagerForm *me = (SSWR::AVIRead::AVIRSNMPManagerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -249,10 +249,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNMPManagerForm *me = (SSWR::AVIRead::AVIRSNMPManagerForm*)userObj;
-	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
 		SSWR::AVIRead::AVIRSNMPWalkForm frm(0, me->ui, me->core, agent->addr, agent->community);

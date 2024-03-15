@@ -4,9 +4,9 @@
 
 #include <stdio.h>
 
-void __stdcall Net::LoRaGWMonitor::OnRAWPacket(void *userData, const UInt8 *packetData, UOSInt packetSize)
+void __stdcall Net::LoRaGWMonitor::OnRAWPacket(AnyType userData, const UInt8 *packetData, UOSInt packetSize)
 {
-	Net::LoRaGWMonitor *me = (Net::LoRaGWMonitor*)userData;
+	NotNullPtr<Net::LoRaGWMonitor> me = userData.GetNN<Net::LoRaGWMonitor>();
 	Net::PacketExtractorEthernet::IPv4Header ipv4Hdr;
 	Net::PacketExtractorEthernet::UDPHeader udpHdr;
 	Net::PacketExtractorEthernet::EthernetHeader etherHdr;
@@ -25,7 +25,7 @@ void __stdcall Net::LoRaGWMonitor::OnRAWPacket(void *userData, const UInt8 *pack
 	}
 }
 
-Net::LoRaGWMonitor::LoRaGWMonitor(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, GWMPMessage msgHdlr, void *msgHdlrObj)
+Net::LoRaGWMonitor::LoRaGWMonitor(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, GWMPMessage msgHdlr, AnyType msgHdlrObj)
 {
 	this->sockf = sockf;
 	this->port = port;

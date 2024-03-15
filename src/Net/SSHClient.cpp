@@ -5,7 +5,7 @@
 
 void __stdcall Net::SSHClient::EventThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::SSHClient *me = (Net::SSHClient*)thread->GetUserObj();
+	NotNullPtr<Net::SSHClient> me = thread->GetUserObj().GetNN<Net::SSHClient>();
 	NotNullPtr<Net::TCPClient> cli;
 	if (me->conn->GetTCPClient().SetTo(cli))
 	{

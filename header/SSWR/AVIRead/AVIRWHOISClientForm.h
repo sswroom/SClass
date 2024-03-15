@@ -29,13 +29,13 @@ namespace SSWR
 
 			NotNullPtr<Net::SocketFactory> sockf;
 
-			static void __stdcall OnRequestClicked(void *userObj);
+			static void __stdcall OnRequestClicked(AnyType userObj);
 		public:
 			AVIRWHOISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWHOISClientForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

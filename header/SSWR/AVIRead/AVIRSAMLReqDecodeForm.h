@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtWellFormat;
 
 		private:
-			static void __stdcall OnDecodeClicked(void *userObj);
+			static void __stdcall OnDecodeClicked(AnyType userObj);
 		public:
 			AVIRSAMLReqDecodeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLReqDecodeForm();

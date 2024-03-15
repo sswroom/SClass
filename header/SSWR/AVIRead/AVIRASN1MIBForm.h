@@ -40,8 +40,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtOIDText;
 
 			static void __stdcall OnFileDroped(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnBrowseClicked(void *userObj);
-			static void __stdcall OnObjectsSelChg(void *userObj);
+			static void __stdcall OnBrowseClicked(AnyType userObj);
+			static void __stdcall OnObjectsSelChg(AnyType userObj);
 			void LoadFile(Text::CStringNN fileName);
 		public:
 			AVIRASN1MIBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

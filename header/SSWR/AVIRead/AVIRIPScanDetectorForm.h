@@ -22,8 +22,8 @@ namespace SSWR
 			IO::LogTool *log;
 			Net::IPScanDetector *ipScanDetect;
 
-			static void __stdcall OnIPScanEvent(const UInt8 *hwAddr, void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
+			static void __stdcall OnIPScanEvent(const UInt8 *hwAddr, AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
 
 		public:
 			AVIRIPScanDetectorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

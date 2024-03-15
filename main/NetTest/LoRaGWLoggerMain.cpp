@@ -8,9 +8,9 @@
 #include "Net/LoRaGWUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall OnMessage(void *userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
+void __stdcall OnMessage(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
 {
-	IO::LogTool *log = (IO::LogTool*)userObj;
+	NotNullPtr<IO::LogTool> log = userObj.GetNN<IO::LogTool>();
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseGWMPMessage(sb, toServer, ver, token, msgType, msg, msgSize);
 	log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);

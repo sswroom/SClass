@@ -64,7 +64,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 
 void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SPKFileAnalyse *me = (IO::FileAnalyse::SPKFileAnalyse *)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::SPKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SPKFileAnalyse>();
 	UInt8 buff[256];
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
 	me->fd->GetRealData(0, 256, BYTEARR(buff));

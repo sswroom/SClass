@@ -5,11 +5,11 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
 #include "Text/MyString.h"
-void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPCIDeviceForm *me = (SSWR::AVIRead::AVIRPCIDeviceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPCIDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPCIDeviceForm>();
 	IO::PCIInfo *pci;
-	pci = (IO::PCIInfo*)me->lbDevices->GetSelectedItem();
+	pci = (IO::PCIInfo*)me->lbDevices->GetSelectedItem().p;
 	if (pci == 0)
 	{
 		me->txtVendorId->SetText(CSTR(""));

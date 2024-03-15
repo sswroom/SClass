@@ -15,7 +15,7 @@
 
 IO::ConsoleWriter *console;
 
-void __stdcall OnUDPData(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall OnUDPData(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

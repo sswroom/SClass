@@ -7,7 +7,7 @@
 
 void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::MPEGFileAnalyse *me = (IO::FileAnalyse::MPEGFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::MPEGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MPEGFileAnalyse>();
 	UInt8 readBuff[256];
 	UInt64 currOfst;
 	UInt64 readOfst;

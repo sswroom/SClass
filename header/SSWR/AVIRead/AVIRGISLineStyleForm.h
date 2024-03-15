@@ -40,13 +40,13 @@ namespace SSWR
 
 			UI::GUIPopupMenu *mnuLayer;
 
-			static void __stdcall LineSelChanged(void *userObj);
-			static void __stdcall AddStyleClicked(void *userObj);
-			static void __stdcall RemoveStyleClicked(void *userObj);
-			static void __stdcall EditStyleClicked(void *userObj);
-			static void __stdcall LineDblClicked(void *userObj);
-			static void __stdcall OKClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
+			static void __stdcall LineSelChanged(AnyType userObj);
+			static void __stdcall AddStyleClicked(AnyType userObj);
+			static void __stdcall RemoveStyleClicked(AnyType userObj);
+			static void __stdcall EditStyleClicked(AnyType userObj);
+			static void __stdcall LineDblClicked(AnyType userObj);
+			static void __stdcall OKClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
 		public:
 			AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineStyleForm();

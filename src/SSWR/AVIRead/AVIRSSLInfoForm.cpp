@@ -6,9 +6,9 @@
 #include "SSWR/AVIRead/AVIRSSLInfoForm.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::PString hostName;
 	NotNullPtr<Text::String> sslHost;
@@ -237,18 +237,18 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
 	if (me->currCerts)
 	{
 		me->core->OpenObject(me->currCerts->Clone());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
 	if (me->packetBuff && me->packetSize > 0)
 	{
 		IO::StmData::MemoryDataCopy md(Data::ByteArrayR(me->packetBuff, me->packetSize));

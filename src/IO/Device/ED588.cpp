@@ -90,7 +90,7 @@ Bool IO::Device::ED588::GetOutputOverloadFlag(UInt16 diNum)
 	return this->ReadDInput((UInt16)(0x400 + diNum));
 }
 
-void IO::Device::ED588::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
+void IO::Device::ED588::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj)
 {
 	dataHdlr(userObj, CSTR("Din 0"),       addr, 10001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
 	dataHdlr(userObj, CSTR("Din 1"),       addr, 10002, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);

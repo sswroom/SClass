@@ -137,20 +137,20 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 		private:
-			static void __stdcall OnStreamClicked(void *userObj);
-			static void __stdcall OnU8GetClicked(void *userObj);
-			static void __stdcall OnU16GetClicked(void *userObj);
-			static void __stdcall OnI32GetClicked(void *userObj);
-			static void __stdcall OnF32GetClicked(void *userObj);
-			static void __stdcall OnSetU8LowClicked(void *userObj);
-			static void __stdcall OnSetU8HighClicked(void *userObj);
-			static void __stdcall OnDeviceAddClicked(void *userObj);
-			static void __stdcall OnTimeoutClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDataRecv(void *userObj, const UInt8 *data, UOSInt dataSize);
-			static void __stdcall OnDataSend(void *userObj, const UInt8 *data, UOSInt dataSize);
+			static void __stdcall OnStreamClicked(AnyType userObj);
+			static void __stdcall OnU8GetClicked(AnyType userObj);
+			static void __stdcall OnU16GetClicked(AnyType userObj);
+			static void __stdcall OnI32GetClicked(AnyType userObj);
+			static void __stdcall OnF32GetClicked(AnyType userObj);
+			static void __stdcall OnSetU8LowClicked(AnyType userObj);
+			static void __stdcall OnSetU8HighClicked(AnyType userObj);
+			static void __stdcall OnDeviceAddClicked(AnyType userObj);
+			static void __stdcall OnTimeoutClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDataRecv(AnyType userObj, const UInt8 *data, UOSInt dataSize);
+			static void __stdcall OnDataSend(AnyType userObj, const UInt8 *data, UOSInt dataSize);
 
-			static void __stdcall OnMODBUSEntry(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
+			static void __stdcall OnMODBUSEntry(AnyType userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 			void StopStream(Bool clearUI);
 
 		public:

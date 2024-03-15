@@ -7,9 +7,9 @@
 #include "Text/UTF8Writer.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
 	UTF8Char sbuff[16];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;

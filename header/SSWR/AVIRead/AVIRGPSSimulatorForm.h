@@ -43,10 +43,10 @@ namespace SSWR
 			Math::Coord2DDbl currPos;
 			Double speed;
 
-			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static void __stdcall OnStreamClicked(void *userObj);
-			static void __stdcall OnSpeedClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnStreamClicked(AnyType userObj);
+			static void __stdcall OnSpeedClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void GenRecord(Math::Coord2DDbl pt, Double dir, Double speed, Bool isValid);
 			Char *GenLat(Char *ptr, Double lat);
 			Char *GenLon(Char *ptr, Double lon);
@@ -57,6 +57,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

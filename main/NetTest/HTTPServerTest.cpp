@@ -21,9 +21,9 @@ private:
 	Data::ArrayListNN<Net::WebServer::IWebResponse> sseConns;
 	Sync::Mutex sseMut;
 
-	static void __stdcall SSEDisconnect(NotNullPtr<Net::WebServer::IWebResponse> resp, void *userObj)
+	static void __stdcall SSEDisconnect(NotNullPtr<Net::WebServer::IWebResponse> resp, AnyType userObj)
 	{
-		MyHandler *me = (MyHandler*)userObj;
+		NotNullPtr<MyHandler> me = userObj.GetNN<MyHandler>();
 		Sync::MutexUsage mutUsage(me->sseMut);
 		me->sseConns.Remove(resp);
 		console->WriteLineC(UTF8STRC("Disconnected"));

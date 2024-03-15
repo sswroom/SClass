@@ -57,7 +57,7 @@ void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 
 void __stdcall Net::NTPServer::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::NTPServer *me = (Net::NTPServer*)thread->GetUserObj();
+	NotNullPtr<Net::NTPServer> me = thread->GetUserObj().GetNN<Net::NTPServer>();
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

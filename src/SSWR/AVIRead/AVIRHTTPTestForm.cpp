@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)thread->GetUserObj();
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 //	UInt8 buff[2048];
 	NotNullPtr<Text::String> url;
 	Double timeDNS;

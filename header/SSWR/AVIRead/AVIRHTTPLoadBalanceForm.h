@@ -92,12 +92,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnStopClick(void *userObj);
-			static void __stdcall OnLogSel(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnAccessSelChg(void *userObj);
-			static void __stdcall OnSSLCertClicked(void *userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnStopClick(AnyType userObj);
+			static void __stdcall OnLogSel(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnAccessSelChg(AnyType userObj);
+			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
 			AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

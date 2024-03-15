@@ -32,7 +32,7 @@ Bool IO::Device::ED527::GetOutputOverloadFlag(UInt16 diNum)
 	return this->ReadDInput((UInt16)(0x400 + diNum));
 }
 
-void IO::Device::ED527::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
+void IO::Device::ED527::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj)
 {
 	dataHdlr(userObj, CSTR("RL0"),         addr,     1, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
 	dataHdlr(userObj, CSTR("RL1"),         addr,     2, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);

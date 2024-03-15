@@ -15,7 +15,7 @@ namespace IO
 			Bool ReadPeopleCount(OutParam<Int32> count);
 			Bool ReadTemperature(OutParam<Double> temp);
 			
-			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj);
+			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj);
 		};
 	}
 }

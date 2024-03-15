@@ -3,14 +3,14 @@
 #include "SSWR/AVIRead/AVIRPostgreSQLForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sb4;
 	Text::StringBuilderUTF8 sbPort;
-	SSWR::AVIRead::AVIRPostgreSQLForm *me = (SSWR::AVIRead::AVIRPostgreSQLForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPostgreSQLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPostgreSQLForm>();
 	me->txtServer->GetText(sb);
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
@@ -35,9 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPostgreSQLForm *me = (SSWR::AVIRead::AVIRPostgreSQLForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPostgreSQLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPostgreSQLForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

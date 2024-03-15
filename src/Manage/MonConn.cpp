@@ -285,7 +285,7 @@ void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 	connTEvt->Set();
 }
 
-Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout)
+Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout)
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;

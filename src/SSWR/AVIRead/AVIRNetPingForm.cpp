@@ -4,9 +4,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetPingForm *me = (SSWR::AVIRead::AVIRNetPingForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetPingForm>();
 	if (me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		me->targetAddr.addrType = Net::AddrType::Unknown;
@@ -57,9 +57,9 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRNetPingForm *me = (SSWR::AVIRead::AVIRNetPingForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRNetPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetPingForm>();
 	if (me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		UInt32 t1;

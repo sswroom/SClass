@@ -7,9 +7,9 @@
 #include "SSWR/AVIRead/AVIRRNCryptorForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRNCryptorForm *me = (SSWR::AVIRead::AVIRRNCryptorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRNCryptorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRNCryptorForm>();
 	Text::StringBuilderUTF8 sbSrcFile;
 	Text::StringBuilderUTF8 sbPassword;
 	me->txtSourceFile->GetText(sbSrcFile);

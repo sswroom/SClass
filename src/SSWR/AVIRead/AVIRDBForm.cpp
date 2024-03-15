@@ -48,17 +48,17 @@ typedef enum
 	MNU_DATABASE_START = 1000
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRDBForm::OnSchemaSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBForm::OnSchemaSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBForm>();
 	me->UpdateTables();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBForm>();
 	sptr = me->lbTable->GetSelectedItemText(sbuff);
 	if (sptr == 0)
 	{
@@ -156,9 +156,9 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSQL->GetText(sb);
 	if (sb.GetLength() > 0)

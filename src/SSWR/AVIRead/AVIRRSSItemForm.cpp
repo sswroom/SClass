@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRRSSItemForm.h"
 #include "Text/HTMLUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRRSSItemForm *me = (SSWR::AVIRead::AVIRRSSItemForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRRSSItemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSItemForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i = me->cboImage->GetSelectedIndex();

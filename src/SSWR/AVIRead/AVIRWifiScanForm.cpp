@@ -6,15 +6,15 @@
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnScanClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnScanClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiScanForm *me = (SSWR::AVIRead::AVIRWifiScanForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiScanForm>();
 	me->WifiScan();
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiScanForm *me = (SSWR::AVIRead::AVIRWifiScanForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiScanForm>();
 	Net::WirelessLAN::BSSInfo *bss = (Net::WirelessLAN::BSSInfo*)me->lvWifi->GetSelectedItem();
 	if (bss == 0)
 	{

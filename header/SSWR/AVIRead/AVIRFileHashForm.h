@@ -73,8 +73,8 @@ namespace SSWR
 			Crypto::Hash::HashType currHashType;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnCheckTypeChg(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnCheckTypeChg(AnyType userObj);
 			static UInt32 __stdcall HashThread(void *userObj);
 			void AddFile(Text::CString fileName);
 			void UpdateUI();

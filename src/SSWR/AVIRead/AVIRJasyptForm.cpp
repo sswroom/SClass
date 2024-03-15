@@ -2,9 +2,9 @@
 #include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "SSWR/AVIRead/AVIRJasyptForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJasyptForm *me = (SSWR::AVIRead::AVIRJasyptForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJasyptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJasyptForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtPassword->GetText(sb);
@@ -24,9 +24,9 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJasyptForm *me = (SSWR::AVIRead::AVIRJasyptForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJasyptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJasyptForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtPassword->GetText(sb);

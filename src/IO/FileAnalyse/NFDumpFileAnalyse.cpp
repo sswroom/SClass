@@ -11,7 +11,7 @@
 
 void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::NFDumpFileAnalyse *me = (IO::FileAnalyse::NFDumpFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::NFDumpFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::NFDumpFileAnalyse>();
 	UInt64 endOfst;
 	UInt64 ofst;
 	UInt8 buff[12];

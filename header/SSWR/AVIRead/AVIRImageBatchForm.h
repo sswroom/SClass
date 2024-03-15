@@ -54,14 +54,14 @@ namespace SSWR
 			Bool initPos;
 			UOSInt selCnt;
 
-			static void __stdcall OnFolderClicked(void *userObj);
-			static void __stdcall OnImageChanged(void *userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting);
-			static void __stdcall OnColorChg(void *userObj, UOSInt newPos);
+			static void __stdcall OnFolderClicked(AnyType userObj);
+			static void __stdcall OnImageChanged(AnyType userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting);
+			static void __stdcall OnColorChg(AnyType userObj, UOSInt newPos);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
-			static void __stdcall OnProgressUpdated(void *userObj, UOSInt finCnt);
-			static void __stdcall OnKeyDown(void *userObj, UI::GUIControl::GUIKey key);
-			static void __stdcall OnBrightResetClicked(void *userObj);
-			static void __stdcall OnGammaResetClicked(void *userObj);
+			static void __stdcall OnProgressUpdated(AnyType userObj, UOSInt finCnt);
+			static void __stdcall OnKeyDown(AnyType userObj, UI::GUIControl::GUIKey key);
+			static void __stdcall OnBrightResetClicked(AnyType userObj);
+			static void __stdcall OnGammaResetClicked(AnyType userObj);
 			static void __stdcall OnFilesDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			void OpenFolder(NotNullPtr<Text::String> folder);

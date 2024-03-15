@@ -6,9 +6,9 @@
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		SDEL_CLASS(me->scanner);
@@ -41,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeScanClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeScanClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		me->scanner->SetCurrMode(IO::CodeScanner::MT_SCAN);
@@ -52,9 +52,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeScanClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		me->scanner->SetCurrMode(IO::CodeScanner::MT_SETTING);
@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeIdleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeIdleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		me->scanner->SetCurrMode(IO::CodeScanner::MT_IDLE);
@@ -91,9 +91,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeIdleClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnResetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnResetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		if (me->scanner->SoftReset())
@@ -104,9 +104,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnResetClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnDefaultClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnDefaultClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		if (me->scanner->ResetDefault())
@@ -117,9 +117,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnDefaultClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		UOSInt i = me->cboSetCmd->GetSelectedIndex();
@@ -166,9 +166,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->scanner)
 	{
 		UTF8Char sbuff[12];
@@ -250,18 +250,18 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, Text::CString code)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(AnyType userObj, Text::CString code)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	Sync::MutexUsage mutUsage(me->codeMut);
 	SDEL_STRING(me->newCode);
 	me->newCode = Text::String::New(code).Ptr();
 	me->codeUpdate = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	if (me->codeUpdate)
 	{
 		me->codeUpdate = false;

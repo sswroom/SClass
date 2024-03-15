@@ -2,11 +2,11 @@
 #include "MyMemory.h"
 #include "Net/TCPServerController.h"
 
-void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, void *userObj)
+void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, AnyType userObj)
 {
 	NotNullPtr<Net::TCPClient> cli;
 	Net::TCPServerController::ClientData *data;
-	Net::TCPServerController *me = (Net::TCPServerController *)userObj;
+	NotNullPtr<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	data = MemAlloc(Net::TCPServerController::ClientData, 1);
 	data->buffSize = 0;
@@ -15,10 +15,10 @@ void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, void *userObj)
 	data->cliObj = me->hdlr->NewConn(cli);
 }
 
-void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	Net::TCPServerController *me = (Net::TCPServerController*)userObj;
-	Net::TCPServerController::ClientData *data = (Net::TCPServerController::ClientData*)cliData;
+	NotNullPtr<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
+	NotNullPtr<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
 	{
@@ -27,15 +27,15 @@ void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cl
 	{
 		me->hdlr->EndConn(cli, data->cliObj);
 		MemFree(data->buff);
-		MemFree(data);
+		MemFree(data.Ptr());
 		cli.Delete();
 	}
 }
 
-void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &srcBuff)
+void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
 {
-	Net::TCPServerController *me = (Net::TCPServerController*)userObj;
-	Net::TCPServerController::ClientData *data = (Net::TCPServerController::ClientData*)cliData;
+	NotNullPtr<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
+	NotNullPtr<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
 	UOSInt copySize;
 
 	Data::ByteArrayR buff = srcBuff;
@@ -63,7 +63,7 @@ void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli
 	}
 }
 
-void __stdcall Net::TCPServerController::TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall Net::TCPServerController::TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
@@ -117,14 +117,14 @@ UOSInt Net::TCPServerController::GetCliCount()
 	return this->cliMgr->GetClientCount();
 }
 
-Net::TCPClient *Net::TCPServerController::GetClient(UOSInt index, void **cliObj)
+Net::TCPClient *Net::TCPServerController::GetClient(UOSInt index, OutParam<AnyType> cliObj)
 {
-	void *cliData;
-	Net::TCPServerController::ClientData *data;
-	Net::TCPClient *cli = this->cliMgr->GetClient(index, &cliData);
+	AnyType cliData;
+	NotNullPtr<Net::TCPServerController::ClientData> data;
+	Net::TCPClient *cli = this->cliMgr->GetClient(index, cliData);
 	if (cli == 0)
 		return 0;
-	data = (Net::TCPServerController::ClientData*)cliData;
-	*cliObj = data->cliObj;
+	data = cliData.GetNN<Net::TCPServerController::ClientData>();
+	cliObj.Set(data->cliObj);
 	return cli;
 }

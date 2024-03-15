@@ -2,9 +2,9 @@
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRADAMForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRADAMForm *me = (SSWR::AVIRead::AVIRADAMForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
 	if (me->stm)
 	{
 		me->StopStream(true);
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 		}
 		IO::StreamType st;
 		NotNullPtr<IO::Stream> stm;
-		if (stm.Set(me->core->OpenStream(&st, me, 0, false)))
+		if (stm.Set(me->core->OpenStream(st, me, 0, false)))
 		{
 			me->stm = stm.Ptr();
 			UTF8Char sbuff[64];
@@ -86,9 +86,9 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRADAMForm *me = (SSWR::AVIRead::AVIRADAMForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;		
 	UOSInt i;

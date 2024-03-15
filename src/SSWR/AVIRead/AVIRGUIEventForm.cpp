@@ -2,17 +2,17 @@
 #include "SSWR/AVIRead/AVIRGUIEventForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	me->log->LogMessage(CSTR("DisplayOff"), IO::LogHandler::LogLevel::Action);
 	me->ui->DisplayOff();
 }

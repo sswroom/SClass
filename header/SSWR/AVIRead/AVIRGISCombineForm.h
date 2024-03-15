@@ -31,10 +31,10 @@ namespace SSWR
 			Data::ArrayListNN<Map::MapDrawLayer> selLayers;
 
 		private:
-			static void __stdcall OnCheckAllClick(void *userObj);
-			static void __stdcall OnUncheckAllClick(void *userObj);
-			static void __stdcall OnCombineClick(void *userObj);
-			static void __stdcall OnCancelClick(void *userObj);
+			static void __stdcall OnCheckAllClick(AnyType userObj);
+			static void __stdcall OnUncheckAllClick(AnyType userObj);
+			static void __stdcall OnCombineClick(AnyType userObj);
+			static void __stdcall OnCancelClick(AnyType userObj);
 
 		public:
 			AVIRGISCombineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers);
@@ -44,6 +44,6 @@ namespace SSWR
 
 			Map::MapDrawLayer *GetCombinedLayer();
 		};
-	};
-};
+	}
+}
 #endif

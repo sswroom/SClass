@@ -34,8 +34,8 @@ namespace IO
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
 
-		static void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
-		static void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
+		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
+		static void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 		Bool ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize);
 		Bool WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *regBuff, UInt16 regSize);

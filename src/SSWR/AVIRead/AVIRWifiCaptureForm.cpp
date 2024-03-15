@@ -13,9 +13,9 @@
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -449,9 +449,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	if (me->locSvc)
 	{
 		me->locSvc->UnregisterLocationHandler(OnGPSData, me);
@@ -467,7 +467,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 	{
 		IO::StreamType st;
 		NotNullPtr<IO::Stream> stm;
-		if (stm.Set(me->core->OpenStream(&st, me, 0, true)))
+		if (stm.Set(me->core->OpenStream(st, me, 0, true)))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(stm->GetSourceNameObj());
@@ -479,9 +479,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	if (me->captureWriter)
 	{
 		Sync::MutexUsage mutUsage(me->captureMut);
@@ -546,9 +546,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
 	if (s)
 	{
@@ -557,9 +557,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -656,9 +656,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -740,9 +740,9 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(AnyType userObj
 	return true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
-	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	if (me->currActive || record->valid != 0)
 	{
 		Sync::MutexUsage mutUsage(me->captureMut);

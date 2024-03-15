@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREncryptForm *me = (SSWR::AVIRead::AVIREncryptForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt8 *decBuff;
 	UOSInt buffSize;

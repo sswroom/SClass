@@ -19,7 +19,7 @@ namespace Net
 			IO::LogTool *log;
 		} IPStatus;
 		
-		typedef void (__stdcall *ClientLogHandler)(void *userObj, UInt32 ip, Text::CString logMessage);
+		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CString logMessage);
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
@@ -29,9 +29,9 @@ namespace Net
 		Sync::Mutex ipMut;
 		Data::FastMap<UInt32, IPStatus*> ipMap;
 		ClientLogHandler logHdlr;
-		void *logHdlrObj;
+		AnyType logHdlrObj;
 
-		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
 		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
 	public:
@@ -39,7 +39,7 @@ namespace Net
 		~SyslogServer();
 
 		Bool IsError();
-		void HandleClientLog(ClientLogHandler hdlr, void *userObj);
+		void HandleClientLog(ClientLogHandler hdlr, AnyType userObj);
 	};
 }
 #endif

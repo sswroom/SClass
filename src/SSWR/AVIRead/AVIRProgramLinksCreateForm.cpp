@@ -2,9 +2,9 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRProgramLinksCreateForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProgramLinksCreateForm *me = (SSWR::AVIRead::AVIRProgramLinksCreateForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksCreateForm>();
 	Text::StringBuilderUTF8 sbShortName;
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbComment;
@@ -41,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(void *
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProgramLinksCreateForm *me = (SSWR::AVIRead::AVIRProgramLinksCreateForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksCreateForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -4,9 +4,9 @@
 
 #define PACKETCOUNT 128
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -43,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->packetsChg)
@@ -90,9 +90,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	UOSInt i;
 	i = me->lbData->GetSelectedIndex();
 	if (i == INVALID_INDEX)
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		UTF8Char *sptr;
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
-		i = (UOSInt)me->lbData->GetItem(i);
+		i = (UOSInt)me->lbData->GetItem(i).p;
 		Sync::MutexUsage mutUsage(me->packetMut);
 		sb.AppendC(UTF8STRC("Recv Time: "));
 		dt.SetTicks(me->packets[i].recvTime);
@@ -124,9 +124,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
@@ -139,9 +139,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, U
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Sync::MutexUsage mutUsage(me->packetMut);
@@ -160,9 +160,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NotNullPtr<const N
 	me->packetsChg = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -176,10 +176,10 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
-	const UTF8Char *ip = (const UTF8Char*)me->lbMulticastCommon->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	const UTF8Char *ip = (const UTF8Char*)me->lbMulticastCommon->GetSelectedItem().p;
 	if (ip)
 	{
 		me->txtMulticastCurr->SetText({ip, Text::StrCharCnt(ip)});

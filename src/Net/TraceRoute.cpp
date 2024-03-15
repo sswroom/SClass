@@ -5,7 +5,7 @@
 
 void __stdcall Net::TraceRoute::RecvThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::TraceRoute *me = (Net::TraceRoute*)thread->GetUserObj();
+	NotNullPtr<Net::TraceRoute> me = thread->GetUserObj().GetNN<Net::TraceRoute>();
 	UInt8 *readBuff;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;

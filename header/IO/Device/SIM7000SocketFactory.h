@@ -46,7 +46,7 @@ namespace IO
 			Text::String *apn;
 			SocketStatus status[8];
 
-			static void __stdcall OnReceiveData(void *userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize);
+			static void __stdcall OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize);
 			void CloseAllSockets();
 		public:
 			SIM7000SocketFactory(IO::Device::SIM7000 *modem, Bool needRelease);

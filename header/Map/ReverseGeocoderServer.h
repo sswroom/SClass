@@ -16,7 +16,7 @@ namespace Map
 		typedef struct
 		{
 			Int64 lastReqTime;
-			void *cliData;
+			AnyType cliData;
 		} ClientStatus;
 
 	private:
@@ -40,12 +40,12 @@ namespace Map
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 
-		virtual void *NewConn(NotNullPtr<Net::TCPClient> cli);
-		virtual void EndConn(NotNullPtr<Net::TCPClient> cli, void *cliObj);
-		virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, void *cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
+		virtual AnyType NewConn(NotNullPtr<Net::TCPClient> cli);
+		virtual void EndConn(NotNullPtr<Net::TCPClient> cli, AnyType cliObj);
+		virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *cliObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType cliObj, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();
 	};
 }

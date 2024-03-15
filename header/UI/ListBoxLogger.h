@@ -24,8 +24,8 @@ namespace UI
 		UInt32 logCnt;
 		Optional<UI::GUITextBox> txt;
 
-		static void __stdcall TimerTick(void *userObj);
-		static void __stdcall OnListBoxSelChg(void *userObj);
+		static void __stdcall TimerTick(AnyType userObj);
+		static void __stdcall OnListBoxSelChg(AnyType userObj);
 	public:
 		ListBoxLogger(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse);
 		virtual ~ListBoxLogger();

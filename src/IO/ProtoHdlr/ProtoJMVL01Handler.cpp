@@ -14,16 +14,16 @@ IO::ProtoHdlr::ProtoJMVL01Handler::~ProtoJMVL01Handler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoJMVL01Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoJMVL01Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return (void*)-1;
 }
 
-void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	UInt16 crcVal;
 	UInt16 len;
@@ -72,7 +72,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 	return buff.GetSize() - i;
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	if (cmdSize >= 1024)
 		return 0;

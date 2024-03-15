@@ -2,9 +2,9 @@
 #include "Map/BingMapsTile.h"
 #include "SSWR/AVIRead/AVIRBingMapsForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBingMapsForm *me = (SSWR::AVIRead::AVIRBingMapsForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBingMapsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBingMapsForm>();
 	Text::StringBuilderUTF8 sbKey;
 	Text::StringBuilderUTF8 sb;
 	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)(OSInt)me->cboImagerySet->GetSelectedItem();

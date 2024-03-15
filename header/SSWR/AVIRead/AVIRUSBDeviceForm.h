@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDBName;
 			NotNullPtr<UI::GUITextBox> txtDBName;
 			
-			static void __stdcall OnDevicesSelChg(void *userObj);
+			static void __stdcall OnDevicesSelChg(AnyType userObj);
 			static OSInt __stdcall ItemCompare(IO::USBInfo *item1, IO::USBInfo *item2);
 		public:
 			AVIRUSBDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

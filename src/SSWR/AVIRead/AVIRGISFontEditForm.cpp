@@ -4,9 +4,9 @@
 #include "UI/GUIFontDialog.h"
 #include "UtilUI/ColorDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	NotNullPtr<UI::GUIFontDialog> dlg;
 	if (me->currFontName == 0)
 	{
@@ -29,9 +29,9 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 	dlg.Delete();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
+Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -48,16 +48,16 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userOb
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(void *userObj, UOSInt scrollPos)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType userObj, UOSInt scrollPos)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	me->currBuffSize = scrollPos;
 	me->UpdateFontPreview();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
+Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -74,17 +74,17 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(void *user
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontsDoubleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontsDoubleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (me->fontStyle < 0)
 		return;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> currFontName;
@@ -99,9 +99,9 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

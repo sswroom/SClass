@@ -1,5 +1,6 @@
 #ifndef _SM_IO_MODBUSDEVICE
 #define _SM_IO_MODBUSDEVICE
+#include "AnyType.h"
 #include "IO/MODBUSController.h"
 #include "IO/MODBUSMaster.h"
 #include "Math/Unit/UnitBase.h"
@@ -10,7 +11,7 @@ namespace IO
 	class MODBUSDevice
 	{
 	public:
-		typedef void (__stdcall *MODBUSDataEntry)(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
+		typedef void (__stdcall *MODBUSDataEntry)(AnyType userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 	private:
 		NotNullPtr<IO::MODBUSMaster> modbus;
 		Data::Duration timeout;
@@ -23,8 +24,8 @@ namespace IO
 		Bool reqHasResult;
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
-		static void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
-		static void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
+		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
+		static void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 	protected:
 		void SetTimeout(Data::Duration timeout);

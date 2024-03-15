@@ -153,12 +153,12 @@ void SSWR::ProcMonForm::SaveProgList()
 	}
 }
 
-void __stdcall SSWR::ProcMonForm::OnProgSelChange(void *userObj)
+void __stdcall SSWR::ProcMonForm::OnProgSelChange(AnyType userObj)
 {
-	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
+	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem();
+	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem().p;
 	if (prog && prog->progPath)
 	{
 		me->txtProgPath->SetText(prog->progPath->ToCString());
@@ -178,10 +178,10 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(void *userObj)
 	}
 }
 
-void __stdcall SSWR::ProcMonForm::OnProcIdClicked(void *userObj)
+void __stdcall SSWR::ProcMonForm::OnProcIdClicked(AnyType userObj)
 {
-	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
-	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem();
+	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
+	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem().p;
 	if (prog)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -194,9 +194,9 @@ void __stdcall SSWR::ProcMonForm::OnProcIdClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
+void __stdcall SSWR::ProcMonForm::OnProgAddClicked(AnyType userObj)
 {
-	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
+	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 procId;
 	me->txtProgAddId->GetText(sb);
@@ -221,17 +221,17 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::ProcMonForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::ProcMonForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
+	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
-void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
+	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UOSInt i;
 	ProgInfo *prog;
 	i = me->progList->GetCount();

@@ -3,9 +3,9 @@
 #include "Text/StringBuilder.h"
 #include "SSWR/AVIRead/AVIRWIADevForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWIADevForm *me = (SSWR::AVIRead::AVIRWIADevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWIADevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWIADevForm>();
 /*	if (me->currCapture == 0)
 	{
 		me->ui->ShowMsgOK(L"Please select a device", L"Select Capture Device");
@@ -25,9 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWIADevForm *me = (SSWR::AVIRead::AVIRWIADevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWIADevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWIADevForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_IPSCANDETECTOR
 #define _SM_NET_IPSCANDETECTOR
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
@@ -10,7 +11,7 @@ namespace Net
 	class IPScanDetector
 	{
 	public:
-		typedef void (__stdcall *IPScanHandler)(const UInt8 *hwAddr, void *userData);
+		typedef void (__stdcall *IPScanHandler)(const UInt8 *hwAddr, AnyType userData);
 
 		typedef struct
 		{
@@ -32,7 +33,7 @@ namespace Net
 		NotNullPtr<Net::SocketFactory> sockf;
 		Socket *soc;
 		IPScanHandler hdlr;
-		void *userData;
+		AnyType userData;
 		Data::FastMap<UInt64, AdapterStatus*> adapterMap;
 		Sync::Mutex adapterMut;
 
@@ -44,7 +45,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(void *obj);
 
 	public:
-		IPScanDetector(NotNullPtr<Net::SocketFactory> sockf, IPScanHandler hdlr, void *userData, UOSInt workerCnt);
+		IPScanDetector(NotNullPtr<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UOSInt workerCnt);
 		~IPScanDetector();
 
 		Bool IsError();

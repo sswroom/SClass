@@ -10,7 +10,7 @@
 
 void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::MDBFileAnalyse *me = (IO::FileAnalyse::MDBFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::MDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MDBFileAnalyse>();
 	UInt8 readBuff[4096];
 	UInt64 readOfst;
 	UOSInt readSize;

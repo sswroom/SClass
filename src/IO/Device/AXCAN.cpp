@@ -114,7 +114,7 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 
 void __stdcall IO::Device::AXCAN::SerialThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::Device::AXCAN *me = (IO::Device::AXCAN*)thread->GetUserObj();
+	NotNullPtr<IO::Device::AXCAN> me = thread->GetUserObj().GetNN<IO::Device::AXCAN>();
 	NotNullPtr<IO::Stream> stm;
 	if (stm.Set(me->stm)) 
 	{

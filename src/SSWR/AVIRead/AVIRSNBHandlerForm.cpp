@@ -5,21 +5,21 @@
 #include "SSWR/AVIRead/AVIRSNBHandlerForm.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnOkClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnOkClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNBHandlerForm *me = (SSWR::AVIRead::AVIRSNBHandlerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNBHandlerForm *me = (SSWR::AVIRead::AVIRSNBHandlerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSNBHandlerForm *me = (SSWR::AVIRead::AVIRSNBHandlerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	OSInt val = (OSInt)me->cboType->GetSelectedItem();

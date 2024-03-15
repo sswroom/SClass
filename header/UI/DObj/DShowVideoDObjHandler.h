@@ -24,8 +24,8 @@ namespace UI
 			Sync::Mutex frameMut;
 			Media::DrawImage *frameImg;
 
-			static void __stdcall OnVideoFrame(void *userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnVideoFrame(AnyType userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		protected:
 			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg);
 			void DrawVideo(NotNullPtr<Media::DrawImage> dimg);

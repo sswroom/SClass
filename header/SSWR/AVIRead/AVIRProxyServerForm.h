@@ -31,14 +31,14 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
 		public:
 			AVIRProxyServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProxyServerForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -3,9 +3,9 @@
 #include "IO/FileAnalyse/SMBIOSFileAnalyse.h"
 #include "SSWR/AVIRead/AVIRSMBIOSForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSMBIOSForm *me = (SSWR::AVIRead::AVIRSMBIOSForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSMBIOSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMBIOSForm>();
 	NotNullPtr<IO::StreamData> fd = me->smbios->CreateStreamData();
 	IO::FileAnalyse::SMBIOSFileAnalyse *fileAnalyse;
 	NEW_CLASS(fileAnalyse, IO::FileAnalyse::SMBIOSFileAnalyse(fd));

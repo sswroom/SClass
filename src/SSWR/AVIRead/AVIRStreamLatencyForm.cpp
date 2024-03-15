@@ -7,9 +7,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/Encoding.h"
 
-void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamLatencyForm *me = (SSWR::AVIRead::AVIRStreamLatencyForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	if (me->stm)
 	{
 		me->StopStream();
@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 	else
 	{
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me, 0, false);
+		me->stm = me->core->OpenStream(st, me, 0, false);
 		if (me->stm)
 		{
 			Data::DateTime dt;
@@ -40,9 +40,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamLatencyForm *me = (SSWR::AVIRead::AVIRStreamLatencyForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;

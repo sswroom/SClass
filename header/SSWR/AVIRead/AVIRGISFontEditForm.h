@@ -49,13 +49,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall FontNameClicked(void *userObj);
-			static Bool __stdcall FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
-			static void __stdcall BufferSizeChanged(void *userObj, UOSInt scrollPos);
-			static Bool __stdcall BufferColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
-			static void __stdcall FontsDoubleClicked(void *userObj);
-			static void __stdcall OKClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
+			static void __stdcall FontNameClicked(AnyType userObj);
+			static Bool __stdcall FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
+			static void __stdcall BufferSizeChanged(AnyType userObj, UOSInt scrollPos);
+			static Bool __stdcall BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
+			static void __stdcall FontsDoubleClicked(AnyType userObj);
+			static void __stdcall OKClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
 
 			void UpdateFontPreview();
 			void UpdateDisplay();

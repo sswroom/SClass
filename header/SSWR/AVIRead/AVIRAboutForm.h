@@ -14,7 +14,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OKClicked(void *userObj);
+			static void __stdcall OKClicked(AnyType userObj);
 		public:
 			AVIRAboutForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRAboutForm();

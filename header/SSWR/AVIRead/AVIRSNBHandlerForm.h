@@ -28,9 +28,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIPictureBox> pbImage;
 
-			static void __stdcall OnOkClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
-			static void __stdcall OnTypeSelChg(void *userObj);
+			static void __stdcall OnOkClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnTypeSelChg(AnyType userObj);
 
 		public:
 			AVIRSNBHandlerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SNBDongle::HandleType handType);

@@ -30,7 +30,7 @@ namespace SSWR
 
 		private:
 			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnDecryptClicked(void *userObj);
+			static void __stdcall OnDecryptClicked(AnyType userObj);
 		public:
 			AVIRSAMLDecryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLDecryptForm();

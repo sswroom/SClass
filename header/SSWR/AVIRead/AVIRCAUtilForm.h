@@ -53,10 +53,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnIssue;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnKeyViewClicked(void *userObj);
-			static void __stdcall OnCACertViewClicked(void *userObj);
-			static void __stdcall OnCSRViewClicked(void *userObj);
-			static void __stdcall OnIssueClicked(void *userObj);
+			static void __stdcall OnKeyViewClicked(AnyType userObj);
+			static void __stdcall OnCACertViewClicked(AnyType userObj);
+			static void __stdcall OnCSRViewClicked(AnyType userObj);
+			static void __stdcall OnIssueClicked(AnyType userObj);
 
 			void DisplayKeyDetail();
 			void DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names);

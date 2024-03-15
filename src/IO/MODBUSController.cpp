@@ -5,9 +5,9 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall IO::MODBUSController::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
+void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
-	IO::MODBUSController *me = (IO::MODBUSController*)userObj;
+	NotNullPtr<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
 	if (me->reqResult && funcCode == me->reqFuncCode && resultSize == me->reqResultSize)
 	{
 		MemCopyNO(me->reqResult, result, resultSize);
@@ -16,9 +16,9 @@ void __stdcall IO::MODBUSController::ReadResult(void *userObj, UInt8 funcCode, c
 	}
 }
 
-void __stdcall IO::MODBUSController::SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
+void __stdcall IO::MODBUSController::SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
 {
-	IO::MODBUSController *me = (IO::MODBUSController*)userObj;
+	NotNullPtr<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
 	if (me->reqResult && funcCode == me->reqFuncCode && me->reqSetStartAddr == startAddr)
 	{
 		me->reqHasResult = true;

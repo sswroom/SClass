@@ -25,7 +25,7 @@ namespace SSWR
 			IO::GPIOControl *ctrl;
 			PinState *states;
 
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRGPIOStatusForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPIOStatusForm();

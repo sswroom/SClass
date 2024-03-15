@@ -56,9 +56,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSAMLDecryptForm *me = (SSWR::AVIRead::AVIRSAMLDecryptForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<Net::SSLEngine> ssl;
 	Crypto::Cert::X509Key *key = 0;

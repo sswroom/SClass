@@ -5,9 +5,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
-	SSWR::SDNSProxy::SDNSProxyCore *me = (SSWR::SDNSProxy::SDNSProxyCore*)userObj;
+	NotNullPtr<SSWR::SDNSProxy::SDNSProxyCore> me = userObj.GetNN<SSWR::SDNSProxy::SDNSProxyCore>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;

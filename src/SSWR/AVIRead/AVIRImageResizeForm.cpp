@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageResizeForm *me = (SSWR::AVIRead::AVIRImageResizeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
 	Text::StringBuilderUTF8 sb;
 	Math::Size2D<UOSInt> outSize = Math::Size2D<UOSInt>(0, 0);
 	UOSInt nTap = 0;
@@ -49,9 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageResizeForm *me = (SSWR::AVIRead::AVIRImageResizeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

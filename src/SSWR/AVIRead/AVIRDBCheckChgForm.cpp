@@ -19,9 +19,9 @@
 #define SRID 4326
 #define UNKNOWN_COL (UOSInt)-2
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDataFile->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChg", false);
@@ -53,18 +53,18 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data:
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataCheckClk(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataCheckClk(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	if (!me->CheckDataFile())
 	{
 		return;
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	if (me->dataFile == 0)
@@ -123,9 +123,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	if (me->dataFile == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
@@ -197,9 +197,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	if (me->dataFile == 0)
 	{
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
@@ -220,9 +220,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(void *userObj)
 	table.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	NotNullPtr<DB::ReadingDB> dataFile;
 	if (!dataFile.Set(me->dataFile))
 	{

@@ -9,7 +9,7 @@
 
 void __stdcall Net::MQTTStaticClient::KAThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::MQTTStaticClient *me = (Net::MQTTStaticClient*)thread->GetUserObj();
+	NotNullPtr<Net::MQTTStaticClient> me = thread->GetUserObj().GetNN<Net::MQTTStaticClient>();
 	while (!thread->IsStopping())
 	{
 		Sync::MutexUsage mutUsage(me->connMut);
@@ -76,7 +76,8 @@ void Net::MQTTStaticClient::Connect()
 	UOSInt j = this->hdlrList.GetCount();
 	while (i < j)
 	{
-		conn->HandlePublishMessage(this->hdlrList.GetItem(i), this->hdlrObjList.GetItem(i));
+		Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr> cb = this->hdlrList.GetItem(i);
+		conn->HandlePublishMessage(cb.func, cb.userObj);
 		i++;
 	}
 	mutUsage.EndUse();
@@ -138,7 +139,7 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 	return this->packetId++;
 }
 
-void Net::MQTTStaticClient::Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog)
+void Net::MQTTStaticClient::Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog)
 {
 	this->kaSeconds = 30;
 	this->conn = 0;
@@ -150,8 +151,7 @@ void Net::MQTTStaticClient::Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTT
 	sb.AppendI64(Data::DateTimeUtil::GetCurrTimeMillis());
 	this->clientId = Text::String::New(sb.ToString(), sb.GetLength());
 	this->packetId = 1;
-	this->hdlrList.Add(hdlr);
-	this->hdlrObjList.Add(userObj);
+	this->hdlrList.Add({hdlr, userObj});
 
 	this->sockf = sockf;
 	this->ssl = 0;
@@ -162,12 +162,12 @@ void Net::MQTTStaticClient::Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTT
 	this->webSocket = false;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(sockf, hdlr, userObj, errLog);
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(sockf, hdlr, userObj, errLog);
 	this->ssl = ssl;
@@ -205,11 +205,10 @@ Bool Net::MQTTStaticClient::ChannelFailure()
 	return this->conn == 0;
 }
 
-void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj)
+void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	this->hdlrList.Add(hdlr);
-	this->hdlrObjList.Add(hdlrObj);
+	this->hdlrList.Add({hdlr, hdlrObj});
 }
 
 Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)

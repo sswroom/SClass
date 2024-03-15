@@ -24,9 +24,9 @@ namespace SSWR
 
 			Map::MapDrawLayer *lyr;
 
-			static void __stdcall OnRoadCenterlineClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnRoadCenterlineClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			AVIRGISHKTrafficForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGISHKTrafficForm();
@@ -35,6 +35,6 @@ namespace SSWR
 
 			Map::MapDrawLayer *GetMapLayer();
 		};
-	};
-};
+	}
+}
 #endif

@@ -7,7 +7,7 @@
 #include "Sync/SimpleThread.h"
 #include <stdio.h>
 
-void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
+void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
 	if (resultSize == 4)
 	{
@@ -15,7 +15,7 @@ void __stdcall ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UO
 	}
 }
 
-void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 count)
+void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 count)
 {
 }
 

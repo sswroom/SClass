@@ -39,8 +39,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIListView> lvDevices;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRDHCPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDHCPServerForm();

@@ -46,12 +46,12 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnEpochSecClicked(void *userObj);
-			static void __stdcall OnEpochMSClicked(void *userObj);
-			static void __stdcall OnEpochUSClicked(void *userObj);
-			static void __stdcall OnEpochNSClicked(void *userObj);
-			static void __stdcall OnDotNetTicksClicked(void *userObj);
-			static void __stdcall OnStrConvClicked(void *userObj);
+			static void __stdcall OnEpochSecClicked(AnyType userObj);
+			static void __stdcall OnEpochMSClicked(AnyType userObj);
+			static void __stdcall OnEpochUSClicked(AnyType userObj);
+			static void __stdcall OnEpochNSClicked(AnyType userObj);
+			static void __stdcall OnDotNetTicksClicked(AnyType userObj);
+			static void __stdcall OnStrConvClicked(AnyType userObj);
 			void DisplayTime(const Data::Timestamp &ts);
 		public:
 			AVIRTimestampForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -60,16 +60,16 @@ namespace SSWR
 			Text::String *newCode;
 			Bool codeUpdate;
 
-			static void __stdcall OnPortClicked(void *userObj);
-			static void __stdcall OnModeScanClicked(void *userObj);
-			static void __stdcall OnModeSettingClicked(void *userObj);
-			static void __stdcall OnModeIdleClicked(void *userObj);
-			static void __stdcall OnResetClicked(void *userObj);
-			static void __stdcall OnDefaultClicked(void *userObj);
-			static void __stdcall OnSetCmdSelChg(void *userObj);
-			static void __stdcall OnSetCmdClicked(void *userObj);
-			static void __stdcall OnCodeScanned(void *userObj, Text::CString code);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnPortClicked(AnyType userObj);
+			static void __stdcall OnModeScanClicked(AnyType userObj);
+			static void __stdcall OnModeSettingClicked(AnyType userObj);
+			static void __stdcall OnModeIdleClicked(AnyType userObj);
+			static void __stdcall OnResetClicked(AnyType userObj);
+			static void __stdcall OnDefaultClicked(AnyType userObj);
+			static void __stdcall OnSetCmdSelChg(AnyType userObj);
+			static void __stdcall OnSetCmdClicked(AnyType userObj);
+			static void __stdcall OnCodeScanned(AnyType userObj, Text::CString code);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRDWQB30Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDWQB30Form();

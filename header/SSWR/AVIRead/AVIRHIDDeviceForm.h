@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDevPath;
 			NotNullPtr<UI::GUITextBox> txtDevPath;
 			
-			static void __stdcall OnDevicesSelChg(void *userObj);
+			static void __stdcall OnDevicesSelChg(AnyType userObj);
 			static OSInt __stdcall ItemCompare(IO::HIDInfo *item1, IO::HIDInfo *item2);
 		public:
 			AVIRHIDDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -36,6 +36,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -45,7 +45,7 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 
 void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::JMVL01FileAnalyse *me = (IO::FileAnalyse::JMVL01FileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::JMVL01FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::JMVL01FileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 tagHdr[5];

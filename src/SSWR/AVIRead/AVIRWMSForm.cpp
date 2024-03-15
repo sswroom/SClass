@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRWMSForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMSForm *me = (SSWR::AVIRead::AVIRWMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWMSURL->GetText(sb);
 	SDEL_CLASS(me->wms);
@@ -64,18 +64,18 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMSForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMSForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMSForm *me = (SSWR::AVIRead::AVIRWMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMSForm *me = (SSWR::AVIRead::AVIRWMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetLayer(me->cboLayer->GetSelectedIndex());
@@ -95,27 +95,27 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerCRSSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerCRSSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMSForm *me = (SSWR::AVIRead::AVIRWMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetLayerCRS(me->cboLayerCRS->GetSelectedIndex());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMSForm::OnMapImageTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMSForm::OnMapImageTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMSForm *me = (SSWR::AVIRead::AVIRWMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetMapImageType(me->cboMapImageType->GetSelectedIndex());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMSForm::OnInfoTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMSForm::OnInfoTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMSForm *me = (SSWR::AVIRead::AVIRWMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetInfoType(me->cboInfoType->GetSelectedIndex());

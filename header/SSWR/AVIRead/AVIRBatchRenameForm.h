@@ -20,8 +20,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnRenameExtUpper;
 			NotNullPtr<UI::GUIButton> btnRenameExtLower;
 
-			static void __stdcall OnRenameExtUpperClicked(void *userObj);
-			static void __stdcall OnRenameExtLowerClicked(void *userObj);
+			static void __stdcall OnRenameExtUpperClicked(AnyType userObj);
+			static void __stdcall OnRenameExtLowerClicked(AnyType userObj);
 		public:
 			AVIRBatchRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBatchRenameForm();

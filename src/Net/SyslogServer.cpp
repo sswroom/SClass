@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SyslogServer::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::SyslogServer::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::SyslogServer *me = (Net::SyslogServer*)userData;
+	NotNullPtr<Net::SyslogServer> me = userData.GetNN<Net::SyslogServer>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (buff[0] == '<')
@@ -104,7 +104,7 @@ Bool Net::SyslogServer::IsError()
 	return this->svr->IsError();
 }
 
-void Net::SyslogServer::HandleClientLog(ClientLogHandler hdlr, void *userObj)
+void Net::SyslogServer::HandleClientLog(ClientLogHandler hdlr, AnyType userObj)
 {
 	this->logHdlrObj = userObj;
 	this->logHdlr = hdlr;

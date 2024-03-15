@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRGISFontStyleForm.h"
 #include "UtilUI/ColorDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	UOSInt newStyle = me->env->AddFontStyle(CSTR_NULL, CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
 
 	SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
@@ -22,17 +22,17 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::RemoveStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::RemoveStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->env->RemoveFontStyle(me->fontStyle);
 	me->fsFonts->UpdateFontStyles();
 	me->fsFonts->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	if (me->fontStyle < me->env->GetFontStyleCount())
 	{
 		SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, me->fontStyle);
@@ -44,28 +44,28 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsSelectedChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsSelectedChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	UOSInt i = me->fsFonts->GetSelectedFontStyle();
 	me->fontStyle = i;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsDoubleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsDoubleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -8,9 +8,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	if (!me->chkAddPoints->IsChecked())
 		return false;
 	UTF8Char sbuff[128];
@@ -43,9 +43,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, M
 	return true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	if (me->stm)
 	{
 		DEL_CLASS(me->stm);
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(void *userOb
 		me->txtStreamType->SetText(CSTR("-"));
 	}
 	IO::StreamType st;
-	IO::Stream *stm = me->core->OpenStream(&st, me, 0, false);
+	IO::Stream *stm = me->core->OpenStream(st, me, 0, false);
 	if (stm)
 	{
 		me->stm = stm;
@@ -61,9 +61,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	Text::StringBuilderUTF8 sb;
 	Double v;
 	me->txtSpeedInput->GetText(sb);
@@ -77,9 +77,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->stm)

@@ -21,7 +21,7 @@ Text::CStringNN IO::ProtoDec::TSProtocolDecoder::GetName() const
 	return CSTR("TS");
 }
 
-UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
 {
 	UOSInt i;
 	UOSInt j;

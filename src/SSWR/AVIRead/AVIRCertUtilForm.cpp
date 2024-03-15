@@ -150,9 +150,9 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl))
 	{
@@ -166,28 +166,28 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	if (me->key)
 	{
 		me->core->OpenObject(me->key->Clone());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (key.Set(me->key))
 	{
-		me->core->SaveData(me, key, L"CertUtilSaveKey");
+		me->core->SaveData(me.Ptr(), key, L"CertUtilSaveKey");
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSAN->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -198,16 +198,16 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	me->sanList->FreeAll();
 	me->lbSAN->ClearItems();
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
@@ -252,9 +252,9 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	Crypto::Cert::CertNames::FreeNames(names);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{

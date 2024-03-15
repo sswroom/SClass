@@ -8,7 +8,7 @@
 
 void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::SMTCFileAnalyse *me = (IO::FileAnalyse::SMTCFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::SMTCFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SMTCFileAnalyse>();
 	DataInfo *data;
 	UInt64 dataSize;
 	UInt64 ofst;

@@ -24,26 +24,26 @@ namespace SSWR
 				Sync::Mutex mut;
 			};
 
-			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, UOSInt dataSize);
+			typedef void (__stdcall *DataHandler)(AnyType userObj, const UInt8 *data, UOSInt dataSize);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			DataHandler dataHdlr;
-			void *dataObj;
+			AnyType dataObj;
 
 			Sync::RWMutex svrMut;
 			Data::FastMap<Int32, ServerInfo*> svrMap;
 
 			Data::ArrayList<SyncClient*> syncCliList;
 
-			static void __stdcall OnClientConn(Socket *s, void *userObj);
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
+			static void __stdcall OnClientConn(Socket *s, AnyType userObj);
+			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 		public:
-			SyncServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart, Data::Duration cliTimeout);
+			SyncServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, AnyType dataObj, Bool autoStart, Data::Duration cliTimeout);
 			virtual ~SyncServer();
 
 			Bool Start();
@@ -51,8 +51,8 @@ namespace SSWR
 			UOSInt GetServerList(Data::ArrayList<ServerInfo*> *svrList);
 			void SendUserData(const UInt8 *dataBuff, UOSInt dataSize);
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		};
 	}
 }

@@ -3,9 +3,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRLUTForm::OnChannelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLUTForm::OnChannelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRLUTForm *me = (SSWR::AVIRead::AVIRLUTForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRLUTForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLUTForm>();
 	me->UpdateValues();
 }
 

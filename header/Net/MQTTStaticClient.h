@@ -1,5 +1,7 @@
 #ifndef _SM_NET_MQTTSTATICCLIENT
 #define _SM_NET_MQTTSTATICCLIENT
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "IO/Writer.h"
 #include "Net/FailoverChannel.h"
 #include "Net/MQTTClient.h"
@@ -23,8 +25,7 @@ namespace Net
 
 		NotNullPtr<Text::String> clientId;
 		Sync::Mutex hdlrMut;
-		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> hdlrList;
-		Data::ArrayList<void *> hdlrObjList;
+		Data::ArrayList<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
 		Sync::Mutex topicMut;
 		Data::ArrayList<Text::String*> topicList;
 
@@ -42,16 +43,16 @@ namespace Net
 		void Connect();
 		UInt16 GetNextPacketId();
 
-		void Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
+		void Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
 	public:
-		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
-		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);
+		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
+		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();
 		virtual Bool ChannelFailure();
 
-		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj);
+		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj);
 		virtual Bool Subscribe(Text::CString topic);
 		virtual Bool Publish(Text::CString topic, Text::CString message);
 	};

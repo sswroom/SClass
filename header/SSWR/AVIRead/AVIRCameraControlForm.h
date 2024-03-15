@@ -30,9 +30,9 @@ namespace SSWR
 			IO::CameraControl *camera;
 			Data::StringUTF8Map<Media::ImageList *> previewMap;
 
-			static void __stdcall OnDownloadClicked(void *userObj);
-			static void __stdcall OnFilesDblClick(void *userObj, UOSInt index);
-			static void __stdcall OnFilesSelChg(void *userObj);
+			static void __stdcall OnDownloadClicked(AnyType userObj);
+			static void __stdcall OnFilesDblClick(AnyType userObj, UOSInt index);
+			static void __stdcall OnFilesSelChg(AnyType userObj);
 		public:
 			AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
 			virtual ~AVIRCameraControlForm();

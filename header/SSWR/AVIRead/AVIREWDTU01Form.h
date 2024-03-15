@@ -43,9 +43,9 @@ namespace SSWR
 			Bool dataChg;
 			Data::FastMap<UInt64, DeviceEntry*> dataMap;
 
-			static void __stdcall OnMQTTMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &buff);
-			static void __stdcall OnConnectClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnMQTTMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff);
+			static void __stdcall OnConnectClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void DataClear();
 		public:
 			AVIREWDTU01Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

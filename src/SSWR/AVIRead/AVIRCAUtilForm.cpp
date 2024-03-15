@@ -182,36 +182,36 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	if (me->key)
 	{
 		me->core->OpenObject(me->key->Clone());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	if (me->caCert)
 	{
 		me->core->OpenObject(me->caCert->Clone());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	if (me->csr)
 	{
 		me->core->OpenObject(me->csr->Clone());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{

@@ -1,6 +1,8 @@
 #ifndef _SM_IO_GPSNMEA
 #define _SM_IO_GPSNMEA
+#include "AnyType.h"
 #include "Data/ArrayList.h"
+#include "Data/CallbackStorage.h"
 #include "Map/ILocationService.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -12,7 +14,7 @@ namespace IO
 	class GPSNMEA : public Map::ILocationService
 	{
 	public:
-		typedef void (__stdcall *CommandHandler)(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
+		typedef void (__stdcall *CommandHandler)(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
 
 	private:
 		enum class ParseStatus
@@ -32,11 +34,10 @@ namespace IO
 		NotNullPtr<IO::Stream> stm;
 	private:
 		Bool relStm;
-		Data::ArrayList<LocationHandler> hdlrList;
-		Data::ArrayList<void *> hdlrObjs;
+		Data::ArrayList<Data::CallbackStorage<LocationHandler>> hdlrList;
 		Sync::RWMutex hdlrMut;
 		CommandHandler cmdHdlr;
-		void *cmdHdlrObj;
+		AnyType cmdHdlrObj;
 
 		Bool threadRunning;
 		Bool threadToStop;
@@ -49,12 +50,12 @@ namespace IO
 		virtual ~GPSNMEA();
 
 		virtual Bool IsDown();
-		virtual void RegisterLocationHandler(LocationHandler hdlr, void *userObj);
-		virtual void UnregisterLocationHandler(LocationHandler hdlr, void *userObj);
+		virtual void RegisterLocationHandler(LocationHandler hdlr, AnyType userObj);
+		virtual void UnregisterLocationHandler(LocationHandler hdlr, AnyType userObj);
 		virtual void ErrorRecover();
 		virtual ServiceType GetServiceType();
 
-		void HandleCommand(CommandHandler cmdHdlr, void *userObj);
+		void HandleCommand(CommandHandler cmdHdlr, AnyType userObj);
 
 		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
 		static NotNullPtr<Map::GPSTrack> NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName);

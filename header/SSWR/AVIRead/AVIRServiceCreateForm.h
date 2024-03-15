@@ -29,8 +29,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;
 
-			static void __stdcall OnCreateClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnCreateClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRServiceCreateForm();

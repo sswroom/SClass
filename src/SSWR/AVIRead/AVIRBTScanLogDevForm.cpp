@@ -7,9 +7,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBTScanLogDevForm *me = (SSWR::AVIRead::AVIRBTScanLogDevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogDevForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BTScanLogDev", true);
 	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	if (dlg->ShowDialog(me->GetHandle()))

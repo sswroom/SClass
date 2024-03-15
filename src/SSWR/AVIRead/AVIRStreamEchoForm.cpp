@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(AnyType userOb
 	else
 	{
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me.Ptr(), 0, false);
+		me->stm = me->core->OpenStream(st, me, 0, false);
 		if (me->stm)
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));

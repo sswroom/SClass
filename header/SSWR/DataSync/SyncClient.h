@@ -43,8 +43,8 @@ namespace SSWR
 			SyncClient(NotNullPtr<Net::SocketFactory> sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout);
 			virtual ~SyncClient();
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 
 			void AddUserData(const UInt8 *data, UOSInt dataSize);
 		};

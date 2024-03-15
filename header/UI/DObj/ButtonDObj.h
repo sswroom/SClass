@@ -24,13 +24,13 @@ namespace UI
 			Double downAlpha;
 			Data::DateTime downTime;
 			UI::UIEvent clkHdlr;
-			void *clkUserObj;
+			AnyType clkUserObj;
 			Bool rectMode;
 			Bool isVisible;
 
 			static UInt32 __stdcall ClickThread(void *userObj);
 		public:
-			ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
+			ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~ButtonDObj();
 
 			void SetRectMode(Bool rectMode);

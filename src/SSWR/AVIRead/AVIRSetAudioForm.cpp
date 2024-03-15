@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetAudioForm *me = (SSWR::AVIRead::AVIRSetAudioForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	sptr = me->lbDevice->GetSelectedItemText(sbuff);
@@ -23,9 +23,9 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSetAudioForm *me = (SSWR::AVIRead::AVIRSetAudioForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

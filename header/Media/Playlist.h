@@ -25,7 +25,7 @@ namespace Media
 		Media::MediaFile *currFile;
 		Bool playing;
 
-		static void __stdcall OnPBEnd(void *userObj);
+		static void __stdcall OnPBEnd(AnyType userObj);
 		void FreeEntry(PlaylistEntry* ent);
 	public:
 		Playlist(Text::CStringNN sourceName, NotNullPtr<Parser::ParserList> parsers);

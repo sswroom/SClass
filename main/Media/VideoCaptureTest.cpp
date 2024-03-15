@@ -19,11 +19,11 @@ static Media::CS::CSConverter *converter;
 Int32 frameCnt;
 IO::ConsoleWriter *console;
 
-void __stdcall FrameChangeHdlr(Media::IVideoSource::FrameChange frChg, void *userData)
+void __stdcall FrameChangeHdlr(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
 }
 
-void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 fnum = frameCnt;
 	if (fnum == 1)

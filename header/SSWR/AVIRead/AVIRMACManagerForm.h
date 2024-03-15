@@ -63,12 +63,12 @@ namespace SSWR
 			Data::ArrayList<LogFileEntry*> logList;
 			Net::MACInfoList macList;
 
-			static void __stdcall OnFileClicked(void *userObj);
-			static void __stdcall OnStoreClicked(void *userObj);
-			static void __stdcall OnContentDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnContentSelChg(void *userObj);
-			static void __stdcall OnInputClicked(void *userObj);
-			static void __stdcall OnWiresharkClicked(void *userObj);
+			static void __stdcall OnFileClicked(AnyType userObj);
+			static void __stdcall OnStoreClicked(AnyType userObj);
+			static void __stdcall OnContentDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnContentSelChg(AnyType userObj);
+			static void __stdcall OnInputClicked(AnyType userObj);
+			static void __stdcall OnWiresharkClicked(AnyType userObj);
 			void LogFileLoad(Text::CStringNN fileName);
 			void LogFileClear();
 

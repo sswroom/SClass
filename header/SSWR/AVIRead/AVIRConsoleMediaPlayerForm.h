@@ -38,14 +38,14 @@ namespace SSWR
 			Net::WebServer::WebListener *listener;
 			Bool videoOpening;
 
-			static void __stdcall OnStopClicked(void *userObj);
-			static void __stdcall OnCaptureDevClicked(void *userObj);
+			static void __stdcall OnStopClicked(AnyType userObj);
+			static void __stdcall OnCaptureDevClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnRotateChg(void *userObj);
-			static void __stdcall OnSurfaceBugChg(void *userObj, Bool newVal);
-			static void __stdcall OnYUVTypeChg(void *userObj);
-			static void __stdcall OnRGBTransChg(void *userObj);
-			static void __stdcall OnColorPrimariesChg(void *userObj);
+			static void __stdcall OnRotateChg(AnyType userObj);
+			static void __stdcall OnSurfaceBugChg(AnyType userObj, Bool newVal);
+			static void __stdcall OnYUVTypeChg(AnyType userObj);
+			static void __stdcall OnRGBTransChg(AnyType userObj);
+			static void __stdcall OnColorPrimariesChg(AnyType userObj);
 
 			void AddYUVType(Media::ColorProfile::YUVType yuvType);
 			void AddRGBTrans(Media::CS::TransferType rgbType);

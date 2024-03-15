@@ -20,7 +20,7 @@ struct IO::RAWBTScanner::ClassData
 
 void __stdcall IO::RAWBTScanner::RecvThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::RAWBTScanner *me = (IO::RAWBTScanner*)thread->GetUserObj();
+	NotNullPtr<IO::RAWBTScanner> me = thread->GetUserObj().GetNN<IO::RAWBTScanner>();
 	UInt8 *buff;
 	UOSInt packetSize;
 	Int64 timeTicks;

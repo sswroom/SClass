@@ -59,10 +59,10 @@ namespace SSWR
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::ProfiledResizer *resizer;
 
-			static void __stdcall OnChgClicked(void *userObj);
+			static void __stdcall OnChgClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnClickedDelProfile(void *userObj);
-			static void __stdcall OnClickedAddProfile(void *userObj);
+			static void __stdcall OnClickedDelProfile(AnyType userObj);
+			static void __stdcall OnClickedAddProfile(AnyType userObj);
 			void ChangeProfile();
 			void UpdateProfileDisp();
 			void UpdateProfileList();

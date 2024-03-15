@@ -57,9 +57,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspPing;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj);
-			static void __stdcall OnPingClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj);
+			static void __stdcall OnPingClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRARPPingForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRARPPingForm();

@@ -12,9 +12,9 @@ extern "C" Int32 UseAVX;
 extern "C" Int32 CPUBrand;
 #endif
 
-void __stdcall SSWR::AVIRead::AVIRAboutForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRAboutForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRAboutForm *me = (SSWR::AVIRead::AVIRAboutForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRAboutForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAboutForm>();
 	me->Close();
 }
 

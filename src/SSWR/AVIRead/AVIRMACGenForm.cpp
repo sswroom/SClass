@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMACGenForm *me = (SSWR::AVIRead::AVIRMACGenForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
 	Data::ArrayList<Net::MACInfo::MACEntry*> *macArr;
 	UTF8Char sbuff[20];
 	UTF8Char *sptr;
@@ -34,9 +34,9 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
 	me->txtPlainFormat->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMACGenForm *me = (SSWR::AVIRead::AVIRMACGenForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
 	UInt8 buff[12];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;

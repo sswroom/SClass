@@ -12,9 +12,9 @@
 #define TEST_SIZE (32768*1024)
 #define LOOP_CNT 128
 
-void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPerformanceLogForm *me = (SSWR::AVIRead::AVIRPerformanceLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
 	if (me->testBuff)
 	{
 		me->Stop();
@@ -30,9 +30,9 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPerformanceLogForm *me = (SSWR::AVIRead::AVIRPerformanceLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
 	if (me->testBuff)
 	{
 		if (Data::Timestamp::UtcNow().DiffMS(me->testTime) >= 600000)

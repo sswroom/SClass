@@ -7,9 +7,9 @@
 #include "Text/Encoding.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRElectronicScaleForm *me = (SSWR::AVIRead::AVIRElectronicScaleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	if (me->stm)
 	{
 		me->StopStream();
@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *use
 	else
 	{
 		IO::StreamType st;
-		me->stm = me->core->OpenStream(&st, me, 9600, false);
+		me->stm = me->core->OpenStream(st, me, 9600, false);
 		if (me->stm)
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *use
 			me->threadRunning = false;
 			me->threadToStop = false;
 
-			Sync::ThreadUtil::Create(RecvThread, me);
+			Sync::ThreadUtil::Create(RecvThread, me.Ptr());
 			while (!me->threadRunning && !me->remoteClosed)
 			{
 				Sync::SimpleThread::Sleep(10);
@@ -35,9 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRElectronicScaleForm *me = (SSWR::AVIRead::AVIRElectronicScaleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;

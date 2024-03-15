@@ -7,9 +7,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadRoute->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtVehicleRes->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtRoadRoute->GetText(sb);
@@ -109,9 +109,9 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

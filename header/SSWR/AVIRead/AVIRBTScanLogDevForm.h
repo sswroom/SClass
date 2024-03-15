@@ -28,7 +28,7 @@ namespace SSWR
 
 			const IO::BTScanLog::DevEntry *entry;
 
-			static void __stdcall OnCSVClicked(void *userObj);
+			static void __stdcall OnCSVClicked(AnyType userObj);
 		public:
 			AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const IO::BTScanLog::DevEntry *entry);
 			virtual ~AVIRBTScanLogDevForm();

@@ -461,7 +461,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 
 void __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::DownloadMonitor::DownMonCore *me = (SSWR::DownloadMonitor::DownMonCore *)thread->GetUserObj();
+	NotNullPtr<SSWR::DownloadMonitor::DownMonCore> me = thread->GetUserObj().GetNN<SSWR::DownloadMonitor::DownMonCore>();
 	while (!thread->IsStopping())
 	{
 		me->ProcessDir(me->downPath, me->succPath, me->errPath);

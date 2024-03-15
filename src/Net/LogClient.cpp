@@ -197,7 +197,7 @@ void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CStringNN logMs
 	this->sendEvt.Set();
 }
 
-void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -220,6 +220,6 @@ void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 
 	}
 }
 
-void Net::LogClient::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogClient::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

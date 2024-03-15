@@ -2,9 +2,9 @@
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRTMSForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTMSForm *me = (SSWR::AVIRead::AVIRTMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtTMSURL->GetText(sb);
 	SDEL_CLASS(me->tms);
@@ -19,9 +19,9 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTMSForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTMSForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTMSForm *me = (SSWR::AVIRead::AVIRTMSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
 	if (me->tms && !me->tms->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);

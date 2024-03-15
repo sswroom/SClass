@@ -31,8 +31,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspWifi;
 			NotNullPtr<UI::GUITextBox> txtWifi;
 
-			static void __stdcall OnScanClicked(void *userObj);
-			static void __stdcall OnWifiSelChg(void *userObj);
+			static void __stdcall OnScanClicked(AnyType userObj);
+			static void __stdcall OnWifiSelChg(AnyType userObj);
 			void WifiScan();
 			void WifiClear();
 		public:
@@ -41,6 +41,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -27,9 +27,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ParserType t;
 
-			static void __stdcall OnBrowseClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnBrowseClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 		public:
 			AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t);

@@ -11,16 +11,16 @@ IO::ProtoHdlr::ProtoCortexHandler::~ProtoCortexHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoCortexHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoCortexHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	UOSInt i;
 	UOSInt j;
@@ -69,7 +69,7 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> s
 	return 0;
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	UInt8 chk;
 	UOSInt i;

@@ -64,9 +64,9 @@ namespace SSWR
 			static UTF8Char *ByteDisp(UTF8Char *sbuff, UOSInt byteSize);
 			void StartTest(UOSInt startSize, UOSInt buffSize);
 			void ClearResult();
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnQuickClicked(void *userObj);
-			static void __stdcall OnSaveClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnQuickClicked(AnyType userObj);
+			static void __stdcall OnSaveClicked(AnyType userObj);
 		public:
 			AVIRBenchmarkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBenchmarkForm();

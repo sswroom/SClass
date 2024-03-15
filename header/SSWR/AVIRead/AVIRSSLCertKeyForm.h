@@ -50,10 +50,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnGenerate;
 
 			static void __stdcall OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
-			static void __stdcall OnFileCertClicked(void *userObj);
-			static void __stdcall OnFileKeyClicked(void *userObj);
-			static void __stdcall OnFileConfirmClicked(void *userObj);
-			static void __stdcall OnGenerateClicked(void *userObj);
+			static void __stdcall OnFileCertClicked(AnyType userObj);
+			static void __stdcall OnFileKeyClicked(AnyType userObj);
+			static void __stdcall OnFileConfirmClicked(AnyType userObj);
+			static void __stdcall OnGenerateClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			void LoadFile(Text::CStringNN fileName);

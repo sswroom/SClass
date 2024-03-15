@@ -4,9 +4,9 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
 
-void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCertTextForm *me = (SSWR::AVIRead::AVIRCertTextForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCertTextForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertTextForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtText->GetText(sb);
 	if (sb.GetLength() == 0)

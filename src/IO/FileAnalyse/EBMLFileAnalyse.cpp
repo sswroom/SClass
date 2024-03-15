@@ -396,7 +396,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 
 void __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::EBMLFileAnalyse *me = (IO::FileAnalyse::EBMLFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::EBMLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EBMLFileAnalyse>();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
 }
 

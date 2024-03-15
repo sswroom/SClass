@@ -78,7 +78,7 @@ namespace SSWR
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm) = 0;
 
 			void OpenGSMModem(IO::Stream *modemPort);
-			IO::Stream *OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
+			IO::Stream *OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
 			void OpenHex(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 
 			void BeginLoad();

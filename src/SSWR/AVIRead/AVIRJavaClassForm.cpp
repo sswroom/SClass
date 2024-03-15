@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRJavaClassForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJavaClassForm *me = (SSWR::AVIRead::AVIRJavaClassForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJavaClassForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaClassForm>();
 	Text::StringBuilderUTF8 sb;
 	me->clsFile->MethodsGetDetail((UOSInt)me->lbMethods->GetSelectedIndex(), 0, true, sb);
 	me->txtMethods->SetText(sb.ToCString());

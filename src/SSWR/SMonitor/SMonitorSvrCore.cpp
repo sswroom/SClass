@@ -27,12 +27,12 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	ClientStatus *status = (ClientStatus*)cliData;
+	NotNullPtr<ClientStatus> status = cliData.GetNN<ClientStatus>();
 	switch (evtType)
 	{
 	case Net::TCPClientMgr::TCP_EVENT_DISCONNECT:
@@ -53,7 +53,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TC
 			}
 			MemFree(status->dataBuff);
 			me->protoHdlr.DeleteStreamData(cli, status->stmData);
-			MemFree(status);
+			MemFreeNN(status);
 			cli.Delete();
 		}
 		break;
@@ -65,10 +65,10 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NotNullPtr<Net::TC
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
-	ClientStatus *status = (ClientStatus*)cliData;
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
+	NotNullPtr<ClientStatus> status = cliData.GetNN<ClientStatus>();
 	MemCopyNO(&status->dataBuff[status->dataSize], buff.Ptr(), buff.GetSize());
 	status->dataSize += buff.GetSize();
 
@@ -87,9 +87,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NotNullPtr<Net::TCP
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = cli->GetRemoteName(sbuff);
@@ -99,9 +99,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NotNullPtr<Net::
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *userObj)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, AnyType userObj)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	NotNullPtr<Net::TCPClient> cli;
 	ClientStatus *status;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
@@ -117,7 +117,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *us
 
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)thread->GetUserObj();
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = thread->GetUserObj().GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	DeviceInfo *dev;
 	Int64 t;
 	UOSInt i;
@@ -183,9 +183,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NotNullPtr<Sync::Thr
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userData;
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	NotNullPtr<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devInfo;
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
 	{
@@ -393,9 +393,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userData;
+	NotNullPtr<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	if (dataSize < 4)
 		return;
 	if (buff[0] == 'S' && buff[1] == 'm' && buff[2] == 'P' && buff[3] == 'M')
@@ -433,11 +433,11 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<con
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	DeviceInfo *dev;
 	NotNullPtr<DeviceInfo> devnn;
-	ClientStatus *status = (ClientStatus*)stmObj;
+	NotNullPtr<ClientStatus> status = stmObj.GetNN<ClientStatus>();
 	switch (cmdType)
 	{
 	case 0:
@@ -594,7 +594,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, voi
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

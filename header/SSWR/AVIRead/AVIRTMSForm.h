@@ -25,8 +25,8 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Map::TileMapServiceSource *tms;
 
-			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
+			static void __stdcall OnLoadClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
 			AVIRTMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRTMSForm();

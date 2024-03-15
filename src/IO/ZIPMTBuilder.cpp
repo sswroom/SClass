@@ -7,7 +7,7 @@
 #endif
 void __stdcall IO::ZIPMTBuilder::ThreadProc(NotNullPtr<Sync::Thread> thread)
 {
-	IO::ZIPMTBuilder *me = (IO::ZIPMTBuilder*)thread->GetUserObj();
+	NotNullPtr<IO::ZIPMTBuilder> me = thread->GetUserObj().GetNN<IO::ZIPMTBuilder>();
 	FileTask *task;
 	while (!thread->IsStopping())
 	{

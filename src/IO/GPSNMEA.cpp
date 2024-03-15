@@ -290,7 +290,8 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 						UOSInt i = me->hdlrList.GetCount();
 						while (i-- > 0)
 						{
-							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), record, Data::DataArray<SateStatus>(sateRec.sates, sateRec.sateCnt));
+							Data::CallbackStorage<LocationHandler> cb = me->hdlrList.GetItem(i);
+							cb.func(cb.userObj, record, Data::DataArray<SateStatus>(sateRec.sates, sateRec.sateCnt));
 						}
 						mutUsage.EndUse();
 						MemClear(&record, sizeof(record));
@@ -348,23 +349,22 @@ Bool IO::GPSNMEA::IsDown()
 	return this->stm->IsDown();
 }
 
-void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, void *userObj)
+void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, AnyType userObj)
 {
 	Sync::RWMutexUsage mutUsage(this->hdlrMut, true);
-	this->hdlrList.Add(hdlr);
-	this->hdlrObjs.Add(userObj);
+	this->hdlrList.Add({hdlr, userObj});
 }
 
-void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, void *userObj)
+void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, AnyType userObj)
 {
 	Sync::RWMutexUsage mutUsage(this->hdlrMut, true);
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		if (this->hdlrList.GetItem(i) == hdlr && this->hdlrObjs.GetItem(i) == userObj)
+		Data::CallbackStorage<LocationHandler> cb = this->hdlrList.GetItem(i);
+		if (cb.func == hdlr && cb.userObj == userObj)
 		{
 			this->hdlrList.RemoveAt(i);
-			this->hdlrObjs.RemoveAt(i);
 			break;
 		}
 	}
@@ -380,7 +380,7 @@ Map::ILocationService::ServiceType IO::GPSNMEA::GetServiceType()
 	return Map::ILocationService::ST_NMEA;
 }
 
-void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, void *userObj)
+void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, AnyType userObj)
 {
 	this->cmdHdlrObj = userObj;
 	this->cmdHdlr = cmdHdlr;

@@ -50,8 +50,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::SMake> smake;
 
-			static void __stdcall OnProgSelChg(void *userObj);
-			static void __stdcall OnProgGroupSelChg(void *userObj);
+			static void __stdcall OnProgSelChg(AnyType userObj);
+			static void __stdcall OnProgGroupSelChg(AnyType userObj);
 		public:
 			AVIRSMakeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SMake> smake);
 			virtual ~AVIRSMakeForm();

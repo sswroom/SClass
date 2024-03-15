@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::JavaClass *clsFile;
 
-			static void __stdcall OnMethodsSelChg(void *userObj);
+			static void __stdcall OnMethodsSelChg(AnyType userObj);
 		public:
 			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile);
 			virtual ~AVIRJavaClassForm();

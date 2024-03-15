@@ -410,7 +410,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	return true;
 }
 
-void IO::MODBUSRTUMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, void *userObj)
+void IO::MODBUSRTUMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj)
 {
 	AddrResultCb *cb = this->cbMap.Get(addr);
 	if (cb)

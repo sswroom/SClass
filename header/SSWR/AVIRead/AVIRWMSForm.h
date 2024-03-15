@@ -37,12 +37,12 @@ namespace SSWR
 			Map::WebMapService *wms;
 			NotNullPtr<Math::CoordinateSystem> envCsys;
 
-			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnLayerSelChg(void *userObj);
-			static void __stdcall OnLayerCRSSelChg(void *userObj);
-			static void __stdcall OnMapImageTypeSelChg(void *userObj);
-			static void __stdcall OnInfoTypeSelChg(void *userObj);
+			static void __stdcall OnLoadClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnLayerSelChg(AnyType userObj);
+			static void __stdcall OnLayerCRSSelChg(AnyType userObj);
+			static void __stdcall OnMapImageTypeSelChg(AnyType userObj);
+			static void __stdcall OnInfoTypeSelChg(AnyType userObj);
 		public:
 			AVIRWMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCsys);
 			virtual ~AVIRWMSForm();

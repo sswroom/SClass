@@ -7,9 +7,9 @@
 #include "UI/GUITextBox.h"
 #include "UI/ListBoxLogger.h"
 
-void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
+void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 {
-	UI::ListBoxLogger *me = (UI::ListBoxLogger*)userObj;
+	NotNullPtr<UI::ListBoxLogger> me = userObj.GetNN<UI::ListBoxLogger>();
 
 	if (me->logCnt > 0)
 	{
@@ -86,9 +86,9 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 	}
 }
 
-void __stdcall UI::ListBoxLogger::OnListBoxSelChg(void *userObj)
+void __stdcall UI::ListBoxLogger::OnListBoxSelChg(AnyType userObj)
 {
-	UI::ListBoxLogger *me = (UI::ListBoxLogger*)userObj;
+	NotNullPtr<UI::ListBoxLogger> me = userObj.GetNN<UI::ListBoxLogger>();
 	NotNullPtr<UI::GUITextBox> txt;
 	if (me->txt.SetTo(txt))
 	{

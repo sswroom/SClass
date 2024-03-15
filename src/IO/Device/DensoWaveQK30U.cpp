@@ -327,7 +327,7 @@ Bool IO::Device::DensoWaveQK30U::ResetDefault()
 	return succ;
 }
 
-void IO::Device::DensoWaveQK30U::HandleCodeScanned(ScanHandler hdlr, void *userObj)
+void IO::Device::DensoWaveQK30U::HandleCodeScanned(ScanHandler hdlr, AnyType userObj)
 {
 	this->scanHdlr = hdlr;
 	this->scanHdlrObj = userObj;

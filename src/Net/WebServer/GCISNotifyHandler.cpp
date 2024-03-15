@@ -218,7 +218,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::W
 	return me->ResponseJSONStr(req, resp, 0, builder.Build());
 }
 
-Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, void *userObj, NotNullPtr<IO::LogTool> log)
+Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, AnyType userObj, NotNullPtr<IO::LogTool> log)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

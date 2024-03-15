@@ -2,9 +2,9 @@
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRWMTSForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWMTSURL->GetText(sb);
 	SDEL_CLASS(me->wmts);
@@ -32,18 +32,18 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
 	if (me->wmts && !me->wmts->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
 	if (me->wmts && !me->wmts->IsError())
 	{
 		me->wmts->SetLayer(me->cboLayer->GetSelectedIndex());
@@ -91,27 +91,27 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnMatrixSetSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnMatrixSetSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
 	if (me->wmts && !me->wmts->IsError())
 	{
 		me->wmts->SetMatrixSet(me->cboMatrixSet->GetSelectedIndex());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceTileTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceTileTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
 	if (me->wmts && !me->wmts->IsError())
 	{
 		me->wmts->SetResourceTileType(me->cboResourceTileType->GetSelectedIndex());
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceInfoTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceInfoTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
 	if (me->wmts && !me->wmts->IsError())
 	{
 		me->wmts->SetResourceInfoType(me->cboResourceInfoType->GetSelectedIndex());

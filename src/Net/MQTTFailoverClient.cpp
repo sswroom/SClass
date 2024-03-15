@@ -6,16 +6,17 @@ void Net::MQTTFailoverClient::FreeClient(ClientInfo *cliInfo)
 	MemFree(cliInfo);
 }
 
-void __stdcall Net::MQTTFailoverClient::OnMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &buff)
+void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff)
 {
-	ClientInfo *cliInfo = (ClientInfo *)userObj;
+	NotNullPtr<ClientInfo> cliInfo = userObj.GetNN<ClientInfo>();
 	if (cliInfo->me->foHdlr.GetCurrChannel() == cliInfo->client)
 	{
 		Sync::MutexUsage mutUsage(cliInfo->me->hdlrMut);
 		UOSInt i = cliInfo->me->hdlrList.GetCount();
 		while (i-- > 0)
 		{
-			cliInfo->me->hdlrList.GetItem(i)(cliInfo->me->hdlrObjList.GetItem(i), topic, buff);
+			Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr> cb = cliInfo->me->hdlrList.GetItem(i);
+			cb.func(cb.userObj, topic, buff);
 		}
 	}
 }
@@ -41,11 +42,10 @@ void Net::MQTTFailoverClient::AddClient(Text::CString host, UInt16 port, Text::C
 	this->foHdlr.AddChannel(cliInfo->client);
 }
 
-void Net::MQTTFailoverClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj)
+void Net::MQTTFailoverClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	this->hdlrList.Add(hdlr);
-	this->hdlrObjList.Add(hdlrObj);
+	this->hdlrList.Add({hdlr, hdlrObj});
 }
 
 Bool Net::MQTTFailoverClient::Subscribe(Text::CString topic)

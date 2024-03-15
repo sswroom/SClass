@@ -6,9 +6,9 @@
 #include "Text/StringBuilderUTF8.h"
 #define MYSQLVERSION CSTR("AVIRead-1.0")
 
-void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMySQLServerForm *me = (SSWR::AVIRead::AVIRMySQLServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -41,22 +41,22 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnUserAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnUserAddClicked(AnyType userObj)
 {
 
 }
 
-void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMySQLServerForm *me = (SSWR::AVIRead::AVIRMySQLServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLServerForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnTimerTick(AnyType userObj)
 {
-//	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRMySQLServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLServerForm>();
 }
 
 SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

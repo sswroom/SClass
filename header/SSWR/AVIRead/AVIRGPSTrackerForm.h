@@ -124,17 +124,17 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpNMEA;
 			NotNullPtr<UI::GUIListBox> lbNMEA;
 
-			static void __stdcall OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnMTKFirmwareClicked(void *userObj);
-			static void __stdcall OnMTKLogDownloadClicked(void *userObj);
-			static void __stdcall OnMTKLogDeleteClicked(void *userObj);
-			static void __stdcall OnMTKTestClicked(void *userObj);
-			static void __stdcall OnMTKFactoryResetClicked(void *userObj);
-			static void __stdcall OnDispOffClicked(void *userObj);
-			static void __stdcall OnTopMostChg(void *userObj, Bool newState);
-			static void __stdcall OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen);
-			static void __stdcall SignalFocusLost(void *userObj);
+			static void __stdcall OnGPSUpdate(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnMTKFirmwareClicked(AnyType userObj);
+			static void __stdcall OnMTKLogDownloadClicked(AnyType userObj);
+			static void __stdcall OnMTKLogDeleteClicked(AnyType userObj);
+			static void __stdcall OnMTKTestClicked(AnyType userObj);
+			static void __stdcall OnMTKFactoryResetClicked(AnyType userObj);
+			static void __stdcall OnDispOffClicked(AnyType userObj);
+			static void __stdcall OnTopMostChg(AnyType userObj, Bool newState);
+			static void __stdcall OnNMEALine(AnyType userObj, const UTF8Char *line, UOSInt lineLen);
+			static void __stdcall SignalFocusLost(AnyType userObj);
 			NotNullPtr<UI::GUIButton> NewDisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
 		public:
 #if defined(_MSC_VER)

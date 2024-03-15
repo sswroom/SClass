@@ -5,17 +5,17 @@
 #include "SSWR/AVIRead/AVIRThreadInfoForm.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->lbDetail->SetSelectedIndex(index);
 	me->tcMain->SetSelectedIndex(1);
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	ProcessInfo *procInfo = (ProcessInfo*)me->lbDetail->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	ProcessInfo *procInfo = (ProcessInfo*)me->lbDetail->GetSelectedItem().p;
 	SDEL_CLASS(me->currProcRes);
 	SDEL_CLASS(me->currProcObj);
 	if (procInfo == 0)
@@ -77,9 +77,9 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[12];
 	UTF8Char *sptr;
@@ -180,9 +180,9 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	if (me->currProc != 0)
 	{
 		Data::Timestamp kernelTime;
@@ -221,9 +221,9 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetailCurrClicked(void* userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetailCurrClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm* me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	OSInt i = me->procIds.SortedIndexOf((UInt32)Manage::Process::GetCurrProcId());
 	if (i >= 0)
 	{
@@ -231,42 +231,42 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetailCurrClicked(void* userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetModuleRefClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetModuleRefClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcModules();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcThreads();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UInt32 threadId = (UInt32)(UOSInt)me->lvDetThread->GetItem(index);
 	SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId);
 	frm.ShowDialog(me);
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapRefClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapRefClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcHeaps();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
-	UOSInt id = (UOSInt)me->lbDetHeap->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	UOSInt id = (UOSInt)me->lbDetHeap->GetSelectedItem().p;
 	me->UpdateProcHeapDetail((UInt32)id);
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UOSInt i = me->lvDetHeap->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
@@ -298,9 +298,9 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHandleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHandleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcHandles();
 }
 

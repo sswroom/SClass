@@ -6,9 +6,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTraffic", false);
@@ -25,9 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(sb);
 	Map::MapDrawLayer *lyr;
@@ -59,9 +59,9 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

@@ -34,8 +34,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtCurrWRate;
 			NotNullPtr<UI::GUIRealtimeLineChart> rlcWRate;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			Bool Start();
 			void Stop();
 			void TestSpeed();

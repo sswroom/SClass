@@ -87,7 +87,7 @@ Bool IO::CortexControl::IsError()
 	return this->stm->IsError();
 }
 
-void IO::CortexControl::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void IO::CortexControl::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	if (cmdType == (this->sendType | 0x80))
 	{
@@ -202,7 +202,7 @@ void IO::CortexControl::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int
 	}
 }
 
-void IO::CortexControl::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void IO::CortexControl::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

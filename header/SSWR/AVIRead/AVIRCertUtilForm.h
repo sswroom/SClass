@@ -58,13 +58,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSelfSignedCert;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnKeyGenerateClicked(void *userObj);
-			static void __stdcall OnKeyViewClicked(void *userObj);
-			static void __stdcall OnKeySaveClicked(void *userObj);
-			static void __stdcall OnSANAddClicked(void *userObj);
-			static void __stdcall OnSANClearClicked(void *userObj);
-			static void __stdcall OnCSRGenerateClicked(void *userObj);
-			static void __stdcall OnSelfSignedCertClicked(void *userObj);
+			static void __stdcall OnKeyGenerateClicked(AnyType userObj);
+			static void __stdcall OnKeyViewClicked(AnyType userObj);
+			static void __stdcall OnKeySaveClicked(AnyType userObj);
+			static void __stdcall OnSANAddClicked(AnyType userObj);
+			static void __stdcall OnSANClearClicked(AnyType userObj);
+			static void __stdcall OnCSRGenerateClicked(AnyType userObj);
+			static void __stdcall OnSelfSignedCertClicked(AnyType userObj);
 
 			Bool GetNames(Crypto::Cert::CertNames *names);
 			void DisplayKeyDetail();

@@ -10,9 +10,9 @@
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCameraControlForm *me = (SSWR::AVIRead::AVIRCameraControlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
 	Data::ArrayList<UOSInt> selIndices;
 	me->lvFiles->GetSelectedIndices(&selIndices);
 	if (selIndices.GetCount() <= 0)
@@ -98,9 +98,9 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRCameraControlForm *me = (SSWR::AVIRead::AVIRCameraControlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
 	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(index);
 	if (file == 0)
 		return;
@@ -145,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCameraControlForm *me = (SSWR::AVIRead::AVIRCameraControlForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
 	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetSelectedItem();
 	if (file == 0)
 		return;

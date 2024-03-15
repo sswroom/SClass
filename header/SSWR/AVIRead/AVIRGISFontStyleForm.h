@@ -37,13 +37,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnEditStyle;
 			SSWR::AVIRead::AVIRFontSelector *fsFonts;
 
-			static void __stdcall AddStyleClicked(void *userObj);
-			static void __stdcall RemoveStyleClicked(void *userObj);
-			static void __stdcall EditStyleClicked(void *userObj);
-			static void __stdcall FontsSelectedChg(void *userObj);
-			static void __stdcall FontsDoubleClicked(void *userObj);
-			static void __stdcall OKClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
+			static void __stdcall AddStyleClicked(AnyType userObj);
+			static void __stdcall RemoveStyleClicked(AnyType userObj);
+			static void __stdcall EditStyleClicked(AnyType userObj);
+			static void __stdcall FontsSelectedChg(AnyType userObj);
+			static void __stdcall FontsDoubleClicked(AnyType userObj);
+			static void __stdcall OKClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
 
 			void UpdatePreview();
 		public:

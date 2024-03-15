@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMACManagerEntryForm *me = (SSWR::AVIRead::AVIRMACManagerEntryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMACManagerEntryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerEntryForm>();
 	Text::StringBuilderUTF8 sb;
 	me->cboName->GetText(sb);
 	sb.Trim();
@@ -25,9 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMACManagerEntryForm *me = (SSWR::AVIRead::AVIRMACManagerEntryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMACManagerEntryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerEntryForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

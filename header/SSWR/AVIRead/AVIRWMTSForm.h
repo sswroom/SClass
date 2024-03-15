@@ -34,12 +34,12 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Map::WebMapTileServiceSource *wmts;
 
-			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnLayerSelChg(void *userObj);
-			static void __stdcall OnMatrixSetSelChg(void *userObj);
-			static void __stdcall OnResourceTileTypeSelChg(void *userObj);
-			static void __stdcall OnResourceInfoTypeSelChg(void *userObj);
+			static void __stdcall OnLoadClicked(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnLayerSelChg(AnyType userObj);
+			static void __stdcall OnMatrixSetSelChg(AnyType userObj);
+			static void __stdcall OnResourceTileTypeSelChg(AnyType userObj);
+			static void __stdcall OnResourceInfoTypeSelChg(AnyType userObj);
 		public:
 			AVIRWMTSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRWMTSForm();

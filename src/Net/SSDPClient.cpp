@@ -4,9 +4,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLReader.h"
 
-void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::SSDPClient *me = (Net::SSDPClient*)userData;
+	NotNullPtr<Net::SSDPClient> me = userData.GetNN<Net::SSDPClient>();
 	if (Text::StrStartsWith(buff, (const UTF8Char*)"HTTP/1.1 200 OK"))
 	{
 		if (addr->addrType == Net::AddrType::IPv4)

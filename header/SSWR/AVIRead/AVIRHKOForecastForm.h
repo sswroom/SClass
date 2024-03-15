@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtGeneralSituation;
 			NotNullPtr<UI::GUIListView> lvForecast;
 
-			static void __stdcall OnReloadClicked(void *userObj);
+			static void __stdcall OnReloadClicked(AnyType userObj);
 			void Reload(Net::HKOWeather::Language lang);
 		public:
 			AVIRHKOForecastForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

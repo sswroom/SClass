@@ -55,8 +55,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvData;
 
 		private:
-			static void __stdcall OnStreamClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStreamClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void StopStream(Bool clearUI);
 
 		public:

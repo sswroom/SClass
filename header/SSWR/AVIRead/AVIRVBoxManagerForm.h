@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblStateSince;
 			NotNullPtr<UI::GUITextBox> txtStateSince;
 
-			static void __stdcall OnVMSSelChg(void *userObj);
+			static void __stdcall OnVMSSelChg(AnyType userObj);
 			void UpdateVMInfo();
 		public:
 			AVIRVBoxManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

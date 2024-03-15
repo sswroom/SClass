@@ -27,10 +27,10 @@ namespace SSWR
 			static void AddFilters(NotNullPtr<IO::FileSelector> selector);
 			Bool ParseFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> output);
 
-			static void __stdcall OnBrowseClicked(void *userObj);
+			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnParseToTextClicked(void *userObj);
-			static void __stdcall OnParseToFileClicked(void *userObj);
+			static void __stdcall OnParseToTextClicked(AnyType userObj);
+			static void __stdcall OnParseToFileClicked(AnyType userObj);
 
 		public:
 			AVIRWellFormatForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

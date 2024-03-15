@@ -38,11 +38,11 @@ namespace SSWR
 			Double dispDist;
 
 		private:
-			static void __stdcall OnTypeSelChg(void *userObj, Bool newState);
-			static void __stdcall OnMeasureSelChg(void *userObj, Bool newState);
-			static void __stdcall OnDistanceUnitChg(void *userObj);
-			static Bool __stdcall OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnTypeSelChg(AnyType userObj, Bool newState);
+			static void __stdcall OnMeasureSelChg(AnyType userObj, Bool newState);
+			static void __stdcall OnDistanceUnitChg(AnyType userObj);
+			static Bool __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			void UpdateDistDisp();
 
 		public:
@@ -51,6 +51,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

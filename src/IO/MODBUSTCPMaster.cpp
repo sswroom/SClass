@@ -365,7 +365,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	return true;
 }
 
-void IO::MODBUSTCPMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, void *userObj)
+void IO::MODBUSTCPMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj)
 {
 	AddrResultCb *cb = this->cbMap.Get(addr);
 	if (cb)

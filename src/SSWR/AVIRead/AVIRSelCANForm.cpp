@@ -6,9 +6,9 @@
 #include "Text/UTF8Reader.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelCANForm *me = (SSWR::AVIRead::AVIRSelCANForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
 	SSWR::AVIRead::AVIRSelStreamForm dlg(0, me->ui, me->core, false, me->ssl, me->core->GetLog());
 	if (dlg.ShowDialog(me) == DR_OK)
 	{
@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelCANForm *me = (SSWR::AVIRead::AVIRSelCANForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AXCANFile", false);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
 	if (dlg->ShowDialog(me->GetHandle()))

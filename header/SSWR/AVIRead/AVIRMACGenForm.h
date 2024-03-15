@@ -31,8 +31,8 @@ namespace SSWR
 
 			Data::BTreeUTF8Map<Data::ArrayList<Net::MACInfo::MACEntry*>*> *macMap;
 
-			static void __stdcall OnGenerateClicked(void *userObj);
-			static void __stdcall OnAdapterSetClicked(void *userObj);
+			static void __stdcall OnGenerateClicked(AnyType userObj);
+			static void __stdcall OnAdapterSetClicked(AnyType userObj);
 			static OSInt __stdcall ListCompare(Data::ArrayList<Net::MACInfo::MACEntry*> *list1, Data::ArrayList<Net::MACInfo::MACEntry*> *list2);
 		public:
 			AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -40,6 +40,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

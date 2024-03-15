@@ -3,9 +3,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProxyServerForm *me = (SSWR::AVIRead::AVIRProxyServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
 	if (me->svr == 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -36,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProxyServerForm *me = (SSWR::AVIRead::AVIRProxyServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{

@@ -7,7 +7,7 @@
 
 void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::EXEFileAnalyse *me = (IO::FileAnalyse::EXEFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::EXEFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EXEFileAnalyse>();
 	UInt8 buff[256];
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
 	UInt32 val;

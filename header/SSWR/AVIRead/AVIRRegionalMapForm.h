@@ -20,8 +20,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvMaps;
 			Map::MapDrawLayer *layer;
 			
-			static void __stdcall OnMapsSelChg(void *userObj);
-			static void __stdcall OnMapsDblClk(void *userObj, UOSInt index);
+			static void __stdcall OnMapsSelChg(AnyType userObj);
+			static void __stdcall OnMapsDblClk(AnyType userObj, UOSInt index);
 		public:
 			AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCSys);
 			virtual ~AVIRRegionalMapForm();

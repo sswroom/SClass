@@ -10,9 +10,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	if (me->svr)
 	{
 		return;
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
 				me->svr->SetRequestLog(me->reqLog);
 				NotNullPtr<UI::ListBoxLogger> logger;
-				NEW_CLASSNN(logger, UI::ListBoxLogger(*me, me->lbLog, 500, true));
+				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
@@ -107,9 +107,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -128,9 +128,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(void *userObj
 	me->btnSSLCert->SetEnabled(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -139,9 +139,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
@@ -220,15 +220,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	me->reqLog->Use(mutUsage);
-	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem();
+	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem().p;
 	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 	log = me->reqLog->GetEntry(i);
@@ -252,9 +252,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	me->txtAccess->SetText(sb.ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{

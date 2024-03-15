@@ -198,25 +198,25 @@ void SSWR::AVIRead::AVIRBenchmarkForm::ClearResult()
 	this->resultList->Clear();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBenchmarkForm *me = (SSWR::AVIRead::AVIRBenchmarkForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	if (me->processing)
 		return;
 	me->StartTest(128, 64 << 20); //64 MB
 }
 
-void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnQuickClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnQuickClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBenchmarkForm *me = (SSWR::AVIRead::AVIRBenchmarkForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	if (me->processing)
 		return;
 	me->StartTest(64 << 20, 64 << 20); //64 MB
 }
 
-void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBenchmarkForm *me = (SSWR::AVIRead::AVIRBenchmarkForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;

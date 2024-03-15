@@ -18,16 +18,16 @@ IO::ProtoHdlr::ProtoDUploadHandler::~ProtoDUploadHandler()
 	this->crc.Delete();
 }
 
-void *IO::ProtoHdlr::ProtoDUploadHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoDUploadHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoDUploadHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoDUploadHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoDUploadHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoDUploadHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];
@@ -62,7 +62,7 @@ UOSInt IO::ProtoHdlr::ProtoDUploadHandler::ParseProtocol(NotNullPtr<IO::Stream> 
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoDUploadHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoDUploadHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)buff = *(Int16*)"DU";
 	WriteInt16(&buff[2], (Int16)cmdSize + 8);

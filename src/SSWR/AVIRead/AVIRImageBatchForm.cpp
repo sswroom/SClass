@@ -15,9 +15,9 @@ typedef enum
 	MNU_SEL_ALL
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	Text::String *path;
 	path = me->icMain->GetFolder();
 	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
@@ -32,9 +32,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (fileName.leng == 0)
 	{
 		SDEL_CLASS(me->dispImage);
@@ -70,9 +70,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UOSInt newPos)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
@@ -111,9 +111,9 @@ Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(AnyType userObj,
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(void *userObj, UOSInt finCnt)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(AnyType userObj, UOSInt finCnt)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->prgMain->ProgressUpdate(finCnt, me->selCnt);
 	if (finCnt >= me->selCnt)
 	{
@@ -121,9 +121,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(void *userObj, UI::GUIControl::GUIKey key)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(AnyType userObj, UI::GUIControl::GUIKey key)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (key == UI::GUIControl::GK_LEFT)
 	{
 		UOSInt currPos = me->hsbContr->GetPos();
@@ -164,15 +164,15 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(void *userObj, UI::G
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnBrightResetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnBrightResetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->hsbBright->SetPos(1000);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->hsbGamma->SetPos(100);
 }
 

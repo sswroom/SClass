@@ -14,9 +14,9 @@
 #include "UI/Clipboard.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, Bool newValue)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(AnyType userObj, Bool newValue)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	if (me->inited)
 	{
 		me->ClearItems(true);
@@ -31,15 +31,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcCboChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcCboChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	me->ClearItems(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestRadChanged(void *userObj, Bool newValue)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestRadChanged(AnyType userObj, Bool newValue)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	if (me->inited)
 	{
 		if (newValue)
@@ -53,15 +53,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestRadChanged(void *userObj,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestCboChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestCboChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	me->UpdateList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	Text::StringBuilderUTF8 sb;
 	Double x;
 	Double y;
@@ -88,15 +88,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
 	me->UpdateList();
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnClearClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnClearClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	me->ClearItems(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	UOSInt i = 0;
 	UOSInt j = me->lvCoord->GetCount();
 	if (j == 0)
@@ -135,9 +135,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *strBuff;
 	UTF8Char *sptr;
@@ -350,9 +350,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	DEL_CLASS(db);
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->lvCoord->GetSubItem(itemIndex, 0, sb);

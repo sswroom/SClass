@@ -6,11 +6,11 @@
 #include "SSWR/AVIRead/AVIRUSBDeviceForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRUSBDeviceForm *me = (SSWR::AVIRead::AVIRUSBDeviceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRUSBDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUSBDeviceForm>();
 	IO::USBInfo *usb;
-	usb = (IO::USBInfo*)me->lbDevices->GetSelectedItem();
+	usb = (IO::USBInfo*)me->lbDevices->GetSelectedItem().p;
 	if (usb == 0)
 	{
 		me->txtVendorId->SetText(CSTR(""));

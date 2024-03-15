@@ -4,15 +4,15 @@
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	me->player->PBStop();
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
 	me->player->CloseFile();
 	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -52,35 +52,35 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType use
 	me->ui->ShowMsgOK(CSTR("Error in loading files"), CSTR("Console Media Player"), me);
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	me->player->SetRotateType((Media::RotateType)(OSInt)me->cboRotate->GetSelectedItem());
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(void *userObj, Bool newVal)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(AnyType userObj, Bool newVal)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	me->player->SetSurfaceBugMode(me->chkSurfaceBug->IsChecked());
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
 		me->player->GetVideoRenderer()->SetSrcYUVType((Media::ColorProfile::YUVType)(OSInt)me->cboYUVType->GetSelectedItem());
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
 		me->player->GetVideoRenderer()->SetSrcRGBType((Media::CS::TransferType)(OSInt)me->cboRGBTrans->GetSelectedItem());
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
 		me->player->GetVideoRenderer()->SetSrcPrimaries((Media::ColorProfile::ColorType)(OSInt)me->cboColorPrimaries->GetSelectedItem());
 }

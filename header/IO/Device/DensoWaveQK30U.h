@@ -17,7 +17,7 @@ namespace IO
 			UInt32 scanDelay;
 
 			ScanHandler scanHdlr;
-			void *scanHdlrObj;
+			AnyType scanHdlrObj;
 			Sync::Mutex reqMut;
 			Sync::Mutex recvMut;
 			UInt8 *recvBuff;
@@ -43,7 +43,7 @@ namespace IO
 			virtual void SetCurrMode(ModeType currMode);
 			virtual Bool SoftReset();
 			virtual Bool ResetDefault();
-			virtual void HandleCodeScanned(ScanHandler hdlr, void *userObj);
+			virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj);
 
 			virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList);
 			virtual Text::CString GetCommandName(DeviceCommand dcmd);

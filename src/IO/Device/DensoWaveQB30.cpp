@@ -11,7 +11,7 @@
 
 void __stdcall IO::Device::DensoWaveQB30::RecvThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::Device::DensoWaveQB30 *me = (IO::Device::DensoWaveQB30*)thread->GetUserObj();
+	NotNullPtr<IO::Device::DensoWaveQB30> me = thread->GetUserObj().GetNN<IO::Device::DensoWaveQB30>();
 	UInt8 buff[256];
 	UTF8Char *sbuff;
 	UOSInt recvSize;
@@ -324,7 +324,7 @@ Bool IO::Device::DensoWaveQB30::ResetDefault()
 	return succ;
 }
 
-void IO::Device::DensoWaveQB30::HandleCodeScanned(ScanHandler hdlr, void *userObj)
+void IO::Device::DensoWaveQB30::HandleCodeScanned(ScanHandler hdlr, AnyType userObj)
 {
 	this->scanHdlr = hdlr;
 	this->scanHdlrObj = userObj;

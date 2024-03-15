@@ -8,7 +8,7 @@
 
 void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::PCapFileAnalyse *me = (IO::FileAnalyse::PCapFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::PCapFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 thisSize;

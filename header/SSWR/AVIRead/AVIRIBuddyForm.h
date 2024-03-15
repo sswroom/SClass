@@ -37,19 +37,19 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnWingUp;
 			NotNullPtr<UI::GUIButton> btnWingDown;
 
-			static void __stdcall OnHeadChanged(void *userObj);
-			static void __stdcall OnHeartChanged(void *userObj, Bool newState);
-			static void __stdcall OnTurnLeftDown(void *userObj, Bool isDown);
-			static void __stdcall OnTurnRightDown(void *userObj, Bool isDown);
-			static void __stdcall OnWingUpDown(void *userObj, Bool isDown);
-			static void __stdcall OnWingDownDown(void *userObj, Bool isDown);
-			static void __stdcall OnDevChanged(void *userObj);
+			static void __stdcall OnHeadChanged(AnyType userObj);
+			static void __stdcall OnHeartChanged(AnyType userObj, Bool newState);
+			static void __stdcall OnTurnLeftDown(AnyType userObj, Bool isDown);
+			static void __stdcall OnTurnRightDown(AnyType userObj, Bool isDown);
+			static void __stdcall OnWingUpDown(AnyType userObj, Bool isDown);
+			static void __stdcall OnWingDownDown(AnyType userObj, Bool isDown);
+			static void __stdcall OnDevChanged(AnyType userObj);
 		public:
 			AVIRIBuddyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRIBuddyForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

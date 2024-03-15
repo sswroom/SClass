@@ -10,7 +10,7 @@
 
 void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::PNGFileAnalyse *me = (IO::FileAnalyse::PNGFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::PNGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PNGFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;

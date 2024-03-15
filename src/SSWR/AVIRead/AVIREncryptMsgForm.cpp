@@ -168,9 +168,9 @@ void SSWR::AVIRead::AVIREncryptMsgForm::ShowOutput(const UInt8 *buff, UOSInt buf
 	DEL_CLASS(enc);
 }
 
-void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREncryptMsgForm *me = (SSWR::AVIRead::AVIREncryptMsgForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
 	Crypto::Encrypt::ICrypto *crypto = me->InitCrypto();
 	if (crypto)
 	{
@@ -190,9 +190,9 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIREncryptMsgForm *me = (SSWR::AVIRead::AVIREncryptMsgForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
 	Crypto::Encrypt::ICrypto *crypto = me->InitCrypto();
 	if (crypto)
 	{

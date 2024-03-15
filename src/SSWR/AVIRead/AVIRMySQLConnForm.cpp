@@ -3,14 +3,14 @@
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sb4;
 	Text::StringBuilderUTF8 sbPort;
-	SSWR::AVIRead::AVIRMySQLConnForm *me = (SSWR::AVIRead::AVIRMySQLConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLConnForm>();
 	me->txtServer->GetText(sb);
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
@@ -42,9 +42,9 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMySQLConnForm *me = (SSWR::AVIRead::AVIRMySQLConnForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLConnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

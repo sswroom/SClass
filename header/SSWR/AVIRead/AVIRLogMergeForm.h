@@ -25,16 +25,16 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOFile;
 			NotNullPtr<UI::GUIButton> btnConvert;
 
-			static void __stdcall OnFile1Clicked(void *userObj);
-			static void __stdcall OnFile2Clicked(void *userObj);
-			static void __stdcall OnOFileClicked(void *userObj);
-			static void __stdcall OnConvertClicked(void *userObj);
+			static void __stdcall OnFile1Clicked(AnyType userObj);
+			static void __stdcall OnFile2Clicked(AnyType userObj);
+			static void __stdcall OnOFileClicked(AnyType userObj);
+			static void __stdcall OnConvertClicked(AnyType userObj);
 		public:
 			AVIRLogMergeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogMergeForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

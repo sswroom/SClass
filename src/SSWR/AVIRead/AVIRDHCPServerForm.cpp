@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDHCPServerForm *me = (SSWR::AVIRead::AVIRDHCPServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -135,9 +135,9 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDHCPServerForm *me = (SSWR::AVIRead::AVIRDHCPServerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
 	if (me->svr)
 	{
 		UTF8Char sbuff[64];

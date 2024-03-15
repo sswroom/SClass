@@ -20,7 +20,7 @@ namespace IO
 			UInt16 GetDICountByHolding(UInt16 diNum);
 			Bool ClearDICount(UInt16 diNum);
 
-			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj);
+			static void GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, AnyType userObj);
 		};
 	}
 }

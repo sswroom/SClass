@@ -9,9 +9,9 @@
 
 #include <stdio.h>
 
-void __stdcall Net::DHCPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::DHCPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::DHCPServer *me = (Net::DHCPServer*)userData;
+	NotNullPtr<Net::DHCPServer> me = userData.GetNN<Net::DHCPServer>();
 	UInt8 repBuff[512];
 	Net::SocketUtil::AddressInfo destAddr;
 	if (dataSize >= 240 && buff[0] == 1 && buff[1] == 1 && buff[2] == 6 && ReadMUInt32(&buff[236]) == 0x63825363)

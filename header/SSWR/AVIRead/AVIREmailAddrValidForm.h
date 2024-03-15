@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::Email::EmailValidator *validator;
 
-			static void __stdcall OnValidateClicked(void *userObj);
+			static void __stdcall OnValidateClicked(AnyType userObj);
 		public:
 			AVIREmailAddrValidForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailAddrValidForm();

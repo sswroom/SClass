@@ -7,9 +7,9 @@
 #include <stdio.h>
 #endif
 
-void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
 	if (ctrl)
 	{
@@ -66,9 +66,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	DB::DBManagerCtrl *db = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
 	if (db == 0)
 		return;
@@ -102,9 +102,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboDestDB->GetSelectedItem();
 	if (ctrl)
 	{
@@ -137,9 +137,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	if (me->dataConn == 0)
 	{
 		return;

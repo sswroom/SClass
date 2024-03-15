@@ -4,16 +4,16 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISGroupQueryForm *me = (SSWR::AVIRead::AVIRGISGroupQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
 	me->downPos = scnPos;
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISGroupQueryForm *me = (SSWR::AVIRead::AVIRGISGroupQueryForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
 	if (me->downPos == scnPos)
 	{
 		Math::Coord2DDbl mapEnvPos;

@@ -70,11 +70,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbLog;
 			NotNullPtr<UI::GUITextBox> txtLog;
 
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnSSLCertClicked(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnTopicUpdate(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnSSLCertClicked(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnTopicUpdate(AnyType userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 
 			void ServerStop();
 			void ClearCACerts();

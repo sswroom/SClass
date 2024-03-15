@@ -8,7 +8,7 @@
 
 void __stdcall Net::SocketMonitor::DataThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::SocketMonitor *me = (Net::SocketMonitor*)thread->GetUserObj();
+	NotNullPtr<Net::SocketMonitor> me = thread->GetUserObj().GetNN<Net::SocketMonitor>();
 	{
 		UInt8 *buff = MemAlloc(UInt8, 65536);
 		while (!thread->IsStopping())

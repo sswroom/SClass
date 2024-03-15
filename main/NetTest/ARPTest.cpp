@@ -10,7 +10,7 @@
 IO::ConsoleWriter *console;
 NotNullPtr<Net::SocketFactory> sockf;
 
-void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
+void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];

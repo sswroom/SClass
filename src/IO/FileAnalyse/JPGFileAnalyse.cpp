@@ -104,7 +104,7 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 
 void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::JPGFileAnalyse *me = (IO::FileAnalyse::JPGFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::JPGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::JPGFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;

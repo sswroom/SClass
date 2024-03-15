@@ -2,9 +2,9 @@
 #include "IO/GPIOPin.h"
 #include "SSWR/AVIRead/AVIRSelIOPinForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelIOPinForm *me = (SSWR::AVIRead::AVIRSelIOPinForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
 	SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)(OSInt)me->cboPinType->GetSelectedItem();
 
 	if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
@@ -56,15 +56,15 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelIOPinForm *me = (SSWR::AVIRead::AVIRSelIOPinForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSelIOPinForm *me = (SSWR::AVIRead::AVIRSelIOPinForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
 	UOSInt i = me->cboPinType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{

@@ -3,9 +3,9 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRBatchRenameForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBatchRenameForm *me = (SSWR::AVIRead::AVIRBatchRenameForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
@@ -48,9 +48,9 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(void 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBatchRenameForm *me = (SSWR::AVIRead::AVIRBatchRenameForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;

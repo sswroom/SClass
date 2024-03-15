@@ -59,9 +59,9 @@ namespace SSWR
 			UInt64 stm2DataSize;
 			UInt64 stm2LastSize;
 		private:
-			static void __stdcall OnStream1Clicked(void *userObj);
-			static void __stdcall OnStream2Clicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStream1Clicked(AnyType userObj);
+			static void __stdcall OnStream2Clicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall Stream1Thread(void *userObj);
 			static UInt32 __stdcall Stream2Thread(void *userObj);
 

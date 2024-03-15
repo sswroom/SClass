@@ -8,9 +8,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPTestForm *me = (SSWR::AVIRead::AVIRTCPTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	if (me->threadCurrCnt > 0)
 	{
 		me->StopThreads();
@@ -68,10 +68,10 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
 {
-	SSWR::AVIRead::AVIRTCPTestForm *me = (SSWR::AVIRead::AVIRTCPTestForm*)thread->GetUserObj();
+	NotNullPtr<SSWR::AVIRead::AVIRTCPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	Net::TCPClient *cli = 0;
 //	UInt8 buff[2048];
-//	void *reqData;
+//	AnyType reqData;
 	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
 	while (!thread->IsStopping())
 	{
@@ -115,9 +115,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NotNullPtr<Sync::Th
 	Sync::Interlocked::DecrementU32(me->threadCurrCnt);
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPTestForm *me = (SSWR::AVIRead::AVIRTCPTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);

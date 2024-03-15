@@ -128,7 +128,7 @@ Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt>
 	return s;
 }
 
-void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, void *userObj)
+void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, AnyType userObj)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

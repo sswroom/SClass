@@ -16,9 +16,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -164,9 +164,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
@@ -207,9 +207,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(void *
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
 	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
@@ -242,9 +242,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(void *u
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -268,9 +268,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(void *u
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -319,9 +319,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(void *userO
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(void *userObj, Text::CString topic, const Data::ByteArrayR &message)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message)
 {
-	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	Sync::Interlocked::IncrementU64(me->totalCount);
 }
 

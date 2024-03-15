@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRJWTParserForm.h"
 #include "Text/JSON.h"
 
-void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRJWTParserForm *me = (SSWR::AVIRead::AVIRJWTParserForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRJWTParserForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJWTParserForm>();
 	Text::StringBuilderUTF8 sbJWT;
 	Text::StringBuilderUTF8 sbErr;
 	Bool succ = false;

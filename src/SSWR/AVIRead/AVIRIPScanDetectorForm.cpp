@@ -3,9 +3,9 @@
 #include "SSWR/AVIRead/AVIRIPScanDetectorForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 *hwAddr, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 *hwAddr, AnyType userObj)
 {
-	SSWR::AVIRead::AVIRIPScanDetectorForm *me = (SSWR::AVIRead::AVIRIPScanDetectorForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRIPScanDetectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanDetectorForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("IP Scan detected from "));
 	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
@@ -18,9 +18,9 @@ void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 
 	me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
-void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnLogSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnLogSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRIPScanDetectorForm *me = (SSWR::AVIRead::AVIRIPScanDetectorForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRIPScanDetectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanDetectorForm>();
 	NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(s->ToCString());
 	s->Release();

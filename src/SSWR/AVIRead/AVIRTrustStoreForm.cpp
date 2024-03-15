@@ -12,9 +12,9 @@ public:
 	}
 };
 
-void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRTrustStoreForm *me = (SSWR::AVIRead::AVIRTrustStoreForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTrustStoreForm>();
 	Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)me->lvTrustCert->GetItem(index);
 	if (cert)
 	{

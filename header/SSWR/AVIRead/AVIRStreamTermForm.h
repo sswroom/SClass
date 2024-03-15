@@ -56,11 +56,11 @@ namespace SSWR
 			Bool remoteClosed;
 
 		private:
-			static void __stdcall OnStreamClicked(void *userObj);
-			static void __stdcall OnSendClicked(void *userObj);
-			static void __stdcall OnRecvTypeChg(void *userObj);
-			static void __stdcall OnSendTypeChg(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStreamClicked(AnyType userObj);
+			static void __stdcall OnSendClicked(AnyType userObj);
+			static void __stdcall OnRecvTypeChg(AnyType userObj);
+			static void __stdcall OnSendTypeChg(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall RecvThread(void *userObj);
 
 			void StopStream(Bool clearUI);
@@ -73,6 +73,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -51,9 +51,9 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->OpenItem(itemIndex);
 	if (!me->playlist->IsPlaying())
 	{
@@ -61,21 +61,21 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(void *userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->StartPlayback();
 }
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnEndClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnEndClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->StopPlayback();
 }
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFSClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFSClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPlaylistForm *me = (SSWR::AVIRead::AVIRPlaylistForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->vbdMain->SwitchFullScreen(true, true);
 }
 

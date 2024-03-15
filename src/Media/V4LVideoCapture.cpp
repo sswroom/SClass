@@ -15,7 +15,7 @@
 
 void __stdcall Media::V4LVideoCapture::PlayThread(NotNullPtr<Sync::Thread> thread)
 {
-	Media::V4LVideoCapture *me = (Media::V4LVideoCapture*)thread->GetUserObj();
+	NotNullPtr<Media::V4LVideoCapture> me = thread->GetUserObj().GetNN<Media::V4LVideoCapture>();
 	Sync::ThreadUtil::SetName(CSTR("V4LVideoCap"));
 	struct timeval tv;
 	fd_set fds;

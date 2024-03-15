@@ -2,9 +2,9 @@
 #include "SSWR/AVIRead/AVIRDragDropViewerForm.h"
 #include "Text/MyStringW.h"
 
-void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRDragDropViewerForm *me = (SSWR::AVIRead::AVIRDragDropViewerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRDragDropViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDragDropViewerForm>();
 	NotNullPtr<Text::String> s;
 	if (me->lbType->GetSelectedItemTextNew().SetTo(s))
 	{

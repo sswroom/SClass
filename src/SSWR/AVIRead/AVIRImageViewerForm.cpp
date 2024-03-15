@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, D
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
 		NotNullPtr<IO::StreamData> fd;
@@ -106,9 +106,9 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
 		NotNullPtr<IO::StreamData> fd;
@@ -170,9 +170,9 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->noMoveCount++ > 4 && !me->hideCursor)
 	{
 		me->hideCursor = true;
@@ -180,9 +180,9 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->imgTimeoutTick != 0 && me->imgList != 0)
 	{
 		Data::DateTime dt;
@@ -204,9 +204,9 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->hideCursor)
 	{
 		me->ShowMouseCursor(true);

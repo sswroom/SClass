@@ -5,9 +5,9 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
+void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
-	IO::MODBUSDevice *me = (IO::MODBUSDevice*)userObj;
+	NotNullPtr<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
 	if (funcCode == 4)
 	{
 		if (me->reqBResult)
@@ -136,9 +136,9 @@ void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const
 	}
 }
 
-void __stdcall IO::MODBUSDevice::SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
+void __stdcall IO::MODBUSDevice::SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
 {
-	IO::MODBUSDevice *me = (IO::MODBUSDevice*)userObj;
+	NotNullPtr<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
 	if (funcCode == 5 || funcCode == 6 || funcCode == 15 || funcCode == 16)
 	{
 		if (me->reqSetStartAddr == startAddr)

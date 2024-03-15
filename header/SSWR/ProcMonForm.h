@@ -56,11 +56,11 @@ namespace SSWR
 		void SetByProcId(ProgInfo *prog, UOSInt procId);
 		void LoadProgList();
 		void SaveProgList();
-		static void __stdcall OnProgSelChange(void *userObj);
-		static void __stdcall OnProcIdClicked(void *userObj);
-		static void __stdcall OnProgAddClicked(void *userObj);
-		static void __stdcall OnLogSelChg(void *userObj);
-		static void __stdcall OnTimerTick(void *userObj);
+		static void __stdcall OnProgSelChange(AnyType userObj);
+		static void __stdcall OnProcIdClicked(AnyType userObj);
+		static void __stdcall OnProgAddClicked(AnyType userObj);
+		static void __stdcall OnLogSelChg(AnyType userObj);
+		static void __stdcall OnTimerTick(AnyType userObj);
 	public:
 		ProcMonForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui);
 		virtual ~ProcMonForm();

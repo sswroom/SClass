@@ -52,15 +52,15 @@ namespace SSWR
 			Data::ArrayList<Double> zList;
 			Bool inited;
 
-			static void __stdcall OnSrcRadChanged(void *userObj, Bool newValue);
-			static void __stdcall OnSrcCboChanged(void *userObj);
-			static void __stdcall OnDestRadChanged(void *userObj, Bool newValue);
-			static void __stdcall OnDestCboChanged(void *userObj);
-			static void __stdcall OnAddClicked(void *userObj);
-			static void __stdcall OnClearClicked(void *userObj);
-			static void __stdcall OnCopyAllClicked(void *userObj);
-			static void __stdcall OnConvFileClicked(void *userObj);
-			static void __stdcall OnCoordDblClk(void *userObj, UOSInt itemIndex);
+			static void __stdcall OnSrcRadChanged(AnyType userObj, Bool newValue);
+			static void __stdcall OnSrcCboChanged(AnyType userObj);
+			static void __stdcall OnDestRadChanged(AnyType userObj, Bool newValue);
+			static void __stdcall OnDestCboChanged(AnyType userObj);
+			static void __stdcall OnAddClicked(AnyType userObj);
+			static void __stdcall OnClearClicked(AnyType userObj);
+			static void __stdcall OnCopyAllClicked(AnyType userObj);
+			static void __stdcall OnConvFileClicked(AnyType userObj);
+			static void __stdcall OnCoordDblClk(AnyType userObj, UOSInt itemIndex);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 
 			void ClearItems(Bool updateList);

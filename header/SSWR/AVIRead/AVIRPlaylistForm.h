@@ -35,10 +35,10 @@ namespace SSWR
 			const WChar *currFileName;
 		private:
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnPlaylistDblClk(void *userObj, UOSInt itemIndex);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnEndClicked(void *userObj);
-			static void __stdcall OnFSClicked(void *userObj);
+			static void __stdcall OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnEndClicked(AnyType userObj);
+			static void __stdcall OnFSClicked(AnyType userObj);
 			void UpdatePlaylist();
 		public:
 			AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
@@ -47,6 +47,6 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

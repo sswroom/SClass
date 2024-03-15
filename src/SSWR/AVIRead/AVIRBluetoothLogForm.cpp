@@ -13,9 +13,9 @@
 #include "Text/UTF8Writer.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BluetoothLogFile", false);
 	dlg->SetAllowMultiSel(true);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	if (me->macList.Store())
 	{
 		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
@@ -51,9 +51,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	const IO::BTDevLog::DevEntry *log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
@@ -83,13 +83,13 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentSelChg(AnyType userObj)
 {
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnUnkOnlyChkChg(void *userObj, Bool checked)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnUnkOnlyChkChg(AnyType userObj, Bool checked)
 {
-	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	me->LogUIUpdate();	
 }
 

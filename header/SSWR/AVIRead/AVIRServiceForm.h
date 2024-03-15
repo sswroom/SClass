@@ -43,13 +43,13 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;
 
-			static void __stdcall OnServiceSelChg(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnStopClicked(void *userObj);
-			static void __stdcall OnEnableClicked(void *userObj);
-			static void __stdcall OnDisableClicked(void *userObj);
-			static void __stdcall OnDeleteClicked(void *userObj);
-			static void __stdcall OnCreateClicked(void *userObj);
+			static void __stdcall OnServiceSelChg(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnStopClicked(AnyType userObj);
+			static void __stdcall OnEnableClicked(AnyType userObj);
+			static void __stdcall OnDisableClicked(AnyType userObj);
+			static void __stdcall OnDeleteClicked(AnyType userObj);
+			static void __stdcall OnCreateClicked(AnyType userObj);
 
 			void UpdateSvcList();
 		public:

@@ -71,11 +71,11 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSaveCnt;
 			NotNullPtr<UI::GUITextBox> txtSaveCnt;
 
-			static void __stdcall OnDevChg(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);
+			static void __stdcall OnDevChg(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
 
 			void StopCapture();
 			void ReleaseFormats();

@@ -67,17 +67,17 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(AnyType userObj, Dat
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLogSel(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -100,9 +100,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	if (me->svr)
 	{
 		SDEL_CLASS(me->svr);
@@ -286,9 +286,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Sync::MutexUsage mutUsage(me->respMut);
 	if (me->respNew)
 	{
@@ -331,17 +331,17 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(void *userObj, Text::CString msg)
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(AnyType userObj, Text::CString msg)
 {
-	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Sync::MutexUsage mutUsage(me->respMut);
 	SDEL_STRING(me->respNew);
 	me->respNew = Text::String::New(msg).Ptr();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg)
+Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg)
 {
-	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::String *decMsg = 0;
 	NotNullPtr<Crypto::Cert::X509Key> key;

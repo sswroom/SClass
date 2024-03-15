@@ -34,14 +34,14 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCodeInfo;
 			NotNullPtr<UI::GUIButton> btnCodeGen;
 
-			static void __stdcall OnCodeTypeChanged(void *userObj);
-			static void __stdcall OnCodeGenClicked(void *userObj);
+			static void __stdcall OnCodeTypeChanged(AnyType userObj);
+			static void __stdcall OnCodeGenClicked(AnyType userObj);
 		public:
 			AVIRCodeImageGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCodeImageGenForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

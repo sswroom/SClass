@@ -18,7 +18,7 @@ namespace Net
 		Sync::Event readEvt;
 		Net::TCPClient *currCli;
 
-		static void __stdcall ConnHandler(Socket *s, void *userObj);
+		static void __stdcall ConnHandler(Socket *s, AnyType userObj);
 	public:
 		TCPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		~TCPServerStream();

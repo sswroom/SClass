@@ -89,13 +89,13 @@ namespace SSWR
 			Bool dataFileNoHeader;
 			Int8 dataFileTz;
 
-			static void __stdcall OnDataFileClk(void *userObj);
+			static void __stdcall OnDataFileClk(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnDataCheckClk(void *userObj);
-			static void __stdcall OnSQLClicked(void *userObj);
-			static void __stdcall OnExecuteClicked(void *userObj);
-			static void __stdcall OnDataTableChg(void *userObj);
-			static void __stdcall OnAssignColClicked(void *userObj);
+			static void __stdcall OnDataCheckClk(AnyType userObj);
+			static void __stdcall OnSQLClicked(AnyType userObj);
+			static void __stdcall OnExecuteClicked(AnyType userObj);
+			static void __stdcall OnDataTableChg(AnyType userObj);
+			static void __stdcall OnAssignColClicked(AnyType userObj);
 			Bool LoadDataFile(Text::CStringNN fileName);
 			Bool GetColIndex(NotNullPtr<Data::ArrayList<UOSInt>> colInd, NotNullPtr<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
 			Bool IsColIndexValid(NotNullPtr<Data::ArrayList<UOSInt>> colInd, NotNullPtr<DB::TableDef> destTable);

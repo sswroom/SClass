@@ -61,7 +61,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 
 void __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::RIFFFileAnalyse *me = (IO::FileAnalyse::RIFFFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::RIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RIFFFileAnalyse>();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
 }
 

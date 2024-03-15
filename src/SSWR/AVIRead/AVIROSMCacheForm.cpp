@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIROSMCacheForm.h"
 
-void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROSMCacheForm *me = (SSWR::AVIRead::AVIROSMCacheForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROSMCacheForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Map::OSM::OSMCacheHandler::CacheStatus status;

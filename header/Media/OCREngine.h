@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_OCRENGINE
 #define _SM_MEDIA_OCRENGINE
+#include "AnyType.h"
 #include "Math/RectArea.h"
 #include "Media/StaticImage.h"
 #include "Media/OpenCV/OCVFrame.h"
@@ -15,13 +16,13 @@ namespace Media
 			English
 		};
 		
-		typedef void (__stdcall *OCRResultFunc)(void *userObj, NotNullPtr<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
+		typedef void (__stdcall *OCRResultFunc)(AnyType userObj, NotNullPtr<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
 	private:
 		class ClassData;
 		ClassData *clsData;
 
 		OCRResultFunc hdlr;
-		void *hdlrObj;
+		AnyType hdlrObj;
 	public:
 		OCREngine(Language lang);
 		~OCREngine();
@@ -32,7 +33,7 @@ namespace Media
 		Bool SetOCVFrame(NotNullPtr<Media::OpenCV::OCVFrame> frame);
 		Optional<Text::String> ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence);
 		
-		void HandleOCRResult(OCRResultFunc hdlr, void *userObj);
+		void HandleOCRResult(OCRResultFunc hdlr, AnyType userObj);
 		Bool ParseAllInImage();
 	};
 }

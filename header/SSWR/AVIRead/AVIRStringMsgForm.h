@@ -19,13 +19,13 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			static void __stdcall OnOKClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
 			AVIRStringMsgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, Text::CStringNN msg);
 			virtual ~AVIRStringMsgForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

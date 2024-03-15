@@ -29,8 +29,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnAXCANSerial;
 			NotNullPtr<UI::GUIButton> btnAXCANFile;
 
-			static void __stdcall OnAXCANSerialClicked(void *userObj);
-			static void __stdcall OnAXCANFileClicked(void *userObj);
+			static void __stdcall OnAXCANSerialClicked(AnyType userObj);
+			static void __stdcall OnAXCANFileClicked(AnyType userObj);
 		public:
 			AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr);
 			virtual ~AVIRSelCANForm();

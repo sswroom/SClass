@@ -24,8 +24,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<Text::String> name;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 			static OSInt __stdcall MACCompare(Net::MACInfo::MACEntry *obj1, Net::MACInfo::MACEntry *obj2);
 		public:
 			AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name);

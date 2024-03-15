@@ -9,9 +9,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::TFTPServer *me = (Net::TFTPServer*)userData;
+	NotNullPtr<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	const UTF8Char *fileName;
 	UOSInt fileNameLen;
 	const UTF8Char *mode;
@@ -206,9 +206,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil
 	
 }
 
-void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::TFTPServer *me = (Net::TFTPServer*)userData;
+	NotNullPtr<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
 	UInt8 repBuff[32];

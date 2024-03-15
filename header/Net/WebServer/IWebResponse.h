@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_IWEBRESPONSE
 #define _SM_NET_WEBSERVER_IWEBRESPONSE
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Net/WebStatus.h"
@@ -29,7 +30,7 @@ namespace Net
 		class IWebResponse : public IO::Stream
 		{
 		public:
-			typedef void (__stdcall *SSEDisconnectHandler)(NotNullPtr<Net::WebServer::IWebResponse> resp, void *userObj);
+			typedef void (__stdcall *SSEDisconnectHandler)(NotNullPtr<Net::WebServer::IWebResponse> resp, AnyType userObj);
 		public:
 			IWebResponse(NotNullPtr<Text::String> sourceName);
 			IWebResponse(Text::CStringNN sourceName);
@@ -42,7 +43,7 @@ namespace Net
 			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
-			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj) = 0;
+			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj) = 0;
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
 			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr) = 0;
 			virtual Text::CString GetRespHeaders() = 0;

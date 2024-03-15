@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
 #include "UI/GUIComboBoxUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[64];
@@ -116,9 +116,9 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->lvSiteList->GetSelectedItem();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -181,9 +181,9 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->cboSiteEnergySite->GetSelectedItem();
 	if (site && me->seAPI)
 	{
@@ -207,15 +207,15 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergySizeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergySizeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	me->UpdateSiteEnergyGraph();
 }
 
-void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->cboSitePowerSite->GetSelectedItem();
 	if (site && me->seAPI)
 	{
@@ -239,9 +239,9 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerSizeChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerSizeChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	me->UpdateSitePowerGraph();
 }
 

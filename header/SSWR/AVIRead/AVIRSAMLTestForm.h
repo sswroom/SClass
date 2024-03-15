@@ -77,12 +77,12 @@ namespace SSWR
 
 		private:
 			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnLogSel(void *userObj);
-			static void __stdcall OnSSLCertClicked(void *userObj);
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnSAMLResponse(void *userObj, Text::CString msg);
-			static Bool __stdcall OnLoginRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg);
+			static void __stdcall OnLogSel(AnyType userObj);
+			static void __stdcall OnSSLCertClicked(AnyType userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CString msg);
+			static Bool __stdcall OnLoginRequest(AnyType userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg);
 			void ClearCACerts();
 		public:
 			AVIRSAMLTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

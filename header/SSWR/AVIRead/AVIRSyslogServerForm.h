@@ -45,11 +45,11 @@ namespace SSWR
 			Data::FastMap<UInt32, IPLog*> ipMap;
 
 		private:
-			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnClientSelChg(void *userObj);
-			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnClientLog(void *userObj, UInt32 ip, Text::CString message);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClick(AnyType userObj);
+			static void __stdcall OnClientSelChg(AnyType userObj);
+			static void __stdcall OnLogSelChg(AnyType userObj);
+			static void __stdcall OnClientLog(AnyType userObj, UInt32 ip, Text::CString message);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRSyslogServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSyslogServerForm();

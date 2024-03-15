@@ -53,10 +53,10 @@ namespace SSWR
 			Text::String *dataSchema;
 			Data::ArrayListStringNN dataTables;
 
-			static void __stdcall OnSourceDBChg(void *userObj);
-			static void __stdcall OnSourceSelectClicked(void *userObj);
-			static void __stdcall OnDestDBChg(void *userObj);
-			static void __stdcall OnCopyClicked(void *userObj);
+			static void __stdcall OnSourceDBChg(AnyType userObj);
+			static void __stdcall OnSourceSelectClicked(AnyType userObj);
+			static void __stdcall OnDestDBChg(AnyType userObj);
+			static void __stdcall OnCopyClicked(AnyType userObj);
 		public:
 			AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::ArrayList<DB::DBManagerCtrl*> *dbList);
 			virtual ~AVIRDBCopyTablesForm();

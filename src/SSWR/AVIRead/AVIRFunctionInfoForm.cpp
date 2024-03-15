@@ -9,7 +9,7 @@
 #include "SSWR/AVIRead/AVIRFunctionInfoForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRFunctionInfoForm::OnMyStackDblClk(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIRead::AVIRFunctionInfoForm::OnMyStackDblClk(AnyType userObj, UOSInt index)
 {
 //	SSWR::AVIRead::AVIRFunctionInfoForm *me = (SSWR::AVIRead::AVIRFunctionInfoForm*)userObj;
 }

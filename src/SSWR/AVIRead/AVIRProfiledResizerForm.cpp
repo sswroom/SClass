@@ -2,9 +2,9 @@
 #include "SSWR/AVIRead/AVIRProfiledResizerForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	me->ChangeProfile();
 }
 
@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	UOSInt i = me->lbProfile->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(void 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[16];
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	UInt32 outParam;
 	Text::StringBuilderUTF8 sb;
 	Media::ProfiledResizer::OutputType outType;
-	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	sptr = me->txtProfileName->GetText(sbuff);
 	if (sbuff[0] == 0)
 	{

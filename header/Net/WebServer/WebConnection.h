@@ -17,7 +17,7 @@ namespace Net
 		class WebConnection : public IWebResponse
 		{
 		public:
-			typedef void (__stdcall *SendLogger)(void *userObj, UOSInt buffSize);
+			typedef void (__stdcall *SendLogger)(AnyType userObj, UOSInt buffSize);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
@@ -45,11 +45,11 @@ namespace Net
 			UInt32 respTranEnc;
 
 			SendLogger logger;
-			void *loggerObj;
+			AnyType loggerObj;
 			IO::SMTCWriter *logWriter;
 
 			SSEDisconnectHandler sseHdlr;
-			void *sseHdlrObj;
+			AnyType sseHdlrObj;
 
 			UOSInt SendData(const UInt8 *buff, UOSInt buffSize);
 		public:
@@ -75,7 +75,7 @@ namespace Net
 			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();
-			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, void *userObj);
+			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj);
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data);
 			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr);
 			virtual Text::CString GetRespHeaders();
@@ -88,7 +88,7 @@ namespace Net
 			virtual Bool Recover();
 			virtual IO::StreamType GetStreamType() const;
 
-			void SetSendLogger(SendLogger logger, void *userObj);
+			void SetSendLogger(SendLogger logger, AnyType userObj);
 			void SetLogWriter(IO::SMTCWriter *logWriter);
 		};
 	}

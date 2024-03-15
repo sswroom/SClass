@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRWHOISClientForm *me = (SSWR::AVIRead::AVIRWHOISClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRWHOISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWHOISClientForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	Net::WhoisRecord *rec;

@@ -45,9 +45,9 @@ namespace SSWR
 			UOSInt packetSize;
 
 		private:
-			static void __stdcall OnCheckClicked(void *userObj);
-			static void __stdcall OnCertClicked(void *userObj);
-			static void __stdcall OnRAWClicked(void *userObj);
+			static void __stdcall OnCheckClicked(AnyType userObj);
+			static void __stdcall OnCertClicked(AnyType userObj);
+			static void __stdcall OnRAWClicked(AnyType userObj);
 			
 		public:
 			AVIRSSLInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

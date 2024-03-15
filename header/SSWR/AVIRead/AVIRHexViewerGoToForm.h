@@ -23,8 +23,8 @@ namespace SSWR
 			UInt64 fileLen;
 
 		private:
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 
 		public:
 			AVIRHexViewerGoToForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileLen);

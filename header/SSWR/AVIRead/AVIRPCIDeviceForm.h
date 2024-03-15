@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDBName;
 			NotNullPtr<UI::GUITextBox> txtDBName;
 			
-			static void __stdcall OnDevicesSelChg(void *userObj);
+			static void __stdcall OnDevicesSelChg(AnyType userObj);
 			static OSInt __stdcall ItemCompare(IO::PCIInfo *item1, IO::PCIInfo *item2);
 		public:
 			AVIRPCIDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
@@ -40,6 +40,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

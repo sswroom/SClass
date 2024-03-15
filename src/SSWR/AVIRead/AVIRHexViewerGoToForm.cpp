@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRHexViewerGoToForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerGoToForm *me = (SSWR::AVIRead::AVIRHexViewerGoToForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerGoToForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerGoToForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtInput->GetText(sb);
 
@@ -51,9 +51,9 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHexViewerGoToForm *me = (SSWR::AVIRead::AVIRHexViewerGoToForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHexViewerGoToForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerGoToForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 

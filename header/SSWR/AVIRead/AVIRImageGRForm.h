@@ -53,16 +53,16 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			static void __stdcall OnHOfstChanged(void *userObj, UOSInt newPos);
-			static void __stdcall OnVOfstChanged(void *userObj, UOSInt newPos);
-			static void __stdcall OnLevelChanged(void *userObj, UOSInt newPos);
-			static void __stdcall OnTypeChanged(void *userObj);
-			static void __stdcall OnEnableChanged(void *userObj, Bool newVal);
-			static void __stdcall OnAddLayerClicked(void *userObj);
-			static void __stdcall OnRemoveLayerClicked(void *userObj);
-			static void __stdcall OnLayersChanged(void *userObj);
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnHOfstChanged(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnVOfstChanged(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnLevelChanged(AnyType userObj, UOSInt newPos);
+			static void __stdcall OnTypeChanged(AnyType userObj);
+			static void __stdcall OnEnableChanged(AnyType userObj, Bool newVal);
+			static void __stdcall OnAddLayerClicked(AnyType userObj);
+			static void __stdcall OnRemoveLayerClicked(AnyType userObj);
+			static void __stdcall OnLayersChanged(AnyType userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 
 			void UpdatePreview();
 			void UpdateLayers();

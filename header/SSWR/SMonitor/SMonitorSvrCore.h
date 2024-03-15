@@ -31,8 +31,8 @@ namespace SSWR
 				UInt8 *dataBuff;
 				UOSInt dataSize;
 				Int64 cliId;
-				SMonitorSvrCore *me;
-				void *stmData;
+				NotNullPtr<SMonitorSvrCore> me;
+				AnyType stmData;
 				DeviceInfo *dev;
 			} ClientStatus;
 
@@ -71,16 +71,16 @@ namespace SSWR
 			IO::StringLogger uaLog;
 			IO::StringLogger refererLog;
 
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
-			static void __stdcall OnServerConn(Socket *s, void *userObj);
+			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall OnServerConn(Socket *s, AnyType userObj);
 			static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
-			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-			static void __stdcall OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 
 			void NewNotify(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName);
 

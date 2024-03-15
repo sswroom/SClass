@@ -2,9 +2,9 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHKOForecastForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRHKOForecastForm::OnReloadClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHKOForecastForm::OnReloadClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHKOForecastForm *me = (SSWR::AVIRead::AVIRHKOForecastForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHKOForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOForecastForm>();
 	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)(OSInt)me->cboLang->GetSelectedItem();
 	me->Reload(lang);
 }

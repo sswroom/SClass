@@ -5,28 +5,28 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnTypeSelChg(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnTypeSelChg(AnyType userObj, Bool newState)
 {
-	SSWR::AVIRead::AVIRGISDistanceForm *me = (SSWR::AVIRead::AVIRGISDistanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	me->ptList->Clear();
 	me->pathDist = 0;
 	me->lastMapPos = Math::Coord2DDbl(0, 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMeasureSelChg(void *userObj, Bool newState)
+void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMeasureSelChg(AnyType userObj, Bool newState)
 {
-//	SSWR::AVIRead::AVIRGISDistanceForm *me = (SSWR::AVIRead::AVIRGISDistanceForm*)userObj;
+//	NotNullPtr<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnDistanceUnitChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnDistanceUnitChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISDistanceForm *me = (SSWR::AVIRead::AVIRGISDistanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	me->UpdateDistDisp();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISDistanceForm *me = (SSWR::AVIRead::AVIRGISDistanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	if (me->radActionMeasure->IsSelected())
 	{
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
@@ -69,9 +69,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(void *userObj,
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	SSWR::AVIRead::AVIRGISDistanceForm *me = (SSWR::AVIRead::AVIRGISDistanceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	if ((me->lastMapPos.x != 0 || me->lastMapPos.y != 0) && me->radActionMeasure->IsSelected())
 	{
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);

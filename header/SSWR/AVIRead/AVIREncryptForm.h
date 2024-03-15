@@ -33,7 +33,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
-			static void __stdcall OnConvertClicked(void *userObj);
+			static void __stdcall OnConvertClicked(AnyType userObj);
 		public:
 			AVIREncryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptForm();

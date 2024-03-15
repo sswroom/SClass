@@ -6,11 +6,11 @@
 #include "SSWR/AVIRead/AVIRHIDDeviceForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHIDDeviceForm *me = (SSWR::AVIRead::AVIRHIDDeviceForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHIDDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHIDDeviceForm>();
 	IO::HIDInfo *hid;
-	hid = (IO::HIDInfo*)me->lbDevices->GetSelectedItem();
+	hid = (IO::HIDInfo*)me->lbDevices->GetSelectedItem().p;
 	if (hid == 0)
 	{
 		me->txtVendorId->SetText(CSTR(""));

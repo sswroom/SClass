@@ -6,9 +6,9 @@
 #include "Media/Playlist.h"
 #include "Text/MyString.h"
 
-void __stdcall Media::Playlist::OnPBEnd(void *userObj)
+void __stdcall Media::Playlist::OnPBEnd(AnyType userObj)
 {
-	Media::Playlist *me = (Media::Playlist*)userObj;
+	NotNullPtr<Media::Playlist> me = userObj.GetNN<Media::Playlist>();
 	Data::RandomOS random;
 	UOSInt i = (UInt32)random.NextInt15() % me->entries.GetCount();
 	me->OpenItem(i);

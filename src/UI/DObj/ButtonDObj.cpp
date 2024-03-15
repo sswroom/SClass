@@ -11,7 +11,7 @@ UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(void *userObj)
 	return 0;
 }
 
-UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(tl)
+UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)

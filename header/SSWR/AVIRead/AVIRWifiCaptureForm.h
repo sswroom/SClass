@@ -104,20 +104,20 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnLogWifiSave;
 			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;
 
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnGPSClicked(void *userObj);
-			static void __stdcall OnCaptureClicked(void *userObj);
-			static void __stdcall OnLogWifiDblClicked(void *userObj, UOSInt index);
-			static void __stdcall OnLogWifiSaveClicked(void *userObj);
-			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnGPSClicked(AnyType userObj);
+			static void __stdcall OnCaptureClicked(AnyType userObj);
+			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UOSInt index);
+			static void __stdcall OnLogWifiSaveClicked(AnyType userObj);
+			static void __stdcall OnLogWifiSaveFClicked(AnyType userObj);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
-			static void __stdcall OnGPSData(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
+			static void __stdcall OnGPSData(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
 		public:
 			AVIRWifiCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

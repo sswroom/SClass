@@ -5,7 +5,7 @@
 
 void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::TXTFileAnalyse *me = (IO::FileAnalyse::TXTFileAnalyse *)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::TXTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TXTFileAnalyse>();
 	UInt64 buffOfst = 0;
 	UOSInt buffSize = 0;
 	UOSInt readSize;

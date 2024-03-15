@@ -1,5 +1,6 @@
 #ifndef _SM_IO_ATCOMMANDCHANNEL
 #define _SM_IO_ATCOMMANDCHANNEL
+#include "AnyType.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/Duration.h"
 #include "IO/LogTool.h"
@@ -13,8 +14,8 @@ namespace IO
 	class ATCommandChannel
 	{
 	public:
-		typedef void (__stdcall *EventHandler)(void *userObj, UInt8 eventType);
-		typedef Bool (__stdcall *CommandHandler)(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
+		typedef void (__stdcall *EventHandler)(AnyType userObj, UInt8 eventType);
+		typedef Bool (__stdcall *CommandHandler)(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
 
 	private:
 		NotNullPtr<IO::Stream> stm;
@@ -22,9 +23,9 @@ namespace IO
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
 		EventHandler evtHdlr;
-		void *evtHdlrObj;
+		AnyType evtHdlrObj;
 		CommandHandler cmdHdlr;
-		void *cmdHdlrObj;
+		AnyType cmdHdlrObj;
 		IO::ILogger *log;
 
 		Data::ArrayListStringNN cmdResults;
@@ -51,8 +52,8 @@ namespace IO
 
 		void Close();
 
-		void SetEventHandler(EventHandler evtHdlr, void *userObj);
-		void SetCommandHandler(CommandHandler cmdHdlr, void *userObj);
+		void SetEventHandler(EventHandler evtHdlr, AnyType userObj);
+		void SetCommandHandler(CommandHandler cmdHdlr, AnyType userObj);
 		void SetLogger(IO::ILogger *log);
 	};
 }

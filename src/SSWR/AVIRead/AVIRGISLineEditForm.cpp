@@ -65,9 +65,9 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	this->pbPreview->SetImage(this->prevsImage);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	LineLayer *lyr;
 	lyr = MemAlloc(LineLayer, 1);
 	lyr->color = 0xff000000;
@@ -82,9 +82,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(void *userObj
 	me->UpdatePreview();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt i = me->lbLayer->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -95,9 +95,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt i = me->lbLayer->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -129,10 +129,10 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	if (me->currLayer && !me->thickChging)
 	{
 		me->thickChging = true;
@@ -149,9 +149,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj, UOSInt newPos)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userObj, UOSInt newPos)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	if (me->currLayer && !me->thickChging)
@@ -165,9 +165,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -187,9 +187,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, M
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt npattern;
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[32];
@@ -224,9 +224,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	LineLayer *lyr;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = me->lineLayers->GetCount();
@@ -255,9 +255,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

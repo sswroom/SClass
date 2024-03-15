@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/DataCaptureStream.h"
 
-IO::DataCaptureStream::DataCaptureStream(IO::Stream *srcStream, DataHandler recvHdlr, DataHandler sendHdlr, void *hdlrObj) : Stream(srcStream->GetSourceNameObj())
+IO::DataCaptureStream::DataCaptureStream(IO::Stream *srcStream, DataHandler recvHdlr, DataHandler sendHdlr, AnyType hdlrObj) : Stream(srcStream->GetSourceNameObj())
 {
 	this->stm = srcStream;
 	this->recvHdlr = recvHdlr;

@@ -7,7 +7,7 @@
 
 void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 {
-	Net::WiFiCapturer *me = (Net::WiFiCapturer*)thread->GetUserObj();
+	NotNullPtr<Net::WiFiCapturer> me = thread->GetUserObj().GetNN<Net::WiFiCapturer>();
 	Net::WirelessLAN::Interface *interf = me->interf;
 	Net::WirelessLAN::BSSInfo *bss;
 	UOSInt i;
@@ -266,7 +266,7 @@ NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> Net::WiFiCapturer::
 	return this->wifiLog.GetLogList();
 }
 
-void Net::WiFiCapturer::SetUpdateHandler(UpdateHandler hdlr, void *hdlrObj)
+void Net::WiFiCapturer::SetUpdateHandler(UpdateHandler hdlr, AnyType hdlrObj)
 {
 	this->hdlrObj = hdlrObj;
 	this->hdlr = hdlr;

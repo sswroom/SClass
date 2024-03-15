@@ -1,5 +1,6 @@
 #ifndef _SM_SYNC_THREAD
 #define _SM_SYNC_THREAD
+#include "AnyType.h"
 #include "Sync/Event.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/String.h"
@@ -16,11 +17,11 @@ namespace Sync
 		NotNullPtr<Text::String> name;
 		Sync::Event evt;
 		ThreadFunc func;
-		void *userObj;
+		AnyType userObj;
 
 		static UInt32 __stdcall InnerThread(void *userObj);
 	public:
-		Thread(ThreadFunc func, void *userObj, Text::CStringNN name);
+		Thread(ThreadFunc func, AnyType userObj, Text::CStringNN name);
 		~Thread();
 
 		Bool Start();
@@ -34,7 +35,7 @@ namespace Sync
 		Bool IsRunning() const;
 		Bool IsStopping() const;
 		Bool IsWaiting() const;
-		void *GetUserObj() const;
+		AnyType GetUserObj() const;
 	};
 }
 #endif

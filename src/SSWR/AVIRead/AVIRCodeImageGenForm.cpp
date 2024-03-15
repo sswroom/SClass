@@ -4,9 +4,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCodeImageGenForm *me = (SSWR::AVIRead::AVIRCodeImageGenForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
 	SDEL_CLASS(me->codeImgGen);
 	me->codeImgGen = Media::CodeImageGen::CodeImageGen::CreateGenerator((Media::CodeImageGen::CodeImageGen::CodeType)(OSInt)me->cboCodeType->GetSelectedItem());
 	if (me->codeImgGen)
@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(void *user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRCodeImageGenForm *me = (SSWR::AVIRead::AVIRCodeImageGenForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
 	if (me->codeImgGen)
 	{
 		Text::StringBuilderUTF8 sb;

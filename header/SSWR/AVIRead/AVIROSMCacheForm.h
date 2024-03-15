@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCacheCnt;
 			NotNullPtr<UI::GUITextBox> txtCacheCnt;
 
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIROSMCacheForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::WebServer::WebListener> listener, NotNullPtr<Map::OSM::OSMCacheHandler> hdlr);
 			virtual ~AVIROSMCacheForm();

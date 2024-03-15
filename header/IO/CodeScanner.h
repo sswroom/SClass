@@ -1,5 +1,6 @@
 #ifndef _SM_IO_CODESCANNER
 #define _SM_IO_CODESCANNER
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"
@@ -155,7 +156,7 @@ namespace IO
 			DC_SET_BUZZER_OFF
 		} DeviceCommand;
 
-		typedef void (__stdcall *ScanHandler)(void *userObj, Text::CString code);
+		typedef void (__stdcall *ScanHandler)(AnyType userObj, Text::CString code);
 
 	private:
 		NotNullPtr<Text::String> devName;
@@ -169,7 +170,7 @@ namespace IO
 		virtual void SetCurrMode(ModeType currMode) = 0;
 		virtual Bool SoftReset() = 0;
 		virtual Bool ResetDefault() = 0;
-		virtual void HandleCodeScanned(ScanHandler hdlr, void *userObj) = 0;
+		virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj) = 0;
 
 		virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList) = 0;
 		virtual Text::CString GetCommandName(DeviceCommand dcmd) = 0;

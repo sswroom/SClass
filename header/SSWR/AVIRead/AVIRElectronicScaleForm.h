@@ -49,8 +49,8 @@ namespace SSWR
 			Bool currWeightUpd;
 
 		private:
-			static void __stdcall OnStreamClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStreamClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall RecvThread(void *userObj);
 
 			void StopStream();
@@ -60,6 +60,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

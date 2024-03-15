@@ -5,9 +5,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamConvForm *me = (SSWR::AVIRead::AVIRStreamConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	if (me->stm1)
 	{
 		me->StopStream1();
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 	else
 	{
 		IO::StreamType st;
-		me->stm1 = me->core->OpenStream(&st, me, 0, true);
+		me->stm1 = me->core->OpenStream(st, me, 0, true);
 
 		if (me->stm1)
 		{
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamConvForm *me = (SSWR::AVIRead::AVIRStreamConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	if (me->stm2)
 	{
 		me->StopStream2();
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 	else
 	{
 		IO::StreamType st;
-		me->stm2 = me->core->OpenStream(&st, me, 0, true);
+		me->stm2 = me->core->OpenStream(st, me, 0, true);
 
 		if (me->stm2)
 		{
@@ -71,9 +71,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamConvForm *me = (SSWR::AVIRead::AVIRStreamConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	if (me->remoteClosed1)
 	{
 		me->remoteClosed1 = false;

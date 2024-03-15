@@ -14,7 +14,7 @@
 
 void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
-	IO::FileAnalyse::FGDBFileAnalyse *me = (IO::FileAnalyse::FGDBFileAnalyse*)thread->GetUserObj();
+	NotNullPtr<IO::FileAnalyse::FGDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FGDBFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;

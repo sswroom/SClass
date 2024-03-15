@@ -16,7 +16,7 @@ IO::ConsoleWriter *console;
 NotNullPtr<Net::SocketFactory> sockf;
 Data::ArrayListUInt32 *ipList;
 
-void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
+void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData)
 {
 	if (ipList->SortedIndexOf(ipv4) < 0)
 	{

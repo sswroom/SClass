@@ -60,9 +60,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvQueryResult;
 
 		private:
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnQueryClicked(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnQueryClicked(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateResult(NotNullPtr<DB::DBReader> r);
 		public:
 			AVIRMySQLClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

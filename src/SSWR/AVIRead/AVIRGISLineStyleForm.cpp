@@ -6,9 +6,9 @@
 
 #define MNU_SET_DEFAULT 101
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	UOSInt newStyle = me->env->AddLineStyle();
 
 	SSWR::AVIRead::AVIRGISLineEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
@@ -24,17 +24,17 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::RemoveStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::RemoveStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	me->env->RemoveLineStyle(me->lineStyle);
 	me->lineSelector->UpdateLineStyles();
 	me->lineSelector->Redraw();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::EditStyleClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::EditStyleClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	SSWR::AVIRead::AVIRGISLineEditForm frm(0, me->ui, me->core, me->env, me->eng, me->lineStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -43,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::EditStyleClicked(void *userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::LineSelChanged(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::LineSelChanged(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	UTF8Char sbuff[256];
 	me->lineStyle = me->lineSelector->GetSelectedLineStyle();
 	sbuff[0] = 0;
@@ -53,21 +53,21 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::LineSelChanged(void *userObj
 	me->changed = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::LineDblClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::LineDblClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::OKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::OKClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::CancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::CancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISLineStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

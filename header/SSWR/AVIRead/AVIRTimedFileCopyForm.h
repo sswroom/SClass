@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIDateTimePicker> dtpEndTime;
 			NotNullPtr<UI::GUIButton> btnStart;
 
-			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
 
 			Bool CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NotNullPtr<Data::DateTime> startTime, NotNullPtr<Data::DateTime> endTime, Bool monthDir);
 		public:

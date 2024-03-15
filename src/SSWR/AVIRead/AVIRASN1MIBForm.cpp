@@ -11,9 +11,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(AnyType userObj, Dat
 	me->LoadFile(files[0]->ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFile->GetText(sb);
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false);
@@ -26,9 +26,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
 	Net::ASN1MIB::ObjectInfo *obj = (Net::ASN1MIB::ObjectInfo*)me->lvObjects->GetSelectedItem();
 	me->lvObjectsVal->ClearItems();
 	if (obj)

@@ -70,15 +70,15 @@ namespace SSWR
 			void LineStyleUpdated();
 			void UpdatePreview();
 
-			static void __stdcall NewLayerClicked(void *userObj);
-			static void __stdcall RemoveLayerClicked(void *userObj);
-			static void __stdcall LayerSelChanged(void *userObj);
-			static void __stdcall ThickChanged(void *userObj);
-			static void __stdcall OnThickScrolled(void *userObj, UOSInt newPos);
-			static Bool __stdcall ColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
-			static void __stdcall PatternChanged(void *userObj);
-			static void __stdcall OKClicked(void *userObj);
-			static void __stdcall CancelClicked(void *userObj);
+			static void __stdcall NewLayerClicked(AnyType userObj);
+			static void __stdcall RemoveLayerClicked(AnyType userObj);
+			static void __stdcall LayerSelChanged(AnyType userObj);
+			static void __stdcall ThickChanged(AnyType userObj);
+			static void __stdcall OnThickScrolled(AnyType userObj, UOSInt newPos);
+			static Bool __stdcall ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static void __stdcall PatternChanged(AnyType userObj);
+			static void __stdcall OKClicked(AnyType userObj);
+			static void __stdcall CancelClicked(AnyType userObj);
 
 			static void FreeLayer(LineLayer *lyr);
 		public:

@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMySQLClientForm *me = (SSWR::AVIRead::AVIRMySQLClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	if (me->cli)
 	{
 		DEL_CLASS(me->cli);
@@ -101,9 +101,9 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMySQLClientForm *me = (SSWR::AVIRead::AVIRMySQLClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	if (me->cli == 0)
 	{
 		return;
@@ -128,9 +128,9 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMySQLClientForm *me = (SSWR::AVIRead::AVIRMySQLClientForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UInt8 buff[48];

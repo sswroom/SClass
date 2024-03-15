@@ -5,9 +5,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
 	UOSInt i = me->layers->GetCount();
 	while (i-- > 0)
 	{
@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
 	UOSInt i = me->layers->GetCount();
 	while (i-- > 0)
 	{
@@ -25,9 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnUncheckAllClick(void *userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
 	UOSInt i;
 	UOSInt j;
 	NotNullPtr<Map::MapDrawLayer> lyr;
@@ -53,9 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCancelClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCancelClick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISCombineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCombineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

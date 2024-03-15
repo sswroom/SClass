@@ -11,7 +11,7 @@ namespace IO
 		class SIM7000 : public IO::GSMModemController
 		{
 		public:
-			typedef void (__stdcall *ReceiveHandler)(void *userObj, UOSInt index, UInt32 ip, UInt16 port, const UInt8 *buff, UOSInt buffSize);
+			typedef void (__stdcall *ReceiveHandler)(AnyType userObj, UOSInt index, UInt32 ip, UInt16 port, const UInt8 *buff, UOSInt buffSize);
 		private:
 			Sync::Event respEvt;
 			Sync::Mutex dnsMut;
@@ -27,14 +27,14 @@ namespace IO
 			UInt32 recvIP;
 			UInt16 recvPort;
 			ReceiveHandler recvHdlr;
-			void *recvHdlrObj;
+			AnyType recvHdlrObj;
 
-			static Bool __stdcall CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
+			static Bool __stdcall CheckATCommand(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
 			SIM7000(IO::ATCommandChannel *channel, Bool needRelease);
 			virtual ~SIM7000();
 
-			void SetReceiveHandler(ReceiveHandler recvHdlr, void *userObj);
+			void SetReceiveHandler(ReceiveHandler recvHdlr, AnyType userObj);
 
 			Bool SIMCOMPowerDown(); //AT+CPOWD
 			Bool SIMCOMReadADC(OutParam<Int32> adc); //AT+CADC

@@ -2,10 +2,10 @@
 #include "SSWR/AVIRead/AVIRClipboardViewerForm.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRClipboardViewerForm *me = (SSWR::AVIRead::AVIRClipboardViewerForm*)userObj;
-	UInt32 fmtId = (UInt32)(UOSInt)me->lbType->GetSelectedItem();
+	NotNullPtr<SSWR::AVIRead::AVIRClipboardViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRClipboardViewerForm>();
+	UInt32 fmtId = (UInt32)(UOSInt)me->lbType->GetSelectedItem().p;
 	if (fmtId)
 	{
 		Text::StringBuilderUTF8 sb;

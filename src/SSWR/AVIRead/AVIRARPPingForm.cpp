@@ -7,9 +7,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj)
+void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
 {
-	SSWR::AVIRead::AVIRARPPingForm *me = (SSWR::AVIRead::AVIRARPPingForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->requested)
 	{
 		UInt32 reqIP = ReadNUInt32(me->targetAddr.addr);
@@ -32,9 +32,9 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRARPPingForm *me = (SSWR::AVIRead::AVIRARPPingForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		SDEL_CLASS(me->arpHdlr);
@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRARPPingForm *me = (SSWR::AVIRead::AVIRARPPingForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		Double t;
