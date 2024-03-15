@@ -122,7 +122,7 @@ Bool Media::AVIUtl::AUIVideo::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, Ou
 	return true;
 }
 
-Bool Media::AVIUtl::AUIVideo::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::AVIUtl::AUIVideo::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	if (this->playing)
 		return false;
@@ -203,7 +203,7 @@ Data::Duration Media::AVIUtl::AUIVideo::GetFrameTime(UOSInt frameIndex)
 	return Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 }
 
-void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	UInt32 i;
 	UInt32 dataSize = (UInt32)this->GetMaxFrameSize();

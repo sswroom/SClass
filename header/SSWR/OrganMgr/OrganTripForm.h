@@ -35,11 +35,11 @@ namespace SSWR
 			Data::Timestamp refTime;
 			
 			void UpdateList();
-			static void __stdcall OnTripSelChg(void *userObj);
-			static void __stdcall OnAddClicked(void *userObj);
-			static void __stdcall OnLocationClicked(void *userObj);
-			static void __stdcall OnDate1HrClicked(void *userObj);
-			static void __stdcall OnLocationLastClicked(void *userObj);
+			static void __stdcall OnTripSelChg(AnyType userObj);
+			static void __stdcall OnAddClicked(AnyType userObj);
+			static void __stdcall OnLocationClicked(AnyType userObj);
+			static void __stdcall OnDate1HrClicked(AnyType userObj);
+			static void __stdcall OnLocationLastClicked(AnyType userObj);
 		public:
 			OrganTripForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			~OrganTripForm();

@@ -21,7 +21,7 @@ namespace Media
 		Bool playing;
 		FrameCallback frameCb;
 		FrameChangeCallback fcCb;
-		void *frameCbObj;
+		AnyType frameCbObj;
 		Bool threadRunning;
 		Bool threadToStop;
 		Sync::Event threadEvt;
@@ -35,7 +35,7 @@ namespace Media
 		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
-		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userObj);
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userObj);
 		virtual Bool Start();
 		virtual void Stop();
 		virtual Bool IsRunning();
@@ -52,7 +52,7 @@ namespace Media
 		virtual Bool HasFrameCount();
 		virtual UOSInt GetFrameCount();
 		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
-		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
+		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 	};

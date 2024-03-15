@@ -588,7 +588,8 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -598,7 +599,8 @@ void UI::GUIListView::EventSelChg()
 	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->selChgHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -608,7 +610,8 @@ void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClkHdlrs.GetItem(i)(this->dblClkObjs.GetItem(i), itemIndex);
+		Data::CallbackStorage<ItemEvent> cb = this->dblClkHdlrs.GetItem(i);
+		cb.func(cb.userObj, itemIndex);
 	}
 }
 
@@ -620,7 +623,8 @@ void UI::GUIListView::EventMouseClick(Math::Coord2DDbl coord, MouseButton btn)
 		i = this->rClkHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->rClkHdlrs.GetItem(i)(this->rClkObjs.GetItem(i), coord, this->GetSelectedIndex());
+			Data::CallbackStorage<MouseEvent> cb = this->rClkHdlrs.GetItem(i);
+			cb.func(cb.userObj, coord, this->GetSelectedIndex());
 		}
 	}
 }
@@ -658,20 +662,17 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 	}
 }
 
-void UI::GUIListView::HandleSelChg(UI::UIEvent hdlr, void *userObj)
+void UI::GUIListView::HandleSelChg(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->selChgHdlrs.Add(hdlr);
-	this->selChgObjs.Add(userObj);
+	this->selChgHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIListView::HandleDblClk(ItemEvent hdlr, void *userObj)
+void UI::GUIListView::HandleDblClk(ItemEvent hdlr, AnyType userObj)
 {
-	this->dblClkHdlrs.Add(hdlr);
-	this->dblClkObjs.Add(userObj);
+	this->dblClkHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIListView::HandleRightClick(MouseEvent hdlr, void *userObj)
+void UI::GUIListView::HandleRightClick(MouseEvent hdlr, AnyType userObj)
 {
-	this->rClkHdlrs.Add(hdlr);
-	this->rClkObjs.Add(userObj);
+	this->rClkHdlrs.Add({hdlr, userObj});
 }

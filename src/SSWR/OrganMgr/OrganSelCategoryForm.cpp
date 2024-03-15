@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganSelCategoryForm.h"
 
-void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(AnyType userObj)
 {
-	OrganSelCategoryForm *me = (OrganSelCategoryForm*)userObj;
+	NotNullPtr<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
 	UOSInt i = me->lbCategory->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		Category *cate = (Category*)me->lbCategory->GetItem(i);
+		Category *cate = (Category*)me->lbCategory->GetItem(i).p;
 		me->env->SetCurrCategory(cate);
 		me->SetDialogResult(DR_OK);
 	}
@@ -16,9 +16,9 @@ void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnCancelClicked(AnyType userObj)
 {
-	OrganSelCategoryForm *me = (OrganSelCategoryForm*)userObj;
+	NotNullPtr<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 

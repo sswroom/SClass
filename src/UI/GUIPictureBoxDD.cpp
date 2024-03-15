@@ -336,7 +336,8 @@ void UI::GUIPictureBoxDD::DrawFromBG()
 		j = this->drawHdlrs.GetCount();
 		while (i < j)
 		{
-			this->drawHdlrs.GetItem(i)(this->drawObjs.GetItem(i), dptr, this->bgBuffSize.x, this->bgBuffSize.x, bpl);
+			Data::CallbackStorage<DrawHandler32> cb = this->drawHdlrs.GetItem(i);
+			cb.func(cb.userObj, dptr, this->bgBuffSize.x, this->bgBuffSize.x, bpl);
 			i++;
 		}
 		this->LockSurfaceEnd();
@@ -767,7 +768,8 @@ void UI::GUIPictureBoxDD::OnMouseMove(Math::Coord2D<OSInt> pos)
 	j = this->mouseMoveHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), pos, UI::GUIControl::MBTN_LEFT))
+		Data::CallbackStorage<MouseEventHandler> cb = this->mouseMoveHdlrs.GetItem(i);
+		if (cb.func(cb.userObj, pos, UI::GUIControl::MBTN_LEFT))
 		{
 			return;
 		}
@@ -790,7 +792,8 @@ void UI::GUIPictureBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton butt
 	j = this->mouseDownHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseDownHdlrs.GetItem(i)(this->mouseDownObjs.GetItem(i), pos, button))
+		Data::CallbackStorage<MouseEventHandler> cb = this->mouseDownHdlrs.GetItem(i);
+		if (cb.func(cb.userObj, pos, button))
 		{
 			return;
 		}
@@ -811,7 +814,8 @@ void UI::GUIPictureBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button
 	j = this->mouseUpHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseUpHdlrs.GetItem(i)(this->mouseUpObjs.GetItem(i), pos, button))
+		Data::CallbackStorage<MouseEventHandler> cb = this->mouseUpHdlrs.GetItem(i);
+		if (cb.func(cb.userObj, pos, button))
 		{
 			return;
 		}
@@ -996,7 +1000,8 @@ void UI::GUIPictureBoxDD::EventMoveToNext()
 	j = this->moveToNextHdlrs.GetCount();
 	while (i < j)
 	{
-		this->moveToNextHdlrs.GetItem(i)(this->moveToNextObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->moveToNextHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 		i++;
 	}
 }
@@ -1009,7 +1014,8 @@ void UI::GUIPictureBoxDD::EventMoveToPrev()
 	j = this->moveToPrevHdlrs.GetCount();
 	while (i < j)
 	{
-		this->moveToPrevHdlrs.GetItem(i)(this->moveToPrevObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->moveToPrevHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 		i++;
 	}
 }
@@ -1078,40 +1084,34 @@ NotNullPtr<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NotNullPt
 	return outImage;
 }
 
-void UI::GUIPictureBoxDD::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
+void UI::GUIPictureBoxDD::HandleMouseDown(MouseEventHandler hdlr, AnyType userObj)
 {
-	this->mouseDownHdlrs.Add(hdlr);
-	this->mouseDownObjs.Add(userObj);
+	this->mouseDownHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIPictureBoxDD::HandleMouseMove(MouseEventHandler hdlr, void *userObj)
+void UI::GUIPictureBoxDD::HandleMouseMove(MouseEventHandler hdlr, AnyType userObj)
 {
-	this->mouseMoveHdlrs.Add(hdlr);
-	this->mouseMoveObjs.Add(userObj);
+	this->mouseMoveHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIPictureBoxDD::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
+void UI::GUIPictureBoxDD::HandleMouseUp(MouseEventHandler hdlr, AnyType userObj)
 {
-	this->mouseUpHdlrs.Add(hdlr);
-	this->mouseUpObjs.Add(userObj);
+	this->mouseUpHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIPictureBoxDD::HandleDraw(DrawHandler32 hdlr, void *userObj)
+void UI::GUIPictureBoxDD::HandleDraw(DrawHandler32 hdlr, AnyType userObj)
 {
-	this->drawHdlrs.Add(hdlr);
-	this->drawObjs.Add(userObj);
+	this->drawHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIPictureBoxDD::HandleMoveToNext(UI::UIEvent hdlr, void *userObj)
+void UI::GUIPictureBoxDD::HandleMoveToNext(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->moveToNextHdlrs.Add(hdlr);
-	this->moveToNextObjs.Add(userObj);
+	this->moveToNextHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, void *userObj)
+void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->moveToPrevHdlrs.Add(hdlr);
-	this->moveToPrevObjs.Add(userObj);
+	this->moveToPrevHdlrs.Add({hdlr, userObj});
 }
 
 Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)

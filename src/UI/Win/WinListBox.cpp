@@ -56,7 +56,7 @@ UI::Win::WinListBox::~WinListBox()
 }
 
 
-UOSInt UI::Win::WinListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -65,14 +65,14 @@ UOSInt UI::Win::WinListBox::AddItem(NotNullPtr<Text::String> itemText, void *ite
 	MemFree(s);
 	if (i == INVALID_INDEX)
 		return i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj.p);
 	}
 	return i;
 }
 
-UOSInt UI::Win::WinListBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -81,73 +81,73 @@ UOSInt UI::Win::WinListBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	MemFree(s);
 	if (i == INVALID_INDEX)
 		return i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj.p);
 	}
 	return i;
 }
 
-UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, AnyType itemObj)
 {
 	OSInt i = SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)itemText);
 	if (i < 0)
 		return (UOSInt)i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return INVALID_INDEX;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return INVALID_INDEX;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj)
 {
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)itemText);
 	if (i < 0)
 		return INVALID_INDEX;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
 
-void *UI::Win::WinListBox::RemoveItem(UOSInt index)
+AnyType UI::Win::WinListBox::RemoveItem(UOSInt index)
 {
-	void *obj = (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
+	AnyType obj = (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, LB_DELETESTRING, index, 0);
 	return obj;
 }
 
-void *UI::Win::WinListBox::GetItem(UOSInt index)
+AnyType UI::Win::WinListBox::GetItem(UOSInt index)
 {
 	return (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
 }
@@ -200,7 +200,7 @@ Bool UI::Win::WinListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 	}
 }
 
-void *UI::Win::WinListBox::GetSelectedItem()
+AnyType UI::Win::WinListBox::GetSelectedItem()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -259,7 +259,7 @@ WChar *UI::Win::WinListBox::GetItemText(WChar *buff, UOSInt index)
 
 void UI::Win::WinListBox::SetItemText(UOSInt index, Text::CStringNN text)
 {
-	void *item = GetItem(index);
+	AnyType item = GetItem(index);
 	this->RemoveItem(index);
 	this->InsertItem(index, text, item);
 }

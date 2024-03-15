@@ -19,26 +19,26 @@ void Sync::ThreadUtil::SleepDur(Data::Duration dur)
 		Sync::SimpleThread::Sleepus(us);
 }
 
-void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj)
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, AnyType userObj)
 {
 	CloseHandle(CreateWithHandle(tProc, userObj));
 }
 
-void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+void Sync::ThreadUtil::Create(Sync::ThreadProc tProc, AnyType userObj, UInt32 threadSize)
 {
 	CloseHandle(CreateWithHandle(tProc, userObj, threadSize));
 }
 
-Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj)
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, AnyType userObj)
 {
 	DWORD threadId = 0;
-	return (ThreadHandle*)CreateThread(0, 0, (LPTHREAD_START_ROUTINE)tProc, userObj, 0, &threadId);
+	return (ThreadHandle*)CreateThread(0, 0, (LPTHREAD_START_ROUTINE)tProc, userObj.p, 0, &threadId);
 }
 
-Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, void *userObj, UInt32 threadSize)
+Sync::ThreadHandle *Sync::ThreadUtil::CreateWithHandle(Sync::ThreadProc tProc, AnyType userObj, UInt32 threadSize)
 {
 	DWORD threadId = 0;
-	return (ThreadHandle*)CreateThread(0, threadSize, (LPTHREAD_START_ROUTINE)tProc, userObj, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId);
+	return (ThreadHandle*)CreateThread(0, threadSize, (LPTHREAD_START_ROUTINE)tProc, userObj.p, STACK_SIZE_PARAM_IS_A_RESERVATION, &threadId);
 }
 
 void Sync::ThreadUtil::CloseHandle(ThreadHandle *handle)

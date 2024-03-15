@@ -350,7 +350,7 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, U
 	}
 }
 
-Bool Media::DShow::DShowVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::DShow::DShowVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
 	this->captureFilter->SetFrameCallback(cb, fcCb, userData);
 	return true;
@@ -418,7 +418,7 @@ Data::Duration Media::DShow::DShowVideoCapture::GetFrameTime(UOSInt frameIndex)
 	return 0;
 }
 
-void Media::DShow::DShowVideoCapture::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::DShow::DShowVideoCapture::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 

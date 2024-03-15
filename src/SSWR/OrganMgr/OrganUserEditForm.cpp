@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganUserEditForm.h"
 
-void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 {
-	OrganUserEditForm *me = (OrganUserEditForm *)userObj;
+	NotNullPtr<OrganUserEditForm> me = userObj.GetNN<OrganUserEditForm>();
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
@@ -58,9 +58,9 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnCancelClicked(AnyType userObj)
 {
-	OrganUserEditForm *me = (OrganUserEditForm *)userObj;
+	NotNullPtr<OrganUserEditForm> me = userObj.GetNN<OrganUserEditForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

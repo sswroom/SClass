@@ -940,7 +940,7 @@ Bool Media::ASIOOutRenderer::IsPlaying()
 	return playing;
 }
 
-void Media::ASIOOutRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::ASIOOutRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

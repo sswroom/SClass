@@ -211,7 +211,8 @@ void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -223,16 +224,14 @@ void UI::GUICustomDrawVScroll::OnKeyDown(UInt32 keyCode)
 {
 }
 
-void UI::GUICustomDrawVScroll::HandleSelChg(UI::UIEvent hdlr, void *userObj)
+void UI::GUICustomDrawVScroll::HandleSelChg(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->selChgHdlrs.Add(hdlr);
-	this->selChgObjs.Add(userObj);
+	this->selChgHdlrs.Add({hdlr, userObj});
 }
 
-void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, void *userObj)
+void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, AnyType userObj)
 {
-	this->dblClkHdlrs.Add(hdlr);
-	this->dblClkObjs.Add(userObj);
+	this->dblClkHdlrs.Add({hdlr, userObj});
 }
 
 void UI::GUICustomDrawVScroll::EventSelChg()
@@ -241,7 +240,8 @@ void UI::GUICustomDrawVScroll::EventSelChg()
 	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->selChgHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -251,7 +251,8 @@ void UI::GUICustomDrawVScroll::EventDblClk()
 	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClkHdlrs.GetItem(i)(this->dblClkObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->dblClkHdlrs.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 

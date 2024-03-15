@@ -407,7 +407,7 @@ Bool Media::KSRenderer::IsPlaying()
 	return this->playing;
 }
 
-void Media::KSRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::KSRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

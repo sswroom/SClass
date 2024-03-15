@@ -56,17 +56,17 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnTimeAdd;
 			NotNullPtr<UI::GUIButton> btnTimeApply;
 
-			static void __stdcall OnSpeciesChg(void *userObj);
-			static void __stdcall OnTileUpdated(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnMapScaleScroll(void *userObj, UOSInt newVal);
-			static void __stdcall OnTrackChg(void *userObj);
-			static void __stdcall OnPictureChg(void *userObj);
-			static void __stdcall OnCameraChg(void *userObj);
-			static void __stdcall OnPasteClicked(void *userObj);
-			static void __stdcall OnTimeAddClicked(void *userObj);
-			static void __stdcall OnTimeSubClicked(void *userObj);
-			static void __stdcall OnTimeApplyClicked(void *userObj);
+			static void __stdcall OnSpeciesChg(AnyType userObj);
+			static void __stdcall OnTileUpdated(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnMapScaleScroll(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnTrackChg(AnyType userObj);
+			static void __stdcall OnPictureChg(AnyType userObj);
+			static void __stdcall OnCameraChg(AnyType userObj);
+			static void __stdcall OnPasteClicked(AnyType userObj);
+			static void __stdcall OnTimeAddClicked(AnyType userObj);
+			static void __stdcall OnTimeSubClicked(AnyType userObj);
+			static void __stdcall OnTimeApplyClicked(AnyType userObj);
 			void UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj);
 		public:
 			OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, DataFileInfo *dataFile);

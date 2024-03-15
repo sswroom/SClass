@@ -23,8 +23,8 @@ namespace SSWR
 			OrganGroup *foundGroup;
 			Int32 parentId;
 			
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			OrganSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
 			virtual ~OrganSearchForm();

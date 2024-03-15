@@ -3,9 +3,9 @@
 #include "SSWR/OrganMgr/OrganImageWebForm.h"
 #include "Text/MyString.h"
 
-void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(AnyType userObj)
 {
-	OrganImageWebForm *me = (OrganImageWebForm *)userObj;
+	NotNullPtr<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSourceURL->GetText(sb);
 	SDEL_STRING(me->srcURL);
@@ -18,9 +18,9 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnCancelClicked(AnyType userObj)
 {
-	OrganImageWebForm *me = (OrganImageWebForm *)userObj;
+	NotNullPtr<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

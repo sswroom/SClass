@@ -492,7 +492,7 @@ Bool Media::WaveOutRenderer::IsPlaying()
 	return this->playing;
 }
 
-void Media::WaveOutRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::WaveOutRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

@@ -21,8 +21,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIListView> lvUser;
 			Data::ArrayList<OrganWebUser*> userList;
 
-			static void __stdcall OnAddClicked(void *userObj);
-			static void __stdcall OnModifyClicked(void *userObj);
+			static void __stdcall OnAddClicked(AnyType userObj);
+			static void __stdcall OnModifyClicked(AnyType userObj);
 			void UpdateUserList();
 		public:
 			OrganUserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);

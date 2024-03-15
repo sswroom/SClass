@@ -49,12 +49,12 @@ namespace SSWR
 			Bool ToSave();
 			Location *GetParentLoc();
 
-			static void __stdcall OnLocSelChg(void *userObj);
-			static void __stdcall OnSubLocSelChg(void *userObj);
-			static void __stdcall OnSubLocDblClk(void *userObj);
-			static void __stdcall OnAddClicked(void *userObj);
-			static void __stdcall OnOkClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnLocSelChg(AnyType userObj);
+			static void __stdcall OnSubLocSelChg(AnyType userObj);
+			static void __stdcall OnSubLocDblClk(AnyType userObj);
+			static void __stdcall OnAddClicked(AnyType userObj);
+			static void __stdcall OnOkClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			OrganLocationForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, SelectMode selMode, Int32 initId);
 			virtual ~OrganLocationForm();

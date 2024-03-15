@@ -4,10 +4,10 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	SSWR::AVIRead::AVIROLEDBForm *me = (SSWR::AVIRead::AVIROLEDBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
 	me->txtConnStr->GetText(sb);
 
 	DB::OLEDBConn *conn;
@@ -24,9 +24,9 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnCancelClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIROLEDBForm *me = (SSWR::AVIRead::AVIROLEDBForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

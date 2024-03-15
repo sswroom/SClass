@@ -16,7 +16,7 @@ namespace Data
 			this->userObj = nullptr;
 		}
 
-		CallbackStorage(nullptr_t)
+		CallbackStorage(std::nullptr_t)
 		{
 			this->func = 0;
 			this->userObj = nullptr;

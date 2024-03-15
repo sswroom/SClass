@@ -3,9 +3,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnOKClicked(AnyType userObj)
 {
-	OrganImageDetailForm *me = (OrganImageDetailForm *)userObj;
+	NotNullPtr<OrganImageDetailForm> me = userObj.GetNN<OrganImageDetailForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDescript->GetText(sb);
 	SDEL_TEXT(me->descript);
@@ -13,9 +13,9 @@ void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnOKClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnCancelClicked(AnyType userObj)
 {
-	OrganImageDetailForm *me = (OrganImageDetailForm *)userObj;
+	NotNullPtr<OrganImageDetailForm> me = userObj.GetNN<OrganImageDetailForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

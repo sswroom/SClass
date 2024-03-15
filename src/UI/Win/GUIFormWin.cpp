@@ -42,7 +42,7 @@ Int32 UI::GUIForm::useCnt = 0;
 
 OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIForm *me = (UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	NotNullPtr<UI::GUIForm> me = NotNullPtr<UI::GUIForm>::FromPtr((UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA));
 	UI::GUIControl *ctrl;
 	NotNullPtr<UI::GUIButton> btn;
 	RECT rc;
@@ -120,24 +120,9 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		InvalidateRect((HWND)hWnd, 0, true);
 		return 0;//DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 	case WM_CLOSE:
-		if (me)
+		if (me->closingHdlr.func)
 		{
-			if (me->closingHdlr)
-			{
-				if (!me->closingHdlr(me->closingHdlrObj, CR_USER))
-				{
-					if (me->currDialog)
-					{
-						me->currDialog->Close();
-					}
-					DestroyWindow((HWND)hWnd);
-				}
-				else
-				{
-				}
-				return 0;
-			}
-			else
+			if (!me->closingHdlr.func(me->closingHdlr.userObj, CR_USER))
 			{
 				if (me->currDialog)
 				{
@@ -145,19 +130,32 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 				}
 				DestroyWindow((HWND)hWnd);
 			}
+			else
+			{
+			}
+			return 0;
+		}
+		else
+		{
+			if (me->currDialog)
+			{
+				me->currDialog->Close();
+			}
+			DestroyWindow((HWND)hWnd);
 		}
 		return 0;
 	case WM_DESTROY:
 		i = me->closeHandlers.GetCount();
 		while (i-- > 0)
 		{
-			((FormClosedEvent)me->closeHandlers.GetItem(i))(me->closeHandlersObj.GetItem(i), me);
+			Data::CallbackStorage<FormClosedEvent> cb = me->closeHandlers.GetItem(i);
+			cb.func(cb.userObj, me);
 		}
 		me->EventClosed();
 		if (!me->isDialog)
 		{
 			me->DestroyObject();
-			DEL_CLASS(me);
+			me.Delete();
 		}
 		else
 		{
@@ -293,14 +291,16 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		i = me->keyUpHandlers.GetCount();
 		while (i-- > 0)
 		{
-			me->keyUpHandlers.GetItem(i)(me->keyUpHandlersObj.GetItem(i), wParam, (lParam & 0x1000000) != 0);
+			Data::CallbackStorage<KeyEvent> cb = me->keyUpHandlers.GetItem(i);
+			cb.func(cb.userObj, wParam, (lParam & 0x1000000) != 0);
 		}
 		break;
 	case WM_KEYDOWN:
 		i = me->keyDownHandlers.GetCount();
 		while (i-- > 0)
 		{
-			me->keyDownHandlers.GetItem(i)(me->keyDownHandlersObj.GetItem(i), wParam, (lParam & 0x1000000) != 0);
+			Data::CallbackStorage<KeyEvent> cb = me->keyDownHandlers.GetItem(i);
+			cb.func(cb.userObj, wParam, (lParam & 0x1000000) != 0);
 		}
 		break;
 	case WM_SYSKEYDOWN:
@@ -363,13 +363,14 @@ void UI::GUIForm::UpdateHAcc()
 		DestroyAcceleratorTable((HACCEL)this->hAcc);
 		this->hAcc = 0;
 	}
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
 		UOSInt i;
 		ACCEL *accels;
 		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
 		UI::GUIMenu::ShortcutKey *key;
-		this->menu->GetAllKeys(keys);
+		menu->GetAllKeys(keys);
 		i = keys.GetCount();
 		if (i > 0)
 		{
@@ -428,7 +429,6 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 		Init(((UI::Win::WinCore*)ui.Ptr())->GetHInst());
 	}
 	this->closingHdlr = 0;
-	this->closingHdlrObj = 0;
 	this->exitOnClose = false;
 	this->nextTmrId = 1;
 	this->ui = ui;
@@ -544,11 +544,7 @@ UI::GUIForm::~GUIForm()
 		{
 			this->timers.GetItem(i).Delete();
 		}
-		if (this->menu)
-		{
-			DEL_CLASS(this->menu);
-			this->menu = 0;
-		}
+		this->menu.Delete();
 		if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 		{
 			Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
@@ -691,7 +687,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
+NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
 {
 	NotNullPtr<UI::Win::WinTimer> tmr;
 	NEW_CLASSNN(tmr, UI::Win::WinTimer(*this, this->nextTmrId++, interval, handler, userObj));
@@ -713,20 +709,17 @@ void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 	}
 }
 
-void UI::GUIForm::SetMenu(UI::GUIMainMenu *menu)
+void UI::GUIForm::SetMenu(NotNullPtr<UI::GUIMainMenu> menu)
 {
 #ifndef _WIN32_WCE
 	::SetMenu((HWND)this->hwnd, (HMENU)menu->GetHMenu());
 #endif
-	if (this->menu)
-	{
-		DEL_CLASS(this->menu);
-	}
+	this->menu.Delete();
 	this->menu = menu;
 	this->UpdateHAcc();
 }
 
-UI::GUIMainMenu *UI::GUIForm::GetMenu()
+Optional<UI::GUIMainMenu> UI::GUIForm::GetMenu()
 {
 	return this->menu;
 }
@@ -795,7 +788,8 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -823,7 +817,8 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 		UOSInt j = this->dropFileHandlers.GetCount();
 		while (j-- > 0)
 		{
-			this->dropFileHandlers.GetItem(j)(this->dropFileHandlersObj.GetItem(j), files, (OSInt)fileCnt);
+			Data::CallbackStorage<FileEvent> cb = this->dropFileHandlers.GetItem(j);
+			cb.func(cb.userObj, {files, (OSInt)fileCnt});
 		}
 		while (fileCnt-- > 0)
 		{
@@ -840,7 +835,8 @@ void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 	i = this->menuClickedHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->menuClickedHandlers.GetItem(i)(this->menuClickedHandlersObj.GetItem(i), cmdId);
+		Data::CallbackStorage<MenuEvent> cb = this->menuClickedHandlers.GetItem(i);
+		cb.func(cb.userObj, cmdId);
 	}
 }
 
@@ -866,13 +862,12 @@ void UI::GUIForm::ShowMouseCursor(Bool toShow)
 	ShowCursor(toShow?TRUE:FALSE);
 }
 
-void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, void *userObj)
+void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, AnyType userObj)
 {
-	this->closeHandlers.Add(handler);
-	this->closeHandlersObj.Add(userObj);
+	this->closeHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
+void UI::GUIForm::HandleDropFiles(FileEvent handler, AnyType userObj)
 {
 #ifndef _WIN32_WCE
 	if (this->dropFileHandlers.GetCount() == 0)
@@ -881,32 +876,27 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
 		UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_EXSTYLE, style | WS_EX_ACCEPTFILES);
 	}
 #endif
-	this->dropFileHandlers.Add(handler);
-	this->dropFileHandlersObj.Add(userObj);
+	this->dropFileHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleMenuClicked(MenuEvent handler, void *userObj)
+void UI::GUIForm::HandleMenuClicked(MenuEvent handler, AnyType userObj)
 {
-	this->menuClickedHandlers.Add(handler);
-	this->menuClickedHandlersObj.Add(userObj);
+	this->menuClickedHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleKeyDown(KeyEvent handler, void *userObj)
+void UI::GUIForm::HandleKeyDown(KeyEvent handler, AnyType userObj)
 {
-	this->keyDownHandlers.Add(handler);
-	this->keyDownHandlersObj.Add(userObj);
+	this->keyDownHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleKeyUp(KeyEvent handler, void *userObj)
+void UI::GUIForm::HandleKeyUp(KeyEvent handler, AnyType userObj)
 {
-	this->keyUpHandlers.Add(handler);
-	this->keyUpHandlersObj.Add(userObj);
+	this->keyUpHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, void *userObj)
+void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, AnyType userObj)
 {
-	this->closingHdlr = handler;
-	this->closingHdlrObj = userObj;
+	this->closingHdlr = {handler, userObj};
 }
 
 void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
@@ -922,10 +912,10 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->UpdateFont();
 	}
-
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
-		this->menu->SetDPI(hdpi, ddpi);
+		menu->SetDPI(hdpi, ddpi);
 	}
 	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
@@ -1029,7 +1019,8 @@ void UI::GUIForm::FromFullScn()
 
 	SetWindowPos((HWND)this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE); 
 
-	if (this->menu)
+	NotNullPtr<UI::GUIMainMenu> menu;
+	if (this->menu.SetTo(menu))
 	{
 #ifdef _WIN32_WCE
 //		::SetMenu((HWND)this->hwnd, (HMENU)menu->GetHMenu());

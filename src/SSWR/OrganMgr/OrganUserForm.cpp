@@ -2,18 +2,18 @@
 #include "SSWR/OrganMgr/OrganUserEditForm.h"
 #include "SSWR/OrganMgr/OrganUserForm.h"
 
-void __stdcall SSWR::OrganMgr::OrganUserForm::OnAddClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganUserForm::OnAddClicked(AnyType userObj)
 {
-	OrganUserForm *me = (OrganUserForm*)userObj;
+	NotNullPtr<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
 	OrganUserEditForm frm(0, me->ui, me->env, 0);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->UpdateUserList();
 	}
 }
-void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(AnyType userObj)
 {
-	OrganUserForm *me = (OrganUserForm*)userObj;
+	NotNullPtr<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
 	OrganWebUser *user = (OrganWebUser*)me->lvUser->GetSelectedItem();
 	if (user)
 	{

@@ -23,9 +23,9 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(AnyType userObj, Da
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(void *userObj, UOSInt itemIndex)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
+	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetItem(itemIndex);
 	if (dataFile == 0)
 		return;
@@ -36,9 +36,9 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(void *userObj, U
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(AnyType userObj)
 {
-	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
+	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	Text::StringBuilderUTF8 sb;
 	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetSelectedItem();
 	if (dataFile == 0)
@@ -55,9 +55,9 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(AnyType userObj)
 {
-	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
+	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetSelectedItem();

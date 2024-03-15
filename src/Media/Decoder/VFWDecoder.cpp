@@ -161,7 +161,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			this->frameCb(frameTime, frameNum, &this->frameBuff, this->maxFrameSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 		}
 
-		if (this->imgCb)
+		if (this->imgCb.func)
 		{
 			Media::FrameInfo info;
 			NotNullPtr<Media::StaticImage> img;
@@ -171,9 +171,8 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			this->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 			NEW_CLASSNN(img, Media::StaticImage(info));
 			MemCopyNO(img->data, this->frameBuff, this->maxFrameSize);
-			this->imgCb(this->imgCbData, frameTime, frameNum, img);
+			this->imgCb.func(this->imgCb.userObj, frameTime, frameNum, img);
 			this->imgCb = 0;
-			this->imgCbData = 0;
 		}
 
 		if (this->frameChg)// && this->hasBFrame)
@@ -208,7 +207,6 @@ Media::Decoder::VFWDecoder::VFWDecoder(NotNullPtr<Media::IVideoSource> sourceVid
 	this->frameCbData = 0;
 	this->frameBuff = 0;
 	this->imgCb = 0;
-	this->imgCbData = 0;
 	this->frameChg = false;
 	this->endProcessing = false;
 
@@ -432,10 +430,9 @@ Media::Decoder::VFWDecoder::~VFWDecoder()
 	}
 }
 
-Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, void *userData)
+Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
-	this->imgCb = imgCb;
-	this->imgCbData = userData;
+	this->imgCb = {imgCb, userData};
 	return true;
 }
 
@@ -494,7 +491,7 @@ Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UOSInt frameIndex)
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }
 
-void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }

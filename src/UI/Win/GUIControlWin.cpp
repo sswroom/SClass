@@ -495,7 +495,8 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UI::UIEvent> cb = this->resizeHandlers.GetItem(i);
+		cb.func(cb.userObj);
 	}
 }
 
@@ -517,10 +518,9 @@ void UI::GUIControl::OnShow()
 {
 }
 
-void UI::GUIControl::HandleSizeChanged(UIEvent handler, void *userObj)
+void UI::GUIControl::HandleSizeChanged(UIEvent handler, AnyType userObj)
 {
-	this->resizeHandlers.Add(handler);
-	this->resizeHandlersObjs.Add(userObj);
+	this->resizeHandlers.Add({handler, userObj});
 }
 
 void UI::GUIControl::UpdateFont()

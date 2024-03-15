@@ -62,9 +62,9 @@ namespace UI
 		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		static void Init(void *hInst);
 		static void Deinit(void *hInst);
-		static void JSTimerTick(void *userObj);
+		static void JSTimerTick(AnyType userObj);
 	public:
-		static void __stdcall OnResized(void *userObj);
+		static void __stdcall OnResized(AnyType userObj);
 
 	protected:
 		void GetDrawingRect(void *rc);

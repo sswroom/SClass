@@ -1,11 +1,11 @@
 ﻿#include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganSearchForm.h"
 
-void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
-	OrganSearchForm *me = (OrganSearchForm *)userObj;
+	NotNullPtr<OrganSearchForm> me = userObj.GetNN<OrganSearchForm>();
 	if (sbuff == me->txt->GetText(sbuff))
 	{
 		return;
@@ -25,9 +25,9 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganSearchForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganSearchForm::OnCancelClicked(AnyType userObj)
 {
-	OrganSearchForm *me = (OrganSearchForm *)userObj;
+	NotNullPtr<OrganSearchForm> me = userObj.GetNN<OrganSearchForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 

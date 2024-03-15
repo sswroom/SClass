@@ -162,7 +162,7 @@ Bool Media::VFVideoStream::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutPa
 	return true;
 }
 
-Bool Media::VFVideoStream::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userObj)
+Bool Media::VFVideoStream::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userObj)
 {
 	if (this->playing)
 	{
@@ -253,7 +253,7 @@ Data::Duration Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
 	return Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateScale, this->frameRate);
 }
 
-void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 	UInt32 i;
 	UOSInt dataSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);

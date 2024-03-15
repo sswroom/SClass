@@ -1,5 +1,7 @@
 #ifndef _SM_UI_GUIPICTUREBOXDD
 #define _SM_UI_GUIPICTUREBOXDD
+#include "AnyType.h"
+#include "Data/CallbackStorage.h"
 #include "Math/Coord2D.h"
 #include "Math/RectArea.h"
 #include "Media/ColorManager.h"
@@ -14,20 +16,14 @@ namespace UI
 	class GUIPictureBoxDD : public GUIDDrawControl, public Media::IColorHandler
 	{
 	public:
-		typedef void (__stdcall *DrawHandler32)(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
+		typedef void (__stdcall *DrawHandler32)(AnyType userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 	private:
-		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
-		Data::ArrayList<void *> mouseDownObjs;
-		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
-		Data::ArrayList<void *> mouseUpObjs;
-		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
-		Data::ArrayList<void *> mouseMoveObjs;
-		Data::ArrayList<DrawHandler32> drawHdlrs;
-		Data::ArrayList<void *> drawObjs;
-		Data::ArrayList<UI::UIEvent> moveToNextHdlrs;
-		Data::ArrayList<void *> moveToNextObjs;
-		Data::ArrayList<UI::UIEvent> moveToPrevHdlrs;
-		Data::ArrayList<void *> moveToPrevObjs;
+		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseDownHdlrs;
+		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseUpHdlrs;
+		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseMoveHdlrs;
+		Data::ArrayList<Data::CallbackStorage<DrawHandler32>> drawHdlrs;
+		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> moveToNextHdlrs;
+		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> moveToPrevHdlrs;
 
 		UInt8 *bgBuff;
 		Math::Size2D<UOSInt> bgBuffSize;
@@ -99,12 +95,12 @@ namespace UI
 		Bool GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math::Size2D<UOSInt> imageSize);
 		NotNullPtr<Media::StaticImage> CreatePreviewImage(NotNullPtr<const Media::StaticImage> image);
 
-		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
-		void HandleMouseMove(MouseEventHandler hdlr, void *userObj);
-		void HandleMouseUp(MouseEventHandler hdlr, void *userObj);
-		void HandleDraw(DrawHandler32 hdlr, void *userObj);
-		void HandleMoveToNext(UI::UIEvent hdlr, void *userObj);
-		void HandleMoveToPrev(UI::UIEvent hdlr, void *userObj);
+		void HandleMouseDown(MouseEventHandler hdlr, AnyType userObj);
+		void HandleMouseMove(MouseEventHandler hdlr, AnyType userObj);
+		void HandleMouseUp(MouseEventHandler hdlr, AnyType userObj);
+		void HandleDraw(DrawHandler32 hdlr, AnyType userObj);
+		void HandleMoveToNext(UI::UIEvent hdlr, AnyType userObj);
+		void HandleMoveToPrev(UI::UIEvent hdlr, AnyType userObj);
 		Math::Coord2DDbl Scn2ImagePos(Math::Coord2D<OSInt> scnPos);
 		Math::Coord2DDbl Image2ScnPos(Math::Coord2DDbl imgPos);
 		void ZoomToFit();

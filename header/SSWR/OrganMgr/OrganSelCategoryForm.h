@@ -20,8 +20,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 			SSWR::OrganMgr::OrganEnv *env;
 			
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnOKClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
 			OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::OrganMgr::OrganEnv *env);
 			~OrganSelCategoryForm();

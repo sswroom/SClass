@@ -1,6 +1,8 @@
 #ifndef _SM_UI_GUIDATETIMEPICKER
 #define _SM_UI_GUIDATETIMEPICKER
+#include "AnyType.h"
 #include "Data/ArrayList.h"
+#include "Data/CallbackStorage.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "UI/GUIClientControl.h"
@@ -10,10 +12,9 @@ namespace UI
 	class GUIDateTimePicker : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *DateChangedHandler)(void *userObj, NotNullPtr<Data::DateTime> newDate);
+		typedef void (__stdcall *DateChangedHandler)(AnyType userObj, NotNullPtr<Data::DateTime> newDate);
 	private:
-		Data::ArrayList<DateChangedHandler> dateChangedHdlrs;
-		Data::ArrayList<void*> dateChangedObjs;
+		Data::ArrayList<Data::CallbackStorage<DateChangedHandler>> dateChangedHdlrs;
 
 	public:
 		GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
@@ -29,7 +30,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		void EventDateChange(NotNullPtr<Data::DateTime> newDate);
-		void HandleDateChange(DateChangedHandler hdlr, void *obj);
+		void HandleDateChange(DateChangedHandler hdlr, AnyType obj);
 	};
 }
 

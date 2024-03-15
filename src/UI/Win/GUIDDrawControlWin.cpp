@@ -216,9 +216,9 @@ void UI::GUIDDrawControl::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
+void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 {
-	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)userObj;
+	NotNullPtr<UI::GUIDDrawControl> me = userObj.GetNN<UI::GUIDDrawControl>();
 	if (me->switching)
 		return;
 	if (me->currScnMode == SM_FS)

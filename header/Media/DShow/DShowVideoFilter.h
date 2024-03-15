@@ -41,7 +41,7 @@ namespace Media
 			Manage::HiResClock *clk;
 			Media::IRealtimeVideoSource::FrameCallback cb;
 			Media::IRealtimeVideoSource::FrameChangeCallback fcCb;
-			void *ud;
+			AnyType ud;
 
 		public:
 			DShowVideoFilter(Bool useSourceTime) : CBaseRenderer(DShowVideoFilterGUID, L"DShowVideoFilter", 0, (HRESULT*)&initRes)
@@ -274,7 +274,7 @@ namespace Media
 				this->preferBPP = bpp;
 			}
 
-			void SetFrameCallback(Media::IRealtimeVideoSource::FrameCallback cb, Media::IRealtimeVideoSource::FrameChangeCallback fcCb, void *ud)
+			void SetFrameCallback(Media::IRealtimeVideoSource::FrameCallback cb, Media::IRealtimeVideoSource::FrameChangeCallback fcCb, AnyType ud)
 			{
 				this->cb = cb;
 				this->fcCb = fcCb;

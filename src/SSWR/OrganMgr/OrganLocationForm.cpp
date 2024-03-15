@@ -99,12 +99,12 @@ SSWR::OrganMgr::Location *SSWR::OrganMgr::OrganLocationForm::GetParentLoc()
 	if (i == 0)
 		return 0;
 	else
-		return (Location*)this->lbLocation->GetItem(i - 1);
+		return (Location*)this->lbLocation->GetItem(i - 1).p;
 }
 
-void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(AnyType userObj)
 {
-	OrganLocationForm *me = (OrganLocationForm*)userObj;
+	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (me->ToSave())
 	{
 		me->lbLocation->SetSelectedIndex(me->lbLocation->GetCount() - 1);
@@ -121,9 +121,9 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(void *userObj)
 	me->UpdateSubloc();
 }
 
-void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(AnyType userObj)
 {
-	OrganLocationForm *me = (OrganLocationForm*)userObj;
+	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (!me->sublocUpdating)
 	{
 		if (me->ToSave())
@@ -134,7 +134,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
 	}
 
 	me->currLocInd = me->lbSublocations->GetSelectedIndex();
-	me->currLoc = (Location*)me->lbSublocations->GetItem(me->currLocInd);
+	me->currLoc = (Location*)me->lbSublocations->GetItem(me->currLocInd).p;
 	if (me->currLoc == 0)
 	{
 		me->txtCName->SetText(CSTR(""));
@@ -152,23 +152,23 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(AnyType userObj)
 {
-	OrganLocationForm *me = (OrganLocationForm*)userObj;
+	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	UOSInt i = me->lbSublocations->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		if (me->ToSave())
 			return;
-		Location *loc = (Location*)me->lbSublocations->GetItem(i);
+		Location *loc = (Location*)me->lbSublocations->GetItem(i).p;
 		i = me->lbLocation->AddItem(loc->cname, loc);
 		me->lbLocation->SetSelectedIndex(i);
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(AnyType userObj)
 {
-	OrganLocationForm *me = (OrganLocationForm*)userObj;
+	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sbuffEnd;
 	UTF8Char sbuff2[256];
@@ -208,9 +208,9 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(AnyType userObj)
 {
-	OrganLocationForm *me = (OrganLocationForm*)userObj;
+	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (me->ToSave())
 		return;
 	if (me->selMode == SM_CHILD)
@@ -236,7 +236,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 	}
 	else if (me->selMode == SM_ANY)
 	{
-		Location *l = (Location*)me->lbSublocations->GetSelectedItem();
+		Location *l = (Location*)me->lbSublocations->GetSelectedItem().p;
 		if (l)
 		{
 			me->currLoc = l;
@@ -268,9 +268,9 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 	me->SetDialogResult(DR_OK);
 }
 
-void __stdcall SSWR::OrganMgr::OrganLocationForm::OnCancelClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganLocationForm::OnCancelClicked(AnyType userObj)
 {
-	OrganLocationForm *me = (OrganLocationForm*)userObj;
+	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (me->ToSave())
 		return;
 	me->SetDialogResult(DR_CANCEL);

@@ -27,7 +27,7 @@ namespace Media
 		Sync::Event *bufferEvt;
 
 		EndNotifier endHdlr;
-		void *endHdlrObj;
+		AnyType endHdlrObj;
 
 		UInt32 buffTime;
 
@@ -51,7 +51,7 @@ namespace Media
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();
-		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
+		virtual void SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj);
 		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();

@@ -21,9 +21,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStartTime;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnFilesDblClk(void *userObj, UOSInt itemIndex);
-			static void __stdcall OnDeleteClicked(void *userObj);
-			static void __stdcall OnStartTimeClicked(void *userObj);
+			static void __stdcall OnFilesDblClk(AnyType userObj, UOSInt itemIndex);
+			static void __stdcall OnDeleteClicked(AnyType userObj);
+			static void __stdcall OnStartTimeClicked(AnyType userObj);
 			void UpdateFileList();
 		public:
 			OrganDataFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);

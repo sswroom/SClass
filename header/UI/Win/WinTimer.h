@@ -14,7 +14,7 @@ namespace UI
 			UInt32 interval;
 
 		public:
-			WinTimer(NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj);
+			WinTimer(NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, AnyType userObj);
 			virtual ~WinTimer();
 
 			UOSInt GetId();
