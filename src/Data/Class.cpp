@@ -19,7 +19,7 @@ Data::Class::~Class()
 	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
 }
 
-UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull)
+UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull)
 {
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
 	field->name = Text::String::New(name);
@@ -30,92 +30,92 @@ UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::Ite
 	return Data::VariItem::GetItemSize(itemType);
 }
 
-Bool Data::Class::AddField(Text::CString name, const UInt8 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const UInt8 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U8, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Int8 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Int8 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I8, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const UInt16 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const UInt16 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U16, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Int16 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Int16 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I16, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const UInt32 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const UInt32 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U32, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Int32 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Int32 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const UInt64 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const UInt64 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U64, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Int64 *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Int64 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I64, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Single *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Single *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F32, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Double *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Double *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Text::String *const *val)
+Bool Data::Class::AddField(Text::CStringNN name, Text::String *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str, false) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Optional<Text::String> *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Optional<Text::String> *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str, false) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const NotNullPtr<Text::String> *val)
+Bool Data::Class::AddField(Text::CStringNN name, const NotNullPtr<Text::String> *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Data::Timestamp *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Data::Timestamp *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Timestamp, false) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Bool *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Bool *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL, true) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Data::ReadonlyArray<UInt8> *const *val)
+Bool Data::Class::AddField(Text::CStringNN name, Data::ReadonlyArray<UInt8> *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr, false) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, const Optional<Math::Geometry::Vector2D> *val)
+Bool Data::Class::AddField(Text::CStringNN name, const Optional<Math::Geometry::Vector2D> *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector, false) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Data::UUID *const *val)
+Bool Data::Class::AddField(Text::CStringNN name, Data::UUID *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID, false) != 0;
 }

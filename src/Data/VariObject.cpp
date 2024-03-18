@@ -206,7 +206,7 @@ Data::Class *Data::VariObject::CreateClass() const
 	UOSInt j = keys->GetCount();
 	while (i < j)
 	{
-		currPos += (OSInt)cls->AddField(Text::CString::FromPtr(keys->GetItem(i)), currPos, values->GetItem(i)->GetItemType(), false);
+		currPos += (OSInt)cls->AddField(Text::CStringNN::FromPtr(keys->GetItem(i)), currPos, values->GetItem(i)->GetItemType(), false);
 		i++;
 	}
 /*	UOSInt i = 0;

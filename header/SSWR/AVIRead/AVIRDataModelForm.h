@@ -1,40 +1,33 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRDBASSIGNCOLUMNFORM
-#define _SM_SSWR_AVIREAD_AVIRDBASSIGNCOLUMNFORM
+#ifndef _SM_SSWR_AVIREAD_AVIRDATAMODELFORM
+#define _SM_SSWR_AVIREAD_AVIRDATAMODELFORM
 #include "DB/TableDef.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 
 namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRDBAssignColumnForm : public UI::GUIForm
+		class AVIRDataModelForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlColumns;
-			NotNullPtr<UI::GUIPanel> pnlButtons;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIPanel> pnlControl;
+			NotNullPtr<UI::GUIListView> lvColumns;
+			NotNullPtr<UI::GUIButton> btnPasteData;
 			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<UI::GUIComboBox> *colsCbo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Data::ArrayList<UOSInt>> colInd;
-			NotNullPtr<DB::TableDef> dbTable;
-			NotNullPtr<DB::ReadingDB> dataFile;
-			Text::CString schema;
-			Text::CStringNN table;
-			Bool dataFileNoHeader;
-			Int8 dataFileTz;
 
-			static void __stdcall OnOKClicked(void *userObj);
-			static void __stdcall OnCancelClicked(void *userObj);
+			static void __stdcall OnPasteDataClicked(AnyType userObj);
+			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::TableDef> dbTable, NotNullPtr<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NotNullPtr<Data::ArrayList<UOSInt>> colInd);
-			virtual ~AVIRDBAssignColumnForm();
+			AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			virtual ~AVIRDataModelForm();
 
 			virtual void OnMonitorChanged();
 		};
