@@ -698,19 +698,19 @@ void DB::OLEDBConn::CloseReader(NotNullPtr<DBReader> r)
 	DEL_CLASS(reader);
 }
 
-void *DB::OLEDBConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 {
 	ClassData *data = this->clsData;
 	if (data->pITransactionLocal == 0)
 	{
 		data->pSession->QueryInterface(IID_ITransactionLocal, (void**)&data->pITransactionLocal);
 		data->pITransactionLocal->StartTransaction(ISOLATIONLEVEL_READCOMMITTED, 0, NULL, NULL);
-		return data->pITransactionLocal;
+		return (DB::DBTransaction*)data->pITransactionLocal;
 	}
 	return 0;
 }
 
-void DB::OLEDBConn::Commit(void *tran)
+void DB::OLEDBConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)
@@ -721,7 +721,7 @@ void DB::OLEDBConn::Commit(void *tran)
 	}
 }
 
-void DB::OLEDBConn::Rollback(void *tran)
+void DB::OLEDBConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)

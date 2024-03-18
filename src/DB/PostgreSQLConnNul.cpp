@@ -111,7 +111,7 @@ void DB::PostgreSQLConn::Reconnect()
 	this->Connect();
 }
 
-void *DB::PostgreSQLConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::PostgreSQLConn::BeginTransaction()
 {
 	if (this->isTran)
 	{
@@ -119,10 +119,10 @@ void *DB::PostgreSQLConn::BeginTransaction()
 	}
 	this->ExecuteNonQuery(CSTR("BEGIN"));
 	this->isTran = true;
-	return (void*)-1;
+	return (DB::DBTransaction*)-1;
 }
 
-void DB::PostgreSQLConn::Commit(void *tran)
+void DB::PostgreSQLConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 	if (this->isTran)
 	{
@@ -131,7 +131,7 @@ void DB::PostgreSQLConn::Commit(void *tran)
 	}
 }
 
-void DB::PostgreSQLConn::Rollback(void *tran)
+void DB::PostgreSQLConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 	if (this->isTran)
 	{

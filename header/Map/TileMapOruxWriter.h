@@ -16,7 +16,7 @@ namespace Map
 		};
 	private:
 		NotNullPtr<DB::SQLiteFile> db;
-		void *sess;
+		Optional<DB::DBTransaction> sess;
 		UOSInt imgCount;
 		Sync::Mutex mut;
 		LevelInfo *levels;

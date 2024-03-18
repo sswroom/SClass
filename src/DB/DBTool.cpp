@@ -110,19 +110,20 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 
 void DB::DBTool::BeginTrans()
 {
-	if (tran == 0)
+	if (tran.IsNull())
 		tran = this->db->BeginTransaction();
 }
 
 void DB::DBTool::EndTrans(Bool toCommit)
 {
-	if (tran == 0)
+	NotNullPtr<DB::DBTransaction> thisTran;
+	if (!tran.SetTo(thisTran))
 		return;
 
 	if (toCommit)
-		this->db->Commit(tran);
+		this->db->Commit(thisTran);
 	else
-		this->db->Rollback(tran);
+		this->db->Rollback(thisTran);
 	tran = 0;
 }
 

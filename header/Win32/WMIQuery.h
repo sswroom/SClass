@@ -33,9 +33,9 @@ namespace Win32
 		Optional<DB::DBReader> ExecuteReaderW(const WChar *sql);
 		virtual Bool IsLastDataError();
 
-		virtual void *BeginTransaction();
-		virtual void Commit(void *tran);
-		virtual void Rollback(void *tran);
+		virtual Optional<DB::DBTransaction> BeginTransaction();
+		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);

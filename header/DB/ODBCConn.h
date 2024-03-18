@@ -73,9 +73,9 @@ namespace DB
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
-		virtual void *BeginTransaction();
-		virtual void Commit(void *tran);
-		virtual void Rollback(void *tran);
+		virtual Optional<DB::DBTransaction> BeginTransaction();
+		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
 
 		ConnError GetConnError();
 		void SetEnableDebug(Bool enableDebug);

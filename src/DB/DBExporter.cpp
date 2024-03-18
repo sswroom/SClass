@@ -188,7 +188,8 @@ Bool DB::DBExporter::GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString 
 		return false;
 	}
 	Bool succ = true;
-	void *tran = file->BeginTransaction();
+	Optional<DB::DBTransaction> tran = file->BeginTransaction();
+	NotNullPtr<DB::DBTransaction> thisTran;
 	while (r->ReadNext())
 	{
 		sql.Clear();
@@ -207,7 +208,10 @@ Bool DB::DBExporter::GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString 
 		}
 	}
 	db->CloseReader(r);
-	file->Commit(tran);
+	if (tran.SetTo(thisTran))
+	{
+		file->Commit(thisTran);
+	}
 	table.Delete();
 	return succ;
 }

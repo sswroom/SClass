@@ -279,16 +279,16 @@ void DB::MySQLConn::Reconnect()
 	Connect();
 }
 
-void *DB::MySQLConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::MySQLConn::BeginTransaction()
 {
-	return (void*)1;
+	return (DB::DBTransaction*)1;
 }
 
-void DB::MySQLConn::Commit(void *tran)
+void DB::MySQLConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 
-void DB::MySQLConn::Rollback(void *tran)
+void DB::MySQLConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 

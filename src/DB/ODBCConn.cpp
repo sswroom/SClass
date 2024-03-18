@@ -854,7 +854,7 @@ void DB::ODBCConn::Reconnect()
 	}
 }
 
-void *DB::ODBCConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::ODBCConn::BeginTransaction()
 {
 	if (isTran)
 		return 0;
@@ -869,7 +869,7 @@ void *DB::ODBCConn::BeginTransaction()
 			this->ExecuteNonQuery(CSTR("BEGIN TRANSACTION"));
 		}
 		isTran = true;
-		return (void*)-1;
+		return (DB::DBTransaction*)-1;
 	}
 	else
 	{
@@ -877,7 +877,7 @@ void *DB::ODBCConn::BeginTransaction()
 	}
 }
 
-void DB::ODBCConn::Commit(void *tran)
+void DB::ODBCConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 	if (!isTran)
 		return;
@@ -893,7 +893,7 @@ void DB::ODBCConn::Commit(void *tran)
 	SQLSetConnectAttr(this->connHand, SQL_ATTR_AUTOCOMMIT, &mode, sizeof(mode));
 }
 
-void DB::ODBCConn::Rollback(void *tran)
+void DB::ODBCConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 	if (!isTran)
 		return;

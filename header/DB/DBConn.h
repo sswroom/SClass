@@ -6,6 +6,8 @@
 
 namespace DB
 {
+	struct DBTransaction;
+
 	class DBConn : public DB::ReadingDB
 	{
 	public:
@@ -51,9 +53,9 @@ namespace DB
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		DataError GetLastDataError();
 
-		virtual void *BeginTransaction() = 0;
-		virtual void Commit(void *tran) = 0;
-		virtual void Rollback(void *tran) = 0;
+		virtual Optional<DBTransaction> BeginTransaction() = 0;
+		virtual void Commit(NotNullPtr<DBTransaction> tran) = 0;
+		virtual void Rollback(NotNullPtr<DBTransaction> tran) = 0;
 
 		virtual Bool IsFullConn() const;
 	};

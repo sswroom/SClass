@@ -207,18 +207,21 @@ void DB::SQLiteFile::Reconnect()
 	}
 }
 
-void *DB::SQLiteFile::BeginTransaction()
+Optional<DB::DBTransaction> DB::SQLiteFile::BeginTransaction()
 {
-	ExecuteNonQuery(CSTR("begin"));
-	return (void*)-1;
+	if (ExecuteNonQuery(CSTR("begin")) >= -1)
+	{
+		return (DB::DBTransaction*)-1;
+	}
+	return 0;
 }
 
-void DB::SQLiteFile::Commit(void *tran)
+void DB::SQLiteFile::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 	ExecuteNonQuery(CSTR("end"));
 }
 
-void DB::SQLiteFile::Rollback(void *tran)
+void DB::SQLiteFile::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 	ExecuteNonQuery(CSTR("rollback"));
 }

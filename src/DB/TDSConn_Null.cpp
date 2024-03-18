@@ -91,16 +91,16 @@ void DB::TDSConn::Reconnect()
 {
 }
 
-void *DB::TDSConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::TDSConn::BeginTransaction()
 {
 	return 0;
 }
 
-void DB::TDSConn::Commit(void *tran)
+void DB::TDSConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 
-void DB::TDSConn::Rollback(void *tran)
+void DB::TDSConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 

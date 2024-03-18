@@ -18,7 +18,7 @@ namespace DB
 	private:
 		Int32 nqFail;
 
-		void *tran;
+		Optional<DB::DBTransaction> tran;
 		Optional<Net::SSHManager> ssh;
 		Optional<Net::SSHClient> sshCli;
 

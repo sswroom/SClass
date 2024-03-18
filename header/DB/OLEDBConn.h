@@ -56,9 +56,9 @@ namespace DB
 //		virtual DBReader *ExecuteReader(const WChar *sql);
 		virtual void CloseReader(NotNullPtr<DBReader> r);
 
-		virtual void *BeginTransaction();
-		virtual void Commit(void *tran);
-		virtual void Rollback(void *tran);
+		virtual Optional<DB::DBTransaction> BeginTransaction();
+		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
 
 		ConnError GetConnError();
 		const WChar *GetConnStr();

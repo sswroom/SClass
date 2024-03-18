@@ -157,16 +157,16 @@ Bool Win32::WMIQuery::IsLastDataError()
 	return this->lastDataError == DE_EXEC_SQL_ERROR;
 }
 
-void *Win32::WMIQuery::BeginTransaction()
+Optional<DB::DBTransaction> Win32::WMIQuery::BeginTransaction()
 {
 	return 0;
 }
 
-void Win32::WMIQuery::Commit(void *tran)
+void Win32::WMIQuery::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 
-void Win32::WMIQuery::Rollback(void *tran)
+void Win32::WMIQuery::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 

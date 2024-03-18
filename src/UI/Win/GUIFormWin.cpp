@@ -818,7 +818,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 		while (j-- > 0)
 		{
 			Data::CallbackStorage<FileEvent> cb = this->dropFileHandlers.GetItem(j);
-			cb.func(cb.userObj, {files, (OSInt)fileCnt});
+			cb.func(cb.userObj, {files, (UOSInt)fileCnt});
 		}
 		while (fileCnt-- > 0)
 		{

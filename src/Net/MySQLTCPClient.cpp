@@ -2389,20 +2389,20 @@ void Net::MySQLTCPClient::Reconnect()
 	}
 }
 
-void *Net::MySQLTCPClient::BeginTransaction()
+Optional<DB::DBTransaction> Net::MySQLTCPClient::BeginTransaction()
 {
 	if (this->ExecuteNonQuery(CSTR("START TRANSACTION")) != -2)
 	{
-		return (void*)-1;
+		return (DB::DBTransaction*)-1;
 	}
 	return 0;
 }
-void Net::MySQLTCPClient::Commit(void *tran)
+void Net::MySQLTCPClient::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 	this->ExecuteNonQuery(CSTR("COMMIT"));
 }
 
-void Net::MySQLTCPClient::Rollback(void *tran)
+void Net::MySQLTCPClient::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 	this->ExecuteNonQuery(CSTR("ROLLBACK"));
 }

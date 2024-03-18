@@ -277,16 +277,16 @@ void DB::OLEDBConn::CloseReader(NotNullPtr<DBReader> r)
 	DEL_CLASS(reader);
 }
 
-void *DB::OLEDBConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 {
 	return 0;
 }
 
-void DB::OLEDBConn::Commit(void *tran)
+void DB::OLEDBConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 
-void DB::OLEDBConn::Rollback(void *tran)
+void DB::OLEDBConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 {
 }
 

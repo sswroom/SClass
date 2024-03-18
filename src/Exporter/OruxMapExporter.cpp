@@ -247,7 +247,8 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 				
 					imgIds.Clear();
 					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat)), &imgIds);
-					void *sess = db->BeginTransaction();
+					Optional<DB::DBTransaction> sess = db->BeginTransaction();
+					NotNullPtr<DB::DBTransaction> thisSess;
 					j = imgIds.GetCount();
 					while (j-- > 0)
 					{
@@ -271,12 +272,18 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 							fd.Delete();
 							if (j != 0 && (j & 0x3fff) == 0)
 							{
-								db->Commit(sess);
+								if (sess.SetTo(thisSess))
+								{
+									db->Commit(thisSess);
+								}
 								sess = db->BeginTransaction();
 							}
 						}
 					}
-					db->Commit(sess);
+					if (sess.SetTo(thisSess))
+					{
+						db->Commit(thisSess);
+					}
 				}
 
 				level++;
