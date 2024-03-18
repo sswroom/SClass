@@ -56,14 +56,15 @@ Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	if (param == 0)
+	NotNullPtr<ParamData> para;
+	if (!param.SetTo(para))
 		return false;
-	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
+	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
@@ -474,7 +475,7 @@ UOSInt Exporter::CIPExporter::GetParamCnt()
 	return 2;
 }
 
-void *Exporter::CIPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (this->IsObjectSupported(pobj) == IO::FileExporter::SupportType::MultiFiles)
 	{
@@ -491,14 +492,18 @@ void *Exporter::CIPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 		{
 			param->scale = param->layer->CalBlockSize();
 		}
-		return param;
+		return (ParamData*)param;
 	}
 	return 0;
 }
 
-void Exporter::CIPExporter::DeleteParam(void *param)
+void Exporter::CIPExporter::DeleteParam(Optional<ParamData> param)
 {
-	MemFree(param);
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
+	{
+		MemFree(para.Ptr());
+	}
 }
 
 Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExporter::ParamInfo> info)
@@ -520,18 +525,19 @@ Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExport
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
+Bool Exporter::CIPExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool Exporter::CIPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 5000 && val <= 5000000)
 		{
+			Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
 			p->scale = val;
 			return true;
 		}
@@ -543,47 +549,51 @@ Bool Exporter::CIPExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
+Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
 {
-	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
-	if (index == 1)
+	NotNullPtr<ParamData> para;
+	if (index == 1 && param.SetTo(para))
 	{
+		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
 		p->dispCol = (UInt32)selCol;
 		return true;
 	}
 	return false;
 }
 
-UTF8Char *Exporter::CIPExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
+UTF8Char *Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 Exporter::CIPExporter::GetParamInt32(void *param, UOSInt index)
+Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
+		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
 		return p->scale;
 	}
 	return 0;
 }
 
-Int32 Exporter::CIPExporter::GetParamSel(void *param, UOSInt index)
+Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 {
-	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
-	if (index == 1)
+	NotNullPtr<ParamData> para;
+	if (index == 1 && param.SetTo(para))
 	{
+		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
 		return (Int32)p->dispCol;
 	}
 	return 0;
 }
 
-UTF8Char *Exporter::CIPExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UTF8Char *Exporter::CIPExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
-	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
-	if (index == 1)
+	NotNullPtr<ParamData> para;
+	if (index == 1 && param.SetTo(para))
 	{
+		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
 		if (itemIndex >= 0 && (UOSInt)itemIndex < p->layer->GetColumnCnt())
 		{
 			return p->layer->GetColumnName(buff, itemIndex);

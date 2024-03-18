@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 		NotNullPtr<Media::ImageList> imgList;
 		Media::StaticImage *simg;
 		Data::DateTime dt;
-		void *param;
+		Optional<IO::FileExporter::ParamData> param;
 		UInt8 *imgBuff;
 		UOSInt imgSize;
 		Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);

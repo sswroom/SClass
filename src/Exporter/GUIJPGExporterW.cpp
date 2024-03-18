@@ -39,7 +39,7 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -68,15 +68,16 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	IO::MemoryStream mstm;
 	{
 		Win32::COMStream cstm(mstm);
+		NotNullPtr<ParamData> para;
 
-		if (param)
+		if (param.SetTo(para))
 		{
 			Gdiplus::EncoderParameters params;
 			params.Count = 1;
 			params.Parameter[0].Guid = Gdiplus::EncoderQuality;
 			params.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
 			params.Parameter[0].NumberOfValues = 1;
-			params.Parameter[0].Value = param;
+			params.Parameter[0].Value = para.Ptr();
 			stat = image->Save(&cstm, &encoderClsid, &params);
 		}
 		else
@@ -208,16 +209,20 @@ UOSInt Exporter::GUIJPGExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::GUIJPGExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
-	return val;
+	return (ParamData*)val;
 }
 
-void Exporter::GUIJPGExporter::DeleteParam(void *param)
+void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)
 {
-	MemFree(param);
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
+	{
+		MemFree(para.Ptr());
+	}
 }
 
 Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
@@ -232,13 +237,14 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> 
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 0 && val <= 100)
 		{
-			*(Int32*)param = val;
+			*(Int32*)para.Ptr() = val;
 			return true;
 		}
 		return false;
@@ -246,11 +252,12 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UOSInt index, Int32 va
 	return false;
 }
 
-Int32 Exporter::GUIJPGExporter::GetParamInt32(void *param, UOSInt index)
+Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
-		return *(Int32*)param;
+		return *(Int32*)para.Ptr();
 	}
 	return 0;
 }

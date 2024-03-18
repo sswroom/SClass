@@ -70,7 +70,7 @@ Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 	return false;
 }
 
-Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UTF8Char fileName2[512];
 	UTF8Char u8fileName[512];

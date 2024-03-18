@@ -375,7 +375,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 					}
 					else
 					{
-						void *param;
+						Optional<IO::FileExporter::ParamData> param;
 						Media::ImageList nimgList(CSTR("Temp"));
 						IO::MemoryStream mstm;
 						nimgList.AddImage(dimg, 0);
@@ -690,7 +690,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 				}
 				else
 				{
-					void *param;
+					Optional<IO::FileExporter::ParamData> param;
 					Media::ImageList nimgList(CSTR("Temp"));
 					IO::MemoryStream mstm;
 					nimgList.AddImage(dimg, 0);
@@ -897,7 +897,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 						dimg->RotateImage(Media::StaticImage::RotateType::CW270);
 					}
 
-					void *param;
+					Optional<IO::FileExporter::ParamData> param;
 					Media::ImageList nimgList(CSTR("Temp"));
 					IO::MemoryStream mstm;
 					nimgList.AddImage(dimg, 0);

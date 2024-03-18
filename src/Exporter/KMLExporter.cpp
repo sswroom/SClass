@@ -88,7 +88,7 @@ void Exporter::KMLExporter::SetEncFactory(Text::EncodingFactory *encFact)
 	this->encFact = encFact;
 }
 
-Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -120,9 +120,10 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		needConv = true;
 	}
 
-	if (param)
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
 	{
-		defHeight = *(Int32*)param;
+		defHeight = *(Int32*)para.Ptr();
 	}
 	IO::BufferedOutputStream cstm(stm, 65536);
 	IO::StreamWriter writer(cstm, &enc);
@@ -701,16 +702,20 @@ UOSInt Exporter::KMLExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::KMLExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::KMLExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *retParam = MemAlloc(Int32, 1);
 	*retParam = 0;
-	return retParam;
+	return (ParamData*)retParam;
 }
 
-void Exporter::KMLExporter::DeleteParam(void *param)
+void Exporter::KMLExporter::DeleteParam(Optional<ParamData> param)
 {
-	MemFree(param);
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
+	{
+		MemFree(para.Ptr());
+	}
 }
 
 Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
@@ -723,18 +728,20 @@ Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> inf
 	return true;
 }
 
-Bool Exporter::KMLExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool Exporter::KMLExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	if (index != 0)
+	NotNullPtr<ParamData> para;
+	if (index != 0 || !param.SetTo(para))
 		return false;
-	Int32 *iParam = (Int32*)param;
+	Int32 *iParam = (Int32*)para.Ptr();
 	*iParam = val;
 	return true;
 }
 
-Int32 Exporter::KMLExporter::GetParamInt32(void *param, UOSInt index)
+Int32 Exporter::KMLExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	if (index != 0)
+	NotNullPtr<ParamData> para;
+	if (index != 0 || !param.SetTo(para))
 		return 0;
-	return *(Int32*)param;
+	return *(Int32*)para.Ptr();
 }

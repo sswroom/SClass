@@ -27,7 +27,7 @@ Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::GUITIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 *tmpBuff;
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, &tmpBuff);
@@ -61,7 +61,7 @@ UOSInt Exporter::GUITIFExporter::GetParamCnt()
 //	return 1;
 }
 
-void *Exporter::GUITIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::GUITIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	return 0;
 /*	Bool *val = MemAlloc(Bool, 1);
@@ -69,7 +69,7 @@ void *Exporter::GUITIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 	return val;*/
 }
 
-void Exporter::GUITIFExporter::DeleteParam(void *param)
+void Exporter::GUITIFExporter::DeleteParam(Optional<ParamData> param)
 {
 //	MemFree(param);
 }
@@ -86,7 +86,7 @@ Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> 
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::SetParamBool(void *param, UOSInt index, Bool val)
+Bool Exporter::GUITIFExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Bool val)
 {
 /*	if (index == 0)
 	{
@@ -96,7 +96,7 @@ Bool Exporter::GUITIFExporter::SetParamBool(void *param, UOSInt index, Bool val)
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::GetParamBool(void *param, UOSInt index)
+Bool Exporter::GUITIFExporter::GetParamBool(Optional<ParamData> param, UOSInt index)
 {
 /*	if (index == 0)
 	{

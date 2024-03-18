@@ -5201,7 +5201,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	if (this->db->ExecuteReader(CSTR("select fileType, fileTime, webuser_id, dataFileName from userfile")).SetTo(r))
 	{
 		Data::DateTime dt;
-		void *param;
+		Optional<IO::FileExporter::ParamData> param;
 		Exporter::GUIJPGExporter exporter;
 		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
 		

@@ -31,31 +31,34 @@ namespace IO
 			ParamType paramType;
 			Bool allowNull;
 		};
+
+		struct ParamData;
+
 	public:
 		virtual ~FileExporter(){};
 
 		virtual Int32 GetName() = 0;
 		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj) = 0;
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff) = 0;
-		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param) = 0;
-		Bool ExportNewFile(Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param);
+		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param) = 0;
+		Bool ExportNewFile(Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 		virtual void SetCodePage(UInt32 codePage);
 		virtual void SetEncFactory(Text::EncodingFactory *encFact);
 
 		virtual UOSInt GetParamCnt();
-		virtual void *CreateParam(NotNullPtr<IO::ParsedObject> pobj);
-		virtual void DeleteParam(void *param);
+		virtual Optional<ParamData> CreateParam(NotNullPtr<IO::ParsedObject> pobj);
+		virtual void DeleteParam(Optional<ParamData> param);
 		virtual Bool GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info);
-		virtual Bool SetParamStr(void *param, UOSInt index, const UTF8Char *val);
-		virtual Bool SetParamInt32(void *param, UOSInt index, Int32 val);
-		virtual Bool SetParamSel(void *param, UOSInt index, UOSInt selCol);
-		virtual Bool SetParamBool(void *param, UOSInt index, Bool val);
-		virtual UTF8Char *GetParamStr(void *param, UOSInt index, UTF8Char *buff);
-		virtual Int32 GetParamInt32(void *param, UOSInt index);
-		virtual Int32 GetParamSel(void *param, UOSInt index);
-		virtual UTF8Char *GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff);
-		virtual Bool GetParamBool(void *param, UOSInt index);
+		virtual Bool SetParamStr(Optional<ParamData> aram, UOSInt index, const UTF8Char *val);
+		virtual Bool SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val);
+		virtual Bool SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol);
+		virtual Bool SetParamBool(Optional<ParamData> param, UOSInt index, Bool val);
+		virtual UTF8Char *GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff);
+		virtual Int32 GetParamInt32(Optional<ParamData> param, UOSInt index);
+		virtual Int32 GetParamSel(Optional<ParamData>param, UOSInt index);
+		virtual UTF8Char *GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff);
+		virtual Bool GetParamBool(Optional<ParamData> param, UOSInt index);
 	};
 }
 #endif

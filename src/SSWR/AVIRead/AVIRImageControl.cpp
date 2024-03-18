@@ -299,13 +299,13 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 				img->To32bpp();
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("jpg"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				void *param = jpgExporter.CreateParam(imgList);
-				if (param)
+				Optional<IO::FileExporter::ParamData> param = jpgExporter.CreateParam(imgList);
+				if (!param.IsNull())
 				{
 					jpgExporter.SetParamInt32(param, 0, 100);
 				}
 				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, param);
-				if (param)
+				if (!param.IsNull())
 				{
 					jpgExporter.DeleteParam(param);
 				}

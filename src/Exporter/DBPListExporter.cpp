@@ -47,7 +47,7 @@ void Exporter::DBPListExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::DBPListExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::DBPListExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -55,9 +55,10 @@ Bool Exporter::DBPListExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 	}
 
 	Optional<Text::String> name = 0;
-	if (param)
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
 	{
-		DBParam *dbParam = (DBParam*)param;
+		DBParam *dbParam = (DBParam*)para.Ptr();
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NotNullPtr<DB::ReadingDB> db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
@@ -69,21 +70,25 @@ UOSInt Exporter::DBPListExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::DBPListExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::DBPListExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
 	param->db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
-	return param;
+	return (ParamData*)param;
 }
 
-void Exporter::DBPListExporter::DeleteParam(void *param)
+void Exporter::DBPListExporter::DeleteParam(Optional<ParamData> param)
 {
-	DBParam *dbParam = (DBParam*)param;
-	dbParam->names.FreeAll();
-	DEL_CLASS(dbParam);
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
+	{
+		DBParam *dbParam = (DBParam*)para.Ptr();
+		dbParam->names.FreeAll();
+		DEL_CLASS(dbParam);
+	}
 }
 
 Bool Exporter::DBPListExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExporter::ParamInfo> info)
@@ -101,52 +106,55 @@ Bool Exporter::DBPListExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileEx
 	}
 }
 
-Bool Exporter::DBPListExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
+Bool Exporter::DBPListExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool Exporter::DBPListExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool Exporter::DBPListExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
 	return false;
 }
 
-Bool Exporter::DBPListExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
+Bool Exporter::DBPListExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
-		DBParam *dbParam = (DBParam*)param;
+		DBParam *dbParam = (DBParam*)para.Ptr();
 		dbParam->tableIndex = selCol;
 		return true;
 	}
 	return false;
 }
 
-UTF8Char *Exporter::DBPListExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
+UTF8Char *Exporter::DBPListExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 Exporter::DBPListExporter::GetParamInt32(void *param, UOSInt index)
+Int32 Exporter::DBPListExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
 	return 0;
 }
 
-Int32 Exporter::DBPListExporter::GetParamSel(void *param, UOSInt index)
+Int32 Exporter::DBPListExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
-		DBParam *dbParam = (DBParam*)param;
+		DBParam *dbParam = (DBParam*)para.Ptr();
 		return (Int32)dbParam->tableIndex;
 	}
 	return 0;
 }
 
-UTF8Char *Exporter::DBPListExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UTF8Char *Exporter::DBPListExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
-		DBParam *dbParam = (DBParam*)param;
+		DBParam *dbParam = (DBParam*)para.Ptr();
 		NotNullPtr<Text::String> name;
 		if (dbParam->names.GetItem(itemIndex).SetTo(name))
 		{

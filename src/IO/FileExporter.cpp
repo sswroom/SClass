@@ -2,7 +2,7 @@
 #include "IO/FileExporter.h"
 #include "IO/FileStream.h"
 
-Bool IO::FileExporter::ExportNewFile(Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool IO::FileExporter::ExportNewFile(Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -26,12 +26,12 @@ UOSInt IO::FileExporter::GetParamCnt()
 	return 0;
 }
 
-void *IO::FileExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> IO::FileExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	return 0;
 }
 
-void IO::FileExporter::DeleteParam(void *param)
+void IO::FileExporter::DeleteParam(Optional<ParamData> param)
 {
 }
 
@@ -40,47 +40,47 @@ Bool IO::FileExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 	return false;
 }
 
-Bool IO::FileExporter::SetParamStr(void *param, UOSInt index, const UTF8Char *val)
+Bool IO::FileExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool IO::FileExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
+Bool IO::FileExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
 {
 	return false;
 }
 
-Bool IO::FileExporter::SetParamBool(void *param, UOSInt index, Bool selCol)
+Bool IO::FileExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Bool selCol)
 {
 	return false;
 }
 
-UTF8Char *IO::FileExporter::GetParamStr(void *param, UOSInt index, UTF8Char *buff)
+UTF8Char *IO::FileExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
 {
 	return 0;
 }
 
-Int32 IO::FileExporter::GetParamInt32(void *param, UOSInt index)
+Int32 IO::FileExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
 	return 0;
 }
 
-Int32 IO::FileExporter::GetParamSel(void *param, UOSInt index)
+Int32 IO::FileExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 {
 	return 0;
 }
 
-UTF8Char *IO::FileExporter::GetParamSelItems(void *param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UTF8Char *IO::FileExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
 	return 0;
 }
 
-Bool IO::FileExporter::GetParamBool(void *param, UOSInt index)
+Bool IO::FileExporter::GetParamBool(Optional<ParamData> param, UOSInt index)
 {
 	return false;
 }

@@ -41,7 +41,7 @@ Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -70,15 +70,16 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	IO::MemoryStream mstm;
 	{
 		Win32::COMStream cstm(mstm);
+		NotNullPtr<ParamData> para;
 
-		if (param)
+		if (param.SetTo(para))
 		{
 			Gdiplus::EncoderParameters params;
 			params.Count = 1;
 			params.Parameter[0].Guid = Gdiplus::EncoderQuality;
 			params.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
 			params.Parameter[0].NumberOfValues = 1;
-			params.Parameter[0].Value = param;
+			params.Parameter[0].Value = para.Ptr();
 			stat = image->Save(&cstm, &encoderClsid, &params);
 		}
 		else

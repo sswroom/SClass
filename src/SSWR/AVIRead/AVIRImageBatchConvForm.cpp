@@ -236,7 +236,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 {
 	Media::ImageList *imgList;
 	NotNullPtr<Media::ImageList> nnimgList;
-	void *param;
+	Optional<IO::FileExporter::ParamData> param;
 	{
 		IO::StmData::FileData fd(srcFile, false);
 		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -245,7 +245,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 	{
 		nnimgList->ToStaticImage(0);
 		param = sess->exporter->CreateParam(nnimgList);
-		if (param)
+		if (!param.IsNull())
 		{
 			sess->exporter->SetParamInt32(param, 0, sess->quality);
 		}
@@ -263,7 +263,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 			}
 		}
 
-		if (param)
+		if (!param.IsNull())
 		{
 			sess->exporter->DeleteParam(param);
 		}

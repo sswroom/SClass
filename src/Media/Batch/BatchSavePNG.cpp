@@ -18,7 +18,7 @@ void Media::Batch::BatchSavePNG::ImageOutput(NotNullPtr<Media::ImageList> imgLis
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = fileId.ConcatTo(sbuff);
-	void *param;
+	Optional<IO::FileExporter::ParamData> param;
 	sptr = Text::StrConcatC(targetId.ConcatTo(sptr), UTF8STRC(".png"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 	param = this->exporter.CreateParam(imgList);

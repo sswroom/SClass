@@ -24,7 +24,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(NotNullPtr<Media::ImageList> i
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	void *param;
+	Optional<IO::FileExporter::ParamData> param;
 	Int32 minIndex;
 	UInt64 minSize;
 	Int32 maxIndex;

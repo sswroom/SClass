@@ -41,7 +41,7 @@ Bool Exporter::WebPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
@@ -49,9 +49,10 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	if (imgList->GetCount() != 1)
 		return false;
 	Int32 quality;
-	if (param)
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
 	{
-		quality = *(Int32*)param;
+		quality = *(Int32*)para.Ptr();
 	}
 	else
 	{
@@ -188,16 +189,20 @@ UOSInt Exporter::WebPExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::WebPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::WebPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
-	return val;
+	return (ParamData*)val;
 }
 
-void Exporter::WebPExporter::DeleteParam(void *param)
+void Exporter::WebPExporter::DeleteParam(Optional<ParamData> param)
 {
-	MemFree(param);
+	NotNullPtr<ParamData> para;
+	if (param.SetTo(para))
+	{
+		MemFree(para.Ptr());
+	}
 }
 
 Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
@@ -212,13 +217,14 @@ Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> in
 	return false;
 }
 
-Bool Exporter::WebPExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
+Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
 		if (val <= 100)
 		{
-			*(Int32*)param = val;
+			*(Int32*)para.Ptr() = val;
 			return true;
 		}
 		return false;
@@ -226,11 +232,12 @@ Bool Exporter::WebPExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 	return false;
 }
 
-Int32 Exporter::WebPExporter::GetParamInt32(void *param, UOSInt index)
+Int32 Exporter::WebPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	if (index == 0)
+	NotNullPtr<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
-		return *(Int32*)param;
+		return *(Int32*)para.Ptr();
 	}
 	return 0;
 }

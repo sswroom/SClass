@@ -74,7 +74,7 @@ void Exporter::GIFExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
+Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;

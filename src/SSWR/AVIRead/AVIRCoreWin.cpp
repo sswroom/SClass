@@ -312,9 +312,9 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 			suppType = fileExp->IsObjectSupported(pobj);
 			if (fileExp->GetParamCnt() > 0)
 			{
-				void *param;
+				Optional<IO::FileExporter::ParamData> param;
 				param = fileExp->CreateParam(pobj);
-				if (param == 0)
+				if (param.IsNull())
 				{
 					this->ui->ShowMsgOK(CSTR("Error in initializing parameters"), CSTR("Save Data"), ownerForm);
 				}
