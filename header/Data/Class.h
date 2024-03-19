@@ -15,6 +15,7 @@ namespace Data
 			OSInt ofst;
 			Data::VariItem::ItemType itemType;
 			Bool notNull;
+			Optional<Text::String> typeName;
 		};
 	private:
 		const void *refObj;
@@ -26,6 +27,7 @@ namespace Data
 		virtual ~Class();
 
 		UOSInt AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull); //return field size
+		UOSInt AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, Bool byName);
 		Bool AddField(Text::CStringNN name, const UInt8 *val);
 		Bool AddField(Text::CStringNN name, const Int8 *val);
 		Bool AddField(Text::CStringNN name, const UInt16 *val);
@@ -46,8 +48,10 @@ namespace Data
 		Bool AddField(Text::CStringNN name, Data::UUID *const *val);
 
 		UOSInt GetFieldCount();
-		Text::String *GetFieldName(UOSInt index);
+		Optional<Text::String> GetFieldName(UOSInt index);
 		Data::VariItem::ItemType GetFieldType(UOSInt index);
+		Optional<FieldInfo> GetFieldInfo(UOSInt index);
+		
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
 		Bool IsNotNull(UOSInt index);
 		Bool GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj);
@@ -57,6 +61,9 @@ namespace Data
 
 		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
 		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
+
+		static Optional<Data::Class> ParseFromStr(Text::CStringNN str);
+		static Optional<Data::Class> ParseFromCpp(Text::CStringNN str);
 	};
 }
 

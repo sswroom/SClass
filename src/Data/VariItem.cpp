@@ -2073,3 +2073,51 @@ UOSInt Data::VariItem::GetItemSize(ItemType itemType)
 		return sizeof(void*);
 	}
 }
+
+Text::CStringNN Data::VariItem::ItemTypeGetName(ItemType itemType)
+{
+	switch (itemType)
+	{
+	case ItemType::F32:
+		return CSTR("Single");
+	case ItemType::F64:
+		return CSTR("Double");
+	case ItemType::I8:
+		return CSTR("Int8");
+	case ItemType::U8:
+		return CSTR("UInt8");
+	case ItemType::I16:
+		return CSTR("Int16");
+	case ItemType::U16:
+		return CSTR("UInt16");
+	case ItemType::I32:
+		return CSTR("Int32");
+	case ItemType::U32:
+		return CSTR("UInt32");
+	case ItemType::I64:
+		return CSTR("Int64");
+	case ItemType::U64:
+		return CSTR("UInt64");
+	case ItemType::BOOL:
+		return CSTR("Bool");
+	case ItemType::CStr:
+		return CSTR("Text::CString");
+	case ItemType::Timestamp:
+		return CSTR("Data::Timestamp");
+	case ItemType::Date:
+		return CSTR("Data::Date");
+	case ItemType::Null:
+		return CSTR("Null");
+	case ItemType::Str:
+		return CSTR("Text::String");
+	case ItemType::ByteArr:
+		return CSTR("Data::ByteArray");
+	case ItemType::Vector:
+		return CSTR("Math::Geometry::Vector2D");
+	case ItemType::UUID:
+		return CSTR("Data::UUID");
+	default:
+	case ItemType::Unknown:
+		return CSTR("Unknown");
+	}
+}

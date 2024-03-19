@@ -120,6 +120,7 @@ namespace DB
 		static Bool CollationParseMySQL(Text::CString collName, Collation *collation);
 
 		static UTF8Char *DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName);
+		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, Optional<Text::String> fieldName);
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);
 		static Bool HasSchema(SQLType sqlType);
 		template <class T> static Bool SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls);
@@ -143,7 +144,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 		{
 			sb.AppendUTF8Char(',');
 		}
-		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i)->v);
+		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i));
 		s = Text::String::NewCSVRec(sbuff);
 		sb.AppendC(s->v, s->leng);
 		s->Release();

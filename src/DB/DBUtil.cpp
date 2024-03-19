@@ -2918,6 +2918,16 @@ UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbNa
 	return fieldNameBuff;
 }
 
+UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, Optional<Text::String> fieldName)
+{
+	NotNullPtr<Text::String> s;
+	if (fieldName.SetTo(s))
+	{
+		return Field2DBName(dbNameBuff, s->v);
+	}
+	return 0;
+}
+
 UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName)
 {
 	Bool isFirst = true;

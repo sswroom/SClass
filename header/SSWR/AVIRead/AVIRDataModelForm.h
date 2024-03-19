@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDATAMODELFORM
 #define _SM_SSWR_AVIREAD_AVIRDATAMODELFORM
-#include "DB/TableDef.h"
+#include "Data/Class.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
@@ -22,9 +22,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			Optional<Data::Class> cls;
 
 			static void __stdcall OnPasteDataClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnColumnsDblClk(AnyType userObj, UOSInt index);
+
+			void UpdateClassDisp();
 		public:
 			AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDataModelForm();

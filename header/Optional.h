@@ -50,6 +50,11 @@ public:
 		return this->p == 0;
 	}
 
+	Bool NotNull() const
+	{
+		return this->p != 0;
+	}
+
 	void Delete()
 	{
 		if (this->p)

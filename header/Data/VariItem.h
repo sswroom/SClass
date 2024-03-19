@@ -211,6 +211,7 @@ namespace Data
 		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);
 
 		static UOSInt GetItemSize(ItemType itemType);
+		static Text::CStringNN ItemTypeGetName(ItemType itemType);
 	};
 }
 #endif

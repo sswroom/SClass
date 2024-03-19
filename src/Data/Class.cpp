@@ -2,10 +2,12 @@
 #include "Data/Class.h"
 #include "Text/CharUtil.h"
 #include "Text/CPPText.h"
+#include "Text/StringBuilderUTF8.h"
 
 void Data::Class::FreeFieldInfo(FieldInfo *field)
 {
 	field->name->Release();
+	OPTSTR_DEL(field->typeName);
 	MemFree(field);
 }
 
@@ -26,8 +28,21 @@ UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::I
 	field->ofst = ofst;
 	field->itemType = itemType;
 	field->notNull = notNull;
+	field->typeName = 0;
 	this->fields.Add(field);
 	return Data::VariItem::GetItemSize(itemType);
+}
+
+UOSInt Data::Class::AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, Bool byName)
+{
+	FieldInfo *field = MemAlloc(FieldInfo, 1);
+	field->name = Text::String::New(name);
+	field->ofst = ofst;
+	field->itemType = byName?(Data::VariItem::ItemType::Str):(Data::VariItem::ItemType::I64);
+	field->notNull = false;
+	field->typeName = Text::String::New(typeName);
+	this->fields.Add(field);
+	return Data::VariItem::GetItemSize(field->itemType);
 }
 
 Bool Data::Class::AddField(Text::CStringNN name, const UInt8 *val)
@@ -125,12 +140,12 @@ UOSInt Data::Class::GetFieldCount()
 	return this->fields.GetCount();
 }
 
-Text::String *Data::Class::GetFieldName(UOSInt index)
+Optional<Text::String> Data::Class::GetFieldName(UOSInt index)
 {
 	FieldInfo *field = this->fields.GetItem(index);
 	if (field)
 	{
-		return field->name.Ptr();
+		return field->name;
 	}
 	return 0;
 }
@@ -143,6 +158,11 @@ Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 		return field->itemType;
 	}
 	return Data::VariItem::ItemType::Unknown;
+}
+
+Optional<Data::Class::FieldInfo> Data::Class::GetFieldInfo(UOSInt index)
+{
+	return this->fields.GetItem(index);
 }
 
 Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
@@ -572,4 +592,167 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	sb->AppendC(UTF8STRC("return cls;\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("}\r\n"));
+}
+
+Optional<Data::Class> Data::Class::ParseFromStr(Text::CStringNN str)
+{
+	Optional<Data::Class> cls = ParseFromCpp(str);
+	if (cls.NotNull())
+		return cls;
+	return 0;
+}
+
+Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
+{
+	NotNullPtr<Data::Class> cls;
+	OSInt ofst = 0;
+	NEW_CLASSNN(cls, Data::Class(0))
+	Text::StringBuilderUTF8 sb;
+	sb.Append(str);
+	Text::PString sarr[2];
+	sarr[1] = sb;
+	Text::PString strType;
+	Text::PString strName;
+	UOSInt i;
+	UOSInt j;
+	while (true)
+	{
+		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+		sarr[0].Trim();
+		if (sarr[0].leng > 0)
+		{
+			if (!sarr[0].EndsWith(';'))
+			{
+				printf("Not end with ';': %s\r\n", sarr[0].v);
+				cls.Delete();
+				return 0;
+			}
+			j = sarr[0].IndexOf(' ');
+			if (j == INVALID_INDEX)
+			{
+				printf("Space not found: %s\r\n", sarr[0].v);
+				cls.Delete();
+				return 0;
+			}
+			strName = sarr[0].SubstrTrim(j + 1);
+			strType = sarr[0].SubstrTrim(0, j);
+			strName.RemoveChars(1);
+			if (strType.Equals(CSTR("Int8")))
+			{
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::I8, true);
+				ofst += 1;
+			}
+			else if (strType.Equals(CSTR("UInt8")))
+			{
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::U8, true);
+				ofst += 1;
+			}
+			else if (strType.Equals(CSTR("Int16")))
+			{
+				if (ofst & 1)
+				{
+					ofst++;
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::I16, true);
+				ofst += 2;
+			}
+			else if (strType.Equals(CSTR("UInt16")))
+			{
+				if (ofst & 1)
+				{
+					ofst++;
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::U16, true);
+				ofst += 2;
+			}
+			else if (strType.Equals(CSTR("Int32")))
+			{
+				if (ofst & 3)
+				{
+					ofst += 4 - (ofst & 3);
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::I32, true);
+				ofst += 4;
+			}
+			else if (strType.Equals(CSTR("UInt32")))
+			{
+				if (ofst & 3)
+				{
+					ofst += 4 - (ofst & 3);
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::U32, true);
+				ofst += 4;
+			}
+			else if (strType.Equals(CSTR("Int64")))
+			{
+				if (ofst & 7)
+				{
+					ofst += 8 - (ofst & 7);
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::I64, true);
+				ofst += 8;
+			}
+			else if (strType.Equals(CSTR("UInt64")))
+			{
+				if (ofst & 7)
+				{
+					ofst += 8 - (ofst & 7);
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::U64, true);
+				ofst += 8;
+			}
+			else if (strType.Equals(CSTR("Single")))
+			{
+				if (ofst & 3)
+				{
+					ofst += 4 - (ofst & 3);
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::F32, true);
+				ofst += 4;
+			}
+			else if (strType.Equals(CSTR("Double")))
+			{
+				if (ofst & 7)
+				{
+					ofst += 8 - (ofst & 7);
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::F64, true);
+				ofst += 8;
+			}
+			else if (strType.Equals(CSTR("NotNullPtr<Text::String>")))
+			{
+				if (ofst & (_OSINT_SIZE / 8 - 1))
+				{
+					ofst += (_OSINT_SIZE / 8) - (ofst & (_OSINT_SIZE / 8 - 1));
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Str, true);
+				ofst += (_OSINT_SIZE / 8);
+			}
+			else if (strType.Equals(CSTR("Optional<Text::String>")))
+			{
+				if (ofst & (_OSINT_SIZE / 8 - 1))
+				{
+					ofst += (_OSINT_SIZE / 8) - (ofst & (_OSINT_SIZE / 8 - 1));
+				}
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Str, false);
+				ofst += (_OSINT_SIZE / 8);
+			}
+			else if (strType.Equals(CSTR("Data::Timestamp")))
+			{
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Timestamp, false);
+				ofst += 13;
+			}
+			else
+			{
+				cls->AddFieldEnum(strName.ToCString(), ofst, strType.ToCString(), false);
+				ofst += (_OSINT_SIZE / 8);
+			}
+		}
+
+		if (i != 2)
+		{
+			break;
+		}
+	}
+	return cls;
 }

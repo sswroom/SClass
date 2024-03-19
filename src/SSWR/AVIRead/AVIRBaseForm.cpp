@@ -69,6 +69,7 @@
 #include "SSWR/AVIRead/AVIRCppEnumForm.h"
 #include "SSWR/AVIRead/AVIRCPUInfoForm.h"
 #include "SSWR/AVIRead/AVIRCustomTileMapForm.h"
+#include "SSWR/AVIRead/AVIRDataModelForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
 #include "SSWR/AVIRead/AVIRDHCPServerForm.h"
 #include "SSWR/AVIRead/AVIRDHT22Form.h"
@@ -506,7 +507,8 @@ typedef enum
 	MNU_JWT_PARSER,
 	MNU_GCIS_CLIENT,
 	MNU_SET_DNS,
-	MNU_SSH_INFO
+	MNU_SSH_INFO,
+	MNU_DATA_MODEL
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
@@ -641,6 +643,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Assembly MASM to GCC"), MNU_ASM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Javascript Text"), MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("C++ Enum to Switch Case"), MNU_CPP_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Data Model"), MNU_DATA_MODEL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Cryptography"));
 	mnu2->AddItem(CSTR("Text Hash"), MNU_TEXTHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Brute Force"), MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2935,6 +2938,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NotNullPtr<SSWR::AVIRead::AVIRSSHInfoForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSHInfoForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_DATA_MODEL:
+		{
+			NotNullPtr<SSWR::AVIRead::AVIRDataModelForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDataModelForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
