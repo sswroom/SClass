@@ -56,7 +56,7 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuild
 		NotNullPtr<Text::String> nativeType;
 		if (col->IsAutoInc())
 		{
-			if (col->GetNativeType().SetTo(nativeType) && (nativeType->Equals(UTF8STRC("serial"))))
+			if (col->GetNativeType().SetTo(nativeType) && (nativeType->Equals(UTF8STRC("serial")) || nativeType->Equals(UTF8STRC("smallserial")) || nativeType->Equals(UTF8STRC("bigserial"))))
 			{
 
 			}
@@ -794,7 +794,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 				sql->AppendCmdC(CSTR("smallint"));
 			else if (s->Equals(UTF8STRC("int2")))
 				sql->AppendCmdC(CSTR("int2"));
-			else if (autoInc)
+			else if (autoInc && s->Equals(CSTR("smallserial")))
 				sql->AppendCmdC(CSTR("smallserial"));
 			else
 				sql->AppendCmdC(CSTR("smallint"));
@@ -804,7 +804,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 				sql->AppendCmdC(CSTR("integer"));
 			else if (s->Equals(UTF8STRC("int4")))
 				sql->AppendCmdC(CSTR("int4"));
-			else if (autoInc)
+			else if (autoInc && s->Equals(CSTR("serial")))
 				sql->AppendCmdC(CSTR("serial"));
 			else
 				sql->AppendCmdC(CSTR("integer"));
@@ -814,7 +814,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 				sql->AppendCmdC(CSTR("bigint"));
 			else if (s->Equals(UTF8STRC("int8")))
 				sql->AppendCmdC(CSTR("int8"));
-			else if (autoInc)
+			else if (autoInc && s->Equals(CSTR("bigserial")))
 				sql->AppendCmdC(CSTR("bigserial"));
 			else
 				sql->AppendCmdC(CSTR("bigint"));
