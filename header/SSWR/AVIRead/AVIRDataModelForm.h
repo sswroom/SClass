@@ -8,6 +8,7 @@
 #include "UI/GUILabel.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
+#include "UI/GUITextBox.h"
 
 namespace SSWR
 {
@@ -18,17 +19,24 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIListView> lvColumns;
+			NotNullPtr<UI::GUILabel> lblClassName;
+			NotNullPtr<UI::GUITextBox> txtClassName;
+			NotNullPtr<UI::GUILabel> lblPrefix;
+			NotNullPtr<UI::GUITextBox> txtPrefix;
 			NotNullPtr<UI::GUIButton> btnPasteData;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NotNullPtr<UI::GUIComboBox> cboType;
+			NotNullPtr<UI::GUIButton> btnGenerate;
+			NotNullPtr<UI::GUILabel> lblStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Data::Class> cls;
 
 			static void __stdcall OnPasteDataClicked(AnyType userObj);
-			static void __stdcall OnCancelClicked(AnyType userObj);
+			static void __stdcall OnGenerateClicked(AnyType userObj);
 			static void __stdcall OnColumnsDblClk(AnyType userObj, UOSInt index);
 
 			void UpdateClassDisp();
+			void PasteData(Bool showError);
 		public:
 			AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDataModelForm();

@@ -30,7 +30,27 @@ void Text::JavaText::ToJavaName(NotNullPtr<Text::StringBuilderUTF8> sb, const UT
 	}
 }
 
-Text::CString Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull)
+void Text::JavaText::ToDBName(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *name)
+{
+	UTF8Char c;
+	Bool notFirst = false;
+	while ((c = *name++) != 0)
+	{
+		if (c >= 'A' && c <= 'Z')
+		{
+			if (notFirst)
+				sb->AppendUTF8Char('_');
+			sb->AppendUTF8Char((UTF8Char)(c + 32));
+		}
+		else
+		{
+			sb->AppendUTF8Char(c);
+		}
+		notFirst = true;
+	}
+}
+
+Text::CStringNN Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull)
 {
 	switch (colType)
 	{
@@ -111,6 +131,88 @@ Text::CString Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool 
 	case DB::DBUtil::CT_Vector:
 		return CSTR("Geometry");
 	case DB::DBUtil::CT_Unknown:
+	default:
+		return CSTR("?");
+	}
+}
+
+Text::CStringNN Text::JavaText::GetJavaTypeName(Data::VariItem::ItemType itemType, Bool notNull)
+{
+	switch (itemType)
+	{
+	case Data::VariItem::ItemType::BOOL:
+		if (notNull)
+		{
+			return CSTR("boolean");
+		}
+		else
+		{
+			return CSTR("Boolean");
+		}
+	case Data::VariItem::ItemType::U8:
+	case Data::VariItem::ItemType::I8:
+		if (notNull)
+		{
+			return CSTR("int");
+		}
+		else
+		{
+			return CSTR("Integer");
+		}
+	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::I16:
+		if (notNull)
+		{
+			return CSTR("int");
+		}
+		else
+		{
+			return CSTR("Integer");
+		}
+	case Data::VariItem::ItemType::U32:
+	case Data::VariItem::ItemType::I32:
+		if (notNull)
+		{
+			return CSTR("int");
+		}
+		else
+		{
+			return CSTR("Integer");
+		}
+	case Data::VariItem::ItemType::U64:
+	case Data::VariItem::ItemType::I64:
+		if (notNull)
+		{
+			return CSTR("long");
+		}
+		else
+		{
+			return CSTR("Long");
+		}
+	case Data::VariItem::ItemType::F32:
+	case Data::VariItem::ItemType::F64:
+		if (notNull)
+		{
+			return CSTR("double");
+		}
+		else
+		{
+			return CSTR("Double");
+		}
+	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
+	case Data::VariItem::ItemType::UUID:
+		return CSTR("String");
+	case Data::VariItem::ItemType::Date:
+		return CSTR("Date");
+	case Data::VariItem::ItemType::Timestamp:
+		return CSTR("Timestamp");
+	case Data::VariItem::ItemType::ByteArr:
+		return CSTR("byte[]");
+	case Data::VariItem::ItemType::Vector:
+		return CSTR("Geometry");
+	case Data::VariItem::ItemType::Null:
+	case Data::VariItem::ItemType::Unknown:
 	default:
 		return CSTR("?");
 	}

@@ -61,6 +61,7 @@ namespace Data
 
 		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
 		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
+		void ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 		static Optional<Data::Class> ParseFromStr(Text::CStringNN str);
 		static Optional<Data::Class> ParseFromCpp(Text::CStringNN str);

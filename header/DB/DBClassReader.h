@@ -49,7 +49,7 @@ namespace DB
 		j = cls->GetFieldCount();
 		while (i < j)
 		{
-			if (!colMap2.ContainsKey(cls->GetFieldName(i)))
+			if (!colMap2.ContainsKey(cls->GetFieldName(i).OrNull()))
 			{
 				clsValid = false;
 			}
@@ -65,7 +65,7 @@ namespace DB
 		i = 0;
 		while (i < j)
 		{
-			this->colIndex[i] = colMap2.Get(cls->GetFieldName(i));
+			this->colIndex[i] = colMap2.Get(cls->GetFieldName(i).OrNull());
 			i++;
 		}
 	}

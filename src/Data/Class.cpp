@@ -1,7 +1,10 @@
 #include "Stdafx.h"
 #include "Data/Class.h"
+#include "Data/StringMap.h"
 #include "Text/CharUtil.h"
 #include "Text/CPPText.h"
+#include "Text/JavaText.h"
+#include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
 void Data::Class::FreeFieldInfo(FieldInfo *field)
@@ -251,6 +254,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->AppendC(UTF8STRC("private:\r\n"));
 	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
 	FieldInfo *field;
+	NotNullPtr<Text::String> typeName;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -259,7 +263,14 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	{
 		field = fieldList->GetItem(i);
 		sb->AppendChar('\t', tabLev + 1);
-		sb->Append(Text::CPPText::GetCppType(field->itemType, field->notNull));
+		if (field->typeName.SetTo(typeName))
+		{
+			sb->Append(typeName);
+		}
+		else
+		{
+			sb->Append(Text::CPPText::GetCppType(field->itemType, field->notNull));
+		}
 		sb->AppendUTF8Char(' ');
 		sb->Append(field->name);
 		sb->AppendC(UTF8STRC(";\r\n"));
@@ -281,24 +292,81 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		Text::CStringNN cppType = Text::CPPText::GetCppType(field->itemType, field->notNull);
-		sb->AppendChar('\t', tabLev + 1);
-		sb->Append(cppType);
-		sb->AppendUTF8Char(' ');
-		sb->AppendC(UTF8STRC("Get"));
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendC(UTF8STRC("() const;\r\n"));
+		if (field->typeName.SetTo(typeName))
+		{
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append(typeName);
+			sb->AppendUTF8Char(' ');
+			sb->AppendC(UTF8STRC("Get"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("() const;\r\n"));
 
-		sb->AppendChar('\t', tabLev + 1);
-		sb->AppendC(UTF8STRC("void Set"));
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendUTF8Char('(');
-		sb->Append(cppType);
-		sb->AppendUTF8Char(' ');
-		sb->Append(field->name);
-		sb->AppendC(UTF8STRC(");\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("void Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendUTF8Char('(');
+			sb->Append(typeName);
+			sb->AppendUTF8Char(' ');
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(");\r\n"));
+
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("void Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("FromName(Text::CStringNN "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(");\r\n"));
+
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("void Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("FromIndex(UOSInt "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(");\r\n"));
+		}
+		else
+		{
+			Text::CStringNN cppType = Text::CPPText::GetCppType(field->itemType, field->notNull);
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append(cppType);
+			sb->AppendUTF8Char(' ');
+			sb->AppendC(UTF8STRC("Get"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("() const;\r\n"));
+
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("void Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendUTF8Char('(');
+			sb->Append(cppType);
+			sb->AppendUTF8Char(' ');
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(");\r\n"));
+			
+			if (field->itemType == Data::VariItem::ItemType::Str)
+			{
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("void Set"));
+				sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+				sb->AppendC(field->name->v + 1, field->name->leng - 1);
+				if (field->notNull)
+				{
+					sb->AppendC(UTF8STRC("(Text::CStringNN "));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("(Text::CString "));
+				}
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(");\r\n"));
+			}
+		}
 		i++;
 	}
 
@@ -319,6 +387,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	}
 	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
 	FieldInfo *field;
+	NotNullPtr<Text::String> typeName;
 	UOSInt i;
 	UOSInt j;
 
@@ -335,16 +404,28 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		sb->AppendChar('\t', tabLev + 1);
-		sb->AppendC(UTF8STRC("this->"));
-		sb->Append(field->name);
-		if (field->itemType == Data::VariItem::ItemType::Str && field->notNull)
+		if (field->typeName.SetTo(typeName))
 		{
-			sb->AppendC(UTF8STRC(" = Text::String::NewEmpty();\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(" = ("));
+			sb->Append(typeName);
+			sb->AppendC(UTF8STRC(")0;\r\n"));
 		}
 		else
 		{
-			sb->AppendC(UTF8STRC(" = 0;\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			if (field->itemType == Data::VariItem::ItemType::Str && field->notNull)
+			{
+				sb->AppendC(UTF8STRC(" = Text::String::NewEmpty();\r\n"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC(" = 0;\r\n"));
+			}
 		}
 		i++;
 	}
@@ -365,54 +446,61 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		switch (field->itemType)
+		if (field->typeName.NotNull())
 		{
-		case Data::VariItem::ItemType::Str:
-			sb->AppendChar('\t', tabLev + 1);
-			if (field->notNull)
+
+		}
+		else
+		{
+			switch (field->itemType)
 			{
+			case Data::VariItem::ItemType::Str:
+				sb->AppendChar('\t', tabLev + 1);
+				if (field->notNull)
+				{
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC("->Release();\r\n"));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(");\r\n"));
+				}
+				break;
+			case Data::VariItem::ItemType::Vector:
+				sb->AppendChar('\t', tabLev + 1);
 				sb->AppendC(UTF8STRC("this->"));
 				sb->Append(field->name);
-				sb->AppendC(UTF8STRC("->Release();\r\n"));
-			}
-			else
-			{
-				sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+				sb->AppendC(UTF8STRC(".Delete();\r\n"));
+				break;
+			case Data::VariItem::ItemType::ByteArr:
+			case Data::VariItem::ItemType::UUID:
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
 				sb->Append(field->name);
 				sb->AppendC(UTF8STRC(");\r\n"));
+				break;
+			case Data::VariItem::ItemType::Timestamp:
+			case Data::VariItem::ItemType::Date:
+			case Data::VariItem::ItemType::CStr:
+			case Data::VariItem::ItemType::F32:
+			case Data::VariItem::ItemType::F64:
+			case Data::VariItem::ItemType::I8:
+			case Data::VariItem::ItemType::U8:
+			case Data::VariItem::ItemType::I16:
+			case Data::VariItem::ItemType::U16:
+			case Data::VariItem::ItemType::I32:
+			case Data::VariItem::ItemType::U32:
+			case Data::VariItem::ItemType::I64:
+			case Data::VariItem::ItemType::U64:
+			case Data::VariItem::ItemType::BOOL:
+			case Data::VariItem::ItemType::Unknown:
+			case Data::VariItem::ItemType::Null:
+			default:
+				break;
 			}
-			break;
-		case Data::VariItem::ItemType::Vector:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(".Delete();\r\n"));
-			break;
-		case Data::VariItem::ItemType::ByteArr:
-		case Data::VariItem::ItemType::UUID:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(");\r\n"));
-			break;
-		case Data::VariItem::ItemType::Timestamp:
-		case Data::VariItem::ItemType::Date:
-		case Data::VariItem::ItemType::CStr:
-		case Data::VariItem::ItemType::F32:
-		case Data::VariItem::ItemType::F64:
-		case Data::VariItem::ItemType::I8:
-		case Data::VariItem::ItemType::U8:
-		case Data::VariItem::ItemType::I16:
-		case Data::VariItem::ItemType::U16:
-		case Data::VariItem::ItemType::I32:
-		case Data::VariItem::ItemType::U32:
-		case Data::VariItem::ItemType::I64:
-		case Data::VariItem::ItemType::U64:
-		case Data::VariItem::ItemType::BOOL:
-		case Data::VariItem::ItemType::Unknown:
-		case Data::VariItem::ItemType::Null:
-		default:
-			break;
 		}
 		i++;
 	}
@@ -425,135 +513,283 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		Text::CStringNN cppType = Text::CPPText::GetCppType(field->itemType, field->notNull);
-		sb->AppendChar('\t', tabLev);
-		sb->Append(cppType);
-		sb->AppendUTF8Char(' ');
-		sb->Append(clsPrefix);
-		sb->Append(clsName);
-		sb->AppendC(UTF8STRC("::Get"));
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendC(UTF8STRC("() const\r\n"));
-		sb->AppendChar('\t', tabLev);
-		sb->AppendC(UTF8STRC("{\r\n"));
-		sb->AppendChar('\t', tabLev + 1);
-		sb->AppendC(UTF8STRC("return this->"));
-		sb->Append(field->name);
-		sb->AppendC(UTF8STRC(";\r\n"));
-		sb->AppendChar('\t', tabLev);
-		sb->AppendC(UTF8STRC("}\r\n"));
-		sb->AppendC(UTF8STRC("\r\n"));
-
-		sb->AppendChar('\t', tabLev);
-		sb->AppendC(UTF8STRC("void "));
-		sb->Append(clsPrefix);
-		sb->Append(clsName);
-		sb->AppendC(UTF8STRC("::Set"));
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendUTF8Char('(');
-		sb->Append(cppType);
-		sb->AppendUTF8Char(' ');
-		sb->Append(field->name);
-		sb->AppendC(UTF8STRC(")\r\n"));
-		sb->AppendChar('\t', tabLev);
-		sb->AppendC(UTF8STRC("{\r\n"));
-		switch (field->itemType)
+		if (field->typeName.SetTo(typeName))
 		{
-		case Data::VariItem::ItemType::Str:
-			if (field->notNull)
+			sb->AppendChar('\t', tabLev);
+			sb->Append(typeName);
+			sb->AppendUTF8Char(' ');
+			sb->Append(clsPrefix);
+			sb->Append(clsName);
+			sb->AppendC(UTF8STRC("::Get"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("() const\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("return this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(";\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
+
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("void "));
+			sb->Append(clsPrefix);
+			sb->Append(clsName);
+			sb->AppendC(UTF8STRC("::Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendUTF8Char('(');
+			sb->Append(typeName);
+			sb->AppendUTF8Char(' ');
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(")\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(" = "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(";\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
+
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("void "));
+			sb->Append(clsPrefix);
+			sb->Append(clsName);
+			sb->AppendC(UTF8STRC("::Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("FromName(Text::CStringNN "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(")\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(" = "));
+			sb->Append(typeName);
+			sb->AppendC(UTF8STRC("FromName("));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(");\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
+
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("void "));
+			sb->Append(clsPrefix);
+			sb->Append(clsName);
+			sb->AppendC(UTF8STRC("::Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("FromIndex(UOSInt "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(")\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(" = ("));
+			sb->Append(typeName);
+			sb->AppendUTF8Char(')');
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(";\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
+		}
+		else
+		{
+			Text::CStringNN cppType = Text::CPPText::GetCppType(field->itemType, field->notNull);
+			sb->AppendChar('\t', tabLev);
+			sb->Append(cppType);
+			sb->AppendUTF8Char(' ');
+			sb->Append(clsPrefix);
+			sb->Append(clsName);
+			sb->AppendC(UTF8STRC("::Get"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendC(UTF8STRC("() const\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("return this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(";\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
+
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("void "));
+			sb->Append(clsPrefix);
+			sb->Append(clsName);
+			sb->AppendC(UTF8STRC("::Set"));
+			sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+			sb->AppendC(field->name->v + 1, field->name->leng - 1);
+			sb->AppendUTF8Char('(');
+			sb->Append(cppType);
+			sb->AppendUTF8Char(' ');
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(")\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			switch (field->itemType)
 			{
-				sb->AppendChar('\t', tabLev + 1);
-				sb->AppendC(UTF8STRC("this->"));
-				sb->Append(field->name);
-				sb->AppendC(UTF8STRC("->Release();\r\n"));
+			case Data::VariItem::ItemType::Str:
+				if (field->notNull)
+				{
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC("->Release();\r\n"));
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(" = "));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC("->Clone();\r\n"));
+					sb->AppendChar('\t', tabLev);
+					sb->AppendC(UTF8STRC("}\r\n"));
+					sb->AppendC(UTF8STRC("\r\n"));
+
+					sb->AppendChar('\t', tabLev);
+					sb->AppendC(UTF8STRC("void "));
+					sb->Append(clsPrefix);
+					sb->Append(clsName);
+					sb->AppendC(UTF8STRC("::Set"));
+					sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+					sb->AppendC(field->name->v + 1, field->name->leng - 1);
+					sb->AppendC(UTF8STRC("(Text::CStringNN "));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(")\r\n"));
+					sb->AppendChar('\t', tabLev);
+					sb->AppendC(UTF8STRC("{\r\n"));
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC("->Release();\r\n"));
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(" = Text::String::New("));
+					sb->Append(field->name);
+					sb->AppendUTF8Char(')');
+				}
+				else
+				{
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(");\r\n"));
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(" = !"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(".IsNull()?"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(".OrNull()->Clone():Optional<Text::String>(0);\r\n"));
+					sb->AppendChar('\t', tabLev);
+					sb->AppendC(UTF8STRC("}\r\n"));
+					sb->AppendC(UTF8STRC("\r\n"));
+
+					sb->AppendChar('\t', tabLev);
+					sb->AppendC(UTF8STRC("void "));
+					sb->Append(clsPrefix);
+					sb->Append(clsName);
+					sb->AppendC(UTF8STRC("::Set"));
+					sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+					sb->AppendC(field->name->v + 1, field->name->leng - 1);
+					sb->AppendC(UTF8STRC("(Text::CString "));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(")\r\n"));
+					sb->AppendChar('\t', tabLev);
+					sb->AppendC(UTF8STRC("{\r\n"));
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(");\r\n"));
+					sb->AppendChar('\t', tabLev + 1);
+					sb->AppendC(UTF8STRC("this->"));
+					sb->Append(field->name);
+					sb->AppendC(UTF8STRC(" = Text::String::NewOrNull("));
+					sb->Append(field->name);
+					sb->AppendUTF8Char(')');
+				}
+				break;
+			case Data::VariItem::ItemType::Date:
+			case Data::VariItem::ItemType::Timestamp:
 				sb->AppendChar('\t', tabLev + 1);
 				sb->AppendC(UTF8STRC("this->"));
 				sb->Append(field->name);
 				sb->AppendC(UTF8STRC(" = "));
 				sb->Append(field->name);
-				sb->AppendC(UTF8STRC("->Clone()"));
-			}
-			else
-			{
+				break;
+			case Data::VariItem::ItemType::Vector:
 				sb->AppendChar('\t', tabLev + 1);
-				sb->AppendC(UTF8STRC("OPTSTR_DEL(this->"));
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(".Delete();\r\n"));
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(" = "));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(".IsNull()?Optional<Math::Geometry::Vector2D>(0):"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(".OrNull()->Clone()"));
+				break;
+			case Data::VariItem::ItemType::ByteArr:
+			case Data::VariItem::ItemType::UUID:
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
 				sb->Append(field->name);
 				sb->AppendC(UTF8STRC(");\r\n"));
 				sb->AppendChar('\t', tabLev + 1);
 				sb->AppendC(UTF8STRC("this->"));
 				sb->Append(field->name);
-				sb->AppendC(UTF8STRC(" = !"));
+				sb->AppendC(UTF8STRC(" = "));
 				sb->Append(field->name);
-				sb->AppendC(UTF8STRC(".IsNull()?"));
+				sb->AppendC(UTF8STRC("?"));
 				sb->Append(field->name);
-				sb->AppendC(UTF8STRC(".OrNull()->Clone():Optional<Text::String>(0)"));
+				sb->AppendC(UTF8STRC("->Clone():0"));
+				break;
+			case Data::VariItem::ItemType::CStr:
+			case Data::VariItem::ItemType::F32:
+			case Data::VariItem::ItemType::F64:
+			case Data::VariItem::ItemType::I8:
+			case Data::VariItem::ItemType::U8:
+			case Data::VariItem::ItemType::I16:
+			case Data::VariItem::ItemType::U16:
+			case Data::VariItem::ItemType::I32:
+			case Data::VariItem::ItemType::U32:
+			case Data::VariItem::ItemType::I64:
+			case Data::VariItem::ItemType::U64:
+			case Data::VariItem::ItemType::BOOL:
+			case Data::VariItem::ItemType::Unknown:
+			case Data::VariItem::ItemType::Null:
+			default:
+				sb->AppendChar('\t', tabLev + 1);
+				sb->AppendC(UTF8STRC("this->"));
+				sb->Append(field->name);
+				sb->AppendC(UTF8STRC(" = "));
+				sb->Append(field->name);
+				break;
 			}
-			break;
-		case Data::VariItem::ItemType::Date:
-		case Data::VariItem::ItemType::Timestamp:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(field->name);
-			break;
-		case Data::VariItem::ItemType::Vector:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(".Delete();\r\n"));
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(".IsNull()?Optional<Math::Geometry::Vector2D>(0):"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(".OrNull()->Clone()"));
-			break;
-		case Data::VariItem::ItemType::ByteArr:
-		case Data::VariItem::ItemType::UUID:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(");\r\n"));
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("?"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("->Clone():0"));
-			break;
-		case Data::VariItem::ItemType::CStr:
-		case Data::VariItem::ItemType::F32:
-		case Data::VariItem::ItemType::F64:
-		case Data::VariItem::ItemType::I8:
-		case Data::VariItem::ItemType::U8:
-		case Data::VariItem::ItemType::I16:
-		case Data::VariItem::ItemType::U16:
-		case Data::VariItem::ItemType::I32:
-		case Data::VariItem::ItemType::U32:
-		case Data::VariItem::ItemType::I64:
-		case Data::VariItem::ItemType::U64:
-		case Data::VariItem::ItemType::BOOL:
-		case Data::VariItem::ItemType::Unknown:
-		case Data::VariItem::ItemType::Null:
-		default:
-			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(field->name);
-			break;
+			sb->AppendC(UTF8STRC(";\r\n"));
+			sb->AppendChar('\t', tabLev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
-		sb->AppendC(UTF8STRC(";\r\n"));
-		sb->AppendChar('\t', tabLev);
-		sb->AppendC(UTF8STRC("}\r\n"));
-		sb->AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
 
@@ -582,15 +818,301 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		sb->AppendChar('\t', tabLev + 1);
-		sb->AppendC(UTF8STRC("CLASS_ADD(cls, "));
-		sb->Append(field->name);
-		sb->AppendC(UTF8STRC(");\r\n"));
+		if (field->typeName.SetTo(typeName))
+		{
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("cls->AddFieldEnum(CSTR(\""));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC("\"), (OSInt)&this->"));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(" - (OSInt)this, CSTR(\""));
+			sb->Append(typeName);
+			sb->AppendC(UTF8STRC("\"), "));
+			if (field->itemType == Data::VariItem::ItemType::Str)
+				sb->AppendC(UTF8STRC("true);\r\n"));
+			else
+				sb->AppendC(UTF8STRC("false);\r\n"));
+		}
+		else
+		{
+			sb->AppendChar('\t', tabLev + 1);
+			sb->AppendC(UTF8STRC("CLASS_ADD(cls, "));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC(");\r\n"));
+		}
 		i++;
 	}
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendC(UTF8STRC("return cls;\r\n"));
 	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("}\r\n"));
+}
+
+void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb)
+{
+	Data::StringMap<Bool> importMap;
+	Text::StringBuilderUTF8 sbCode;
+	Text::StringBuilderUTF8 sbConstrHdr;
+	Text::StringBuilderUTF8 sbConstrItem;
+	Text::StringBuilderUTF8 sbGetterSetter;
+	Text::StringBuilderUTF8 sbEquals;
+	Text::StringBuilderUTF8 sbHashCode;
+	Text::StringBuilderUTF8 sbFieldOrder;
+	Text::StringBuilderUTF8 sbTmp;
+	importMap.Put(CSTR("javax.persistence.Entity"), true);
+	importMap.Put(CSTR("javax.persistence.Table"), true);
+
+	sbCode.AppendC(UTF8STRC("@Entity\r\n"));
+	sbCode.AppendC(UTF8STRC("@Table(name="));
+	Text::JavaText::ToDBName(sbTmp, clsName->v);
+	Text::JSText::ToJSTextDQuote(sbCode, sbTmp.v);
+	sbCode.AppendC(UTF8STRC(", schema="));
+	Text::JSText::ToJSTextDQuote(sbCode, (const UTF8Char*)"dbo");
+	sbCode.AppendC(UTF8STRC(")\r\n"));
+	sbCode.AppendC(UTF8STRC("public class "));
+	Text::JavaText::ToJavaName(sbCode, clsName->v, true);
+	sbCode.AppendC(UTF8STRC("\r\n"));
+
+	sbConstrHdr.AppendC(UTF8STRC("\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\tpublic "));
+	Text::JavaText::ToJavaName(sbConstrHdr, clsName->v, true);
+	sbConstrHdr.AppendC(UTF8STRC("() {\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\t}\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\tpublic "));
+	Text::JavaText::ToJavaName(sbConstrHdr, clsName->v, true);
+	sbConstrHdr.AppendUTF8Char('(');
+
+	sbEquals.AppendC(UTF8STRC("\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t@Override\r\n"));
+	sbEquals.AppendC(UTF8STRC("\tpublic boolean equals(Object o) {\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\tif (o == this)\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t\treturn true;\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\tif (!(o instanceof "));
+	Text::JavaText::ToJavaName(sbEquals, clsName->v, true);
+	sbEquals.AppendC(UTF8STRC(")) {\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t\treturn false;\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t}\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t"));
+	Text::JavaText::ToJavaName(sbEquals, clsName->v, true);
+	sbEquals.AppendUTF8Char(' ');
+	Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
+	sbEquals.AppendC(UTF8STRC(" = ("));
+	Text::JavaText::ToJavaName(sbEquals, clsName->v, true);
+	sbEquals.AppendC(UTF8STRC(") o;\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\treturn "));
+
+	sbHashCode.AppendC(UTF8STRC("\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\t@Override\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\tpublic int hashCode() {\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\t\treturn Objects.hash("));
+
+	sbFieldOrder.AppendC(UTF8STRC("\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t@Override\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\tpublic String toString() {\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t\treturn DataTools.toObjectString(this);\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t}\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\tpublic static String[] getFieldOrder() {\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
+
+	sbCode.AppendC(UTF8STRC("{\r\n"));
+	NotNullPtr<FieldInfo> field;
+	NotNullPtr<Text::String> typeName;
+	Text::CStringNN javaType;
+	UOSInt i = 0;
+	UOSInt j = this->fields.GetCount();
+	while (i < j)
+	{
+		if (field.Set(this->fields.GetItem(i)))
+		{
+			if (field->typeName.SetTo(typeName))
+			{
+				if (field->itemType == Data::VariItem::ItemType::Str)
+				{
+					sbCode.AppendC(UTF8STRC("\t@Enumerated(value = EnumType.STRING)\r\n"));
+				}
+				else
+				{
+					sbCode.AppendC(UTF8STRC("\t@Enumerated(value = EnumType.ORDINAL)\r\n"));
+				}
+				sbCode.AppendC(UTF8STRC("\tprivate "));
+				sbCode.Append(typeName);
+				javaType = typeName->ToCString();
+
+			}
+			else
+			{
+				sbCode.AppendC(UTF8STRC("\tprivate "));
+				if (field->itemType == Data::VariItem::ItemType::Vector)
+				{
+					importMap.Put(CSTR("org.locationtech.jts.geom.Geometry"), true);
+				}
+				else if (field->itemType == Data::VariItem::ItemType::Timestamp)
+				{
+					importMap.Put(CSTR("java.sql.Timestamp"), true);
+				}
+				else if (field->itemType == Data::VariItem::ItemType::Date)
+				{
+					importMap.Put(CSTR("java.sql.Date"), true);
+				}
+				javaType = Text::JavaText::GetJavaTypeName(field->itemType, field->notNull);
+				sbCode.Append(javaType);
+			}
+			sbCode.AppendUTF8Char(' ');
+			Text::JavaText::ToJavaName(sbCode, field->name->v, false);
+			sbCode.AppendC(UTF8STRC(";\r\n"));
+
+			sbConstrHdr.Append(javaType);
+			sbConstrHdr.AppendUTF8Char(' ');
+			Text::JavaText::ToJavaName(sbConstrHdr, field->name->v, false);
+			if (i + 1 < j)
+			{
+				sbConstrHdr.AppendC(UTF8STRC(", "));
+			}
+
+			sbConstrItem.AppendC(UTF8STRC("\t\tthis."));
+			Text::JavaText::ToJavaName(sbConstrItem, field->name->v, false);
+			sbConstrItem.AppendC(UTF8STRC(" = "));
+			Text::JavaText::ToJavaName(sbConstrItem, field->name->v, false);
+			sbConstrItem.AppendC(UTF8STRC(";\r\n"));
+
+			sbGetterSetter.AppendC(UTF8STRC("\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\tpublic "));
+			sbGetterSetter.Append(javaType);
+			if (field->itemType == Data::VariItem::ItemType::BOOL)
+			{
+				sbGetterSetter.AppendC(UTF8STRC(" is"));
+			}
+			else
+			{
+				sbGetterSetter.AppendC(UTF8STRC(" get"));
+			}
+			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, true);
+			sbGetterSetter.AppendC(UTF8STRC("() {\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\t\treturn this."));
+			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+			sbGetterSetter.AppendC(UTF8STRC(";\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\t}\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\tpublic void set"));
+			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, true);
+			sbGetterSetter.AppendUTF8Char('(');
+			sbGetterSetter.Append(javaType);
+			sbGetterSetter.AppendUTF8Char(' ');
+			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+			sbGetterSetter.AppendC(UTF8STRC(") {\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\t\tthis."));
+			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+			sbGetterSetter.AppendC(UTF8STRC(" = "));
+			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+			sbGetterSetter.AppendC(UTF8STRC(";\r\n"));
+			sbGetterSetter.AppendC(UTF8STRC("\t}\r\n"));
+
+			Bool isObj = true;
+			if (field->notNull)
+			{
+				switch (field->itemType)
+				{
+				case Data::VariItem::ItemType::BOOL:
+				case Data::VariItem::ItemType::U8:
+				case Data::VariItem::ItemType::I8:
+				case Data::VariItem::ItemType::I16:
+				case Data::VariItem::ItemType::U16:
+				case Data::VariItem::ItemType::U32:
+				case Data::VariItem::ItemType::I32:
+				case Data::VariItem::ItemType::I64:
+				case Data::VariItem::ItemType::U64:
+				case Data::VariItem::ItemType::F64:
+				case Data::VariItem::ItemType::F32:
+					isObj = false;
+					break;
+				case Data::VariItem::ItemType::Str:
+				case Data::VariItem::ItemType::CStr:
+				case Data::VariItem::ItemType::UUID:
+				case Data::VariItem::ItemType::Date:
+				case Data::VariItem::ItemType::Timestamp:
+				case Data::VariItem::ItemType::ByteArr:
+				case Data::VariItem::ItemType::Vector:
+				case Data::VariItem::ItemType::Null:
+				case Data::VariItem::ItemType::Unknown:
+				default:
+					break;
+				}
+			}
+			if (isObj)
+			{
+				sbEquals.AppendC(UTF8STRC("Objects.equals("));
+				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+				sbEquals.AppendC(UTF8STRC(", "));
+				Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
+				sbEquals.AppendUTF8Char('.');
+				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+				sbEquals.AppendUTF8Char(')');
+			}
+			else
+			{
+				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+				sbEquals.AppendC(UTF8STRC(" == "));
+				Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
+				sbEquals.AppendUTF8Char('.');
+				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+			}
+			if (i + 1 < j)
+			{
+				sbEquals.AppendC(UTF8STRC(" && "));
+			}
+
+			Text::JavaText::ToJavaName(sbHashCode, field->name->v, false);
+			if (i + 1 < j)
+			{
+				sbHashCode.AppendC(UTF8STRC(", "));
+			}
+
+			sbFieldOrder.AppendC(UTF8STRC("\t\t\""));
+			Text::JavaText::ToJavaName(sbFieldOrder, field->name->v, false);
+			if (i + 1 >= j)
+			{
+				sbFieldOrder.AppendC(UTF8STRC("\"\r\n"));
+			}
+			else
+			{
+				sbFieldOrder.AppendC(UTF8STRC("\",\r\n"));
+			}
+		}
+		i++;
+	}
+
+
+	sbConstrHdr.AppendC(UTF8STRC(") {\r\n"));
+	sbConstrItem.AppendC(UTF8STRC("\t}\r\n"));
+	sbEquals.AppendC(UTF8STRC(";\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t}\r\n"));
+	sbHashCode.AppendC(UTF8STRC(");\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\t}\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t\t};\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t}\r\n"));
+	importMap.Put(CSTR("org.sswr.util.data.DataTools"), true);
+	importMap.Put(CSTR("java.util.Objects"), true);
+
+	i = 0;
+	j = importMap.GetCount();
+	while (i < j)
+	{
+		sb->AppendC(UTF8STRC("import "));
+		sb->Append(importMap.GetKey(i));
+		sb->AppendC(UTF8STRC(";\r\n"));
+		i++;
+	}
+	sb->AllocLeng(sbCode.GetLength() + sbConstrHdr.GetLength() + sbConstrItem.GetLength() + sbGetterSetter.GetLength() + sbEquals.GetLength() + sbHashCode.GetLength() + sbFieldOrder.GetLength() + 2);
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->Append(sbCode.ToCString());
+	sb->Append(sbConstrHdr.ToCString());
+	sb->Append(sbConstrItem.ToCString());
+	sb->Append(sbGetterSetter.ToCString());
+	sb->Append(sbEquals.ToCString());
+	sb->Append(sbHashCode.ToCString());
+	sb->Append(sbFieldOrder.ToCString());
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
@@ -741,6 +1263,16 @@ Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 			{
 				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Timestamp, false);
 				ofst += 13;
+			}
+			else if (strType.Equals(CSTR("NotNullPtr<Math::Geometry::Vector2D>")))
+			{
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Vector, true);
+				ofst += (_OSINT_SIZE / 8);
+			}
+			else if (strType.Equals(CSTR("Optional<Math::Geometry::Vector2D>")))
+			{
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Vector, false);
+				ofst += (_OSINT_SIZE / 8);
 			}
 			else
 			{

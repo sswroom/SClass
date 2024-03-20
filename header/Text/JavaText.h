@@ -10,7 +10,9 @@ namespace Text
 	{
 	public:
 		static void ToJavaName(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *usName, Bool isClass);
-		static Text::CString GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull);
+		static void ToDBName(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *name);
+		static Text::CStringNN GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull);
+		static Text::CStringNN GetJavaTypeName(Data::VariItem::ItemType itemType, Bool notNull);
 	};
 }
 #endif
