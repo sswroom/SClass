@@ -181,7 +181,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType
 				hdlr(userObj, fileOfst + j, i - j, CSTR("Unknown Protocol"));
 			}
 			j = i;
-			b64.Decrypt(&buff[i + 2], 8, this->protoBuff, 0);
+			b64.Decrypt(&buff[i + 2], 8, this->protoBuff);
 			cmdSize = ReadUInt16(&this->protoBuff[0]);
 			cmdType = ReadUInt16(&this->protoBuff[2]);
 			seqId = ReadUInt16(&this->protoBuff[4]);
@@ -347,7 +347,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 		UOSInt tmpVal1;
 		UOSInt tmpVal2;
 		Crypto::Encrypt::Base64 b64;
-		b64.Decrypt(&buff[2], 8, this->protoBuff, 0);
+		b64.Decrypt(&buff[2], 8, this->protoBuff);
 		cmdSize = ReadUInt16(&this->protoBuff[0]);
 		cmdType = ReadUInt16(&this->protoBuff[2]);
 		seqId = ReadUInt16(&this->protoBuff[4]);
@@ -361,7 +361,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 		{
 			tmpVal2 = tmpVal1 * 4;
 		}
-		b64.Decrypt(&buff[10], tmpVal2, &this->protoBuff[8], 0);
+		b64.Decrypt(&buff[10], tmpVal2, &this->protoBuff[8]);
 		buff = this->protoBuff;
 	}
 	else

@@ -154,7 +154,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt sr
 	srcBuff = this->DecGetIV(srcBuff, iv);
 	this->GetEncKey(salt, key);
 	NotNullPtr<Crypto::Encrypt::ICrypto> enc = this->CreateCrypto(iv, key);
-	outSize = enc->Decrypt(srcBuff, (UOSInt)(srcBuffEnd - srcBuff), outBuff, 0);
+	outSize = enc->Decrypt(srcBuff, (UOSInt)(srcBuffEnd - srcBuff), outBuff);
 	enc.Delete();
 	MemFree(key);
 	MemFree(iv);
@@ -229,7 +229,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NotNullPtr<Text::StringBui
 	UInt8 *key = MemAlloc(UInt8, this->dkLen);
 	this->GetEncKey(salt, key);
 	NotNullPtr<Crypto::Encrypt::ICrypto> enc = this->CreateCrypto(iv, key);
-	destOfst += enc->Encrypt(srcBuff, destLen - destOfst, &destBuff[destOfst], 0);
+	destOfst += enc->Encrypt(srcBuff, destLen - destOfst, &destBuff[destOfst]);
 	enc.Delete();
 	MemFree(key);
 	if (srcTmpBuff)

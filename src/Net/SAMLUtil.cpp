@@ -210,11 +210,11 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNull
 					if (headingIV)
 					{
 						cipher->SetIV(data);
-						decSize = cipher->Decrypt(data + blkSize, dataSize - blkSize, decData, 0);
+						decSize = cipher->Decrypt(data + blkSize, dataSize - blkSize, decData);
 					}
 					else
 					{
-						decSize = cipher->Decrypt(data, dataSize, decData, 0);
+						decSize = cipher->Decrypt(data, dataSize, decData);
 					}
 					if (decData[decSize - 1] <= blkSize)
 					{

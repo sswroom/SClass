@@ -89,7 +89,7 @@ Bool Crypto::Encrypt::RC2Cipher::SetKey(const UInt8 *key, UOSInt keyLen, UOSInt 
 	return true;
 }
 
-UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) const
+UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
 {
 	const UInt16 *xkey = this->xkeys;
 	UInt16 x76;
@@ -136,7 +136,7 @@ UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *out
     return 8;
 }
 
-UOSInt Crypto::Encrypt::RC2Cipher::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) const
+UOSInt Crypto::Encrypt::RC2Cipher::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
 {
     UInt16 x76;
 	UInt16 x54;

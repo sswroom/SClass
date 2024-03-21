@@ -279,7 +279,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 
 				UOSInt txtSize = (UOSInt)(Text::StrConcat((UTF8Char*)&buff[4], sarr2[0]) - &buff[4]);
 				WriteMInt32(buff, 1);
-				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4], 0);
+				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4]);
 
 				if (this->sps)
 				{
@@ -293,7 +293,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 
 				txtSize = (UOSInt)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
 				WriteMInt32(buff, 1);
-				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4], 0);
+				txtSize = b64.Decrypt(&buff[4], txtSize - 1, &buff[4]);
 
 				if (this->pps)
 				{

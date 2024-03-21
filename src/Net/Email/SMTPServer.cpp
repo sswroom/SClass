@@ -234,7 +234,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 			Text::CString userName;
 			Text::CString pwd;
 			Crypto::Encrypt::Base64 b64;
-			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
+			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff);
 			decBuff[cmdLen] = 0;
 			userName.v = (const UTF8Char*)&decBuff[1];
 			userName.leng = Text::StrCharCnt(userName.v);
@@ -262,7 +262,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 		{
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
 			Crypto::Encrypt::Base64 b64;
-			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
+			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff);
 			decBuff[cmdLen] = 0;
 			SDEL_STRING(cliStatus->userName);
 			cliStatus->userName = Text::String::New(decBuff, cmdLen).Ptr();
@@ -275,7 +275,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 			Bool succ = false;
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
 			Crypto::Encrypt::Base64 b64;
-			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
+			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff);
 			decBuff[cmdLen] = 0;
 			succ = this->loginHdlr(this->mailObj, cliStatus->userName->ToCString(), {decBuff, cmdLen});
 			MemFree(decBuff);
@@ -426,7 +426,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 			Text::CString userName;
 			Text::CString pwd;
 			Crypto::Encrypt::Base64 b64;
-			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff, 0);
+			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff);
 			decBuff[cmdLen] = 0;
 			userName.v = &decBuff[1];
 			userName.leng = Text::StrCharCnt(userName.v);
@@ -453,7 +453,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 		{
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
 			Crypto::Encrypt::Base64 b64;
-			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff, 0);
+			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff);
 			decBuff[cmdLen] = 0;
 			SDEL_STRING(cliStatus->userName);
 			cliStatus->userName = Text::String::New((UTF8Char*)&decBuff[1], cmdLen - 1).Ptr();

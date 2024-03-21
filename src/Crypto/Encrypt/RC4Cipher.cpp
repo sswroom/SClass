@@ -48,7 +48,7 @@ void Crypto::Encrypt::RC4Cipher::SetKey(const UInt8 *key, UOSInt keyLen)
 	this->j = 0;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::RC4Cipher::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
 	if (outBuff == 0)
 	{
@@ -71,7 +71,7 @@ UOSInt Crypto::Encrypt::RC4Cipher::Encrypt(const UInt8 *inBuff, UOSInt inSize, U
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::RC4Cipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
 	if (outBuff == 0)
 	{

@@ -17,52 +17,52 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 
-	aes.Encrypt(testVector1, 16, cipherText, 0);
+	aes.Encrypt(testVector1, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("F3EED1BDB5D2A03C064B5A7E3DB181F8")))
 	{
 		return 1;
 	}
-	aes.Decrypt(cipherText, 16, decText, 0);
+	aes.Decrypt(cipherText, 16, decText);
 	if (!Text::StrEqualsC(decText, 16, testVector1, 16))
 	{
 		return 1;
 	}
 
 	aes.SetKey(key);
-	aes.Encrypt(testVector2, 16, cipherText, 0);
+	aes.Encrypt(testVector2, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("591CCB10D410ED26DC5BA74A31362870")))
 	{
 		return 1;
 	}
-	aes.Decrypt(cipherText, 16, decText, 0);
+	aes.Decrypt(cipherText, 16, decText);
 	if (!Text::StrEqualsC(decText, 16, testVector2, 16))
 	{
 		return 1;
 	}
 
 	aes.SetKey(key);
-	aes.Encrypt(testVector3, 16, cipherText, 0);
+	aes.Encrypt(testVector3, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("B6ED21B99CA6F4F9F153E7B1BEAFED1D")))
 	{
 		return 1;
 	}
-	aes.Decrypt(cipherText, 16, decText, 0);
+	aes.Decrypt(cipherText, 16, decText);
 	if (!Text::StrEqualsC(decText, 16, testVector3, 16))
 	{
 		return 1;
 	}
 
 	aes.SetKey(key);
-	aes.Encrypt(testVector4, 16, cipherText, 0);
+	aes.Encrypt(testVector4, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("23304B7A39F9F3FF067D8D8F9E24ECC7")))
 	{
 		return 1;
 	}
-	aes.Decrypt(cipherText, 16, decText, 0);
+	aes.Decrypt(cipherText, 16, decText);
 	if (!Text::StrEqualsC(decText, 16, testVector4, 16))
 	{
 		return 1;

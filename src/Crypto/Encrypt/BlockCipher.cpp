@@ -16,7 +16,7 @@ Crypto::Encrypt::BlockCipher::~BlockCipher()
 	MemFree(this->iv);
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
 	UInt8 *blk;
 	UOSInt blkCnt = 0;
@@ -25,7 +25,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 	case ChainMode::ECB:
 		while (inSize >= this->blockSize)
 		{
-			EncryptBlock(inBuff, outBuff, encParam);
+			EncryptBlock(inBuff, outBuff);
 			blkCnt++;
 			inBuff += this->blockSize;
 			outBuff += this->blockSize;
@@ -36,7 +36,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 			blk = MemAlloc(UInt8, this->blockSize);
 			MemClear(blk, this->blockSize);
 			MemCopyNO(blk, inBuff, inSize);
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			blkCnt++;
 			MemFree(blk);
 		}
@@ -47,7 +47,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		while (inSize >= blockSize)
 		{
 			MemXOR(blk, inBuff, blk, this->blockSize);
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			MemCopyNO(blk, outBuff, this->blockSize);
 			blkCnt++;
 			inBuff += this->blockSize;
@@ -57,7 +57,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		if (inSize > 0)
 		{
 			MemXOR(blk, inBuff, blk, inSize);
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			blkCnt++;
 		}
 		MemFree(blk);
@@ -68,7 +68,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		while (inSize >= blockSize)
 		{
 			MemXOR(blk, inBuff, blk, this->blockSize);
-			EncryptBlock(inBuff, outBuff, encParam);
+			EncryptBlock(inBuff, outBuff);
 			MemXOR(inBuff, outBuff, blk, this->blockSize);
 			blkCnt++;
 			inBuff += this->blockSize;
@@ -78,7 +78,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		if (inSize > 0)
 		{
 			MemXOR(blk, inBuff, blk, inSize);
-			EncryptBlock(inBuff, outBuff, encParam);
+			EncryptBlock(inBuff, outBuff);
 			blkCnt++;
 		}
 		MemFree(blk);
@@ -88,7 +88,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= blockSize)
 		{
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			MemXOR(outBuff, inBuff, outBuff, this->blockSize);
 			MemCopyNO(blk, outBuff, this->blockSize);
 			blkCnt++;
@@ -98,7 +98,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		if (inSize > 0)
 		{
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			MemXOR(outBuff, inBuff, outBuff, inSize);
 			blkCnt++;
 		}
@@ -109,7 +109,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= blockSize)
 		{
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			MemCopyNO(blk, outBuff, this->blockSize);
 			MemXOR(outBuff, inBuff, outBuff, this->blockSize);
 			blkCnt++;
@@ -119,7 +119,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		if (inSize > 0)
 		{
-			EncryptBlock(blk, outBuff, encParam);
+			EncryptBlock(blk, outBuff);
 			MemXOR(outBuff, inBuff, outBuff, inSize);
 			blkCnt++;
 		}
@@ -130,7 +130,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 	}
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
 	UInt8 *blk;
 	UInt8 *blk2;
@@ -141,7 +141,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 	case ChainMode::ECB:
 		while (inSize >= this->blockSize)
 		{
-			DecryptBlock(inBuff, outBuff, decParam);
+			DecryptBlock(inBuff, outBuff);
 			blkCnt++;
 			inBuff += this->blockSize;
 			outBuff += this->blockSize;
@@ -155,7 +155,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			MemCopyNO(blk, this->iv, this->blockSize);
 			while (inSize >= this->blockSize)
 			{
-				DecryptBlock(inBuff, outBuff, decParam);
+				DecryptBlock(inBuff, outBuff);
 				blkCnt++;
 				MemXOR(outBuff, blk, outBuff, this->blockSize);
 				MemCopyNO(blk, inBuff, this->blockSize);
@@ -173,7 +173,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			while (inSize >= this->blockSize)
 			{
 				MemCopyNO(blk2, inBuff, this->blockSize);
-				DecryptBlock(inBuff, outBuff, decParam);
+				DecryptBlock(inBuff, outBuff);
 				blkCnt++;
 				MemXOR(outBuff, blk, outBuff, this->blockSize);
 				blkTmp = blk;
@@ -194,7 +194,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			MemCopyNO(blk, this->iv, this->blockSize);
 			while (inSize >= this->blockSize)
 			{
-				DecryptBlock(inBuff, outBuff, decParam);
+				DecryptBlock(inBuff, outBuff);
 				blkCnt++;
 				MemXOR(outBuff, blk, outBuff, this->blockSize);
 				MemXOR(inBuff, outBuff, blk, this->blockSize);
@@ -212,7 +212,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			while (inSize >= this->blockSize)
 			{
 				MemCopyNO(blk2, inBuff, this->blockSize);
-				DecryptBlock(inBuff, outBuff, decParam);
+				DecryptBlock(inBuff, outBuff);
 				blkCnt++;
 				MemXOR(outBuff, blk, outBuff, this->blockSize);
 				MemXOR(blk2, outBuff, blk, this->blockSize);
@@ -231,7 +231,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			MemCopyNO(blk, this->iv, this->blockSize);
 			while (inSize >= this->blockSize)
 			{
-				DecryptBlock(blk, outBuff, decParam);
+				DecryptBlock(blk, outBuff);
 				blkCnt++;
 				MemXOR(outBuff, inBuff, outBuff, this->blockSize);
 				MemCopyNO(blk, inBuff, this->blockSize);
@@ -249,7 +249,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			while (inSize >= this->blockSize)
 			{
 				MemCopyNO(blk2, inBuff, this->blockSize);
-				DecryptBlock(blk, outBuff, decParam);
+				DecryptBlock(blk, outBuff);
 				blkCnt++;
 				MemXOR(outBuff, blk2, outBuff, this->blockSize);
 				blkTmp = blk;
@@ -270,7 +270,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			MemCopyNO(blk, this->iv, this->blockSize);
 			while (inSize >= this->blockSize)
 			{
-				DecryptBlock(blk, outBuff, decParam);
+				DecryptBlock(blk, outBuff);
 				blkCnt++;
 				MemCopyNO(blk, outBuff, this->blockSize);
 				MemXOR(outBuff, inBuff, outBuff, this->blockSize);
@@ -288,7 +288,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			while (inSize >= this->blockSize)
 			{
 				MemCopyNO(blk2, inBuff, this->blockSize);
-				DecryptBlock(blk, outBuff, decParam);
+				DecryptBlock(blk, outBuff);
 				blkCnt++;
 				MemCopyNO(blk, outBuff, this->blockSize);
 				MemXOR(outBuff, blk2, outBuff, this->blockSize);

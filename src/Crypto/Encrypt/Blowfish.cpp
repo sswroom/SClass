@@ -648,7 +648,7 @@ Crypto::Encrypt::Blowfish::~Blowfish()
 
 }
 
-UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) const
+UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
 {
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);
@@ -659,7 +659,7 @@ UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(const UInt8 *inBlock, UInt8 *outB
 	return 8;
 }
 
-UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) const
+UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
 {
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);

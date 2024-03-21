@@ -35,7 +35,7 @@ void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, Text:
 		strLen = s.leng;
 		b64Size = (strLen / 3) * 4 + 4;
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
-		b64Size = b64.Encrypt(s.v, strLen, b64Buff, 0);
+		b64Size = b64.Encrypt(s.v, strLen, b64Buff);
 		b64Buff[b64Size] = 0;
 		sbc->AppendC(b64Buff, b64Size);
 		MemFree(b64Buff);
@@ -70,7 +70,7 @@ void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const
 		buffSize = str->leng;
 		b64Size = (buffSize / 3) * 4 + 4;
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
-		b64Size = b64.Encrypt(str->v, buffSize, b64Buff, 0);
+		b64Size = b64.Encrypt(str->v, buffSize, b64Buff);
 		b64Buff[b64Size] = 0;
 		sbc->AppendC(b64Buff, b64Size);
 		MemFree(b64Buff);

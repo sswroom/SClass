@@ -18,14 +18,13 @@ global _Base64_Encrypt
 global Base64_Decrypt
 global _Base64_Decrypt
 
-;OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam);
+;OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff);
 ;0 rbx
 ;8 rbp
 ;16 retAddr
 ;rdi inBuff
 ;rsi inSize
 ;rdx outbuff
-;rcx encParam
 	align 16
 Base64_Encrypt:
 _Base64_Encrypt:
@@ -135,14 +134,13 @@ b64eexit:
 	pop rbp
 	ret
 
-;OSInt Base64_Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam);
+;OSInt Base64_Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff);
 ;16 rbx
 ;24 rbp
 ;32 retAddr
 ;rdi inBuff
 ;rsi inSize
 ;rdx outbuff
-;rcx encParam
 	align 16
 Base64_Decrypt:
 _Base64_Decrypt:

@@ -451,7 +451,7 @@ UTF8Char *Text::MIMEObj::MIMEMessage::ParseHeaderStr(UTF8Char *sbuff, const UTF8
 						UOSInt buffSize = (sbc.GetLength() >> 2) * 3;
 						UOSInt outSize;
 						UInt8 *tmpBuff = MemAlloc(UInt8, buffSize);
-						outSize = b64.Decrypt((const UInt8*)sbc.ToString(), sbc.GetLength(), tmpBuff, 0);
+						outSize = b64.Decrypt((const UInt8*)sbc.ToString(), sbc.GetLength(), tmpBuff);
 						sbuff = enc.UTF8FromBytes(sbuff, tmpBuff, outSize, 0);
 						MemFree(tmpBuff);
 					}

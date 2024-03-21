@@ -9,7 +9,7 @@ Crypto::Encrypt::XOREnc::~XOREnc()
 {
 }
 
-UOSInt Crypto::Encrypt::XOREnc::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::XOREnc::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
 	UInt8 lastByte = 0;
 	UOSInt i = 0;
@@ -21,7 +21,7 @@ UOSInt Crypto::Encrypt::XOREnc::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::XOREnc::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::XOREnc::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
 	UInt8 lastByte = 0;
 	UInt8 lastLastByte = 0;

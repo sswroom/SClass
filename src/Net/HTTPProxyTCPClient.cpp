@@ -64,7 +64,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NotNullPtr<Net::SocketFactory> sockf
 
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Proxy-Authorization: Basic "));
 		Crypto::Encrypt::Base64 b64;
-		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), (UInt8*)sptr, 0);
+		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), (UInt8*)sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));

@@ -19,8 +19,8 @@ namespace Crypto
 
 			void SetKey(const UInt8 *key, UOSInt keyLen);
 
-			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam); //outBuff = null to get the size
-			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam); //outBuff = null to get the size
+			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff); //outBuff = null to get the size
+			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff); //outBuff = null to get the size
 
 			virtual UOSInt GetEncBlockSize() const;
 			virtual UOSInt GetDecBlockSize() const;

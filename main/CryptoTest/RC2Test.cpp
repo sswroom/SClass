@@ -15,7 +15,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt8 dataBuff[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 	UInt8 outBuff[32];
 	UOSInt outSize;
-	outSize = rc2.Encrypt(dataBuff, 8, outBuff, 0);
+	outSize = rc2.Encrypt(dataBuff, 8, outBuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
 	console.WriteLineC(sb.ToString(), sb.GetLength());

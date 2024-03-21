@@ -9,7 +9,7 @@ void Crypto::Hash::AESCMAC::GenSubKey()
 	UInt8 zero[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	UInt8 l[16];
 	UOSInt i;
-	this->aes.EncryptBlock(zero, l, 0);
+	this->aes.EncryptBlock(zero, l);
 	i = 0;
 	while (i < 15)
 	{
@@ -80,7 +80,7 @@ void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 			MemCopyNO(&this->buff[this->buffSize], buff, 16 - this->buffSize);
 			WriteNUInt64(&this->x[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&this->buff[0]));
 			WriteNUInt64(&this->x[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&this->buff[8]));
-			this->aes.EncryptBlock(this->x, this->x, 0);
+			this->aes.EncryptBlock(this->x, this->x);
 			buff += 16 - this->buffSize;
 			buffSize -= (16 - this->buffSize);
 			this->buffSize = 0;
@@ -97,7 +97,7 @@ void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 	{
 		WriteNUInt64(&this->x[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&buff[0]));
 		WriteNUInt64(&this->x[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&buff[8]));
-		this->aes.EncryptBlock(this->x, this->x, 0);
+		this->aes.EncryptBlock(this->x, this->x);
 		buff += 16;
 		buffSize -= 16;
 	}
@@ -116,13 +116,13 @@ void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff) const
 		y[0] = 0x80;
 		WriteNUInt64(&y[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&y[0]) ^ ReadNUInt64(&this->k2[0]));
 		WriteNUInt64(&y[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&y[8]) ^ ReadNUInt64(&this->k2[8]));
-		this->aes.EncryptBlock(y, buff, 0);
+		this->aes.EncryptBlock(y, buff);
 	}
 	else if (this->buffSize == 16)
 	{
 		WriteNUInt64(&y[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&this->buff[0]) ^ ReadNUInt64(&this->k1[0]));
 		WriteNUInt64(&y[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&this->buff[8]) ^ ReadNUInt64(&this->k1[8]));
-		this->aes.EncryptBlock(y, buff, 0);
+		this->aes.EncryptBlock(y, buff);
 	}
 	else
 	{
@@ -136,7 +136,7 @@ void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff) const
 		}
 		WriteNUInt64(&y[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&y[0]) ^ ReadNUInt64(&this->k2[0]));
 		WriteNUInt64(&y[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&y[8]) ^ ReadNUInt64(&this->k2[8]));
-		this->aes.EncryptBlock(y, buff, 0);
+		this->aes.EncryptBlock(y, buff);
 	}
 }
 

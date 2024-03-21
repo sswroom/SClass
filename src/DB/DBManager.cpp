@@ -810,7 +810,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBMa
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
 		UInt8 *outBuff = MemAlloc(UInt8, sb.GetCharCnt() + aes.GetEncBlockSize());
-		outSize = aes.Encrypt(sb.ToString(), sb.GetCharCnt(), outBuff, 0);
+		outSize = aes.Encrypt(sb.ToString(), sb.GetCharCnt(), outBuff);
 		fs->Write(outBuff, outSize);
 		MemFree(outBuff);
 	}
@@ -845,7 +845,7 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DB
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		aes.Decrypt(fileBuff.Ptr(), (UOSInt)len, decBuff, 0);
+		aes.Decrypt(fileBuff.Ptr(), (UOSInt)len, decBuff);
 		decBuff[(UOSInt)len] = 0;
 		while (len > 0 && decBuff[(UOSInt)len - 1] == 0)
 		{

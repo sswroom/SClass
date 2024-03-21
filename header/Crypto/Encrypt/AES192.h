@@ -15,8 +15,8 @@ namespace Crypto
 			AES192(const UInt8 *key);
 			virtual ~AES192();
 
-			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) const;
-			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) const;
+			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const;
+			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const;
 
 			void SetKey(const UInt8 *key);
 		};

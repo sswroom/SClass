@@ -200,11 +200,11 @@ void GUIDDrawControl_OnResize(GtkWidget *widget, GdkRectangle *allocation, gpoin
 	}
 }*/
 
-void UI::GUIDDrawControl::Init(void *hInst)
+void UI::GUIDDrawControl::Init(InstanceHandle *hInst)
 {
 }
 
-void UI::GUIDDrawControl::Deinit(void *hInst)
+void UI::GUIDDrawControl::Deinit(InstanceHandle *hInst)
 {
 }
 

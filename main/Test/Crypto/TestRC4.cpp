@@ -17,7 +17,7 @@ void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
 	WriteUInt32(&dataBuff[4], val);
 	WriteUInt32(&dataBuff[8], val);
 	WriteUInt32(&dataBuff[12], val);
-	outSize = rc4.Encrypt(dataBuff, 16, outBuff, 0);
+	outSize = rc4.Encrypt(dataBuff, 16, outBuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("DEC "));
 	sb.AppendU32(val);
@@ -64,14 +64,14 @@ Bool TestEncode2(const UTF8Char *key, UOSInt keyLen, const UTF8Char *val, UOSInt
 	UOSInt decSize;
 	UTF8Char sbuff[33];
 	UTF8Char *sptr;
-	outSize = rc4.Encrypt(val, valLen, outBuff, 0);
+	outSize = rc4.Encrypt(val, valLen, outBuff);
 	sptr = Text::StrHexBytes(sbuff, outBuff, outSize, 0);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), expRes, expResLen))
 	{
 		return false;
 	}
 	rc4.SetKey(key, keyLen);
-	decSize = rc4.Decrypt(outBuff, outSize, decBuff, 0);
+	decSize = rc4.Decrypt(outBuff, outSize, decBuff);
 	if (!Text::StrEqualsC(decBuff, decSize, val, valLen))
 	{
 		return false;

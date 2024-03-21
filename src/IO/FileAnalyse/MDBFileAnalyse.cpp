@@ -156,7 +156,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 			Crypto::Encrypt::RC4Cipher rc4(decBuff, 4);
 			if (this->fileVer == 0)
 			{
-				rc4.Decrypt(&packBuff[24], 126, decBuff, 0);
+				rc4.Decrypt(&packBuff[24], 126, decBuff);
 				Double ddays = ReadDouble(&decBuff[0x5A]);
 				frame->AddHexBuff(24, 0x22, CSTR("Unknown"), decBuff, true);
 				frame->AddUInt(24 + 0x22, 2, CSTR("System Collation"), ReadUInt16(&decBuff[0x22]));
@@ -174,7 +174,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 			}
 			else
 			{
-				rc4.Decrypt(&packBuff[24], 128, decBuff, 0);
+				rc4.Decrypt(&packBuff[24], 128, decBuff);
 				Double ddays = ReadDouble(&decBuff[0x5A]);
 				UInt32 ndays = (UInt32)ddays;
 				frame->AddHexBuff(24, 0x24, CSTR("Unkonwn"), decBuff, true);

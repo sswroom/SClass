@@ -11,14 +11,14 @@ Bool BFTest(UInt64 key, UInt64 plainText, UInt64 cipherText)
 	WriteMUInt64(keyBuff, key);
 	WriteMUInt64(plainBuff, plainText);
 	Crypto::Encrypt::Blowfish bf(keyBuff, 8);
-	bf.Encrypt(plainBuff, 8, cipherBuff, 0);
+	bf.Encrypt(plainBuff, 8, cipherBuff);
 	if (ReadMUInt64(cipherBuff) != cipherText)
 	{
 		return false;
 	}
 	WriteMUInt64(plainBuff, 0);
 	bf.SetKey(keyBuff, 8);
-	bf.Decrypt(cipherBuff, 8, plainBuff, 0);
+	bf.Decrypt(cipherBuff, 8, plainBuff);
 	if (ReadMUInt64(plainBuff) != plainText)
 	{
 		return false;

@@ -15,7 +15,7 @@ Text::MailBase64Stream::~MailBase64Stream()
 	UInt8 b64buff[74];
 	if (this->lineBuffSize > 0)
 	{
-		UOSInt i = b64->Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff, 0);
+		UOSInt i = b64->Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff);
 		this->stm->Write(b64buff, i);
 	}
 	DEL_CLASS(this->b64);
@@ -38,7 +38,7 @@ UOSInt Text::MailBase64Stream::Write(const UInt8 *buff, UOSInt size)
 	if (this->lineBuffSize + size >= 54)
 	{
 		MemCopyNO(&this->lineBuff[this->lineBuffSize], buff, 54 - this->lineBuffSize);
-		b64->Encrypt(this->lineBuff, 54, b64buff, 0);
+		b64->Encrypt(this->lineBuff, 54, b64buff);
 		b64buff[72] = 13;
 		b64buff[73] = 10;
 		this->stm->Write(b64buff, 74);
@@ -49,7 +49,7 @@ UOSInt Text::MailBase64Stream::Write(const UInt8 *buff, UOSInt size)
 	}
 	while (size >= 54)
 	{
-		b64->Encrypt(buff, 54, b64buff, 0);
+		b64->Encrypt(buff, 54, b64buff);
 		b64buff[72] = 13;
 		b64buff[73] = 10;
 		this->stm->Write(b64buff, 74);

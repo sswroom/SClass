@@ -122,7 +122,7 @@ UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAd
 		while (payloadLen > 0)
 		{
 			ablock[15]++;
-			aes.EncryptBlock(ablock, sblock, 0);
+			aes.EncryptBlock(ablock, sblock);
 			if (payloadLen >= 16)
 			{
 				WriteNUInt64(&buff[index], ReadNUInt64(sblock) ^ ReadNUInt64(payload));

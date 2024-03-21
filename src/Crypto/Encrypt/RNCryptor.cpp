@@ -65,7 +65,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NotNullPtr<IO::SeekableStream> srcStrea
 					break;
 				}
 				hmac.Calc(srcBuff.Ptr(), readSize);
-				aes.Decrypt(srcBuff.Ptr(), readSize, destBuff, 0);
+				aes.Decrypt(srcBuff.Ptr(), readSize, destBuff);
 				if (destStream->Write(destBuff, 1048576) != 1048576)
 				{
 					succ = false;
@@ -83,7 +83,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NotNullPtr<IO::SeekableStream> srcStrea
 				else
 				{
 					hmac.Calc(srcBuff.Ptr(), readSize);
-					aes.Decrypt(srcBuff.Ptr(), readSize, destBuff, 0);
+					aes.Decrypt(srcBuff.Ptr(), readSize, destBuff);
 					readSize = RemovePadding(destBuff, readSize);
 					if (destStream->Write(destBuff, readSize) != readSize)
 					{
@@ -106,7 +106,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NotNullPtr<IO::SeekableStream> srcStrea
 			else
 			{
 				hmac.Calc(srcBuff.Ptr(), readSize);
-				aes.Decrypt(srcBuff.Ptr(), readSize, destBuff, 0);
+				aes.Decrypt(srcBuff.Ptr(), readSize, destBuff);
 				readSize = RemovePadding(destBuff, readSize);
 				if (destStream->Write(destBuff, readSize) != readSize)
 				{
@@ -176,7 +176,7 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(NotNullPtr<IO::SeekableStream> srcStrea
 	Crypto::Hash::SHA256 sha256;
 	Crypto::Hash::HMAC hmac(sha256, hmacKey, 32);
 	hmac.Calc(header, 34);
-	aes.Encrypt(srcBuff.Ptr(), (UOSInt)fileLength, destBuff, 0);
+	aes.Encrypt(srcBuff.Ptr(), (UOSInt)fileLength, destBuff);
 	hmac.Calc(destBuff, (UOSInt)fileLength);
 	hmac.GetValue(hmacCalc);
 	Bool succ = true;

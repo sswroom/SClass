@@ -181,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userO
 			UInt8 *dataBuff = me->InitIV(crypto, buff, &buffSize, crypto->GetEncBlockSize(), true);
 			if (dataBuff)
 			{
-				buffSize = crypto->Encrypt(dataBuff, buffSize, dataBuff, 0);
+				buffSize = crypto->Encrypt(dataBuff, buffSize, dataBuff);
 				me->ShowOutput(buff, buffSize + (UOSInt)(dataBuff - buff));
 			}
 			MemFree(buff);
@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userO
 			UInt8 *dataBuff = me->InitIV(crypto, buff, &buffSize, crypto->GetDecBlockSize(), false);
 			if (dataBuff)
 			{
-				buffSize = crypto->Decrypt(dataBuff, buffSize, dataBuff, 0);
+				buffSize = crypto->Decrypt(dataBuff, buffSize, dataBuff);
 				me->ShowOutput(dataBuff, buffSize);
 			}
 			MemFree(buff);

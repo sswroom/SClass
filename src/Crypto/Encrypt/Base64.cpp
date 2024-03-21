@@ -26,8 +26,8 @@ extern "C"
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 	};
-	UOSInt Base64_Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam);
-	UOSInt Base64_Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam);
+	UOSInt Base64_Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff);
+	UOSInt Base64_Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff);
 }
 Crypto::Encrypt::Base64::Base64()
 {
@@ -37,14 +37,14 @@ Crypto::Encrypt::Base64::~Base64()
 {
 }
 
-UOSInt Crypto::Encrypt::Base64::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::Base64::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
-	return Base64_Encrypt(inBuff, inSize, outBuff, encParam);
+	return Base64_Encrypt(inBuff, inSize, outBuff);
 }
 
-UOSInt Crypto::Encrypt::Base64::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::Base64::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
 {
-	return Base64_Decrypt(inBuff, inSize, outBuff, decParam);
+	return Base64_Decrypt(inBuff, inSize, outBuff);
 }
 
 UOSInt Crypto::Encrypt::Base64::GetEncBlockSize() const
