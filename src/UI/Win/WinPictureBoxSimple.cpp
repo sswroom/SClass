@@ -116,7 +116,7 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 	EndPaint((HWND)this->hwnd, &ps);
 }
 
-void UI::Win::WinPictureBoxSimple::Init(void *hInst)
+void UI::Win::WinPictureBoxSimple::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -134,7 +134,7 @@ void UI::Win::WinPictureBoxSimple::Init(void *hInst)
         return; 
 }
 
-void UI::Win::WinPictureBoxSimple::Deinit(void *hInst)
+void UI::Win::WinPictureBoxSimple::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

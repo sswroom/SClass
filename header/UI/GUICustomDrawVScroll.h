@@ -26,8 +26,8 @@ namespace UI
 	private:
 		static OSInt __stdcall CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 		void OnPaint();
-		void Init(void *hInst);
-		void Deinit(void *hInst);
+		void Init(InstanceHandle *hInst);
+		void Deinit(InstanceHandle *hInst);
 	
 	protected:
 		void ClearBackground(NotNullPtr<Media::DrawImage> img);

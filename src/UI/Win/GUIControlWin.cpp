@@ -27,7 +27,7 @@
 #define SetWindowLongPtr(a, b, c) SetWindowLongW(a, b, c)
 #endif
 
-void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	HDC hdc = GetDC((HWND)parentHWnd);
 	this->hdpi = GetDeviceCaps(hdc, LOGPIXELSY);
@@ -46,7 +46,7 @@ void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *cla
 	UpdateFont();
 }
 
-void UI::GUIControl::InitControl(void *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	this->fontHeightPt = 0.0;
 	NotNullPtr<GUIClientControl> nnparent;
@@ -150,7 +150,7 @@ UI::GUIControl::~GUIControl()
 	}
 }
 
-void *UI::GUIControl::GetHInst()
+UI::InstanceHandle *UI::GUIControl::GetHInst()
 {
 	return ((Win::WinCore*)ui.Ptr())->GetHInst();
 }

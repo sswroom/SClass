@@ -9,7 +9,7 @@ namespace UI
 		class WinCore : public UI::GUICore
 		{
 		private:
-			void *hInst;
+			InstanceHandle *hInst;
 			Int32 frmCnt;
 			Bool hasCommCtrl;
 			Bool noDispOff;
@@ -18,7 +18,7 @@ namespace UI
 			Media::MonitorMgr *monMgr;
 
 		public:
-			WinCore(void *hInst);
+			WinCore(InstanceHandle *hInst);
 			virtual ~WinCore();
 
 			virtual void Run();
@@ -71,7 +71,7 @@ namespace UI
 			virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent);
 
 			void SetFocusWnd(void *hWnd, void *hAcc);
-			void *GetHInst();
+			InstanceHandle *GetHInst();
 
 			static OSInt MSGetWindowObj(ControlHandle *hWnd, OSInt index);
 			static OSInt MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt value);

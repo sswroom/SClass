@@ -358,7 +358,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUITextView::Init(void *hInst)
+void UI::GUITextView::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -376,7 +376,7 @@ void UI::GUITextView::Init(void *hInst)
         return; 
 }
 
-void UI::GUITextView::Deinit(void *hInst)
+void UI::GUITextView::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

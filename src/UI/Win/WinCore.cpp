@@ -36,7 +36,7 @@
 /////////////////////////////// EnumDisplayMonitors
 /////////////////////////////// GetMonitorInfoW
 
-UI::Win::WinCore::WinCore(void *hInst)
+UI::Win::WinCore::WinCore(InstanceHandle *hInst)
 {
 	this->hInst = hInst;
 	this->focusWnd = 0;
@@ -171,7 +171,7 @@ void UI::Win::WinCore::SetFocusWnd(void *hWnd, void *hAcc)
 	this->focusHAcc = hAcc;
 }
 
-void *UI::Win::WinCore::GetHInst()
+UI::InstanceHandle *UI::Win::WinCore::GetHInst()
 {
 	return this->hInst;
 }

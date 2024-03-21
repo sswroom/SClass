@@ -241,15 +241,15 @@ namespace UI
 		void *dropHdlr;
 
 	public:
-		void InitControl(void *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
-		void InitControl(void *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 
 	protected:
 		GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
 	public:
 		virtual ~GUIControl();
 
-		void *GetHInst();
+		InstanceHandle *GetHInst();
 		virtual void *GetFont();
 		virtual void Show();
 		virtual void Close();

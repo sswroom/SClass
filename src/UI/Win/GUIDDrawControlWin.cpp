@@ -192,7 +192,7 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIDDrawControl::Init(void *hInst)
+void UI::GUIDDrawControl::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = CS_DBLCLKS; 
@@ -211,7 +211,7 @@ void UI::GUIDDrawControl::Init(void *hInst)
         return; 
 }
 
-void UI::GUIDDrawControl::Deinit(void *hInst)
+void UI::GUIDDrawControl::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

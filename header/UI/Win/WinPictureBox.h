@@ -14,8 +14,8 @@ namespace UI
 
 			static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 			void OnPaint();
-			void Init(void *hInst);
-			void Deinit(void *hInst);
+			void Init(InstanceHandle *hInst);
+			void Deinit(InstanceHandle *hInst);
 			virtual void UpdatePreview();
 		public:
 			WinPictureBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);

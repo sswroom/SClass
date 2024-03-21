@@ -18,7 +18,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> ctrl);
 
 struct WinProgControl : public Core::IProgControl
 {
-	void *hInst;
+	UI::InstanceHandle *hInst;
 	UOSInt argc;
 	UTF8Char **argv;
 };
@@ -140,7 +140,7 @@ void __stdcall WinProgControl_SignalRestart(NotNullPtr<Core::IProgControl> progC
 }
 
 
-void WinProgControl_Create(NotNullPtr<WinProgControl> ctrl, void *hInst)
+void WinProgControl_Create(NotNullPtr<WinProgControl> ctrl, UI::InstanceHandle *hInst)
 {
 	ctrl->argc = 0;
 	ctrl->argv = 0;
@@ -222,7 +222,7 @@ Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, i
 		}
 	}
 
-	WinProgControl_Create(ctrl, hInst);
+	WinProgControl_Create(ctrl, (UI::InstanceHandle*)hInst);
 	ret = MyMain(ctrl);
 	WinProgControl_Destroy(ctrl);
 	Core::CoreEnd();

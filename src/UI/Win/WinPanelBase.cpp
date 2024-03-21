@@ -178,7 +178,7 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinPanelBase::Init(void *hInst)
+void UI::Win::WinPanelBase::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -196,7 +196,7 @@ void UI::Win::WinPanelBase::Init(void *hInst)
         return; 
 }
 
-void UI::Win::WinPanelBase::Deinit(void *hInst)
+void UI::Win::WinPanelBase::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

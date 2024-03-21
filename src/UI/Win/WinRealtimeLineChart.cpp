@@ -54,7 +54,7 @@ OSInt __stdcall UI::Win::WinRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinRealtimeLineChart::Init(void *hInst)
+void UI::Win::WinRealtimeLineChart::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -72,7 +72,7 @@ void UI::Win::WinRealtimeLineChart::Init(void *hInst)
         return; 
 }
 
-void UI::Win::WinRealtimeLineChart::Deinit(void *hInst)
+void UI::Win::WinRealtimeLineChart::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

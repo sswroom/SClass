@@ -135,7 +135,7 @@ void UI::GUICustomDrawVScroll::OnPaint()
 	EndPaint((HWND)this->hwnd, &ps);
 }
 
-void UI::GUICustomDrawVScroll::Init(void *hInst)
+void UI::GUICustomDrawVScroll::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = CS_DBLCLKS;
@@ -153,7 +153,7 @@ void UI::GUICustomDrawVScroll::Init(void *hInst)
         return; 
 }
 
-void UI::GUICustomDrawVScroll::Deinit(void *hInst)
+void UI::GUICustomDrawVScroll::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

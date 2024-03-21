@@ -12,6 +12,8 @@ namespace UI
 	typedef void (__stdcall *UIEvent)(AnyType userObj);
 	typedef Bool (__stdcall *KeyEvent)(AnyType userObj, UInt32 osKey);
 
+	struct InstanceHandle;
+	
 	class GUIButton;
 	class GUICheckBox;
 	class GUICheckedListBox;

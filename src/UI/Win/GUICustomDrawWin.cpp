@@ -178,7 +178,7 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUICustomDraw::Init(void *hInst)
+void UI::GUICustomDraw::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -196,7 +196,7 @@ void UI::GUICustomDraw::Init(void *hInst)
         return; 
 }
 
-void UI::GUICustomDraw::Deinit(void *hInst)
+void UI::GUICustomDraw::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

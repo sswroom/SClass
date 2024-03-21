@@ -29,8 +29,8 @@ namespace UI
 	private:
 		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 		static void __stdcall OnResize(AnyType userObj);
-		void Init(void *hInst);
-		void Deinit(void *hInst);
+		void Init(InstanceHandle *hInst);
+		void Deinit(InstanceHandle *hInst);
 		void OnPaint();
 		void UpdateScrollBar();
 

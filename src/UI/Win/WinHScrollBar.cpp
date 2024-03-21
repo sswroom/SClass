@@ -63,7 +63,7 @@ OSInt __stdcall UI::Win::WinHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSI
 	return 0;
 }
 
-void UI::Win::WinHScrollBar::Init(void *hInst)
+void UI::Win::WinHScrollBar::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -81,7 +81,7 @@ void UI::Win::WinHScrollBar::Init(void *hInst)
         return; 
 }
 
-void UI::Win::WinHScrollBar::Deinit(void *hInst)
+void UI::Win::WinHScrollBar::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

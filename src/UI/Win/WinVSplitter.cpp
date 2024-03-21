@@ -128,7 +128,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinVSplitter::Init(void *hInst)
+void UI::Win::WinVSplitter::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -146,7 +146,7 @@ void UI::Win::WinVSplitter::Init(void *hInst)
         return; 
 }
 
-void UI::Win::WinVSplitter::Deinit(void *hInst)
+void UI::Win::WinVSplitter::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }

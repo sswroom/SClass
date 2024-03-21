@@ -328,7 +328,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIForm::Init(void *hInst)
+void UI::GUIForm::Init(InstanceHandle *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
@@ -351,7 +351,7 @@ void UI::GUIForm::Init(void *hInst)
         return; 
 }
 
-void UI::GUIForm::Deinit(void *hInst)
+void UI::GUIForm::Deinit(InstanceHandle *hInst)
 {
 	UnregisterClassW(L"WinForm", (HINSTANCE)hInst);
 }

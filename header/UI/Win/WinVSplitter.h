@@ -22,8 +22,8 @@ namespace UI
 		private:
 			static Int32 useCnt;
 			static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-			static void Init(void *hInst);
-			static void Deinit(void *hInst);
+			static void Init(InstanceHandle *hInst);
+			static void Deinit(InstanceHandle *hInst);
 
 			void DrawXorBar(HDC hdc, OSInt x, OSInt y);
 			void CalDragRange();
