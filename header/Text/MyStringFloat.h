@@ -17,7 +17,7 @@ namespace Text
 	static const DoubleStyle DoubleStyleExcel = {UTF8STRC("1.#INF00"), UTF8STRC("1.#QNAN0")};
 	static const DoubleStyle DoubleStyleC = {UTF8STRC("INF"), UTF8STRC("NAN")};
 
-	UTF8Char *StrDouble(UTF8Char *oriStr, Double val, const DoubleStyle *style);
+	UTF8Char *StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NotNullPtr<const DoubleStyle> style);
 	UTF8Char *StrDouble(UTF8Char *oriStr, Double val);
 	FORCEINLINE Char *StrDouble(Char *oriStr, Double val) { return (Char*)StrDouble((UTF8Char*)oriStr, val); }
 	UTF16Char *StrDouble(UTF16Char *oriStr, Double val);

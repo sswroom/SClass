@@ -482,8 +482,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	UOSInt keyCol = (UOSInt)this->cboKeyCol->GetSelectedItem();
-	UOSInt keyDCol;
+	UOSInt keyCol1 = (UOSInt)this->cboKeyCol1->GetSelectedItem();
+	UOSInt keyDCol1;
+	UOSInt keyCol2 = (UOSInt)this->cboKeyCol2->GetSelectedItem();
+	UOSInt keyDCol2;
 	UOSInt i;
 	UOSInt k;
 	UOSInt dbCnt;
@@ -509,7 +511,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	dbCnt = table->GetColCnt();
 	srcCnt = r->ColCount();
-	keyDCol = this->colInd.GetItem(keyCol);
+	keyDCol1 = this->colInd.GetItem(keyCol1);
+	if (keyCol2 == INVALID_INDEX)
+	{
+		keyDCol2 = INVALID_INDEX;
+	}
+	else
+	{
+		keyDCol2 = this->colInd.GetItem(keyCol2);
+	}
 
 	if (this->dataFileNoHeader)
 	{
@@ -525,7 +535,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	else
 	{
-		if (keyCol != INVALID_INDEX && keyDCol == INVALID_INDEX)
+		if (keyCol1 != INVALID_INDEX && keyDCol1 == INVALID_INDEX)
 		{
 			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
@@ -541,27 +551,34 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt newRowCnt = 0;
 	UOSInt delRowCnt = 0;
 	Bool succ = true;
-	NotNullPtr<Text::String> s;
 	NotNullPtr<Text::String> id;
+	Text::StringBuilderUTF8 sbId;
 	while (r->ReadNext())
 	{
 		dataFileRowCnt++;
 		if (r->ColCount() >= srcCnt)
 		{
-			if (keyCol == INVALID_INDEX)
+			if (keyCol1 == INVALID_INDEX)
 			{
 				newRowCnt++;
 			}
 			else
 			{
-				s = r->GetNewStrNN(keyDCol);
-				if (s->leng == 0 || s->Equals(UTF8STRC("0")))
+				id = r->GetNewStrNN(keyDCol1);
+				if (keyDCol2 == INVALID_INDEX && (id->leng == 0 || id->Equals(UTF8STRC("0"))))
 				{
-					s->Release();
+					id->Release();
 					newRowCnt++;
 				}
 				else
 				{
+					sbId.ClearStr();
+					sbId.Append(id);
+					if (keyDCol2 != INVALID_INDEX)
+					{
+						sbId.AppendC(UTF8STRC("_ _"));
+						r->GetStr(keyDCol2, sbId);
+					}
 					rowData = MemAlloc(Text::String*, dbCnt);
 					i = 0;
 					while (i < dbCnt)
@@ -617,7 +634,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						}
 						i++;
 					}
-					rowData = csvData.PutNN(s, rowData);
+					rowData = csvData.PutC(sbId.ToCString(), rowData);
 					if (rowData)
 					{
 						i = dbCnt;
@@ -629,21 +646,21 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 
 						Text::StringBuilderUTF8 sb;
 						sb.Append(CSTR("Data File Key duplicate ("));
-						sb.Append(s);
+						sb.Append(sbId.ToCString());
 						sb.AppendUTF8Char(')');
 						this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
-						s->Release();
+						id->Release();
 						succ = false;
 						break;
 					}
-					s->Release();
+					id->Release();
 				}
 			}
 		}
 	}
 	this->dataFile->CloseReader(r);
 
-	if (succ && keyCol != INVALID_INDEX)
+	if (succ && keyCol1 != INVALID_INDEX)
 	{
 		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond).SetTo(r))
 		{
@@ -655,24 +672,32 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			Data::ArrayListStringNN idList;
 			while (r->ReadNext())
 			{
-				if (!r->GetNewStr(keyCol).SetTo(id))
+				if (!r->GetNewStr(keyCol1).SetTo(id))
 				{
 					this->ui->ShowMsgOK(CSTR("Source Key is null"), CSTR("Check Table Changes"), this);
 					succ = false;
 					break;
 				}
-				if (idList.SortedIndexOf(id) >= 0)
+				sbId.ClearStr();
+				sbId.Append(id);
+				if (keyCol2 != INVALID_INDEX)
+				{
+					sbId.AppendC(UTF8STRC("_ _"));
+					r->GetStr(keyCol2, sbId);
+				}
+				if (idList.SortedIndexOfC(sbId.ToCString()) >= 0)
 				{
 					sbFilter.ClearStr();
 					sbFilter.AppendC(UTF8STRC("Source Key duplicate ("));
-					sbFilter.Append(id);
+					sbFilter.Append(sbId);
 					sbFilter.AppendUTF8Char(')');
 					this->ui->ShowMsgOK(sbFilter.ToCString(), CSTR("Check Table Changes"), this);
 					succ = false;
 					break;
 				}
-				rowData = csvData.GetNN(id);
-				idList.SortedInsert(id);
+				rowData = csvData.GetC(sbId.ToCString());
+				idList.SortedInsert(Text::String::New(sbId.ToCString()));
+				id->Release();
 				if (rowData)
 				{
 					Bool diff = false;
@@ -710,12 +735,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_UTF8Char:
 							case DB::DBUtil::CT_UTF16Char:
 							case DB::DBUtil::CT_UTF32Char:
-								s = r->GetNewStrNN(i);
-								if (!s->Equals(rowData[i]->v, rowData[i]->leng))
+								id = r->GetNewStrNN(i);
+								if (!id->Equals(rowData[i]->v, rowData[i]->leng))
 								{
 									diff = true;
 								}
-								s->Release();
+								id->Release();
 								break;
 							case DB::DBUtil::CT_Date:
 								{
@@ -961,13 +986,16 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Bool succ = true;
 	Bool intKey = false;
 	NotNullPtr<DB::ColDef> col;
-	UOSInt keyCol = (UOSInt)this->cboKeyCol->GetSelectedItem();
-	UOSInt keyDCol;
+	Text::StringBuilderUTF8 sbId;
+	UOSInt keyCol1 = (UOSInt)this->cboKeyCol1->GetSelectedItem();
+	UOSInt keyDCol1;
+	UOSInt keyCol2 = (UOSInt)this->cboKeyCol2->GetSelectedItem();
+	UOSInt keyDCol2;
 	UOSInt i = 0;
 	UOSInt dbCnt = table->GetColCnt();
 	while (i < dbCnt)
 	{
-		if (i == keyCol && table->GetCol(i).SetTo(col))
+		if (i == keyCol1 && keyCol2 == INVALID_INDEX && table->GetCol(i).SetTo(col))
 		{
 			DB::DBUtil::ColType colType = col->GetColType();
 			switch (colType)
@@ -1024,7 +1052,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		return false;
 	}
 	srcCnt = r->ColCount();
-	keyDCol = this->colInd.GetItem(keyCol);
+	keyDCol1 = this->colInd.GetItem(keyCol1);
+	if (keyCol2 == INVALID_INDEX)
+	{
+		keyDCol2 = INVALID_INDEX;
+	}
+	else
+	{
+		keyDCol2 = this->colInd.GetItem(keyCol2);
+	}
 
 	if (this->dataFileNoHeader)
 	{
@@ -1040,7 +1076,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	else
 	{
-		if (keyCol != INVALID_INDEX && keyDCol == INVALID_INDEX)
+		if (keyCol1 != INVALID_INDEX && keyDCol1 == INVALID_INDEX)
 		{
 			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
@@ -1055,26 +1091,33 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Bool colFound;
 	NotNullPtr<Text::String> s;
 	Optional<Text::String> ops;
-	NotNullPtr<Text::String> id;
+//	NotNullPtr<Text::String> id;
 	while (r->ReadNext())
 	{
 		if (r->ColCount() >= srcCnt)
 		{
 			genInsert = false;
-			if (keyCol == INVALID_INDEX)
+			if (keyCol1 == INVALID_INDEX)
 			{
 				genInsert = true;
 			}
 			else
 			{
-				s = r->GetNewStrNN(keyDCol);
-				if (s->leng == 0 || s->Equals(UTF8STRC("0")))
+				s = r->GetNewStrNN(keyDCol1);
+				if (keyDCol2 == INVALID_INDEX && (s->leng == 0 || s->Equals(UTF8STRC("0"))))
 				{
 					s->Release();
 					genInsert = true;
 				}
 				else
 				{
+					sbId.ClearStr();
+					sbId.Append(s);
+					if (keyDCol2 != INVALID_INDEX)
+					{
+						sbId.AppendC(UTF8STRC("_ _"));
+						r->GetStr(keyDCol2, sbId);
+					}
 					rowData = MemAlloc(Text::String*, dbCnt);
 					i = 0;
 					while (i < dbCnt)
@@ -1134,7 +1177,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 						i++;
 					}
-					rowData = csvData.PutNN(s, rowData);
+					rowData = csvData.PutC(sbId.ToCString(), rowData);
 					s->Release();
 					if (rowData)
 					{
@@ -1162,7 +1205,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				i = 0;
 				while (i < dbCnt)
 				{
-					if (i != keyCol && this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
+					if ((i != keyCol1 || keyCol2 != INVALID_INDEX) && this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
 					{
 						if (colFound) sql.AppendCmdC(CSTR(", "));
 						colFound = true;
@@ -1175,7 +1218,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				i = 0;
 				while (i < dbCnt)
 				{
-					if (i != keyCol && this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
+					if ((i != keyCol1 || keyCol2 != INVALID_INDEX) && this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
 					{
 						if (colFound) sql.AppendCmdC(CSTR(", "));
 						colFound = true;
@@ -1203,7 +1246,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	this->dataFile->CloseReader(r);
 
-	if (keyCol != INVALID_INDEX)
+	if (keyCol1 != INVALID_INDEX)
 	{
 		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond).SetTo(r))
 		{
@@ -1211,12 +1254,23 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		}
 		else
 		{
+			NotNullPtr<Text::String> id1;
+			Optional<Text::String> id2;
 			Data::ArrayListStringNN idList;
 			while (r->ReadNext())
 			{
-				id = r->GetNewStrNN(keyCol);
-				rowData = csvData.GetNN(id);
-				idList.Add(id);
+				sbId.ClearStr();
+				id1 = r->GetNewStrNN(keyCol1);
+				sbId.Append(id1);
+				id2 = 0;
+				if (keyCol2 != INVALID_INDEX)
+				{
+					sbId.AppendC(UTF8STRC("_ _"));
+					id2 = r->GetNewStrNN(keyCol2);
+					sbId.AppendOpt(id2);
+				}
+				rowData = csvData.GetC(sbId.ToCString());
+				idList.Add(Text::String::New(sbId.ToCString()));
 				if (rowData)
 				{
 					Bool diff = false;
@@ -1636,19 +1690,29 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					if (diff)
 					{
 						sql.AppendCmdC(CSTR(" where "));
-						if (table->GetCol(keyCol).SetTo(col))
+						if (table->GetCol(keyCol1).SetTo(col))
 							sql.AppendCol(col->GetColName()->v);
 						sql.AppendCmdC(CSTR(" = "));
 						if (intKey)
 						{
-							sql.AppendInt64(id->ToInt64());
+							sql.AppendInt64(id1->ToInt64());
 						}
 						else
 						{
-							sql.AppendStr(id);
+							sql.AppendStr(id1);
+						}
+						if (keyCol2 != INVALID_INDEX)
+						{
+							sql.AppendCmdC(CSTR(" and "));
+							if (table->GetCol(keyCol2).SetTo(col))
+								sql.AppendCol(col->GetColName()->v);
+							sql.AppendCmdC(CSTR(" = "));
+							sql.AppendStr(id2);
 						}
 						if (!NextSQL(sql.ToCString(), sess))
 						{
+							id1->Release();
+							OPTSTR_DEL(id2);
 							succ = false;
 							break;
 						}
@@ -1665,23 +1729,35 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					}
 					sql.AppendCol(this->table.v);
 					sql.AppendCmdC(CSTR(" where "));
-					if (table->GetCol(keyCol).SetTo(col))
+					if (table->GetCol(keyCol1).SetTo(col))
 						sql.AppendCol(col->GetColName()->v);
 					sql.AppendCmdC(CSTR(" = "));
 					if (intKey)
 					{
-						sql.AppendInt64(id->ToInt64());
+						sql.AppendInt64(id1->ToInt64());
 					}
 					else
 					{
-						sql.AppendStr(id);
+						sql.AppendStr(id1);
+					}
+					if (keyCol2 != INVALID_INDEX)
+					{
+						sql.AppendCmdC(CSTR(" and "));
+						if (table->GetCol(keyCol2).SetTo(col))
+							sql.AppendCol(col->GetColName()->v);
+						sql.AppendCmdC(CSTR(" = "));
+						sql.AppendStr(id2);
 					}
 					if (!NextSQL(sql.ToCString(), sess))
 					{
+						id1->Release();
+						OPTSTR_DEL(id2);
 						succ = false;
 						break;
 					}
 				}
+				id1->Release();
+				OPTSTR_DEL(id2);
 			}
 			this->db->CloseReader(r);
 
@@ -2032,8 +2108,11 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->cboDataTable->HandleSelectionChange(OnDataTableChg, this);
 	this->lblKeyCol = ui->NewLabel(this->grpData, CSTR("Key Column"));
 	this->lblKeyCol->SetRect(0, 72, 100, 23, false);
-	this->cboKeyCol = ui->NewComboBox(this->grpData, false);
-	this->cboKeyCol->SetRect(100, 72, 200, 23, false);
+	this->cboKeyCol1 = ui->NewComboBox(this->grpData, false);
+	this->cboKeyCol1->SetRect(100, 72, 200, 23, false);
+	this->cboKeyCol2 = ui->NewComboBox(this->grpData, false);
+	this->cboKeyCol2->SetRect(300, 72, 200, 23, false);
+	this->cboKeyCol2->AddItem(CSTR("No second key"), (void*)(INVALID_INDEX));
 	this->lblNullCol = ui->NewLabel(this->grpData, CSTR("Null Column"));
 	this->lblNullCol->SetRect(0, 96, 100, 23, false);
 	this->cboNullCol = ui->NewComboBox(this->grpData, false);
@@ -2118,6 +2197,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 
 	this->HandleDropFiles(OnFiles, this);
 
+	this->cboKeyCol2->SetSelectedIndex(0);
 	DB::TableDef *tableDef = this->db->GetTableDef(this->schema, this->table);
 	if (tableDef)
 	{
@@ -2128,18 +2208,19 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 		while (it.HasNext())
 		{
 			col = it.Next();
-			this->cboKeyCol->AddItem(col->GetColName(), (void*)i);
+			this->cboKeyCol1->AddItem(col->GetColName(), (void*)i);
+			this->cboKeyCol2->AddItem(col->GetColName(), (void*)i);
 			if (col->IsPK())
 			{
 				hasKey = true;
-				this->cboKeyCol->SetSelectedIndex(i);
+				this->cboKeyCol1->SetSelectedIndex(i);
 			}
 			i++;
 		}
-		this->cboKeyCol->AddItem(CSTR("No Key, All inserts"), (void*)INVALID_INDEX);
+		this->cboKeyCol1->AddItem(CSTR("No Key, All inserts"), (void*)INVALID_INDEX);
 		if (!hasKey)
 		{
-			this->cboKeyCol->SetSelectedIndex(0);
+			this->cboKeyCol1->SetSelectedIndex(0);
 		}
 		DEL_CLASS(tableDef);
 	}

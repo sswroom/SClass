@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF.h"
 
-UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, const DoubleStyle *style)
+UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NotNullPtr<const DoubleStyle> style)
 {
 	if (val == 0)
 	{
@@ -33,11 +33,26 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, const DoubleStyle *style
 	{
 		return Text::StrConcatC(oriStr, style->infStr, style->infLen);
 	}
-	OSInt i = 7;
+	Double addBase = 5.0e-10;
+	UOSInt i;
+	if (sigFig < 10)
+	{
+		sigFig = 10;
+	}
+	else
+	{
+		i = 10;
+		while (i < sigFig)
+		{
+			addBase *= 0.1;
+			i++;
+		}
+	}
+	i = sigFig >> 1;
 	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
-	val = val * Math_Pow(10.0, -ex - 1) + 5.0e-15;
-	if (ex >= 16 || ex <= -4)
+	val = val * Math_Pow(10.0, -ex - 1) + addBase;
+	if (ex >= (OSInt)(sigFig + 1) || ex <= -4)
 	{
 		val = val * 100.0;
 		iVal = (Int32)val;
@@ -189,7 +204,7 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, const DoubleStyle *style
 
 UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
 {
-	return StrDouble(oriStr, val, &DoubleStyleExcel);
+	return StrDouble(oriStr, val, 15, DoubleStyleExcel);
 }
 
 UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)

@@ -343,8 +343,8 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 				Double *mArr = lr->GetMList(m);
 				while (m-- > 0)
 				{
-					zArr[m] = zList.GetItem((j + m) << 1);
-					mArr[m] = zList.GetItem(((j + m) << 1) + 1);
+					zArr[m] = zList.GetItem(((k >> 1) + m) << 1);
+					mArr[m] = zList.GetItem((((k >> 1) + m) << 1) + 1);
 				}
 			}
 			else if (hasZ)
@@ -352,7 +352,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 				Double *zArr = lr->GetZList(m);
 				while (m-- > 0)
 				{
-					zArr[m] = zList.GetItem(j + m);
+					zArr[m] = zList.GetItem((k >> 1) + m);
 				}
 			}
 			pg->AddGeometry(lr);
@@ -623,8 +623,8 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 					Double *mArr = lr->GetMList(m);
 					while (m-- > 0)
 					{
-						zArr[m] = zList.GetItem((j + m) << 1);
-						mArr[m] = zList.GetItem(((j + m) << 1) + 1);
+						zArr[m] = zList.GetItem(((k >> 1) + m) << 1);
+						mArr[m] = zList.GetItem((((k >> 1) + m) << 1) + 1);
 					}
 				}
 				else if (hasZ)
@@ -632,7 +632,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 					Double *zArr = lr->GetZList(m);
 					while (m-- > 0)
 					{
-						zArr[m] = zList.GetItem(j + m);
+						zArr[m] = zList.GetItem((k >> 1) + m);
 					}
 				}
 				pg->AddGeometry(lr);

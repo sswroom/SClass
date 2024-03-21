@@ -179,10 +179,17 @@ namespace Text
 			return *this;
 		}
 
-		NotNullPtr<StringBuilderUTF8> AppendDouble(Double dVal, const DoubleStyle *style)
+		NotNullPtr<StringBuilderUTF8> AppendDouble(Double dVal, NotNullPtr<const DoubleStyle> style)
 		{
 			this->AllocLeng(32);
-			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal, style) - this->v);
+			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal, 15, style) - this->v);
+			return *this;
+		}
+
+		NotNullPtr<StringBuilderUTF8> AppendDouble(Double dVal, UOSInt sigFig, NotNullPtr<const DoubleStyle> style)
+		{
+			this->AllocLeng(32);
+			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal, sigFig, style) - this->v);
 			return *this;
 		}
 

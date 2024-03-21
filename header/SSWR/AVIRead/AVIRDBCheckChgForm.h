@@ -47,7 +47,8 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDataTable;
 			NotNullPtr<UI::GUIComboBox> cboDataTable;
 			NotNullPtr<UI::GUILabel> lblKeyCol;
-			NotNullPtr<UI::GUIComboBox> cboKeyCol;
+			NotNullPtr<UI::GUIComboBox> cboKeyCol1;
+			NotNullPtr<UI::GUIComboBox> cboKeyCol2;
 			NotNullPtr<UI::GUILabel> lblNullCol;
 			NotNullPtr<UI::GUIComboBox> cboNullCol;
 			NotNullPtr<UI::GUILabel> lblAssignCol;

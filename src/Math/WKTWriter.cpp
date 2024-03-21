@@ -9,6 +9,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
+#define DOUBLESIGFIG 17
+
 void Math::WKTWriter::SetLastError(Text::CString lastError)
 {
 	SDEL_STRING(this->lastError);
@@ -33,20 +35,20 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, N
 				if (i > 0) sb->AppendUTF8Char(',');
 				if (reverseAxis)
 				{
-					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				else
 				{
-					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
+				sb->AppendDouble(zArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(mArr[i], &Text::DoubleStyleC);
+				sb->AppendDouble(mArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -58,18 +60,18 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, N
 				if (i > 0) sb->AppendUTF8Char(',');
 				if (reverseAxis)
 				{
-					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				else
 				{
-					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				sb->AppendC(UTF8STRC(" NaN "));
-				sb->AppendDouble(mArr[i], &Text::DoubleStyleC);
+				sb->AppendDouble(mArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -81,18 +83,18 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, N
 				if (i > 0) sb->AppendUTF8Char(',');
 				if (reverseAxis)
 				{
-					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				else
 				{
-					sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
+				sb->AppendDouble(zArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -105,9 +107,9 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, N
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+				sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -117,9 +119,9 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, N
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
+				sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
  				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -296,22 +298,22 @@ Bool Math::WKTWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<
 			Math::Vector3 pos = pt->GetPos3D();
 			if (this->reverseAxis)
 			{
-				sb->AppendDouble(pos.GetY(), &Text::DoubleStyleC);
+				sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pos.GetX(), &Text::DoubleStyleC);
+				sb->AppendDouble(pos.GetX(), DOUBLESIGFIG, Text::DoubleStyleC);
 			}
 			else
 			{
-				sb->AppendDouble(pos.GetX(), &Text::DoubleStyleC);
+				sb->AppendDouble(pos.GetX(), DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pos.GetY(), &Text::DoubleStyleC);
+				sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);
 			}
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pos.GetZ(), &Text::DoubleStyleC);
+			sb->AppendDouble(pos.GetZ(), DOUBLESIGFIG, Text::DoubleStyleC);
 			if (vec->HasM())
 			{
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(((Math::Geometry::PointZM*)pt)->GetM(), &Text::DoubleStyleC);
+				sb->AppendDouble(((Math::Geometry::PointZM*)pt)->GetM(), DOUBLESIGFIG, Text::DoubleStyleC);
 			}
 		}
 		else
@@ -321,20 +323,20 @@ Bool Math::WKTWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<
 			coord = pt->GetCenter();
 			if (this->reverseAxis)
 			{
-				sb->AppendDouble(coord.y, &Text::DoubleStyleC);
+				sb->AppendDouble(coord.y, DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(coord.x, &Text::DoubleStyleC);
+				sb->AppendDouble(coord.x, DOUBLESIGFIG, Text::DoubleStyleC);
 			}
 			else
 			{
-				sb->AppendDouble(coord.x, &Text::DoubleStyleC);
+				sb->AppendDouble(coord.x, DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(coord.y, &Text::DoubleStyleC);
+				sb->AppendDouble(coord.y, DOUBLESIGFIG, Text::DoubleStyleC);
 			}
 			if (vec->HasM())
 			{
 				sb->AppendC(UTF8STRC(" NAN "));
-				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM(), &Text::DoubleStyleC);
+				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM(), DOUBLESIGFIG, Text::DoubleStyleC);
 			}
 		}
 		sb->AppendC(UTF8STRC(")"));
