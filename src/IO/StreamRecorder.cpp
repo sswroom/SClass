@@ -3,9 +3,9 @@
 #include "IO/ActiveStreamReader.h"
 #include "IO/StreamRecorder.h"
 
-void __stdcall IO::StreamRecorder::DataHdlr(const UInt8 *buff, UOSInt buffSize, void *userData)
+void __stdcall IO::StreamRecorder::DataHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	IO::StreamRecorder *me = (IO::StreamRecorder *)userData;
+	NotNullPtr<IO::StreamRecorder> me = userData.GetNN<IO::StreamRecorder>();
 	me->recordedLength += me->destStm.Write(buff, buffSize);
 }
 

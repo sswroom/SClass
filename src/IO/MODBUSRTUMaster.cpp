@@ -10,9 +10,9 @@
 #include <stdio.h>
 #define CMDDELAY 200
 
-UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(void *userObj)
+UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 {
-	IO::MODBUSRTUMaster *me = (IO::MODBUSRTUMaster*)userObj;
+	NotNullPtr<IO::MODBUSRTUMaster> me = userObj.GetNN<IO::MODBUSRTUMaster>();
 	UInt8 buff[1024];
 	UOSInt buffSize = 0;
 	UOSInt readSize;

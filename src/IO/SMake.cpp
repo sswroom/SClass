@@ -1010,15 +1010,15 @@ Bool IO::SMake::ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList
 	return true;
 }
 
-void IO::SMake::CompileTask(void *userObj)
+void IO::SMake::CompileTask(AnyType userObj)
 {
-	CompileReq *req = (CompileReq *)userObj;
+	NotNullPtr<CompileReq> req = userObj.GetNN<CompileReq>();
 	if (!req->me->ExecuteCmd(req->cmd->ToCString()))
 	{
 		req->me->error = true;
 	}
 	req->cmd->Release();
-	MemFree(req);
+	MemFreeNN(req);
 }
 
 void IO::SMake::CompileObject(Text::CStringNN cmd)

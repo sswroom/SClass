@@ -14,7 +14,7 @@ namespace Net
 			Sync::Mutex sendMut;
 			NotNullPtr<Net::WebServer::IWebResponse> resp;
 			IO::StreamHandler *stmHdlr;
-			void *stmData;
+			AnyType stmData;
 
 			UInt8 *recvBuff;
 			UOSInt recvCapacity;

@@ -1,5 +1,6 @@
 #ifndef _SM_IO_MODBUSTCPMASTER
 #define _SM_IO_MODBUSTCPMASTER
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "IO/MODBUSMaster.h"
 #include "IO/Stream.h"
@@ -27,7 +28,7 @@ namespace IO
 		Sync::Mutex stmMut;
 		Data::FastMap<Int32, AddrResultCb*> cbMap;
 
-		static UInt32 __stdcall ThreadProc(void *userObj);
+		static UInt32 __stdcall ThreadProc(AnyType userObj);
 	public:
 		MODBUSTCPMaster(IO::Stream *stm);
 		virtual ~MODBUSTCPMaster();

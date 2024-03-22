@@ -61,7 +61,7 @@ namespace SSWR
 			static void __stdcall OnRecvTypeChg(AnyType userObj);
 			static void __stdcall OnSendTypeChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 
 			void StopStream(Bool clearUI);
 			void UpdateRecvDisp();

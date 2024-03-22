@@ -95,9 +95,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientTimeout(NotNullPtr<Net:
 {
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(AnyType userObj)
 {
-	ClientStatus *cliStatus = (ClientStatus*)userObj;
+	NotNullPtr<ClientStatus> cliStatus = userObj.GetNN<ClientStatus>();
 	Data::ByteBuffer recvBuff(9000);
 	UOSInt recvSize;
 	while (true)
@@ -109,7 +109,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 			cliStatus->cli->Write(recvBuff.Ptr(), recvSize);
 	}
 	cliStatus->cli.Delete();
-	MemFree(cliStatus);
+	MemFreeNN(cliStatus);
 	return 0;
 }
 

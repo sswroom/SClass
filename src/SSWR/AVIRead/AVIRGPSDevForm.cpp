@@ -10,9 +10,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	UOSInt recvBuffSize;
 	UOSInt readSize;
 	NotNullPtr<Net::TCPClient> cli;

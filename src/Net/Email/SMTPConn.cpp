@@ -14,9 +14,9 @@
 #include <stdio.h>
 #endif
 
-UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
+UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(AnyType userObj)
 {
-	Net::Email::SMTPConn *me = (Net::Email::SMTPConn *)userObj;
+	NotNullPtr<Net::Email::SMTPConn> me = userObj.GetNN<Net::Email::SMTPConn>();
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
 	UTF8Char *sptr;

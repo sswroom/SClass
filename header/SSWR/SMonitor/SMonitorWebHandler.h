@@ -19,8 +19,8 @@ namespace SSWR
 			Data::FastStringMap<RequestHandler> *reqMap;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
-			static Bool __stdcall OnSessDeleted(NotNullPtr<Net::WebServer::IWebSession> sess, void *userObj);
-			static Bool __stdcall OnSessCheck(NotNullPtr<Net::WebServer::IWebSession> sess, void *userObj);
+			static Bool __stdcall OnSessDeleted(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj);
+			static Bool __stdcall OnSessCheck(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj);
 
 			static Bool __stdcall DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 			static Bool __stdcall IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);

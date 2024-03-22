@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRPACKAGEFORM
 #define _SM_SSWR_AVIREAD_AVIRPACKAGEFORM
+#include "AnyType.h"
 #include "Data/ArrayListNN.h"
 #include "IO/PackageFile.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -128,7 +129,7 @@ namespace SSWR
 			Bool progUpdated;
 			Bool progEnd;
 
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall LVDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnStatusDblClick(AnyType userObj, UOSInt index);

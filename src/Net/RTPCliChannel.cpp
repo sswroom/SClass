@@ -272,9 +272,9 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUt
 	}
 }
 
-UInt32 __stdcall Net::RTPCliChannel::PlayThread(void *userObj)
+UInt32 __stdcall Net::RTPCliChannel::PlayThread(AnyType userObj)
 {
-	Net::RTPCliChannel *me = (Net::RTPCliChannel*)userObj;
+	NotNullPtr<Net::RTPCliChannel> me = userObj.GetNN<Net::RTPCliChannel>();
 	{
 		Data::DateTime dt;
 		Data::DateTime lastDt;
@@ -473,12 +473,12 @@ Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 	return aSrc;
 }
 
-void *Net::RTPCliChannel::GetUserData()
+AnyType Net::RTPCliChannel::GetUserData()
 {
 	return this->chData->userData;
 }
 
-void Net::RTPCliChannel::SetUserData(void *userData)
+void Net::RTPCliChannel::SetUserData(AnyType userData)
 {
 	this->chData->userData = userData;
 }

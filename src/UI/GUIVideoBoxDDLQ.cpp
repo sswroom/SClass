@@ -7,7 +7,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/GUIVideoBoxDDLQ.h"
 
-void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
+void UI::GUIVideoBoxDDLQ::ProcessVideo(NotNullPtr<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
 	DrawRect rect;
 	UOSInt srcWidth = 0;
@@ -296,7 +296,7 @@ Media::IImgResizer *UI::GUIVideoBoxDDLQ::CreateResizer(Media::ColorManagerSess *
 	return resizer;
 }
 
-void UI::GUIVideoBoxDDLQ::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info)
+void UI::GUIVideoBoxDDLQ::CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::FrameInfo *info)
 {
 	SDEL_CLASS(tstat->csconv);
 	Media::ColorProfile::YUVType yuvType = info->yuvType;
@@ -341,7 +341,7 @@ void UI::GUIVideoBoxDDLQ::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info
 	}
 }
 
-void UI::GUIVideoBoxDDLQ::CreateThreadResizer(ThreadStat *tstat)
+void UI::GUIVideoBoxDDLQ::CreateThreadResizer(NotNullPtr<ThreadStat> tstat)
 {
 	SDEL_CLASS(tstat->resizer);
 	SDEL_CLASS(tstat->dresizer);

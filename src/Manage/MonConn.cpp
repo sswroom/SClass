@@ -121,9 +121,9 @@ void Manage::MonConn::ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType,
 	*cmdData = &buff[8];
 }
 
-UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
+UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 {
-	Manage::MonConn *me = (Manage::MonConn*)conn;
+	NotNullPtr<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UOSInt buffSize;
 	me->ConnRRunning = true;
 	{
@@ -220,9 +220,9 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 	return 0;
 }
 
-UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
+UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 {
-	Manage::MonConn *me = (Manage::MonConn*)conn;
+	NotNullPtr<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UInt8 *data;
 	me->ConnTRunning = true;
 	while (true)

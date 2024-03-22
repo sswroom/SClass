@@ -13,11 +13,11 @@
 Crypto::Cert::CertStore *Net::SSLEngine::trustStore = 0;
 UInt32 Net::SSLEngine::trustStoreCnt = 0;
 
-UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
+UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	ThreadState *state = (ThreadState*)userObj;
+	NotNullPtr<ThreadState> state = userObj.GetNN<ThreadState>();
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SSLEngine")), state->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	state->status = ThreadStatus::NewClient;

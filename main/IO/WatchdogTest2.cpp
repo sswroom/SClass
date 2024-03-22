@@ -30,7 +30,7 @@ NotNullPtr<Net::SocketFactory> sockf;
 Optional<Net::SSLEngine> ssl;
 IO::ConsoleWriter *consoleWriter;
 
-UInt32 __stdcall WatchdogThread(void *userObj)
+UInt32 __stdcall WatchdogThread(AnyType userObj)
 {
 	Int32 i = 15;
 	Single tempVal;
@@ -77,7 +77,7 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall HTTPThread(void *userObj)
+UInt32 __stdcall HTTPThread(AnyType userObj)
 {
 	NotNullPtr<Net::HTTPClient> cli;
 	{

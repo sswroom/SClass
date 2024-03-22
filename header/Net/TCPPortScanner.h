@@ -22,7 +22,7 @@ namespace Net
 		Bool threadToStop;
 		Sync::Event threadEvt;
 
-		static UInt32 __stdcall ScanThread(void *userObj);
+		static UInt32 __stdcall ScanThread(AnyType userObj);
 	public:
 		TCPPortScanner(NotNullPtr<Net::SocketFactory> socf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj);
 		~TCPPortScanner();

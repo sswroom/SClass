@@ -1,5 +1,6 @@
 #ifndef _SM_NET_MQTTBROKER
 #define _SM_NET_MQTTBROKER
+#include "AnyType.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
@@ -97,14 +98,14 @@ namespace Net
 		static void __stdcall OnClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
 		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 		
-		static UInt32 __stdcall SysInfoThread(void *userObj);
+		static UInt32 __stdcall SysInfoThread(AnyType userObj);
 
 		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		void UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicSend(NotNullPtr<IO::Stream> stm, AnyType stmData, const TopicInfo *topic);
 
-		virtual void *StreamCreated(NotNullPtr<IO::Stream> stm);
+		virtual AnyType StreamCreated(NotNullPtr<IO::Stream> stm);
 		virtual void StreamData(NotNullPtr<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff);
 		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, AnyType stmData);
 	public:

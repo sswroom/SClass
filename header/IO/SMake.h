@@ -1,5 +1,6 @@
 #ifndef _SM_IO_SMAKE
 #define _SM_IO_SMAKE
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "Data/ArrayListStringNN.h"
@@ -70,8 +71,7 @@ namespace IO
 		Bool ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> objectFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
 
-		static void __stdcall CompileTask(void *userObj);
-		static void __stdcall TestTask(void *userObj);
+		static void __stdcall CompileTask(AnyType userObj);
 		void CompileObject(Text::CStringNN cmd);
 		void CompileObject(NotNullPtr<Text::String> cmd);
 		Bool CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest);

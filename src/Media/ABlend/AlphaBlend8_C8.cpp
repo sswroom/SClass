@@ -131,9 +131,9 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144 + 8192], this->dProfile, this->oProfile.primaries, 14);
 }
 
-UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(void *userObj)
+UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 {
-	ThreadStat *stat = (ThreadStat *)userObj;
+	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ABlend8_C8_")), stat->index);

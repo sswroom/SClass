@@ -193,9 +193,9 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(const UInt8 *inPt, UI
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoTask(void *obj)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoTask(AnyType obj)
 {
-	TaskParam *ts = (TaskParam*)obj;
+	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
 		LanczosResizerLR_C32_CPU_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);

@@ -1,5 +1,6 @@
 #ifndef _SM_IO_ACTIVESTREAMREADER
 #define _SM_IO_ACTIVESTREAMREADER
+#include "AnyType.h"
 #include "IO/Stream.h"
 #include "IO/StreamData.h"
 
@@ -18,7 +19,7 @@ namespace IO
 			Write
 		};
 
-		typedef void (__stdcall *DataHdlr)(const UInt8 *buff, UOSInt buffSize, void *userData);
+		typedef void (__stdcall *DataHdlr)(const UInt8 *buff, UOSInt buffSize, AnyType userData);
 		typedef struct
 		{
 			UInt8 *buff;
@@ -39,14 +40,14 @@ namespace IO
 		ReadBuffer buffs[ACTIVESTREAMREADER_BUFFCNT];
 		Sync::Event fullEvt;
 		Sync::Event emptyEvt;
-		void *userData;
+		AnyType userData;
 
-		static UInt32 __stdcall ReadThread(void *obj);
+		static UInt32 __stdcall ReadThread(AnyType obj);
 	public:
-		ActiveStreamReader(DataHdlr hdlr, void *userData, UOSInt buffSize);
+		ActiveStreamReader(DataHdlr hdlr, AnyType userData, UOSInt buffSize);
 		~ActiveStreamReader();
 
-		void SetUserData(void *userData);
+		void SetUserData(AnyType userData);
 		void ReadStream(NotNullPtr<IO::Stream> stm, OptOut<BottleNeckType> bnt);
 		void ReadStreamData(NotNullPtr<IO::StreamData> stmData, OptOut<BottleNeckType> bnt);
 	};

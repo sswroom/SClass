@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_WEBIMAGELAYER
 #define _SM_MAP_WEBIMAGELAYER
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Data/CallbackStorage.h"
 #include "Data/IComparable.h"
@@ -67,7 +68,7 @@ namespace Map
 		ImageStat *GetImageStat(Int32 id);
 
 		void LoadImage(ImageStat *stat);
-		static UInt32 __stdcall LoadThread(void *userObj);
+		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
 		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NotNullPtr<Math::CoordinateSystem> csys, Text::CString layerName);
 		virtual ~WebImageLayer();

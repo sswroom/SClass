@@ -3,9 +3,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
+UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 {
-	Net::RSSReader *me = (Net::RSSReader*)userObj;
+	NotNullPtr<Net::RSSReader> me = userObj.GetNN<Net::RSSReader>();
 	Net::RSS *rss;
 	RSSStatus *status;
 	Data::DateTime *dt;

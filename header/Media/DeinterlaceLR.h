@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DEINTERLACELR
 #define _SM_MEDIA_DEINTERLACELR
+#include "AnyType.h"
 #include "Media/IDeinterlacer.h"
 #include "Sync/Event.h"
 
@@ -47,7 +48,7 @@ namespace Media
 		static Double lanczos3_weight(Double phase);
 		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
-		static UInt32 __stdcall ProcThread(void *obj);
+		static UInt32 __stdcall ProcThread(AnyType obj);
 	public:
 		DeinterlaceLR(UOSInt fieldCnt, UOSInt fieldSep);
 		virtual ~DeinterlaceLR();

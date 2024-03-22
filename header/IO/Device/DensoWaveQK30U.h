@@ -1,5 +1,6 @@
 #ifndef _SM_IO_DEVICE_DENSOWAVEQK30U
 #define _SM_IO_DEVICE_DENSOWAVEQK30U
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "IO/CodeScanner.h"
 #include "IO/Stream.h"
@@ -26,7 +27,7 @@ namespace IO
 			Bool recvToStop;
 			Sync::Event recvEvt;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 			Bool ScanModeStart();
 			Bool ScanModeEnd();
 			Bool SettingModeStart();

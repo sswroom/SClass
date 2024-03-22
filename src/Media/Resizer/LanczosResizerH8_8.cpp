@@ -830,9 +830,9 @@ void Media::Resizer::LanczosResizerH8_8::mt_copy(const UInt8 *inPt, UInt8 *outPt
 	this->ptask->WaitForIdle();
 }
 
-void __stdcall Media::Resizer::LanczosResizerH8_8::DoTask(void *obj)
+void __stdcall Media::Resizer::LanczosResizerH8_8::DoTask(AnyType obj)
 {
-	TaskParam *ts = (TaskParam*)obj;
+	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
 		LanczosResizerH8_8_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep);

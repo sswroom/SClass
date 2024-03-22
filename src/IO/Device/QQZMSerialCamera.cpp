@@ -10,9 +10,9 @@
 #define PACKETSIZE 512
 #define IMAGESIZE 3
 
-UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(void *userObj)
+UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 {
-	IO::Device::QQZMSerialCamera *me = (IO::Device::QQZMSerialCamera*)userObj;
+	NotNullPtr<IO::Device::QQZMSerialCamera> me = userObj.GetNN<IO::Device::QQZMSerialCamera>();
 	Data::DateTime *dt;
 	UInt8 cmdBuff[10];
 	UInt8 buff[2048];

@@ -75,9 +75,9 @@ void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, AnyType userObj)
 	}
 }
 
-UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
+UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 {
-	Net::MQTTBroker *me = (Net::MQTTBroker*)userObj;
+	NotNullPtr<Net::MQTTBroker> me = userObj.GetNN<Net::MQTTBroker>();
 	Data::DateTime *dt;
 	UTF8Char sbuff[64];
 	UOSInt i;
@@ -876,7 +876,7 @@ Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, AnyType stmData, con
 	}
 }
 
-void *Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
+AnyType Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
 {
 	ClientData *data;
 	data = MemAlloc(ClientData, 1);

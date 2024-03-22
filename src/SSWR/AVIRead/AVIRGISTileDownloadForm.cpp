@@ -340,9 +340,9 @@ Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UOSInt> minLevel
 	return true;
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType userObj)
 {
-	ThreadStat *stat = (ThreadStat*)userObj;
+	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	Map::TileMap::ImageType it;
 	IO::StreamData *fd;
 	Math::RectAreaDbl bounds;

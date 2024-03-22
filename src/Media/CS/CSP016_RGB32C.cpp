@@ -137,9 +137,9 @@ void Media::CS::CSP016_RGB32C::SetupInterpolationParameter(UOSInt source_length,
 	MemFree(work);
 }
 
-UInt32 Media::CS::CSP016_RGB32C::WorkerThread(void *obj)
+UInt32 Media::CS::CSP016_RGB32C::WorkerThread(AnyType obj)
 {
-	CSP016_RGB32C *converter = (CSP016_RGB32C*)obj;
+	NotNullPtr<CSP016_RGB32C> converter = obj.GetNN<CSP016_RGB32C>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

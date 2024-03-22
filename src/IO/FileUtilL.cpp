@@ -163,11 +163,11 @@ typedef struct
 {
 	IO::FileStream *destStm;
 	UInt64 writeSize;
-	IO::ProgressHandler *progHdlr;
+	Optional<IO::ProgressHandler> progHdlr;
 	UInt64 fileSize;
 } CopySess;
 
-Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
@@ -220,9 +220,10 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		}
 	}
 
-	if (progHdlr)
+	NotNullPtr<IO::ProgressHandler> nnprogHdlr;
+	if (progHdlr.SetTo(nnprogHdlr))
 	{
-		progHdlr->ProgressStart(file1, fileSize);
+		nnprogHdlr->ProgressStart(file1, fileSize);
 	}
 	if (fileSize < 1048576)
 	{
@@ -235,9 +236,9 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		MemFree(buff);
 		fs1.GetFileTimes(ts1, ts2, ts3);
 		fs2->SetFileTimes(ts1, ts2, ts3);
-		if (progHdlr)
+		if (progHdlr.SetTo(nnprogHdlr))
 		{
-			progHdlr->ProgressUpdate(writeSize, fileSize);
+			nnprogHdlr->ProgressUpdate(writeSize, fileSize);
 		}
 	}
 	else if (samePart)
@@ -263,9 +264,9 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			}
 			writenSize = fs2->Write(buff, thisSize);
 			writeSize += writenSize;
-			if (progHdlr)
+			if (progHdlr.SetTo(nnprogHdlr))
 			{
-				progHdlr->ProgressUpdate(writeSize, fileSize);
+				nnprogHdlr->ProgressUpdate(writeSize, fileSize);
 			}
 			if (writenSize != thisSize)
 			{
@@ -299,7 +300,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 	return writeSize == fileSize;
 }
 
-Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -368,7 +369,7 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	}
 }
 
-Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	Bool samePart = IO::FileUtil::IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)
@@ -399,7 +400,7 @@ Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 	}
 }
 
-Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -557,15 +558,16 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	return succ;
 }*/
 
-void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, void *userData)
+void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	CopySess *csess = (CopySess*)userData;
+	NotNullPtr<CopySess> csess = userData.GetNN<CopySess>();
 	UOSInt writenSize;
 	writenSize = csess->destStm->Write(buff, buffSize);
 	csess->writeSize += writenSize;
-	if (csess->progHdlr)
+	NotNullPtr<IO::ProgressHandler> progHdlr;
+	if (csess->progHdlr.SetTo(progHdlr))
 	{
-		csess->progHdlr->ProgressUpdate(csess->writeSize, csess->fileSize);
+		progHdlr->ProgressUpdate(csess->writeSize, csess->fileSize);
 	}
 }
 

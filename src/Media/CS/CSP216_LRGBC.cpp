@@ -8,9 +8,9 @@ extern "C"
 	void CSP216_LRGBC_do_yuy2rgb(UInt8 *srcY, UInt8 *srcUV, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSP216_LRGBC::WorkerThread(void *obj)
+UInt32 Media::CS::CSP216_LRGBC::WorkerThread(AnyType obj)
 {
-	CSP216_LRGBC *converter = (CSP216_LRGBC*)obj;
+	NotNullPtr<CSP216_LRGBC> converter = obj.GetNN<CSP216_LRGBC>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

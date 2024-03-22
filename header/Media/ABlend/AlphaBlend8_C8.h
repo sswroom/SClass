@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_ABLEND_ALPHABLEND8_C8
 #define _SM_MEDIA_ABLEND_ALPHABLEND8_C8
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Media/ColorProfile.h"
 #include "Media/ColorSess.h"
@@ -50,7 +51,7 @@ namespace Media
 			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 
 			void UpdateLUT();
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			AlphaBlend8_C8(Media::ColorSess *colorSess, Bool multiProfile);
 			virtual ~AlphaBlend8_C8();

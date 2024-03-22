@@ -9,9 +9,9 @@ extern "C"
 	void CSP010_RGB8_do_p010rgb2(UInt8 *yPtr, UInt8 *uvPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt isFirst, UOSInt isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSP010_RGB8::WorkerThread(void *obj)
+UInt32 Media::CS::CSP010_RGB8::WorkerThread(AnyType obj)
 {
-	CSP010_RGB8 *converter = (CSP010_RGB8*)obj;
+	NotNullPtr<CSP010_RGB8> converter = obj.GetNN<CSP010_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

@@ -116,9 +116,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::ThreadFunc(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::ThreadFunc(AnyType userObj)
 {
-	ThreadState *state = (ThreadState*)userObj;
+	NotNullPtr<ThreadState> state = userObj.GetNN<ThreadState>();
 	{
 		Sync::Event evt;
 		state->evt = &evt;

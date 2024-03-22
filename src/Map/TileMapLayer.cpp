@@ -13,12 +13,12 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
+UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 {
 	Math::RectAreaDbl bounds;
 	Media::ImageList *imgList;
 	CachedImage *cimg;
-	ThreadStat *stat = (ThreadStat*)userObj;
+	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TileMapLayer")), stat->index);

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_SNS_SNSMANAGER
 #define _SM_NET_SNS_SNSMANAGER
+#include "AnyType.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/List.h"
 #include "Data/Usable.h"
@@ -44,7 +45,7 @@ namespace Net
 			void ChannelUpdate(ChannelData *channel);
 			void ChannelReload(ChannelData *channel);
 
-			static UInt32 __stdcall ThreadProc(void *userObj);
+			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
 			SNSManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log);
 			virtual ~SNSManager();

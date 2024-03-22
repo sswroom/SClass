@@ -1,5 +1,6 @@
 #ifndef _SM_IO_CORTEXCONTROL
 #define _SM_IO_CORTEXCONTROL
+#include "AnyType.h"
 #include "IO/IProtocolHandler.h"
 #include "IO/SerialPort.h"
 #include "IO/Writer.h"
@@ -25,7 +26,7 @@ namespace IO
 		Bool recvRunning;
 		Bool recvToStop;
 
-		static UInt32 __stdcall RecvThread(void *userObj);
+		static UInt32 __stdcall RecvThread(AnyType userObj);
 	public:
 		CortexControl(UOSInt portNum, IO::Writer *errWriter);
 		virtual ~CortexControl();

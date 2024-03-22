@@ -1,5 +1,6 @@
 #ifndef _SM_IO_MTFILELOG
 #define _SM_IO_MTFILELOG
+#include "AnyType.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/BufferedOutputStream.h"
@@ -35,7 +36,7 @@ namespace IO
 
 		UTF8Char *GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
 		void WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
-		static UInt32 __stdcall FileThread(void *userObj);
+		static UInt32 __stdcall FileThread(AnyType userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
 		MTFileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);

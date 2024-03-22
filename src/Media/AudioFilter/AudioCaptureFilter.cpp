@@ -7,9 +7,9 @@
 #include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
-UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *userObj)
+UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(AnyType userObj)
 {
-	Media::AudioFilter::AudioCaptureFilter *me = (Media::AudioFilter::AudioCaptureFilter*)userObj;
+	NotNullPtr<Media::AudioFilter::AudioCaptureFilter> me = userObj.GetNN<Media::AudioFilter::AudioCaptureFilter>();
 	UInt8 *tmpBuff;
 	UOSInt buffSize;
 	me->running = true;

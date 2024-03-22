@@ -38,7 +38,7 @@ class PrintTest : public Media::IPrintHandler
 {
 private:
 	OSInt pageId;
-	Media::IPrintDocument *doc;
+	Optional<Media::IPrintDocument> doc;
 
 public:
 	PrintTest()
@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	virtual Bool BeginPrint(Media::IPrintDocument *doc)
+	virtual Bool BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
 	{
 		Media::PaperSize psize(Media::PaperSize::PT_A4);
 		this->pageId = 0;
@@ -72,10 +72,11 @@ public:
 		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi), p, 0);
 		printPage->DelPen(p);
 
-		if (this->pageId == 0)
+		NotNullPtr<Media::IPrintDocument> doc;
+		if (this->pageId == 0 && this->doc.SetTo(doc))
 		{
 			this->pageId = 1;
-			this->doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
+			doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
 			return true;
 		}
 		else
@@ -84,7 +85,7 @@ public:
 		}
 	}
 
-	virtual Bool EndPrint(Media::IPrintDocument *doc)
+	virtual Bool EndPrint(NotNullPtr<Media::IPrintDocument> doc)
 	{
 		return true;
 	}
@@ -583,8 +584,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					PrintTest *test;
 					NEW_CLASS(test, PrintTest());
-					Media::IPrintDocument *doc = printer->StartPrint(test, deng);
-					if (doc)
+					NotNullPtr<Media::IPrintDocument> doc;
+					if (printer->StartPrint(test, deng).SetTo(doc))
 					{
 						printer->EndPrint(doc);
 					}

@@ -10,13 +10,13 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
+UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 {
 	Math::RectAreaDbl bounds;
 	Media::ImageList *imgList;
 	Math::Size2DDbl size;
 	Double dpi;
-	Map::DrawMapServiceLayer *me = (Map::DrawMapServiceLayer*)userObj;
+	NotNullPtr<Map::DrawMapServiceLayer> me = userObj.GetNN<Map::DrawMapServiceLayer>();
 	Int64 thisId = 0;
 	{
 		Text::StringBuilderUTF8 sb;

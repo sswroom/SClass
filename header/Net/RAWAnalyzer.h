@@ -1,5 +1,6 @@
 #ifndef _SM_NET_RAWANALYZER
 #define _SM_NET_RAWANALYZER
+#include "AnyType.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/SocketFactory.h"
 #include "Net/WebServer/WebListener.h"
@@ -19,7 +20,7 @@ namespace Net
 		Int32 threadCnt;
 		Bool threadToStop;
 
-		static UInt32 __stdcall RecvThread(void *obj);
+		static UInt32 __stdcall RecvThread(AnyType obj);
 
 	public:
 		RAWAnalyzer(NotNullPtr<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType aType);

@@ -33,9 +33,9 @@ typedef enum
 	MNU_OPEN_SELECTED
 } MenuItem;
 
-void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, void *userData)
+void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	SSWR::AVIRead::AVIRPackageForm::ReadSession *sess = (SSWR::AVIRead::AVIRPackageForm::ReadSession*)userData;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm::ReadSession> sess = userData.GetNN<SSWR::AVIRead::AVIRPackageForm::ReadSession>();
 	if (sess->hash)
 	{
 		sess->hash->Calc(buff, buffSize);
@@ -43,9 +43,9 @@ void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, void *userD
 	sess->fileReadSize += buffSize;
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> fname;

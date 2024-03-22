@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_IWEBSESSIONMANAGER
 #define _SM_NET_WEBSERVER_IWEBSESSIONMANAGER
+#include "AnyType.h"
 #include "Net/WebServer/IWebRequest.h"
 #include "Net/WebServer/IWebResponse.h"
 #include "Net/WebServer/IWebSession.h"
@@ -11,13 +12,13 @@ namespace Net
 		class IWebSessionManager
 		{
 		public:
-			typedef Bool (__stdcall *SessionHandler)(NotNullPtr<IWebSession> sess, void *userObj);
+			typedef Bool (__stdcall *SessionHandler)(NotNullPtr<IWebSession> sess, AnyType userObj);
 
 		protected:
 			SessionHandler delHdlr;
-			void *delHdlrObj;
+			AnyType delHdlrObj;
 
-			IWebSessionManager(SessionHandler delHdlr, void *delHdlrObj);
+			IWebSessionManager(SessionHandler delHdlr, AnyType delHdlrObj);
 		public:
 			virtual ~IWebSessionManager();
 

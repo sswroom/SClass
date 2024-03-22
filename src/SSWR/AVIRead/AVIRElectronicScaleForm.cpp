@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRElectronicScaleForm *me = (SSWR::AVIRead::AVIRElectronicScaleForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	UInt8 buff[512];
 	UOSInt recvSize;
 	UOSInt buffSize = 0;

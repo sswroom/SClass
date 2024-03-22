@@ -30,7 +30,7 @@ namespace SSWR
 			Sync::Event mainEvt;
 			Double t;
 
-			static UInt32 __stdcall TestThread(void *userObj);
+			static UInt32 __stdcall TestThread(AnyType userObj);
 			static void __stdcall OnTestClicked(AnyType userObj);
 		public:
 			AVIRThreadSpeedForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

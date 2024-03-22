@@ -47,8 +47,8 @@ namespace Manage
 		AnyType userObj;
 		IO::Writer *msgWriter;
 
-		static UInt32 __stdcall ConnTThread(void *conn);
-		static UInt32 __stdcall ConnRThread(void *conn);
+		static UInt32 __stdcall ConnTThread(AnyType conn);
+		static UInt32 __stdcall ConnRThread(AnyType conn);
 		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
 		MonConn(EventHandler hdlr, AnyType userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout);

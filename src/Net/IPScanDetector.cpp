@@ -10,9 +10,9 @@
 #define TIMEDETECTRANGE 3000
 #define DETECTCOUNT 5
 
-UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
+UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 {
-	Net::IPScanDetector::ThreadStat *stat = (Net::IPScanDetector::ThreadStat*)obj;
+	NotNullPtr<Net::IPScanDetector::ThreadStat> stat = obj.GetNN<Net::IPScanDetector::ThreadStat>();
 	UInt8 macBuff[8];
 	stat->threadRunning = true;
 	stat->me->ctrlEvt->Set();

@@ -39,9 +39,9 @@ void Net::ICMPScanner::ICMPChecksum(UInt8 *buff, OSInt buffSize)
 	WriteInt16(&oriBuff[2], ~sum);
 }
 
-UInt32 __stdcall Net::ICMPScanner::Ping1Thread(void *userObj)
+UInt32 __stdcall Net::ICMPScanner::Ping1Thread(AnyType userObj)
 {
-	PingStatus *status = (PingStatus*)userObj;
+	NotNullPtr<PingStatus> status = userObj.GetNN<PingStatus>();
 	UInt8 buff1[4];
 	UInt8 buff2[4];
 	ScanResult *result;
@@ -83,9 +83,9 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall Net::ICMPScanner::Ping2Thread(void *userObj)
+UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 {
-	Net::ICMPScanner *me = (Net::ICMPScanner*)userObj;
+	NotNullPtr<Net::ICMPScanner> me = userObj.GetNN<Net::ICMPScanner>();
 	UInt8 *readBuff;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;

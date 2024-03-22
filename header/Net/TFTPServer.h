@@ -1,5 +1,6 @@
 #ifndef _SM_NET_TFTPSERVER
 #define _SM_NET_TFTPSERVER
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "IO/LogTool.h"
 #include "Net/UDPServer.h"
@@ -36,7 +37,7 @@ namespace Net
 
 		static void __stdcall OnCommandPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static void __stdcall OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static UInt32 __stdcall CheckThread(void *userObj);
+		static UInt32 __stdcall CheckThread(AnyType userObj);
 		void ReleaseSess(SessionInfo *sess);
 	public:
 		TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString path);

@@ -584,9 +584,9 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> 
 	mutUsage.EndUse();
 }
 
-UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
+UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 {
-	DB::DBHandler *me = (DB::DBHandler*)userObj;
+	NotNullPtr<DB::DBHandler> me = userObj.GetNN<DB::DBHandler>();
 	me->running = true;
 
 	NotNullPtr<Text::String> s;

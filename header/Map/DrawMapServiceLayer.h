@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_DRAWMAPSERVICELAYER
 #define _SM_MAP_DRAWMAPSERVICELAYER
+#include "AnyType.h"
 #include "Data/CallbackStorage.h"
 #include "Data/SyncLinkedList.h"
 #include "Map/DrawMapService.h"
@@ -35,7 +36,7 @@ namespace Map
 		Sync::Mutex updMut;
 		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
-		static UInt32 __stdcall TaskThread(void *userObj);
+		static UInt32 __stdcall TaskThread(AnyType userObj);
 		void ClearDisp();
 	public:
 		DrawMapServiceLayer(Map::DrawMapService *mapService);

@@ -110,9 +110,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(AnyType userObj)
 
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	UInt8 *sendBuff;
 	UOSInt sendSize;
 	UOSInt sendBuffSize = SENDBUFFSIZE;
@@ -147,9 +147,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	UOSInt recvSize;
 	me->recvRunning = true;
 	me->mainEvt.Set();

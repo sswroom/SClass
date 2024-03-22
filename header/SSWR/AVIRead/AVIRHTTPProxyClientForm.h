@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPPROXYCLIENTFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPPROXYCLIENTFORM
+#include "AnyType.h"
 #include "Data/ArrayListNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -62,7 +63,7 @@ namespace SSWR
 			Data::ArrayListStringNN respHeaders;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 		public:

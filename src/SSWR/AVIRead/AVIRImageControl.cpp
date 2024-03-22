@@ -21,9 +21,9 @@
 
 #include <stdio.h>
 
-UInt32 __stdcall SSWR::AVIRead::AVIRImageControl::FolderThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRImageControl::FolderThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRImageControl *me = (SSWR::AVIRead::AVIRImageControl*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRImageControl> me = userObj.GetNN<SSWR::AVIRead::AVIRImageControl>();
 	me->threadState = 1;
 	me->folderCtrlEvt.Set();
 	while (true)
@@ -1298,7 +1298,7 @@ void SSWR::AVIRead::AVIRImageControl::SelectAll()
 	this->Redraw();
 }
 
-void SSWR::AVIRead::AVIRImageControl::HandleKeyDown(KeyDownHandler keyHdlr, void *keyObj)
+void SSWR::AVIRead::AVIRImageControl::HandleKeyDown(KeyDownHandler keyHdlr, AnyType keyObj)
 {
 	this->keyObj = keyObj;
 	this->keyHdlr = keyHdlr;

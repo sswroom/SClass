@@ -48,9 +48,9 @@ void Media::ImageCopy::MT_Copy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSIn
 	}
 }
 
-UInt32 Media::ImageCopy::WorkerThread(void *obj)
+UInt32 Media::ImageCopy::WorkerThread(AnyType obj)
 {
-	IMGCOPYSTAT *stat = (IMGCOPYSTAT*)obj;
+	NotNullPtr<IMGCOPYSTAT> stat = obj.GetNN<IMGCOPYSTAT>();
 	Sync::ThreadUtil::SetName(CSTR("ImageCopyWorker"));
 	{
 		Sync::Event evt;

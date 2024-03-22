@@ -8,12 +8,12 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
+UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 {
 	UInt8 buff[2048];
 	UOSInt readSize;
 
-	HTTPDATAHANDLE *fdh = (HTTPDATAHANDLE*)userObj;
+	NotNullPtr<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);

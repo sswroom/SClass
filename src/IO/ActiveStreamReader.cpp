@@ -3,9 +3,9 @@
 #include "IO/ActiveStreamReader.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
+UInt32 __stdcall IO::ActiveStreamReader::ReadThread(AnyType obj)
 {
-	IO::ActiveStreamReader *me = (IO::ActiveStreamReader *)obj;
+	NotNullPtr<IO::ActiveStreamReader> me = obj.GetNN<IO::ActiveStreamReader>();
 	Int32 i = 0;
 	OptOut<BottleNeckType> bnt;
 	me->started = true;
@@ -31,7 +31,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 	return 0;
 }
 
-IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, UOSInt buffSize)
+IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, AnyType userData, UOSInt buffSize)
 {
 	this->hdlr = hdlr;
 	this->buffSize = buffSize;
@@ -67,7 +67,7 @@ IO::ActiveStreamReader::~ActiveStreamReader()
 
 }
 
-void IO::ActiveStreamReader::SetUserData(void *userData)
+void IO::ActiveStreamReader::SetUserData(AnyType userData)
 {
 	this->userData = userData;
 }

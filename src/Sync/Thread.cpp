@@ -3,9 +3,9 @@
 #include "Sync/Thread.h"
 #include "Sync/Interlocked.h"
 
-UInt32 __stdcall Sync::Thread::InnerThread(void *userObj)
+UInt32 __stdcall Sync::Thread::InnerThread(AnyType userObj)
 {
-	NotNullPtr<Thread> me = NotNullPtr<Thread>::FromPtr((Thread*)userObj);
+	NotNullPtr<Thread> me = userObj.GetNN<Thread>();
 	Sync::ThreadUtil::SetName(me->name->ToCString());
 	me->func(me);
 	Sync::Interlocked::DecrementU32(me->running);

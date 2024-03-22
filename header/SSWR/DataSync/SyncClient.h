@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCCLIENT
 #define _SM_SSWR_DATASYNC_SYNCCLIENT
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "IO/ProtoHdlr/ProtoSyncHandler.h"
 #include "Net/TCPClient.h"
@@ -33,8 +34,8 @@ namespace SSWR
 
 			SSWR::DataSync::SyncClientDataMgr dataMgr;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
-			static UInt32 __stdcall KAThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
+			static UInt32 __stdcall KAThread(AnyType userObj);
 
 			Bool SendLogin();
 			Bool SendKA();

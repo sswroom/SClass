@@ -7,10 +7,10 @@ namespace UI
 	class GUIVideoBoxDDLQ : public GUIVideoBoxDD
 	{
 	protected:
-		virtual void ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
+		virtual void ProcessVideo(NotNullPtr<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
 		virtual Media::IImgResizer *CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance);
-		virtual void CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info);
-		virtual void CreateThreadResizer(ThreadStat *tstat);
+		virtual void CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::FrameInfo *info);
+		virtual void CreateThreadResizer(NotNullPtr<ThreadStat> tstat);
 	public:
 		GUIVideoBoxDDLQ(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~GUIVideoBoxDDLQ();

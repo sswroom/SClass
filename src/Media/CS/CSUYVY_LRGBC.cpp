@@ -8,9 +8,9 @@ extern "C"
 	void CSUYVY_LRGBC_do_yuy2rgb(UInt8 *src, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSUYVY_LRGBC::WorkerThread(void *obj)
+UInt32 Media::CS::CSUYVY_LRGBC::WorkerThread(AnyType obj)
 {
-	CSUYVY_LRGBC *converter = (CSUYVY_LRGBC*)obj;
+	NotNullPtr<CSUYVY_LRGBC> converter = obj.GetNN<CSUYVY_LRGBC>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	UOSInt threadId = converter->currId;

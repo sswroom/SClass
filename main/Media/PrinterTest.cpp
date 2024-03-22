@@ -18,7 +18,7 @@ public:
 	{
 	}
 
-	virtual Bool BeginPrint(Media::IPrintDocument *doc)
+	virtual Bool BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
 	{
 		doc->SetDocName(CSTR("PrinterTest"));
 		return true;
@@ -33,7 +33,7 @@ public:
 		printPage->DelFont(font);
 		return false;
 	}
-	virtual Bool EndPrint(Media::IPrintDocument *doc)
+	virtual Bool EndPrint(NotNullPtr<Media::IPrintDocument> doc)
 	{
 		return true;
 	}
@@ -48,7 +48,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	NotNullPtr<Media::DrawEngine> eng;
 	Media::Printer *printer;
-	Media::IPrintDocument *doc;
+	NotNullPtr<Media::IPrintDocument> doc;
 	PrintObj *prtobj;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
@@ -65,8 +65,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(printer, Media::Printer(PRINTERNAME));
 	printer->ShowPrintSettings(0);
 	NEW_CLASS(prtobj, PrintObj());
-	doc = printer->StartPrint(prtobj, eng);
-	if (doc)
+	if (printer->StartPrint(prtobj, eng).SetTo(doc))
 	{
 		doc->WaitForEnd();
 		printer->EndPrint(doc);

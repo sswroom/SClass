@@ -19,7 +19,7 @@ namespace Math
 		
 
 		Value2D() = default;
-		Value2D(void *)
+		Value2D(std::nullptr_t)
 		{
 			this->x = 0;
 			this->y = 0;

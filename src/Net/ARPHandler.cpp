@@ -5,9 +5,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-UInt32 __stdcall Net::ARPHandler::DataThread(void *obj)
+UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 {
-	Net::ARPHandler::ThreadStat *stat = (Net::ARPHandler::ThreadStat*)obj;
+	NotNullPtr<Net::ARPHandler::ThreadStat> stat = obj.GetNN<Net::ARPHandler::ThreadStat>();
 	stat->threadRunning = true;
 	stat->me->ctrlEvt->Set();
 

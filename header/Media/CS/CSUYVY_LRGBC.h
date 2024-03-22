@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_CS_CSUYVY_LRGBC
 #define _SM_MEDIA_CS_CSUYVY_LRGBC
+#include "AnyType.h"
 #include "Media/CS/CSYUV_LRGBC.h"
 #include "Sync/Event.h"
 
@@ -26,7 +27,7 @@ namespace Media
 			Sync::Event *evtMain;
 			THREADSTAT *stats;
 
-			static UInt32 __stdcall WorkerThread(void *obj);
+			static UInt32 __stdcall WorkerThread(AnyType obj);
 		public:
 			CSUYVY_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSUYVY_LRGBC();

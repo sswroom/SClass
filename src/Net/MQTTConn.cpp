@@ -95,9 +95,9 @@ void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, cons
 {
 }
 
-UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
+UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 {
-	Net::MQTTConn *me = (Net::MQTTConn*)userObj;
+	NotNullPtr<Net::MQTTConn> me = userObj.GetNN<Net::MQTTConn>();
 	Sync::ThreadUtil::SetName(CSTR("MQTTConnRecv"));
 	UOSInt maxBuffSize = 9000;
 	UInt8 *buff;

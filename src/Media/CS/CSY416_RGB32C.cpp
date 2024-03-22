@@ -9,9 +9,9 @@ extern "C"
 	void CSY416_RGB32C_convert(UInt8 *yPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSY416_RGB32C::WorkerThread(void *obj)
+UInt32 Media::CS::CSY416_RGB32C::WorkerThread(AnyType obj)
 {
-	CSY416_RGB32C *converter = (CSY416_RGB32C*)obj;
+	NotNullPtr<CSY416_RGB32C> converter = obj.GetNN<CSY416_RGB32C>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

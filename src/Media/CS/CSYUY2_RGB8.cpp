@@ -8,9 +8,9 @@ extern "C"
 	void CSYUY2_RGB8_do_yuy2rgb(UInt8 *src, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSYUY2_RGB8::WorkerThread(void *obj)
+UInt32 Media::CS::CSYUY2_RGB8::WorkerThread(AnyType obj)
 {
-	CSYUY2_RGB8 *converter = (CSYUY2_RGB8*)obj;
+	NotNullPtr<CSYUY2_RGB8> converter = obj.GetNN<CSYUY2_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

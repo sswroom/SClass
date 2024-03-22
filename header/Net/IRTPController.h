@@ -10,13 +10,13 @@ namespace Net
 	public:
 		virtual ~IRTPController(){};
 
-		virtual Bool Init(Net::RTPCliChannel *rtpChannel) = 0;
-		virtual Bool Play(Net::RTPCliChannel *rtpChannel) = 0;
-		virtual Bool KeepAlive(Net::RTPCliChannel *rtpChannel) = 0;
-		virtual Bool StopPlay(Net::RTPCliChannel *rtpChannel) = 0;
-		virtual Bool Deinit(Net::RTPCliChannel *rtpChannel) = 0;
+		virtual Bool Init(NotNullPtr<Net::RTPCliChannel> rtpChannel) = 0;
+		virtual Bool Play(NotNullPtr<Net::RTPCliChannel> rtpChannel) = 0;
+		virtual Bool KeepAlive(NotNullPtr<Net::RTPCliChannel> rtpChannel) = 0;
+		virtual Bool StopPlay(NotNullPtr<Net::RTPCliChannel> rtpChannel) = 0;
+		virtual Bool Deinit(NotNullPtr<Net::RTPCliChannel> rtpChannel) = 0;
 
 		virtual Net::IRTPController *Clone() const = 0;
 	};
-};
+}
 #endif

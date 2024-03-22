@@ -1,7 +1,9 @@
 #ifndef _SM_UI_GUITEXTFILEVIEW
 #define _SM_UI_GUITEXTFILEVIEW
+#include "AnyType.h"
 #include "Data/ArrayListUInt64.h"
 #include "Data/ByteBuffer.h"
+#include "Data/CallbackStorage.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
 #include "Sync/Event.h"
@@ -13,7 +15,7 @@ namespace UI
 	class GUITextFileView : public GUITextView
 	{
 	public:
-		typedef void (__stdcall *TextPosEvent)(void *userObj, UInt32 textPosX, UOSInt textPosY);
+		typedef void (__stdcall *TextPosEvent)(AnyType userObj, UInt32 textPosX, UOSInt textPosY);
 	private:
 		enum class LoadFileType
 		{
@@ -23,11 +25,10 @@ namespace UI
 			FileStream
 		};
 
-		Data::ArrayList<TextPosEvent> textPosUpdHdlr;
-		Data::ArrayList<void *> textPosUpdObj;
+		Data::ArrayList<Data::CallbackStorage<TextPosEvent>> textPosUpdHdlr;
 		IO::SeekableStream *fs;
 		UInt32 codePage;
-//		void *drawFont;
+//		AnyType drawFont;
 		UOSInt lastLineCnt;
 
 		NotNullPtr<Text::String> fileName;
@@ -61,7 +62,7 @@ namespace UI
 		Int32 caretDispX;
 		Int32 caretDispY;
 
-		static UInt32 __stdcall ProcThread(void *userObj);
+		static UInt32 __stdcall ProcThread(AnyType userObj);
 
 		void EnsureCaretVisible();
 		void UpdateCaretSel(Bool noRedraw);
@@ -105,7 +106,7 @@ namespace UI
 		void GoToText(UOSInt newPosY, UInt32 newPosX);
 		void SearchText(Text::CString txt);
 
-		void HandleTextPosUpdate(TextPosEvent hdlr, void *obj);
+		void HandleTextPosUpdate(TextPosEvent hdlr, AnyType obj);
 	};
 }
 #endif

@@ -71,7 +71,7 @@ Sync::Event *threadEvt;
 Sync::Event *mainEvt;
 Double threadT;
 
-UInt32 __stdcall TestThread(void *userObj)
+UInt32 __stdcall TestThread(AnyType userObj)
 {
 	threadT = clk->GetTimeDiff();
 	clk->Start();

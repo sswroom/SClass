@@ -50,9 +50,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(AnyType u
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	Text::String *currURL;
 	Text::String *currPath;
 	Text::String *currHeader;

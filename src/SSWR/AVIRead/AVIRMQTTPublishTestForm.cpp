@@ -334,9 +334,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(AnyType 
 //	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMQTTPublishTestForm *me = (SSWR::AVIRead::AVIRMQTTPublishTestForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{

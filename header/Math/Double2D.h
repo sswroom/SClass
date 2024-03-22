@@ -19,7 +19,7 @@ namespace Math
 		
 
 		Double2D() = default;
-		Double2D(void *)
+		Double2D(std::nullptr_t)
 		{
 			this->x = 0;
 			this->y = 0;

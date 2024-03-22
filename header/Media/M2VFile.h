@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_M2VFILE
 #define _SM_MEDIA_M2VFILE
+#include "AnyType.h"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "Media/IStreamControl.h"
@@ -22,7 +23,7 @@ namespace Media
 		Bool playStarted;
 		Bool playToStop;
 
-		static UInt32 __stdcall PlayThread(void *userData);
+		static UInt32 __stdcall PlayThread(AnyType userData);
 	public:
 		M2VFile(NotNullPtr<IO::StreamData> stmData);
 		virtual ~M2VFile();

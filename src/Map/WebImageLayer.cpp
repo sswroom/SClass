@@ -150,9 +150,9 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 	}
 }
 
-UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
+UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 {
-	Map::WebImageLayer *me = (Map::WebImageLayer*)userObj;
+	NotNullPtr<Map::WebImageLayer> me = userObj.GetNN<Map::WebImageLayer>();
 	ImageStat *stat;
 	UOSInt i;
 	IO::ParsedObject *pobj;

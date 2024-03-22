@@ -1,5 +1,6 @@
 #ifndef _SM_IO_TVCTRL_NECTVCONTROL
 #define _SM_IO_TVCTRL_NECTVCONTROL
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/TVControl.h"
@@ -25,7 +26,7 @@ namespace IO
 			Bool recvToStop;
 			Sync::Event recvEvt;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 			Bool SendCommand(Text::CString cmd, UTF8Char *cmdReply, Int32 cmdTimeout);
 			Bool GetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 *maxVal, UInt16 *currVal, Int32 cmdTimeout);
 			Bool SetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 val, Int32 cmdTimeout);

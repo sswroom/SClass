@@ -16,13 +16,13 @@
 #include "Text/XML.h"
 #include "Text/UTF8Writer.h"
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(NotNullPtr<Net::WebServer::IWebSession> sess, void *userObj)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj)
 {
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
 	return false;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NotNullPtr<Net::WebServer::IWebSession> sess, void *userObj)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj)
 {
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
 	Data::DateTime dt;

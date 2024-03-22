@@ -19,9 +19,9 @@
 #include <stdio.h>
 #endif
 
-UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
+UInt32 __stdcall Net::LDAPClient::RecvThread(AnyType userObj)
 {
-	Net::LDAPClient *me = (Net::LDAPClient*)userObj;
+	NotNullPtr<Net::LDAPClient> me = userObj.GetNN<Net::LDAPClient>();
 	UOSInt buffSize;
 	UOSInt recvSize;
 	UOSInt i;

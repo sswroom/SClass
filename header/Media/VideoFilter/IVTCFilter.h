@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_VIDEOFILTER_IVTCFILTER
 #define _SM_MEDIA_VIDEOFILTER_IVTCFILTER
+#include "AnyType.h"
 #include "IO/FileStream.h"
 #include "IO/Writer.h"
 #include "Media/VideoFilter/VideoFilterBase.h"
@@ -90,8 +91,8 @@ namespace Media
 			void ClearIVTC();
 			void StartIVTC(Data::Duration frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 
-			static UInt32 __stdcall IVTCThread(void *userObj);
-			static UInt32 __stdcall CalcThread(void *userObj);
+			static UInt32 __stdcall IVTCThread(AnyType userObj);
+			static UInt32 __stdcall CalcThread(AnyType userObj);
 			static void do_CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h);
 			static void do_CalcFieldStatP(FieldStat *fieldStat, UInt8 *framePtr, UOSInt w, UOSInt h);
 			void CalcFieldStat(FieldStat *fieldStat, UInt8 *oddPtr, UInt8 *evenPtr, UOSInt w, UOSInt h);

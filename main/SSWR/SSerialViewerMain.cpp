@@ -14,7 +14,7 @@ Bool readError;
 Bool toStop;
 Bool running;
 
-static UInt32 __stdcall SerialViewer(void *userObj)
+static UInt32 __stdcall SerialViewer(AnyType userObj)
 {
 	UInt8 readBuff[1024];
 	UOSInt readSize;

@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_ABLEND_ALPHABLEND8_8
 #define _SM_MEDIA_ABLEND_ALPHABLEND8_8
+#include "AnyType.h"
 #include "Media/ImageAlphaBlend.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -33,7 +34,7 @@ namespace Media
 			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			AlphaBlend8_8();
 			virtual ~AlphaBlend8_8();

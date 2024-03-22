@@ -86,8 +86,8 @@ namespace Net
 
 		IO::SMTCWriter *logWriter;
 
-		static UInt32 __stdcall ClientThread(void *o);
-		static UInt32 __stdcall WorkerThread(void *o);
+		static UInt32 __stdcall ClientThread(AnyType o);
+		static UInt32 __stdcall WorkerThread(AnyType o);
 		void ProcessClient(NotNullPtr<TCPClientStatus> cliStat);
 		void ClientBeginRead(NotNullPtr<TCPClientStatus> cliStat);
 	public:

@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZERLR_C16
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZERLR_C16
+#include "AnyType.h"
 #include "Media/IImgResizer.h"
 #include "Media/ColorManager.h"
 #include "Sync/Event.h"
@@ -79,7 +80,7 @@ namespace Media
 
 			void UpdateRGBTable();
 
-			static void __stdcall DoTask(void *obj);
+			static void __stdcall DoTask(AnyType obj);
 			void DestoryHori();
 			void DestoryVert();
 		public:

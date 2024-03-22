@@ -1,5 +1,6 @@
 #ifndef _SM_NET_LDAPCLIENT
 #define _SM_NET_LDAPCLIENT
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/TCPClient.h"
@@ -63,7 +64,7 @@ namespace Net
 		Bool recvRunning;
 		Bool recvToStop;
 
-		static UInt32 __stdcall RecvThread(void *userObj);
+		static UInt32 __stdcall RecvThread(AnyType userObj);
 		void ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen);
 		const UTF8Char *ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF8Char *filter, Bool complex);
 	public:

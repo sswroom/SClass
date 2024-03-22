@@ -58,7 +58,7 @@ private:
 	Sync::Mutex filesMut;
 	Data::ArrayList<FileEntry*> filesList;
 
-	static void ParseJSONObj(ThreadStatus *stat, Text::String *url, Text::JSONBase *obj, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSONObj(NotNullPtr<ThreadStatus> stat, Text::String *url, Text::JSONBase *obj, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 	{
 		if (obj == 0 || obj->GetType() != Text::JSONType::Object)
 		{
@@ -94,7 +94,7 @@ private:
 		}
 	}
 
-	static void ParseJSON(ThreadStatus *stat, Text::String *url, IO::MemoryStream *mstm, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSON(NotNullPtr<ThreadStatus> stat, Text::String *url, IO::MemoryStream *mstm, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 	{
 		mstm->Write((const UInt8*)"", 1);
 		UOSInt i;
@@ -107,7 +107,7 @@ private:
 		}
 	}
 
-	static void ProcURL(ThreadStatus *stat, Text::String *url, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	static void ProcURL(NotNullPtr<ThreadStatus> stat, Text::String *url, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 	{
 		UInt8 buff[4096];
 		stat->reqCnt++;
@@ -187,9 +187,9 @@ private:
 		cli.Delete();
 	}
 
-	static UInt32 __stdcall ProcThread(void *userObj)
+	static UInt32 __stdcall ProcThread(AnyType userObj)
 	{
-		ThreadStatus *stat = (ThreadStatus*)userObj;
+		NotNullPtr<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
 		Text::String *nextURL;
 		{
 			Text::StringBuilderUTF8 sb;

@@ -8,9 +8,9 @@ extern "C"
 	void CSAYUV_RGB8_do_ayuvrgb(UInt8 *src, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, Int64 *yuv2rgb, UInt8 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSAYUV_RGB8::WorkerThread(void *obj)
+UInt32 Media::CS::CSAYUV_RGB8::WorkerThread(AnyType obj)
 {
-	CSAYUV_RGB8 *converter = (CSAYUV_RGB8*)obj;
+	NotNullPtr<CSAYUV_RGB8> converter = obj.GetNN<CSAYUV_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

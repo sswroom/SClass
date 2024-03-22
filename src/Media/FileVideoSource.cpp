@@ -6,9 +6,9 @@
 
 #define BUFFCNT 16
 
-UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
+UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 {
-	Media::FileVideoSource *me = (Media::FileVideoSource*)userObj;
+	NotNullPtr<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
 	UInt8 *frameBuff;
 	UInt8 *frameBuff2;
 	UInt32 lastFrameNum;
@@ -161,9 +161,9 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 	return 1003;
 }
 
-UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
+UInt32 __stdcall Media::FileVideoSource::OutputThread(AnyType userObj)
 {
-	Media::FileVideoSource *me = (Media::FileVideoSource*)userObj;
+	NotNullPtr<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
 	OSInt nextIndex;
 	me->outputRunning = true;
 	me->mainEvt.Set();

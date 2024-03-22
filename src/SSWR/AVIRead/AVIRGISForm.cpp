@@ -857,15 +857,17 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (printer)
 			{
 				this->printer = printer;
-				Media::IPrintDocument *doc;
-				doc = printer->StartPrint(this, this->core->GetDrawEngine());
-				if (doc == 0)
+				NotNullPtr<Media::IPrintDocument> doc;
+				if (!printer->StartPrint(this, this->core->GetDrawEngine()).SetTo(doc))
 				{
 					DEL_CLASS(printer);
 					this->ui->ShowMsgOK(CSTR("Error in printing the map"), CSTR("GISForm"), this);
 				}
-				doc->WaitForEnd();
-				printer->EndPrint(doc);
+				else
+				{
+					doc->WaitForEnd();
+					printer->EndPrint(doc);
+				}
 //				DEL_CLASS(printer);
 			}
 		}
@@ -1997,7 +1999,7 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(Media::IPrintDocument *doc)
+Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
 {
 	doc->SetDocName(this->env->GetSourceNameObj().Ptr());
 	return true;
@@ -2015,7 +2017,7 @@ Bool SSWR::AVIRead::AVIRGISForm::PrintPage(NotNullPtr<Media::DrawImage> printPag
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRGISForm::EndPrint(Media::IPrintDocument *doc)
+Bool SSWR::AVIRead::AVIRGISForm::EndPrint(NotNullPtr<Media::IPrintDocument> doc)
 {
 	SDEL_CLASS(this->printer);
 	return true;

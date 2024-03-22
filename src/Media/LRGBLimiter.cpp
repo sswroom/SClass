@@ -4,9 +4,9 @@
 #include "Media/LRGBLimiterC.h"
 #include "Sync/ThreadUtil.h"
 
-void Media::LRGBLimiter::TaskFunc(void *userObj)
+void Media::LRGBLimiter::TaskFunc(AnyType userObj)
 {
-	ThreadStatus *status = (ThreadStatus*)userObj;
+	NotNullPtr<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
 	LRGBLimiter_LimitImageLRGB(status->imgPtr, status->w, status->h);
 }
 

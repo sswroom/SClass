@@ -237,9 +237,9 @@ void Media::Resizer::LanczosResizerLR_C16::UpdateRGBTable()
 	lutGen.GenLRGB_RGB16(this->rgbTable, this->destColor, 14, this->srcRefLuminance);
 }
 
-void __stdcall Media::Resizer::LanczosResizerLR_C16::DoTask(void *obj)
+void __stdcall Media::Resizer::LanczosResizerLR_C16::DoTask(AnyType obj)
 {
-	TaskParam *ts = (TaskParam*)obj;
+	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
 		LanczosResizerLR_C16_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);

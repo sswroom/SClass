@@ -536,9 +536,9 @@ void __stdcall UtilUI::ColorDialog::OnAlphaChange(AnyType userObj)
 	me->aVal = Text::StrToDouble(sbuff) / 255.0;
 }
 
-UInt32 __stdcall UtilUI::ColorDialog::GenThread(void *userObj)
+UInt32 __stdcall UtilUI::ColorDialog::GenThread(AnyType userObj)
 {
-	UtilUI::ColorDialog::ThreadStat *stat = (UtilUI::ColorDialog::ThreadStat *)userObj;
+	NotNullPtr<UtilUI::ColorDialog::ThreadStat> stat = userObj.GetNN<UtilUI::ColorDialog::ThreadStat>();
 	stat->status = 1;
 	stat->me->genEvt->Set();
 	while (true)

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_RSSREADER
 #define _SM_NET_RSSREADER
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "Data/FastStringMap.h"
 #include "Net/RSS.h"
@@ -38,7 +39,7 @@ namespace Net
 		Bool threadRunning;
 		Bool threadToStop;
 
-		static UInt32 __stdcall RSSThread(void *userObj);
+		static UInt32 __stdcall RSSThread(AnyType userObj);
 	public:
 		RSSReader(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
 		~RSSReader();

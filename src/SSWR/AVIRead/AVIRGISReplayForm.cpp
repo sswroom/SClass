@@ -17,9 +17,9 @@ typedef enum
 	MNU_MARK_DELETE
 } MenuItems;
 
-UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	Math::Coord2DDbl *latLon;
 	UOSInt recCnt;
 	UOSInt i;

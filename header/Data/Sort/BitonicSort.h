@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_SORT_BITONICSORT
 #define _SM_DATA_SORT_BITONICSORT
+#include "AnyType.h"
 #include "Data/IComparable.h"
 #include "Data/SyncArrayList.h"
 #include "Sync/Event.h"
@@ -43,12 +44,12 @@ namespace Data
 			ThreadStat mainThread;
 			Data::SyncArrayList<TaskInfo*> tasks;
 
-			static void DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n, Bool dir, OSInt m);
-			static void DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt n, Bool dir, OSInt m);
-			Bool DoTask(ThreadStat *stat);
+			static void DoMergeInt32(NotNullPtr<ThreadStat> stat, Int32 *arr, OSInt n, Bool dir, OSInt m);
+			static void DoMergeUInt32(NotNullPtr<ThreadStat> stat, UInt32 *arr, OSInt n, Bool dir, OSInt m);
+			Bool DoTask(NotNullPtr<ThreadStat> stat);
 			void SortInnerInt32(Int32 *arr, OSInt n, Bool dir, OSInt pw2);
 			void SortInnerUInt32(UInt32 *arr, OSInt n, Bool dir, OSInt pw2);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			BitonicSort();
 			~BitonicSort();

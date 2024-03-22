@@ -7,9 +7,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Net/FTPConn.h"
 
-UInt32 __stdcall Net::FTPConn::FTPThread(void *userObj)
+UInt32 __stdcall Net::FTPConn::FTPThread(AnyType userObj)
 {
-	Net::FTPConn *me = (Net::FTPConn *)userObj;
+	NotNullPtr<Net::FTPConn> me = userObj.GetNN<Net::FTPConn>();
 	NotNullPtr<IO::StreamReader> reader;
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];

@@ -10,9 +10,9 @@
 
 #include "Crypto/Hash/CRC32RIEEE.h"
 
-UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
+UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(AnyType userObj)
 {
-	SSWR::DataSync::SyncClient *me = (SSWR::DataSync::SyncClient*)userObj;
+	NotNullPtr<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
 	UOSInt recvSize;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -78,9 +78,9 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(void *userObj)
+UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(AnyType userObj)
 {
-	SSWR::DataSync::SyncClient *me = (SSWR::DataSync::SyncClient*)userObj;
+	NotNullPtr<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
 	UOSInt i;
 	UOSInt j;
 	me->kaRunning = true;

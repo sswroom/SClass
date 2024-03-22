@@ -5,7 +5,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void Data::Sort::BitonicSort::DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n, Bool dir, OSInt m)
+void Data::Sort::BitonicSort::DoMergeInt32(NotNullPtr<ThreadStat> stat, Int32 *arr, OSInt n, Bool dir, OSInt m)
 {
 	Int32 v1;
 	Int32 v2;
@@ -92,7 +92,7 @@ void Data::Sort::BitonicSort::DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n
 	}
 }
 
-void Data::Sort::BitonicSort::DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt n, Bool dir, OSInt m)
+void Data::Sort::BitonicSort::DoMergeUInt32(NotNullPtr<ThreadStat> stat, UInt32 *arr, OSInt n, Bool dir, OSInt m)
 {
 	UInt32 v1;
 	UInt32 v2;
@@ -179,7 +179,7 @@ void Data::Sort::BitonicSort::DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt
 	}
 }
 
-Bool Data::Sort::BitonicSort::DoTask(ThreadStat *stat)
+Bool Data::Sort::BitonicSort::DoTask(NotNullPtr<ThreadStat> stat)
 {
 	TaskInfo *task = 0;
 	task = this->tasks.RemoveLast();
@@ -289,9 +289,9 @@ void Data::Sort::BitonicSort::SortInnerUInt32(UInt32 *arr, OSInt n, Bool dir, OS
 	}
 }
 
-UInt32 __stdcall Data::Sort::BitonicSort::ProcessThread(void *userObj)
+UInt32 __stdcall Data::Sort::BitonicSort::ProcessThread(AnyType userObj)
 {
-	ThreadStat *stat = (ThreadStat*)userObj;
+	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	stat->state = 1;
 	stat->me->mainThread.evt->Set();
 	while (!stat->toStop)

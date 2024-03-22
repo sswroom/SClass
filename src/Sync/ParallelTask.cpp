@@ -3,9 +3,9 @@
 #include "Sync/ParallelTask.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Sync::ParallelTask::WorkerThread(void *userObj)
+UInt32 __stdcall Sync::ParallelTask::WorkerThread(AnyType userObj)
 {
-	ThreadStatus *stat = (ThreadStatus*)userObj;
+	NotNullPtr<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ParallelTask")), stat->index);
@@ -128,7 +128,7 @@ UOSInt Sync::ParallelTask::GetThreadCnt()
 	return this->threadCnt;
 }
 
-void Sync::ParallelTask::AddTask(TaskFunc func, void *taskObj)
+void Sync::ParallelTask::AddTask(TaskFunc func, AnyType taskObj)
 {
 	if (this->threadCnt > 1)
 	{

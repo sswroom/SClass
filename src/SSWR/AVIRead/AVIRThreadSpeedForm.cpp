@@ -7,9 +7,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 
-UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::TestThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRThreadSpeedForm *me = (SSWR::AVIRead::AVIRThreadSpeedForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRThreadSpeedForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadSpeedForm>();
 	me->t = me->clk.GetTimeDiff();
 	me->clk.Start();
 	me->mainEvt.Set();

@@ -13,7 +13,7 @@ Sync::Event *evt;
 Bool threadRunning;
 Bool threadToStop;
 
-UInt32 __stdcall ThreadFunc(void *userObj)
+UInt32 __stdcall ThreadFunc(AnyType userObj)
 {
 	threadRunning = true;
 	while (!threadToStop)

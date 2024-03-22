@@ -11,7 +11,7 @@ IO::SerialPort *port;
 Bool threadRunning;
 Bool threadToStop;
 
-UInt32 __stdcall ReadThread(void *userObj)
+UInt32 __stdcall ReadThread(AnyType userObj)
 {
 	UInt8 readBuff[1024];
 	UOSInt buffSize = 0;

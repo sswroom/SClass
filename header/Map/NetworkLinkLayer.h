@@ -56,7 +56,7 @@ namespace Map
 		Bool ctrlToStop;
 
 		static void __stdcall InnerUpdated(AnyType userObj);
-		static UInt32 __stdcall ControlThread(void *userObj);
+		static UInt32 __stdcall ControlThread(AnyType userObj);
 		void CheckLinks(Bool manualRequest);
 		void LoadLink(LinkInfo *link);
 	public:

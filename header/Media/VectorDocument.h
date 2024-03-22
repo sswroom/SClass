@@ -13,7 +13,7 @@ namespace Media
 	private:
 		UOSInt currGraph;
 		Data::ArrayList<Media::VectorGraph*> *items;
-		Media::IPrintDocument *currDoc;
+		Optional<Media::IPrintDocument> currDoc;
 		NotNullPtr<Media::DrawEngine> refEng;
 		UInt32 srid;
 
@@ -52,9 +52,9 @@ namespace Media
 		virtual UOSInt GetCount() const;
 		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
 
-		virtual Bool BeginPrint(IPrintDocument *doc);
+		virtual Bool BeginPrint(NotNullPtr<IPrintDocument> doc);
 		virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage); //return has more pages 
-		virtual Bool EndPrint(IPrintDocument *doc);
+		virtual Bool EndPrint(NotNullPtr<IPrintDocument> doc);
 
 		virtual IO::ParserType GetParserType() const;
 	};

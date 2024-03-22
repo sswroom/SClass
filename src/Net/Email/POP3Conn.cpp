@@ -14,9 +14,9 @@
 #include <stdio.h>
 #endif
 
-UInt32 __stdcall Net::Email::POP3Conn::RecvThread(void *userObj)
+UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 {
-	Net::Email::POP3Conn *me = (Net::Email::POP3Conn *)userObj;
+	NotNullPtr<Net::Email::POP3Conn> me = userObj.GetNN<Net::Email::POP3Conn>();
 	UTF8Char sbuff[2048];
 	UTF8Char *sptr;
 	UOSInt i;

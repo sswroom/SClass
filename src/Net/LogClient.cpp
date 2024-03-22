@@ -15,9 +15,9 @@
 #define MTU 2048
 #define BUFFSIZE (MAXSIZE + MTU)
 
-UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
+UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 {
-	Net::LogClient *me = (Net::LogClient*)userObj;
+	NotNullPtr<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
 	UOSInt recvSize = 0;
 	UOSInt readSize;
 	NotNullPtr<Net::TCPClient> cli;
@@ -70,9 +70,9 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
+UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 {
-	Net::LogClient *me = (Net::LogClient*)userObj;
+	NotNullPtr<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
 	Net::TCPClient *cli;
 	Int64 t;
 	Int64 msgTime;

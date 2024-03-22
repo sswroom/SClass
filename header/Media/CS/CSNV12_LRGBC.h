@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_CS_CSNV12_LRGBC
 #define _SM_MEDIA_CS_CSNV12_LRGBC
+#include "AnyType.h"
 #include "Media/CS/CSYUV_LRGBC.h"
 #include "Sync/Event.h"
 
@@ -57,7 +58,7 @@ namespace Media
 			static Double lanczos3_weight(Double phase);
 			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
-			static UInt32 __stdcall WorkerThread(void *obj);
+			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
 			CSNV12_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);

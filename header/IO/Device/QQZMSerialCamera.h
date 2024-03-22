@@ -1,5 +1,6 @@
 #ifndef _SM_IO_DEVICE_QQZMSERIALCAMERA
 #define _SM_IO_DEVICE_QQZMSERIALCAMERA
+#include "AnyType.h"
 #include "IO/Stream.h"
 
 namespace IO
@@ -24,7 +25,7 @@ namespace IO
 			Bool imgEnd;
 			Int64 imgLastUpdateTime;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 		public:
 			QQZMSerialCamera(IO::Stream *stm, UInt8 cameraId, Bool toRelease);
 			~QQZMSerialCamera();

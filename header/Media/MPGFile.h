@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_MPGFILE
 #define _SM_MEDIA_MPGFILE
+#include "AnyType.h"
 #include "Data/ByteBuffer.h"
 #include "Data/FastMap.h"
 #include "IO/StreamData.h"
@@ -28,7 +29,7 @@ namespace Media
 		Bool playStarted;
 		Bool playToStop;
 
-		static UInt32 __stdcall PlayThread(void *userData);
+		static UInt32 __stdcall PlayThread(AnyType userData);
 		UInt64 GetBitRate();
 
 		Bool StartPlay();

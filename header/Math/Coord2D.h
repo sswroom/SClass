@@ -7,7 +7,7 @@ namespace Math
 	template <typename T> struct Coord2D : public Value2D<T>
 	{
 		Coord2D() = default;
-		Coord2D(void *v) : Value2D<T>(v)
+		Coord2D(std::nullptr_t v) : Value2D<T>(v)
 		{
 		}
 

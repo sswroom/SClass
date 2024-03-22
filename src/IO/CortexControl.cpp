@@ -9,9 +9,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
+UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 {
-	IO::CortexControl *me = (IO::CortexControl *)userObj;
+	NotNullPtr<IO::CortexControl> me = userObj.GetNN<IO::CortexControl>();
 	UInt8 buff[260];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;

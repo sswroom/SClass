@@ -1,5 +1,6 @@
 #ifndef _SM_NET_MYSQLTCPCLIENT
 #define _SM_NET_MYSQLTCPCLIENT
+#include "AnyType.h"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
@@ -63,7 +64,7 @@ namespace Net
 		MySQLTCPBinaryReader *cmdBinReader;
 		CmdResultType cmdResultType;
 
-		static UInt32 __stdcall RecvThread(void *userObj);
+		static UInt32 __stdcall RecvThread(AnyType userObj);
 		void SetLastError(Text::CString errMsg);
 
 		void SendExecuteStmt(UInt32 stmtId);

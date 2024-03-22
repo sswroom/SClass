@@ -1,5 +1,6 @@
 #ifndef _SM_IO_RS232GPIO
 #define _SM_IO_RS232GPIO
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "IO/GPIOControl.h"
 #include "IO/Stream.h"
@@ -31,8 +32,8 @@ namespace IO
 		Bool running;
 		Bool toStop;
 
-		static UInt32 __stdcall ReadThread(void *userObj);
-		static void __stdcall IntHdlr(void *userObj);
+		static UInt32 __stdcall ReadThread(AnyType userObj);
+		static void __stdcall IntHdlr(AnyType userObj);
 	public:
 		RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate);
 		virtual ~RS232GPIO();

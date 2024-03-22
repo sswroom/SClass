@@ -10,13 +10,11 @@
 
 #include <stdio.h>
 
-UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
+UInt32 __stdcall Map::MapScheduler::MapThread(AnyType obj)
 {
-	Map::MapScheduler *me;
 	UInt32 i = 0;
 	UOSInt j;
-
-	me = (Map::MapScheduler*)obj;
+	NotNullPtr<Map::MapScheduler> me = obj.GetNN<Map::MapScheduler>();
 	me->threadRunning = true;
 	while (!me->toStop)
 	{

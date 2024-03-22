@@ -122,9 +122,9 @@ Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
 	return false;
 }
 
-UInt32 __stdcall IO::BTController::LEScanThread(void *userObj)
+UInt32 __stdcall IO::BTController::LEScanThread(AnyType userObj)
 {
-	IO::BTController *me = (IO::BTController*)userObj;
+	NotNullPtr<IO::BTController> me = userObj.GetNN<IO::BTController>();
 	BTControllerInfo *info = (BTControllerInfo*)me->hand;
 	UInt8 buf[HCI_MAX_EVENT_SIZE];
 	UInt8 *ptr;

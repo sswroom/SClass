@@ -10,9 +10,9 @@
 #include "Text/MyString.h"
 #define RECVBUFFSIZE 256
 
-UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
+UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(AnyType userObj)
 {
-	IO::Device::DensoWaveQK30U *me = (IO::Device::DensoWaveQK30U*)userObj;
+	NotNullPtr<IO::Device::DensoWaveQK30U> me = userObj.GetNN<IO::Device::DensoWaveQK30U>();
 	UInt8 buff[256];
 	UTF8Char *sbuff;
 	UOSInt recvSize;

@@ -6,9 +6,9 @@
 #include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
-UInt32 __stdcall Media::M2VFile::PlayThread(void *userData)
+UInt32 __stdcall Media::M2VFile::PlayThread(AnyType userData)
 {
-	Media::M2VFile *me = (Media::M2VFile*)userData;
+	NotNullPtr<Media::M2VFile> me = userData.GetNN<Media::M2VFile>();
 	UOSInt buffSize;
 	me->playStarted = true;
 	me->playing = true;

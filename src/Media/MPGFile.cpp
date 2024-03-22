@@ -10,9 +10,9 @@
 #include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
-UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
+UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 {
-	Media::MPGFile *me = (Media::MPGFile*)userData;
+	NotNullPtr<Media::MPGFile> me = userData.GetNN<Media::MPGFile>();
 	UOSInt buffSize;
 	UOSInt readSize;
 	UOSInt i;

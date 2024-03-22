@@ -14,9 +14,9 @@ extern "C"
 	void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sAdd, OSInt dAdd, UInt8 *lut, UInt32 bpp, UInt32 hdrLev);
 }
 
-UInt32 __stdcall Media::RGBColorFilter::ProcessThread(void *userObj)
+UInt32 __stdcall Media::RGBColorFilter::ProcessThread(AnyType userObj)
 {
-	ThreadStat *tstat = (ThreadStat *)userObj;
+	NotNullPtr<ThreadStat> tstat = userObj.GetNN<ThreadStat>();
 	{
 		Sync::Event evt;
 		tstat->evt = &evt;

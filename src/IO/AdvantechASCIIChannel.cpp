@@ -5,9 +5,9 @@
 
 #define CMDTIMEOUT 100
 
-UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(void *userObj)
+UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(AnyType userObj)
 {
-	IO::AdvantechASCIIChannel *me = (IO::AdvantechASCIIChannel*)userObj;
+	NotNullPtr<IO::AdvantechASCIIChannel> me = userObj.GetNN<IO::AdvantechASCIIChannel>();
 	UInt8 readBuff[64];
 	UOSInt readSize;
 	UOSInt buffSize = 0;

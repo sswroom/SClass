@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZERLR_C32_CPU
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZERLR_C32_CPU
+#include "AnyType.h"
 #include "Media/Resizer/LanczosResizerLR_C32Action.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -59,7 +60,7 @@ namespace Media
 			void mt_hv_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType);
 			void mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
-			static void __stdcall DoTask(void *obj);
+			static void __stdcall DoTask(AnyType obj);
 		public:
 			LanczosResizerLR_C32_CPU();
 			virtual ~LanczosResizerLR_C32_CPU();

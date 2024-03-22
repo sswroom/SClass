@@ -27,9 +27,9 @@ void __stdcall Map::NetworkLinkLayer::InnerUpdated(AnyType userObj)
 	}
 }
 
-UInt32 __stdcall Map::NetworkLinkLayer::ControlThread(void *userObj)
+UInt32 __stdcall Map::NetworkLinkLayer::ControlThread(AnyType userObj)
 {
-	Map::NetworkLinkLayer *me = (Map::NetworkLinkLayer*)userObj;
+	NotNullPtr<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
 	me->ctrlRunning = true;
 	while (!me->ctrlToStop)
 	{

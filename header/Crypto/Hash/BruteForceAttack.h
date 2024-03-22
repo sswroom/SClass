@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_HASH_BRUTEFORCEATTACK
 #define _SM_CRYPTO_HASH_BRUTEFORCEATTACK
+#include "AnyType.h"
 #include "Crypto/Hash/HashValidator.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -41,7 +42,7 @@ namespace Crypto
 			UOSInt maxLeng;
 			UInt64 testCnt;
 
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			UOSInt GetNextKey(UInt8 *keyBuff, UTF8Char *resultBuff);
 		public:
 			BruteForceAttack(Crypto::Hash::HashValidator *validator, CharEncoding ce);

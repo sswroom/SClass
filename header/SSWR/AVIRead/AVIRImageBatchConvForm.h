@@ -65,7 +65,7 @@ namespace SSWR
 
 			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnConvertClicked(AnyType userObj);
-			static UInt32 __stdcall ThreadFunc(void *userObj);
+			static UInt32 __stdcall ThreadFunc(AnyType userObj);
 
 			void StartThreads();
 			void StopThreads();

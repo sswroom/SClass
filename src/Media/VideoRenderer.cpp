@@ -53,7 +53,7 @@ void Media::VideoRenderer::CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, Dra
 }
 
 
-void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
+void Media::VideoRenderer::ProcessVideo(NotNullPtr<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
 	DrawRect rect;
 	UOSInt srcWidth = 0;
@@ -713,7 +713,7 @@ Media::IImgResizer *Media::VideoRenderer::CreateResizer(Media::ColorManagerSess 
 	return resizer;
 }
 
-void Media::VideoRenderer::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info)
+void Media::VideoRenderer::CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::FrameInfo *info)
 {
 	SDEL_CLASS(tstat->csconv);
 	Media::ColorProfile::YUVType yuvType = info->yuvType;
@@ -776,7 +776,7 @@ void Media::VideoRenderer::CreateCSConv(ThreadStat *tstat, Media::FrameInfo *inf
 	}
 }
 
-void Media::VideoRenderer::CreateThreadResizer(ThreadStat *tstat)
+void Media::VideoRenderer::CreateThreadResizer(NotNullPtr<ThreadStat> tstat)
 {
 	SDEL_CLASS(tstat->resizer);
 	SDEL_CLASS(tstat->dresizer);
@@ -1173,9 +1173,9 @@ void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameCha
 	}
 }
 
-UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
+UInt32 __stdcall Media::VideoRenderer::ProcessThread(AnyType userObj)
 {
-	ThreadStat *tstat = (ThreadStat*)userObj;
+	NotNullPtr<ThreadStat> tstat = userObj.GetNN<ThreadStat>();
 	Sync::ThreadUtil::SetName(CSTR("VideoRendererP"));
 	UOSInt i;
 	VideoBuff *buff = 0;
@@ -1336,9 +1336,9 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
+UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 {
-	Media::VideoRenderer *me = (Media::VideoRenderer*)userObj;
+	NotNullPtr<Media::VideoRenderer> me = userObj.GetNN<Media::VideoRenderer>();
 	Sync::ThreadUtil::SetName(CSTR("VideoRendererD"));
 	UOSInt i;
 	Bool found;
@@ -1994,8 +1994,8 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->CreateThreadResizer(&this->tstats[i]);
-			this->CreateCSConv(&this->tstats[i], &info);
+			this->CreateThreadResizer(this->tstats[i]);
+			this->CreateCSConv(this->tstats[i], &info);
 		}
 		this->VideoEndLoad();
 		this->UpdateCrop();
@@ -2117,7 +2117,7 @@ void Media::VideoRenderer::SetSrcRGBType(Media::CS::TransferType rgbType)
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2135,7 +2135,7 @@ void Media::VideoRenderer::SetSrcRGBTransfer(NotNullPtr<const Media::CS::Transfe
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2155,7 +2155,7 @@ void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorT
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2168,7 +2168,7 @@ void Media::VideoRenderer::SetSrcPrimaries(NotNullPtr<const Media::ColorProfile:
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2182,7 +2182,7 @@ void Media::VideoRenderer::SetSrcWP(Media::ColorProfile::WhitePointType wpType)
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2196,7 +2196,7 @@ void Media::VideoRenderer::SetSrcWPTemp(Double colorTemp)
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2210,7 +2210,7 @@ void Media::VideoRenderer::SetSrcYUVType(Media::ColorProfile::YUVType yuvType)
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], &this->videoInfo);
+		CreateCSConv(this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }

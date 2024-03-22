@@ -5,9 +5,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
+UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(AnyType userObj)
 {
-	IO::TVCtrl::MDT701STVControl *me = (IO::TVCtrl::MDT701STVControl *)userObj;
+	NotNullPtr<IO::TVCtrl::MDT701STVControl> me = userObj.GetNN<IO::TVCtrl::MDT701STVControl>();
 	UInt8 buff[256];
 	UOSInt recvSize;
 	me->recvRunning = true;

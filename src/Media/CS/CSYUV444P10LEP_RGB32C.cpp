@@ -264,9 +264,9 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupYUV_RGB13()
 	}
 }
 
-UInt32 Media::CS::CSYUV444P10LEP_RGB32C::WorkerThread(void *obj)
+UInt32 Media::CS::CSYUV444P10LEP_RGB32C::WorkerThread(AnyType obj)
 {
-	CSYUV444P10LEP_RGB32C *converter = (CSYUV444P10LEP_RGB32C*)obj;
+	NotNullPtr<CSYUV444P10LEP_RGB32C> converter = obj.GetNN<CSYUV444P10LEP_RGB32C>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 	{

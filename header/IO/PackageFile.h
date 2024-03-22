@@ -53,10 +53,10 @@ namespace IO
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const = 0;
 		virtual NotNullPtr<PackageFile> Clone() const = 0;
 		virtual PackageFileType GetFileType() const = 0;
-		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
-		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
-		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
-		virtual Bool RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
+		virtual Bool CopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
+		virtual Bool MoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
+		virtual Bool RetryCopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
+		virtual Bool RetryMoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName) = 0;
 		virtual Optional<IO::StreamData> OpenStreamData(Text::CString fileName) const = 0;
 		virtual Bool HasParent() const = 0;

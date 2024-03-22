@@ -7,12 +7,12 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
+UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> s;
-	Net::UDPServer::ThreadStat *stat = (Net::UDPServer::ThreadStat*)obj;
+	NotNullPtr<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -83,12 +83,12 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 	return 0;
 }
 
-UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
+UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	NotNullPtr<Text::String> s;
-	Net::UDPServer::ThreadStat *stat = (Net::UDPServer::ThreadStat*)obj;
+	NotNullPtr<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
 	{
 		Sync::Event evt;
 		stat->evt = &evt;

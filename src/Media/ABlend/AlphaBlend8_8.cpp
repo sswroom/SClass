@@ -98,9 +98,9 @@ void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt
 	}
 }
 
-UInt32 __stdcall Media::ABlend::AlphaBlend8_8::ProcessThread(void *userObj)
+UInt32 __stdcall Media::ABlend::AlphaBlend8_8::ProcessThread(AnyType userObj)
 {
-	ThreadStat *stat = (ThreadStat *)userObj;
+	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	{
 		Sync::Event evt;
 		stat->evt = &evt;

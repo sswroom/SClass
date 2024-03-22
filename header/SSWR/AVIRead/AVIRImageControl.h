@@ -94,7 +94,7 @@ namespace SSWR
 			Int32 threadState; //0 = not started, 1 = idle, 2 = initDir, 3 = exporting
 			Int32 threadCtrlCode; //0 = no control, 1 = initDir, 2 = stop thread, 3 = force idle
 
-			static UInt32 __stdcall FolderThread(void *userObj);
+			static UInt32 __stdcall FolderThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 
 			void InitDir();
@@ -137,7 +137,7 @@ namespace SSWR
 			void MoveDown();
 			void SelectAll();
 
-			void HandleKeyDown(KeyDownHandler keyHdlr, void *keyObj);
+			void HandleKeyDown(KeyDownHandler keyHdlr, AnyType keyObj);
 		};
 	}
 }

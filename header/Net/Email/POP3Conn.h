@@ -46,7 +46,7 @@ namespace Net
 			Bool authPlain;
 			Bool authLogin;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 			ResultStatus WaitForResult(UTF8Char **msgRetEnd);
 		public:
 			POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);

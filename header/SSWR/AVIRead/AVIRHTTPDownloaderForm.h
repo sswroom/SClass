@@ -75,7 +75,7 @@ namespace SSWR
 			Data::ArrayListStringNN respHeaders;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 		public:

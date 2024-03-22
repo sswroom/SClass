@@ -19,7 +19,7 @@ namespace Sync
 		ThreadFunc func;
 		AnyType userObj;
 
-		static UInt32 __stdcall InnerThread(void *userObj);
+		static UInt32 __stdcall InnerThread(AnyType userObj);
 	public:
 		Thread(ThreadFunc func, AnyType userObj, Text::CStringNN name);
 		~Thread();

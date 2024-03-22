@@ -1,5 +1,6 @@
 #ifndef _SM_UI_DOBJ_BUTTONDOBJ
 #define _SM_UI_DOBJ_BUTTONDOBJ
+#include "AnyType.h"
 #include "Data/RandomOS.h"
 #include "UI/GUICore.h"
 #include "UI/DObj/DirectObject.h"
@@ -28,7 +29,7 @@ namespace UI
 			Bool rectMode;
 			Bool isVisible;
 
-			static UInt32 __stdcall ClickThread(void *userObj);
+			static UInt32 __stdcall ClickThread(AnyType userObj);
 		public:
 			ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~ButtonDObj();

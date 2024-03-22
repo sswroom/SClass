@@ -9,9 +9,9 @@ extern "C"
 	void CSY416_LRGBC_convert(UInt8 *yPtr, UInt8 *dest, UOSInt width, UOSInt height, OSInt dbpl, UOSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);
 }
 
-UInt32 Media::CS::CSY416_LRGBC::WorkerThread(void *obj)
+UInt32 Media::CS::CSY416_LRGBC::WorkerThread(AnyType obj)
 {
-	CSY416_LRGBC *converter = (CSY416_LRGBC*)obj;
+	NotNullPtr<CSY416_LRGBC> converter = obj.GetNN<CSY416_LRGBC>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

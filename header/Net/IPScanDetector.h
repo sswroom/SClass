@@ -42,7 +42,7 @@ namespace Net
 		Sync::Event *ctrlEvt;
 
 	private:
-		static UInt32 __stdcall DataThread(void *obj);
+		static UInt32 __stdcall DataThread(AnyType obj);
 
 	public:
 		IPScanDetector(NotNullPtr<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UOSInt workerCnt);

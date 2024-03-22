@@ -198,16 +198,16 @@ namespace Media
 
 		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 
-		virtual void ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
+		virtual void ProcessVideo(NotNullPtr<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
 		virtual Media::IImgResizer *CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance);
-		virtual void CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info);
-		virtual void CreateThreadResizer(ThreadStat *tstat);
+		virtual void CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::FrameInfo *info);
+		virtual void CreateThreadResizer(NotNullPtr<ThreadStat> tstat);
 
 		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
 
-		static UInt32 __stdcall ProcessThread(void *userObj);
-		static UInt32 __stdcall DisplayThread(void *userObj);
+		static UInt32 __stdcall ProcessThread(AnyType userObj);
+		static UInt32 __stdcall DisplayThread(AnyType userObj);
 		void StopThreads();
 
 		void VideoBeginLoad();

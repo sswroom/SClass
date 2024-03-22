@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORT
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORT
+#include "AnyType.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
@@ -44,10 +45,10 @@ namespace Data
 			OSInt *tasks;
 			UOSInt taskCnt;
 
-			void DoSortInt32(ThreadStat *stat, Int32 *arr, OSInt firstIndex, OSInt lastIndex);
-			void DoSortUInt32(ThreadStat *stat, UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
-			void DoSortStr(ThreadStat *stat, UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			void DoSortInt32(NotNullPtr<ThreadStat> stat, Int32 *arr, OSInt firstIndex, OSInt lastIndex);
+			void DoSortUInt32(NotNullPtr<ThreadStat> stat, UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
+			void DoSortStr(NotNullPtr<ThreadStat> stat, UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			ArtificialQuickSort();
 			~ArtificialQuickSort();

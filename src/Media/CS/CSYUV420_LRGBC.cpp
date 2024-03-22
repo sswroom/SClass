@@ -138,9 +138,9 @@ void Media::CS::CSYUV420_LRGBC::SetupInterpolationParameter(UOSInt source_length
 	MemFree(work);
 }
 
-UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(void *obj)
+UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(AnyType obj)
 {
-	CSYUV420_LRGBC *converter = (CSYUV420_LRGBC*)obj;
+	NotNullPtr<CSYUV420_LRGBC> converter = obj.GetNN<CSYUV420_LRGBC>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 	{

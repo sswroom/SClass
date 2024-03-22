@@ -253,9 +253,9 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 	}
 }
 
-UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
+UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 {
-	IO::GPSNMEA *me = (IO::GPSNMEA*)userObj;
+	NotNullPtr<IO::GPSNMEA> me = userObj.GetNN<IO::GPSNMEA>();
 	UTF8Char sbuff[8200];
 	UTF8Char *sptr;
 	Map::GPSTrack::GPSRecord3 record;

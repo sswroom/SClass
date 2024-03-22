@@ -204,7 +204,7 @@ namespace SSWR
 			Bool running;
 			Sync::Event modemEvt;
 
-			static UInt32 __stdcall ModemThread(void *userObj);
+			static UInt32 __stdcall ModemThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnPhoneRClick(AnyType userObj);
 			static void __stdcall OnSMSRClick(AnyType userObj);

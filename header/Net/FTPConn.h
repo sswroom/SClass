@@ -1,5 +1,6 @@
 #ifndef _SM_NET_FTPCONN
 #define _SM_NET_FTPCONN
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/StreamWriter.h"
@@ -22,7 +23,7 @@ namespace Net
 		UTF8Char *msgRet;
 		Sync::Event *evt;
 
-		static UInt32 __stdcall FTPThread(void *userObj);
+		static UInt32 __stdcall FTPThread(AnyType userObj);
 		Int32 WaitForResult();
 	public:
 		FTPConn(Text::CStringNN host, UInt16 port, NotNullPtr<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout);

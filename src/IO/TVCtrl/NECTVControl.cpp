@@ -9,9 +9,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
+UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(AnyType userObj)
 {
-	IO::TVCtrl::NECTVControl *me = (IO::TVCtrl::NECTVControl *)userObj;
+	NotNullPtr<IO::TVCtrl::NECTVControl> me = userObj.GetNN<IO::TVCtrl::NECTVControl>();
 	UInt8 buff[256];
 	UOSInt recvSize;
 	me->recvRunning = true;

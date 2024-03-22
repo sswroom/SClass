@@ -137,7 +137,7 @@ namespace UtilUI
 		static void __stdcall OnHSVSTChange(AnyType userObj);
 		static void __stdcall OnHSVVTChange(AnyType userObj);
 		static void __stdcall OnAlphaChange(AnyType userObj);
-		static UInt32 __stdcall GenThread(void *userObj);
+		static UInt32 __stdcall GenThread(AnyType userObj);
 
 		void XYZ2RGB(Double x, Double y, Double z, Double *r, Double *g, Double *b);
 		static void __inline YIQ2RGB(Double y, Double i, Double q, Double *r, Double *g, Double *b);

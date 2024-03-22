@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_VCDMPGFILE
 #define _SM_MEDIA_VCDMPGFILE
+#include "AnyType.h"
 #include "Data/ByteBuffer.h"
 #include "Data/FastMap.h"
 #include "IO/ISectorData.h"
@@ -25,7 +26,7 @@ namespace Media
 		Bool playStarted;
 		Bool playToStop;
 
-		static UInt32 __stdcall PlayThread(void *userData);
+		static UInt32 __stdcall PlayThread(AnyType userData);
 
 		Bool StartPlay();
 		Bool StopPlay();

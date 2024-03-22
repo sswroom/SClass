@@ -315,9 +315,9 @@ void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::A
 	mutUsage.EndUse();
 }
 
-UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
+UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 {
-	Net::TFTPServer *me = (Net::TFTPServer*)userObj;
+	NotNullPtr<Net::TFTPServer> me = userObj.GetNN<Net::TFTPServer>();
 	SessionInfo *sess;
 	UOSInt i;
 	Int64 currTime;

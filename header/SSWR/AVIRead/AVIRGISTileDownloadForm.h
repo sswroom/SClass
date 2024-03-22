@@ -74,7 +74,7 @@ namespace SSWR
 			void SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel);
 			void WriteTiles(NotNullPtr<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel);
 			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
-			static UInt32 __stdcall ProcThread(void *userObj);
+			static UInt32 __stdcall ProcThread(AnyType userObj);
 		public:
 			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::TileMapLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISTileDownloadForm();

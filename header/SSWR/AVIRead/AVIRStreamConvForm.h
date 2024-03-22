@@ -62,8 +62,8 @@ namespace SSWR
 			static void __stdcall OnStream1Clicked(AnyType userObj);
 			static void __stdcall OnStream2Clicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static UInt32 __stdcall Stream1Thread(void *userObj);
-			static UInt32 __stdcall Stream2Thread(void *userObj);
+			static UInt32 __stdcall Stream1Thread(AnyType userObj);
+			static UInt32 __stdcall Stream2Thread(AnyType userObj);
 
 			void StopStream1();
 			void StopStream2();

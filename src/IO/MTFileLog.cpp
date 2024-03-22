@@ -152,9 +152,9 @@ void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *
 	cstm->Flush();
 }
 
-UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
+UInt32 __stdcall IO::MTFileLog::FileThread(AnyType userObj)
 {
-	IO::MTFileLog *me = (IO::MTFileLog*)userObj;
+	NotNullPtr<IO::MTFileLog> me = userObj.GetNN<IO::MTFileLog>();
 	Sync::ThreadUtil::SetName(CSTR("MTFileLog"));
 	UOSInt arrCnt;
 	NotNullPtr<Text::String> *msgArr = 0;

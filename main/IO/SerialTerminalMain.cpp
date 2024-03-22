@@ -13,7 +13,7 @@ IO::SerialPort *port;
 Bool threadToStop;
 Bool threadRunning;
 
-UInt32 __stdcall RecvThread(void *userObj)
+UInt32 __stdcall RecvThread(AnyType userObj)
 {
 	UInt8 buff[512];
 	UOSInt buffSize;

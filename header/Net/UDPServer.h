@@ -49,8 +49,8 @@ namespace Net
 		Data::Timestamp logDateS;
 
 	private:
-		static UInt32 __stdcall DataV4Thread(void *obj);
-		static UInt32 __stdcall DataV6Thread(void *obj);
+		static UInt32 __stdcall DataV4Thread(AnyType obj);
+		static UInt32 __stdcall DataV6Thread(AnyType obj);
 
 	public:
 		UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);

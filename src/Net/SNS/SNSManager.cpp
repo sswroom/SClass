@@ -371,9 +371,9 @@ void Net::SNS::SNSManager::ChannelReload(Net::SNS::SNSManager::ChannelData *chan
 	}
 }
 
-UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
+UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 {
-	Net::SNS::SNSManager *me = (Net::SNS::SNSManager*)userObj;
+	NotNullPtr<Net::SNS::SNSManager> me = userObj.GetNN<Net::SNS::SNSManager>();
 	Int64 t;
 	UOSInt i;
 	Int32 cnt;

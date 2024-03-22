@@ -4,9 +4,9 @@
 #include "Sync/ThreadUtil.h"
 #include "UI/DObj/ButtonDObj.h"
 
-UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(void *userObj)
+UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(AnyType userObj)
 {
-	UI::DObj::ButtonDObj *me = (UI::DObj::ButtonDObj*)userObj;
+	NotNullPtr<UI::DObj::ButtonDObj> me = userObj.GetNN<UI::DObj::ButtonDObj>();
 	me->clkHdlr(me->clkUserObj);
 	return 0;
 }

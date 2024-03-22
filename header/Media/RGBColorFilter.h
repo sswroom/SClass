@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_RGBCOLORFILTER
 #define _SM_MEDIA_RGBCOLORFILTER
+#include "AnyType.h"
 #include "Media/ColorManager.h"
 #include "Media/FrameInfo.h"
 #include "Sync/Event.h"
@@ -39,7 +40,7 @@ namespace Media
 		Sync::Event threadEvt;
 		ThreadStat *threadStats;
 
-		static UInt32 __stdcall ProcessThread(void *userObj);
+		static UInt32 __stdcall ProcessThread(AnyType userObj);
 		void WaitForThread(Int32 stat);
 	public:
 		RGBColorFilter(Media::ColorManager *colorMgr);

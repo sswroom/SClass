@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_BATCH_BATCHLOADER
 #define _SM_MEDIA_BATCH_BATCHLOADER
+#include "AnyType.h"
 #include "Data/SyncCircularBuff.h"
 #include "Media/Batch/BatchHandler.h"
 #include "Parser/ParserList.h"
@@ -39,7 +40,7 @@ namespace Media
 			ThreadState *threadStates;
 			UOSInt nextThread;
 
-			static UInt32 __stdcall ThreadProc(void *userObj);
+			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
 			BatchLoader(NotNullPtr<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr);
 			~BatchLoader();
@@ -48,6 +49,6 @@ namespace Media
 			void AddImageData(NotNullPtr<IO::StreamData> data, Text::CStringNN fileId);
 			Bool IsProcessing();
 		};
-	};
-};
+	}
+}
 #endif

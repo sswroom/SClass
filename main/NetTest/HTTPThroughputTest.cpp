@@ -43,9 +43,9 @@ struct ThreadStatus
 	UInt64 hdrSize;
 };
 
-UInt32 __stdcall ProcessThread(void *userObj)
+UInt32 __stdcall ProcessThread(AnyType userObj)
 {
-	ThreadStatus *status = (ThreadStatus*)userObj;
+	NotNullPtr<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
 	NotNullPtr<Net::HTTPClient> cli;
 //	UInt8 buff[2048];
 	Text::CStringNN url;

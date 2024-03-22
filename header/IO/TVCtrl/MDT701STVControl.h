@@ -1,5 +1,6 @@
 #ifndef _SM_IO_TVCTRL_MDT701STVCONTROL
 #define _SM_IO_TVCTRL_MDT701STVCONTROL
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/TVControl.h"
@@ -24,7 +25,7 @@ namespace IO
 			Bool recvToStop;
 			Sync::Event recvEvt;
 
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 			Bool SendBasicCommand(const Char *buff, UOSInt buffSize, const Char *cmdReply, UOSInt replySize, UInt32 cmdTimeout, UInt32 cmdInterval);
 		public:
 			MDT701STVControl(IO::Stream *stm, Int32 monId);

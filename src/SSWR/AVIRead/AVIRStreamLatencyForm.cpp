@@ -84,9 +84,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamLatencyForm *me = (SSWR::AVIRead::AVIRStreamLatencyForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	UInt8 buff[2060];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;

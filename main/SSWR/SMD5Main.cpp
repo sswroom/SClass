@@ -34,9 +34,9 @@ private:
 	Bool threadToStop;
 	Sync::Event *evt;
 
-	static UInt32 __stdcall CheckThread(void *userObj)
+	static UInt32 __stdcall CheckThread(AnyType userObj)
 	{
-		ProgressHandler *me = (ProgressHandler*)userObj;
+		NotNullPtr<ProgressHandler> me = userObj.GetNN<ProgressHandler>();
 		UInt64 lastDispCount = 0;
 		Double lastDispTime = 0;
 		UInt64 currCount;

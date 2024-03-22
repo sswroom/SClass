@@ -80,9 +80,9 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	FileQueue *file;
 	UpdateQueue *update;
 	Media::MediaFile *mediaFile;

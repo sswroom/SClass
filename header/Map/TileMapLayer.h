@@ -55,7 +55,7 @@ namespace Map
 		Sync::Mutex updMut;
 		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
-		static UInt32 __stdcall TaskThread(void *userObj);
+		static UInt32 __stdcall TaskThread(AnyType userObj);
 		static Math::Coord2D<Int32> IdToCoord(Int64 id);
 		static Int64 CoordToId(Math::Coord2D<Int32> tileId);
 		void AddTask(CachedImage *cimg);

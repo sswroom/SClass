@@ -613,9 +613,9 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 	MemFree(work);
 }
 
-UInt32 __stdcall Media::Deinterlace8::ProcThread(void *obj)
+UInt32 __stdcall Media::Deinterlace8::ProcThread(AnyType obj)
 {
-	DI8THREADSTAT *stat = (DI8THREADSTAT*) obj;
+	NotNullPtr<DI8THREADSTAT> stat = obj.GetNN<DI8THREADSTAT>();
 	stat->status = 1;
 	while (true)
 	{

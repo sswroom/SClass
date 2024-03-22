@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZERH8_8
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZERH8_8
+#include "AnyType.h"
 #include "Media/IImgResizer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -77,7 +78,7 @@ namespace Media
 			void mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 			void mt_copy(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
-			static void __stdcall DoTask(void *obj);
+			static void __stdcall DoTask(AnyType obj);
 			void DestoryHori();
 			void DestoryVert();
 		public:

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_EMAIL_SMTPCONN
 #define _SM_NET_EMAIL_SMTPCONN
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/Writer.h"
@@ -37,7 +38,7 @@ namespace Net
 			Bool authPlain;
 			Bool authLogin;
 
-			static UInt32 __stdcall SMTPThread(void *userObj);
+			static UInt32 __stdcall SMTPThread(AnyType userObj);
 			UInt32 WaitForResult(UTF8Char **msgRetEnd);
 		public:
 			SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);

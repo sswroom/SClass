@@ -36,9 +36,9 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandl
 	}
 }
 
-UInt32 __stdcall Net::TCPServer::Svrv4Subthread(void *o)
+UInt32 __stdcall Net::TCPServer::Svrv4Subthread(AnyType o)
 {
-	SubthreadStatus *status = (SubthreadStatus*)o;
+	NotNullPtr<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv4Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
@@ -51,9 +51,9 @@ UInt32 __stdcall Net::TCPServer::Svrv4Subthread(void *o)
 	return 0;
 }
 
-UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
+UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 {
-	Net::TCPServer *svr = (Net::TCPServer*)o;
+	NotNullPtr<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	UOSInt sthreadCnt = 0;
@@ -144,9 +144,9 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	return 0;
 }
 
-UInt32 __stdcall Net::TCPServer::Svrv6Subthread(void *o)
+UInt32 __stdcall Net::TCPServer::Svrv6Subthread(AnyType o)
 {
-	SubthreadStatus *status = (SubthreadStatus*)o;
+	NotNullPtr<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv6Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
@@ -159,9 +159,9 @@ UInt32 __stdcall Net::TCPServer::Svrv6Subthread(void *o)
 	return 0;
 }
 
-UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
+UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 {
-	Net::TCPServer *svr = (Net::TCPServer*)o;
+	NotNullPtr<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	UOSInt sthreadCnt = 0;
@@ -252,9 +252,9 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	return 0;
 }
 
-UInt32 __stdcall Net::TCPServer::WorkerThread(void *o)
+UInt32 __stdcall Net::TCPServer::WorkerThread(AnyType o)
 {
-	Net::TCPServer *svr = (Net::TCPServer*)o;
+	NotNullPtr<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[256];
 	UTF8Char *str;
 

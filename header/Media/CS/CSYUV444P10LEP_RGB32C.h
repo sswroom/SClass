@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_CS_CSYUV444P10LEP_RGB32C
 #define _SM_MEDIA_CS_CSYUV444P10LEP_RGB32C
+#include "AnyType.h"
 #include "Media/CS/CSYUV16_RGB32C.h"
 #include "Sync/Event.h"
 
@@ -44,7 +45,7 @@ namespace Media
 			void SetupRGB13_LR();
 			void SetupYUV_RGB13();
 
-			static UInt32 __stdcall WorkerThread(void *obj);
+			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
 			CSYUV444P10LEP_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);

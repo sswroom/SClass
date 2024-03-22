@@ -10,7 +10,7 @@
 
 Manage::HiResClock *clk; Sync::Event *evt; Double t1; Double t2;
 
-UInt32 __stdcall TestThread(void *userObj)
+UInt32 __stdcall TestThread(AnyType userObj)
 {
 	evt->Wait();
 	t1 = clk->GetTimeDiff();

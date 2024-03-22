@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_MEMORYWEBSESSIONMANAGER
 #define _SM_NET_WEBSERVER_MEMORYWEBSESSIONMANAGER
+#include "AnyType.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListNN.h"
 #include "Net/WebServer/IWebSessionManager.h"
@@ -21,15 +22,15 @@ namespace Net
 
 			Int32 chkInterval;
 			SessionHandler chkHdlr;
-			void *chkHdlrObj;
+			AnyType chkHdlrObj;
 			Bool chkRunning;
 			Bool chkToStop;
 			Sync::Event chkEvt;
 
-			static UInt32 __stdcall CheckThread(void *userObj);
+			static UInt32 __stdcall CheckThread(AnyType userObj);
 			Int64 GetSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
-			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj, Text::CString cookieName);
+			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName);
 			virtual ~MemoryWebSessionManager();
 
 			virtual Optional<IWebSession> GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);

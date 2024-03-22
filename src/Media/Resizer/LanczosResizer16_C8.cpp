@@ -366,9 +366,9 @@ void Media::Resizer::LanczosResizer16_C8::UpdateRGBTable()
 	lutGen.GenRGB16_LRGBC((Int64*)&this->rgbTable[262144], this->srcProfile, this->destProfile.GetPrimaries(), 14);
 }
 
-void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(void *obj)
+void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(AnyType obj)
 {
-	TaskParam *ts = (TaskParam*)obj;
+	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
 
 	if (ts->funcType == 3)
 	{

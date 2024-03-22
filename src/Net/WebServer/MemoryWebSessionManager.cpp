@@ -8,9 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *userObj)
+UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType userObj)
 {
-	Net::WebServer::MemoryWebSessionManager *me = (Net::WebServer::MemoryWebSessionManager *)userObj;
+	NotNullPtr<Net::WebServer::MemoryWebSessionManager> me = userObj.GetNN<Net::WebServer::MemoryWebSessionManager>();
 	Optional<Net::WebServer::MemoryWebSession> sess;
 	NotNullPtr<MemoryWebSession> nnsess;
 	Int64 sessId;
@@ -97,7 +97,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NotNullPtr<Net::WebServ
 	return sessId;
 }
 
-Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
+Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
 {
 	this->path = Text::String::New(path);
 	if (cookieName.leng == 0)

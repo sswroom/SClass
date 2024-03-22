@@ -16,23 +16,23 @@ namespace Map
 		{
 			Double tlx;
 			Double tly;
-			Media::DrawImage *img;
+			NotNullPtr<Media::DrawImage> img;
 		} CachedImage;
 	private:
 		NotNullPtr<Media::DrawEngine> eng;
 		Map::TileMap *map;
-		Parser::ParserList *parsers;
+		NotNullPtr<Parser::ParserList> parsers;
 
 		OSInt lastLevel;
-		Data::ArrayListInt64 *lastIds;
-		Data::ArrayList<CachedImage *> *lastImgs;
+		Data::ArrayListInt64 lastIds;
+		Data::ArrayList<CachedImage *> lastImgs;
 
 	public:
-		TileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers);
+		TileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, NotNullPtr<Parser::ParserList> parsers);
 		virtual ~TileMapRenderer();
 
-		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view);
-		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, void *userObj);
+		virtual void DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, OptOut<UInt32> imgDurMS);
+		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, AnyType userObj);
 	};
-};
+}
 #endif

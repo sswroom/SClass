@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRTCPSPDSVRFORM
 #define _SM_SSWR_AVIREAD_AVIRTCPSPDSVRFORM
+#include "AnyType.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -33,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 		public:
 			AVIRTCPSpdSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPSpdSvrForm();

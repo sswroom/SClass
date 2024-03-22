@@ -163,9 +163,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(AnyType userObj)
 	me->lastTime.SetValue(dt);
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 {
-	ThreadStatus *t = (ThreadStatus*)userObj;
+	NotNullPtr<ThreadStatus> t = userObj.GetNN<ThreadStatus>();
 	UInt8 buff[32];
 	UOSInt i;
 	Net::SocketUtil::AddressInfo destAddr;

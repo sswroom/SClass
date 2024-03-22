@@ -64,7 +64,7 @@ namespace SSWR
 		private:
 			static void __stdcall OnStreamClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 
 			void StopStream();
 

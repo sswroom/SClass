@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_M2VSTREAMSOURCE
 #define _SM_MEDIA_M2VSTREAMSOURCE
+#include "AnyType.h"
 #include "Data/CallbackStorage.h"
 #include "IO/Writer.h"
 #include "Media/IMediaStream.h"
@@ -70,7 +71,7 @@ namespace Media
 
 		void SubmitFrame(UOSInt frameSize, UOSInt frameStart, UOSInt pictureStart);
 		void ClearPlayBuff();
-		static UInt32 __stdcall PlayThread(void *userObj);
+		static UInt32 __stdcall PlayThread(AnyType userObj);
 	public:
 		M2VStreamSource(NotNullPtr<Media::IStreamControl> pbc);
 		virtual ~M2VStreamSource();

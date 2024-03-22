@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_FILEVIDEOSOURCE
 #define _SM_MEDIA_FILEVIDEOSOURCE
+#include "AnyType.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListUInt64.h"
 #include "IO/StreamData.h"
@@ -57,8 +58,8 @@ namespace Media
 
 		Sync::Event mainEvt;
 
-		static UInt32 __stdcall PlayThread(void *userObj);
-		static UInt32 __stdcall OutputThread(void *userObj);
+		static UInt32 __stdcall PlayThread(AnyType userObj);
+		static UInt32 __stdcall OutputThread(AnyType userObj);
 	public:
 		FileVideoSource(NotNullPtr<IO::StreamData> data, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
 		virtual ~FileVideoSource();

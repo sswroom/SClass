@@ -81,7 +81,7 @@ namespace SSWR
 			static void __stdcall OnSendClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 
-			static UInt32 __stdcall ProcThread(void *userObj);
+			static UInt32 __stdcall ProcThread(AnyType userObj);
 		public:
 			AVIRUDPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUDPTestForm();

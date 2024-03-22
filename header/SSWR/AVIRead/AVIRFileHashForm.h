@@ -75,7 +75,7 @@ namespace SSWR
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnCheckTypeChg(AnyType userObj);
-			static UInt32 __stdcall HashThread(void *userObj);
+			static UInt32 __stdcall HashThread(AnyType userObj);
 			void AddFile(Text::CString fileName);
 			void UpdateUI();
 		public:

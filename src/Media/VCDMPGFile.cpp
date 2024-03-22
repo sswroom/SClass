@@ -9,9 +9,9 @@
 #include "Sync/ThreadUtil.h"
 #define BUFFSIZE 1048576
 
-UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
+UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 {
-	Media::VCDMPGFile *me = (Media::VCDMPGFile*)userData;
+	NotNullPtr<Media::VCDMPGFile> me = userData.GetNN<Media::VCDMPGFile>();
 	Bool succ;
 	UOSInt currOfst;
 	UOSInt i;

@@ -34,7 +34,7 @@ Double lastTime;
 UInt64 lastRecvSize;
 UInt64 lastSendSize;
 
-UInt32 __stdcall DispThread(void *userObj)
+UInt32 __stdcall DispThread(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -65,7 +65,7 @@ UInt32 __stdcall DispThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall ProcThread(void *userObj)
+UInt32 __stdcall ProcThread(AnyType userObj)
 {
 	UInt8 *sendBuff;
 	UOSInt sendSize;
@@ -101,7 +101,7 @@ UInt32 __stdcall ProcThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall RecvThread(void *userObj)
+UInt32 __stdcall RecvThread(AnyType userObj)
 {
 	UOSInt recvSize;
 	recvRunning = true;

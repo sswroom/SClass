@@ -84,7 +84,7 @@ namespace Net
 		static UInt32 trustStoreCnt;
 		Bool trustStoreUsed;
 
-		static UInt32 __stdcall ServerThread(void *userObj);
+		static UInt32 __stdcall ServerThread(AnyType userObj);
 		virtual Net::SSLClient *CreateServerConn(Socket *s) = 0;
 		SSLEngine(NotNullPtr<Net::SocketFactory> sockf);
 	public:

@@ -25,7 +25,7 @@ Socket *rawSock;
 NotNullPtr<Net::SocketFactory> sockf;
 IO::LogTool *logTool;
 
-UInt32 __stdcall RecvThread(void *userObj)
+UInt32 __stdcall RecvThread(AnyType userObj)
 {
 	UInt8 packetBuff[10240];
 	UOSInt packetSize;

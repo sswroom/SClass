@@ -1,5 +1,6 @@
 #ifndef _SM_NET_LOGCLIENT
 #define _SM_NET_LOGCLIENT
+#include "AnyType.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/LogTool.h"
@@ -36,8 +37,8 @@ namespace Net
 		Bool recvToStop;
 		Sync::Event recvEvt;
 
-		static UInt32 __stdcall RecvThread(void *userObj);
-		static UInt32 __stdcall SendThread(void *userObj);
+		static UInt32 __stdcall RecvThread(AnyType userObj);
+		static UInt32 __stdcall SendThread(AnyType userObj);
 	public:
 		LogClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout);
 		virtual ~LogClient();

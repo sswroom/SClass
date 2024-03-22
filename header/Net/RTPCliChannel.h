@@ -1,5 +1,6 @@
 #ifndef _SM_NET_RTPCLICHANNEL
 #define _SM_NET_RTPCLICHANNEL
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "Media/IAudioSource.h"
 #include "Media/IMediaSource.h"
@@ -30,7 +31,7 @@ namespace Net
 
 			Net::UDPServer *rtpUDP;
 			Net::UDPServer *rtcpUDP;
-			void *userData;
+			AnyType userData;
 			Text::String *controlURL;
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
@@ -59,7 +60,7 @@ namespace Net
 	private:
 		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static void __stdcall PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static UInt32 __stdcall PlayThread(void *userObj);
+		static UInt32 __stdcall PlayThread(AnyType userObj);
 
 	private:
 		void SetControlURL(Text::CString url);
@@ -80,8 +81,8 @@ namespace Net
 		Media::IVideoSource *CreateShadowVideo(UOSInt index);
 		Media::IAudioSource *CreateShadowAudio(UOSInt index);
 
-		void *GetUserData();
-		void SetUserData(void *userData);
+		AnyType GetUserData();
+		void SetUserData(AnyType userData);
 
 		Bool StartPlay();
 		Bool StopPlay();

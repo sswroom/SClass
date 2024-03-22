@@ -52,7 +52,7 @@ namespace SSWR
 			UOSInt currTrackId;
 
 		private:
-			static UInt32 __stdcall AddressThread(void *userObj);
+			static UInt32 __stdcall AddressThread(AnyType userObj);
 			static void __stdcall OnCboNameChg(AnyType userObj);
 			static void __stdcall OnLbRecordChg(AnyType userObj);
 			static Bool __stdcall OnLbRecordRClick(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);

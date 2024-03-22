@@ -182,7 +182,7 @@ namespace DB
 
 	private:
 		void WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> sqlCmd);
-		static UInt32 __stdcall ProcessSQL(void *userObj);
+		static UInt32 __stdcall ProcessSQL(AnyType userObj);
 
 	public:
 		void Wake();

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_HTTPDATA
 #define _SM_NET_HTTPDATA
+#include "AnyType.h"
 #include "IO/StreamData.h"
 #include "IO/FileStream.h"
 #include "Net/HTTPClient.h"
@@ -39,7 +40,7 @@ namespace Net
 		UInt64 dataOffset;
 		UInt64 dataLength;
 
-		static UInt32 __stdcall LoadThread(void *userObj);
+		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
 		HTTPData(const HTTPData *fd, UInt64 offset, UInt64 length);
 		HTTPData(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload);

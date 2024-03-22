@@ -5,9 +5,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
+UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 {
-	IO::RS232GPIO *me = (IO::RS232GPIO*)userObj;
+	NotNullPtr<IO::RS232GPIO> me = userObj.GetNN<IO::RS232GPIO>();
 	Manage::HiResClock *clk;
 	UInt8 readBuff[12];
 	UInt32 fullClk = 1000000 / me->baudRate;

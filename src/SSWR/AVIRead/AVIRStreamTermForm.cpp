@@ -127,9 +127,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->threadRunning = true;

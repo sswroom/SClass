@@ -177,7 +177,7 @@ Media::VectorGraph *Media::VectorDocument::GetItem(UOSInt Index) const
 	return this->items->GetItem(Index);
 }
 
-Bool Media::VectorDocument::BeginPrint(IPrintDocument *doc)
+Bool Media::VectorDocument::BeginPrint(NotNullPtr<IPrintDocument> doc)
 {
 	Media::VectorGraph *graph;
 	Double width;
@@ -210,7 +210,8 @@ Bool Media::VectorDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
 	Double width;
 	Double height;
 	graph = this->items->GetItem(this->currGraph);
-	if (this->currDoc == 0 || graph == 0)
+	NotNullPtr<Media::IPrintDocument> doc;
+	if (!this->currDoc.SetTo(doc) || graph == 0)
 		return false;
 	graph->DrawTo(printPage, 0);
 	this->currGraph++;
@@ -221,18 +222,18 @@ Bool Media::VectorDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
 	height = graph->GetVisibleHeightMM();
 	if (width > height)
 	{
-		this->currDoc->SetNextPagePaperSizeMM(height, width);
-		this->currDoc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
+		doc->SetNextPagePaperSizeMM(height, width);
+		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
 	}
 	else
 	{
-		this->currDoc->SetNextPagePaperSizeMM(width, height);
-		this->currDoc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
+		doc->SetNextPagePaperSizeMM(width, height);
+		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
 	}
 	return true;
 }
 
-Bool Media::VectorDocument::EndPrint(IPrintDocument *doc)
+Bool Media::VectorDocument::EndPrint(NotNullPtr<IPrintDocument> doc)
 {
 	this->currDoc = 0;
 	return true;

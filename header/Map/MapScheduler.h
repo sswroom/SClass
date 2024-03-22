@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_MAPSCHEDULER
 #define _SM_MAP_MAPSCHEDULER
+#include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
@@ -52,7 +53,7 @@ namespace Map
 		Bool *isLayerEmpty;
 
 	private:
-		static UInt32 __stdcall MapThread(void *obj);
+		static UInt32 __stdcall MapThread(AnyType obj);
 
 	private:
 		void DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec);

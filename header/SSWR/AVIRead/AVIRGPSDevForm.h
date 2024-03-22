@@ -128,7 +128,7 @@ namespace SSWR
 			Data::ArrayListStringNN userConts;
 			Data::ArrayList<Int64> userContDevs;
 
-			static UInt32 __stdcall ClientThread(void *userObj);
+			static UInt32 __stdcall ClientThread(AnyType userObj);
 			static void __stdcall OnConnClicked(AnyType userObj);
 			static void __stdcall OnDeviceRClicked(AnyType userObj);
 			static void __stdcall OnUserRClicked(AnyType userObj);

@@ -1243,9 +1243,9 @@ void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 
 	}
 }
 
-UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
+UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(AnyType userObj)
 {
-	Media::VideoFilter::IVTCFilter *me = (Media::VideoFilter::IVTCFilter *)userObj;
+	NotNullPtr<Media::VideoFilter::IVTCFilter> me = userObj.GetNN<Media::VideoFilter::IVTCFilter>();
 	Sync::ThreadUtil::SetName(CSTR("IVTCFilterIVTC"));
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	me->ivtcTStatus = 1;
@@ -1277,9 +1277,9 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
+UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(AnyType userObj)
 {
-	ThreadStat *tStat = (ThreadStat*)userObj;
+	NotNullPtr<ThreadStat> tStat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("IVTCFilterC")), tStat->index);

@@ -34,7 +34,7 @@ namespace IO
 		Bool threadRunning;
 		Bool threadToStop;
 	private:
-		static UInt32 __stdcall CmdThread(void *userObj);
+		static UInt32 __stdcall CmdThread(AnyType userObj);
 		void ClearResults();
 	public:
 		ATCommandChannel(NotNullPtr<IO::Stream> stm, Bool needRelease);

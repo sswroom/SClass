@@ -1,5 +1,6 @@
 #ifndef _SM_NET_RTSPCLIENT
 #define _SM_NET_RTSPCLIENT
+#include "AnyType.h"
 #include "Net/IRTPController.h"
 #include "Net/RTPCliChannel.h"
 #include "Net/SDPFile.h"
@@ -38,7 +39,7 @@ namespace Net
 	private:
 		ClientData *cliData;
 
-		static UInt32 __stdcall ControlThread(void *userObj);
+		static UInt32 __stdcall ControlThread(AnyType userObj);
 		Int32 NextRequest();
 		Bool WaitForReply();
 		Bool SendData(UInt8 *buff, UOSInt buffSize);
@@ -55,19 +56,19 @@ namespace Net
 		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
 
 	private:
-		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net::RTPCliChannel *rtpChannel);
+		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, NotNullPtr<Net::RTPCliChannel> rtpChannel);
 
 		Bool Play(Text::CString url, Text::CString sessId);
 		Bool Close(Text::CString url, Text::CString sessId);
 
 	public:
-		virtual Bool Init(Net::RTPCliChannel *rtpChannel);
-		virtual Bool Play(Net::RTPCliChannel *rtpChannel);
-		virtual Bool KeepAlive(Net::RTPCliChannel *rtpChannel);
-		virtual Bool StopPlay(Net::RTPCliChannel *rtpChannel);
-		virtual Bool Deinit(Net::RTPCliChannel *rtpChannel);
+		virtual Bool Init(NotNullPtr<Net::RTPCliChannel> rtpChannel);
+		virtual Bool Play(NotNullPtr<Net::RTPCliChannel> rtpChannel);
+		virtual Bool KeepAlive(NotNullPtr<Net::RTPCliChannel> rtpChannel);
+		virtual Bool StopPlay(NotNullPtr<Net::RTPCliChannel> rtpChannel);
+		virtual Bool Deinit(NotNullPtr<Net::RTPCliChannel> rtpChannel);
 
 		virtual Net::IRTPController *Clone() const;
 	};
-};
+}
 #endif

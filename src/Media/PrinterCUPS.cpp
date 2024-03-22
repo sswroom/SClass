@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "AnyType.h"
 #include "MyMemory.h"
 #include "IO/Path.h"
 #include "Math/Math.h"
@@ -33,7 +34,7 @@ namespace Media
 		Math::Size2DDbl paperSizeMM;
 		NotNullPtr<Text::String> printerName;
 
-		static UInt32 __stdcall PrintThread(void *userObj);
+		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
 		CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr);
 		virtual ~CUPSPrintDocument();
@@ -49,9 +50,9 @@ namespace Media
 	};
 }
 
-UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
+UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 {
-	Media::CUPSPrintDocument *me = (Media::CUPSPrintDocument*)userObj;
+	NotNullPtr<Media::CUPSPrintDocument> me = userObj.GetNN<Media::CUPSPrintDocument>();
 	NotNullPtr<Media::DrawImage> img;
 	Bool hasMorePage;
 
@@ -186,7 +187,7 @@ void Media::CUPSPrintDocument::Start()
 	if (this->started)
 		return;
 
-	if (this->hdlr->BeginPrint(this))
+	if (this->hdlr->BeginPrint(*this))
 	{
 		
 		this->started = true;
@@ -256,7 +257,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
+Optional<Media::IPrintDocument> Media::Printer::StartPrint(IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
 {
 	Media::CUPSPrintDocument *doc;
 	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, (Media::GTKDrawEngine*)eng.Ptr(), hdlr));
@@ -269,8 +270,8 @@ Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, NotNullPt
 	return doc;
 }
 
-void Media::Printer::EndPrint(IPrintDocument *doc)
+void Media::Printer::EndPrint(NotNullPtr<IPrintDocument> doc)
 {
-	DEL_CLASS(doc);
+	doc.Delete();
 }
 

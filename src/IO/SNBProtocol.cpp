@@ -4,9 +4,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall IO::SNBProtocol::RecvThread(void *userObj)
+UInt32 __stdcall IO::SNBProtocol::RecvThread(AnyType userObj)
 {
-	IO::SNBProtocol *me = (IO::SNBProtocol*)userObj;
+	NotNullPtr<IO::SNBProtocol> me = userObj.GetNN<IO::SNBProtocol>();
 	UInt8 *recvBuff;
 	UOSInt buffSize;
 	UOSInt recvSize;

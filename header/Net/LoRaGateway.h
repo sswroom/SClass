@@ -1,5 +1,6 @@
 #ifndef _SM_NET_LORAGATEWAY
 #define _SM_NET_LORAGATEWAY
+#include "AnyType.h"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 
@@ -30,7 +31,7 @@ namespace Net
 		Int32 altitude;
 
 		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static UInt32 __stdcall PullThread(void *userObj);
+		static UInt32 __stdcall PullThread(AnyType userObj);
 
 		Bool SendPullData();
 		Bool SendStatData();

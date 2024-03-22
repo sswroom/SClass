@@ -10,9 +10,9 @@
 
 //#define DEBUG
 
-UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
+UInt32 __stdcall IO::ATCommandChannel::CmdThread(AnyType userObj)
 {
-	IO::ATCommandChannel *me = (IO::ATCommandChannel*)userObj;
+	NotNullPtr<IO::ATCommandChannel> me = userObj.GetNN<IO::ATCommandChannel>();
 #if defined(DEBUG)
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(CSTR("Received.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

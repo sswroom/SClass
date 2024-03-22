@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTPUBLISHTESTFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTPUBLISHTESTFORM
+#include "AnyType.h"
 #include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -61,7 +62,7 @@ namespace SSWR
 			static void __stdcall OnPingTimerTick(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message);
-			static UInt32 __stdcall SendThread(void *userObj);
+			static UInt32 __stdcall SendThread(AnyType userObj);
 
 			void ServerStop();
 		public:

@@ -6,9 +6,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Net::RAWAnalyzer::RecvThread(void *userObj)
+UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 {
-	Net::RAWAnalyzer *me = (Net::RAWAnalyzer*)userObj;
+	NotNullPtr<Net::RAWAnalyzer> me = userObj.GetNN<Net::RAWAnalyzer>();
 	UInt8 packetBuff[10240];
 	UOSInt packetSize;
 	Net::SocketUtil::AddressInfo addr;

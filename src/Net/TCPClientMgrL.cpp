@@ -40,9 +40,9 @@ void TCPClientMgr_RemoveCliStat(NotNullPtr<Data::UInt64FastMap<Net::TCPClientMgr
 	}
 }
 
-UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
+UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 {
-	Net::TCPClientMgr *me = (Net::TCPClientMgr*)o;
+	NotNullPtr<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
 	ClassData *clsData = me->clsData;
 	Data::Timestamp currTime;
 	OSInt pollRet;
@@ -231,9 +231,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	return 0;
 }
 
-UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
+UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
-	Net::TCPClientMgr::WorkerStatus *stat = (Net::TCPClientMgr::WorkerStatus*)o;
+	NotNullPtr<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
 	Net::TCPClientMgr *me = stat->me;
 	ClassData *clsData = me->clsData;
 	Data::Timestamp currTime;

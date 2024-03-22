@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_IMAGECOPY
 #define _SM_MEDIA_IMAGECOPY
+#include "AnyType.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/ThreadUtil.h"
@@ -28,7 +29,7 @@ namespace Media
 
 		void MT_Copy(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
-		static UInt32 __stdcall WorkerThread(void *obj);
+		static UInt32 __stdcall WorkerThread(AnyType obj);
 	public:
 		ImageCopy();
 		~ImageCopy();

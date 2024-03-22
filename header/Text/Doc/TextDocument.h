@@ -61,9 +61,9 @@ namespace Text
 			virtual UOSInt GetCount() const;
 			virtual DocSection *GetItem(UOSInt Index) const;
 
-			virtual Bool BeginPrint(Media::IPrintDocument *doc);
+			virtual Bool BeginPrint(NotNullPtr<Media::IPrintDocument> doc);
 			virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage); 
-			virtual Bool EndPrint(Media::IPrintDocument *doc);
+			virtual Bool EndPrint(NotNullPtr<Media::IPrintDocument> doc);
 		};
 	}
 }

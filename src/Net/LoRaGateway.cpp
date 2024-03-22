@@ -15,9 +15,9 @@ void __stdcall Net::LoRaGateway::OnUDPPacket(NotNullPtr<const Net::SocketUtil::A
 	printf("%s\r\n", sb.ToString());
 }
 
-UInt32 __stdcall Net::LoRaGateway::PullThread(void *userObj)
+UInt32 __stdcall Net::LoRaGateway::PullThread(AnyType userObj)
 {
-	Net::LoRaGateway *me = (Net::LoRaGateway*)userObj;
+	NotNullPtr<Net::LoRaGateway> me = userObj.GetNN<Net::LoRaGateway>();
 	Data::Timestamp currTime;
 	{
 		Sync::Event evt;

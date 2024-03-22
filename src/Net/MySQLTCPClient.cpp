@@ -1367,9 +1367,9 @@ namespace Net
 	};
 }
 
-UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
+UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 {
-	Net::MySQLTCPClient *me = (Net::MySQLTCPClient*)userObj;
+	NotNullPtr<Net::MySQLTCPClient> me = userObj.GetNN<Net::MySQLTCPClient>();
 	UInt8 *buff;
 	UOSInt buffCapacity = INITBUFFSIZE;
 	UOSInt buffSize;

@@ -94,9 +94,9 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnTimerTick(AnyType userObj)
 	me->stm2LastSize = val;
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamConvForm *me = (SSWR::AVIRead::AVIRStreamConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->thread1Running = true;
@@ -126,9 +126,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
 	return 0;
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRStreamConvForm *me = (SSWR::AVIRead::AVIRStreamConvForm *)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->thread2Running = true;

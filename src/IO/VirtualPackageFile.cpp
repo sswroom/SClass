@@ -783,7 +783,7 @@ IO::PackageFileType IO::VirtualPackageFile::GetFileType() const
 	return PackageFileType::Virtual;
 }
 
-Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
 	if (pt == IO::Path::PathType::File)
@@ -818,17 +818,17 @@ Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, IO::ProgressHand
 	return false;
 }
 
-Bool IO::VirtualPackageFile::MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::VirtualPackageFile::MoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return false;
 }
 
-Bool IO::VirtualPackageFile::RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::VirtualPackageFile::RetryCopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return this->CopyFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::VirtualPackageFile::RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::VirtualPackageFile::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }

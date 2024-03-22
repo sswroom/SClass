@@ -226,9 +226,9 @@ void Media::M2VStreamSource::ClearPlayBuff()
 	mutUsage.EndUse();
 }
 
-UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
+UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 {
-	Media::M2VStreamSource *me = (Media::M2VStreamSource*)userObj;
+	NotNullPtr<Media::M2VStreamSource> me = userObj.GetNN<Media::M2VStreamSource>();
 	me->playInit = true;
 	me->playing = true;
 	while (!me->playToStop)

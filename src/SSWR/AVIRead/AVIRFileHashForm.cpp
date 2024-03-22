@@ -75,9 +75,9 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(AnyType userObj)
 	me->currHashType = (Crypto::Hash::HashType)(OSInt)me->cboCheckType->GetSelectedItem();
 }
 
-UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
+UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	Bool found;
 	FileStatus *status = 0;
 	UTF8Char sbuff[512];

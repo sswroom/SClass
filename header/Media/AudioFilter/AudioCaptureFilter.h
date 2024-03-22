@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_AUDIOFILTER_AUDIOCAPTUREFILTER
 #define _SM_MEDIA_AUDIOFILTER_AUDIOCAPTUREFILTER
+#include "AnyType.h"
 #include "IO/FileStream.h"
 #include "Media/IAudioFilter.h"
 #include "Sync/Event.h"
@@ -27,7 +28,7 @@ namespace Media
 			Bool toStop;
 			Sync::Event evt;
 
-			static UInt32 __stdcall CaptureThread(void *userObj);
+			static UInt32 __stdcall CaptureThread(AnyType userObj);
 		public:
 			AudioCaptureFilter(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~AudioCaptureFilter();

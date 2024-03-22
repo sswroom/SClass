@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_CS_CSY416_RGB32C
 #define _SM_MEDIA_CS_CSY416_RGB32C
+#include "AnyType.h"
 #include "Media/CS/CSYUV16_RGB32C.h"
 #include "Sync/Event.h"
 
@@ -27,7 +28,7 @@ namespace Media
 			Sync::Event *evtMain;
 			THREADSTAT *stats;
 
-			static UInt32 __stdcall WorkerThread(void *obj);
+			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
 			CSY416_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);

@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(AnyType userObj);
 			static void __stdcall OnAllowTimeSkipChange(AnyType userObj, Bool newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static UInt32 __stdcall ProcessThread(void *userObj);
+			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			void CancelQueues();
 		public:
 			AVIRVideoCheckerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

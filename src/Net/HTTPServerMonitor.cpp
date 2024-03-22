@@ -4,9 +4,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(void *userObj)
+UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(AnyType userObj)
 {
-	Net::HTTPServerMonitor *me = (Net::HTTPServerMonitor*)userObj;
+	NotNullPtr<Net::HTTPServerMonitor> me = userObj.GetNN<Net::HTTPServerMonitor>();
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{

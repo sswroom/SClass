@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ICMPSCANNER
 #define _SM_NET_ICMPSCANNER
+#include "AnyType.h"
 #include "Data/FastMap.h"
 #include "Manage/HiResClock.h"
 #include "Net/SocketFactory.h"
@@ -28,8 +29,8 @@ namespace Net
 
 	private:
 		static void __stdcall ICMPChecksum(UInt8 *buff, OSInt buffSize);
-		static UInt32 __stdcall Ping1Thread(void *userObj);
-		static UInt32 __stdcall Ping2Thread(void *userObj);
+		static UInt32 __stdcall Ping1Thread(AnyType userObj);
+		static UInt32 __stdcall Ping2Thread(AnyType userObj);
 
 		void AppendMACs(UInt32 ip);
 	public:

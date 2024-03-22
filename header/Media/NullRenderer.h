@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_NULLRENDERER
 #define _SM_MEDIA_NULLRENDERER
+#include "AnyType.h"
 #include "Data/CallbackStorage.h"
 #include "Media/IAudioRenderer.h"
 
@@ -18,7 +19,7 @@ namespace Media
 		UInt32 buffTime;
 		UInt64 sampleCnt;
 
-		static UInt32 __stdcall PlayThread(void *obj);
+		static UInt32 __stdcall PlayThread(AnyType obj);
 	public:
 		NullRenderer();
 		virtual ~NullRenderer();

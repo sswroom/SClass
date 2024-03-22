@@ -53,7 +53,7 @@ namespace IO
 		LEScanHandler leHdlr;
 		AnyType leHdlrObj;
 
-		static UInt32 __stdcall LEScanThread(void *userObj);
+		static UInt32 __stdcall LEScanThread(AnyType userObj);
 	public:
 		BTController(void *internalData, void *hand);
 		~BTController();

@@ -46,8 +46,8 @@ namespace SSWR
 
 			static void __stdcall OnConnClick(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static UInt32 __stdcall ProcThread(void *userObj);
-			static UInt32 __stdcall RecvThread(void *userObj);
+			static UInt32 __stdcall ProcThread(AnyType userObj);
+			static UInt32 __stdcall RecvThread(AnyType userObj);
 		public:
 			AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPSpdCliForm();

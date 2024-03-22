@@ -17,7 +17,7 @@ namespace IO
 		Bool running;
 		Bool toStop;
 
-		static UInt32 __stdcall RecvThread(void *userObj);
+		static UInt32 __stdcall RecvThread(AnyType userObj);
 	public:
 		SNBProtocol(NotNullPtr<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj);
 		~SNBProtocol();

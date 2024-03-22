@@ -7,7 +7,7 @@ namespace Math
 	struct Coord2DDbl : public Double2D
 	{
 		Coord2DDbl() = default;
-		Coord2DDbl(void *)
+		Coord2DDbl(std::nullptr_t)
 		{
 			this->x = 0;
 			this->y = 0;

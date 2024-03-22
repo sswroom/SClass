@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_LRGBLIMITER
 #define _SM_MEDIA_LRGBLIMITER
+#include "AnyType.h"
 #include "Sync/ParallelTask.h"
 
 namespace Media
@@ -16,7 +17,7 @@ namespace Media
 	private:
 		Sync::ParallelTask ptask;
 
-		static void TaskFunc(void *userObj);
+		static void TaskFunc(AnyType userObj);
 	public:
 		LRGBLimiter();
 		~LRGBLimiter();

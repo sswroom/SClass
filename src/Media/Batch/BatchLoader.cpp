@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
+UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -17,7 +17,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	IO::ParsedObject *pobj;
 	NotNullPtr<IO::ParsedObject> nnpobj;
 
-	ThreadState *state = (ThreadState*)userObj;
+	NotNullPtr<ThreadState> state = userObj.GetNN<ThreadState>();
 	state->running = true;
 	state->me->mainEvt.Set();
 	while (!state->toStop)

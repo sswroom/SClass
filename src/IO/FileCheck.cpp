@@ -17,10 +17,10 @@ typedef struct
 	Crypto::Hash::IHash *hash;
 	UInt64 readSize;
 	UInt64 fileSize;
-	IO::ProgressHandler *progress;
+	Optional<IO::ProgressHandler> progress;
 } ReadSess;
 
-IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError)
+IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
@@ -31,6 +31,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	ReadSess readSess;
 	NotNullPtr<IO::FileStream> fs;
 	IO::ActiveStreamReader::BottleNeckType bnt;
+	NotNullPtr<IO::ProgressHandler> nnprogress;
 
 	hash = Crypto::Hash::HashCreator::CreateHash(chkType);
 	if (hash == 0)
@@ -59,9 +60,9 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 			readSess.progress = progress;
 			fileSize = fs->GetLength();
 			readSess.fileSize = fileSize;
-			if (progress)
+			if (progress.SetTo(nnprogress))
 			{
-				progress->ProgressStart(path, fileSize);
+				nnprogress->ProgressStart(path, fileSize);
 			}
 			hash->Clear();
 			reader.SetUserData(&readSess);
@@ -75,18 +76,18 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 			else if (!skipError)
 			{
 				fs.Delete();
-				if (progress)
+				if (progress.SetTo(nnprogress))
 				{
-					progress->ProgressEnd();
+					nnprogress->ProgressEnd();
 				}
 				DEL_CLASS(fchk);
 				DEL_CLASS(hash);
 				return 0;
 			}
 			fs.Delete();
-			if (progress)
+			if (progress.SetTo(nnprogress))
 			{
-				progress->ProgressEnd();
+				nnprogress->ProgressEnd();
 			}
 		}
 	}
@@ -119,9 +120,9 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 				fchk = 0;
 			}
 		}
-		if (progress)
+		if (progress.SetTo(nnprogress))
 		{
-			progress->ProgressEnd();
+			nnprogress->ProgressEnd();
 		}
 	}
 	else
@@ -132,18 +133,19 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	return fchk;
 }
 
-void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, void *userData)
+void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	ReadSess *sess = (ReadSess*)userData;
+	NotNullPtr<ReadSess> sess = userData.GetNN<ReadSess>();
 	sess->hash->Calc(buff, buffSize);
 	sess->readSize += buffSize;
-	if (sess->progress)
+	NotNullPtr<IO::ProgressHandler> progress;
+	if (sess->progress.SetTo(progress))
 	{
-		sess->progress->ProgressUpdate(sess->readSize, sess->fileSize);
+		progress->ProgressUpdate(sess->readSize, sess->fileSize);
 	}
 }
 
-Bool IO::FileCheck::CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UTF8Char *sptr2;
@@ -154,6 +156,7 @@ Bool IO::FileCheck::CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char
 	UInt64 fileSize;
 	UInt8 hashBuff[32];
 	IO::ActiveStreamReader::BottleNeckType bnt;
+	NotNullPtr<IO::ProgressHandler> nnprogress;
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -195,9 +198,9 @@ Bool IO::FileCheck::CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char
 					readSess.progress = progress;
 					fileSize = fs->GetLength();
 					readSess.fileSize = fileSize;
-					if (progress)
+					if (progress.SetTo(nnprogress))
 					{
-						progress->ProgressStart(CSTRP(hashPath, sptr2), fileSize);
+						nnprogress->ProgressStart(CSTRP(hashPath, sptr2), fileSize);
 					}
 					hash->Clear();
 					reader->SetUserData(&readSess);

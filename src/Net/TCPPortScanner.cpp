@@ -5,9 +5,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
+UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 {
-	Net::TCPPortScanner *me = (Net::TCPPortScanner*)userObj;
+	NotNullPtr<Net::TCPPortScanner> me = userObj.GetNN<Net::TCPPortScanner>();
 	Net::SocketUtil::AddressInfo addr;
 	OSInt i;
 	Socket *s;

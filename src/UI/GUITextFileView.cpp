@@ -16,12 +16,12 @@
 
 #define READBUFFSIZE 1048576
 
-UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
+UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 {
 	UOSInt lineCurr;
 	WChar lastC;
 	WChar c;
-	UI::GUITextFileView *me = (UI::GUITextFileView*)userObj;
+	NotNullPtr<UI::GUITextFileView> me = userObj.GetNN<UI::GUITextFileView>();
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
@@ -855,7 +855,8 @@ void UI::GUITextFileView::EventTextPosUpdated()
 	UOSInt i = this->textPosUpdHdlr.GetCount();
 	while (i-- > 0)
 	{
-		this->textPosUpdHdlr.GetItem(i)(this->textPosUpdObj.GetItem(i), this->caretX, this->caretY);
+		Data::CallbackStorage<TextPosEvent> cb = this->textPosUpdHdlr.GetItem(i);
+		cb.func(cb.userObj, this->caretX, this->caretY);
 	}
 }
 
@@ -1677,8 +1678,7 @@ void UI::GUITextFileView::SearchText(Text::CString txt)
 	}
 }
 
-void UI::GUITextFileView::HandleTextPosUpdate(TextPosEvent hdlr, void *obj)
+void UI::GUITextFileView::HandleTextPosUpdate(TextPosEvent hdlr, AnyType obj)
 {
-	this->textPosUpdHdlr.Add(hdlr);
-	this->textPosUpdObj.Add(obj);
+	this->textPosUpdHdlr.Add({hdlr, obj});
 }

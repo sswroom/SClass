@@ -15,7 +15,7 @@ Bool running;
 Bool toStop;
 Sync::Event *evt;
 
-UInt32 __stdcall WatchdogThread(void *userObj)
+UInt32 __stdcall WatchdogThread(AnyType userObj)
 {
 	running = true;
 	while (!toStop)
