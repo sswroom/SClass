@@ -3192,6 +3192,9 @@ Net/RTPCliChannel.h:
 @RTPCliChannel.o
 Net/RTPH264Handler.h:
 @RTPH264Handler.o
+Net/RTPSessionController.h:
+Net/RTPSvrChannel.h:
+@RTPSvrChannel.o
 Net/RTPVPLHandler.h:
 Net/RTPVSource.h:
 @RTPVSource.o

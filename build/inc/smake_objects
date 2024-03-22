@@ -1389,6 +1389,7 @@ RTPAACHandler.o: ../../src/Net/RTPAACHandler.cpp
 RTPASource.o: ../../src/Net/RTPASource.cpp
 RTPCliChannel.o: ../../src/Net/RTPCliChannel.cpp
 RTPH264Handler.o: ../../src/Net/RTPH264Handler.cpp
+RTPSvrChannel.o: ../../src/Net/RTPSvrChannel.cpp
 RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
 SAMLUtil.o: ../../src/Net/SAMLUtil.cpp

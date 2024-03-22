@@ -299,7 +299,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 	return writeSize == fileSize;
 }
 
-Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -399,7 +399,7 @@ Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 	}
 }
 
-Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];

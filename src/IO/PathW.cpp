@@ -89,7 +89,7 @@ Bool IO::Path::IsDirectoryExistW(const WChar *dir)
 		return (ret & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-Bool IO::Path::CreateDirectory(Text::CString dirInput)
+Bool IO::Path::CreateDirectory(Text::CStringNN dirInput)
 {
 	WChar dir[MAX_PATH];
 	Text::StrUTF8_WChar(dir, dirInput.v, 0);

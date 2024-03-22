@@ -7,13 +7,12 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::RTPSvrChannel *me = (Net::RTPSvrChannel*)userData;
+	NotNullPtr<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
 
 	if (dataSize < 12)
 	{
-		me = 0;
 		return;
 	}
 	Int32 v = buff[0] >> 6;
@@ -25,13 +24,13 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::
 		if (dataSize < 12)
 			return;
 	}
-	Bool extension = (buff[0] & 0x10) != 0;
+/*	Bool extension = (buff[0] & 0x10) != 0;
 	Int32 csrcCnt = buff[0] & 15;
 	Bool marker = (buff[1] & 0x80) != 0;
 	Int32 payloadType = buff[1] & 0x7f;
 	Int32 seqNum = ReadMUInt16(&buff[2]);
-	UInt32 timestamp = ReadMUInt32(&buff[4]);
-	me->lastSSRC = ReadMUInt32(&buff[8]);
+	UInt32 timestamp = ReadMUInt32(&buff[4]);*/
+	me->lastSSRC = ReadMInt32(&buff[8]);
 
 /*	me->packMut->Lock();
 	if (me->packCnt >= me->threadCnt)
@@ -92,16 +91,14 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::
 	me->packMut->Unlock();*/
 }
 
-void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	Net::RTPSvrChannel *me = (Net::RTPSvrChannel*)userData;
-	Data::DateTime *dt;
-	Int32 size = 0;
-	Int32 ofst = 0;
-	OSInt i;
+	NotNullPtr<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
+	UInt32 size = 0;
+	UInt32 ofst = 0;
 	while (ofst < dataSize)
 	{
-		size = (ReadMInt16(&buff[ofst + 2]) + 1) << 2;
+		size = (UInt32)(ReadMUInt16(&buff[ofst + 2]) + 1) << 2;
 		if (size + ofst > dataSize)
 		{
 			break;
@@ -159,7 +156,6 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUt
 			case 203: //BYE
 				break;
 			default:
-				i = 1;
 				break;
 			}
 		}
@@ -182,7 +178,7 @@ Net::RTPSvrChannel::RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 p
 	{
 		port += 1;
 	}
-	NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this, 0, 0, this->threadCnt, false));
+	NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, this->log, CSTR_NULL, this->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->rtpUDP->GetPort();
@@ -190,10 +186,10 @@ Net::RTPSvrChannel::RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 p
 		{
 			port += 1;
 			DEL_CLASS(this->rtpUDP);
-			NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this, 0, 0, this->threadCnt, false));
+			NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, this->log, CSTR_NULL, this->threadCnt, false));
 		}
 	}
-	NEW_CLASS(this->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, 0, PacketCtrlHdlr, this, 0, 0, 1, false));
+	NEW_CLASS(this->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, CSTR_NULL, PacketCtrlHdlr, this, this->log, CSTR_NULL, 1, false));
 }
 
 Net::RTPSvrChannel::~RTPSvrChannel()
@@ -218,9 +214,9 @@ Int32 Net::RTPSvrChannel::GetSeqNum()
 	return seqNum;
 }
 
-Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UInt32 dataSize, Bool marker)
+Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UOSInt dataSize, Bool marker)
 {
-	OSInt sendSize = dataSize + 12;
+	UOSInt sendSize = dataSize + 12;
 	UInt8 sendBuff[1500];
 	sendBuff[0] = 0x80;
 	if (dataSize & 1)
@@ -241,7 +237,7 @@ Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UI
 	return true;
 }
 
-Bool Net::RTPSvrChannel::SendControl(UInt8 *buff, UInt32 dataSize)
+Bool Net::RTPSvrChannel::SendControl(UInt8 *buff, UOSInt dataSize)
 {
 	this->rtcpUDP->SendTo(this->targetAddr, this->targetPort + 1, buff, dataSize);
 	return true;

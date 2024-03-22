@@ -24,7 +24,7 @@ namespace IO
 		static WChar *GetTempFileW(WChar *buff, const WChar *fileName);
 		static Bool IsDirectoryExist(Text::CStringNN dir);
 		static Bool IsDirectoryExistW(const WChar *dir);
-		static Bool CreateDirectory(Text::CString dir);
+		static Bool CreateDirectory(Text::CStringNN dir);
 		static Bool CreateDirectoryW(const WChar *dir);
 		static Bool RemoveDirectory(const UTF8Char *dir);
 		static Bool RemoveDirectoryW(const WChar *dir);

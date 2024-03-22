@@ -8,5 +8,5 @@ namespace Net
 	public:
 		virtual void SessionKA(Int32 sessId) = 0;
 	};
-};
+}
 #endif

@@ -485,7 +485,7 @@ Bool Net::SDPFile::BuildBuff()
 	return true;
 }
 
-Bool Net::SDPFile::WriteToStream(IO::Stream *stm)
+Bool Net::SDPFile::WriteToStream(NotNullPtr<IO::Stream> stm)
 {
 	return stm->Write(this->buff, this->buffSize) == this->buffSize;
 }

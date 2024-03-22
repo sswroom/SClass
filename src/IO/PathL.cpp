@@ -56,7 +56,7 @@ Bool IO::Path::IsDirectoryExistW(const WChar *dir)
 	return GetPathTypeW(dir) == PathType::Directory;
 }
 
-Bool IO::Path::CreateDirectory(Text::CString dirInput)
+Bool IO::Path::CreateDirectory(Text::CStringNN dirInput)
 {
 	UOSInt i = dirInput.LastIndexOf('/');
 	if (i != INVALID_INDEX && i > 0)
