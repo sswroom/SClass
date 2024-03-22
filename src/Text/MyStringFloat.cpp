@@ -33,7 +33,7 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NotNullPt
 	{
 		return Text::StrConcatC(oriStr, style->infStr, style->infLen);
 	}
-	Double addBase = 5.0e-10;
+	Double addBase = 5.0e-11;
 	UOSInt i;
 	if (sigFig < 10)
 	{

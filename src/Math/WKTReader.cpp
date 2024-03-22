@@ -333,7 +333,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			if (i >= j)
 				l = ptList.GetCount();
 			else
-				l = ptOfstList.GetItem(i);
+				l = ptOfstList.GetItem(i) << 1;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
 			Math::Coord2DDbl *ptArr = lr->GetPointList(m);
 			MemCopyNO(ptArr, ptList.Ptr() + k, (l - k) * sizeof(Double));
@@ -613,7 +613,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 				if (i >= j)
 					l = ptList.GetCount();
 				else
-					l = ptOfstList.GetItem(i);
+					l = ptOfstList.GetItem(i) << 1;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
 				Math::Coord2DDbl *ptArr = lr->GetPointList(m);
 				MemCopyNO(ptArr, ptList.Ptr() + k, (l - k) * sizeof(Double));
