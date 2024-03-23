@@ -38,15 +38,15 @@ namespace SSWR
 			QualityMode qMode;
 
 			UI::GUIVideoBoxDD *vbox;
-			UI::GUIMainMenu *mnu;
-			UI::GUIMenu *mnuChapters;
+			NotNullPtr<UI::GUIMainMenu> mnu;
+			NotNullPtr<UI::GUIMenu> mnuChapters;
 
 			UI::GUIForm *dbgFrm;
 			NotNullPtr<UI::GUITextBox> txtDebug;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
-			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnDebugClosed(void *userObj, UI::GUIForm *frm);
+			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
 		public:
 			Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
 			Bool OpenVideo(Media::MediaFile *mf);

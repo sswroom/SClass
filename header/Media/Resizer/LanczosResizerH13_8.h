@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZERH13_8
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZERH13_8
+#include "AnyType.h"
 //MMX Accelerated Lanczos Resizer
 namespace Media
 {
@@ -37,7 +38,7 @@ namespace Media
 			Int32 nTap;
 			Sync::Event *evtMain;
 			LRH13THREADSTAT *stats;
-			Int32 nThread;
+			UOSInt nThread;
 
 			Int32 hsSize;
 			Int32 hdSize;
@@ -68,7 +69,7 @@ namespace Media
 			void mt_expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep);
 			void mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep);
 
-			static UInt32 WorkerThread(void *obj);
+			static UInt32 WorkerThread(AnyType obj);
 			void DestoryHori();
 			void DestoryVert();
 		public:

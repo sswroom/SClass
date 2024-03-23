@@ -710,9 +710,9 @@ yv2rflopexit:
 	};
 }*/
 
-UInt32 Media::CS::CSI420_RGB8::WorkerThread(void *obj)
+UInt32 Media::CS::CSI420_RGB8::WorkerThread(AnyType obj)
 {
-	CSI420_RGB8 *converter = (CSI420_RGB8*)obj;
+	NotNullPtr<CSI420_RGB8> converter = obj.GetNN<CSI420_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

@@ -1,5 +1,6 @@
 #ifndef _SM_UI_DOBJ_CLICKAREADOBJ
 #define _SM_UI_DOBJ_CLICKAREADOBJ
+#include "AnyType.h"
 #include "Data/RandomOS.h"
 #include "UI/GUICore.h"
 #include "UI/DObj/DirectObject.h"
@@ -13,12 +14,12 @@ namespace UI
 		private:
 			NotNullPtr<Media::DrawEngine> deng;
 			UI::UIEvent clkHdlr;
-			void *clkUserObj;
+			AnyType clkUserObj;
 			OSInt width;
 			OSInt height;
 
 		public:
-			ClickAreaDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, void *clkUserObj);
+			ClickAreaDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~ClickAreaDObj();
 
 			virtual Bool IsChanged();

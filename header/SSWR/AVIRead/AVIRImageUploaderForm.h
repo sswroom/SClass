@@ -26,9 +26,9 @@ namespace SSWR
 
 			struct FileItem
 			{
-			Text::String *fileName;
-			UInt64 fileSize;
-			FileStatus status;
+				NotNullPtr<Text::String> fileName;
+				UInt64 fileSize;
+				FileStatus status;
 			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
@@ -43,8 +43,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnUpload;
 			NotNullPtr<UI::GUIListView> lvStatus;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt);
-			static void __stdcall OnUploadClicked(void *userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnUploadClicked(AnyType userObj);
 			static void FreeItem(FileItem *item);
 		public:
 			AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

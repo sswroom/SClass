@@ -1391,9 +1391,9 @@ yv2rflopexit:
 }
 #endif
 
-UInt32 Media::CS::CSNV12_RGB8::WorkerThread(void *obj)
+UInt32 Media::CS::CSNV12_RGB8::WorkerThread(AnyType obj)
 {
-	CSNV12_RGB8 *converter = (CSNV12_RGB8*)obj;
+	NotNullPtr<CSNV12_RGB8> converter = obj.GetNN<CSNV12_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

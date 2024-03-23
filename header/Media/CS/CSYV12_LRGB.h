@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_CS_CSYV12_LRGB
 #define _SM_MEDIA_CS_CSYV12_LRGB
+#include "AnyType.h"
 #include "Media/CS/CSYUV_LRGBHQ.h"
 #include "Sync/Event.h"
 
@@ -62,14 +63,14 @@ namespace Media
 			void do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
 			void do_yv12rgb8vc2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
 			void do_yv12rgb8vc16(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
-			static UInt32 __stdcall WorkerThread(void *obj);
+			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
-			CSYV12_LRGB(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYV12_LRGB(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYV12_LRGB();
 			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, Int32 width, Int32 height, Int32 srcRGBBpl, Int32 destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
-	};
-};
+	}
+}
 #endif

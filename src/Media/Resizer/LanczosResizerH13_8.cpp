@@ -28,7 +28,7 @@ Double Media::Resizer::LanczosResizerH13_8::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::Resizer::LanczosResizerH13_8::setup_interpolation_parameter(Int32 source_length, Int32 result_length, LRH13PARAMETER *out, Int32 indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerH13_8::setup_interpolation_parameter(Int32 source_length, UOSInt result_length, LRH13PARAMETER *out, Int32 indexSep, Double offsetCorr)
 {
 	Int32 i,j,n;
 	Double *work;
@@ -77,7 +77,7 @@ void Media::Resizer::LanczosResizerH13_8::setup_interpolation_parameter(Int32 so
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerH13_8::setup_decimation_parameter(Int32 source_length, Int32 result_length, LRH13PARAMETER *out, Int32 indexSep, Int32 offsetCorr)
+void Media::Resizer::LanczosResizerH13_8::setup_decimation_parameter(Int32 source_length, UOSInt result_length, LRH13PARAMETER *out, Int32 indexSep, Int32 offsetCorr)
 {
 	Int32 i,j,n;
 	Double *work;
@@ -126,7 +126,7 @@ void Media::Resizer::LanczosResizerH13_8::setup_decimation_parameter(Int32 sourc
 }
 
 /*-----------------------------------------------------------------*/
-void Media::Resizer::LanczosResizerH13_8::horizontal_filter(UInt8 *inPt, UInt8 *outPt,Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
 {
 	Int64 toAdd = 0xff80ff80ff80ff80;
 	Int64 toAdd2 = 0x8080808080808080;
@@ -250,7 +250,7 @@ hflop7:
 }
 
 /*-----------------------------------------------------------------*/
-void Media::Resizer::LanczosResizerH13_8::vertical_filter(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
 {
 	Int64 toAdd = 0xff80ff80ff80ff80;
 	Int64 toAdd2 = 0x80808080;
@@ -310,7 +310,7 @@ vflop3:
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::expand(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
 {
 	Int32 currWidth;
 	Int32 currHeight;
@@ -348,7 +348,7 @@ vflop2:
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::collapse(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
 {
 	Int64 toAdd = 0xff80ff80ff80ff80;
 	Int64 toAdd2 = 0x80808080;
@@ -391,7 +391,7 @@ vflop2:
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt,Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
 {
 	Int32 currHeight;
 	Int32 lastHeight = height;
@@ -432,15 +432,15 @@ void Media::Resizer::LanczosResizerH13_8::mt_horizontal_filter(UInt8 *inPt, UInt
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
+void Media::Resizer::LanczosResizerH13_8::mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep)
 {
-	Int32 currHeight;
-	Int32 lastHeight = height;
-	Int32 i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
-		currHeight = MulDiv(i, height, this->nThread);
+		currHeight = MulDivUOS(i, height, this->nThread);
 		this->stats[i].inPt = inPt;
 		this->stats[i].outPt = outPt + currHeight * dstep;
 		this->stats[i].width = width;
@@ -473,15 +473,15 @@ void Media::Resizer::LanczosResizerH13_8::mt_vertical_filter(UInt8 *inPt, UInt8 
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::mt_expand(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::mt_expand(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
 {
-	Int32 currHeight;
-	Int32 lastHeight = height;
-	Int32 i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
-		currHeight = MulDiv(i, height, this->nThread);
+		currHeight = MulDivUOS(i, height, this->nThread);
 		this->stats[i].inPt = inPt + currHeight * sstep;
 		this->stats[i].outPt = outPt + currHeight * dstep;
 		this->stats[i].width = width;
@@ -511,15 +511,15 @@ void Media::Resizer::LanczosResizerH13_8::mt_expand(UInt8 *inPt, UInt8 *outPt, I
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::mt_collapse(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 sstep, Int32 dstep)
+void Media::Resizer::LanczosResizerH13_8::mt_collapse(UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, Int32 sstep, Int32 dstep)
 {
-	Int32 currHeight;
-	Int32 lastHeight = height;
-	Int32 i = this->nThread;
+	UOSInt currHeight;
+	UOSInt lastHeight = height;
+	UOSInt i = this->nThread;
 	Bool fin;
 	while (i-- > 0)
 	{
-		currHeight = MulDiv(i, height, this->nThread);
+		currHeight = MulDivUOS(i, height, this->nThread);
 		this->stats[i].inPt = inPt + currHeight * sstep;
 		this->stats[i].outPt = outPt + currHeight * dstep;
 		this->stats[i].width = width;
@@ -548,9 +548,9 @@ void Media::Resizer::LanczosResizerH13_8::mt_collapse(UInt8 *inPt, UInt8 *outPt,
 		evtMain->Wait();
 	}}
 
-UInt32 Media::Resizer::LanczosResizerH13_8::WorkerThread(void *obj)
+UInt32 Media::Resizer::LanczosResizerH13_8::WorkerThread(AnyType obj)
 {
-	LanczosResizerH13_8 *lr = (LanczosResizerH13_8*)obj;
+	NotNullPtr<LanczosResizerH13_8> lr = obj.GetNN<LanczosResizerH13_8>();
 	Int32 threadId = lr->currId;
 	LRH13THREADSTAT *ts = &lr->stats[threadId];
 
@@ -713,7 +713,7 @@ Media::Resizer::LanczosResizerH13_8::~LanczosResizerH13_8()
 	}
 }
 
-void Media::Resizer::LanczosResizerH13_8::Resize(UInt8 *src, Int32 sbpl, Int32 swidth, Int32 sheight, UInt8 *dest, Int32 dbpl, Int32 dwidth, Int32 dheight)
+void Media::Resizer::LanczosResizerH13_8::Resize(UInt8 *src, Int32 sbpl, Int32 swidth, Int32 sheight, UInt8 *dest, Int32 dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	LRH13PARAMETER prm;
 	if (dwidth < 16 || dheight < 16)

@@ -1,5 +1,6 @@
 #ifndef _SM_UI_DOBJ_DOWNBUTTONDOBJ
 #define _SM_UI_DOBJ_DOWNBUTTONDOBJ
+#include "AnyType.h"
 #include "UI/GUICore.h"
 #include "UI/DObj/DirectObject.h"
 
@@ -16,11 +17,11 @@ namespace UI
 			Bool isMouseDown;
 			Math::Coord2D<OSInt> dispTL;
 			UI::UIEvent clkHdlr;
-			void *clkUserObj;
+			AnyType clkUserObj;
 			Bool updated;
 
 		public:
-			DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, void *clkUserObj);
+			DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~DownButtonDObj();
 
 			virtual Bool IsChanged();

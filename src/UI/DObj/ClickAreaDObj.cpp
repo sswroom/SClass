@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/DObj/ClickAreaDObj.h"
 
-UI::DObj::ClickAreaDObj::ClickAreaDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(tl)
+UI::DObj::ClickAreaDObj::ClickAreaDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, OSInt width, OSInt height, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->width = width;

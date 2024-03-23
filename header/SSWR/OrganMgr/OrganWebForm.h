@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANWEBFORM
 #define _SM_SSWR_ORGANMGR_ORGANWEBFORM
 #include "Net/SocketFactory.h"
-#include "SSWR/OrganMgr/OrganWebEnv.h"
+#include "SSWR/OrganMgr/OrganEnv.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 
@@ -16,9 +16,9 @@ namespace SSWR
 
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;
-			OrganWebEnv *env;
+			OrganEnv *env;
 			
-			static void __stdcall OnReloadClicked(void *userObj);
+			static void __stdcall OnReloadClicked(AnyType userObj);
 		public:
 			OrganWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> eng);
 			virtual ~OrganWebForm();

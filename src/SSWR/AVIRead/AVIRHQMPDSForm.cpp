@@ -131,8 +131,9 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
-	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
 	UOSInt i;
+	UOSInt nFiles = files.GetCount();
 
 	me->player->StopPlayback();
 	i = 0;
@@ -144,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -257,9 +258,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(void *userObj, UI::GUIForm *frm)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
 {
-	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
+	NotNullPtr<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
 	me->dbgFrm = 0;
 }
 
@@ -386,10 +387,10 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 	this->playlist = 0;
 	this->storeTime = -1;
 
-	UI::GUIMenu *mnu;
-	UI::GUIMenu *mnu2;
-	UI::GUIMenu *mnu3;
-	NEW_CLASS(this->mnu, UI::GUIMainMenu());
+	NotNullPtr<UI::GUIMenu> mnu;
+	NotNullPtr<UI::GUIMenu> mnu2;
+	NotNullPtr<UI::GUIMenu> mnu3;
+	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Open..."), MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
 	mnu->AddItem(CSTR("Open C&apture Device"), MNU_FILE_CAPTURE_DEVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);

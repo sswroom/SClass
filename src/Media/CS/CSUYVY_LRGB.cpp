@@ -170,9 +170,9 @@ u2rlop2:
 	}
 }*/
 
-UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(void *obj)
+UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 {
-	CSUYVY_LRGB *converter = (CSUYVY_LRGB*)obj;
+	NotNullPtr<CSUYVY_LRGB> converter = obj.GetNN<CSUYVY_LRGB>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 

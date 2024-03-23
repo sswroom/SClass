@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZER8_8
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZER8_8
+#include "AnyType.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Media/IImgResizer.h"
@@ -69,7 +70,7 @@ namespace Media
 			void mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt,Int32 width, Int32 height, Int32 tap, Int32 *index, Int32 *weight, UInt32 sstep, UInt32 dstep);
 			void mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int32 *weight, UInt32 sstep, UInt32 dstep);
 
-			static UInt32 WorkerThread(void *obj);
+			static UInt32 WorkerThread(AnyType obj);
 			void DestoryHori();
 			void DestoryVert();
 		public:

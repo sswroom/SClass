@@ -1,5 +1,6 @@
 #ifndef _SM_IO_IPROTOCOLPARSER
 #define _SM_IO_IPROTOCOLPARSER
+#include "AnyType.h"
 #include "IO/Stream.h"
 
 namespace IO

@@ -1190,9 +1190,9 @@ void Media::Resizer::LanczosResizer8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *o
 	}
 }
 
-UInt32 Media::Resizer::LanczosResizer8_8::WorkerThread(void *obj)
+UInt32 Media::Resizer::LanczosResizer8_8::WorkerThread(AnyType obj)
 {
-	LanczosResizer8_8 *lr = (LanczosResizer8_8*)obj;
+	NotNullPtr<LanczosResizer8_8> lr = obj.GetNN<LanczosResizer8_8>();
 	Int32 threadId = lr->currId;
 	LRTHREADSTAT *ts = &lr->stats[threadId];
 
@@ -1514,8 +1514,8 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_8::ProcessToNewPartial(Media
 	{
 		targetSize.y = srcImage->info.dispSize.y;
 	}
-	CalOutputSize(&srcImage->info, targetSize, &destInfo, rar);
-	NEW_CLASS(img, Media::StaticImage(&destInfo));
+	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
+	NEW_CLASS(img, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
 	Resize(srcImage->data + tlx * 4 + tly * srcImage->GetDataBpl(), srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, img->GetDataBpl(), destInfo.dispSize.x, destInfo.dispSize.y);

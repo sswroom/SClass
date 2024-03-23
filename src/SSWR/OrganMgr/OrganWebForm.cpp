@@ -6,9 +6,9 @@
 #include "Net/OSSocketFactory.h"
 #include "SSWR/OrganMgr/OrganWebForm.h"
 
-void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(void *userObj)
+void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(AnyType userObj)
 {
-	SSWR::OrganMgr::OrganWebForm *me = (SSWR::OrganMgr::OrganWebForm*)userObj;
+	NotNullPtr<SSWR::OrganMgr::OrganWebForm> me = userObj.GetNN<SSWR::OrganMgr::OrganWebForm>();
 	me->env->Reload();
 }
 
@@ -19,19 +19,19 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 	this->SetNoResize(true);
 
 	this->env = 0;
-	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in loading config file"), CSTR("Error"), this);
+		ui->ShowMsgOK(CSTR("Error in loading config file"), CSTR("Error"), this);
 		return;
 	}
 
 	DB::DBTool *db;
 	Int32 scnSize = 0;
-	Text::String *s;
-	if ((s = cfg->GetValue(CSTR("ScreenSize"))) != 0)
+	NotNullPtr<Text::String> s;
+	if (cfg->GetValue(CSTR("ScreenSize")).SetTo(s))
 	{
 		scnSize = s->ToInt32();
 	}
@@ -39,11 +39,11 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 	{
 		scnSize = 1800;
 	}
-	if ((s = cfg->GetValue(CSTR("MDBFile"))) != 0)
+	if (cfg->GetValue(CSTR("MDBFile")).SetTo(s))
 	{
 		db = DB::MDBFileConn::CreateDBTool(s, this->log, CSTR("DB: "));
 	}
-	else if ((s = cfg->GetValue(CSTR("MySQLServer"))) != 0)
+	else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s))
 	{
 		db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, cfg->GetValue(CSTR("MySQLDB")), cfg->GetValue(CSTR("MySQLUID")), cfg->GetValue(CSTR("MySQLPwd")), this->log, CSTR("DB: "));
 	}
@@ -53,34 +53,33 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 	}
 	UInt16 port = 0;
 	UInt16 sslPort = 0;
-	s = cfg->GetValue(CSTR("SvrPort"));
-	if (s)
+	if (cfg->GetValue(CSTR("SvrPort")).SetTo(s))
 	{
-		s->ToUInt16(&port);
+		s->ToUInt16(port);
 	}
 	NEW_CLASS(this->env, OrganWebEnv(this->sockf, 0, this->log, db, cfg->GetValue(CSTR("ImageDir")), port, 0, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), 0, eng, cfg->GetValue(CSTR("OSMCacheOath"))->ToCString()));
 	DEL_CLASS(cfg);
 
-	this->btnReload = ui->NewButton(this, CSTR("&Reload"));
+	this->btnReload = ui->NewButton(*this, CSTR("&Reload"));
 	this->btnReload->SetRect(40, 16, 75, 23, false);
 	this->btnReload->HandleButtonClick(OnReloadClicked, this);
-	if (this->env->IsError())
+	if (this->env->GetErrorType() != SSWR::OrganMgr::OrganEnv::ERR_NONE)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), this);
+		ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), this);
 	}
 }
 
 SSWR::OrganMgr::OrganWebForm::~OrganWebForm()
 {
 	SDEL_CLASS(this->env);
-	DEL_CLASS(this->sockf);
+	this->sockf.Delete();
 }
 
 Bool SSWR::OrganMgr::OrganWebForm::IsError()
 {
 	if (this->env == 0)
 		return true;
-	if (this->env->IsError())
+	if (this->env->GetErrorType() != SSWR::OrganMgr::OrganEnv::ERR_NONE)
 		return true;
 	return false;
 }
