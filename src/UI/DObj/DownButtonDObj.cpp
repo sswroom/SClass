@@ -3,7 +3,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DownButtonDObj.h"
 
-UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(tl)
+UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)

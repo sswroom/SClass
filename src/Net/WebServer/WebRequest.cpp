@@ -258,7 +258,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	if (contType == 1)
 	{
 		Text::String *s;
-		if (formName.v && dataSize > i)
+		if (formName.v && dataSize >= i)
 		{
 			Text::CStringNN formNameNN = formName.OrEmpty();
 			s = this->formMap->GetC(formNameNN);

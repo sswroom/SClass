@@ -157,6 +157,20 @@ namespace Data
 			return this->dateVal == DATE_NULL;
 		}
 
+		Int32 ToYMD() const
+		{
+			DateTimeUtil::DateValue d;
+			DateTimeUtil::TotalDays2DateValue(this->dateVal, d);
+			if (d.year <= 0)
+			{
+				return (d.year - 1) * 10000 - (Int32)d.month * 100 - (Int32)d.day;
+			}
+			else
+			{
+				return d.year * 10000 + (Int32)d.month * 100 + (Int32)d.day;
+			}
+		}
+
 		static Date Today()
 		{
 			return Data::Date((Data::DateTimeUtil::GetCurrTimeMillis() + Data::DateTimeUtil::GetLocalTzQhr() * 900000) / 86400000);

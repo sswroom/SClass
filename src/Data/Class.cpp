@@ -32,16 +32,29 @@ UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::I
 	field->itemType = itemType;
 	field->notNull = notNull;
 	field->typeName = 0;
+	field->byNameFunc = 0;
 	this->fields.Add(field);
 	return Data::VariItem::GetItemSize(itemType);
 }
 
-UOSInt Data::Class::AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, Bool byName)
+UOSInt Data::Class::AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, UOSInt fieldSize, ByNameFunc byNameFunc)
 {
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
 	field->name = Text::String::New(name);
 	field->ofst = ofst;
-	field->itemType = byName?(Data::VariItem::ItemType::Str):(Data::VariItem::ItemType::I64);
+	if (byNameFunc != 0)
+	{
+		field->itemType = Data::VariItem::ItemType::Str;
+	}
+	else if (fieldSize == 8)
+	{
+		field->itemType = Data::VariItem::ItemType::I64;
+	}
+	else
+	{
+		field->itemType = Data::VariItem::ItemType::I32;
+	}
+	field->byNameFunc = byNameFunc;
 	field->notNull = false;
 	field->typeName = Text::String::New(typeName);
 	this->fields.Add(field);
@@ -375,6 +388,10 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->AppendC(UTF8STRC("NotNullPtr<Data::NamedClass<"));
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC(">> CreateClass() const;\r\n"));
+	sb->AppendChar('\t', tabLev + 1);
+	sb->AppendC(UTF8STRC("Bool FillFromDBReader(NotNullPtr<DB::DBReader> r);\r\n"));
+	sb->AppendChar('\t', tabLev + 1);
+	sb->AppendC(UTF8STRC("static void DBColList(NotNullPtr<Data::ArrayListNN<Text::String>> colList);\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
@@ -827,11 +844,17 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(" - (OSInt)this, CSTR(\""));
 			sb->Append(typeName);
-			sb->AppendC(UTF8STRC("\"), "));
+			sb->AppendC(UTF8STRC("\"), sizeof("));
+			sb->Append(field->name);
+			sb->AppendC(UTF8STRC("), "));
 			if (field->itemType == Data::VariItem::ItemType::Str)
-				sb->AppendC(UTF8STRC("true);\r\n"));
+			{
+				sb->AppendC(UTF8STRC("(Data::Class::ByNameFunc)"));
+				sb->Append(typeName);
+				sb->AppendC(UTF8STRC("FromName);\r\n"));
+			}
 			else
-				sb->AppendC(UTF8STRC("false);\r\n"));
+				sb->AppendC(UTF8STRC("0);\r\n"));
 		}
 		else
 		{
@@ -844,6 +867,50 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	}
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendC(UTF8STRC("return cls;\r\n"));
+	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("}\r\n"));
+	sb->AppendC(UTF8STRC("\r\n"));
+
+	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("Bool "));
+	sb->Append(clsPrefix);
+	sb->Append(clsName);
+	sb->AppendC(UTF8STRC("::FillFromDBReader(NotNullPtr<DB::DBReader> r)\r\n"));
+	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("{\r\n"));
+	sb->AppendChar('\t', tabLev + 1);
+	sb->AppendC(UTF8STRC("NotNullPtr<Data::NamedClass<"));
+	sb->Append(clsPrefix);
+	sb->Append(clsName);
+	sb->AppendC(UTF8STRC(">> cls = this->CreateClass();\r\n"));
+	sb->AppendChar('\t', tabLev + 1);
+	sb->AppendC(UTF8STRC("Bool ret = Data::DataModelUtil::FillFromDBReader(cls, this, r);\r\n"));
+	sb->AppendChar('\t', tabLev + 1);
+	sb->AppendC(UTF8STRC("cls.Delete();\r\n"));
+	sb->AppendChar('\t', tabLev + 1);
+	sb->AppendC(UTF8STRC("return ret;\r\n"));
+	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("}\r\n"));
+	sb->AppendC(UTF8STRC("\r\n"));
+
+	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("void "));
+	sb->Append(clsPrefix);
+	sb->Append(clsName);
+	sb->AppendC(UTF8STRC("::DBColList(NotNullPtr<Data::ArrayListNN<Text::String>> colList)\r\n"));
+	sb->AppendChar('\t', tabLev);
+	sb->AppendC(UTF8STRC("{\r\n"));
+	i = 0;
+	j = fieldList->GetCount();
+	while (i < j)
+	{
+		field = fieldList->GetItem(i);
+		sb->AppendChar('\t', tabLev + 1);
+		sb->AppendC(UTF8STRC("colList->Add(Text::String::New(CSTR(\""));
+		Text::JavaText::ToDBName(sb, field->name->v);
+		sb->AppendC(UTF8STRC("\")));\r\n"));
+		i++;
+	}
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
@@ -1276,7 +1343,7 @@ Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 			}
 			else
 			{
-				cls->AddFieldEnum(strName.ToCString(), ofst, strType.ToCString(), false);
+				cls->AddFieldEnum(strName.ToCString(), ofst, strType.ToCString(), _OSINT_SIZE / 8, 0);
 				ofst += (_OSINT_SIZE / 8);
 			}
 		}

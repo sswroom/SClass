@@ -9,6 +9,7 @@ namespace Data
 	class Class
 	{
 	public:
+		typedef OSInt (*ByNameFunc)(Text::CStringNN name);
 		struct FieldInfo
 		{
 			NotNullPtr<Text::String> name;
@@ -16,6 +17,7 @@ namespace Data
 			Data::VariItem::ItemType itemType;
 			Bool notNull;
 			Optional<Text::String> typeName;
+			ByNameFunc byNameFunc;
 		};
 	private:
 		const void *refObj;
@@ -27,7 +29,7 @@ namespace Data
 		virtual ~Class();
 
 		UOSInt AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull); //return field size
-		UOSInt AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, Bool byName);
+		UOSInt AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, UOSInt fieldSize, ByNameFunc byNameFunc);
 		Bool AddField(Text::CStringNN name, const UInt8 *val);
 		Bool AddField(Text::CStringNN name, const Int8 *val);
 		Bool AddField(Text::CStringNN name, const UInt16 *val);

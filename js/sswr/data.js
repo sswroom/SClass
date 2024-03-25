@@ -542,6 +542,7 @@ export class DateTimeUtil
 
 	static totalDays2DateValue(totalDays, t)
 	{
+		totalDays = BigInt(totalDays);
 		if (totalDays < 0)
 		{
 			t.year = 1970;
@@ -550,11 +551,11 @@ export class DateTimeUtil
 				t.year--;
 				if (DateTimeUtil.isYearLeap(t.year))
 				{
-					totalDays += 366;
+					totalDays += 366n;
 				}
 				else
 				{
-					totalDays += 365;
+					totalDays += 365n;
 				}
 			}
 		}
@@ -572,7 +573,7 @@ export class DateTimeUtil
 					else
 					{
 						t.year++;
-						totalDays -= 366;
+						totalDays -= 366n;
 					}
 				}
 				else
@@ -584,7 +585,7 @@ export class DateTimeUtil
 					else
 					{
 						t.year++;
-						totalDays -= 365;
+						totalDays -= 365n;
 					}
 				}
 			}
@@ -1689,7 +1690,7 @@ export class LocalDate
 				}
 				else
 				{
-					this.dateVal = year - 0;
+					this.dateVal = year;
 				}
 			}
 			else if (t == "DateValue" || t == "TimeValue")

@@ -126,6 +126,7 @@ Chart.o: ../../src/Data/Chart.cpp
 CircularByteBuff.o: ../../src/Data/CircularByteBuff.cpp
 Class.o: ../../src/Data/Class.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
+DataModelUtil.o: ../../src/Data/DataModelUtil.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
 DateTimeUtil.o: ../../src/Data/DateTimeUtil.cpp
 FieldComparator.o: ../../src/Data/FieldComparator.cpp

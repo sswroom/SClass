@@ -1449,6 +1449,8 @@ Data/DataArray.h:
 Data/DataComparer.h:
 @DataComparer.o
 Data/DataMap.h:
+Data/DataModelUtil.h:
+@DataModelUtil.o
 Data/Date.h:
 Data/DateTime.h:
 @DateTime.o

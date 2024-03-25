@@ -109,7 +109,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 	return 0;
 }
 
-Manage::ExceptionRecorder::ExceptionRecorder(Text::CString fileName, ExceptionAction exAction)
+Manage::ExceptionRecorder::ExceptionRecorder(Text::CStringNN fileName, ExceptionAction exAction)
 {
 	Manage::ExceptionRecorder::fileName = Text::String::New(fileName);
 	Manage::ExceptionRecorder::exAction = exAction;

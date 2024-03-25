@@ -1,3 +1,6 @@
+1.6.2
+-Fixed data.DateTimeUtil.totalDays2DateValue bigint problem
+
 1.6.1
 -Fixed parser: parseJpg and parseWebp problem
 -Modified data.Timestamp.fromStr to return null if error
