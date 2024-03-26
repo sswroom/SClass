@@ -30,7 +30,7 @@ namespace Net
 			static UInt32 __stdcall CheckThread(AnyType userObj);
 			Int64 GetSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
-			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName);
+			MemoryWebSessionManager(Text::CStringNN path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName);
 			virtual ~MemoryWebSessionManager();
 
 			virtual Optional<IWebSession> GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);

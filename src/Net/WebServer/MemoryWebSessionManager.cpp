@@ -97,7 +97,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NotNullPtr<Net::WebServ
 	return sessId;
 }
 
-Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
+Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CStringNN path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
 {
 	this->path = Text::String::New(path);
 	if (cookieName.leng == 0)

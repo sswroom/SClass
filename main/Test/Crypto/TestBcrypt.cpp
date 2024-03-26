@@ -3,9 +3,9 @@
 #include "Crypto/Hash/Bcrypt.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool BCryptTest(Crypto::Hash::Bcrypt *bcrypt, const UTF8Char *hash, UOSInt hashLen, const UTF8Char *password, UOSInt pwdLen)
+Bool BCryptTest(NotNullPtr<Crypto::Hash::Bcrypt> bcrypt, Text::CStringNN hash, Text::CStringNN password)
 {
-	return bcrypt->Matches(hash, hashLen, password, pwdLen);
+	return bcrypt->Matches(hash, password);
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
@@ -26,17 +26,17 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		return 1;
 	}
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$10$IIlT8V9XkWW5WxvoIjC/Q.hAGkGFd54hcUaGSBo8p1xL847drOwAa"), UTF8STRC("admin"))) return 1;
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2y$11$hbIW55e9K0klAOTBidPNIeSszueX1nQbDZgGuNur5qAExTwX6pe8i"), UTF8STRC("admin"))) return 1;
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$04$zVHmKQtGGQob.b/Nc7l9NO8UlrYcW05FiuCj/SxsFO/ZtiN9.mNzy"), UTF8STRC(""))) return 1;
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$04$VYAclAMpaXY/oqAo9yUpkuWmoYywaPzyhu56HxXpVltnBIfmO9tgu"), UTF8STRC("<.S.2K(Zq'"))) return 1;
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$12$aroG/pwwPj1tU5fl9a9pkO4rydAmkXRj/LqfHZOSnR6LGAZ.z.jwa"), UTF8STRC("ptAP\"mcg6oH.\";c0U2_oll.OKi<!ku"))) return 1;
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$04$5DCebwootqWMCp59ISrMJ.l4WvgHIVg17ZawDIrDM2IjlE64GDNQS"), UTF8STRC("a"))) return 1;
-	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$12$kQtGrSy5/39p96XsfTnpmuG1RiTw0KPKTSTsLuaooVr476.Ti9zcW"), UTF8STRC("admin"))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2a$10$IIlT8V9XkWW5WxvoIjC/Q.hAGkGFd54hcUaGSBo8p1xL847drOwAa"), CSTR("admin"))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2y$11$hbIW55e9K0klAOTBidPNIeSszueX1nQbDZgGuNur5qAExTwX6pe8i"), CSTR("admin"))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2a$04$zVHmKQtGGQob.b/Nc7l9NO8UlrYcW05FiuCj/SxsFO/ZtiN9.mNzy"), CSTR(""))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2a$04$VYAclAMpaXY/oqAo9yUpkuWmoYywaPzyhu56HxXpVltnBIfmO9tgu"), CSTR("<.S.2K(Zq'"))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2a$12$aroG/pwwPj1tU5fl9a9pkO4rydAmkXRj/LqfHZOSnR6LGAZ.z.jwa"), CSTR("ptAP\"mcg6oH.\";c0U2_oll.OKi<!ku"))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2a$04$5DCebwootqWMCp59ISrMJ.l4WvgHIVg17ZawDIrDM2IjlE64GDNQS"), CSTR("a"))) return 1;
+	if (!BCryptTest(bcrypt, CSTR("$2a$12$kQtGrSy5/39p96XsfTnpmuG1RiTw0KPKTSTsLuaooVr476.Ti9zcW"), CSTR("admin"))) return 1;
 
 	sb.ClearStr();
-	bcrypt.GenHash(sb, 10, UTF8STRC("admin"));
-	if (!bcrypt.Matches(sb.ToString(), sb.GetLength(), UTF8STRC("admin")))
+	bcrypt.GenHash(sb, 10, CSTR("admin"));
+	if (!bcrypt.Matches(sb.ToCString(), CSTR("admin")))
 	{
 		return 1;
 	}

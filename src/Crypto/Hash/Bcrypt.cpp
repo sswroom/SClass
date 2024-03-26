@@ -5,10 +5,10 @@
 #include "Data/ByteTool.h"
 #include "Data/RandomBytesGenerator.h"
 
-void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen, UInt8 *hashBuff)
+void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, Text::CStringNN password, UInt8 *hashBuff)
 {
 	Crypto::Encrypt::Blowfish bf;
-	bf.EksBlowfishSetup(cost, salt, password, pwdLen);
+	bf.EksBlowfishSetup(cost, salt, password.v, password.leng);
 	bf.SetChainMode(Crypto::Encrypt::ChainMode::ECB);
 	UInt32 tmpBuff[6];
 	const UInt8 *initVal = (const UInt8*)"OrpheanBeholderScryDoubt";
@@ -41,17 +41,17 @@ Crypto::Hash::Bcrypt::~Bcrypt()
 {
 }
 
-Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::Bcrypt::Matches(Text::CStringNN hash, Text::CStringNN password)
 {
-	if (hash[0] != '$' || hashLen > 63)
+	if (hash.v[0] != '$' || hash.leng > 63)
 	{
 		return false;
 	}
 	UTF8Char hashBuff[64];
 	Text::PString sarr[4];
 	UOSInt sarrCnt; 
-	Text::StrConcatC(hashBuff, hash + 1, hashLen - 1);
-	sarrCnt = Text::StrSplitP(sarr, 4, {hashBuff, hashLen - 1}, '$');
+	hash.Substring(1).ConcatTo(hashBuff);
+	sarrCnt = Text::StrSplitP(sarr, 4, {hashBuff, hash.leng - 1}, '$');
 	if (sarrCnt != 3)
 	{
 		return false;
@@ -63,7 +63,7 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 		UInt8 myCTxt[24];
 		this->radix64.DecodeBin(sarr[2].v, 22, salt);
 		this->radix64.DecodeBin(sarr[2].v + 22, 31, hashCTxt);
-		this->CalcHash(Text::StrToUInt32(sarr[1].v), salt, password, pwdLen, myCTxt);
+		this->CalcHash(Text::StrToUInt32(sarr[1].v), salt, password, myCTxt);
 		return Data::BinTool::Equals(hashCTxt, myCTxt, 23);
 	}
 	else
@@ -72,7 +72,7 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 	}
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, Text::CStringNN password)
 {
 	if (cost < 4 || cost > 31)
 	{
@@ -81,10 +81,10 @@ Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt3
 	Data::RandomBytesGenerator rand;
 	UInt8 salt[16];
 	rand.NextBytes(salt, 16);
-	return this->GenHash(sb, cost, salt, password, pwdLen);
+	return this->GenHash(sb, cost, salt, password);
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password)
 {
 	if (cost < 4 || cost > 31)
 	{
@@ -99,7 +99,7 @@ Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt3
 	sb->AppendUTF8Char('$');
 	UInt8 hashCTxt[24];
 	this->radix64.EncodeBin(sb, salt, 16);
-	this->CalcHash(cost, salt, password, pwdLen, hashCTxt);
+	this->CalcHash(cost, salt, password, hashCTxt);
 	this->radix64.EncodeBin(sb, hashCTxt, 23);
 	return true;
 }

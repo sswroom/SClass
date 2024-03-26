@@ -1449,6 +1449,7 @@ Data/DataArray.h:
 Data/DataComparer.h:
 @DataComparer.o
 Data/DataMap.h:
+Data/DataMapNN.h:
 Data/DataModelUtil.h:
 @DataModelUtil.o
 Data/Date.h:
@@ -1459,6 +1460,7 @@ Data/DateTimeUtil.h:
 Data/Duration.h:
 Data/FastMap.h:
 Data/FastStringMap.h:
+Data/FastStringMapNN.h:
 Data/FieldComparator.h:
 @FieldComparator.o
 Data/FixedCircularBuff.h:
@@ -1470,6 +1472,7 @@ Data/LineChart.h:
 @LineChart.o
 Data/List.h:
 Data/ListMap.h:
+Data/ListMapNN.h:
 Data/NamedClass.h:
 Data/ObjectGetter.h:
 Data/QueryConditions.h:

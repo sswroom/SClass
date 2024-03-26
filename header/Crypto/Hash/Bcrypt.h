@@ -13,14 +13,14 @@ namespace Crypto
 		private:
 			Text::TextBinEnc::Radix64Enc radix64;
 
-			void CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen, UInt8 *hashBuff);
+			void CalcHash(UInt32 cost, const UInt8 *salt, Text::CStringNN password, UInt8 *hashBuff);
 		public:
 			Bcrypt();
 			virtual ~Bcrypt();
 			
-			Bool Matches(const UTF8Char *hash, UOSInt hashLen, const UTF8Char *password, UOSInt pwdLen);
-			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UTF8Char *password, UOSInt pwdLen);
-			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen);
+			Bool Matches(Text::CStringNN hash, Text::CStringNN password);
+			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, Text::CStringNN password);
+			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password);
 		};
 	}
 }
