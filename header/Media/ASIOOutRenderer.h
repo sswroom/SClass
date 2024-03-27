@@ -32,7 +32,7 @@ namespace Media
 		UInt32 buffTime;
 
 		static Int32 GetDeviceIndex(const UTF8Char *buff);
-		static UInt32 __stdcall PlayThread(void *obj);
+		static UInt32 __stdcall PlayThread(AnyType obj);
 		void InitDevice(UInt32 devId);
 
 	public:

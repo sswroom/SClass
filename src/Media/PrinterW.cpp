@@ -25,7 +25,7 @@ namespace Media
 		Double paperWidth;
 		Double paperHeight;
 
-		static UInt32 __stdcall PrintThread(void *userObj);
+		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
 		GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr);
 		virtual ~GDIPrintDocument();
@@ -41,9 +41,9 @@ namespace Media
 	};
 }
 
-UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
+UInt32 __stdcall Media::GDIPrintDocument::PrintThread(AnyType userObj)
 {
-	Media::GDIPrintDocument *me = (Media::GDIPrintDocument*)userObj;
+	NotNullPtr<Media::GDIPrintDocument> me = userObj.GetNN<Media::GDIPrintDocument>();
 	NotNullPtr<Media::GDIImage> img;
 	Bool hasMorePage;
 	DEVMODEW *devMode = (DEVMODEW*)me->devMode;
@@ -156,7 +156,7 @@ void Media::GDIPrintDocument::Start()
 	if (this->started)
 		return;
 
-	if (this->hdlr->BeginPrint(this))
+	if (this->hdlr->BeginPrint(*this))
 	{
 		const WChar *wptr = 0;
 		DOCINFOW docInfo;
@@ -183,7 +183,7 @@ void Media::GDIPrintDocument::Start()
 		}
 		else
 		{
-			this->hdlr->EndPrint(this);
+			this->hdlr->EndPrint(*this);
 		}
 
 		if (wptr)
@@ -379,7 +379,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return IDOK == lReturn;
 }
 
-Media::IPrintDocument *Media::Printer::StartPrint(Media::IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
+Optional<Media::IPrintDocument> Media::Printer::StartPrint(Media::IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
 {
 	Media::GDIPrintDocument *doc;
 	if (this->devMode == 0)
@@ -394,7 +394,7 @@ Media::IPrintDocument *Media::Printer::StartPrint(Media::IPrintHandler *hdlr, No
 	return doc;
 }
 
-void Media::Printer::EndPrint(Media::IPrintDocument *doc)
+void Media::Printer::EndPrint(NotNullPtr<Media::IPrintDocument> doc)
 {
-	DEL_CLASS(doc);
+	doc.Delete();
 }

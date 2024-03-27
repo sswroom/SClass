@@ -16,9 +16,9 @@
 
 #define PROCESS_TIMEOUT_DURATION 30000
 
-UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
+UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 {
-	Net::TCPClientMgr *me = (Net::TCPClientMgr*)o;
+	NotNullPtr<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
 	Double t;
 	UInt32 waitPeriod = 1;
 	Data::Timestamp intT;
@@ -160,9 +160,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	return 0;
 }
 
-UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
+UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
-	Net::TCPClientMgr::WorkerStatus *stat = (Net::TCPClientMgr::WorkerStatus*)o;
+	NotNullPtr<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
 	Net::TCPClientMgr *me = stat->me;
 	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UTF8Char sbuff[16];

@@ -368,9 +368,9 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
 	return ret;
 }
 
-UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
+UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 {
-	Media::ASIOOutRenderer *me = (Media::ASIOOutRenderer*)obj;
+	NotNullPtr<Media::ASIOOutRenderer> me = obj.GetNN<Media::ASIOOutRenderer>();
 	IASIO *asio = (IASIO*)me->asiodrv;
 	AudioFormat fmt;
 	UInt32 ch;

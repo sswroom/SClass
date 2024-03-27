@@ -7,9 +7,9 @@
 #include "Sync/ThreadUtil.h"
 #include <windows.h>
 
-UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
+UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(AnyType userObj)
 {
-	Media::AVIUtl::AUIVideo *me = (Media::AVIUtl::AUIVideo *)userObj;
+	NotNullPtr<Media::AVIUtl::AUIVideo> me = userObj.GetNN<Media::AVIUtl::AUIVideo>();
 	UInt8 *frameBuff;
 	UInt32 lastFrameNum = (UInt32)-2;
 	UInt32 thisFrameNum;

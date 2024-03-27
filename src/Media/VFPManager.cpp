@@ -95,8 +95,8 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 				if (funcs->GetFileInfo(fhand, &finfo) == VF_OK)
 				{
 					UOSInt outCnt = 0;
-					VFMediaFile *mfile;
-					NEW_CLASS(mfile, VFMediaFile());
+					NotNullPtr<VFMediaFile> mfile;
+					NEW_CLASSNN(mfile, VFMediaFile());
 					mfile->vfpmgr = this;
 					mfile->plugin = plugin;
 					mfile->file = fhand;
@@ -122,7 +122,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 					{
 						funcs->CloseFile(fhand);
 						Text::StrDelNew(mfile->fileName);
-						DEL_CLASS(mfile);
+						mfile.Delete();
 						Sync::Interlocked::DecrementI32(this->useCnt);
 						MemFree(cFile);
 						return 0;

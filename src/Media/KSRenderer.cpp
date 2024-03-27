@@ -53,9 +53,9 @@ void Media::KSRenderer::FillFormat(void *formatEx, Media::AudioFormat *fmt)
 
 }
 
-UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
+UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 {
-	Media::KSRenderer *me = (Media::KSRenderer *)obj;
+	NotNullPtr<Media::KSRenderer> me = obj.GetNN<Media::KSRenderer>();
 	Media::AudioFormat af;
 	UOSInt i;
 	Data::Duration audStartTime;
