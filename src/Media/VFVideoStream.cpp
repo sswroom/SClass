@@ -8,9 +8,9 @@
 #include <windows.h>
 #include "Media/VFAPI.h"
 
-UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
+UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 {
-	Media::VFVideoStream *me = (Media::VFVideoStream*)userObj;
+	NotNullPtr<Media::VFVideoStream> me = userObj.GetNN<Media::VFVideoStream>();
 	UInt8 *frameBuff;
 	UInt32 frameTime;
 	Media::FrameType ft;
@@ -45,7 +45,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
 	return 0;
 }
 
-Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
+Media::VFVideoStream::VFVideoStream(NotNullPtr<Media::VFMediaFile> mfile)
 {
 	this->mfile = mfile;
 	{
@@ -139,7 +139,7 @@ Media::VFVideoStream::~VFVideoStream()
 		VF_PluginFunc *funcs = (VF_PluginFunc*)this->mfile->plugin->funcs;
 		funcs->CloseFile(this->mfile->file);
 		this->mfile->vfpmgr->Release();
-		DEL_CLASS(this->mfile);
+		this->mfile.Delete();
 	}
 }
 

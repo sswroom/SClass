@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "Media/VFAPI.h"
 
-Media::VFAudioStream::VFAudioStream(Media::VFMediaFile *mfile)
+Media::VFAudioStream::VFAudioStream(NotNullPtr<Media::VFMediaFile> mfile)
 {
 	this->mfile = mfile;
 	{
@@ -46,7 +46,7 @@ Media::VFAudioStream::~VFAudioStream()
 		VF_PluginFunc *funcs = (VF_PluginFunc*)this->mfile->plugin->funcs;
 		funcs->CloseFile(this->mfile->file);
 		this->mfile->vfpmgr->Release();
-		DEL_CLASS(this->mfile);
+		this->mfile.Delete();
 	}
 }
 

@@ -25,7 +25,7 @@ namespace Media
 		UInt32 buffTime;
 
 		static void FillFormat(void *formatEx, Media::AudioFormat *fmt);
-		static UInt32 __stdcall PlayThread(void *obj);
+		static UInt32 __stdcall PlayThread(AnyType obj);
 	public:
 		static UOSInt GetDeviceCount();
 		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);

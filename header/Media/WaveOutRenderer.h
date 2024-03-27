@@ -24,7 +24,7 @@ namespace Media
 		UInt32 buffTime;
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
-		static UInt32 __stdcall PlayThread(void *obj);
+		static UInt32 __stdcall PlayThread(AnyType obj);
 		static UInt32 GetMSFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt);
 		static Data::Duration GetDurFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt);
 	public:

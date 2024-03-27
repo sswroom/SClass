@@ -9,7 +9,7 @@ namespace Media
 	class VFVideoStream : public VideoSourceBase
 	{
 	private:
-		Media::VFMediaFile *mfile;
+		NotNullPtr<Media::VFMediaFile> mfile;
 		
 		Media::FrameInfo info;
 		UInt32 frameRate;
@@ -26,9 +26,9 @@ namespace Media
 		Bool threadToStop;
 		Sync::Event threadEvt;
 
-		static UInt32 __stdcall PlayThread(void *userObj);
+		static UInt32 __stdcall PlayThread(AnyType userObj);
 	public:
-		VFVideoStream(Media::VFMediaFile *mfile);
+		VFVideoStream(NotNullPtr<Media::VFMediaFile> mfile);
 		~VFVideoStream();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

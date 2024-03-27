@@ -29,7 +29,7 @@ namespace Media
 			Bool threadToStop;
 			Sync::Event threadEvt;
 			
-			static UInt32 __stdcall PlayThread(void *userObj);
+			static UInt32 __stdcall PlayThread(AnyType userObj);
 			UOSInt GetMaxFrameSize();
 		public:
 			AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt);

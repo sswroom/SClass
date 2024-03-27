@@ -97,9 +97,9 @@ void __stdcall Media::WaveOutRenderer::WaveEvents(void *hwo, UInt32 uMsg, UInt32
 	}
 }
 
-UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
+UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 {
-	Media::WaveOutRenderer *me = (Media::WaveOutRenderer *)obj;
+	NotNullPtr<Media::WaveOutRenderer> me = obj.GetNN<Media::WaveOutRenderer>();
 	Media::AudioFormat af;
 	Sync::Event *evt;
 	WAVEHDR hdrs[4];
