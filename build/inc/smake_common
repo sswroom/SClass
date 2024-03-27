@@ -1459,6 +1459,7 @@ Data/DateTimeUtil.h:
 @DateTimeUtil.o
 Data/Duration.h:
 Data/FastMap.h:
+Data/FastMapNN.h:
 Data/FastStringMap.h:
 Data/FastStringMapNN.h:
 Data/FieldComparator.h:
@@ -1468,6 +1469,7 @@ Data/ICaseBTreeUTF8Map.h:
 Data/ICaseStringMap.h:
 Data/ICaseStringUTF8Map.h:
 Data/IComparable.h:
+Data/Iterator.h:
 Data/LineChart.h:
 @LineChart.o
 Data/List.h:
@@ -1485,6 +1487,7 @@ Data/RandomMT19937.h:
 Data/RandomOS.h:
 @RandomOS.o
 Data/ReadingList.h:
+Data/ReadingListNN.h:
 Data/ReadonlyArray.h:
 Data/SortableArrayList.h:
 Data/SortableArrayListNative.h:

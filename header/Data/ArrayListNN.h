@@ -4,11 +4,11 @@
 #include "MyMemory.h"
 #include "Data/ArrayCollection.h"
 #include "Data/DataArray.h"
-#include "Data/ReadingList.h"
+#include "Data/ReadingListNN.h"
 
 namespace Data
 {
-	template <class T> class ArrayListNN : public ReadingList<Optional<T>>, public ArrayCollection<NotNullPtr<T>>
+	template <class T> class ArrayListNN : public ReadingListNN<T>, public ArrayCollection<NotNullPtr<T>>
 	{
 	public:
 		typedef void (*FreeFunc)(NotNullPtr<T> v);
@@ -26,7 +26,7 @@ namespace Data
 
 		virtual UOSInt Add(NotNullPtr<T> val);
 		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
-		UOSInt AddAll(NotNullPtr<const ArrayListNN<T>> list);
+		UOSInt AddAll(NotNullPtr<const ReadingListNN<T>> list);
 		UOSInt AddAll(Data::ArrayIterator<NotNullPtr<T>> it);
 		virtual Bool Remove(NotNullPtr<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
@@ -40,7 +40,7 @@ namespace Data
 		void EnsureCapacity(UOSInt capacity);
 
 		virtual Optional<T> GetItem(UOSInt index) const;
-		NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
+		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
 		virtual Optional<T> SetItem(UOSInt index, NotNullPtr<T> val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(NotNullPtr<T> *outArr, UOSInt index, UOSInt cnt) const;
@@ -100,7 +100,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddAll(NotNullPtr<const ArrayListNN<T>> arr)
+	template <class T> UOSInt ArrayListNN<T>::AddAll(NotNullPtr<const ReadingListNN<T>> arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
@@ -120,7 +120,7 @@ namespace Data
 		UOSInt i = 0;
 		while (i < cnt)
 		{
-			this->arr[this->objCnt + i] = arr->arr[i];
+			this->arr[this->objCnt + i] = arr->GetItemNoCheck(i);
 			i++;
 		}
 		this->objCnt += cnt;
@@ -130,9 +130,9 @@ namespace Data
 	template <class T> UOSInt ArrayListNN<T>::AddAll(Data::ArrayIterator<NotNullPtr<T>> it)
 	{
 		UOSInt ret = 0;
-		while (it.HasNext())
+		while (it->HasNext())
 		{
-			this->Add(it.Next());
+			this->Add(it->Next());
 			ret++;
 		}
 		return ret;
