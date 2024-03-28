@@ -99,7 +99,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 
 		DWGFileAnalyseComparator comparator;
 		Sync::MutexUsage mutUsage;
-		Data::Sort::ArtificialQuickSort::Sort(me->packs.GetArrayList(mutUsage).Ptr(), &comparator);
+		Data::Sort::ArtificialQuickSort::Sort<PackInfo*>(me->packs.GetArrayList(mutUsage).Ptr(), comparator);
 		mutUsage.EndUse();
 	}
 }

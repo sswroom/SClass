@@ -57,14 +57,14 @@ namespace Data
 			void SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
 			void SortStr(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
 
-			template <class T> static void PreSort(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(Data::ArrayCollection<T> *list, Data::Comparator<T> *comparator);
+			template <class T> static void PreSort(T *arr, NotNullPtr<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void Sort(T *arr, NotNullPtr<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void Sort(Data::ArrayCollection<T> *list, NotNullPtr<Data::Comparator<T>> comparator);
 		};
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::PreSort(T *arr, Data::Comparator<T> *comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::ArtificialQuickSort::PreSort(T *arr, NotNullPtr<Data::Comparator<T>> comparator, OSInt left, OSInt right)
 {
 	T temp = arr[left];
 	T temp2;
@@ -82,7 +82,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::PreSort(T *arr, Data::C
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, NotNullPtr<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex)
 {
 #if _OSINT_SIZE == 16
 	OSInt levi[256];
@@ -166,7 +166,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, Data::Comp
 #endif
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, Data::Comparator<T> *comparator)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, NotNullPtr<Data::Comparator<T>> comparator)
 {
 	UOSInt len;
 	T *arr = list->GetPtr(len);

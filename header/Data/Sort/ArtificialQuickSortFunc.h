@@ -318,7 +318,7 @@ namespace Data
 				}
 			}
 
-			static void Sort(NotNullPtr<Data::ArrayList<T>> arr, CompareFunc func)
+			static void Sort(NotNullPtr<Data::ArrayCollection<T>> arr, CompareFunc func)
 			{
 				UOSInt j;
 				T *a = arr->GetPtr(j);

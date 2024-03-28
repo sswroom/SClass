@@ -1384,6 +1384,7 @@ Crypto/Token/JWTParam.h:
 @JWTParam.o
 
 Data/ArrayCmpMap.h:
+Data/ArrayCmpMapNN.h:
 Data/ArrayCollection.h:
 Data/ArrayIterator.h:
 Data/ArrayList.h:
@@ -1467,6 +1468,7 @@ Data/FieldComparator.h:
 Data/FixedCircularBuff.h:
 Data/ICaseBTreeUTF8Map.h:
 Data/ICaseStringMap.h:
+Data/ICaseStringMapNN.h:
 Data/ICaseStringUTF8Map.h:
 Data/IComparable.h:
 Data/Iterator.h:
@@ -1495,6 +1497,7 @@ Data/SortableArrayListNN.h:
 Data/StringCMap.h:
 Data/StringHashMap.h:
 Data/StringMap.h:
+Data/StringMapNN.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
 Data/SyncCircularBuff.h:

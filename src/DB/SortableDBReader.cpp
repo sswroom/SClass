@@ -145,7 +145,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	if (ordering.leng > 0)
 	{
 		Data::FieldComparator comparator(ordering);
-		Data::Sort::ArtificialQuickSort::Sort(&this->objList, &comparator);
+		Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Data::VariObject>>(&this->objList, comparator);
 	}
 	if (dataOfst > 0)
 	{

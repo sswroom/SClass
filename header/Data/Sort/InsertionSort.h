@@ -32,12 +32,12 @@ namespace Data
 		class InsertionSort
 		{
 		public:
-			template <class T> static void SortB(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void SortB(T *arr, NotNullPtr<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }
 
-template <class T> void Data::Sort::InsertionSort::SortB(T *arr, Data::Comparator<T> *comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::InsertionSort::SortB(T *arr, NotNullPtr<Data::Comparator<T>> comparator, OSInt left, OSInt right)
 {
 	OSInt i;
 	OSInt j;
