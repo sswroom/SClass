@@ -939,9 +939,9 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	}
 }
 
-Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng)
+NotNullPtr<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng)
 {
-	Media::VectorDocument *doc;
+	NotNullPtr<Media::VectorDocument> doc;
 	NotNullPtr<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -990,7 +990,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Medi
 
 	lastRowType = RT_UNKNOWN;
 	sptr = Text::StrInt32(sbuff, id);
-	NEW_CLASS(doc, Media::VectorDocument(0, CSTRP(sbuff, sptr), deng));
+	NEW_CLASSNN(doc, Media::VectorDocument(0, CSTRP(sbuff, sptr), deng));
 	if (this->paperHori)
 	{
 		g = doc->AddGraph(paperSize.GetHeightMM(), paperSize.GetWidthMM(), Math::Unit::Distance::DU_MILLIMETER);

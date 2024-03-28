@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
 	IO::ServiceManager::ServiceItem *svc;
 	this->svcMgr.QueryServiceList(&svcList);
 	IO::ServiceManager::ServiceComparator comparator;
-	Data::Sort::ArtificialQuickSort::Sort(&svcList, &comparator);
+	Data::Sort::ArtificialQuickSort::Sort<IO::ServiceManager::ServiceItem*>(&svcList, comparator);
 	i = 0;
 	j = svcList.GetCount();
 	while (i < j)

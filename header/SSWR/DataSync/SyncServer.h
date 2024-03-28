@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCSERVER
 #define _SM_SSWR_DATASYNC_SYNCSERVER
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/IProtocolHandler.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
@@ -34,7 +34,7 @@ namespace SSWR
 			AnyType dataObj;
 
 			Sync::RWMutex svrMut;
-			Data::FastMap<Int32, ServerInfo*> svrMap;
+			Data::FastMapNN<Int32, ServerInfo> svrMap;
 
 			Data::ArrayList<SyncClient*> syncCliList;
 
@@ -48,7 +48,7 @@ namespace SSWR
 
 			Bool Start();
 			Bool IsError();
-			UOSInt GetServerList(Data::ArrayList<ServerInfo*> *svrList);
+			UOSInt GetServerList(NotNullPtr<Data::ArrayListNN<ServerInfo>> svrList);
 			void SendUserData(const UInt8 *dataBuff, UOSInt dataSize);
 
 			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);

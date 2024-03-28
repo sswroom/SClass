@@ -49,7 +49,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NotNullPtr<Media::DrawEngine> eng;
 	Media::Printer *printer;
 	NotNullPtr<Media::IPrintDocument> doc;
-	PrintObj *prtobj;
+	NotNullPtr<PrintObj> prtobj;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	console->WriteLineC(UTF8STRC("Found Printers:"));
@@ -64,13 +64,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	eng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASS(printer, Media::Printer(PRINTERNAME));
 	printer->ShowPrintSettings(0);
-	NEW_CLASS(prtobj, PrintObj());
+	NEW_CLASSNN(prtobj, PrintObj());
 	if (printer->StartPrint(prtobj, eng).SetTo(doc))
 	{
 		doc->WaitForEnd();
 		printer->EndPrint(doc);
 	}
-	DEL_CLASS(prtobj);
+	prtobj.Delete();
 	DEL_CLASS(printer);
 	eng.Delete();
 

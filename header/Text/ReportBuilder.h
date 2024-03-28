@@ -106,7 +106,7 @@ namespace Text
 		void SetColHAlign(UOSInt index, HAlignment hAlign);
 		Bool HasChart();
 		Text::SpreadSheet::Workbook *CreateWorkbook();
-		Media::VectorDocument *CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng);
+		NotNullPtr<Media::VectorDocument> CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng);
 	};
 }
 #endif

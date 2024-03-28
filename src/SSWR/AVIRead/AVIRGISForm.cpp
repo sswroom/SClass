@@ -858,7 +858,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				this->printer = printer;
 				NotNullPtr<Media::IPrintDocument> doc;
-				if (!printer->StartPrint(this, this->core->GetDrawEngine()).SetTo(doc))
+				if (!printer->StartPrint(*this, this->core->GetDrawEngine()).SetTo(doc))
 				{
 					DEL_CLASS(printer);
 					this->ui->ShowMsgOK(CSTR("Error in printing the map"), CSTR("GISForm"), this);

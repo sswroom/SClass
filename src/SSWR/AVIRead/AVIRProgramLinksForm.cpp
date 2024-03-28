@@ -110,7 +110,7 @@ void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 	Data::ArrayListStringNN nameList;
 	Text::StringComparatorFastNN comparator;
 	this->progMgr.GetLinkNames(&nameList, true, true);
-	Data::Sort::ArtificialQuickSort::Sort(&nameList, &comparator);
+	Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Text::String>>(&nameList, comparator);
 	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = nameList.GetCount();

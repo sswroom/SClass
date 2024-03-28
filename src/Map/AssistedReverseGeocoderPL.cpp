@@ -84,7 +84,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NotNullPtr<DB::DBTool>
 		UOSInt i = this->lcidMap.GetCount();
 		while (i-- > 0)
 		{
-			Data::Sort::ArtificialQuickSort::Sort(&this->lcidMap.GetItem(i)->mainList, &comparator);
+			Data::Sort::ArtificialQuickSort::Sort<AddressEntry*>(&this->lcidMap.GetItem(i)->mainList, comparator);
 		}
 	}
 	printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);

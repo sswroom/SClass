@@ -25,7 +25,7 @@ namespace Media
 	class CUPSPrintDocument : public Media::IPrintDocument
 	{
 	private:
-		IPrintHandler *hdlr;
+		NotNullPtr<IPrintHandler> hdlr;
 		Media::GTKDrawEngine *eng;
 		Optional<Text::String> docName;
 		Bool started;
@@ -36,7 +36,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr);
+		CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, NotNullPtr<IPrintHandler> hdlr);
 		virtual ~CUPSPrintDocument();
 
 		Bool IsError();
@@ -137,7 +137,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::CUPSPrintDocument::CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr)
+Media::CUPSPrintDocument::CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, NotNullPtr<IPrintHandler> hdlr)
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
@@ -257,7 +257,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Optional<Media::IPrintDocument> Media::Printer::StartPrint(IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
+Optional<Media::IPrintDocument> Media::Printer::StartPrint(NotNullPtr<IPrintHandler> hdlr, NotNullPtr<Media::DrawEngine> eng)
 {
 	Media::CUPSPrintDocument *doc;
 	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, (Media::GTKDrawEngine*)eng.Ptr(), hdlr));

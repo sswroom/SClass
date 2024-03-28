@@ -172,7 +172,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 		SpeciesSciNameComparator comparator;
 		Data::ArrayList<SpeciesInfo*> speciesList(this->spMap.GetCount());
 		speciesList.AddAll(this->spMap);
-		Data::Sort::ArtificialQuickSort::Sort(&speciesList, &comparator);
+		Data::Sort::ArtificialQuickSort::Sort<SpeciesInfo*>(&speciesList, comparator);
 		UOSInt i = 0;
 		UOSInt j = speciesList.GetCount();
 		while (i < j)
@@ -429,7 +429,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 		UserFileTimeComparator comparator;
 		Data::ArrayList<UserFileInfo*> userFileList(this->userFileMap.GetCount());
 		userFileList.AddAll(this->userFileMap);
-		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
+		Data::Sort::ArtificialQuickSort::Sort<UserFileInfo*>(&userFileList, comparator);
 		i = 0;
 		j = userFileList.GetCount();
 		while (i < j)

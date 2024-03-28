@@ -582,8 +582,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					PrintTest *test;
-					NEW_CLASS(test, PrintTest());
+					NotNullPtr<PrintTest> test;
+					NEW_CLASSNN(test, PrintTest());
 					NotNullPtr<Media::IPrintDocument> doc;
 					if (printer->StartPrint(test, deng).SetTo(doc))
 					{
@@ -594,7 +594,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						console->WriteLineC(UTF8STRC("Error in start printing"));
 						writer->WriteLineC(UTF8STRC("Error in start printing"));
 					}
-					DEL_CLASS(test);
+					test.Delete();
 				}
 				DEL_CLASS(printer);
 

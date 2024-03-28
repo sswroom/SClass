@@ -199,7 +199,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		db->CloseReader(r);
 
 		UserFileComparator comparator;
-		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
+		Data::Sort::ArtificialQuickSort::Sort<UserFileInfo*>(&userFileList, comparator);
 		this->userFileMap.AllocSize(userFileList.GetCount());
 		i = 0;
 		j = userFileList.GetCount();
@@ -211,7 +211,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		}
 
 		UserFileTimeComparator tcomparator;
-		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &tcomparator);
+		Data::Sort::ArtificialQuickSort::Sort<UserFileInfo*>(&userFileList, tcomparator);
 		webUser = 0;
 		i = 0;
 		j = userFileList.GetCount();
@@ -229,7 +229,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		}
 
 		UserFileSpeciesComparator scomparator;
-		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &scomparator);
+		Data::Sort::ArtificialQuickSort::Sort<UserFileInfo*>(&userFileList, scomparator);
 		species = 0;
 		i = 0;
 		j = userFileList.GetCount();
@@ -273,7 +273,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		db->CloseReader(r);
 
 		WebFileSpeciesComparator comparator;
-		Data::Sort::ArtificialQuickSort::Sort(&fileList, &comparator);
+		Data::Sort::ArtificialQuickSort::Sort<WebFileInfo*>(&fileList, comparator);
 		species = 0;
 		i = 0;
 		j = fileList.GetCount();

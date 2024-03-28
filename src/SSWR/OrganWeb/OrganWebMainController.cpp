@@ -1213,7 +1213,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 			if (env.user != 0)
 			{
 				UserFileDescComparator comparator(&env);
-				Data::Sort::ArtificialQuickSort::Sort(&fileList, &comparator);
+				Data::Sort::ArtificialQuickSort::Sort<UserFileInfo*>(&fileList, comparator);
 			}
 			i = 0;
 			j = fileList.GetCount();

@@ -52,6 +52,7 @@ namespace Data
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 		void DeleteAll();
 		void FreeAll(FreeFunc freeFunc);
+		void MemFreeAll();
 		Data::DataArray<NotNullPtr<T>> ToArray() const;
 	};
 
@@ -413,6 +414,16 @@ namespace Data
 		while (i-- > 0)
 		{
 			freeFunc(this->arr[i]);
+		}
+		this->objCnt = 0;
+	}
+
+	template <class T> void ArrayListNN<T>::MemFreeAll()
+	{
+		UOSInt i = this->objCnt;
+		while (i-- > 0)
+		{
+			MemFreeNN(this->arr[i]);
 		}
 		this->objCnt = 0;
 	}

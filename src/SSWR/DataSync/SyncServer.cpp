@@ -3,6 +3,7 @@
 #include "IO/ProtoHdlr/ProtoSyncHandler.h"
 #include "SSWR/DataSync/SyncServer.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/RWMutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
 #define BUFFSIZE 10240
@@ -35,12 +36,11 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(NotNullPtr<Net::TCPClie
 		NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
 		if (data->serverId != 0)
 		{
-			ServerInfo *svr;
-			me->svrMut.LockRead();
-			svr = me->svrMap.Get(data->serverId);
-			me->svrMut.UnlockRead();
-			if (svr)
+			NotNullPtr<ServerInfo> svr;
+			Sync::RWMutexUsage svrMutUsage(me->svrMut, false);
+			if (me->svrMap.Get(data->serverId).SetTo(svr))
 			{
+				svrMutUsage.EndUse();
 				Sync::MutexUsage mutUsage(svr->mut);
 				if (svr->cli == cli.Ptr())
 				{
@@ -101,8 +101,8 @@ SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, Not
 	this->sockf = sockf;
 	this->dataHdlr = dataHdlr;
 	this->dataObj = dataObj;
-	ServerInfo *svrInfo;
-	NEW_CLASS(svrInfo, ServerInfo());
+	NotNullPtr<ServerInfo> svrInfo;
+	NEW_CLASSNN(svrInfo, ServerInfo());
 	svrInfo->serverId = serverId;
 	svrInfo->serverName = Text::StrCopyNewC(serverName.v, serverName.leng).Ptr();
 	svrInfo->isLocal = true;
@@ -150,13 +150,13 @@ SSWR::DataSync::SyncServer::~SyncServer()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 	UOSInt i;
-	ServerInfo *svrInfo;
+	NotNullPtr<ServerInfo> svrInfo;
 	i = this->svrMap.GetCount();
 	while (i-- > 0)
 	{
-		svrInfo = this->svrMap.GetItem(i);
+		svrInfo = this->svrMap.GetItemNoCheck(i);
 		Text::StrDelNew(svrInfo->serverName);
-		DEL_CLASS(svrInfo);
+		svrInfo.Delete();
 	}
 	SyncClient *syncCli;
 	i = this->syncCliList.GetCount();
@@ -177,7 +177,7 @@ Bool SSWR::DataSync::SyncServer::IsError()
 	return this->svr == 0 || this->svr->IsV4Error();
 }
 
-UOSInt SSWR::DataSync::SyncServer::GetServerList(Data::ArrayList<ServerInfo*> *svrList)
+UOSInt SSWR::DataSync::SyncServer::GetServerList(NotNullPtr<Data::ArrayListNN<ServerInfo>> svrList)
 {
 	UOSInt i = svrList->GetCount();
 	svrList->AddAll(this->svrMap);
@@ -202,15 +202,14 @@ void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType 
 	{
 	case 0: //register
 		{
-			ServerInfo *svr;
+			NotNullPtr<ServerInfo> svr;
 			if (data->serverId == 0 && cmdSize > 5 && (UOSInt)(cmd[4] + 4) <= cmdSize)
 			{
 				Int32 serverId = ReadInt32(cmd);
-				this->svrMut.LockRead();
-				svr = this->svrMap.Get(serverId);
-				this->svrMut.UnlockRead();
-				if (svr)
+				Sync::RWMutexUsage svrMutUsage(this->svrMut, false);
+				if (this->svrMap.Get(serverId).SetTo(svr))
 				{
+					svrMutUsage.EndUse();
 					Sync::MutexUsage mutUsage(svr->mut);
 					svr->cli = (Net::TCPClient*)stm.Ptr();
 					mutUsage.EndUse();
@@ -218,15 +217,14 @@ void SSWR::DataSync::SyncServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType 
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					NEW_CLASS(svr, ServerInfo());
+					NEW_CLASSNN(svr, ServerInfo());
 					svr->serverId = serverId;
 					sb.AppendC((const UTF8Char*)&cmd[5], cmd[4]);
 					svr->serverName = Text::StrCopyNew(sb.ToString()).Ptr();
 					svr->isLocal = false;
 					svr->cli = (Net::TCPClient*)stm.Ptr();
-					this->svrMut.LockWrite();
 					this->svrMap.Put(serverId, svr);
-					this->svrMut.UnlockWrite();
+					svrMutUsage.EndUse();
 				}
 				data->serverId = serverId;
 			}
