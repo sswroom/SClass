@@ -150,7 +150,7 @@ void Exporter::ExporterList::SetCodePage(UInt32 codePage)
 	}
 }
 
-void Exporter::ExporterList::SetEncFactory(Text::EncodingFactory *encFact)
+void Exporter::ExporterList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	UOSInt i = this->exporters->GetCount();
 	IO::FileExporter *exporter;

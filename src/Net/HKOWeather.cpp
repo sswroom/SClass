@@ -75,7 +75,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *text
 	return signal;
 }
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact)
 {
 	UInt8 buff[1024];
 	UInt8 *mbuff;
@@ -397,7 +397,7 @@ void Net::HKOWeather::FreeWarningSummary(Data::ArrayList<WarningSummary*> *warni
 	LIST_FREE_FUNC(warnings, MemFree);
 }
 
-Net::HKOWeather::HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr, NotNullPtr<IO::LogTool> log)
+Net::HKOWeather::HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact, UpdateHandler hdlr, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

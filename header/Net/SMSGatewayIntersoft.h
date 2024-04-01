@@ -14,11 +14,11 @@ namespace Net
 		IO::LogTool *log;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		Text::EncodingFactory *encFact;
+		NotNullPtr<Text::EncodingFactory> encFact;
 		Text::String *userName;
 		Text::String *password;
 	public:
-		SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, IO::LogTool *log);
+		SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact, IO::LogTool *log);
 		virtual ~SMSGatewayIntersoft();
 
 		virtual Bool IsTargetValid(Text::CString targetNum);

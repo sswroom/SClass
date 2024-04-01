@@ -22,7 +22,7 @@ namespace Map
 		Math::Coord2DDbl csysOrigin;
 		UOSInt tileWidth;
 		UOSInt tileHeight;
-		Text::EncodingFactory *encFact;
+		Optional<Text::EncodingFactory> encFact;
 		ImageType imgType;
 		Text::String *tileExt;
 		NotNullPtr<Text::String> tmsURL;
@@ -36,7 +36,7 @@ namespace Map
 
 		void LoadXML();
 	public:
-		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
+		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();
 
 		virtual Text::CStringNN GetName() const;

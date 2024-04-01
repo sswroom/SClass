@@ -625,7 +625,7 @@ void Map::WebMapTileServiceSource::ReleaseResourceURL(ResourceURL *resourceURL)
 	MemFree(resourceURL);
 }
 
-Map::WebMapTileServiceSource::WebMapTileServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL)
+Map::WebMapTileServiceSource::WebMapTileServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmtsURL)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

@@ -156,7 +156,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NotNullP
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	UTF8Char tmpBuff[1024];
 	UTF8Char *tmpPtr;
@@ -214,7 +214,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 	return false;
 }
 
-Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, Bool swapXY, Text::EncodingFactory *encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
+Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList, Math::Coord2DDbl coord)
 {
 	IO::MemoryReadingStream mstm(xml.v, xml.leng);
 	NotNullPtr<Text::String> nodeText;
@@ -413,7 +413,7 @@ Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry
 	return vec;
 }
 
-Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, Math::Coord2DDbl coord, Text::EncodingFactory *encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, Math::Coord2DDbl coord, Optional<Text::EncodingFactory> encFact, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	IO::MemoryReadingStream mstm(xml.v, xml.leng);
 	NotNullPtr<Text::String> nodeText;

@@ -366,7 +366,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 				fd->GetRealData(ofst + 33, j - 29, tagBuff);
 				NotNullPtr<Text::XMLDocument> doc;
 				NEW_CLASSNN(doc, Text::XMLDocument());
-				if (doc->ParseBuff(&encFact, tagBuff.Ptr(), j - 29))
+				if (doc->ParseBuff(encFact, tagBuff.Ptr(), j - 29))
 				{
 					xmf.Set(doc);
 				}

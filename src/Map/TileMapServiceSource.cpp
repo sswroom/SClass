@@ -272,7 +272,7 @@ void Map::TileMapServiceSource::LoadXML()
 	cli.Delete();
 }
 
-Map::TileMapServiceSource::TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString tmsURL)
+Map::TileMapServiceSource::TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

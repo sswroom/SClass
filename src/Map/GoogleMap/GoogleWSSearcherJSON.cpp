@@ -13,7 +13,7 @@
 #include "Text/Locale.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Optional<Text::EncodingFactory> encFact)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

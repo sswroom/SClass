@@ -35,12 +35,12 @@ namespace Net
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			Text::EncodingFactory *encFact;
+			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
 			Text::JSONBase *ParsePageJSON(Text::CStringNN url);
 		public:
-			WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent);
+			WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSiteInstagramControl();
 
 			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);

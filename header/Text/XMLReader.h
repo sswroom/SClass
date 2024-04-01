@@ -21,7 +21,7 @@ namespace Text
 	private:
 		Text::Encoding *enc;
 		Bool stmEnc;
-		Text::EncodingFactory *encFact;
+		Optional<Text::EncodingFactory> encFact;
 		NotNullPtr<IO::Stream> stm;
 		UTF8Char *readBuff;
 		UOSInt buffSize;
@@ -44,7 +44,7 @@ namespace Text
 		void InitBuffer();
 		UOSInt FillBuffer();
 	public:
-		XMLReader(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, ParseMode mode);
+		XMLReader(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, ParseMode mode);
 		~XMLReader();
 
 		void GetCurrPath(NotNullPtr<Text::StringBuilderUTF8> sb) const;
@@ -68,7 +68,7 @@ namespace Text
 		UOSInt GetErrorCode() const;
 		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-		static Bool XMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Bool XMLWellFormat(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

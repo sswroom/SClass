@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, IO::LogTool *log)
+Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact, IO::LogTool *log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -54,8 +54,8 @@ void Net::SMSGatewayIntersoft::SetAccount(Text::CString userName, Text::CString 
 	{
 		SDEL_STRING(this->userName);
 		SDEL_STRING(this->password);
-		this->userName = Text::String::New(userName);
-		this->password = Text::String::New(password);
+		this->userName = Text::String::New(userName).Ptr();
+		this->password = Text::String::New(password).Ptr();
 	}
 }
 
@@ -85,16 +85,16 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Text::StringBuilderUTF8 sbMsg;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli)
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (!cli->IsError())
 	{
 		Int32 status = (Int32)cli->GetRespStatus();
-		IO::MemoryStream mstm(UTF8STRC("Net.SMSGatewayIntersoft.SendSMS.mstm"));
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		IO::MemoryStream mstm;
+		while ((readSize = cli->Read(Data::ByteArray(dataBuff, 2048))) > 0)
 		{
 			mstm.Write(dataBuff, readSize);
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 
 #if defined(VERBOSE)
 		sbMsg.ClearStr();
@@ -107,7 +107,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 #endif
 
 		Bool ret = false;
-		UInt8 *memBuff = mstm.GetBuff(&readSize);
+		UInt8 *memBuff = mstm.GetBuff(readSize);
 		Text::XMLDocument doc;
 		if (doc.ParseBuff(this->encFact, memBuff, readSize))
 		{
@@ -181,6 +181,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 	}
 	else
 	{
+		cli.Delete();
 		if (this->log)
 		{
 			sbMsg.ClearStr();

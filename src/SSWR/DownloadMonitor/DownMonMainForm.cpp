@@ -354,10 +354,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> totalList;
 	Net::WebSite::WebSite48IdolControl::ItemData *item;
 	Net::WebSite::WebSite48IdolControl *ctrl;
-	Text::EncodingFactory *encFact;
+	NotNullPtr<Text::EncodingFactory> encFact;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
-	NEW_CLASS(encFact, Text::EncodingFactory());
+	NEW_CLASSNN(encFact, Text::EncodingFactory());
 	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
 	ua->Release();
 	while (true)
@@ -414,7 +414,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	}
 
 	DEL_CLASS(ctrl);
-	DEL_CLASS(encFact);
+	encFact.Delete();
 }
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(AnyType userObj)

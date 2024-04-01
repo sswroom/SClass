@@ -3,7 +3,7 @@
 #include "Net/SNS/SNSInstagram.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent, Text::CString channelId)
+Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);

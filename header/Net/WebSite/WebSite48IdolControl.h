@@ -21,11 +21,11 @@ namespace Net
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			Text::EncodingFactory *encFact;
+			Optional<Text::EncodingFactory> encFact;
 			Text::String *userAgent;
 
 		public:
-			WebSite48IdolControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
+			WebSite48IdolControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent);
 			~WebSite48IdolControl();
 
 			OSInt GetTVPageItems(OSInt pageNo, Data::ArrayList<ItemData*> *itemList);

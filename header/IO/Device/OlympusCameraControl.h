@@ -17,7 +17,7 @@ namespace IO
 		private:
 			Net::SocketUtil::AddressInfo addr;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Text::EncodingFactory *encFact;
+			Optional<Text::EncodingFactory> encFact;
 			Text::String *oiVersion;
 			Text::String *oiTrackVersion;
 			Data::ArrayListStringNN cmdList;
@@ -28,7 +28,7 @@ namespace IO
 			void GetGPSLogList();
 			void GetSNSLogList();
 		public:
-			OlympusCameraControl(NotNullPtr<Net::SocketFactory> sockf, Text::EncodingFactory *encFact, const Net::SocketUtil::AddressInfo *addr);
+			OlympusCameraControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~OlympusCameraControl();
 
 			virtual UOSInt GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
@@ -41,7 +41,7 @@ namespace IO
 			Text::String *GetOITrackVersion();
 			Bool GetModel(NotNullPtr<Text::StringBuilderUTF8> sb);
 			
-			static OlympusCameraControl *CreateControl(NotNullPtr<Net::SocketFactory> sockf, Text::EncodingFactory *encFact);
+			static OlympusCameraControl *CreateControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact);
 		};
 	}
 }

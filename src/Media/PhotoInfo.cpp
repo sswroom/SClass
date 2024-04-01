@@ -149,7 +149,7 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 			{
 				Text::XMLDocument doc;
 				Text::EncodingFactory encFact;
-				if (doc.ParseBuff(&encFact, (const UInt8*)item->dataBuff, item->cnt))
+				if (doc.ParseBuff(encFact, (const UInt8*)item->dataBuff, item->cnt))
 				{
 					ParseXMF(doc);
 				}

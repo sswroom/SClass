@@ -236,9 +236,9 @@ NotNullPtr<Media::DrawEngine> SSWR::AVIRead::AVIRCore::GetDrawEngine()
 	return this->eng;
 }
 
-Text::EncodingFactory *SSWR::AVIRead::AVIRCore::GetEncFactory()
+NotNullPtr<Text::EncodingFactory> SSWR::AVIRead::AVIRCore::GetEncFactory()
 {
-	return &this->encFact;
+	return this->encFact;
 }
 
 IO::SiLabDriver *SSWR::AVIRead::AVIRCore::GetSiLabDriver()

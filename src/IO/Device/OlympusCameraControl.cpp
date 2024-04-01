@@ -229,7 +229,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	cli.Delete();
 }
 
-IO::Device::OlympusCameraControl::OlympusCameraControl(NotNullPtr<Net::SocketFactory> sockf, Text::EncodingFactory *encFact, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
+IO::Device::OlympusCameraControl::OlympusCameraControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
 {
 	this->addr = *addr;
 	this->sockf = sockf;
@@ -408,7 +408,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(NotNullPtr<Text::StringBuilderUT
 	return found;
 }
 
-IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateControl(NotNullPtr<Net::SocketFactory> sockf, Text::EncodingFactory *encFact)
+IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact)
 {
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;

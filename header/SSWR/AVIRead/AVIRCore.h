@@ -91,7 +91,7 @@ namespace SSWR
 			Media::ColorManager *GetColorMgr();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();
 			NotNullPtr<Media::DrawEngine> GetDrawEngine();
-			Text::EncodingFactory *GetEncFactory();
+			NotNullPtr<Text::EncodingFactory> GetEncFactory();
 			IO::SiLabDriver *GetSiLabDriver();
 			Net::WebBrowser *GetWebBrowser();
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();

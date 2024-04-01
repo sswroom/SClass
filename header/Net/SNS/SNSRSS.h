@@ -17,7 +17,7 @@ namespace Net
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			Text::EncodingFactory *encFact;
+			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 			NotNullPtr<Text::String> channelId;
 			NotNullPtr<Text::String> chName;
@@ -30,7 +30,7 @@ namespace Net
 
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
 		public:
-			SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log);
+			SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log);
 			virtual ~SNSRSS();
 
 			virtual Bool IsError();

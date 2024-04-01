@@ -25,7 +25,7 @@ namespace Parser
 
 		void SetCodePage(UInt32 codePage);
 		void SetMapManager(Map::MapManager *mapMgr);
-		void SetEncFactory(Text::EncodingFactory *encFact);
+		void SetEncFactory(Optional<Text::EncodingFactory> encFact);
 		void SetWebBrowser(Net::WebBrowser *browser);
 		void SetProgressHandler(IO::ProgressHandler *progHdlr);
 		void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf);

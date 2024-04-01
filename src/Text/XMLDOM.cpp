@@ -1173,7 +1173,7 @@ Text::XMLDocument::~XMLDocument()
 	SDEL_STRING(this->version);
 }
 
-Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt size)
+Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt size)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *newDoc = 0;
@@ -1373,7 +1373,7 @@ Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *b
 	return false;
 }
 
-Bool Text::XMLDocument::ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm)
+Bool Text::XMLDocument::ParseStream(NotNullPtr<Text::EncodingFactory> encFact, IO::Stream *stm)
 {
 	Bool parseRes;
 	UInt8 buff[2048];

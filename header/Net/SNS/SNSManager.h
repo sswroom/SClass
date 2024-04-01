@@ -28,7 +28,7 @@ namespace Net
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			Text::EncodingFactory *encFact;
+			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 			NotNullPtr<Text::String> dataPath;
 			Sync::Mutex mut;
@@ -47,7 +47,7 @@ namespace Net
 
 			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
-			SNSManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log);
+			SNSManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log);
 			virtual ~SNSManager();
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);

@@ -19,11 +19,11 @@ namespace Map
 			IO::Writer *errWriter;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
-			Text::EncodingFactory *encFact;
+			NotNullPtr<Text::EncodingFactory> encFact;
 			Bool lastIsError;
 			
 		public:
-			GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NotNullPtr<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherXML();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw

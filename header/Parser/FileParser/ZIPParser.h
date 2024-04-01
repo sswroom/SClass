@@ -11,7 +11,7 @@ namespace Parser
 		{
 		private:
 			UInt32 codePage;
-			Text::EncodingFactory *encFact;
+			Optional<Text::EncodingFactory> encFact;
 			Parser::ParserList *parsers;
 			Net::WebBrowser *browser;
 		public:
@@ -22,7 +22,7 @@ namespace Parser
 			virtual void SetCodePage(UInt32 codePage);
 			virtual void SetWebBrowser(Net::WebBrowser *browser);
 			virtual void SetParserList(Parser::ParserList *parsers);
-			virtual void SetEncFactory(Text::EncodingFactory *encFact);
+			virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact);
 			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);

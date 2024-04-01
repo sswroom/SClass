@@ -26,10 +26,10 @@ namespace Net
 	private:
 		Data::FastStringMap<GroupInfo*> groupMap;
 
-		void Init(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize);
+		void Init(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
 	public:
-		HKTrafficImage(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize);
-		HKTrafficImage(Text::EncodingFactory *encFact, Text::CStringNN fileName);
+		HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
+		HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, Text::CStringNN fileName);
 		~HKTrafficImage();
 
 		UOSInt GetGroups(Data::ArrayList<GroupInfo*> *groups);

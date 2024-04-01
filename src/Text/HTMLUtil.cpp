@@ -6,7 +6,7 @@
 #include "Text/JSText.h"
 #include "Text/XMLReader.h"
 
-Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::XMLAttrib *attr;
 	UOSInt i;
@@ -225,7 +225,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListStringNN *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListStringNN *imgList)
 {
 	UOSInt len;
 	Text::XMLNode::NodeType nt;

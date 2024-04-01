@@ -17,7 +17,7 @@ void IO::FileExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-void IO::FileExporter::SetEncFactory(Text::EncodingFactory *encFact)
+void IO::FileExporter::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 }
 

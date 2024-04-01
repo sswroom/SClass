@@ -44,7 +44,7 @@ namespace IO
 		Bool ExportNewFile(Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 		virtual void SetCodePage(UInt32 codePage);
-		virtual void SetEncFactory(Text::EncodingFactory *encFact);
+		virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact);
 
 		virtual UOSInt GetParamCnt();
 		virtual Optional<ParamData> CreateParam(NotNullPtr<IO::ParsedObject> pobj);

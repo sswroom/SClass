@@ -122,7 +122,7 @@ UOSInt Text::XMLReader::FillBuffer()
 	}
 }
 
-Text::XMLReader::XMLReader(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, ParseMode mode)
+Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, ParseMode mode)
 {
 	this->encFact = encFact;
 	this->enc = 0;
@@ -735,7 +735,8 @@ Bool Text::XMLReader::ReadNext()
 						this->parseOfst = parseOfst + 2;
 						if (this->nodeText != 0)
 						{
-							if (this->encFact && this->nodeText->Equals(UTF8STRC("xml")))
+							NotNullPtr<Text::EncodingFactory> encFact;
+							if (this->encFact.SetTo(encFact) && this->nodeText->Equals(UTF8STRC("xml")))
 							{
 								UOSInt i = this->attrList.GetCount();
 								Text::XMLAttrib *attr;
@@ -744,7 +745,7 @@ Bool Text::XMLReader::ReadNext()
 									attr = this->attrList.GetItem(i);
 									if (attr->name->EqualsICase(UTF8STRC("ENCODING")) && attr->value)
 									{
-										UInt32 cp = this->encFact->GetCodePage(attr->value->ToCString());
+										UInt32 cp = encFact->GetCodePage(attr->value->ToCString());
 										if (cp && !this->stmEnc)
 										{
 											SDEL_CLASS(this->enc);
@@ -1761,7 +1762,7 @@ Bool Text::XMLReader::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	return false;
 }
 
-Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::XMLReader::XMLWellFormat(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;

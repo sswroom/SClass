@@ -45,7 +45,7 @@ void Parser::FileParser::ZIPParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::ZIPParser::SetEncFactory(Text::EncodingFactory *encFact)
+void Parser::FileParser::ZIPParser::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	this->encFact = encFact;
 }

@@ -169,7 +169,7 @@ const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevic
 }
 
 #define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(sb); v = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm)
+Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm)
 {
 	SSDPRoot *root = MemAlloc(SSDPRoot, 1);
 	MemClear(root, sizeof(SSDPRoot));

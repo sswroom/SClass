@@ -22,7 +22,7 @@ namespace Net
 			Data::FastMap<Int64, SNSItem *> itemMap;
 
 		public:
-			SNSTwitter(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent, Text::CString channelId);
+			SNSTwitter(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId);
 			virtual ~SNSTwitter();
 
 			virtual Bool IsError();

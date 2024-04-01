@@ -101,7 +101,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	}
 }
 
-Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent)
+Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
 {
 	this->sockf = sockf;
 	this->encFact = encFact;

@@ -50,7 +50,7 @@ void Parser::FileParser::XMLParser::SetWebBrowser(Net::WebBrowser *browser)
 	this->browser = browser;
 }
 
-void Parser::FileParser::XMLParser::SetEncFactory(Text::EncodingFactory *encFact)
+void Parser::FileParser::XMLParser::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	this->encFact = encFact;
 }
@@ -133,7 +133,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NotNullPtr<IO::Str
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	NotNullPtr<Text::String> nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);

@@ -21,6 +21,7 @@
 Exporter::KMLExporter::KMLExporter()
 {
 	this->codePage = 65001;
+	this->encFact = 0;
 }
 
 Exporter::KMLExporter::~KMLExporter()
@@ -83,7 +84,7 @@ void Exporter::KMLExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Exporter::KMLExporter::SetEncFactory(Text::EncodingFactory *encFact)
+void Exporter::KMLExporter::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	this->encFact = encFact;
 }

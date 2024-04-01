@@ -265,7 +265,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 	}
 }
 
-Map::WebFeatureService::WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString wfsURL, Version version)
+Map::WebFeatureService::WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wfsURL, Version version)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

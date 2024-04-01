@@ -75,7 +75,7 @@ void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 	}
 }
 
-void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
+void Parser::ParserList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
 	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
