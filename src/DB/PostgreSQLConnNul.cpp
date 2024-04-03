@@ -19,6 +19,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port,
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
 	this->geometryOid = 0;
+	this->stgeometryOid = 0;
 	this->citextOid = 0;
 	this->Connect();
 }
@@ -34,6 +35,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CS
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->geometryOid = 0;
+	this->stgeometryOid = 0;
 	this->citextOid = 0;
 	this->Connect();
 }
@@ -284,12 +286,17 @@ Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
 	return CSTR("Unknown");
 }
 
-UInt32 DB::PostgreSQLConn::GetGeometryOid()
+UInt32 DB::PostgreSQLConn::GetGeometryOid() const
 {
 	return this->geometryOid;
 }
 
-UInt32 DB::PostgreSQLConn::GetCitextOid()
+UInt32 DB::PostgreSQLConn::GetSTGeometryOid() const
+{
+	return this->stgeometryOid;
+}
+
+UInt32 DB::PostgreSQLConn::GetCitextOid() const
 {
 	return this->citextOid;
 }

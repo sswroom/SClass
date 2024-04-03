@@ -25,6 +25,7 @@ namespace DB
 		Int8 tzQhr;
 		UInt32 geometryOid;
 		UInt32 citextOid;
+		UInt32 stgeometryOid;
 
 		Bool Connect();
 		void InitConnection();
@@ -63,8 +64,9 @@ namespace DB
 		Optional<Text::String> GetConnPWD() const;
 		Bool ChangeDatabase(Text::CString databaseName);
 
-		UInt32 GetGeometryOid();
-		UInt32 GetCitextOid();
+		UInt32 GetGeometryOid() const;
+		UInt32 GetSTGeometryOid() const;
+		UInt32 GetCitextOid() const;
 		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 
 		static Text::CString ExecStatusTypeGetName(OSInt status);

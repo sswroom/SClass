@@ -513,6 +513,17 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 						geometrySchema = r->GetNewStr(10);
 					}
 				}
+				else if (s->Equals(UTF8STRC("st_geometry")))
+				{
+					col->SetColType(DB::DBUtil::CT_Vector);
+					col->SetColDP(0);
+					col->SetColSize(0);
+					hasGeometry = true;
+					if (geometrySchema.IsNull())
+					{
+						geometrySchema = r->GetNewStr(10);
+					}
+				}
 				else if (s->Equals(UTF8STRC("_float4")))
 				{
 					col->SetColType(DB::DBUtil::CT_Binary);
@@ -630,19 +641,39 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		}
 		if (hasGeometry && geometrySchema.SetTo(s))
 		{
-			sql.Clear();
-			sql.AppendCmdC(CSTR("SELECT f_geometry_column, coord_dimension, srid, type FROM "));
-			sql.AppendCol(s->v);
-			sql.AppendCmdC(CSTR(".geometry_columns where f_table_name = "));
-			sql.AppendStrC(tableName);
-			sql.AppendCmdC(CSTR(" and f_table_schema = "));
-			if (schemaName.leng == 0)
+			if (s->Equals(CSTR("sde")))
 			{
-				sql.AppendStrC(CSTR("public"));
+				sql.Clear();
+				sql.AppendCmdC(CSTR("SELECT f_geometry_column, coord_dimension, srid FROM "));
+				sql.AppendCol(s->v);
+				sql.AppendCmdC(CSTR(".sde_geometry_columns where f_table_name = "));
+				sql.AppendStrC(tableName);
+				sql.AppendCmdC(CSTR(" and f_table_schema = "));
+				if (schemaName.leng == 0)
+				{
+					sql.AppendStrC(CSTR("public"));
+				}
+				else
+				{
+					sql.AppendStrC(schemaName);
+				}
 			}
 			else
 			{
-				sql.AppendStrC(schemaName);
+				sql.Clear();
+				sql.AppendCmdC(CSTR("SELECT f_geometry_column, coord_dimension, srid, type FROM "));
+				sql.AppendCol(s->v);
+				sql.AppendCmdC(CSTR(".geometry_columns where f_table_name = "));
+				sql.AppendStrC(tableName);
+				sql.AppendCmdC(CSTR(" and f_table_schema = "));
+				if (schemaName.leng == 0)
+				{
+					sql.AppendStrC(CSTR("public"));
+				}
+				else
+				{
+					sql.AppendStrC(schemaName);
+				}
 			}
 			if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 			{

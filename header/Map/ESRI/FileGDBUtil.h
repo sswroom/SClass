@@ -4,6 +4,7 @@
 #include "Data/ByteArray.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Text/CString.h"
 #include "Text/String.h"
 
@@ -67,6 +68,7 @@ namespace Map
 			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, OutParam<Int64> val);
 			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val);
 			static UOSInt ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val);
+			static Optional<Math::Geometry::Vector2D> ParseSDERecord(Data::ByteArrayR buff);
 
 			static Text::CStringNN GeometryTypeGetName(UInt8 t);
 			static Text::CStringNN FieldTypeGetName(UInt8 t);

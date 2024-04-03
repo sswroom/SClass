@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/PostgreSQLConn.h"
+#include "Map/ESRI/FileGDBUtil.h"
 #include "Math/WKBReader.h"
 #include "Math/Geometry/Point.h"
 #include "Text/MyStringW.h"
@@ -23,17 +24,20 @@ private:
 	int ncol;
 	int nrow;
 	int currrow;
-	DB::PostgreSQLConn *conn;
+	Bool arcGISSDE;
+	NotNullPtr<DB::PostgreSQLConn> conn;
 	UInt32 geometryOid;
+	UInt32 stgeometryOid;
 	UInt32 citextOid;
 public:
-	PostgreSQLReader(PGresult *res, Int8 tzQhr, DB::PostgreSQLConn *conn) : DBReader()
+	PostgreSQLReader(PGresult *res, Int8 tzQhr, NotNullPtr<DB::PostgreSQLConn> conn) : DBReader()
 	{
 		this->tzQhr = tzQhr;
 		this->res = res;
 		this->currrow = -1;
 		this->conn = conn;
 		this->geometryOid = conn->GetGeometryOid();
+		this->stgeometryOid = conn->GetSTGeometryOid();
 		this->citextOid = conn->GetCitextOid();
 		this->ncol = PQnfields(this->res);
 		this->nrow = PQntuples(this->res);
@@ -253,6 +257,25 @@ public:
 			Math::WKBReader reader(0);
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			if (reader.ParseWKB(wkb, wkbLen, 0).SetTo(vec))
+			{
+				MemFree(wkb);
+				item->SetVectorDirect(vec);
+				return true;
+			}
+			else
+			{
+				MemFree(wkb);
+				return false;
+			}
+		}
+		else if (colType == stgeometryOid)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
+			UOSInt wkbLen = sb.Hex2Bytes(wkb);
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR(wkb, wkbLen)).SetTo(vec))
 			{
 				MemFree(wkb);
 				item->SetVectorDirect(vec);
@@ -708,6 +731,10 @@ void DB::PostgreSQLConn::InitConnection()
 			{
 				this->geometryOid = (UInt32)r->GetInt32(0);
 			}
+			else if (sb.Equals(UTF8STRC("st_geometry")))
+			{
+				this->stgeometryOid = (UInt32)r->GetInt32(0);
+			}
 			else if (sb.Equals(UTF8STRC("citext")))
 			{
 				this->citextOid = (UInt32)r->GetInt32(0);
@@ -737,6 +764,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port,
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
 	this->geometryOid = 0;
+	this->stgeometryOid = 0;
 	this->citextOid = 0;
 	if (this->Connect()) this->InitConnection();
 }
@@ -753,6 +781,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CS
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->geometryOid = 0;
+	this->stgeometryOid = 0;
 	this->citextOid = 0;
 	if (this->Connect()) this->InitConnection();
 }
@@ -861,7 +890,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 		PQclear(res);
 		return 0;
 	}
-	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr, this));
+	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr, *this));
 }
 
 void DB::PostgreSQLConn::CloseReader(NotNullPtr<DB::DBReader> r)
@@ -1066,12 +1095,18 @@ Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
 	}
 }
 
-UInt32 DB::PostgreSQLConn::GetGeometryOid()
+UInt32 DB::PostgreSQLConn::GetGeometryOid() const
 {
 	return this->geometryOid;
 }
 
-UInt32 DB::PostgreSQLConn::GetCitextOid()
+
+UInt32 DB::PostgreSQLConn::GetSTGeometryOid() const
+{
+	return this->stgeometryOid;
+}
+
+UInt32 DB::PostgreSQLConn::GetCitextOid() const
 {
 	return this->citextOid;
 }
@@ -1079,6 +1114,8 @@ UInt32 DB::PostgreSQLConn::GetCitextOid()
 DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 {
 	if (dbType == this->geometryOid)
+		return DB::DBUtil::CT_Vector;
+	if (dbType == this->stgeometryOid)
 		return DB::DBUtil::CT_Vector;
 	if (dbType == this->citextOid)
 		return DB::DBUtil::CT_VarUTF32Char;

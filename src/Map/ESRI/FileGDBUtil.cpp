@@ -3,6 +3,8 @@
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Math/Geometry/LineString.h"
+#include "Math/Geometry/Point.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
@@ -349,6 +351,93 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, Ou
 		val.Set(v);
 	}
 	return ofst;
+}
+
+Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR buff)
+{
+	UInt32 recSize = buff.ReadU32(0);
+	if (recSize != buff.GetSize())
+		return 0;
+	UInt32 nPoints = buff.ReadU32(4);
+	UInt16 type1 = buff.ReadU16(8);
+	UInt16 type2 = buff.ReadU16(10);
+	UInt32 srid = buff.ReadU32(12);
+	UInt32 pointLen = buff.ReadU32(16);
+	UInt32 nParts = buff.ReadU32(20);
+	UOSInt ofst = 24;
+	Int64 iv;
+	Double ratio = 1 / 1000000000.0;
+	Double dx = -400;
+	Double dy = -400;
+	if (ReadVarInt(buff, 24 + pointLen, iv) != INVALID_INDEX)
+	{
+		if (iv != 0)
+		{
+			if (iv >= 1000 || iv <= -1000)
+			{
+				ratio = 1 / (Double)iv;
+			}
+		}
+	}
+	if (srid == 2326)
+	{
+		dx = 0;
+		dy = 0;
+		printf("FileGDBUtil.ParseSDERecord: ratio = %lf\r\n", 1 / ratio);
+	}
+	
+	if (nParts != 1)
+	{
+		printf("FileGDBUtil.ParseSDERecord: unknown nParts value: %d\r\n", (UInt32)nParts);
+	}
+	if (type1 == 1 && type2 == 4 && nPoints == 1)
+	{
+		NotNullPtr<Math::Geometry::Point> pt;
+		ofst = ReadVarInt(buff, ofst, iv);
+		dx += (Double)iv * ratio;
+		ofst = ReadVarInt(buff, ofst, iv);
+		dy += (Double)iv * ratio;
+		NEW_CLASSNN(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(dx, dy)));
+		if (ofst != pointLen + 24)
+		{
+			pt.Delete();
+			printf("FileGDBUtil.ParseSDERecord: pointLen not valid: %d, actual = %d\r\n", (UInt32)pointLen, (UInt32)ofst - 24);
+			return 0;
+		}
+		return pt;
+	}
+	else if (type1 == 4 && type2 == 12)
+	{
+		UOSInt tmpV;
+		NotNullPtr<Math::Geometry::LineString> lineString;
+		NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
+		Math::Coord2DDbl *ptList = lineString->GetPointList(tmpV);
+		UOSInt i = 0;
+		while (i < nPoints)
+		{
+			ofst = ReadVarInt(buff, ofst, iv);
+			dx += (Double)iv * ratio;
+			ofst = ReadVarInt(buff, ofst, iv);
+			dy += (Double)iv * ratio;
+			ptList[i] = Math::Coord2DDbl(dx, dy);
+			i++;
+		}
+		if (ofst != pointLen + 24)
+		{
+			lineString.Delete();
+			printf("FileGDBUtil.ParseSDERecord: pointLen not valid: %d, actual = %d\r\n", (UInt32)pointLen, (UInt32)ofst - 24);
+			return 0;
+		}
+		return lineString;
+	}
+	else
+	{
+		printf("FileGDBUtil.ParseSDERecord: Record type is not supported: %d, %d\r\n", type1, type2);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+		printf("%s\r\n", sb.v);
+		return 0;
+	}
 }
 
 Text::CStringNN Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
