@@ -1071,7 +1071,7 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 	UOSInt nPoints;
 	Math::Coord2DDbl *pts;
 	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
-	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, outPoints.GetCount(), false, false));
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, outPoints.GetCount() >> 1, false, false));
 	pts = lr->GetPointList(nPoints);
 	i = 0;
 	while (i < nPoints)

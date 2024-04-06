@@ -79,6 +79,7 @@ void Math::Geometry::Polyline::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst,
 	UOSInt i = 0;
 	UOSInt j;
 	UOSInt k;
+	UOSInt tmp;
 	Math::Coord2DDbl *ptArr;
 	Double *zArr;
 	Double *mArr;
@@ -89,10 +90,10 @@ void Math::Geometry::Polyline::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst,
 			k = nPoint;
 		else
 			k = ptOfstList[i + 1];
-		NEW_CLASSNN(lineString, LineString(this->srid, k, zList != 0, mList != 0));
-		ptArr = lineString->GetPointList(j);
-		zArr = lineString->GetZList(j);
-		mArr = lineString->GetMList(j);
+		NEW_CLASSNN(lineString, LineString(this->srid, (k - j), zList != 0, mList != 0));
+		ptArr = lineString->GetPointList(tmp);
+		zArr = lineString->GetZList(tmp);
+		mArr = lineString->GetMList(tmp);
 		MemCopyNO(ptArr, &pointList[j], (k - j) * sizeof(Math::Coord2DDbl));
 		if (zList)
 		{

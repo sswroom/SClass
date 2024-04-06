@@ -35,7 +35,7 @@ Bool Math::Geometry::PointM::GetMBounds(OutParam<Double> min, OutParam<Double> m
 	return true;
 }
 
-Bool Math::Geometry::PointM::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
+Bool Math::Geometry::PointM::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
@@ -44,25 +44,11 @@ Bool Math::Geometry::PointM::Equals(NotNullPtr<const Math::Geometry::Vector2D> v
 	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ() && vec->HasM())
 	{
 		const Math::Geometry::PointM *pt = (const Math::Geometry::PointM*)vec.Ptr();
-		return this->pos == pt->pos && this->m == pt->m;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-Bool Math::Geometry::PointM::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
-{
-	if (vec->GetSRID() != this->srid)
-	{
-		return false;
-	}
-	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ() && vec->HasM())
-	{
-		const Math::Geometry::PointM *pt = (const Math::Geometry::PointM*)vec.Ptr();
-		return this->pos.EqualsNearly(pt->pos) &&
+		if (nearlyVal)
+			return this->pos.EqualsNearly(pt->pos) &&
 				Math::NearlyEqualsDbl(this->m, pt->m);
+		else
+			return this->pos == pt->pos && this->m == pt->m;
 	}
 	else
 	{
