@@ -19,9 +19,9 @@ Bool Net::WebServer::WellKnownHandler::ProcessRequest(NotNullPtr<Net::WebServer:
 	return WebServiceHandler::ProcessRequest(req, resp, subReq);
 }
 
-Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::WellKnownHandler *me = (Net::WebServer::WellKnownHandler*)svc;
+	NotNullPtr<Net::WebServer::WellKnownHandler> me = NotNullPtr<Net::WebServer::WellKnownHandler>::ConvertFrom(svc);
 	NotNullPtr<Text::String> t;
 	NotNullPtr<Text::String> name;
 	NotNullPtr<Text::String> val;

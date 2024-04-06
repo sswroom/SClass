@@ -11,9 +11,9 @@
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "Text/UTF8Reader.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
 {
-	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
+	NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController> me = NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -50,9 +50,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net:
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
 {
-	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
+	NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController> me = NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -106,9 +106,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NotNullPtr<
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
 {
-	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
+	NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController> me = NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 

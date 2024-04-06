@@ -42,7 +42,7 @@ namespace Net
 			Optional<IWebSession> GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
 
-			void GetSessionIds(Data::ArrayList<Int64> *sessIds);
+			void GetSessionIds(NotNullPtr<Data::ArrayList<Int64>> sessIds);
 		};
 	}
 }

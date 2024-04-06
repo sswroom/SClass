@@ -3,9 +3,9 @@
 #include "Text/Builder/HTMLDocumentBuilder.h"
 #include "Text/JSONBuilder.h"
 
-Bool __stdcall Net::PushServerHandler::SendHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::SendHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	NotNullPtr<Net::PushServerHandler> me = NotNullPtr<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
 	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
@@ -21,9 +21,9 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NotNullPtr<Net::WebServer::IW
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::SendBatchHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::SendBatchHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	NotNullPtr<Net::PushServerHandler> me = NotNullPtr<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
 	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
@@ -50,9 +50,9 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NotNullPtr<Net::WebServe
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	NotNullPtr<Net::PushServerHandler> me = NotNullPtr<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
 	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
@@ -112,9 +112,9 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServe
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	NotNullPtr<Net::PushServerHandler> me = NotNullPtr<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
 	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
@@ -135,9 +135,9 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebSer
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	NotNullPtr<Net::PushServerHandler> me = NotNullPtr<Net::PushServerHandler>::ConvertFrom(svc);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectBeginArray(CSTR("users"));
 	Sync::MutexUsage mutUsage;
@@ -153,9 +153,9 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::I
 	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
-Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
+	NotNullPtr<Net::PushServerHandler> me = NotNullPtr<Net::PushServerHandler>::ConvertFrom(svc);
 	Text::Builder::HTMLDocumentBuilder builder(Text::Builder::HTMLDocumentBuilder::DocType::HTML5, CSTR("Devices"));
 	Text::Builder::HTMLBodyBuilder *body = builder.StartBody(CSTR_NULL);
 	body->BeginTable();

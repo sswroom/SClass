@@ -3,9 +3,9 @@
 #include "IO/Path.h"
 #include "SSWR/VAMS/VAMSBTWebHandler.h"
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebServiceHandler> hdlr)
 {
-	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
+	NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> me = NotNullPtr<SSWR::VAMS::VAMSBTWebHandler>::ConvertFrom(hdlr);
 	req->ParseHTTPForm();
 	NotNullPtr<Text::String> avlNo;
 	Int64 ts;
@@ -21,9 +21,9 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::
 	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
 {
-	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
+	NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> me = NotNullPtr<SSWR::VAMS::VAMSBTWebHandler>::ConvertFrom(hdlr);
 	req->ParseHTTPForm();
 	Int32 progId;
 	if (!req->GetHTTPFormInt32(CSTR("progId"), progId))
@@ -35,9 +35,9 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::I
 	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
 {
-	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
+	NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> me = NotNullPtr<SSWR::VAMS::VAMSBTWebHandler>::ConvertFrom(hdlr);
 	Int32 progId;
 	Int32 logDate;
 	if (!req->GetQueryValueI32(CSTR("progId"), progId) || !req->GetQueryValueI32(CSTR("logDate"), logDate))
@@ -88,9 +88,9 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::
 	}
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
 {
-	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
+	NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> me = NotNullPtr<SSWR::VAMS::VAMSBTWebHandler>::ConvertFrom(hdlr);
 	Data::ArrayList<Int32> progList;
 	me->btList->GetProgList(progList);
 	Text::StringBuilderUTF8 sb;
@@ -136,9 +136,9 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer:
 	return true;
 }
 
-Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
 {
-	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
+	NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> me = NotNullPtr<SSWR::VAMS::VAMSBTWebHandler>::ConvertFrom(hdlr);
 	Int32 progId;
 	if (!req->GetQueryValueI32(CSTR("progId"), progId))
 	{

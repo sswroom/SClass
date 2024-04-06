@@ -50,7 +50,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NotNullPtr<Net::WebServer
 		ServiceFunc func = service->funcs.Get((Int32)req->GetReqMethod());
 		if (func)
 		{
-			return func(req, resp, subReq, this);
+			return func(req, resp, subReq, *this);
 		}
 		else
 		{

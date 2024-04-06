@@ -5,9 +5,9 @@
 
 #include <stdio.h>
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
 {
-	GCISNotifyHandler *me = (GCISNotifyHandler*)hdlr;
+	NotNullPtr<GCISNotifyHandler> me = NotNullPtr<GCISNotifyHandler>::ConvertFrom(hdlr);
 	Crypto::Cert::X509Cert *cert = req->GetClientCert();
 	Text::StringBuilderUTF8 sb2;
 	Text::JSONBuilder builder(Text::JSONBuilder::OT_OBJECT);
@@ -200,9 +200,9 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 	return me->ResponseJSONStr(req, resp, 0, builder.Build());
 }
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svcHdlr)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svcHdlr)
 {
-	GCISNotifyHandler *me = (GCISNotifyHandler*)svcHdlr;
+	NotNullPtr<GCISNotifyHandler> me = NotNullPtr<GCISNotifyHandler>::ConvertFrom(svcHdlr);
 	UOSInt size;
 	const UInt8 *data = req->GetReqData(size);
 	Text::StringBuilderUTF8 sb;

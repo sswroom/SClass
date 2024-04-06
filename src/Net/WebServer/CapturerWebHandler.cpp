@@ -10,9 +10,9 @@
 
 #define BTTIMEOUT 30000
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
@@ -94,9 +94,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -126,9 +126,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net:
 
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -159,9 +159,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::
 }
 
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -190,9 +190,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Ne
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -224,9 +224,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Ne
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -256,9 +256,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
 {
-	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
+	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);

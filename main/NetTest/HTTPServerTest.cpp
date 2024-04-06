@@ -29,9 +29,9 @@ private:
 		console->WriteLineC(UTF8STRC("Disconnected"));
 	}
 
-	static Bool __stdcall SSEHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me)
+	static Bool __stdcall SSEHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me)
 	{
-		MyHandler *myHdlr = (MyHandler*)me;
+		NotNullPtr<MyHandler> myHdlr = NotNullPtr<MyHandler>::ConvertFrom(me);
 		resp->AddDefHeaders(req);
 		if (resp->ResponseSSE(30000, SSEDisconnect, myHdlr))
 		{

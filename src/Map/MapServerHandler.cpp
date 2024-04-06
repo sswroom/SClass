@@ -15,9 +15,9 @@
 #include "Text/JSText.h"
 #include "Text/XML.h"
 
-Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
 {
-	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
+	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -42,9 +42,9 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::I
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
 {
-	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
+	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
 	NotNullPtr<Text::String> name;
 	NotNullPtr<Text::String> fmt;
 	UTF8Char sbuff[256];
@@ -243,9 +243,9 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	}
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
 {
-	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
+	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
 	NotNullPtr<Text::String> file;
 	Optional<Text::String> range = req->GetQueryValue(CSTR("range"));
 	Double minErr;
@@ -354,9 +354,9 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
+Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
 {
-	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
+	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
 	NotNullPtr<Text::String> file;
 	Text::StringBuilderUTF8 sb;
 	if (!req->GetQueryValue(CSTR("file")).SetTo(file))

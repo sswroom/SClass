@@ -57,6 +57,7 @@ namespace Data
 
 		virtual UOSInt GetCount() const;
 		virtual Optional<T> GetItem(UOSInt index) const;
+		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
 		OSInt IndexOf(NotNullPtr<Text::String> s) const;
@@ -161,6 +162,11 @@ namespace Data
 		{
 			return 0;
 		}
+		return this->items[index].val;
+	}
+
+	template <class T> NotNullPtr<T> FastStringMapNN<T>::GetItemNoCheck(UOSInt index) const
+	{
 		return this->items[index].val;
 	}
 
@@ -355,7 +361,7 @@ namespace Data
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
-			T oldVal = this->items[index].val;
+			NotNullPtr<T> oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)

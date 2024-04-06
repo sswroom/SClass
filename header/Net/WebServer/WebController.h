@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONTROLLER
 #define _SM_NET_WEBSERVER_WEBCONTROLLER
 #include "Data/FastMap.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Net/WebServer/IWebRequest.h"
 #include "Net/WebServer/IWebResponse.h"
 
@@ -12,7 +12,7 @@ namespace Net
 		class WebController
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebController *me);
+			typedef Bool (__stdcall *ServiceFunc)(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebController> me);
 		private:
 			typedef struct
 			{
@@ -20,7 +20,7 @@ namespace Net
 				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
-			Data::FastStringMap<ServiceInfo *> services;
+			Data::FastStringMapNN<ServiceInfo> services;
 			NotNullPtr<Text::String> svcPath;
 
 		public:
