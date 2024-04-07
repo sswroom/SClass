@@ -174,9 +174,9 @@ Bool IO::Device::AM2315GPIO::ReadWord(UInt8 regAddr, UInt8 *data)
 		return false;
 	}
 	UInt16 crcVal;
-	this->crc->Clear();
-	this->crc->Calc(buff, 4);
-	this->crc->GetValue((UInt8*)&crcVal);
+	this->crc.Clear();
+	this->crc.Calc(buff, 4);
+	this->crc.GetValue((UInt8*)&crcVal);
 	if (((UInt16)~crcVal) == ReadUInt16(&buff[4]))
 	{
 		data[0] = buff[2];
@@ -190,11 +190,11 @@ Bool IO::Device::AM2315GPIO::ReadWord(UInt8 regAddr, UInt8 *data)
 	}
 }
 
-IO::Device::AM2315GPIO::AM2315GPIO(IO::IOPin *sdaPin, IO::IOPin *sclPin)
+IO::Device::AM2315GPIO::AM2315GPIO(NotNullPtr<IO::IOPin> sdaPin, NotNullPtr<IO::IOPin> sclPin)
 {
 	this->sdaPin = sdaPin;
 	this->sclPin = sclPin;
-	NEW_CLASS(this->crc, Crypto::Hash::CRC16R());
+	this->error = false;
 
 	this->sdaPin->SetPinOutput(false);
 	this->sclPin->SetPinOutput(false);
@@ -207,35 +207,31 @@ IO::Device::AM2315GPIO::AM2315GPIO(IO::IOPin *sdaPin, IO::IOPin *sclPin)
 	if (this->DirectWrite(buff, 3) != 3)
 	{
 		printf("Write != 3\r\n");
-		this->sdaPin = 0;
-		this->sclPin = 0;
+		this->error = true;
 		return;
 	}
 	this->Wait();
 	if (this->DirectRead(buff, 3) != 3)
 	{
 		printf("Read != 3\r\n");
-		this->sdaPin = 0;
-		this->sclPin = 0;
+		this->error = true;
 		return;
 	}
 	if (buff[0] != 3 || buff[1] != 7)
 	{
 		printf("Read content error\r\n");
-		this->sdaPin = 0;
-		this->sclPin = 0;
+		this->error = true;
 		return;
 	}
 }
 
 IO::Device::AM2315GPIO::~AM2315GPIO()
 {
-	SDEL_CLASS(this->crc);
 }
 
 Bool IO::Device::AM2315GPIO::IsError()
 {
-	return this->sdaPin == 0 || this->sclPin == 0;
+	return this->error;
 }
 
 void IO::Device::AM2315GPIO::Wakeup()
@@ -248,7 +244,7 @@ void IO::Device::AM2315GPIO::Wakeup()
 	this->I2CEnd();
 }
 
-Bool IO::Device::AM2315GPIO::ReadTemperature(Double *temp)
+Bool IO::Device::AM2315GPIO::ReadTemperature(OutParam<Double> temp)
 {
 	UInt8 buff[2];
 	if (this->IsError())
@@ -256,7 +252,7 @@ Bool IO::Device::AM2315GPIO::ReadTemperature(Double *temp)
 	this->Wakeup();
 	if (this->ReadWord(2, buff))
 	{
-		*temp = ReadMInt16(buff) * 0.1;
+		temp.Set(ReadMInt16(buff) * 0.1);
 		return true;
 	}
 	else
@@ -265,7 +261,7 @@ Bool IO::Device::AM2315GPIO::ReadTemperature(Double *temp)
 	}
 }
 
-Bool IO::Device::AM2315GPIO::ReadRH(Double *rh)
+Bool IO::Device::AM2315GPIO::ReadRH(OutParam<Double> rh)
 {
 	UInt8 buff[2];
 	if (this->IsError())
@@ -273,7 +269,7 @@ Bool IO::Device::AM2315GPIO::ReadRH(Double *rh)
 	this->Wakeup();
 	if (this->ReadWord(0, buff))
 	{
-		*rh = ReadMUInt16(buff) * 0.1;
+		rh.Set(ReadMUInt16(buff) * 0.1);
 		return true;
 	}
 	else

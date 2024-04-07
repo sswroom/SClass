@@ -100,7 +100,7 @@ void IO::Device::BYDC9R::GetStatus(DeviceStatus *status)
 	MemCopyNO(status, &this->status, sizeof(DeviceStatus));
 }
 
-IO::CANHandler *IO::Device::BYDC9R::GetCANHandler()
+NotNullPtr<IO::CANHandler> IO::Device::BYDC9R::GetCANHandler()
 {
-	return this;
+	return *this;
 }

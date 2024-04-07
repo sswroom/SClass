@@ -861,7 +861,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NotNullPtr<Text::String> tableName;
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString());
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -892,7 +892,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NotNullPtr<Text::String> tableName;
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString());
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}

@@ -16,7 +16,7 @@ namespace Media
 	private:
 		void *hdcPrinter;
 		UInt8 *devMode;
-		IPrintHandler *hdlr;
+		NotNullPtr<IPrintHandler> hdlr;
 		Media::GDIEngine *eng;
 		Optional<Text::String> docName;
 		Bool started;
@@ -27,7 +27,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr);
+		GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NotNullPtr<IPrintHandler> hdlr);
 		virtual ~GDIPrintDocument();
 
 		Bool IsError();
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::GDIPrintDocument::GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr)
+Media::GDIPrintDocument::GDIPrintDocument(NotNullPtr<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NotNullPtr<IPrintHandler> hdlr)
 {
 	this->devMode = devMode;
 	this->eng = eng;
@@ -379,7 +379,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return IDOK == lReturn;
 }
 
-Optional<Media::IPrintDocument> Media::Printer::StartPrint(Media::IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
+Optional<Media::IPrintDocument> Media::Printer::StartPrint(NotNullPtr<Media::IPrintHandler> hdlr, NotNullPtr<Media::DrawEngine> eng)
 {
 	Media::GDIPrintDocument *doc;
 	if (this->devMode == 0)

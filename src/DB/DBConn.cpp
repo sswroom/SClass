@@ -215,7 +215,11 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		this->CloseReader(r);
 
 		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("SELECT c.name AS column_name, i.name AS index_name, c.is_identity FROM sys.indexes i"));
+		sb.AppendC(UTF8STRC("SELECT c.name AS column_name, i.name AS index_name, c.is_identity, IDENT_CURRENT('"));
+		sb.Append(tableName);
+		sb.AppendC(UTF8STRC("'), IDENT_INCR('"));
+		sb.Append(tableName);
+		sb.AppendC(UTF8STRC("') FROM sys.indexes i"));
 		sb.AppendC(UTF8STRC(" inner join sys.index_columns ic  ON i.object_id = ic.object_id AND i.index_id = ic.index_id"));
 		sb.AppendC(UTF8STRC(" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id"));
 		sb.AppendC(UTF8STRC(" WHERE i.is_primary_key = 1"));
@@ -242,6 +246,16 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
 				{
 					col->SetPK(true);
+					if (col->IsAutoInc())
+					{
+						Int64 lastIndex = 0;
+						Int64 step = 1;
+						if (!r->IsNull(3))
+							lastIndex = r->GetInt64(3);
+						if (!r->IsNull(4))
+							step = r->GetInt64(4);
+						col->SetAutoInc(DB::ColDef::AutoIncType::Default, lastIndex + step, step);
+					}
 					break;
 				}
 			}

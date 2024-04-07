@@ -11,20 +11,20 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
+	NotNullPtr<DB::ReadingDB> db;
 	if (ctrl)
 	{
 		me->cboSourceSchema->ClearItems();
-		if (!ctrl->Connect())
+		if (!ctrl->Connect() || !ctrl->GetDB().SetTo(db))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
-		DB::ReadingDB *db = ctrl->GetDB();
 		if (db->IsDBTool())
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			DB::ReadingDBTool *dbt = (DB::ReadingDBTool*)db;
+			NotNullPtr<DB::ReadingDBTool> dbt = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(db);
 			DB::Collation collation;
 			NotNullPtr<Text::String> dbName = Text::String::OrEmpty(dbt->GetCurrDBName());
 			me->txtSourceDB->SetText(dbName->ToCString());
@@ -69,8 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	DB::DBManagerCtrl *db = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
-	if (db == 0)
+	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
+	NotNullPtr<DB::ReadingDB> db;
+	if (ctrl == 0 || !ctrl->GetDB().SetTo(db))
 		return;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -78,14 +79,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyTyp
 	if (sptr == 0)
 		return;
 	Data::ArrayListStringNN tableNames;
-	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), tableNames);
+	db->QueryTableNames(CSTRP(sbuff, sptr), tableNames);
 	if (tableNames.GetCount() == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Tables not found"), CSTR("Copy Tables"), me);
 	}
 	else
 	{
-		me->dataConn = db->GetDB();
+		me->dataConn = db.Ptr();
 		SDEL_STRING(me->dataSchema);
 		me->dataTables.FreeAll();
 		me->dataSchema = Text::String::NewP(sbuff, sptr).Ptr();
@@ -114,9 +115,15 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
+		NotNullPtr<DB::ReadingDB> db;
+		if (!ctrl->GetDB().SetTo(db))
+		{
+			me->ui->ShowMsgOK(CSTR("Error in getting database"), CSTR("Copy Tables"), me);
+			return;
+		}
 		Data::ArrayListStringNN schemaNames;
 		NotNullPtr<Text::String> s;
-		ctrl->GetDB()->QuerySchemaNames(schemaNames);
+		db->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
 		if (j > 0)
@@ -156,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		return;
 	}
 	NotNullPtr<DB::ReadingDB> destConn;
-	if (!destConn.Set(destDB->GetDB()))
+	if (!destDB->GetDB().SetTo(destConn))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in getting destination DB"), CSTR("Copy Tables"), me);
 		return;
@@ -228,7 +235,32 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		Bool succ = true;
 		tableName = it.Next();
 		tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
-		if (succ && destTableType == 0)
+		if (succ && destTableType == 3)
+		{
+			if (!nntabDef.Set(tabDef))
+			{
+				me->lvData->SetSubItem(i, 1, CSTR("Error in getting table definition"));
+				succ = false;
+			}
+			else
+			{
+				sql.Clear();
+				if (!DB::SQLGenerator::GenDropTableCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString()))
+				{
+					me->lvData->SetSubItem(i, 1, CSTR("Error in generating drop command"));
+					succ = false;
+				}
+				else if (destDBTool->ExecuteNonQuery(sql.ToCString()) <= -2)
+				{
+					sb.ClearStr();
+					destDBTool->GetLastErrorMsg(sb);
+					me->lvData->SetSubItem(i, 1, sb.ToCString());
+					succ = false;
+				}
+			}
+
+		}
+		if (succ && (destTableType == 0 || destTableType == 3))
 		{
 			if (!nntabDef.Set(tabDef))
 			{
@@ -365,7 +397,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::ArrayList<DB::DBManagerCtrl*> *dbList) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> dbList) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Copy Tables"));
@@ -425,8 +457,9 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->cboDestTableType = ui->NewComboBox(this->grpDest, false);
 	this->cboDestTableType->SetRect(104, 52, 100, 23, false);
 	this->cboDestTableType->AddItem(CSTR("Create Table"), 0);
-	this->cboDestTableType->AddItem(CSTR("Remove existing"), 0);
+	this->cboDestTableType->AddItem(CSTR("Remove Data"), 0);
 	this->cboDestTableType->AddItem(CSTR("Append Data"), 0);
+	this->cboDestTableType->AddItem(CSTR("Recreate Table"), 0);
 	this->cboDestTableType->SetSelectedIndex(0);
 	this->chkDestCopyData = ui->NewCheckBox(this->grpDest, CSTR("Copy Data"), true);
 	this->chkDestCopyData->SetRect(204, 52, 100, 23, false);
@@ -437,21 +470,21 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->btnCopy->HandleButtonClick(OnCopyClicked, this);
 
 	Text::StringBuilderUTF8 sb;
-	DB::DBManagerCtrl *ctrl;
+	NotNullPtr<DB::DBManagerCtrl> ctrl;
 	UOSInt firstActive = INVALID_INDEX;
 	UOSInt i = 0;
 	UOSInt j = this->dbList->GetCount();
 	while (i < j)
 	{
-		ctrl = this->dbList->GetItem(i);
+		ctrl = this->dbList->GetItemNoCheck(i);
 		if (firstActive == INVALID_INDEX && ctrl->GetStatus() == DB::DBManagerCtrl::ConnStatus::Connected)
 		{
 			firstActive = i;
 		}
 		sb.ClearStr();
 		ctrl->GetConnName(sb);
-		this->cboSourceConn->AddItem(sb.ToCString(), ctrl);
-		this->cboDestDB->AddItem(sb.ToCString(), ctrl);
+		this->cboSourceConn->AddItem(sb.ToCString(), ctrl.Ptr());
+		this->cboDestDB->AddItem(sb.ToCString(), ctrl.Ptr());
 		i++;
 	}
 	if (j > 0)

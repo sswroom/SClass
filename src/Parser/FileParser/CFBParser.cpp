@@ -269,7 +269,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 		else if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 		{
 			Map::DBMapLayer *layer;
-			DB::WorkbookDB *db;
+			NotNullPtr<DB::WorkbookDB> db;
 			NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
 			if (!wb->GetItem(0).SetTo(sheet))
 			{
@@ -283,7 +283,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 					return 0;
 				}
 			}
-			NEW_CLASS(db, DB::WorkbookDB(wb));
+			NEW_CLASSNN(db, DB::WorkbookDB(wb));
 			NEW_CLASS(layer, Map::DBMapLayer(wb->GetSourceNameObj()));
 			if (layer->SetDatabase(db, CSTR_NULL, sheet->GetName()->ToCString(), true))
 			{
@@ -292,11 +292,11 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 			DEL_CLASS(layer);
 			if (targetType == IO::ParserType::Unknown)
 			{
-				return db;
+				return db.Ptr();
 			}
 			else
 			{
-				DEL_CLASS(db);
+				db.Delete();
 				return 0;
 			}
 		}

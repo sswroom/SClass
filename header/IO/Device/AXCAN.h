@@ -34,11 +34,11 @@ namespace IO
 				BR_1000K
 			};
 		private:
-			CANHandler *hdlr;
+			NotNullPtr<CANHandler> hdlr;
 			Sync::Mutex cmdMut;
 			Sync::Event cmdEvent;
 			UOSInt cmdResultCode;
-			IO::Stream *stm;
+			Optional<IO::Stream> stm;
 			Sync::Thread serialThread;
 
 			Bool SendSetCANBitRate(CANBitRate bitRate);
@@ -50,7 +50,7 @@ namespace IO
 			
 			static void __stdcall SerialThread(NotNullPtr<Sync::Thread> userObj);
 		public:
-			AXCAN(CANHandler *hdlr);
+			AXCAN(NotNullPtr<CANHandler> hdlr);
 			virtual ~AXCAN();
 
 			Bool OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate);
@@ -60,7 +60,7 @@ namespace IO
 			virtual void CANStop();
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-			void ParseReader(IO::Reader *reader);
+			void ParseReader(NotNullPtr<IO::Reader> reader);
 		};
 	}
 }

@@ -13,7 +13,9 @@ IO::Device::AM2315::AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease)
 {
 	this->channel = channel;
 	this->toRelease = toRelease;
-	NEW_CLASS(this->i2c, IO::I2CMODBUS(this->channel, 20));
+	this->i2c = 0;
+	NotNullPtr<IO::I2CMODBUS> i2c;
+	NEW_CLASSNN(i2c, IO::I2CMODBUS(this->channel, 20));
 
 	UInt8 buff[3];
 	buff[0] = 3;
@@ -22,16 +24,16 @@ IO::Device::AM2315::AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease)
 	this->Wakeup();
 	if (this->channel->I2CWrite(buff, 3) != 3)
 	{
-		SDEL_CLASS(this->i2c);
+		i2c.Delete();
 #if defined(_DEBUG)
 		printf("Error, AM2315 not found\r\n");
 #endif
 		return;
 	}
-	this->i2c->Wait();
+	i2c->Wait();
 	if (this->channel->I2CRead(buff, 3) != 3)
 	{
-		SDEL_CLASS(this->i2c);
+		i2c.Delete();
 #if defined(_DEBUG)
 		printf("Error, AM2315 not valid\r\n");
 #endif
@@ -39,17 +41,18 @@ IO::Device::AM2315::AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease)
 	}
 	if (buff[0] != 3 || buff[1] != 7)
 	{
-		SDEL_CLASS(this->i2c);
+		i2c.Delete();
 #if defined(_DEBUG)
 		printf("Error, AM2315 wrong reply\r\n");
 #endif
 		return;
 	}
+	this->i2c = i2c;
 }
 
 IO::Device::AM2315::~AM2315()
 {
-	SDEL_CLASS(this->i2c);
+	this->i2c.Delete();
 	if (this->toRelease)
 	{
 		this->channel.Delete();
@@ -58,29 +61,31 @@ IO::Device::AM2315::~AM2315()
 
 Bool IO::Device::AM2315::IsError()
 {
-	return this->i2c == 0;
+	return this->i2c.IsNull();
 }
 
 void IO::Device::AM2315::Wakeup()
 {
 	UInt8 byte = 0;
-	if (this->i2c)
+	NotNullPtr<IO::I2C> i2c;
+	if (this->i2c.SetTo(i2c))
 	{
 		this->channel->I2CWrite(&byte, 1);
 		this->channel->I2CWrite(&byte, 1);
-		this->i2c->Wait();
+		i2c->Wait();
 		this->channel->I2CWrite(&byte, 1);
-		this->i2c->Wait();
+		i2c->Wait();
 	}
 }
 
 Bool IO::Device::AM2315::ReadTemperature(OutParam<Single> temp)
 {
 	UInt8 buff[2];
-	if (this->i2c == 0)
+	NotNullPtr<IO::I2C> i2c;
+	if (!this->i2c.SetTo(i2c))
 		return false;
 	this->Wakeup();
-	if (this->i2c->ReadBuff(2, 2, buff))
+	if (i2c->ReadBuff(2, 2, buff))
 	{
 		temp.Set((Single)(ReadMInt16(buff) * 0.1));
 		return true;
@@ -94,10 +99,11 @@ Bool IO::Device::AM2315::ReadTemperature(OutParam<Single> temp)
 Bool IO::Device::AM2315::ReadRH(OutParam<Single> rh)
 {
 	UInt8 buff[2];
-	if (this->i2c == 0)
+	NotNullPtr<IO::I2C> i2c;
+	if (!this->i2c.SetTo(i2c))
 		return false;
 	this->Wakeup();
-	if (this->i2c->ReadBuff(0, 2, buff))
+	if (i2c->ReadBuff(0, 2, buff))
 	{
 		rh.Set((Single)(ReadMUInt16(buff) * 0.1));
 		return true;

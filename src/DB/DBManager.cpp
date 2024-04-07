@@ -769,7 +769,7 @@ void DB::DBManager::GetConnName(Text::CString connStr, NotNullPtr<Text::StringBu
 	}
 }
 
-Bool DB::DBManager::StoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList)
+Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -782,17 +782,16 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBMa
 	if (ctrlList->GetCount() > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		DB::DBManagerCtrl *ctrl;
-		Text::String *connStr;
+		NotNullPtr<DB::DBManagerCtrl> ctrl;
+		NotNullPtr<Text::String> connStr;
 		UOSInt i;
 		UOSInt j;
 		i = 0;
 		j = ctrlList->GetCount();
 		while (i < j)
 		{
-			ctrl = ctrlList->GetItem(i);
-			connStr = ctrl->GetConnStr();
-			if (connStr)
+			ctrl = ctrlList->GetItemNoCheck(i);
+			if (ctrl->GetConnStr().SetTo(connStr))
 			{
 				sb.Append(connStr);
 				sb.AppendC(UTF8STRC("\r\n"));
@@ -819,7 +818,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBMa
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

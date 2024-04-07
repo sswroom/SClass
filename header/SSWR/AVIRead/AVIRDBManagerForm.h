@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
 #define _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
+#include "Data/ArrayListNN.h"
 #include "DB/DBManagerCtrl.h"
 #include "Map/DBMapLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -86,10 +87,10 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::ListBoxLogger> logger;
-			Data::ArrayList<DB::DBManagerCtrl*> dbList;
+			Data::ArrayListNN<DB::DBManagerCtrl> dbList;
 			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
-			DB::ReadingDB *currDB;
+			Optional<DB::ReadingDB> currDB;
 			Data::QueryConditions *currCond;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			NotNullPtr<Map::MapEnv> mapEnv;
@@ -127,7 +128,7 @@ namespace SSWR
 			static void UpdateResult(NotNullPtr<DB::DBReader> r, NotNullPtr<UI::GUIListView> lv);
 			void UpdateVariableList();
 			void UpdateSvrConnList();
-			void RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName);
+			void RunSQLFile(NotNullPtr<DB::ReadingDBTool> db, NotNullPtr<Text::String> fileName);
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CStringNN tableName);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);

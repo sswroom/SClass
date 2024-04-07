@@ -15,7 +15,7 @@ namespace DB
 		typedef struct
 		{
 			NotNullPtr<Text::String> tableName;
-			TableDef *def;
+			NotNullPtr<TableDef> def;
 			UOSInt dataCnt;
 		} TableInfo;
 	private:
@@ -26,7 +26,7 @@ namespace DB
 		UOSInt cacheCnt;
 
 		TableInfo *GetTableInfo(Text::CString tableName);
-		TableInfo *GetTableInfo(TableDef *tableDef);
+		TableInfo *GetTableInfo(NotNullPtr<TableDef> tableDef);
 	public:
         DBCache(NotNullPtr<DB::DBModel> model, NotNullPtr<DB::DBTool> db);
         ~DBCache();

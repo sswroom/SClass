@@ -39,7 +39,7 @@ namespace DB
 		Bool DeleteDatabase(Text::CString databaseName);
 		Bool CreateSchema(Text::CString schemaName);
 		Bool DeleteSchema(Text::CString schemaName);
-		Bool DeleteTableData(Text::CString schemaName, Text::CString tableName);
+		Bool DeleteTableData(Text::CString schemaName, Text::CStringNN tableName);
 	
 		Bool KillConnection(Int32 id);
 

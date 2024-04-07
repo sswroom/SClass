@@ -165,7 +165,8 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapSchemaSelChg(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB == 0)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (!me->currDB.SetTo(currDB))
 	{
 		return;
 	}
@@ -175,7 +176,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userOb
 	NotNullPtr<Text::String> nntableName;
 	if (schemaName.SetTo(nnschemaName) && tableName.SetTo(nntableName))
 	{
-		me->dbLayer->SetDatabase(me->currDB, nnschemaName->ToCString(), nntableName->ToCString(), false);
+		me->dbLayer->SetDatabase(currDB, nnschemaName->ToCString(), nntableName->ToCString(), false);
 		Math::RectAreaDbl rect;
 		if (me->dbLayer->GetBounds(rect))
 		{
@@ -262,12 +263,13 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB))
 	{
 		NotNullPtr<Text::String> dbName;
 		if (me->lbDatabase->GetSelectedItemTextNew().SetTo(dbName))
 		{
-			if (me->currDB->ChangeDatabase(dbName->ToCString()))
+			if (currDB->ChangeDatabase(dbName->ToCString()))
 			{
 				me->UpdateTableData(CSTR_NULL, 0);
 				me->UpdateSchemaList();
@@ -280,9 +282,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(AnyType
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB))
 	{
-		if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
+		if (currDB->IsDBTool() && NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->CanModify())
 		{
 			NotNullPtr<Text::String> dbName;
 			if (me->lbDatabase->GetSelectedItemTextNew().SetTo(dbName))
@@ -293,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(AnyType
 				sb.AppendC(UTF8STRC("? This process cannot be undo."));
 				if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("DB Manager"), me))
 				{
-					if (((DB::DBTool*)me->currDB)->DeleteDatabase(dbName->ToCString()))
+					if (NotNullPtr<DB::DBTool>::ConvertFrom(currDB)->DeleteDatabase(dbName->ToCString()))
 					{
 						me->UpdateDatabaseList();
 					}
@@ -303,7 +306,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(AnyType
 						sb.AppendC(UTF8STRC("Error in deleting database "));
 						sb.Append(dbName);
 						sb.AppendC(UTF8STRC(": "));
-						me->currDB->GetLastErrorMsg(sb);
+						currDB->GetLastErrorMsg(sb);
 						me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), me);
 					}
 				}
@@ -320,9 +323,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(AnyType
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB))
 	{
-		if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
+		if (currDB->IsDBTool() && NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->CanModify())
 		{
 			UtilUI::TextInputDialog dlg(0, me->ui, me->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter database name to create"));
 			if (dlg.ShowDialog(me))
@@ -330,7 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(AnyType us
 				Text::StringBuilderUTF8 sb;
 				if (dlg.GetInputString(sb))
 				{
-					if (((DB::DBTool*)me->currDB)->CreateDatabase(sb.ToCString(), 0))
+					if (NotNullPtr<DB::DBTool>::ConvertFrom(currDB)->CreateDatabase(sb.ToCString(), 0))
 					{
 						me->UpdateDatabaseList();
 					}
@@ -338,7 +342,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(AnyType us
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in creating database: "));
-						me->currDB->GetLastErrorMsg(sb);
+						currDB->GetLastErrorMsg(sb);
 						me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), me);
 					}
 				}
@@ -354,16 +358,17 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB))
 	{
-		if (me->currDB->IsDBTool())
+		if (currDB->IsDBTool())
 		{
 			Text::StringBuilderUTF8 sb;
 			me->txtSQL->GetText(sb);
 			if (sb.GetLength() > 0)
 			{
 				NotNullPtr<DB::DBReader> r;
-				if (((DB::ReadingDBTool*)me->currDB)->ExecuteReader(sb.ToCString()).SetTo(r))
+				if (NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->ExecuteReader(sb.ToCString()).SetTo(r))
 				{
 					if (r->ColCount() == 0)
 					{
@@ -380,12 +385,12 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(AnyType userOb
 						me->sqlFileMode = false;
 						UpdateResult(r, me->lvSQLResult);
 					}
-					me->currDB->CloseReader(r);
+					currDB->CloseReader(r);
 				}
 				else
 				{
 					sb.ClearStr();
-					me->currDB->GetLastErrorMsg(sb);
+					currDB->GetLastErrorMsg(sb);
 					me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), me);
 				}
 			}
@@ -396,9 +401,10 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB && me->currDB->IsDBTool())
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB) && currDB->IsDBTool())
 	{
-		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
+		NotNullPtr<DB::ReadingDBTool> db = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB);
 		{
 			NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerSQLFile", false);
 			dlg->SetAllowMultiSel(false);
@@ -434,13 +440,14 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	if (me->currDB->IsDBTool() && ((DB::ReadingDBTool*)me->currDB)->CanModify())
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB) && currDB->IsDBTool() && NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->CanModify())
 	{
 		UOSInt index = me->lvSvrConn->GetSelectedIndex();
 		if (index != INVALID_INDEX)
 		{
 			Int32 id = (Int32)(OSInt)me->lvSvrConn->GetItem(index);
-			if (((DB::DBTool*)me->currDB)->KillConnection(id))
+			if (NotNullPtr<DB::DBTool>::ConvertFrom(currDB)->KillConnection(id))
 			{
 				me->UpdateSvrConnList();
 			}
@@ -451,19 +458,21 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
-	DB::ReadingDBTool *db = 0;
-	if (me->currDB && me->currDB->IsDBTool())
+	Optional<DB::ReadingDBTool> db = 0;
+	NotNullPtr<DB::ReadingDBTool> nndb;
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (me->currDB.SetTo(currDB) && currDB->IsDBTool())
 	{
-		db = (DB::ReadingDBTool*)me->currDB;
+		db = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB);
 	}
 	Bool isSQLTab = (me->tcMain->GetSelectedPage().OrNull() == me->tpSQL.Ptr());
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
 	{
-		if (isSQLTab && db && files[i]->EndsWith(UTF8STRC(".sql")))
+		if (isSQLTab && db.SetTo(nndb) && files[i]->EndsWith(UTF8STRC(".sql")))
 		{
-			me->RunSQLFile(db, files[i]);
+			me->RunSQLFile(nndb, files[i]);
 		}
 		else
 		{
@@ -482,7 +491,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 			}
 			if (nndb.Set(db))
 			{
-				DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
+				NotNullPtr<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
 				me->dbList.Add(ctrl);
 				Text::StringBuilderUTF8 sb;
 				ctrl->GetConnName(sb);
@@ -496,13 +505,14 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 {
 	this->lbDatabase->ClearItems();
-	if (this->currDB == 0)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (!this->currDB.SetTo(currDB))
 	{
 		return;
 	}
 	NotNullPtr<Text::String> dbName;
 	Data::ArrayListStringNN dbNames;
-	this->currDB->GetDatabaseNames(dbNames);
+	currDB->GetDatabaseNames(dbNames);
 	ArtificialQuickSort_SortAList(&dbNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = dbNames.Iterator();
 	while (it.HasNext())
@@ -510,14 +520,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 		dbName = it.Next();
 		this->lbDatabase->AddItem(dbName, 0);
 	}
-	this->currDB->ReleaseDatabaseNames(dbNames);
+	currDB->ReleaseDatabaseNames(dbNames);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 {
 	this->lbSchema->ClearItems();
 	this->lbMapSchema->ClearItems();
-	if (this->currDB == 0)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (!this->currDB.SetTo(currDB))
 	{
 		return;
 	}
@@ -525,7 +536,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 	UOSInt i;
 	UOSInt j;
 
-	this->currDB->QuerySchemaNames(schemaNames);
+	currDB->QuerySchemaNames(schemaNames);
 	if (schemaNames.GetCount() == 0)
 	{
 		this->lbSchema->AddItem(CSTR(""), 0);
@@ -549,7 +560,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 {
 	this->lbTable->ClearItems();
-	if (this->currDB == 0)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (!this->currDB.SetTo(currDB))
 	{
 		return;
 	}
@@ -557,7 +569,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	NotNullPtr<Text::String> tableName;
 	Data::ArrayListStringNN tableNames;
 	UOSInt i = 0;
-	UOSInt j = this->currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
+	UOSInt j = currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	OPTSTR_DEL(schemaName);
 	ArtificialQuickSort_SortAList(&tableNames);
 	while (i < j)
@@ -572,14 +584,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
 {
 	this->lbMapTable->ClearItems();
-	if (this->currDB == 0)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (!this->currDB.SetTo(currDB))
 	{
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbMapSchema->GetSelectedItemTextNew();
 	NotNullPtr<Text::String> tableName;
 	Data::ArrayListStringNN tableNames;
-	this->currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
+	currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	OPTSTR_DEL(schemaName);
 	ArtificialQuickSort_SortAList(&tableNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();
@@ -596,7 +609,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	this->lvTable->ClearItems();
 	this->lvTableResult->ClearItems();
 	NotNullPtr<Text::String> nntableName;
-	if (!tableName.SetTo(nntableName) || this->currDB == 0)
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (!tableName.SetTo(nntableName) || !this->currDB.SetTo(currDB))
 	{
 		return;
 	}
@@ -606,9 +620,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	NotNullPtr<Text::String> s;
 	DB::TableDef *tabDef = 0;
 	NotNullPtr<DB::DBReader> r;
-	tabDef = this->currDB->GetTableDef(schemaName, nntableName->ToCString());
+	tabDef = currDB->GetTableDef(schemaName, nntableName->ToCString());
 
-	if (this->currDB->QueryTableData(schemaName, nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0).SetTo(r))
+	if (currDB->QueryTableData(schemaName, nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0).SetTo(r))
 	{
 		UpdateResult(r, this->lvTableResult);
 
@@ -627,7 +641,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 					this->lvTable->SetSubItem(k, 2, s);
 				this->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				this->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
-				this->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
+				if (col->IsAutoInc())
+				{
+					if (col->GetAutoIncType() == DB::ColDef::AutoIncType::Always)
+						sptr = Text::StrConcatC(sbuff, UTF8STRC("Always ("));
+					else
+						sptr = Text::StrConcatC(sbuff, UTF8STRC("Default ("));
+					sptr = Text::StrInt64(sptr, col->GetAutoIncStartIndex());
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
+					sptr = Text::StrInt64(sptr, col->GetAutoIncStep());
+					sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
+					this->lvTable->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+				}
 				if (col->GetDefVal().SetTo(s))
 					this->lvTable->SetSubItem(k, 6, s);
 				if (col->GetAttr().SetTo(s))
@@ -661,7 +686,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 			}
 		}
 
-		this->currDB->CloseReader(r);
+		currDB->CloseReader(r);
 	}
 	else
 	{
@@ -754,11 +779,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 	Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> vars;
 	Data::TwinItem<Optional<Text::String>, Optional<Text::String>> item(0);
 	this->lvVariable->ClearItems();
-	if (this->currDB->IsDBTool())
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (this->currDB.SetTo(currDB) && currDB->IsDBTool())
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i = 0;
-		UOSInt j = ((DB::ReadingDBTool*)this->currDB)->GetVariables(&vars);
+		UOSInt j = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->GetVariables(&vars);
 		while (i < j)
 		{
 			item = vars.GetItem(i);
@@ -766,7 +792,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 			if (item.value.SetTo(s)) this->lvVariable->SetSubItem(i, 1, s);
 			i++;
 		}
-		((DB::ReadingDBTool*)this->currDB)->FreeVariables(&vars);
+		NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeVariables(&vars);
 	}
 }
 
@@ -775,13 +801,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	this->lvSvrConn->ClearItems();
-	if (this->currDB->IsDBTool())
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (this->currDB.SetTo(currDB) && currDB->IsDBTool())
 	{
 		Data::ArrayList<DB::ReadingDBTool::ConnectionInfo*> conns;
 		DB::ReadingDBTool::ConnectionInfo *conn;
 		NotNullPtr<Text::String> s;
 		UOSInt i = 0;
-		UOSInt j = ((DB::ReadingDBTool*)this->currDB)->GetConnectionInfo(&conns);
+		UOSInt j = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->GetConnectionInfo(&conns);
 		while (i < j)
 		{
 			conn = conns.GetItem(i);
@@ -797,11 +824,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 			if (conn->sql.SetTo(s)) this->lvSvrConn->SetSubItem(i, 7, s);
 			i++;
 		}
-		((DB::ReadingDBTool*)this->currDB)->FreeConnectionInfo(&conns);
+		NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeConnectionInfo(&conns);
 	}
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName)
+void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NotNullPtr<DB::ReadingDBTool> db, NotNullPtr<Text::String> fileName)
 {
 	UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UOSInt rowInd;
@@ -846,12 +873,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNull
 						this->ui->ProcessMessages();
 					}
 				}
-				this->currDB->CloseReader(r);
+				db->CloseReader(r);
 			}
 			else
 			{
 				sb.ClearStr();
-				this->currDB->GetLastErrorMsg(sb);
+				db->GetLastErrorMsg(sb);
 				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 				break;
 			}
@@ -867,7 +894,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNull
 Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NotNullPtr<DB::ReadingDB> db;
-	if (db.Set(this->currDB))
+	if (this->currDB.SetTo(db))
 	{
 		return DB::DBExporter::CreateTableClass(db, schemaName, tableName);
 	}
@@ -881,7 +908,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::SQLType sqlType, Bool
 	DB::SQLBuilder sql(sqlType, axisAware, 0);
 	NotNullPtr<DB::TableDef> tabDef;
 	NotNullPtr<Text::String> nntableName;
-	if (tableName.SetTo(nntableName) && tabDef.Set(this->currDB->GetTableDef(OPTSTR_CSTR(schemaName), nntableName->ToCString())))
+	NotNullPtr<DB::ReadingDB> currDB;
+	if (this->currDB.SetTo(currDB) && tableName.SetTo(nntableName) && tabDef.Set(currDB->GetTableDef(OPTSTR_CSTR(schemaName), nntableName->ToCString())))
 	{
 		if (!DB::SQLGenerator::GenCreateTableCmd(sql, OPTSTR_CSTR(schemaName), nntableName->ToCString(), tabDef, true))
 		{
@@ -906,7 +934,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -950,7 +978,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -992,7 +1020,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -1035,7 +1063,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableHTML()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -1077,7 +1105,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTablePList()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -1119,7 +1147,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableXLSX()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -1162,7 +1190,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableExcelXML()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::ReadingDB> db;
-	if (!db.Set(this->currDB))
+	if (!this->currDB.SetTo(db))
 	{
 		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
@@ -1430,15 +1458,15 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
-	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
+	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), this->dbList, this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
 	{
 		Text::StringBuilderUTF8 sb;
-		DB::DBManagerCtrl *ctrl;
+		NotNullPtr<DB::DBManagerCtrl> ctrl;
 		UOSInt i = 0;
 		UOSInt j = this->dbList.GetCount();
 		while (i < j)
 		{
-			ctrl = this->dbList.GetItem(i);
+			ctrl = this->dbList.GetItemNoCheck(i);
 			sb.ClearStr();
 			ctrl->GetConnName(sb);
 			this->lbConn->AddItem(sb.ToCString(), ctrl);
@@ -1467,13 +1495,13 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
-	DB::DBManager::StoreConn(CSTRP(sbuff, sptr), &this->dbList);
+	DB::DBManager::StoreConn(CSTRP(sbuff, sptr), this->dbList);
 	UOSInt i = this->dbList.GetCount();
-	DB::DBManagerCtrl *ctrl;
+	NotNullPtr<DB::DBManagerCtrl> ctrl;
 	while (i-- > 0)
 	{
-		ctrl = this->dbList.GetItem(i);
-		DEL_CLASS(ctrl);
+		ctrl = this->dbList.GetItemNoCheck(i);
+		ctrl.Delete();
 	}
 	SDEL_CLASS(this->currCond);
 	this->ssl.Delete();
@@ -1485,6 +1513,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	NotNullPtr<DB::DBConn> conn;
+	NotNullPtr<DB::ReadingDB> db;
 	switch (cmdId)
 	{
 	case MNU_CONN_ODBCDSN:
@@ -1549,7 +1578,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TOOL_COPY_TABLES:
 		{
-			SSWR::AVIRead::AVIRDBCopyTablesForm dlg(0, this->ui, this->core, &this->dbList);
+			SSWR::AVIRead::AVIRDBCopyTablesForm dlg(0, this->ui, this->core, this->dbList);
 			UOSInt i = this->lbConn->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
@@ -1563,8 +1592,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i = this->lbConn->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
-				DB::DBManagerCtrl *ctrl = this->dbList.RemoveAt(i);
-				DEL_CLASS(ctrl);
+				NotNullPtr<DB::DBManagerCtrl> ctrl;
+				if (this->dbList.RemoveAt(i).SetTo(ctrl))
+				{
+					ctrl.Delete();
+				}
 				this->lbConn->RemoveItem(i);
 			}
 		}
@@ -1575,8 +1607,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			NotNullPtr<DB::DBManagerCtrl> ctrl;
 			if (this->lbConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl))
 			{
-				Text::String *connStr = ctrl->GetConnStr();
-				if (connStr)
+				NotNullPtr<Text::String> connStr;
+				if (ctrl->GetConnStr().SetTo(connStr))
 				{
 					UI::Clipboard::SetString(this->GetHandle(), connStr->ToCString());
 				}
@@ -1588,7 +1620,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_SCHEMA_NEW:
-		if (this->currDB && this->currDB->IsDBTool() && ((DB::ReadingDBTool*)this->currDB)->CanModify())
+		if (this->currDB.SetTo(db) && db->IsDBTool() && NotNullPtr<DB::ReadingDBTool>::ConvertFrom(db)->CanModify())
 		{
 			UtilUI::TextInputDialog dlg(0, this->ui, this->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter schema name to create"));
 			if (dlg.ShowDialog(this))
@@ -1596,7 +1628,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				if (dlg.GetInputString(sb))
 				{
-					if (((DB::DBTool*)this->currDB)->CreateSchema(sb.ToCString()))
+					if (NotNullPtr<DB::DBTool>::ConvertFrom(db)->CreateSchema(sb.ToCString()))
 					{
 						this->UpdateSchemaList();
 					}
@@ -1604,7 +1636,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in creating schema: "));
-						this->currDB->GetLastErrorMsg(sb);
+						db->GetLastErrorMsg(sb);
 						this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 					}
 				}
@@ -1612,7 +1644,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_SCHEMA_DELETE:
-		if (this->currDB && this->currDB->IsDBTool() && ((DB::ReadingDBTool*)this->currDB)->CanModify())
+		if (this->currDB.SetTo(db) && db->IsDBTool() && NotNullPtr<DB::ReadingDBTool>::ConvertFrom(db)->CanModify())
 		{
 			NotNullPtr<Text::String> schemaName;
 			if (this->lbSchema->GetSelectedItemTextNew().SetTo(schemaName))
@@ -1625,7 +1657,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 					sb.AppendC(UTF8STRC("? This process cannot be undo."));
 					if (this->ui->ShowMsgYesNo(sb.ToCString(), CSTR("DB Manager"), this))
 					{
-						if (((DB::DBTool*)this->currDB)->DeleteSchema(schemaName->ToCString()))
+						if (NotNullPtr<DB::DBTool>::ConvertFrom(db)->DeleteSchema(schemaName->ToCString()))
 						{
 							this->UpdateSchemaList();
 						}
@@ -1635,7 +1667,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 							sb.AppendC(UTF8STRC("Error in deleting schema "));
 							sb.Append(schemaName);
 							sb.AppendC(UTF8STRC(": "));
-							this->currDB->GetLastErrorMsg(sb);
+							db->GetLastErrorMsg(sb);
 							this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 						}
 					}
@@ -1649,15 +1681,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Optional<Text::String> tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::String *databaseName = 0;
-			NotNullPtr<DB::ReadingDB> db;
 			NotNullPtr<Text::String> nntableName;
 			if (!tableName.SetTo(nntableName))
 			{
 				this->ui->ShowMsgOK(CSTR("Select table first"), CSTR("DB Manager"), this);
 			}
-			else if (db.Set(this->currDB))
+			else if (this->currDB.SetTo(db))
 			{
-				databaseName = this->currDB->GetCurrDBName();
+				databaseName = db->GetCurrDBName();
 				Text::StringBuilderUTF8 sb;
 				DB::JavaDBUtil::ToJavaEntity(sb, schemaName, nntableName, databaseName, db);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
@@ -1736,9 +1767,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 			NotNullPtr<Text::String> tableName;
-			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
+			if (this->currDB.SetTo(db) && this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->currDB, OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, db, OPTSTR_CSTR(schemaName), tableName->ToCString());
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -1755,9 +1786,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 			NotNullPtr<Text::String> tableName;
-			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
+			if (this->currDB.SetTo(db) && this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->currDB, OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, db, OPTSTR_CSTR(schemaName), tableName->ToCString());
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -1776,7 +1807,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(NotNullPtr<DB::DBConn> conn)
 {
 	NotNullPtr<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, this->log, CSTR("DB: ")));
-	DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetSocketFactory(), this->core->GetParserList());
+	NotNullPtr<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetSocketFactory(), this->core->GetParserList());
 	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(sb);

@@ -319,7 +319,7 @@ const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize
 }
 
 
-DB::DBRow::DBRow(TableDef *table)
+DB::DBRow::DBRow(NotNullPtr<TableDef> table)
 {
 	this->table = table;
 	NotNullPtr<DB::ColDef> col;
@@ -886,7 +886,7 @@ void DB::DBRow::AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 	}
 }
 
-DB::TableDef *DB::DBRow::GetTableDef()
+NotNullPtr<DB::TableDef> DB::DBRow::GetTableDef()
 {
 	return this->table;
 }

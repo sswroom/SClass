@@ -20,8 +20,8 @@ namespace DB
 		NotNullPtr<IO::LogTool> log;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Optional<Parser::ParserList> parsers;
-		Text::String *connStr;
-		DB::ReadingDB *db;
+		Optional<Text::String> connStr;
+		Optional<DB::ReadingDB> db;
 		ConnStatus status;
 
 		DBManagerCtrl(NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
@@ -31,14 +31,14 @@ namespace DB
 		Bool Connect();
 		void Disconnect();
 		ConnStatus GetStatus();
-		Text::String *GetConnStr();
-		DB::ReadingDB *GetDB();
+		Optional<Text::String> GetConnStr();
+		Optional<DB::ReadingDB> GetDB();
 		void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 
-		static DBManagerCtrl *Create(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
-		static DBManagerCtrl *Create(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
-		static DBManagerCtrl *Create(NotNullPtr<DB::DBTool> db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
-		static DBManagerCtrl *CreateFromFile(NotNullPtr<DB::ReadingDB> db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Parser::ParserList> parsers);
+		static NotNullPtr<DBManagerCtrl> Create(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		static NotNullPtr<DBManagerCtrl> Create(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		static NotNullPtr<DBManagerCtrl> Create(NotNullPtr<DB::DBTool> db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		static NotNullPtr<DBManagerCtrl> CreateFromFile(NotNullPtr<DB::ReadingDB> db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Parser::ParserList> parsers);
 	};
 }
 #endif

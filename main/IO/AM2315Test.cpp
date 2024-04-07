@@ -12,8 +12,8 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	IO::GPIOPin *sdaPin;
-	IO::GPIOPin *sclPin;
+	NotNullPtr<IO::GPIOPin> sdaPin;
+	NotNullPtr<IO::GPIOPin> sclPin;
 	IO::Device::AM2315GPIO *am2315;
 	IO::ConsoleWriter console;
 	Double temp;
@@ -36,8 +36,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC(" (SCL)"));
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	IO::GPIOControl gpioCtrl;
-	NEW_CLASS(sdaPin, IO::GPIOPin(gpioCtrl, pinNum1));
-	NEW_CLASS(sclPin, IO::GPIOPin(gpioCtrl, pinNum2));
+	NEW_CLASSNN(sdaPin, IO::GPIOPin(gpioCtrl, pinNum1));
+	NEW_CLASSNN(sclPin, IO::GPIOPin(gpioCtrl, pinNum2));
 	NEW_CLASS(am2315, IO::Device::AM2315GPIO(sdaPin, sclPin));
 	if (gpioCtrl.IsError() || sdaPin->IsError() || sclPin->IsError())
 	{
@@ -47,14 +47,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		while (true)
 		{
-			if (am2315->ReadTemperature(&temp))
+			if (am2315->ReadTemperature(temp))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Temp = "));
 				sb.AppendDouble(temp);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 
-				if (am2315->ReadRH(&rh))
+				if (am2315->ReadRH(rh))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("RH = "));
@@ -75,7 +75,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 	}
 	DEL_CLASS(am2315);
-	DEL_CLASS(sdaPin);
-	DEL_CLASS(sclPin);
+	sdaPin.Delete();
+	sclPin.Delete();
 	return 0;
 }

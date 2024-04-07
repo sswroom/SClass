@@ -29,7 +29,7 @@ namespace SSWR
 				Data::Timestamp lastUpdateTime;
 				NotNullPtr<Text::StringBuilderUTF8> sbInsert;
 				UOSInt nInsert;
-				DB::DBConn *db;
+				Optional<DB::DBConn> db;
 			};
 		private:
 			NotNullPtr<UI::GUILabel> lblSchema;
@@ -82,7 +82,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<UOSInt> colInd;
-			DB::ReadingDB *db;
+			NotNullPtr<DB::ReadingDB> db;
 			Text::CString schema;
 			Text::CStringNN table;
 
@@ -108,7 +108,7 @@ namespace SSWR
 			Text::CString GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:
-			AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CStringNN table);
+			AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table);
 			virtual ~AVIRDBCheckChgForm();
 
 			virtual void OnMonitorChanged();

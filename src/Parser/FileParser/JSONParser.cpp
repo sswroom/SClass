@@ -86,12 +86,12 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(NotNullPtr<IO::St
 		return 0;
 	}
 
-	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName(), targetType, pkgFile, this->parsers);
+	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName().OrEmpty(), targetType, pkgFile, this->parsers);
 	fileJSON->EndUse();
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
@@ -254,8 +254,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 	{
 		return 0;
 	}
-	DB::JSONDB *db;
-	NEW_CLASS(db, DB::JSONDB(sourceName, layerName, dataArr));
+	NotNullPtr<DB::JSONDB> db;
+	NEW_CLASSNN(db, DB::JSONDB(sourceName, layerName, dataArr));
 	if (targetType == IO::ParserType::Unknown || targetType == IO::ParserType::MapLayer)
 	{
 		Map::DBMapLayer *layer;
@@ -266,7 +266,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		}
 		DEL_CLASS(layer);
 	}
-	return db;
+	return db.Ptr();
 }
 
 Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)

@@ -336,8 +336,8 @@ Int32 AXCAN_BYDC9RTest()
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Reader reader(fs);
 	TestCANHandler hdlr;
-	IO::Device::AXCAN axcan(&hdlr);
-	axcan.ParseReader(&reader);
+	IO::Device::AXCAN axcan(hdlr);
+	axcan.ParseReader(reader);
 	return 0;
 }
 

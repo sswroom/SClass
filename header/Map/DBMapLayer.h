@@ -59,7 +59,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 
-		Bool SetDatabase(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Bool releaseDB);
+		Bool SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Bool releaseDB);
 	};
 }
 #endif

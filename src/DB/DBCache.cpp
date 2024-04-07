@@ -13,8 +13,8 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	mutUsage.EndUse();
 	if (table)
 		return table;
-	DB::TableDef *def = this->model->GetTable(tableName);
-	if (def == 0)
+	NotNullPtr<DB::TableDef> def;
+	if (!def.Set(this->model->GetTable(tableName)))
 	{
 		return 0;
 	}
@@ -45,7 +45,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	return table;
 }
 
-DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
+DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(NotNullPtr<DB::TableDef> tableDef)
 {
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
@@ -203,7 +203,7 @@ void DB::DBCache::FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows)
 	NotNullPtr<DB::DBRow> row;
 	if (rows->GetCount() > 0 && rows->GetItem(0).SetTo(row))
 	{
-		DB::TableDef *table = row->GetTableDef();
+		NotNullPtr<DB::TableDef> table = row->GetTableDef();
 		DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(table);
 		if (tableInfo->dataCnt >= this->cacheCnt)
 		{

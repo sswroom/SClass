@@ -271,7 +271,7 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 	}
 }
 
-Bool DB::DBTool::DeleteTableData(Text::CString schemaName, Text::CString tableName)
+Bool DB::DBTool::DeleteTableData(Text::CString schemaName, Text::CStringNN tableName)
 {
 	DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 	DB::SQLGenerator::GenTruncateTableCmd(sql, schemaName, tableName);

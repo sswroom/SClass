@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CString table) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Export Table Data as SQL"));

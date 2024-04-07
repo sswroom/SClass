@@ -42,7 +42,7 @@ namespace DB
 			FieldData currentData;
 		};
 	private:
-		TableDef *table;
+		NotNullPtr<TableDef> table;
 		Data::StringUTF8Map<Field*> dataMap;
 
 		void FreeField(Field *field);
@@ -65,7 +65,7 @@ namespace DB
 		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize) const;
 
 	public:
-		DBRow(TableDef *table);
+		DBRow(NotNullPtr<TableDef> table);
 		~DBRow();
 
 		Bool SetByReader(NotNullPtr<DB::DBReader> r, Bool commit);
@@ -96,7 +96,7 @@ namespace DB
 		void AppendTableName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		void AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const;
 
-		TableDef *GetTableDef();
+		NotNullPtr<TableDef> GetTableDef();
 	};
 }
 #endif

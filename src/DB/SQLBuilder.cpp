@@ -137,7 +137,7 @@ void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
 	this->sb.SetEndPtr(DB::DBUtil::SDBBin(this->sb.GetEndPtr(), buff, buffSize, this->sqlType));
 }
 
-void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
+void DB::SQLBuilder::AppendTableName(NotNullPtr<DB::TableDef> table)
 {
 	NotNullPtr<Text::String> name;
 	if (table->GetDatabaseName().SetTo(name))
@@ -209,4 +209,9 @@ NotNullPtr<Text::String> DB::SQLBuilder::ToNewString() const
 DB::SQLType DB::SQLBuilder::GetSQLType() const
 {
 	return this->sqlType;
+}
+
+Bool DB::SQLBuilder::SupportSchema() const
+{
+	return this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::PostgreSQL;
 }

@@ -17,7 +17,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> jso
 	UTF8Char sbuff[64];
 	DB::DBRow::DataType dtype;
 	NotNullPtr<Math::Geometry::Vector2D> vec;
-	DB::TableDef *table = row->GetTableDef();
+	NotNullPtr<DB::TableDef> table = row->GetTableDef();
 	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
 	while (it.HasNext())
 	{

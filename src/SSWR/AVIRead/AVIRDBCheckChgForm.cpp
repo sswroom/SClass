@@ -131,14 +131,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 		me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::DBConn *db;
+	NotNullPtr<DB::DBConn> db;
 	if (me->db->IsFullConn())
 	{
-		db = (DB::DBConn*)me->db;
+		db = NotNullPtr<DB::DBConn>::ConvertFrom(me->db);
 	}
 	else if (me->db->IsDBTool())
 	{
-		db = ((DB::ReadingDBTool*)me->db)->GetDBConn().Ptr();
+		db = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(me->db)->GetDBConn();
 	}
 	else
 	{
@@ -1838,6 +1838,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<SQLSession> sess)
 {
+		NotNullPtr<DB::DBConn> db;
 	if (sess->mode == 0)
 	{
 		if (sess->stm->Write(sql.v, sql.leng) != sql.leng)
@@ -1851,9 +1852,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<
 		sess->totalCnt++;
 		return true;
 	}
-	else if (sess->mode == 1)
+	else if (sess->mode == 1 && sess->db.SetTo(db))
 	{
-		if (sess->db->ExecuteNonQuery(sql) >= 0)
+		if (db->ExecuteNonQuery(sql) >= 0)
 		{
 			sess->totalCnt++;
 			this->UpdateStatus(sess);
@@ -1864,14 +1865,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<
 		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	else if (sess->mode == 2)
+	else if (sess->mode == 2 && sess->db.SetTo(db))
 	{
 		if (sql.StartsWith(UTF8STRC("insert into ")))
 		{
 			UOSInt i = sql.IndexOf(UTF8STRC(") values ("));
 			if (i == INVALID_INDEX)
 			{
-				if (sess->db->ExecuteNonQuery(sql) >= 0)
+				if (db->ExecuteNonQuery(sql) >= 0)
 				{
 					sess->totalCnt++;
 					this->UpdateStatus(sess);
@@ -1880,7 +1881,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					sess->db->GetLastErrorMsg(sb);
+					db->GetLastErrorMsg(sb);
 					this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 					return false;
 				}
@@ -1897,7 +1898,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<
 			sess->nInsert++;
 			if (sess->nInsert >= 250)
 			{
-				if (sess->db->ExecuteNonQuery(sess->sbInsert->ToCString()) >= 0)
+				if (db->ExecuteNonQuery(sess->sbInsert->ToCString()) >= 0)
 				{
 					sess->totalCnt += sess->nInsert;
 					sess->nInsert = 0;
@@ -1915,7 +1916,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<
 			}
 			return true;
 		}
-		else if (sess->db->ExecuteNonQuery(sql) >= 0)
+		else if (db->ExecuteNonQuery(sql) >= 0)
 		{
 			sess->totalCnt++;
 			this->UpdateStatus(sess);
@@ -2047,11 +2048,11 @@ DB::SQLType SSWR::AVIRead::AVIRDBCheckChgForm::GetDBSQLType()
 {
 	if (this->db->IsDBTool())
 	{
-		return ((DB::ReadingDBTool*)this->db)->GetSQLType();
+		return NotNullPtr<DB::ReadingDBTool>::ConvertFrom(this->db)->GetSQLType();
 	}
 	else if (this->db->IsFullConn())
 	{
-		return ((DB::DBConn*)this->db)->GetSQLType();
+		return NotNullPtr<DB::DBConn>::ConvertFrom(this->db)->GetSQLType();
 	}
 	else
 	{
@@ -2059,7 +2060,7 @@ DB::SQLType SSWR::AVIRead::AVIRDBCheckChgForm::GetDBSQLType()
 	}
 }
 
-SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Check Table Changes"));

@@ -23,7 +23,11 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuild
 	{
 		if (col->IsAutoInc())
 		{
-			sql->AppendCmdC(CSTR(" IDENTITY(1,1)"));
+			sql->AppendCmdC(CSTR(" IDENTITY("));
+			sql->AppendInt64(col->GetAutoIncStartIndex());
+			sql->AppendCmdC(CSTR(","));
+			sql->AppendInt64(col->GetAutoIncStep());
+			sql->AppendCmdC(CSTR(")"));
 		}
 	}
 	else if (sqlType == DB::SQLType::MySQL)
@@ -881,15 +885,18 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 	}
 }
 
-Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, NotNullPtr<DB::TableDef> tabDef, Bool multiline)
+Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, NotNullPtr<DB::TableDef> tabDef, Bool multiline)
 {
 	DB::SQLType sqlType = sql->GetSQLType();
 	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
 	Bool found;
 	UOSInt pkCnt = tabDef->CountPK();
+	Bool hasAutoInc = false;
+	Int64 autoIncStart = 1;
+//	Int64 autoIncStep = 1;
 	NotNullPtr<DB::ColDef> col;
 	sql->AppendCmdC(CSTR("create table "));
-	if (schemaName.leng > 0)
+	if (schemaName.leng > 0 && sql->SupportSchema())
 	{
 		sql->AppendCol(schemaName.v);
 		sql->AppendCmdC(CSTR("."));
@@ -912,7 +919,6 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 	}
 	else if (sqlType == DB::SQLType::SQLite)
 	{
-		Bool hasAutoInc = false;
 		found = false;
 		it = tabDef->ColIterator();
 		while (it.HasNext())
@@ -958,6 +964,12 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 			if (found) sql->AppendCmdC(CSTR(", "));
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
 			AppendColDef(sqlType, sql, col, pkCnt);
+			if (col->IsAutoInc())
+			{
+				hasAutoInc = true;
+				autoIncStart = col->GetAutoIncStartIndex();
+//				autoIncStep = col->GetAutoIncStep();
+			}
 			found = true;
 		}
 		it = tabDef->ColIterator();
@@ -1001,23 +1013,29 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 			sql->AppendCmdC(CSTR(" DEFAULT CHARSET="));
 			sql->AppendCmdC(s->ToCString());
 		}
+		if (hasAutoInc)
+		{
+			sql->AppendCmdC(CSTR(" AUTO_INCREMENT="));
+			sql->AppendInt64(autoIncStart);
+		}
 	}
 	return true;
 }
 
-Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, NotNullPtr<DB::DBReader> r)
+Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, NotNullPtr<DB::DBReader> r)
 {
 	return GenInsertCmd(sql, schemaName, tableName, 0, r);
 }
 
-Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, DB::TableDef *tabDef, NotNullPtr<DB::DBReader> r)
+Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, NotNullPtr<DB::TableDef> tabDef, NotNullPtr<DB::DBReader> r)
 {
 	return GenInsertCmd(sql, OPTSTR_CSTR(tabDef->GetSchemaName()), tabDef->GetTableName()->ToCString(), tabDef, r);
 }
 
-Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef, NotNullPtr<DB::DBReader> r)
+Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, Optional<DB::TableDef> tabDef, NotNullPtr<DB::DBReader> r)
 {
 	UTF8Char tmpBuff[256];
+	NotNullPtr<DB::TableDef> nntabDef;
 	DB::DBUtil::ColType colType;
 	UOSInt i;
 	UOSInt j;
@@ -1026,7 +1044,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 	Data::DateTime dt;
 
 	sql->AppendCmdC(CSTR("insert into "));
-	if (schemaName.leng > 0)
+	if (schemaName.leng > 0 && sql->SupportSchema())
 	{
 		sql->AppendCol(schemaName.v);
 		sql->AppendCmdC(CSTR("."));
@@ -1044,11 +1062,11 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 		sql->AppendCol(tmpBuff);
 		i++;
 	}
-	if (tabDef && sql->GetSQLType() == DB::SQLType::PostgreSQL)
+	if (tabDef.SetTo(nntabDef) && sql->GetSQLType() == DB::SQLType::PostgreSQL)
 	{
 		Bool hasAutoIncAlways = false;
 		NotNullPtr<DB::ColDef> col;
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tabDef->ColIterator();
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = nntabDef->ColIterator();
 		while (it.HasNext())
 		{
 			col = it.Next();
@@ -1205,17 +1223,22 @@ Bool DB::SQLGenerator::GenDeleteSchemaCmd(NotNullPtr<DB::SQLBuilder> sql, Text::
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDropTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString tableName)
+Bool DB::SQLGenerator::GenDropTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName)
 {
 	sql->AppendCmdC(CSTR("drop table "));
+	if (schemaName.leng > 0 && sql->SupportSchema())
+	{
+		sql->AppendCol(schemaName.v);
+		sql->AppendCmdC(CSTR("."));
+	}
 	sql->AppendCol(tableName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDeleteTableDataCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName)
+Bool DB::SQLGenerator::GenDeleteTableDataCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName)
 {
 	sql->AppendCmdC(CSTR("delete from "));
-	if (schemaName.leng > 0)
+	if (schemaName.leng > 0 && sql->SupportSchema())
 	{
 		sql->AppendCol(schemaName.v);
 		sql->AppendCmdC(CSTR("."));
@@ -1224,10 +1247,10 @@ Bool DB::SQLGenerator::GenDeleteTableDataCmd(NotNullPtr<DB::SQLBuilder> sql, Tex
 	return true;
 }
 
-Bool DB::SQLGenerator::GenTruncateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName)
+Bool DB::SQLGenerator::GenTruncateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName)
 {
 	sql->AppendCmdC(CSTR("truncate table "));
-	if (schemaName.leng > 0)
+	if (schemaName.leng > 0 && sql->SupportSchema())
 	{
 		sql->AppendCol(schemaName.v);
 		sql->AppendCmdC(CSTR("."));
@@ -1236,10 +1259,11 @@ Bool DB::SQLGenerator::GenTruncateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text:
 	return true;
 }
 
-DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::SQLBuilder> sql, DB::TableDef *tabDef, DB::PageRequest *page)
+DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::SQLBuilder> sql, NotNullPtr<DB::TableDef> tabDef, Optional<DB::PageRequest> page)
 {
 	DB::SQLGenerator::PageStatus status;
-	if (page)
+	NotNullPtr<DB::PageRequest> nnpage;
+	if (page.NotNull())
 	{
 		status = PageStatus::NoPage;
 	}
@@ -1252,10 +1276,10 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 	it = tabDef->ColIterator();
 	Bool found = false;
 	sql->AppendCmdC(CSTR("select "));
-	if (page && (sql->GetSQLType() == DB::SQLType::Access))
+	if (page.SetTo(nnpage) && (sql->GetSQLType() == DB::SQLType::Access))
 	{
 		sql->AppendCmdC(CSTR("TOP "));
-		sql->AppendInt32((Int32)((page->GetPageNum() + 1) * page->GetPageSize()));
+		sql->AppendInt32((Int32)((nnpage->GetPageNum() + 1) * nnpage->GetPageSize()));
 		status = PageStatus::NoOffset;
 	}
 	while (it.HasNext())
@@ -1268,25 +1292,25 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 	}
 	sql->AppendCmdC(CSTR(" from "));
 	sql->AppendTableName(tabDef);
-	if (page)
+	if (page.SetTo(nnpage))
 	{
 		Bool hasOrder = false;
 		UOSInt i = 1;
-		UOSInt j = page->GetSortingCount();
+		UOSInt j = nnpage->GetSortingCount();
 		if (j > 0)
 		{
 			hasOrder = true;
 			sql->AppendCmdC(CSTR(" order by "));
-			sql->AppendCol(page->GetSortColumn(0));
-			if (page->IsSortDesc(0))
+			sql->AppendCol(nnpage->GetSortColumn(0));
+			if (nnpage->IsSortDesc(0))
 			{
 				sql->AppendCmdC(CSTR(" desc"));
 			}
 			while (i < j)
 			{
 				sql->AppendCmdC(CSTR(", "));
-				sql->AppendCol(page->GetSortColumn(i));
-				if (page->IsSortDesc(i))
+				sql->AppendCol(nnpage->GetSortColumn(i));
+				if (nnpage->IsSortDesc(i))
 				{
 					sql->AppendCmdC(CSTR(" desc"));
 				}
@@ -1297,9 +1321,9 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 		if (sql->GetSQLType() == DB::SQLType::MySQL)
 		{
 			sql->AppendCmdC(CSTR(" LIMIT "));
-			sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
+			sql->AppendInt32((Int32)(nnpage->GetPageNum() * nnpage->GetPageSize()));
 			sql->AppendCmdC(CSTR(", "));
-			sql->AppendInt32((Int32)page->GetPageSize());
+			sql->AppendInt32((Int32)nnpage->GetPageSize());
 			status = PageStatus::Succ;
 		}
 		else if (sql->GetSQLType() == DB::SQLType::MSSQL)
@@ -1330,9 +1354,9 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 			{
 				status = PageStatus::Succ;
 				sql->AppendCmdC(CSTR(" offset "));
-				sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
+				sql->AppendInt32((Int32)(nnpage->GetPageNum() * nnpage->GetPageSize()));
 				sql->AppendCmdC(CSTR(" row fetch next "));
-				sql->AppendInt32((Int32)page->GetPageSize());
+				sql->AppendInt32((Int32)nnpage->GetPageSize());
 				sql->AppendCmdC(CSTR(" row only"));
 			}
 			else
@@ -1344,7 +1368,7 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 	return status;
 }
 
-UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::SQLType sqlType, Text::CString tableName, DB::DBReader *r)
+UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::SQLType sqlType, Text::CString schemaName, Text::CStringNN tableName, NotNullPtr<DB::DBReader> r)
 {
 	UTF8Char *currPtr;
 	UTF8Char tmpBuff[256];
@@ -1352,6 +1376,11 @@ UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::SQLType sqlType, 
 	UOSInt j;
 
 	currPtr = Text::StrConcatC(sqlstr, UTF8STRC("insert into "));
+	if (schemaName.leng > 0)
+	{
+		currPtr = DB::DBUtil::SDBColUTF8(currPtr, schemaName.v, sqlType);
+		currPtr = Text::StrConcatC(currPtr, UTF8STRC("."));
+	}
 	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tableName.v, sqlType);
 	r->GetName(0, tmpBuff);
 	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tmpBuff, sqlType);

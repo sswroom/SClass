@@ -48,7 +48,7 @@ namespace IO
 			virtual void OKLED(Bool ledOn);
 
 			void GetStatus(DeviceStatus *status);
-			CANHandler *GetCANHandler();
+			NotNullPtr<CANHandler> GetCANHandler();
 		};
 	}
 }

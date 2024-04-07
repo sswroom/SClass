@@ -44,7 +44,7 @@ namespace DB
 		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
 		void AppendBinary(const UInt8 *buff, UOSInt buffSize);
 
-		void AppendTableName(DB::TableDef *table);
+		void AppendTableName(NotNullPtr<DB::TableDef> table);
 		void AppendCol(const UTF8Char *val);
 		void AppendCol(const WChar *val);
 		void AppendTrim(Text::CString val);
@@ -55,6 +55,7 @@ namespace DB
 		Text::CStringNN ToCString() const;
 		NotNullPtr<Text::String> ToNewString() const;
 		DB::SQLType GetSQLType() const;
+		Bool SupportSchema() const;
 	};
 }
 #endif

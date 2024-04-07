@@ -31,14 +31,14 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(AnyType userObj
 		Text::UTF8Reader reader(fs);
 		IO::Device::AXCAN *can;
 		NEW_CLASS(can, IO::Device::AXCAN(me->hdlr));
-		can->ParseReader(&reader);
+		can->ParseReader(reader);
 		me->listener = can;
 		me->SetDialogResult(DialogResult::DR_OK);
 	}
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::CANHandler> hdlr) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Select CAN Bus"));
 	this->SetFont(0, 0, 8.25, false);
