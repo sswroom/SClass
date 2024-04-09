@@ -1529,11 +1529,22 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 			tval->second = 0;
 			nanosec.Set(0);
 		}
-		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
+		else if ((nStrs = Text::StrSplitP(strs, 3, strs2[0], ':')) == 3)
 		{
 			Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, defTzQhr);
 //			else
 //				Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
+			TimeValueSetTime(tval, strs, nanosec);
+		}
+		else if (nStrs == 2)
+		{
+			Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, defTzQhr);
+			if (!strs[0].ToUInt8(tval->hour))
+				tval->hour = 0;
+			if (!strs[0].ToUInt8(tval->minute))
+				tval->minute = 0;
+			tval->second = 0;
+			nanosec.Set(0);
 			TimeValueSetTime(tval, strs, nanosec);
 		}
 		else
