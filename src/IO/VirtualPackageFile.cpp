@@ -74,7 +74,7 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 Bool IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NotNullPtr<PackFileItem> item;
-	item = MemAllocNN(PackFileItem, 1);
+	item = MemAllocNN(PackFileItem);
 	item->itemType = IO::PackFileItem::PackItemType::Uncompressed;
 	item->fileOfst = ofst;
 	item->dataLength = dataLength;
@@ -96,7 +96,7 @@ Bool IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst,
 Bool IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NotNullPtr<PackFileItem> item;
-	item = MemAllocNN(PackFileItem, 1);
+	item = MemAllocNN(PackFileItem);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->dataLength = 0;
 	item->fileOfst = 0;
@@ -125,7 +125,7 @@ Bool IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CStringNN n
 Bool IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, IO::PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NotNullPtr<PackFileItem> item;
-	item = MemAllocNN(PackFileItem, 1);
+	item = MemAllocNN(PackFileItem);
 	item->itemType = IO::PackFileItem::PackItemType::Compressed;
 	item->headerType = headerType;
 	item->fileOfst = ofst;
@@ -153,7 +153,7 @@ Bool IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 o
 Bool IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NotNullPtr<PackFileItem> item;
-	item = MemAllocNN(PackFileItem, 1);
+	item = MemAllocNN(PackFileItem);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fileOfst = 0;
 	item->dataLength = 0;

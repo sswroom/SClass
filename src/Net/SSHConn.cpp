@@ -21,7 +21,7 @@ struct Net::SSHConn::ClassData
 Net::SSHConn::SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	this->sockf = sockf;
-	this->clsData = MemAllocNN(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->session = libssh2_session_init();
 	this->clsData->handshakeRet = 0;
 	this->clsData->authen = false;

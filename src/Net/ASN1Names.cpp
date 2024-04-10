@@ -274,7 +274,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::AllNotMatch()
 
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::Container(Text::CStringNN name, ContentFunc func)
 {
-	NotNullPtr<NameRule> rule = MemAllocNN(NameRule, 1);
+	NotNullPtr<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;
 	rule->itemType = this->currItemType;
 	rule->condParam = this->currCondParam;
@@ -288,7 +288,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::Container(Text::CStringNN name, Conte
 
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::NextValue(Text::CStringNN name)
 {
-	NotNullPtr<NameRule> rule = MemAllocNN(NameRule, 1);
+	NotNullPtr<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;
 	rule->itemType = this->currItemType;
 	rule->condParam = this->currCondParam;
@@ -302,7 +302,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::NextValue(Text::CStringNN name)
 
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt)
 {
-	NotNullPtr<NameRule> rule = MemAllocNN(NameRule, 1);
+	NotNullPtr<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;
 	rule->itemType = this->currItemType;
 	rule->condParam = this->currCondParam;

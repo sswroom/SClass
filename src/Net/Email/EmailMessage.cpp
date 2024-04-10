@@ -270,7 +270,7 @@ void Net::Email::EmailMessage::EmailAddressFree(NotNullPtr<EmailAddress> addr)
 
 NotNullPtr<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr)
 {
-	NotNullPtr<EmailAddress> ret = MemAllocNN(EmailAddress, 1);
+	NotNullPtr<EmailAddress> ret = MemAllocNN(EmailAddress);
 	ret->type = type;
 	if (name.leng > 0)
 		ret->name = Text::String::New(name);
@@ -499,7 +499,7 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	}
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment, 1);
+	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = (UOSInt)len;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	if (fs.Read(Data::ByteArray(attachment->content, attachment->contentLen)) != attachment->contentLen)
@@ -523,7 +523,7 @@ NotNullPtr<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAt
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment, 1);
+	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = contentLen;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	MemCopyNO(attachment->content, content, contentLen);

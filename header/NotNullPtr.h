@@ -1,5 +1,6 @@
 #ifndef _SM_NOTNULLPTR
 #define _SM_NOTNULLPTR
+#include "MyMemory.h"
 #include <stdio.h>
 
 template <typename T> struct NotNullPtr
@@ -82,6 +83,11 @@ public:
 	{
 		T *p = (T*)this->p;
 		delete p;
+	}
+
+	void CopyFrom(NotNullPtr<T> p)
+	{
+		MemCopyNO(this->p, p.Ptr(), sizeof(T));
 	}
 
 	static NotNullPtr<T> FromPtr(T *p)

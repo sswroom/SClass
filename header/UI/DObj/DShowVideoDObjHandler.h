@@ -15,7 +15,7 @@ namespace UI
 			Math::Coord2D<OSInt> videoTL;
 			Math::Size2D<UOSInt> videoSize;
 
-			UI::GUIForm *ownerFrm;
+			NotNullPtr<UI::GUIForm> ownerFrm;
 			NotNullPtr<UI::GUITimer> tmr;
 			NotNullPtr<Text::String> videoFileName;
 			Media::Decoder::VideoDecoderFinder vdecoders;
@@ -30,7 +30,7 @@ namespace UI
 			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg);
 			void DrawVideo(NotNullPtr<Media::DrawImage> dimg);
 		public:
-			DShowVideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
+			DShowVideoDObjHandler(NotNullPtr<UI::GUIForm> ownerFrm, NotNullPtr<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName);
 			virtual ~DShowVideoDObjHandler();
 		};
 	}

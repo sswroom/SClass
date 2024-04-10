@@ -18,7 +18,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	FileGDBFieldInfo *field;
-	NotNullPtr<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo, 1);
+	NotNullPtr<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo);
 	MemClear(table.Ptr(), sizeof(FileGDBTableInfo));
 	NEW_CLASS(table->fields, Data::ArrayList<FileGDBFieldInfo*>());
 	UInt32 descSize = ReadUInt32(&fieldDesc[0]);
@@ -240,7 +240,7 @@ Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBField
 
 NotNullPtr<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NotNullPtr<FileGDBTableInfo> tableInfo)
 {
-	NotNullPtr<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo, 1);
+	NotNullPtr<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo);
 	MemCopyNO(newTable.Ptr(), tableInfo.Ptr(), sizeof(FileGDBTableInfo));
 	if (tableInfo->csys)
 	{

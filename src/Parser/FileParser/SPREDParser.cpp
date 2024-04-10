@@ -142,7 +142,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 					}
 					currDevId = devId;
 				}
-				rec = MemAllocANN(Map::GPSTrack::GPSRecord3, 1);
+				rec = MemAllocANN(Map::GPSTrack::GPSRecord3);
 				rec->pos.SetLat((*(Int32*)&buff[i + 8]) / 200000.0);
 				rec->pos.SetLon((*(Int32*)&buff[i + 12]) / 200000.0);
 				rec->speed = *(Int32*)&buff[i + 16] * 0.0001;

@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NotNullP
 	UTF8Char *sptr;
 	if (boundary.GetArea() >= 1000)
 	{
-		NotNullPtr<ResultInfo> res = MemAllocNN(ResultInfo, 1);
+		NotNullPtr<ResultInfo> res = MemAllocNN(ResultInfo);
 		res->result = txt->Clone();
 		res->confidence = confidence;
 		res->area = boundary;

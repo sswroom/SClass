@@ -3517,7 +3517,7 @@ UOSInt SSWR::OrganWeb::OrganWebEnv::PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> 
 	{
 		while (r->ReadNext())
 		{
-			peak = MemAllocNN(PeakInfo, 1);
+			peak = MemAllocNN(PeakInfo);
 			peak->id = r->GetInt32(0);
 			peak->refId = r->GetNewStrNN(1);
 			peak->district = r->GetNewStrNN(2);

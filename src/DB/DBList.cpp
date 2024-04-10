@@ -29,7 +29,7 @@ void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
 {
 	NotNullPtr<DBInfo> dbInfo;
 	Sync::MutexUsage mutUsage(this->dbMut);
-	dbInfo = MemAllocNN(DBInfo, 1);
+	dbInfo = MemAllocNN(DBInfo);
 	dbInfo->db = db;
 	dbInfo->isUsing = false;
 	this->dbList.Add(dbInfo);
