@@ -1,11 +1,11 @@
 #ifndef _SM_DATA_LISTMAPNN
 #define _SM_DATA_LISTMAPNN
 #include "Data/DataMapNN.h"
-#include "Data/ReadingList.h"
+#include "Data/ReadingListNN.h"
 
 namespace Data
 {
-	template <class T, class V> class ListMapNN : public DataMapNN<T, V>, public ReadingList<Optional<V>>
+	template <class T, class V> class ListMapNN : public DataMapNN<T, V>, public ReadingListNN<V>
 	{
 	public:
 		virtual ~ListMapNN() {};

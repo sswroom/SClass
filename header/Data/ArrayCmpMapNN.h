@@ -28,6 +28,7 @@ namespace Data
 		NotNullPtr<Data::SortableArrayList<T>> GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual Optional<V> GetItem(UOSInt index) const;
+		virtual NotNullPtr<V> GetItemNoCheck(UOSInt index) const;
 		virtual Bool IsEmpty() const;
 		virtual NotNullPtr<V> *ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
@@ -130,6 +131,11 @@ namespace Data
 	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::GetItem(UOSInt index) const
 	{
 		return this->vals.GetItem(index);
+	}
+
+	template <class T, class V> NotNullPtr<V> ArrayCmpMapNN<T, V>::GetItemNoCheck(UOSInt index) const
+	{
+		return this->vals.GetItemNoCheck(index);
 	}
 
 	template <class T, class V> Bool ArrayCmpMapNN<T, V>::IsEmpty() const

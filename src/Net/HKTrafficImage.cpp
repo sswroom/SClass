@@ -13,8 +13,8 @@ void Net::HKTrafficImage::Init(NotNullPtr<Text::EncodingFactory> encFact, const 
 	Text::XMLNode *node1;
 	Text::XMLNode *node2;
 	Text::XMLNode *node3;
-	GroupInfo *grp;
-	ImageInfo *img;
+	NotNullPtr<GroupInfo> grp;
+	NotNullPtr<ImageInfo> img;
 	Text::XMLDocument doc;
 	if (doc.ParseBuff(encFact, buff, buffSize))
 	{
@@ -88,16 +88,15 @@ void Net::HKTrafficImage::Init(NotNullPtr<Text::EncodingFactory> encFact, const 
 
 						if (lat != 0 && lon != 0 && sbKey.GetLength() > 0 && sbRegion.GetLength() > 0 && sbDesc.GetLength() > 0 && sbURL.GetLength() > 0)
 						{
-							grp = this->groupMap.GetC(sbRegion.ToCString());
-							if (grp == 0)
+							if (!this->groupMap.GetC(sbRegion.ToCString()).SetTo(grp))
 							{
-								grp = MemAlloc(GroupInfo, 1);
+								grp = MemAllocNN(GroupInfo);
 								grp->groupName = Text::String::New(sbRegion.ToString(), sbRegion.GetLength());
-								NEW_CLASS(grp->imageList, Data::ArrayList<ImageInfo*>());
+								NEW_CLASS(grp->imageList, Data::ArrayListNN<ImageInfo>());
 								this->groupMap.PutNN(grp->groupName, grp);
 							}
 
-							img = MemAlloc(ImageInfo, 1);
+							img = MemAllocNN(ImageInfo);
 							img->key = Text::String::New(sbKey.ToString(), sbKey.GetLength());
 							img->addr = Text::String::New(sbDesc.ToString(), sbDesc.GetLength());
 							img->lat = lat;
@@ -135,30 +134,30 @@ Net::HKTrafficImage::HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, T
 
 Net::HKTrafficImage::~HKTrafficImage()
 {
-	GroupInfo *grp;
-	ImageInfo *img;
+	NotNullPtr<GroupInfo> grp;
+	NotNullPtr<ImageInfo> img;
 	UOSInt i;
 	UOSInt j;
 	i = this->groupMap.GetCount();
 	while (i-- > 0)
 	{
-		grp = this->groupMap.GetItem(i);
+		grp = this->groupMap.GetItemNoCheck(i);
 		j = grp->imageList->GetCount();
 		while (j-- > 0)
 		{
-			img = grp->imageList->GetItem(j);
+			img = grp->imageList->GetItemNoCheck(j);
 			img->key->Release();
 			img->addr->Release();
 			img->url->Release();
-			MemFree(img);
+			MemFreeNN(img);
 		}
 		DEL_CLASS(grp->imageList);
 		grp->groupName->Release();
-		MemFree(grp);
+		MemFreeNN(grp);
 	}
 }
 
-UOSInt Net::HKTrafficImage::GetGroups(Data::ArrayList<Net::HKTrafficImage::GroupInfo*> *groups)
+UOSInt Net::HKTrafficImage::GetGroups(NotNullPtr<Data::ArrayListNN<Net::HKTrafficImage::GroupInfo>> groups)
 {
 	return groups->AddAll(this->groupMap);
 }

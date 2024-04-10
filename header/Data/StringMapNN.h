@@ -99,7 +99,7 @@ namespace Data
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			T oldVal = this->vals.GetItem((UOSInt)i);
+			Optional<T> oldVal = this->vals.GetItem((UOSInt)i);
             this->vals.SetItem((UOSInt)i, val);
 			return oldVal;
 		}

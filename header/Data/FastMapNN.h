@@ -54,7 +54,7 @@ namespace Data
 		}
 	};
 
-	template <class T, class V> class FastMapNN : public ListMapNN<T, V>, public ReadingListNN<V>
+	template <class T, class V> class FastMapNN : public ListMapNN<T, V>
 	{
 	protected:
 		Data::ArrayList<TwinItemNN<T, V>> values;

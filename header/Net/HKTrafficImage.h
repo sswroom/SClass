@@ -1,6 +1,7 @@
 #ifndef _SM_NET_HKTRAFFICIMAGE
 #define _SM_NET_HKTRAFFICIMAGE
-#include "Data/FastStringMap.h"
+#include "Data/ArrayListNN.h"
+#include "Data/FastStringMapNN.h"
 #include "Text/EncodingFactory.h"
 
 namespace Net
@@ -20,11 +21,11 @@ namespace Net
 		typedef struct
 		{
 			NotNullPtr<Text::String> groupName;
-			Data::ArrayList<ImageInfo*> *imageList;
+			Data::ArrayListNN<ImageInfo> *imageList;
 		} GroupInfo;
 
 	private:
-		Data::FastStringMap<GroupInfo*> groupMap;
+		Data::FastStringMapNN<GroupInfo> groupMap;
 
 		void Init(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
 	public:
@@ -32,7 +33,7 @@ namespace Net
 		HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, Text::CStringNN fileName);
 		~HKTrafficImage();
 
-		UOSInt GetGroups(Data::ArrayList<GroupInfo*> *groups);
+		UOSInt GetGroups(NotNullPtr<Data::ArrayListNN<GroupInfo>> groups);
 	};
 }
 #endif
