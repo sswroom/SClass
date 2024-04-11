@@ -45,6 +45,11 @@ public:
 		return this->p == p.p;
 	}
 
+	Bool operator!=(const NotNullPtr<T> &p)
+	{
+		return this->p != p.p;
+	}
+
 	Bool Set(T *p)
 	{
 		if (p)
