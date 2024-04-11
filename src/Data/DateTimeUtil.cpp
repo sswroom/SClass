@@ -1545,7 +1545,6 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 				tval->minute = 0;
 			tval->second = 0;
 			nanosec.Set(0);
-			TimeValueSetTime(tval, strs, nanosec);
 		}
 		else
 		{

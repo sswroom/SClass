@@ -55,3 +55,21 @@ export class SHA1 extends Hash
 
 	static calcBlock(intermediateHash: number[], messageBlock: ArrayBuffer): void;
 }
+
+export class MD5 extends Hash
+{
+	messageLength: number;
+	h: number[];
+	buff: number[];
+	buffSize: number;
+
+	constructor();
+	getName(): string;
+	clone(): Hash;
+	clear(): void;
+	calc(buff: ArrayBuffer): void;
+	getValue(): ArrayBuffer;
+	getBlockSize(): number;
+
+	static calcBlock(hVals: number[], block: DataView): void;
+}
