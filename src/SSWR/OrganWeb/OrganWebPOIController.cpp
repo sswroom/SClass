@@ -101,10 +101,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::W
 				Data::ArrayListInt32 *pickObjs;
 				NEW_CLASS(t, Data::DateTime());
 				NEW_CLASS(pickObjs, Data::ArrayListInt32());
-				sess->SetValuePtr(UTF8STRC("LastUseTime"), t);
-				sess->SetValuePtr(UTF8STRC("User"), env.user);
-				sess->SetValuePtr(UTF8STRC("PickObjs"), pickObjs);
-				sess->SetValueInt32(UTF8STRC("PickObjType"), 0);
+				sess->SetValuePtr(CSTR("LastUseTime"), t);
+				sess->SetValuePtr(CSTR("User"), env.user);
+				sess->SetValuePtr(CSTR("PickObjs"), pickObjs);
+				sess->SetValueInt32(CSTR("PickObjType"), 0);
 				sess->EndUse();
 				msg = CSTR("ok");
 			}

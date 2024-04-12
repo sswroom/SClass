@@ -38,43 +38,43 @@ Int64 Net::WebServer::MemoryWebSession::GetSessId()
 	return this->sessId;
 }
 
-void Net::WebServer::MemoryWebSession::SetValuePtr(const UTF8Char *name, UOSInt nameLen, void *val)
+void Net::WebServer::MemoryWebSession::SetValuePtr(Text::CStringNN name, void *val)
 {
-	this->items.PutC({name, nameLen}, (Int64)val);
+	this->items.PutC(name, (Int64)val);
 }
 
-void Net::WebServer::MemoryWebSession::SetValueDbl(const UTF8Char *name, UOSInt nameLen, Double val)
+void Net::WebServer::MemoryWebSession::SetValueDbl(Text::CStringNN name, Double val)
 {
-	this->items.PutC({name, nameLen}, *(Int64*)&val);
+	this->items.PutC(name, *(Int64*)&val);
 }
 
-void Net::WebServer::MemoryWebSession::SetValueInt64(const UTF8Char *name, UOSInt nameLen, Int64 val)
+void Net::WebServer::MemoryWebSession::SetValueInt64(Text::CStringNN name, Int64 val)
 {
-	this->items.PutC({name, nameLen}, val);
+	this->items.PutC(name, val);
 }
 
-void Net::WebServer::MemoryWebSession::SetValueInt32(const UTF8Char *name, UOSInt nameLen, Int32 val)
+void Net::WebServer::MemoryWebSession::SetValueInt32(Text::CStringNN name, Int32 val)
 {
-	this->items.PutC({name, nameLen}, val);
+	this->items.PutC(name, val);
 }
 
-void *Net::WebServer::MemoryWebSession::GetValuePtr(const UTF8Char *name, UOSInt nameLen)
+void *Net::WebServer::MemoryWebSession::GetValuePtr(Text::CStringNN name)
 {
-	return (void*)this->items.GetC({name, nameLen});
+	return (void*)this->items.GetC(name);
 }
 
-Double Net::WebServer::MemoryWebSession::GetValueDbl(const UTF8Char *name, UOSInt nameLen)
+Double Net::WebServer::MemoryWebSession::GetValueDbl(Text::CStringNN name)
 {
-	Int64 ret = this->items.GetC({name, nameLen});
+	Int64 ret = this->items.GetC(name);
 	return *(Double*)&ret;
 }
 
-Int64 Net::WebServer::MemoryWebSession::GetValueInt64(const UTF8Char *name, UOSInt nameLen)
+Int64 Net::WebServer::MemoryWebSession::GetValueInt64(Text::CStringNN name)
 {
-	return this->items.GetC({name, nameLen});
+	return this->items.GetC(name);
 }
 
-Int32 Net::WebServer::MemoryWebSession::GetValueInt32(const UTF8Char *name, UOSInt nameLen)
+Int32 Net::WebServer::MemoryWebSession::GetValueInt32(Text::CStringNN name)
 {
-	return (Int32)this->items.GetC({name, nameLen});
+	return (Int32)this->items.GetC(name);
 }

@@ -40,10 +40,10 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 	if (this->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		Data::DateTime *t;
-		env->user = (WebUserInfo*)sess->GetValuePtr(UTF8STRC("User"));
-		env->pickObjType = (PickObjType)sess->GetValueInt32(UTF8STRC("PickObjType"));
-		env->pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(UTF8STRC("PickObjs"));
-		t = (Data::DateTime*)sess->GetValuePtr(UTF8STRC("LastUseTime"));
+		env->user = (WebUserInfo*)sess->GetValuePtr(CSTR("User"));
+		env->pickObjType = (PickObjType)sess->GetValueInt32(CSTR("PickObjType"));
+		env->pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(CSTR("PickObjs"));
+		t = (Data::DateTime*)sess->GetValuePtr(CSTR("LastUseTime"));
 		t->SetCurrTimeUTC();
 		if (keepSess)
 		{

@@ -13,15 +13,15 @@ namespace Net
 			virtual void EndUse() = 0;
 			virtual Int64 GetSessId() = 0;
 
-			virtual void SetValuePtr(const UTF8Char *name, UOSInt nameLen, void *val) = 0;
-			virtual void SetValueDbl(const UTF8Char *name, UOSInt nameLen, Double val) = 0;
-			virtual void SetValueInt64(const UTF8Char *name, UOSInt nameLen, Int64 val) = 0;
-			virtual void SetValueInt32(const UTF8Char *name, UOSInt nameLen, Int32 val) = 0;
+			virtual void SetValuePtr(Text::CStringNN name, void *val) = 0;
+			virtual void SetValueDbl(Text::CStringNN name, Double val) = 0;
+			virtual void SetValueInt64(Text::CStringNN name, Int64 val) = 0;
+			virtual void SetValueInt32(Text::CStringNN name, Int32 val) = 0;
 
-			virtual void *GetValuePtr(const UTF8Char *name, UOSInt nameLen) = 0;
-			virtual Double GetValueDbl(const UTF8Char *name, UOSInt nameLen) = 0;
-			virtual Int64 GetValueInt64(const UTF8Char *name, UOSInt nameLen) = 0;
-			virtual Int32 GetValueInt32(const UTF8Char *name, UOSInt nameLen) = 0;
+			virtual void *GetValuePtr(Text::CStringNN name) = 0;
+			virtual Double GetValueDbl(Text::CStringNN name) = 0;
+			virtual Int64 GetValueInt64(Text::CStringNN name) = 0;
+			virtual Int32 GetValueInt32(Text::CStringNN name) = 0;
 		};
 	}
 }
