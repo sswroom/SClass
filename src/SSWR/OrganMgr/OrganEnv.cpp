@@ -173,12 +173,12 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 		grpType = this->grpTypes.GetItem(i);
 		DEL_CLASS(grpType);
 	}
-	DataFileInfo *dataFile;
+	NotNullPtr<DataFileInfo> dataFile;
 	this->BooksDeinit();
 	i = this->dataFiles.GetCount();
 	while (i-- > 0)
 	{
-		dataFile = this->dataFiles.GetItem(i);
+		dataFile = this->dataFiles.GetItemNoCheck(i);
 		this->ReleaseDataFile(dataFile);
 	}
 	SpeciesInfo *species;
@@ -350,16 +350,16 @@ SSWR::OrganMgr::WebUserInfo *SSWR::OrganMgr::OrganEnv::GetWebUser(Int32 userId)
 	return webUser;
 }
 
-Data::ArrayList<SSWR::OrganMgr::DataFileInfo*> *SSWR::OrganMgr::OrganEnv::GetDataFiles()
+NotNullPtr<Data::ArrayListNN<SSWR::OrganMgr::DataFileInfo>> SSWR::OrganMgr::OrganEnv::GetDataFiles()
 {
-	return &this->dataFiles;
+	return this->dataFiles;
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(DataFileInfo *dataFile)
+void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(NotNullPtr<DataFileInfo> dataFile)
 {
 	dataFile->oriFileName->Release();
 	dataFile->fileName->Release();
-	MemFree(dataFile);
+	MemFreeNN(dataFile);
 }
 
 void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
@@ -600,7 +600,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Tim
 		Data::Timestamp ts2 = ts.ClearTimeLocal();
 		Data::Timestamp ts3 = ts2.AddDay(1);
 		{
-			OrganTripForm frm(0, ui, this);
+			OrganTripForm frm(0, ui, *this);
 			sb.AppendC(UTF8STRC("Trip not found at "));
 			sb.AppendTSNoZone(ts);
 			frm.SetText(sb.ToCString());

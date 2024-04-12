@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 {
 	NotNullPtr<SSWR::AVIRead::AVIRCodeProjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeProjectForm>();
 	UI::GUITreeView::TreeItem *tvi = me->tvMain->GetSelectedItem();
-	Text::CodeProjectCfg *cfg = (Text::CodeProjectCfg*)me->cboConfig->GetSelectedItem();
+	Optional<Text::CodeProjectCfg> cfg = me->cboConfig->GetSelectedItem().GetOpt<Text::CodeProjectCfg>();
 	if (tvi)
 	{
 		Text::CodeObject *obj = (Text::CodeObject*)tvi->GetItemObj();

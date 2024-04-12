@@ -50,10 +50,9 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
-	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	adapter = (SSWR::AVIRead::AVIRARPScanForm::AdapterInfo*)me->cboAdapter->GetSelectedItem();
-	if (adapter)
+	if (me->cboAdapter->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo>().SetTo(adapter))
 	{
 		UInt8 buff[4];
 		WriteNUInt32(buff, adapter->ipAddr);

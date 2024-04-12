@@ -48,8 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
-	const IO::BTScanLog::DevEntry *log = (const IO::BTScanLog::DevEntry*)me->lvContent->GetItem(index);
-	if (log == 0)
+	NotNullPtr<const IO::BTScanLog::DevEntry> log;
+	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTScanLog::DevEntry>().SetTo(log))
 		return;
 	{
 		SSWR::AVIRead::AVIRBTScanLogDevForm frm(0, me->ui, me->core, log);

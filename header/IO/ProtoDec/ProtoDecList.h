@@ -1,23 +1,24 @@
 #ifndef _SM_IO_PROTODEC_PROTODECLIST
 #define _SM_IO_PROTODEC_PROTODECLIST
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/ProtoDec/IProtocolDecoder.h"
 
 namespace IO
 {
 	namespace ProtoDec
 	{
-		class ProtoDecList : public Data::ReadingList<IProtocolDecoder*>
+		class ProtoDecList : public Data::ReadingListNN<IProtocolDecoder>
 		{
 		private:
-			Data::ArrayList<IProtocolDecoder*> *decList;
+			Data::ArrayListNN<IProtocolDecoder> decList;
 
 		public:
 			ProtoDecList();
 			virtual ~ProtoDecList();
 
 			virtual UOSInt GetCount() const;
-			virtual IProtocolDecoder *GetItem(UOSInt index) const;
+			virtual Optional<IProtocolDecoder> GetItem(UOSInt index) const;
+			virtual NotNullPtr<IProtocolDecoder> GetItemNoCheck(UOSInt index) const;
 		};
 	}
 }

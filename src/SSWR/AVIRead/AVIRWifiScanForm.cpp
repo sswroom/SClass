@@ -15,8 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnScanClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRWifiScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiScanForm>();
-	Net::WirelessLAN::BSSInfo *bss = (Net::WirelessLAN::BSSInfo*)me->lvWifi->GetSelectedItem();
-	if (bss == 0)
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+	if (!me->lvWifi->GetSelectedItem().GetOpt<Net::WirelessLAN::BSSInfo>().SetTo(bss))
 	{
 		me->txtWifi->SetText(CSTR(""));
 	}
@@ -142,12 +142,12 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 
 void SSWR::AVIRead::AVIRWifiScanForm::WifiClear()
 {
-	Net::WirelessLAN::BSSInfo *bss;
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
 	UOSInt i = this->lvWifi->GetCount();
 	while (i-- > 0)
 	{
-		bss = (Net::WirelessLAN::BSSInfo*)this->lvWifi->GetItem(i);
-		DEL_CLASS(bss);
+		bss = this->lvWifi->GetItem(i).GetNN<Net::WirelessLAN::BSSInfo>();
+		bss.Delete();
 	}
 	this->lvWifi->ClearItems();
 }

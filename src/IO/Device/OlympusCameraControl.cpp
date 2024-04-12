@@ -82,13 +82,13 @@ void IO::Device::OlympusCameraControl::GetImageList()
 {
 	if (this->fileList == 0)
 	{
-		NEW_CLASS(this->fileList, Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*>());
+		NEW_CLASS(this->fileList, Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>());
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		NotNullPtr<Net::HTTPClient> cli;
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
-		IO::CameraControl::FileInfo *file;
+		NotNullPtr<IO::CameraControl::FileInfo> file;
 		UTF8Char *sarr[7];
 		Data::DateTime dt;
 		Int32 dateVal;
@@ -107,7 +107,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 			}
 			if (Text::StrSplit(sarr, 7, sb.v, ',') == 6)
 			{
-				file = MemAlloc(IO::Device::OlympusCameraControl::FileInfo, 1);
+				file = MemAllocNN(IO::Device::OlympusCameraControl::FileInfo);
 				Text::StrConcat(file->fileName, sarr[1]);
 				Text::StrConcat(file->filePath, sarr[0]);
 				file->fileSize = Text::StrToUInt64(sarr[2]);
@@ -143,7 +143,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	NotNullPtr<Net::HTTPClient> cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	IO::CameraControl::FileInfo *file;
+	NotNullPtr<IO::CameraControl::FileInfo> file;
 	UTF8Char *sarr[11];
 	Data::DateTime dt;
 	Int32 dateVal;
@@ -163,7 +163,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 		{
 			if (Text::StrCharCnt(sarr[6]) == 8 && Text::StrCharCnt(sarr[7]) == 6)
 			{
-				file = MemAlloc(IO::CameraControl::FileInfo, 1);
+				file = MemAllocNN(IO::CameraControl::FileInfo);
 				Text::StrConcat(file->fileName, sarr[1]);
 				Text::StrConcat(file->filePath, sarr[0]);
 				file->fileSize = Text::StrToUInt64(sarr[2]);
@@ -192,7 +192,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	NotNullPtr<Net::HTTPClient> cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	IO::CameraControl::FileInfo *file;
+	NotNullPtr<IO::CameraControl::FileInfo> file;
 	UTF8Char *sarr[11];
 	Data::DateTime dt;
 	Int32 dateVal;
@@ -212,7 +212,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 		{
 			if (Text::StrCharCnt(sarr[6]) == 8 && Text::StrCharCnt(sarr[7]) == 6)
 			{
-				file = MemAlloc(IO::CameraControl::FileInfo, 1);
+				file = MemAllocNN(IO::CameraControl::FileInfo);
 				Text::StrConcat(file->fileName, sarr[1]);
 				Text::StrConcat(file->filePath, sarr[0]);
 				file->fileSize = Text::StrToUInt64(sarr[2]);
@@ -245,12 +245,12 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	this->cmdList.FreeAll();
 	if (this->fileList)
 	{
-		IO::CameraControl::FileInfo *file;
+		NotNullPtr<IO::CameraControl::FileInfo> file;
 		UOSInt i = this->fileList->GetCount();
 		while (i-- > 0)
 		{
-			file = this->fileList->GetItem(i);
-			MemFree(file);
+			file = this->fileList->GetItemNoCheck(i);
+			MemFreeNN(file);
 		}
 		DEL_CLASS(this->fileList);
 	}
@@ -258,7 +258,7 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	SDEL_STRING(this->oiTrackVersion);
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
+UOSInt IO::Device::OlympusCameraControl::GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -280,13 +280,13 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListStringNN *na
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
+void IO::Device::OlympusCameraControl::FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
 {
 	nameList->FreeAll();
 	valueList->FreeAll();
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*> *fileList)
+UOSInt IO::Device::OlympusCameraControl::GetFileList(NotNullPtr<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> fileList)
 {
 	if (this->fileList == 0)
 	{
@@ -294,11 +294,16 @@ UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device:
 		this->GetGPSLogList();
 		this->GetSNSLogList();
 	}
-	fileList->AddAll(NotNullPtr<Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*>>::FromPtr(this->fileList));
-	return this->fileList->GetCount();
+	NotNullPtr<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> nnfileList;
+	if (nnfileList.Set(this->fileList))
+	{
+		fileList->AddAll(nnfileList);
+		return nnfileList->GetCount();
+	}
+	return 0;
 }
 
-Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl::FileInfo *file, IO::Stream *outStm)
+Bool IO::Device::OlympusCameraControl::GetFile(NotNullPtr<IO::Device::OlympusCameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
@@ -331,7 +336,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(IO::Device::OlympusCameraControl:
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
 }
 
-Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCameraControl::FileInfo *file, IO::Stream *outStm)
+Bool IO::Device::OlympusCameraControl::GetThumbnailFile(NotNullPtr<IO::Device::OlympusCameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;

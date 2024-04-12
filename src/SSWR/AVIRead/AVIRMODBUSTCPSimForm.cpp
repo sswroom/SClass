@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
-	DeviceType devType = (DeviceType)(OSInt)me->cboDevType->GetSelectedItem();
+	DeviceType devType = (DeviceType)me->cboDevType->GetSelectedItem().GetOSInt();
 	Text::StringBuilderUTF8 sb;
 	UInt8 addr;
 	if (me->listener == 0)

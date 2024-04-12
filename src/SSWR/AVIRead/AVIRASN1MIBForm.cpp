@@ -29,9 +29,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
-	Net::ASN1MIB::ObjectInfo *obj = (Net::ASN1MIB::ObjectInfo*)me->lvObjects->GetSelectedItem();
+	NotNullPtr<Net::ASN1MIB::ObjectInfo> obj;
 	me->lvObjectsVal->ClearItems();
-	if (obj)
+	if (me->lvObjects->GetSelectedItem().GetOpt<Net::ASN1MIB::ObjectInfo>().SetTo(obj))
 	{
 		UOSInt i = 0;
 		UOSInt j = obj->valName.GetCount();

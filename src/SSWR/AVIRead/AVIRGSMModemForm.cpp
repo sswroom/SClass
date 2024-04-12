@@ -327,12 +327,11 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSRClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	IO::GSMModemController::SMSMessage *sms;
+	NotNullPtr<IO::GSMModemController::SMSMessage> sms;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::SMSMessage *smsMsg;
-	sms = (IO::GSMModemController::SMSMessage *)me->lvSMS->GetSelectedItem();
-	if (sms)
+	if (me->lvSMS->GetSelectedItem().GetOpt<IO::GSMModemController::SMSMessage>().SetTo(sms))
 	{
 		Data::DateTime dt;
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
@@ -397,7 +396,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	IO::GSMModemController::SMSMessage *sms;
+	NotNullPtr<IO::GSMModemController::SMSMessage> sms;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::SMSMessage *smsMsg;
@@ -412,7 +411,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 			Data::DateTime dt;
 			while (i < j)
 			{
-				sms = (IO::GSMModemController::SMSMessage *)me->lvSMS->GetItem(i);
+				sms = me->lvSMS->GetItem(i).GetNN<IO::GSMModemController::SMSMessage>();
 				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 				smsMsg->GetMessageTime(dt);
 				sb.ClearStr();
@@ -454,7 +453,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(AnyType userOb
 {
 	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NotNullPtr<IO::SerialPort> port;
-	NEW_CLASSNN(port, IO::SerialPort((UOSInt)me->cboDeviceSerial->GetSelectedItem(), 115200, IO::SerialPort::PARITY_NONE, false));
+	NEW_CLASSNN(port, IO::SerialPort(me->cboDeviceSerial->GetSelectedItem().GetUOSInt(), 115200, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		port.Delete();
@@ -657,7 +656,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveSelectedClicke
 		UOSInt i = me->lvPDPContext->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (me->modem->GPRSSetPDPActive(true, (UInt32)(UOSInt)me->lvPDPContext->GetItem(i)))
+			if (me->modem->GPRSSetPDPActive(true, (UInt32)me->lvPDPContext->GetItem(i).GetUOSInt()))
 			{
 				me->txtPDPContextStatus->SetText(CSTR("Context activated"));
 			}
@@ -681,7 +680,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClic
 		UOSInt i = me->lvPDPContext->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (me->modem->GPRSSetPDPActive(false, (UInt32)(UOSInt)me->lvPDPContext->GetItem(i)))
+			if (me->modem->GPRSSetPDPActive(false, (UInt32)me->lvPDPContext->GetItem(i).GetUOSInt()))
 			{
 				me->txtPDPContextStatus->SetText(CSTR("Context deactivated"));
 			}
@@ -747,7 +746,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(AnyType user
 
 void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 {
-	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)(OSInt)this->cboPhoneStorage->GetItem((UOSInt)this->cboPhoneStorage->GetSelectedIndex());
+	IO::GSMModemController::PBStorage store = (IO::GSMModemController::PBStorage)this->cboPhoneStorage->GetItem((UOSInt)this->cboPhoneStorage->GetSelectedIndex()).GetOSInt();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -794,7 +793,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	this->lvSMS->ClearItems();
 	this->msgList.Clear();
 
-	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)(OSInt)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex());
+	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex()).GetOSInt();
 
 	this->modem->SMSSetStorage(store, IO::GSMModemController::SMSSTORE_SIM, IO::GSMModemController::SMSSTORE_SIM);
 	sptr = this->modem->SMSGetSMSC(sbuff);
@@ -926,7 +925,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NotNullPtr<IO::Stream> stm, Boo
 			UOSInt i = this->cboDeviceSerial->GetCount();
 			while (i-- > 0)
 			{
-				if ((UOSInt)this->cboDeviceSerial->GetItem(i) == portNum)
+				if (this->cboDeviceSerial->GetItem(i).GetUOSInt() == portNum)
 				{
 					this->cboDeviceSerial->SetSelectedIndex(i);
 					break;

@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRHKOForecastForm::OnReloadClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRHKOForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOForecastForm>();
-	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)(OSInt)me->cboLang->GetSelectedItem();
+	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)me->cboLang->GetSelectedItem().GetOSInt();
 	me->Reload(lang);
 }
 

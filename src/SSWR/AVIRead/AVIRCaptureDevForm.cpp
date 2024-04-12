@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
 		return;
 	}
-	CaptureFormat *fmt = (CaptureFormat*)me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex());
-	if (fmt == 0)
+	NotNullPtr<CaptureFormat> fmt;
+	if (!me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex()).GetOpt<CaptureFormat>().SetTo(fmt))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a format"), CSTR("Select Capture Device"), me);
 		return;

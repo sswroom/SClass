@@ -38,8 +38,8 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
-	ResultInfo *res = (ResultInfo*)me->lvText->GetSelectedItem();
-	if (res)
+	NotNullPtr<ResultInfo> res;
+	if (me->lvText->GetSelectedItem().GetOpt<ResultInfo>().SetTo(res))
 	{
 		me->pbResult->SetImage(res->resImg);
 	}

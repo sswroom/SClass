@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 	Net::ICMPScanner::ScanResult *result;
 	UOSInt i;
 	UOSInt j;
-	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
 	if (ip != 0)
 	{
 		WriteNUInt32(buff, ip);

@@ -6,7 +6,7 @@ void Net::MQTTFailoverClient::FreeClient(ClientInfo *cliInfo)
 	MemFree(cliInfo);
 }
 
-void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff)
+void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
 	NotNullPtr<ClientInfo> cliInfo = userObj.GetNN<ClientInfo>();
 	if (cliInfo->me->foHdlr.GetCurrChannel() == cliInfo->client)

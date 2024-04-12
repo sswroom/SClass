@@ -26,11 +26,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCSV;
 			NotNullPtr<UI::GUIListView> lvContent;
 
-			const IO::BTScanLog::DevEntry *entry;
+			NotNullPtr<const IO::BTScanLog::DevEntry> entry;
 
 			static void __stdcall OnCSVClicked(AnyType userObj);
 		public:
-			AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const IO::BTScanLog::DevEntry *entry);
+			AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const IO::BTScanLog::DevEntry> entry);
 			virtual ~AVIRBTScanLogDevForm();
 
 			virtual void OnMonitorChanged();

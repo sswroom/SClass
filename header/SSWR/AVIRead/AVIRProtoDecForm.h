@@ -39,9 +39,9 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::FileStream *currFile;
-			IO::ProtoDec::IProtocolDecoder *currDec;
-			IO::ProtoDec::ProtoDecList *decList;
-			Data::ArrayList<ProtocolItem*> *itemList;
+			Optional<IO::ProtoDec::IProtocolDecoder> currDec;
+			IO::ProtoDec::ProtoDecList decList;
+			Data::ArrayListNN<ProtocolItem> itemList;
 
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnFileClicked(AnyType userObj);

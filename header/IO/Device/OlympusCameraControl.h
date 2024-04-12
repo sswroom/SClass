@@ -21,7 +21,7 @@ namespace IO
 			Text::String *oiVersion;
 			Text::String *oiTrackVersion;
 			Data::ArrayListStringNN cmdList;
-			Data::ArrayList<IO::CameraControl::FileInfo*> *fileList;
+			Data::ArrayListNN<IO::CameraControl::FileInfo> *fileList;
 
 			void GetCommandList();
 			void GetImageList();
@@ -31,11 +31,11 @@ namespace IO
 			OlympusCameraControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~OlympusCameraControl();
 
-			virtual UOSInt GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
-			virtual void FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
-			virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
-			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
-			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);
+			virtual UOSInt GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList);
+			virtual void FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList);
+			virtual UOSInt GetFileList(NotNullPtr<Data::ArrayListNN<FileInfo>> fileList);
+			virtual Bool GetFile(NotNullPtr<FileInfo> file, NotNullPtr<IO::Stream> outStm);
+			virtual Bool GetThumbnailFile(NotNullPtr<FileInfo> file, NotNullPtr<IO::Stream> outStm);
 
 			Text::String *GetOIVersion();
 			Text::String *GetOITrackVersion();

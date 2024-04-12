@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnColumnsDblClk(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
-	UOSInt fieldIndex = (UOSInt)me->lvColumns->GetItem(index);
+	UOSInt fieldIndex = me->lvColumns->GetItem(index).GetUOSInt();
 	NotNullPtr<Data::Class> cls;
 	NotNullPtr<Data::Class::FieldInfo> field;
 	if (me->cls.SetTo(cls) && cls->GetFieldInfo(fieldIndex).SetTo(field))

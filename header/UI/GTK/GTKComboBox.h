@@ -10,7 +10,7 @@ namespace UI
 		class GTKComboBox : public GUIComboBox
 		{
 		private:
-			Data::ArrayList<void *> items;
+			Data::ArrayList<AnyType> items;
 			GtkTreeModel *model;
 			UOSInt minVisible;
 			Bool allowEdit;
@@ -25,17 +25,17 @@ namespace UI
 
 			virtual void BeginUpdate();
 			virtual void EndUpdate();
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
-			virtual void *RemoveItem(UOSInt index);
+			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
+			virtual AnyType RemoveItem(UOSInt index);
 			virtual void ClearItems();
 			virtual UOSInt GetCount();
 			virtual void SetSelectedIndex(UOSInt index);
 			virtual UOSInt GetSelectedIndex();
-			virtual void *GetSelectedItem();
-			virtual void *GetItem(UOSInt index);
+			virtual AnyType GetSelectedItem();
+			virtual AnyType GetItem(UOSInt index);
 
 			virtual Math::Size2DDbl GetSize();
 			virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);

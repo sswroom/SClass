@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 
 
 	me->noShutdown = me->chkNoShutdown->IsChecked();
-	me->reqMeth = (Net::WebUtil::RequestMethod)(OSInt)me->cboMethod->GetSelectedItem();
+	me->reqMeth = (Net::WebUtil::RequestMethod)me->cboMethod->GetSelectedItem().GetOSInt();
 	me->reqOSClient = me->chkOSClient->IsChecked();
 	me->reqAllowComp = me->chkAllowComp->IsChecked();
 	if ((me->reqMeth == Net::WebUtil::RequestMethod::HTTP_GET) || (me->reqMeth == Net::WebUtil::RequestMethod::HTTP_DELETE))

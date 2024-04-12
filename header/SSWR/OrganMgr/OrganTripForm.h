@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnLocationLast;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIListBox> lbTrips;
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			Int32 locId;
 			Bool updating;
 			Data::Timestamp refTime;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnDate1HrClicked(AnyType userObj);
 			static void __stdcall OnLocationLastClicked(AnyType userObj);
 		public:
-			OrganTripForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
+			OrganTripForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
 			~OrganTripForm();
 
 			virtual void OnMonitorChanged();

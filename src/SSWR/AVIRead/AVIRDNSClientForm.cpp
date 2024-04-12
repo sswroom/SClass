@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	Double t;
 	if (reqIP == 0)
 	{
-		UInt16 reqType = (UInt16)(UOSInt)me->cboRequest->GetSelectedItem();
+		UInt16 reqType = (UInt16)me->cboRequest->GetSelectedItem().GetUOSInt();
 		clk->Start();
 		dnsCli->GetByType(me->ansList, sb.ToCString(), reqType);
 		t = clk->GetTimeDiff();

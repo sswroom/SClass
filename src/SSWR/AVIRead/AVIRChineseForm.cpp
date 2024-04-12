@@ -236,7 +236,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 			return false;
 		}
 	}
-	chInfo.charType = (Text::ChineseInfo::CharType)(OSInt)this->cboCharType->GetSelectedItem();
+	chInfo.charType = (Text::ChineseInfo::CharType)this->cboCharType->GetSelectedItem().GetOSInt();
 	chInfo.mainChar = this->chkMainChar->IsChecked();
 	return this->chinese->SetCharInfo(this->currChar, &chInfo);
 }

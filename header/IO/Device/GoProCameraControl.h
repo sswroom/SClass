@@ -14,19 +14,19 @@ namespace IO
 		private:
 			Net::SocketUtil::AddressInfo addr;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Data::ArrayList<IO::CameraControl::FileInfo*> *fileList;
+			Data::ArrayListNN<IO::CameraControl::FileInfo> *fileList;
 
 			void GetMediaList();
-			Bool GetInfo(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);			
+			Bool GetInfo(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList);			
 		public:
 			GoProCameraControl(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~GoProCameraControl();
 
-			virtual UOSInt GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
-			virtual void FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
-			virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
-			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
-			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);
+			virtual UOSInt GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList);
+			virtual void FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList);
+			virtual UOSInt GetFileList(NotNullPtr<Data::ArrayListNN<FileInfo>> fileList);
+			virtual Bool GetFile(NotNullPtr<FileInfo> file, NotNullPtr<IO::Stream> outStm);
+			virtual Bool GetThumbnailFile(NotNullPtr<FileInfo> file, NotNullPtr<IO::Stream> outStm);
 
 			static GoProCameraControl *CreateControl(NotNullPtr<Net::SocketFactory> sockf);
 		};

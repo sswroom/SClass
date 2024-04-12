@@ -11,7 +11,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(AnyType userObj)
 	UOSInt i;
 	UOSInt j;
 	Int32 spId;
-	spId = (Int32)(OSInt)me->cboSpecies->GetSelectedItem();
+	spId = (Int32)me->cboSpecies->GetSelectedItem().GetOSInt();
 	me->currFileList->Clear();
 	me->lbPictures->ClearItems();
 	
@@ -227,7 +227,7 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 	}
 }
 
-SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, DataFileInfo *dataFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NotNullPtr<DataFileInfo> dataFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 	this->SetFont(0, 0, 10.5, false);

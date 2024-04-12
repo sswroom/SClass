@@ -57,7 +57,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 		j = me->lvFiles->GetCount();
 		while (i < j)
 		{
-			if (id == (OSInt)me->lvFiles->GetItem(i))
+			if (id == me->lvFiles->GetItem(i).GetOSInt())
 			{
 				me->lvFiles->RemoveItem(i);
 				changed = true;
@@ -72,7 +72,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 		me->SaveList();
 		if (me->chkAutoStart->IsChecked())
 		{
-			id = (Int32)(OSInt)me->lvFiles->GetItem(0);
+			id = (Int32)me->lvFiles->GetItem(0).GetOSInt();
 			if (id)
 			{
 				me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -88,7 +88,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 		{
 			me->alarmSet = false;
 			me->lblAlarm->SetText(CSTR(""));
-			id = (Int32)(OSInt)me->lvFiles->GetItem(0);
+			id = (Int32)me->lvFiles->GetItem(0).GetOSInt();
 			if (id)
 			{
 				me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -283,7 +283,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyTyp
 	j = me->lvFiles->GetCount();
 	while (i < j)
 	{
-		Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(i);
+		Int32 id = (Int32)me->lvFiles->GetItem(i).GetOSInt();
 		Sync::MutexUsage mutUsage;
 		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id & 0xffffff, id >> 24, mutUsage);
 		if (file != 0)
@@ -318,7 +318,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyTyp
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType userObj, UOSInt itemIndex)
 {
 	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
-	Int32 id = (Int32)(OSInt)me->lvFiles->GetItem(itemIndex);
+	Int32 id = (Int32)me->lvFiles->GetItem(itemIndex).GetOSInt();
 	if (id)
 	{
 		me->core->FileStart(id & 0xffffff, id >> 24, me->GetHandle());
@@ -328,7 +328,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType u
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
-	Int32 id = (Int32)(OSInt)me->lvFiles->GetSelectedItem();
+	Int32 id = (Int32)me->lvFiles->GetSelectedItem().GetOSInt();
 	if (id > 0)
 	{
 		if (me->ui->ShowMsgYesNo(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
@@ -561,7 +561,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	j = this->lvFiles->GetCount();
 	while (i < j)
 	{
-		Int32 id = (Int32)(OSInt)this->lvFiles->GetItem(i);
+		Int32 id = (Int32)this->lvFiles->GetItem(i).GetOSInt();
 		Sync::MutexUsage mutUsage;
 		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id & 0xffffff, id >> 24, mutUsage);
 		if (file != 0)

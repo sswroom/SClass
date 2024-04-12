@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please add a data column first"), CSTR("Error"), me);
 		return;
 	}
-	xCol = (OSInt)me->cboXAxis->GetSelectedItem();
+	xCol = me->cboXAxis->GetSelectedItem().GetOSInt();
 	if (xCol < 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Current Version does not support integer X-Axis"), CSTR("Error"), me);
@@ -247,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please select a column first"), CSTR("Error"), me);
 		return;
 	}
-	col = (UOSInt)me->cboYAxis->GetItem(i);
+	col = me->cboYAxis->GetItem(i).GetUOSInt();
 	sptr = me->cboYAxis->GetItemText(sbuff, i);
 	me->lbYAxis->AddItem(CSTRP(sbuff, sptr), (void*)col);
 	me->yCols->Add((UInt32)col);

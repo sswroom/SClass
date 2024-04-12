@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
-	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)(OSInt)me->cboFormat->GetSelectedItem();
+	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetOSInt();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType user
 	}
 
 	Text::StringBuilderUTF8 sb;
-	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
-	Net::RAWCapture::CaptureType type = (Net::RAWCapture::CaptureType)(OSInt)me->cboType->GetSelectedItem();
-	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)(OSInt)me->cboFormat->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetUOSInt();
+	Net::RAWCapture::CaptureType type = (Net::RAWCapture::CaptureType)me->cboType->GetSelectedItem().GetOSInt();
+	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetOSInt();
 	me->txtFileName->GetText(sb);
 	if (ip && sb.GetLength() > 0)
 	{

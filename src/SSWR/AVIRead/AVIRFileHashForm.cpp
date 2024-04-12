@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
-	me->currHashType = (Crypto::Hash::HashType)(OSInt)me->cboCheckType->GetSelectedItem();
+	me->currHashType = (Crypto::Hash::HashType)me->cboCheckType->GetSelectedItem().GetOSInt();
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)

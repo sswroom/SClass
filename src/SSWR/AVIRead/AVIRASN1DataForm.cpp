@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
-		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)(OSInt)me->cboVerifyHash->GetSelectedItem(), mstm.GetBuff(), (UOSInt)mstm.GetLength(), signBuff, signLen))
+		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)me->cboVerifyHash->GetSelectedItem().GetOSInt(), mstm.GetBuff(), (UOSInt)mstm.GetLength(), signBuff, signLen))
 		{
 			me->txtVerifyStatus->SetText(CSTR("Valid"));
 		}
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
-		UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+		UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
 		MemFree(buff);
 		ssl.Delete();
 		key.Delete();
@@ -316,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
-		UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+		UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
 		MemFree(buff);
 		key.Delete();
 		ssl.Delete();

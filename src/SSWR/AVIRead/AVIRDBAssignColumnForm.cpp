@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 	i = 0;
 	while (i < j)
 	{
-		me->colInd->SetItem(i, (UOSInt)me->colsCbo[i]->GetSelectedItem());
+		me->colInd->SetItem(i, me->colsCbo[i]->GetSelectedItem().GetUOSInt());
 		i++;
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);

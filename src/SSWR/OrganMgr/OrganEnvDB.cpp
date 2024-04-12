@@ -136,12 +136,12 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	if (db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by id")).SetTo(r))
 	{
 		Data::DateTime dt;
-		DataFileInfo *dataFile;
+		NotNullPtr<DataFileInfo> dataFile;
 		WebUserInfo *webUser;
 
 		while (r->ReadNext())
 		{
-			dataFile = MemAlloc(DataFileInfo, 1);
+			dataFile = MemAllocNN(DataFileInfo);
 			dataFile->id = r->GetInt32(0);
 			dataFile->fileType = r->GetInt32(1);
 			dataFile->startTime = r->GetTimestamp(2);
@@ -3211,7 +3211,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 	UTF8Char sbuff[512];
 	const UTF8Char *dataFileName;
 	Int32 fileType = 0;
-	DataFileInfo *dataFile;
+	NotNullPtr<DataFileInfo> dataFile;
 	Bool chg = false;
 	Data::Timestamp ts;
 	UOSInt i;
@@ -3343,7 +3343,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 			if (db->ExecuteNonQuery(sql.ToCString()) >= 1)
 			{
 				chg = true;
-				dataFile = MemAlloc(DataFileInfo, 1);
+				dataFile = MemAllocNN(DataFileInfo);
 				dataFile->id = db->GetLastIdentity32();
 				dataFile->fileType = fileType;
 				dataFile->startTime = startTime;
@@ -3398,7 +3398,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 	return chg;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
+Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(NotNullPtr<DataFileInfo> dataFile)
 {
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -3409,7 +3409,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	i = this->dataFiles.GetCount();
 	while (i-- > 0)
 	{
-		if (dataFile == this->dataFiles.GetItem(i))
+		if (dataFile == this->dataFiles.GetItemNoCheck(i))
 		{
 			found = true;
 			break;
@@ -3453,7 +3453,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 {
 	OSInt i;
 	WebUserInfo *webUser;
-	DataFileInfo *dataFile;
+	NotNullPtr<DataFileInfo> dataFile;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime > ts || this->gpsEndTime < ts)
@@ -3466,8 +3466,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 		{
 			i = ~i - 1;
 		}
-		dataFile = webUser->gpsFileObj.GetItem((UOSInt)i);
-		if (dataFile != 0)
+		if (webUser->gpsFileObj.GetItem((UOSInt)i).SetTo(dataFile))
 		{
 			this->gpsStartTime = dataFile->startTime;
 			this->gpsEndTime = dataFile->endTime;
@@ -3509,7 +3508,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 	}
 }
 
-Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
+Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NotNullPtr<DataFileInfo> dataFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

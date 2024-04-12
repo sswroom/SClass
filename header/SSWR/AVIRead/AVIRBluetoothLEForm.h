@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/BTManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -31,10 +31,10 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::BTManager btMgr;
-			Data::ArrayList<IO::BTController *> btList;
-			IO::BTController *btCtrl;
+			Data::ArrayListNN<IO::BTController> btList;
+			Optional<IO::BTController> btCtrl;
 			Sync::Mutex devMut;
-			Data::FastMap<UInt64, BTDevice*> devMap;
+			Data::FastMapNN<UInt64, BTDevice> devMap;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblInterface;

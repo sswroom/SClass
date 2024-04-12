@@ -14,8 +14,8 @@ namespace SSWR
 		class OrganUserEditForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
-			OrganWebUser *user;
+			NotNullPtr<OrganEnv> env;
+			Optional<OrganWebUser> user;
 			NotNullPtr<UI::GUILabel> lblUserName;
 			NotNullPtr<UI::GUITextBox> txtUserName;
 			NotNullPtr<UI::GUILabel> lblPassword;
@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganWebUser *user);
+			OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, Optional<OrganWebUser> user);
 			virtual ~OrganUserEditForm();
 
 			virtual void OnMonitorChanged();

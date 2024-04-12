@@ -6,7 +6,7 @@
 void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
-	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)(OSInt)me->cboChannel->GetSelectedItem();
+	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)me->cboChannel->GetSelectedItem().GetOSInt();
 	Text::StringBuilderUTF8 sb;
 	me->txtChannelId->GetText(sb);
 	Net::SNS::SNSControl *ctrl = me->mgr->AddChannel(typ, sb.ToCString());

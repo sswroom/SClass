@@ -85,7 +85,7 @@ void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32
 		MemCopyNO(packet->content, cmd, cmdSize);
 		{
 			Sync::MutexUsage mutUsage(this->packetMut);
-			this->packetList.Add(packet);
+			this->packetList.Add(NotNullPtr<PacketInfo>::FromPtr(packet));
 		}
 		this->packetEvt.Set();
 	}
@@ -140,7 +140,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize)
+void Net::MQTTConn::OnPublishMessage(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize)
 {
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
@@ -150,23 +150,24 @@ void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, 
 	}
 }
 
-Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, Data::Duration timeout)
+Optional<Net::MQTTConn::PacketInfo> Net::MQTTConn::GetNextPacket(UInt8 packetType, Data::Duration timeout)
 {
 	Manage::HiResClock clk;
-	PacketInfo *packet;
+	NotNullPtr<PacketInfo> packet;
 	Data::Duration t;
 	while (true)
 	{
 		while (this->packetList.GetCount() > 0)
 		{
 			Sync::MutexUsage mutUsage(this->packetMut);
-			packet = this->packetList.RemoveAt(0);
+			if (!this->packetList.RemoveAt(0).SetTo(packet))
+				break;
 			mutUsage.EndUse();
 			if ((packet->packetType & 0xf0) == packetType)
 			{
 				return packet;
 			}
-			MemFree(packet);
+			MemFreeNN(packet);
 		}
 		t = Data::Duration::FromUs(clk.GetTimeDiffus());
 		if (!this->recvRunning || t >= timeout)
@@ -273,7 +274,7 @@ Net::MQTTConn::~MQTTConn()
 	i = this->packetList.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->packetList.GetItem(i));
+		MemFreeNN(this->packetList.GetItemNoCheck(i));
 	}
 }
 
@@ -457,19 +458,19 @@ Bool Net::MQTTConn::SendDisconnect()
 
 Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(Data::Duration timeout)
 {
-	PacketInfo *packet = this->GetNextPacket(0x20, timeout);
-	if (packet == 0)
+	NotNullPtr<PacketInfo> packet;
+	if (!this->GetNextPacket(0x20, timeout).SetTo(packet))
 		return Net::MQTTConn::CS_TIMEDOUT;
 
 	Net::MQTTConn::ConnectStatus ret = (Net::MQTTConn::ConnectStatus)packet->content[1];
-	MemFree(packet);
+	MemFreeNN(packet);
 	return ret;
 }
 
 UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, Data::Duration timeout)
 {
-	PacketInfo *packet = this->GetNextPacket(0x90, timeout);
-	if (packet == 0)
+	NotNullPtr<PacketInfo> packet;
+	if (!this->GetNextPacket(0x90, timeout).SetTo(packet))
 		return 0x80;
 
 	UInt8 ret;
@@ -481,15 +482,14 @@ UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, Data::Duration timeout)
 	{
 		ret = packet->content[2];
 	}
-	MemFree(packet);
+	MemFreeNN(packet);
 	return ret;
 }
 
 void Net::MQTTConn::ClearPackets()
 {
 	Sync::MutexUsage mutUsage(this->packetMut);
-	LIST_FREE_FUNC(&this->packetList, MemFree);
-	this->packetList.Clear();
+	this->packetList.MemFreeAll();
 }
 
 UInt64 Net::MQTTConn::GetTotalUpload()

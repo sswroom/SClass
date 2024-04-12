@@ -10,9 +10,9 @@
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
+	NotNullPtr<DB::DBManagerCtrl> ctrl;
 	NotNullPtr<DB::ReadingDB> db;
-	if (ctrl)
+	if (me->cboSourceConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl))
 	{
 		me->cboSourceSchema->ClearItems();
 		if (!ctrl->Connect() || !ctrl->GetDB().SetTo(db))
@@ -69,9 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboSourceConn->GetSelectedItem();
+	NotNullPtr<DB::DBManagerCtrl> ctrl;
 	NotNullPtr<DB::ReadingDB> db;
-	if (ctrl == 0 || !ctrl->GetDB().SetTo(db))
+	if (!me->cboSourceConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl) || !ctrl->GetDB().SetTo(db))
 		return;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -106,8 +106,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	DB::DBManagerCtrl *ctrl = (DB::DBManagerCtrl*)me->cboDestDB->GetSelectedItem();
-	if (ctrl)
+	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	if (me->cboDestDB->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl))
 	{
 		me->cboDestSchema->ClearItems();
 		if (!ctrl->Connect())
@@ -151,8 +151,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	{
 		return;
 	}
-	DB::DBManagerCtrl *destDB = (DB::DBManagerCtrl *)me->cboDestDB->GetSelectedItem();
-	if (destDB == 0)
+	NotNullPtr<DB::DBManagerCtrl> destDB;
+	if (!me->cboDestDB->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(destDB))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a destination DB first"), CSTR("Copy Tables"), me);
 		return;

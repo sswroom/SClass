@@ -26,8 +26,8 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(AnyType userObj, Da
 void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(AnyType userObj, UOSInt itemIndex)
 {
 	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
-	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetItem(itemIndex);
-	if (dataFile == 0)
+	NotNullPtr<DataFileInfo> dataFile;
+	if (!me->lvFiles->GetItem(itemIndex).GetOpt<DataFileInfo>().SetTo(dataFile))
 		return;
 	if (dataFile->fileType == 1)
 	{
@@ -40,8 +40,8 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(AnyType userOb
 {
 	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	Text::StringBuilderUTF8 sb;
-	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetSelectedItem();
-	if (dataFile == 0)
+	NotNullPtr<DataFileInfo> dataFile;
+	if (!me->lvFiles->GetSelectedItem().GetOpt<DataFileInfo>().SetTo(dataFile))
 		return;
 	sb.AppendC(UTF8STRC("Are you sure to delete "));
 	sb.AppendC(dataFile->fileName->v, dataFile->fileName->leng);
@@ -60,8 +60,8 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(AnyType use
 	NotNullPtr<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetSelectedItem();
-	if (dataFile == 0)
+	NotNullPtr<DataFileInfo> dataFile;
+	if (!me->lvFiles->GetSelectedItem().GetOpt<DataFileInfo>().SetTo(dataFile))
 		return;
 
 	sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
@@ -72,8 +72,8 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 {
 	this->lvFiles->ClearItems();
 
-	Data::ArrayList<DataFileInfo*> *dataFiles = this->env->GetDataFiles();
-	DataFileInfo *dataFile;
+	NotNullPtr<Data::ArrayListNN<DataFileInfo>> dataFiles = this->env->GetDataFiles();
+	NotNullPtr<DataFileInfo> dataFile;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -83,7 +83,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	j = dataFiles->GetCount();
 	while (i < j)
 	{
-		dataFile = dataFiles->GetItem(i);
+		dataFile = dataFiles->GetItemNoCheck(i);
 		k = this->lvFiles->AddItem(dataFile->oriFileName, dataFile);
 		sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
@@ -93,7 +93,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	}
 }
 
-SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Data File Form"));
 	this->SetFont(0, 0, 10.5, false);

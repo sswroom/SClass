@@ -11,16 +11,16 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Data::ArrayList<IO::BTController*> btCtrlList;
-	Data::ArrayList<IO::BTController::BTDevice*> btDevList;
-	IO::BTController *btCtrl;
-	IO::BTController::BTDevice  *btDev;
+	Data::ArrayListNN<IO::BTController> btCtrlList;
+	Data::ArrayListNN<IO::BTController::BTDevice> btDevList;
+	NotNullPtr<IO::BTController> btCtrl;
+	NotNullPtr<IO::BTController::BTDevice> btDev;
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 
 	IO::BTManager btMgr;
-	btMgr.CreateControllers(&btCtrlList);
+	btMgr.CreateControllers(btCtrlList);
 	i = btCtrlList.GetCount();
 	sb.AppendUOSInt(i);
 	sb.AppendC(UTF8STRC(" controller found:"));
@@ -28,7 +28,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	while (i-- > 0)
 	{
-		btCtrl = btCtrlList.GetItem(i);
+		btCtrl = btCtrlList.GetItemNoCheck(i);
 		console.WriteLine();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Controller "));
@@ -66,12 +66,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC(" - Devices:"));
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 
-		btCtrl->CreateDevices(&btDevList, false);
+		btCtrl->CreateDevices(btDevList, false);
 		k = 0;
 		l = btDevList.GetCount();
 		while (k < l)
 		{
-			btDev = btDevList.GetItem(k);
+			btDev = btDevList.GetItemNoCheck(k);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Controller "));
 			sb.AppendUOSInt(j);
@@ -136,12 +136,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendDateTime(dt);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 
-			DEL_CLASS(btDev);
+			btDev.Delete();
 			k++;
 		}
 		btDevList.Clear();
 
-		DEL_CLASS(btCtrl);
+		btCtrl.Delete();
 		j++;
 	}
 

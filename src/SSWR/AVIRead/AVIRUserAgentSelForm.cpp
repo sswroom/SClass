@@ -14,25 +14,34 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnOkClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
-	SSWR::AVIRead::AVIRUserAgentSelForm::OSItem *osItem = (SSWR::AVIRead::AVIRUserAgentSelForm::OSItem*)me->cboFilterOS->GetSelectedItem();
-	me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)(OSInt)me->cboFilterBrowser->GetSelectedItem());
+	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
+	if (me->cboFilterOS->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem>().SetTo(osItem))
+	{
+		me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)me->cboFilterBrowser->GetSelectedItem().GetOSInt());
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
-	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetSelectedItem();
-	me->currUserAgent = uaList->userAgent;
-	me->currUserAgentLen = uaList->userAgentLen;
+	NotNullPtr<Net::UserAgentDB::UAEntry> uaList;
+	if (me->lvUserAgent->GetSelectedItem().GetOpt<Net::UserAgentDB::UAEntry>().SetTo(uaList))
+	{
+		me->currUserAgent = uaList->userAgent;
+		me->currUserAgentLen = uaList->userAgentLen;
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
-	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetItem(itemIndex);
-	me->currUserAgent = uaList->userAgent;
-	me->currUserAgentLen = uaList->userAgentLen;
-	me->SetDialogResult(UI::GUIForm::DR_OK);
+	NotNullPtr<Net::UserAgentDB::UAEntry> uaList;
+	if (me->lvUserAgent->GetItem(itemIndex).GetOpt<Net::UserAgentDB::UAEntry>().SetTo(uaList))
+	{
+		me->currUserAgent = uaList->userAgent;
+		me->currUserAgentLen = uaList->userAgentLen;
+		me->SetDialogResult(UI::GUIForm::DR_OK);
+	}
 }
 
 void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser)

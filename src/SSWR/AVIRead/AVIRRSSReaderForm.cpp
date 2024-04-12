@@ -143,8 +143,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
-	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem(index);
-	if (item)
+	NotNullPtr<Net::RSSItem> item;
+	if (me->lvItems->GetItem(index).GetOpt<Net::RSSItem>().SetTo(item))
 	{
 		SSWR::AVIRead::AVIRRSSItemForm frm(0, me->ui, me->core, item);
 		frm.ShowDialog(me);

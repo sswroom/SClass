@@ -28,6 +28,16 @@ struct AnyType
 		return Optional<T>((T*)this->p);
 	}
 
+	OSInt GetOSInt() const
+	{
+		return (OSInt)this->p;
+	}
+
+	UOSInt GetUOSInt() const
+	{
+		return (UOSInt)this->p;
+	}
+
 	Bool IsNull() const
 	{
 		return this->p == 0;

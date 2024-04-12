@@ -7,36 +7,38 @@
 
 IO::ProtoDec::ProtoDecList::ProtoDecList()
 {
-	IO::ProtoDec::IProtocolDecoder *protoDec;
-	NEW_CLASS(this->decList, Data::ArrayList<IO::ProtoDec::IProtocolDecoder*>());
-
-	NEW_CLASS(protoDec, IO::ProtoDec::TK109ProtocolDecoder());
-	this->decList->Add(protoDec);
-	NEW_CLASS(protoDec, IO::ProtoDec::TSProtocolDecoder());
-	this->decList->Add(protoDec);
-	NEW_CLASS(protoDec, IO::ProtoDec::JTT808ProtocolDecoder());
-	this->decList->Add(protoDec);
+	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NEW_CLASSNN(protoDec, IO::ProtoDec::TK109ProtocolDecoder());
+	this->decList.Add(protoDec);
+	NEW_CLASSNN(protoDec, IO::ProtoDec::TSProtocolDecoder());
+	this->decList.Add(protoDec);
+	NEW_CLASSNN(protoDec, IO::ProtoDec::JTT808ProtocolDecoder());
+	this->decList.Add(protoDec);
 }
 
 IO::ProtoDec::ProtoDecList::~ProtoDecList()
 {
-	IO::ProtoDec::IProtocolDecoder *protoDec;
+	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
 	UOSInt i;
-	i = this->decList->GetCount();
+	i = this->decList.GetCount();
 	while (i-- > 0)
 	{
-		protoDec = this->decList->GetItem(i);
-		DEL_CLASS(protoDec);
+		protoDec = this->decList.GetItemNoCheck(i);
+		protoDec.Delete();
 	}
-	DEL_CLASS(this->decList);
 }
 
 UOSInt IO::ProtoDec::ProtoDecList::GetCount() const
 {
-	return this->decList->GetCount();
+	return this->decList.GetCount();
 }
 
-IO::ProtoDec::IProtocolDecoder *IO::ProtoDec::ProtoDecList::GetItem(UOSInt index) const
+Optional<IO::ProtoDec::IProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItem(UOSInt index) const
 {
-	return this->decList->GetItem(index);
+	return this->decList.GetItem(index);
+}
+
+NotNullPtr<IO::ProtoDec::IProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItemNoCheck(UOSInt index) const
+{
+	return this->decList.GetItemNoCheck(index);
 }

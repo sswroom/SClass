@@ -36,7 +36,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;
 
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			SelectMode selMode;
 			Int32 initId;
 			Bool sublocUpdating;
@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnOkClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganLocationForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, SelectMode selMode, Int32 initId);
+			OrganLocationForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, SelectMode selMode, Int32 initId);
 			virtual ~OrganLocationForm();
 
 			virtual void OnMonitorChanged();

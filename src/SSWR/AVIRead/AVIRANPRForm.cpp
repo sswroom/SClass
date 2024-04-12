@@ -43,8 +43,8 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnPlateSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
-	ResultInfo *res = (ResultInfo*)me->lvPlate->GetSelectedItem();
-	if (res)
+	NotNullPtr<ResultInfo> res;
+	if (me->lvPlate->GetSelectedItem().GetOpt<ResultInfo>().SetTo(res))
 	{
 		me->pbPlate->SetImage(res->plateImg);
 	}

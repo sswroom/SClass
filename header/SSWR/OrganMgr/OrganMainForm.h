@@ -119,7 +119,7 @@ namespace SSWR
 
 			Media::ColorManager *colorMgr;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			OrganGroup *rootGroup;
 			UOSInt lastDirIndex;
 			UOSInt lastObjIndex;
@@ -230,7 +230,7 @@ namespace SSWR
 			void ClearImgLayers();
 			NotNullPtr<OrganSpImgLayer> GetImgLayer(UInt32 mapColor);
 		public:
-			OrganMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, OrganEnv *env);
+			OrganMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NotNullPtr<OrganEnv> env);
 			virtual ~OrganMainForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

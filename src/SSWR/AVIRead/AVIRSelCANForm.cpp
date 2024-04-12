@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(AnyType userO
 	{
 		IO::Device::AXCAN *can;
 		NEW_CLASS(can, IO::Device::AXCAN(me->hdlr));
-		can->OpenStream(dlg.GetStream(), (IO::Device::AXCAN::CANBitRate)(OSInt)me->cboAXCANBitRate->GetSelectedItem());
+		can->OpenStream(dlg.GetStream(), (IO::Device::AXCAN::CANBitRate)me->cboAXCANBitRate->GetSelectedItem().GetOSInt());
 		me->listener = can;
 		me->SetDialogResult(DialogResult::DR_OK);
 	}

@@ -41,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(AnyType use
 	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	Sync::MutexUsage mutUsage;
 	me->netbios->GetAnswers(mutUsage);
-	Net::NetBIOSScanner::NameAnswer *ans = (Net::NetBIOSScanner::NameAnswer*)me->lvAnswers->GetSelectedItem();
+	NotNullPtr<Net::NetBIOSScanner::NameAnswer> ans;
 	me->lvEntries->ClearItems();
-	if (ans)
+	if (me->lvAnswers->GetSelectedItem().GetOpt<Net::NetBIOSScanner::NameAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;

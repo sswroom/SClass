@@ -53,9 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Error, target name is not valid"), CSTR("Error"), me);
 			return;
 		}
-		SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
-		adapter = (SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*)me->cboAdapter->GetSelectedItem();
-		if (adapter == 0)
+		NotNullPtr<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
+		if (!me->cboAdapter->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo>().SetTo(adapter))
 		{
 			me->ui->ShowMsgOK(CSTR("Error, no adapter is selected"), CSTR("Error"), me);
 			return;

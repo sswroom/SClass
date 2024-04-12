@@ -20,7 +20,7 @@ namespace Text
 			Bool InitVSEnv(Text::VSProject::VisualStudioVersion vsv);
 		public:
 			CppEnv(Text::VSProject::VisualStudioVersion vsv);
-			CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg);
+			CppEnv(Text::CodeProject *proj, Optional<IO::ConfigFile> cfg);
 			~CppEnv();
 
 			void AddIncludePath(Text::CString includePath);

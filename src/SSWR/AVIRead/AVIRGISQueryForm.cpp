@@ -179,9 +179,9 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(AnyType userOb
 {
 	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NotNullPtr<Math::Geometry::Vector2D> vec;
-	if (vec.Set(me->currVec))
+	NotNullPtr<Math::VectorTextWriter> writer;
+	if (vec.Set(me->currVec) && me->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
 	{
-		Math::VectorTextWriter *writer = (Math::VectorTextWriter*)me->cboShapeFmt->GetSelectedItem();
 		Text::StringBuilderUTF8 sb;
 		writer->ToText(sb, vec);
 		me->txtShape->SetText(sb.ToCString());
@@ -237,8 +237,9 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 
 void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 {
+	NotNullPtr<Math::VectorTextWriter> writer;
 	NotNullPtr<Math::Geometry::Vector2D> vec;
-	if (!this->queryVecList.GetItem(index).SetTo(vec))
+	if (!this->queryVecList.GetItem(index).SetTo(vec) || !this->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
 		return;
 	SDEL_CLASS(this->currVec);
 	this->currVec = vec->Clone().Ptr();
@@ -285,7 +286,6 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	}
 	Math::RectAreaDbl bounds = vec->GetBounds();
 
-	Math::VectorTextWriter *writer = (Math::VectorTextWriter*)this->cboShapeFmt->GetSelectedItem();
 	Text::StringBuilderUTF8 sb;
 	writer->ToText(sb, vec);
 	this->txtShape->SetText(sb.ToCString());

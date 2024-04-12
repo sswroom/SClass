@@ -9,11 +9,16 @@
 void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
-	Text::TextBinEnc::ITextBinEnc *enc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncoding->GetSelectedItem();
+	NotNullPtr<Text::TextBinEnc::ITextBinEnc> enc;
 	Text::StringBuilderUTF8 sbText;
 	Text::StringBuilderUTF8 sbDir;
 	UInt8 dataBuff[256];
 	UOSInt dataSize;
+	if (!me->cboEncoding->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(enc))
+	{
+		me->ui->ShowMsgOK(CSTR("Please select an encoding first"), CSTR("File Search"), me);
+		return;
+	}
 	me->txtText->GetText(sbText);
 	if (sbText.GetLength() == 0)
 	{
@@ -69,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj,
 {
 	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
 	NotNullPtr<Text::String> filePath;
-	if (!filePath.Set((Text::String*)me->lvFiles->GetItem(itemIndex)))
+	if (!me->lvFiles->GetItem(itemIndex).GetOpt<Text::String>().SetTo(filePath))
 		return;
 	NotNullPtr<UtilUI::TextViewerForm> frm;
 	NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, me->ui, me->core->GetMonitorMgr(), me->core->GetDrawEngine(), me->core->GetCurrCodePage()));

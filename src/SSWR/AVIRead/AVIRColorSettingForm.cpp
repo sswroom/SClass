@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(AnyType user
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		Media::ColorProfile::CommonProfileType cpt = (Media::ColorProfile::CommonProfileType)(OSInt)me->cboMonProfile->GetSelectedItem();
+		Media::ColorProfile::CommonProfileType cpt = (Media::ColorProfile::CommonProfileType)me->cboMonProfile->GetSelectedItem().GetOSInt();
 		if (cpt == Media::ColorProfile::CPT_FILE)
 		{
 			NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnDefVProfileChg(AnyType use
 	NotNullPtr<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	if (me->inited)
 	{
-		me->colorMgr->SetDefVProfile((Media::ColorProfile::CommonProfileType)(OSInt)me->cboDefVProfile->GetSelectedItem());
+		me->colorMgr->SetDefVProfile((Media::ColorProfile::CommonProfileType)me->cboDefVProfile->GetSelectedItem().GetOSInt());
 	}
 }
 
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnDefPProfileChg(AnyType use
 	NotNullPtr<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	if (me->inited)
 	{
-		me->colorMgr->SetDefPProfile((Media::ColorProfile::CommonProfileType)(OSInt)me->cboDefPProfile->GetSelectedItem());
+		me->colorMgr->SetDefPProfile((Media::ColorProfile::CommonProfileType)me->cboDefPProfile->GetSelectedItem().GetOSInt());
 	}
 }
 

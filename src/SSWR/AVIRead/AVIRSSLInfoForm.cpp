@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 			return;
 		}
 	}
-	Net::SSLVer ver = (Net::SSLVer)(OSInt)me->cboVersion->GetSelectedItem();
+	Net::SSLVer ver = (Net::SSLVer)me->cboVersion->GetSelectedItem().GetOSInt();
 	Socket *s;
 	if (addr.addrType == Net::AddrType::IPv4)
 	{

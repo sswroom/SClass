@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 	sb.ClearStr();
 	me->txtHashValue->GetText(sb);
 	Crypto::Hash::HashValidator *validator = 0;
-	OSInt hashType = (OSInt)me->cboHashType->GetSelectedItem();
+	OSInt hashType = me->cboHashType->GetSelectedItem().GetOSInt();
 	if (hashType < 1000)
 	{
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)hashType);
@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 		return;
 	}
 	Crypto::Hash::BruteForceAttack *bforce;
-	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)(OSInt)me->cboEncoding->GetSelectedItem()));
-	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)(OSInt)me->cboCharType->GetSelectedItem());
+	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)me->cboEncoding->GetSelectedItem().GetOSInt()));
+	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)me->cboCharType->GetSelectedItem().GetOSInt());
 	me->lastCnt = 0;
 	me->lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	if (!bforce->Start(sb.ToString(), sb.GetLength(), minLeng, maxLeng))

@@ -58,8 +58,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType us
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	IO::BTScanLog::ScanRecord3 *dev = (IO::BTScanLog::ScanRecord3*)me->lvDevices->GetItem(index);
-	if (dev)
+	NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
+	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord3>().SetTo(dev))
 	{
 		sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 		UI::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));

@@ -219,12 +219,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 	dt.SetCurrTimeUTC();
 	if (dt.ToTicks() - me->lastUpdateTime >= 30000)
 	{
-		Net::SNMPManager::ReadingInfo *reading;
+		NotNullPtr<Net::SNMPManager::ReadingInfo> reading;
 		me->mgr->UpdateValues();
 		UOSInt i = me->lvAgentReading->GetCount();
 		while (i-- > 0)
 		{
-			reading = (Net::SNMPManager::ReadingInfo*)me->lvAgentReading->GetItem(i);
+			reading = me->lvAgentReading->GetItem(i).GetNN<Net::SNMPManager::ReadingInfo>();
 			if (reading->valValid)
 			{
 				sptr = Text::StrDouble(sbuff, reading->currVal);

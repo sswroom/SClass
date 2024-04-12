@@ -43,25 +43,25 @@ namespace UI
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
-		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-		UOSInt AddItem(const WChar *itemText, void *itemObj);
-		UOSInt AddItem(Text::CStringNN itemText, void *itemObj, UOSInt imageIndex);
+		UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
+		UOSInt AddItem(const WChar *itemText, AnyType itemObj);
+		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj, UOSInt imageIndex);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
-		UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
-		void *RemoveItem(UOSInt index);
-		void *GetItem(UOSInt index);
+		UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
+		UOSInt InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj);
+		AnyType RemoveItem(UOSInt index);
+		AnyType GetItem(UOSInt index);
 		void ClearItems();
 		UOSInt GetCount();
 		void SetSelectedIndex(UOSInt index);
 		UOSInt GetSelectedIndex();
 		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
-		void *GetSelectedItem();
+		AnyType GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		Text::String *GetSelectedItemTextNew();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
@@ -72,7 +72,7 @@ namespace UI
 		UOSInt GetStringWidth(const WChar *s);
 		void GetItemRectP(UOSInt index, Int32 *rect);
 		void EnsureVisible(UOSInt index);
-		void *SetItem(UOSInt index, void *itemObj);
+		AnyType SetItem(UOSInt index, AnyType itemObj);
 
 		void BeginUpdate();
 		void EndUpdate();

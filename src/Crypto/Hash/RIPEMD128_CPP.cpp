@@ -221,7 +221,7 @@ extern "C" void RMD128_CalcBlock(UInt32 *keys, const UInt8 *block)
 }
 
 #else
-#if defined(HAS_GCCASM32) || defined(HAS_GCCASM64)
+#if 0 && (defined(HAS_GCCASM32) || defined(HAS_GCCASM64))
 template<class T>
 inline T _rotl(T x, UInt8 r)
 {

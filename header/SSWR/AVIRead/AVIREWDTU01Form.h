@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREWDTU01FORM
 #define _SM_SSWR_AVIREAD_AVIREWDTU01FORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/MQTTStaticClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
@@ -41,9 +41,9 @@ namespace SSWR
 			Net::MQTTStaticClient *cli;
 			Sync::Mutex dataMut;
 			Bool dataChg;
-			Data::FastMap<UInt64, DeviceEntry*> dataMap;
+			Data::FastMapNN<UInt64, DeviceEntry> dataMap;
 
-			static void __stdcall OnMQTTMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff);
+			static void __stdcall OnMQTTMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
 			static void __stdcall OnConnectClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void DataClear();

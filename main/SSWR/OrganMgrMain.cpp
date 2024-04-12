@@ -27,14 +27,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				UI::GUIForm::DialogResult dr;
 				{
-					SSWR::OrganMgr::OrganSelCategoryForm cateFrm(0, ui, &env);
+					SSWR::OrganMgr::OrganSelCategoryForm cateFrm(0, ui, env);
 					dr = cateFrm.ShowDialog(0);
 				}
 
 				if (dr == UI::GUIForm::DR_OK)
 				{
 					SSWR::OrganMgr::OrganMainForm *frm;
-					NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, 0, &env));
+					NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, 0, env));
 					frm->SetExitOnClose(true);
 					frm->Show();
 					ui->Run();

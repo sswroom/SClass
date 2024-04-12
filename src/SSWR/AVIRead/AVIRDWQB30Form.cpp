@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 		UOSInt i = me->cboSetCmd->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)(OSInt)me->cboSetCmd->GetItem(i);
+			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)me->cboSetCmd->GetItem(i).GetOSInt();
 			me->cmdCurr = dcmd;
 			me->cmdType = me->scanner->GetCommandParamType(dcmd, &me->cmdMin, &me->cmdMax);
 			if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 			UOSInt i = me->cboSetParam->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
-				val = (Int32)(OSInt)me->cboSetParam->GetItem(i);
+				val = (Int32)me->cboSetParam->GetItem(i).GetOSInt();
 				if (me->scanner->SetCommand(me->cmdCurr, val))
 				{
 					me->txtSetCmd->SetText(CSTR("Success"));

@@ -319,7 +319,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(AnyType use
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &message)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	Sync::Interlocked::IncrementU64(me->totalCount);

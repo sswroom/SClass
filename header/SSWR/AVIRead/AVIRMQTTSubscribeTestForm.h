@@ -54,7 +54,7 @@ namespace SSWR
 			static void __stdcall OnCliKeyClicked(AnyType userObj);
 			static void __stdcall OnPingTimerTick(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message);
+			static void __stdcall OnPublishMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &message);
 
 			void ServerStop();
 		public:

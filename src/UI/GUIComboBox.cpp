@@ -72,7 +72,7 @@ Text::CStringNN UI::GUIComboBox::GetObjectClass() const
 	return CSTR("ComboBox");
 }
 
-void UI::GUIComboBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
+void UI::GUIComboBox::HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj)
 {
 	this->selChgHdlrs.Add(hdlr);
 	this->selChgObjs.Add(userObj);

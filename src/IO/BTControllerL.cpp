@@ -301,14 +301,14 @@ IO::BTController::~BTController()
 	this->name->Release();
 }
 
-OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
+OSInt IO::BTController::CreateDevices(NotNullPtr<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
 {
 	BTControllerInfo *info = (BTControllerInfo*)this->hand;
 	OSInt ret = 0;
 	OSInt i;
 	inquiry_info *ii;
 	BTDeviceInfo devInfo;
-	BTDevice *dev;
+	NotNullPtr<BTDevice> dev;
 	if (toSearch)
 	{
 		devInfo.ctrlInfo = info;
@@ -323,7 +323,7 @@ OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool 
 			devInfo.addr[3] = ii[i].bdaddr.b[3];
 			devInfo.addr[4] = ii[i].bdaddr.b[4];
 			devInfo.addr[5] = ii[i].bdaddr.b[5];
-			NEW_CLASS(dev, BTDevice(0, 0, &devInfo));
+			NEW_CLASSNN(dev, BTDevice(0, 0, &devInfo));
 			devList->Add(dev);
 			i++;
 		}

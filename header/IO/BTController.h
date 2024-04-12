@@ -2,6 +2,7 @@
 #define _SM_IO_BTCONTROLLER
 #include "AnyType.h"
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
 #include "Text/String.h"
 
@@ -58,7 +59,7 @@ namespace IO
 		BTController(void *internalData, void *hand);
 		~BTController();
 
-		OSInt CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch);
+		OSInt CreateDevices(NotNullPtr<Data::ArrayListNN<BTDevice>> devList, Bool toSearch);
 
 		UInt8 *GetAddress();
 		NotNullPtr<Text::String> GetName() const;

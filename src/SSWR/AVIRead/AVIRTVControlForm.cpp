@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 		me->cboCommand->ClearItems();
 		return;
 	}
-	IO::TVControl::TVType tvType = (IO::TVControl::TVType)(OSInt)me->cboTVType->GetSelectedItem();
+	IO::TVControl::TVType tvType = (IO::TVControl::TVType)me->cboTVType->GetSelectedItem().GetOSInt();
 	UOSInt i = me->cboPort->GetSelectedIndex();
-	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem(i);
+	UInt32 portNum = (UInt32)me->cboPort->GetItem(i).GetUOSInt();
 	if (portNum == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a port"), CSTR("TV Control"), me);
@@ -87,7 +87,9 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		Int32 cmdValue;
-		CommandInfo *cmdInfo = (CommandInfo*)me->cboCommand->GetSelectedItem();
+		NotNullPtr<CommandInfo> cmdInfo;
+		if (!me->cboCommand->GetSelectedItem().GetOpt<CommandInfo>().SetTo(cmdInfo))
+			return;
 		sb.AppendC(UTF8STRC("Sending "));
 		sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 		me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
@@ -166,8 +168,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(AnyType userObj)
 	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->tvCtrl)
 	{
-		CommandInfo *cmdInfo = (CommandInfo*)me->cboCommand->GetSelectedItem();
-		if (cmdInfo == 0)
+		NotNullPtr<CommandInfo> cmdInfo;
+		if (!me->cboCommand->GetSelectedItem().GetOpt<CommandInfo>().SetTo(cmdInfo))
 		{
 			me->txtCommand->SetReadOnly(true);
 		}

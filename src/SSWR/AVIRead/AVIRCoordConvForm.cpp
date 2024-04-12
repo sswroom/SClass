@@ -258,23 +258,23 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 
 	if (me->radSrcGeo->IsSelected())
 	{
-		Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(OSInt)me->cboSrc->GetItem(i);
+		Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboSrc->GetItem(i).GetOSInt();
 		srcCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 	}
 	else
 	{
-		Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(OSInt)me->cboSrc->GetItem(i);
+		Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)me->cboSrc->GetItem(i).GetOSInt();
 		srcCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 	}
 
 	if (me->radDestGeo->IsSelected())
 	{
-		Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(OSInt)me->cboDest->GetItem(i);
+		Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboDest->GetItem(i).GetOSInt();
 		destCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 	}
 	else
 	{
-		Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(OSInt)me->cboDest->GetItem(i);
+		Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)me->cboDest->GetItem(i).GetOSInt();
 		destCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 	}
 
@@ -459,12 +459,12 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	{
 		if (this->radSrcGeo->IsSelected())
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(OSInt)this->cboSrc->GetItem(i);
+			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)this->cboSrc->GetItem(i).GetOSInt();
 			srcCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 		}
 		else
 		{
-			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(OSInt)this->cboSrc->GetItem(i);
+			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)this->cboSrc->GetItem(i).GetOSInt();
 			srcCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
 	}
@@ -478,12 +478,12 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	{
 		if (this->radDestGeo->IsSelected())
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(OSInt)this->cboDest->GetItem(i);
+			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)this->cboDest->GetItem(i).GetOSInt();
 			destCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 		}
 		else
 		{
-			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(OSInt)this->cboDest->GetItem(i);
+			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)this->cboDest->GetItem(i).GetOSInt();
 			destCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
 	}

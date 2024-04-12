@@ -22,7 +22,7 @@ void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnCancelClicked(AnyType use
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env) : UI::GUIForm(parent, 374, 262, ui)
+SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 374, 262, ui)
 {
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 10.5, false);

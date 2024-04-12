@@ -27,7 +27,7 @@ namespace Net
 		Data::ArrayList<ClientInfo*> cliList;
 		
 		void FreeClient(ClientInfo *cliInfo);
-		static void __stdcall OnMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff);
+		static void __stdcall OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
 	public:
 		MQTTFailoverClient(Net::FailoverType foType, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds);
 		virtual ~MQTTFailoverClient();

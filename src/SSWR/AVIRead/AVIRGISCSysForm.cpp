@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 		UOSInt i = me->cboGeo->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(OSInt)me->cboGeo->GetItem(i);
+			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboGeo->GetItem(i).GetOSInt();
 			me->outCSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 		UOSInt i = me->cboProj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			const UTF8Char *projName = (const UTF8Char*)me->cboProj->GetItem(i);
+			const UTF8Char *projName = me->cboProj->GetItem(i).GetOpt<const UTF8Char>().OrNull();
 			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem({projName, Text::StrCharCnt(projName)}, projName);
 			if (me->outCSys)
 			{

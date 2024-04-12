@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(AnyType u
 		{
 			return;
 		}
-		DeviceType dt = (DeviceType)(OSInt)me->cboDevice->GetSelectedItem();
+		DeviceType dt = (DeviceType)me->cboDevice->GetSelectedItem().GetOSInt();
 		switch (dt)
 		{
 		case DT_SDM120:

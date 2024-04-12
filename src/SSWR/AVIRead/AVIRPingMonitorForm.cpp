@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userOb
 		return;
 	}
 
-	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
 		Socket *soc = me->sockf->CreateICMPIPv4Socket(ip);

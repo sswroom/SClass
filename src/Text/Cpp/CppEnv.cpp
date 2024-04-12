@@ -144,17 +144,18 @@ Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 	this->baseFile = 0;
 }
 
-Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
+Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, Optional<IO::ConfigFile> cfg)
 {
 	this->pt = proj->GetProjectType();
 	this->baseFile = proj->GetSourceNameObj()->Clone().Ptr();
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
 		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
-		if (cfg)
+		NotNullPtr<IO::ConfigFile> nncfg;
+		if (cfg.SetTo(nncfg))
 		{
 			NotNullPtr<Text::String> inclDir;
-			if (cfg->GetValue(CSTR("AdditionalIncludeDirectories")).SetTo(inclDir))
+			if (nncfg->GetValue(CSTR("AdditionalIncludeDirectories")).SetTo(inclDir))
 			{
 				Text::PString sarr[2];
 				UOSInt cnt;

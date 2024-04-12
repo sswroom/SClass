@@ -19,7 +19,7 @@ void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnCancelClicked(AnyType use
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, UserFileInfo *userFile) : UI::GUIForm(parent, 420, 224, ui)
+SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, UserFileInfo *userFile) : UI::GUIForm(parent, 420, 224, ui)
 {
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 10.5, false);

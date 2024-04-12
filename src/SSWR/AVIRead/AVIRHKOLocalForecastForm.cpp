@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRHKOLocalForecastForm::OnReloadClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRHKOLocalForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOLocalForecastForm>();
-	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)(OSInt)me->cboLang->GetSelectedItem();
+	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)me->cboLang->GetSelectedItem().GetOSInt();
 	me->Reload(lang);
 }
 

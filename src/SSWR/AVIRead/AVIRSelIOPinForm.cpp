@@ -5,12 +5,12 @@
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
-	SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)(OSInt)me->cboPinType->GetSelectedItem();
+	SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetSelectedItem().GetOSInt();
 
 	if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
 	{
 		UOSInt i = me->cboGPIO->GetSelectedIndex();
-		UInt16 pinNum = (UInt16)(UOSInt)me->cboGPIO->GetItem((UOSInt)i);
+		UInt16 pinNum = (UInt16)me->cboGPIO->GetItem((UOSInt)i).GetUOSInt();
 		if (i == INVALID_INDEX)
 		{
 			me->ui->ShowMsgOK(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 	else if (iopt == SSWR::AVIRead::AVIRCore::IOPT_VIOPIN)
 	{
 		UOSInt i = me->cboVirtualPin->GetSelectedIndex();
-		UInt16 pinNum = (UInt16)(UOSInt)me->cboVirtualPin->GetItem(i);
+		UInt16 pinNum = (UInt16)me->cboVirtualPin->GetItem(i).GetUOSInt();
 		if (i == INVALID_INDEX)
 		{
 			me->ui->ShowMsgOK(CSTR("Please select a VirtualPin"), CSTR("Select VirtualPin"), me);
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(AnyType userObj)
 	UOSInt i = me->cboPinType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)(OSInt)me->cboPinType->GetItem(i);
+		SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetItem(i).GetOSInt();
 		if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
 		{
 			me->tcConfig->SetSelectedPage(me->tpGPIO);

@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
-	Data::ArrayList<Net::MACInfo::MACEntry*> *macArr;
+	NotNullPtr<Data::ArrayList<Net::MACInfo::MACEntry*>> macArr;
 	UTF8Char sbuff[20];
 	UTF8Char *sptr;
 	UInt64 iMAC;
@@ -19,8 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 	dt.SetCurrTimeUTC();
 	Data::RandomMT19937 random((UInt32)(dt.ToTicks() & 0xffffffff));
 	irand = (UInt32)random.NextInt32();
-	macArr = (Data::ArrayList<Net::MACInfo::MACEntry*>*)me->cboVendor->GetSelectedItem();
-	if (macArr == 0)
+	if (!me->cboVendor->GetSelectedItem().GetOpt<Data::ArrayList<Net::MACInfo::MACEntry*>>().SetTo(macArr))
 	{
 		return;
 	}

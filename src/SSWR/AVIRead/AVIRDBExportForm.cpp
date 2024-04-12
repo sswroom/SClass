@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(AnyType userObj, UOSInt itemIndex)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
-	UOSInt currVal = (UOSInt)me->lvTables->GetItem(itemIndex);
+	UOSInt currVal = me->lvTables->GetItem(itemIndex).GetUOSInt();
 	if (currVal == 0)
 	{
 		me->lvTables->SetSubItem(itemIndex, 1, CSTR("yes"));
@@ -44,13 +44,13 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 	dlg->SetFileName(CSTRP(sbuff, sptr));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		DB::SQLBuilder sql((DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
+		DB::SQLBuilder sql((DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt(), me->chkAxisAware->IsChecked(), 0);
 		Data::ArrayListStringNN cols;
 		UOSInt i = 0;
 		UOSInt j = me->lvTables->GetCount();
 		while (i < j)
 		{
-			if (me->lvTables->GetItem(i) != 0)
+			if (me->lvTables->GetItem(i).IsNull())
 			{
 				cols.Add(Text::String::OrEmpty(me->lvTables->GetItemTextNew(i)));
 			}

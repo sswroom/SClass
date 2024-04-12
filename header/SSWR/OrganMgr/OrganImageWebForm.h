@@ -14,7 +14,7 @@ namespace SSWR
 		class OrganImageWebForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			Text::String *srcURL;
 			Text::String *location;
 
@@ -34,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganImageItem *userFile, SSWR::OrganMgr::WebFileInfo *wfile);
+			OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, OrganImageItem *userFile, SSWR::OrganMgr::WebFileInfo *wfile);
 			virtual ~OrganImageWebForm();
 
 			virtual void OnMonitorChanged();

@@ -107,7 +107,7 @@ void UI::GTK::GTKComboBox::EndUpdate()
 	this->clsData->model = 0;*/
 }
 
-UOSInt UI::GTK::GTKComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(itemText->Clone());
@@ -119,7 +119,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(NotNullPtr<Text::String> itemText, void *it
 	return cnt;
 }
 
-UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(Text::String::New(itemText));
@@ -141,7 +141,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return cnt;
 }
 
-UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
@@ -152,7 +152,7 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> i
 	return index;
 }
 
-UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
@@ -163,13 +163,13 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, 
 	return index;
 }
 
-void *UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
+AnyType UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
 		return 0;
 	OPTSTR_DEL(this->itemTexts.RemoveAt(index));
-	void *item = this->items.RemoveAt(index);
+	AnyType item = this->items.RemoveAt(index);
 	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, (gint)index);
 	return item;
 }
@@ -201,12 +201,12 @@ UOSInt UI::GTK::GTKComboBox::GetSelectedIndex()
 	return (UOSInt)(OSInt)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd);
 }
 
-void *UI::GTK::GTKComboBox::GetSelectedItem()
+AnyType UI::GTK::GTKComboBox::GetSelectedItem()
 {
 	return this->items.GetItem(this->GetSelectedIndex());
 }
 
-void *UI::GTK::GTKComboBox::GetItem(UOSInt index)
+AnyType UI::GTK::GTKComboBox::GetItem(UOSInt index)
 {
 	return this->items.GetItem(index);
 }

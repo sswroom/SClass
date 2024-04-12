@@ -22,8 +22,8 @@ namespace SSWR
 		class OrganTimeAdjForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
-			DataFileInfo *dataFile;
+			NotNullPtr<OrganEnv> env;
+			NotNullPtr<DataFileInfo> dataFile;
 			NotNullPtr<Map::GPSTrack> gpsTrk;
 			Bool mapUpdated;
 			NotNullPtr<Map::MapEnv> mapEnv;
@@ -69,7 +69,7 @@ namespace SSWR
 			static void __stdcall OnTimeApplyClicked(AnyType userObj);
 			void UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj);
 		public:
-			OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, DataFileInfo *dataFile);
+			OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NotNullPtr<DataFileInfo> dataFile);
 			virtual ~OrganTimeAdjForm();
 
 			virtual void OnMonitorChanged();

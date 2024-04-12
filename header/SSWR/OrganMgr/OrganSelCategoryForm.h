@@ -18,12 +18,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbCategory;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
-			SSWR::OrganMgr::OrganEnv *env;
+			NotNullPtr<SSWR::OrganMgr::OrganEnv> env;
 			
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::OrganMgr::OrganEnv *env);
+			OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::OrganMgr::OrganEnv> env);
 			~OrganSelCategoryForm();
 
 			virtual void OnMonitorChanged();

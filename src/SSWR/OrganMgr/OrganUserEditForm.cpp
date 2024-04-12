@@ -27,7 +27,8 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter watermark"), CSTR("Error"), me);
 		return;
 	}
-	if (me->user == 0)
+	NotNullPtr<OrganWebUser> user;
+	if (!me->user.SetTo(user))
 	{
 		if (sb2.GetLength() == 0)
 		{
@@ -43,14 +44,14 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 	{
 		if (sb2.GetLength() == 0)
 		{
-			if (me->env->ModifyWebUser(me->user->id, sb1.ToString(), 0, sb3.ToString()))
+			if (me->env->ModifyWebUser(user->id, sb1.ToString(), 0, sb3.ToString()))
 			{
 				me->SetDialogResult(UI::GUIForm::DR_OK);
 			}
 		}
 		else
 		{
-			if (me->env->ModifyWebUser(me->user->id, sb1.ToString(), sb2.ToString(), sb3.ToString()))
+			if (me->env->ModifyWebUser(user->id, sb1.ToString(), sb2.ToString(), sb3.ToString()))
 			{
 				me->SetDialogResult(UI::GUIForm::DR_OK);
 			}
@@ -64,7 +65,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnCancelClicked(AnyType userOb
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, OrganWebUser *user) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, Optional<OrganWebUser> user) : UI::GUIForm(parent, 480, 160, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetNoResize(true);
@@ -72,7 +73,7 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientContr
 	this->env = env;
 	this->user = user;
 
-	if (user)
+	if (user.NotNull())
 	{
 		this->SetText(this->env->GetLang(CSTR("UserEditTitleModify")));
 	}
@@ -106,10 +107,11 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientContr
 	this->btnCancel->SetRect(244, 108, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	if (this->user)
+	NotNullPtr<OrganWebUser> nnuser;
+	if (this->user.SetTo(nnuser))
 	{
-		this->txtUserName->SetText(this->user->userName->ToCString());
-		this->txtWatermark->SetText(this->user->watermark->ToCString());
+		this->txtUserName->SetText(nnuser->userName->ToCString());
+		this->txtWatermark->SetText(nnuser->watermark->ToCString());
 	}
 	this->txtUserName->Focus();
 	this->SetDefaultButton(this->btnOK);

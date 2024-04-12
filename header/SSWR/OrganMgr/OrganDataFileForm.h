@@ -14,7 +14,7 @@ namespace SSWR
 		class OrganDataFileForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			NotNullPtr<UI::GUIListView> lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnDelete;
@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnStartTimeClicked(AnyType userObj);
 			void UpdateFileList();
 		public:
-			OrganDataFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
+			OrganDataFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
 			virtual ~OrganDataFileForm();
 
 			virtual void OnMonitorChanged();

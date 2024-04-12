@@ -5,8 +5,8 @@
 void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
-	const Map::RegionalMapSource::MapInfo *map = (const Map::RegionalMapSource::MapInfo*)me->lvMaps->GetSelectedItem();
-	if (map)
+	NotNullPtr<const Map::RegionalMapSource::MapInfo> map;
+	if (me->lvMaps->GetSelectedItem().GetOpt<const Map::RegionalMapSource::MapInfo>().SetTo(map))
 	{
 		me->txtDesc->SetText(Text::CStringNN(map->desc, map->descLen));
 	}
@@ -19,11 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
-	const Map::RegionalMapSource::MapInfo *map = (const Map::RegionalMapSource::MapInfo*)me->lvMaps->GetItem(index);
-	me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
-	if (me->layer)
+	NotNullPtr<const Map::RegionalMapSource::MapInfo> map;
+	if (me->lvMaps->GetItem(index).GetOpt<const Map::RegionalMapSource::MapInfo>().SetTo(map))
 	{
-		me->SetDialogResult(UI::GUIForm::DR_OK);
+		me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
+		if (me->layer)
+		{
+			me->SetDialogResult(UI::GUIForm::DR_OK);
+		}
 	}
 }
 

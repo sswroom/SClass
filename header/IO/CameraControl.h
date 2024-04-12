@@ -1,6 +1,5 @@
 #ifndef _SM_IO_CAMERACONTROL
 #define _SM_IO_CAMERACONTROL
-#include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "IO/Stream.h"
 #include "Text/StringBuilderUTF8.h"
@@ -31,11 +30,11 @@ namespace IO
 		CameraControl() {};
 		virtual ~CameraControl() {};
 
-		virtual UOSInt GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList) = 0;
-		virtual void FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList) = 0;
-		virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList) = 0;
-		virtual Bool GetFile(FileInfo *file, IO::Stream *outStm) = 0;
-		virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm) = 0;
+		virtual UOSInt GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList) = 0;
+		virtual void FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList) = 0;
+		virtual UOSInt GetFileList(NotNullPtr<Data::ArrayListNN<FileInfo>> fileList) = 0;
+		virtual Bool GetFile(NotNullPtr<FileInfo> file, NotNullPtr<IO::Stream> outStm) = 0;
+		virtual Bool GetThumbnailFile(NotNullPtr<FileInfo> file, NotNullPtr<IO::Stream> outStm) = 0;
 	};
 }
 #endif

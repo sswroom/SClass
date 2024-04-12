@@ -12,12 +12,12 @@ void IO::Device::GoProCameraControl::GetMediaList()
 {
 	if (this->fileList == 0)
 	{
-		NEW_CLASS(this->fileList, Data::ArrayList<IO::CameraControl::FileInfo*>());
+		NEW_CLASS(this->fileList, Data::ArrayListNN<IO::CameraControl::FileInfo>());
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		
 		Text::StringBuilderUTF8 sb;
-		IO::CameraControl::FileInfo *file;
+		NotNullPtr<IO::CameraControl::FileInfo> file;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
@@ -81,7 +81,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 										
 										if (jsObjFS->GetObjectString(CSTR("n")).SetTo(fileName) && jsObjFS->GetObjectString(CSTR("s")).SetTo(fileSize))
 										{
-											file = MemAlloc(IO::CameraControl::FileInfo, 1);
+											file = MemAllocNN(IO::CameraControl::FileInfo);
 											fileName->ConcatTo(file->fileName);
 											dirName->ConcatTo(file->filePath);
 											if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".MP4"))
@@ -117,7 +117,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 	}
 }
 
-Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
+Bool IO::Device::GoProCameraControl::GetInfo(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -196,18 +196,18 @@ IO::Device::GoProCameraControl::~GoProCameraControl()
 	UOSInt i;
 	if (this->fileList)
 	{
-		IO::CameraControl::FileInfo *file;
+		NotNullPtr<IO::CameraControl::FileInfo> file;
 		i = this->fileList->GetCount();
 		while (i-- > 0)
 		{
-			file = this->fileList->GetItem(i);
-			MemFree(file);
+			file = this->fileList->GetItemNoCheck(i);
+			MemFreeNN(file);
 		}
 		DEL_CLASS(this->fileList);
 	}
 }
 
-UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
+UOSInt IO::Device::GoProCameraControl::GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -215,33 +215,28 @@ UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayListStringNN *name
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::GoProCameraControl::FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
+void IO::Device::GoProCameraControl::FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
 {
-	UOSInt i = nameList->GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(nameList->GetItem(i));
-	}
-	nameList->Clear();
-	i = valueList->GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(valueList->GetItem(i));
-	}
-	valueList->Clear();
+	nameList->FreeAll();
+	valueList->FreeAll();
 }
 
-UOSInt IO::Device::GoProCameraControl::GetFileList(Data::ArrayList<IO::CameraControl::FileInfo*> *fileList)
+UOSInt IO::Device::GoProCameraControl::GetFileList(NotNullPtr<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList)
 {
 	if (this->fileList == 0)
 	{
 		this->GetMediaList();
 	}
-	fileList->AddAll(NotNullPtr<Data::ArrayList<IO::CameraControl::FileInfo*>>::FromPtr(this->fileList));
-	return this->fileList->GetCount();
+	NotNullPtr<Data::ArrayListNN<IO::CameraControl::FileInfo>> nnfileList;
+	if (nnfileList.Set(this->fileList))
+	{
+		fileList->AddAll(nnfileList);
+		return nnfileList->GetCount();
+	}
+	return 0;
 }
 
-Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, IO::Stream *outStm)
+Bool IO::Device::GoProCameraControl::GetFile(NotNullPtr<IO::CameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
@@ -264,7 +259,7 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
 }
 
-Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInfo *file, IO::Stream *outStm)
+Bool IO::Device::GoProCameraControl::GetThumbnailFile(NotNullPtr<IO::CameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;

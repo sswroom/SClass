@@ -8,8 +8,9 @@
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
-	ProtocolItem *item = (ProtocolItem*)me->lvLogs->GetSelectedItem();
-	if (item && me->currFile)
+	NotNullPtr<ProtocolItem> item;
+	NotNullPtr<IO::ProtoDec::IProtocolDecoder> currDec;
+	if (me->lvLogs->GetSelectedItem().GetOpt<ProtocolItem>().SetTo(item) && me->currFile && me->currDec.SetTo(currDec))
 	{
 		Text::StringBuilderUTF8 sb;
 		Data::ByteBuffer buff(item->size);
@@ -17,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 		me->currFile->Read(buff);
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC("\r\n\r\n"));
-		me->currDec->GetProtocolDetail(buff.Ptr(), item->size, sb);
+		currDec->GetProtocolDetail(buff.Ptr(), item->size, sb);
 		me->txtLogs->SetText(sb.ToCString());
 	}
 	else
@@ -48,10 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
-	IO::ProtoDec::IProtocolDecoder *protoDec;
+	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
 	me->txtFile->GetText(sb);
-	protoDec = (IO::ProtoDec::IProtocolDecoder*)me->cboDecoder->GetSelectedItem();
-	if (sb.GetLength() > 0 && protoDec != 0)
+	if (sb.GetLength() > 0 && me->cboDecoder->GetSelectedItem().GetOpt<IO::ProtoDec::IProtocolDecoder>().SetTo(protoDec))
 	{
 		me->ClearList();
 		SDEL_CLASS(me->currFile);
@@ -97,11 +97,11 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
-	ProtocolItem *item;
+	NotNullPtr<ProtocolItem> item;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
-	item = MemAlloc(ProtocolItem, 1);
+	item = MemAllocNN(ProtocolItem);
 	item->fileOfst = fileOfst;
 	item->size = size;
 	sptr = Text::StrUInt64(sbuff, fileOfst);
@@ -109,17 +109,17 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj,
 	sptr = Text::StrInt32(sbuff, (Int32)size);
 	me->lvLogs->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	me->lvLogs->SetSubItem(i, 2, typeName);
-	me->itemList->Add(item);
+	me->itemList.Add(item);
 }
 
 void SSWR::AVIRead::AVIRProtoDecForm::ClearList()
 {
-	UOSInt i = this->itemList->GetCount();
+	UOSInt i = this->itemList.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->itemList->GetItem(i));
+		MemFreeNN(this->itemList.GetItemNoCheck(i));
 	}
-	this->itemList->Clear();
+	this->itemList.Clear();
 	this->lvLogs->ClearItems();
 }
 
@@ -131,8 +131,6 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->currFile = 0;
 	this->currDec = 0;
-	NEW_CLASS(this->decList, IO::ProtoDec::ProtoDecList());
-	NEW_CLASS(this->itemList, Data::ArrayList<ProtocolItem*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -169,12 +167,12 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 
 	UOSInt i;
 	UOSInt j;
-	IO::ProtoDec::IProtocolDecoder *protoDec;
+	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
 	i = 0;
-	j = this->decList->GetCount();
+	j = this->decList.GetCount();
 	while (i < j)
 	{
-		protoDec = this->decList->GetItem(i);
+		protoDec = this->decList.GetItemNoCheck(i);
 		this->cboDecoder->AddItem(protoDec->GetName(), protoDec);
 		i++;
 	}
@@ -188,8 +186,6 @@ SSWR::AVIRead::AVIRProtoDecForm::~AVIRProtoDecForm()
 {
 	this->ClearList();
 	SDEL_CLASS(this->currFile);
-	DEL_CLASS(this->itemList);
-	DEL_CLASS(this->decList);
 }
 
 void SSWR::AVIRead::AVIRProtoDecForm::OnMonitorChanged()

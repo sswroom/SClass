@@ -79,9 +79,9 @@ namespace SSWR
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url);
 
 			virtual Bool AddDataFile(Text::CStringNN fileName);
-			virtual Bool DelDataFile(DataFileInfo *dataFile);
+			virtual Bool DelDataFile(NotNullPtr<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos);
-			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile);
+			virtual Map::GPSTrack *OpenGPSTrack(NotNullPtr<DataFileInfo> dataFile);
 
 			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
 			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType);

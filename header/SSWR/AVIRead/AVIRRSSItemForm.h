@@ -34,12 +34,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtText;
 
 			Media::ImageList *currImg;
-			Net::RSSItem *rssItem;
+			NotNullPtr<Net::RSSItem> rssItem;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnImageSelChg(AnyType userObj);
 		public:
-			AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::RSSItem *rssItem);
+			AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::RSSItem> rssItem);
 			virtual ~AVIRRSSItemForm();
 
 			virtual void OnMonitorChanged();

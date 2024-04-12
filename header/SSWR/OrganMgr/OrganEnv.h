@@ -127,7 +127,7 @@ namespace SSWR
 		{
 			Int32 id;
 			Data::SortableArrayListNative<Data::Timestamp> gpsFileIndex;
-			Data::ArrayList<DataFileInfo*> gpsFileObj;
+			Data::ArrayListNN<DataFileInfo> gpsFileObj;
 			Data::SortableArrayListNative<Data::Timestamp> userFileIndex;
 			Data::ArrayList<UserFileInfo*> userFileObj;
 		};
@@ -196,7 +196,7 @@ namespace SSWR
 			Bool cateIsFullDir;
 			Data::ArrayListInt32 *bookIds;
 			Data::ArrayList<OrganBook*> *bookObjs;
-			Data::ArrayList<DataFileInfo*> dataFiles;
+			Data::ArrayListNN<DataFileInfo> dataFiles;
 			Int32 userId;
 			Data::FastMap<Int32, SpeciesInfo*> speciesMap;
 			Data::FastMap<Int32, UserFileInfo*> userFileMap;
@@ -276,11 +276,11 @@ namespace SSWR
 
 			WebUserInfo *GetWebUser(Int32 userId);
 			virtual Bool AddDataFile(Text::CStringNN fileName) = 0;
-			Data::ArrayList<DataFileInfo*> *GetDataFiles();
-			virtual Bool DelDataFile(DataFileInfo *dataFile) = 0;
-			void ReleaseDataFile(DataFileInfo *dataFile);
+			NotNullPtr<Data::ArrayListNN<DataFileInfo>> GetDataFiles();
+			virtual Bool DelDataFile(NotNullPtr<DataFileInfo> dataFile) = 0;
+			void ReleaseDataFile(NotNullPtr<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos) = 0;
-			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile) = 0;
+			virtual Map::GPSTrack *OpenGPSTrack(NotNullPtr<DataFileInfo> dataFile) = 0;
 
 			void ReleaseSpecies(SpeciesInfo *species);
 			void ReleaseUserFile(UserFileInfo *userFile);

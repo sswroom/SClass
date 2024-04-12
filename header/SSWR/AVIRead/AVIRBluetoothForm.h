@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHFORM
+#include "Data/ArrayListNN.h"
 #include "IO/BTManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -23,8 +24,8 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				IO::BTController *bt;
-				Data::ArrayList<IO::BTController::BTDevice*> *devList;
+				NotNullPtr<IO::BTController> bt;
+				NotNullPtr<Data::ArrayListNN<IO::BTController::BTDevice>> devList;
 			} BTStatus;
 		private:
 			NotNullPtr<UI::GUIListBox> lbCtrl;
@@ -55,8 +56,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbDevServices;
 			NotNullPtr<UI::GUIListView> lvDevice;
 
-			Data::ArrayList<BTStatus*> btList;
-			IO::BTController::BTDevice *currDev;
+			Data::ArrayListNN<BTStatus> btList;
+			Optional<IO::BTController::BTDevice> currDev;
 			Data::ArrayList<void *> guidList;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
@@ -69,7 +70,7 @@ namespace SSWR
 			static void __stdcall OnDevUnauthenClicked(AnyType userObj);
 
 			void ClearGUIDs();
-			void UpdateDevList(BTStatus *btStatus);
+			void UpdateDevList(NotNullPtr<BTStatus> btStatus);
 		public:
 			AVIRBluetoothForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothForm();

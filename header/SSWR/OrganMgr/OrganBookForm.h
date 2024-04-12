@@ -32,7 +32,7 @@ namespace SSWR
 		class OrganBookForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 
 			NotNullPtr<UI::GUIPanel> pnlBook;
 			NotNullPtr<UI::GUIPanel> pnlBookDet;
@@ -65,7 +65,7 @@ namespace SSWR
 
 			void UpdateBookList();
 		public:
-			OrganBookForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
+			OrganBookForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
 			virtual ~OrganBookForm();
 
 			virtual void OnMonitorChanged();

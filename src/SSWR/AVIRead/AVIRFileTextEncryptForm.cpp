@@ -18,10 +18,10 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
 	Text::StringBuilderUTF8 sbSrc;
 	Text::StringBuilderUTF8 sbDest;
-	Text::TextBinEnc::ITextBinEnc *destEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncrypt->GetSelectedItem();
+	NotNullPtr<Text::TextBinEnc::ITextBinEnc> destEnc;
 	me->txtSrcFile->GetText(sbSrc);
 	me->txtDestFile->GetText(sbDest);
-	if (destEnc == 0)
+	if (!me->cboEncrypt->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(destEnc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select encryption"), CSTR("File Text Encrypt"), me);
 	}

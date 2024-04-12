@@ -68,7 +68,7 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 	default:
 		return 0;
 	}
-	crypto->SetChainMode((Crypto::Encrypt::ChainMode)(OSInt)this->cboChainMode->GetSelectedItem());
+	crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetOSInt());
 	return crypto;
 }
 

@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> results;
 	me->txtSearchBase->GetText(sb);
 	me->txtSearchFilter->GetText(sb2);
-	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)(OSInt)me->cboSearchScope->GetSelectedItem(), (Net::LDAPClient::DerefType)(OSInt)me->cboSearchDerefAliases->GetSelectedItem(), 0, 0, false, sb2.ToString(), &results))
+	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetOSInt(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetOSInt(), 0, 0, false, sb2.ToString(), &results))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
 	}
@@ -112,9 +112,9 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
-	Net::LDAPClient::SearchResObject *obj = (Net::LDAPClient::SearchResObject*)me->cboSearchResult->GetSelectedItem();
+	NotNullPtr<Net::LDAPClient::SearchResObject> obj;
 	me->lvSearch->ClearItems();
-	if (obj && obj->items)
+	if (me->cboSearchResult->GetSelectedItem().GetOpt<Net::LDAPClient::SearchResObject>().SetTo(obj) && obj->items)
 	{
 		UOSInt i;
 		UOSInt j;

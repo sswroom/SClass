@@ -146,8 +146,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 	}
 	else
 	{
-		CaptureFormat *cfmt = (CaptureFormat*)me->cboFormat->GetSelectedItem();
-		if (cfmt && me->currCapture)
+		NotNullPtr<CaptureFormat> cfmt;
+		if (me->cboFormat->GetSelectedItem().GetOpt<CaptureFormat>().SetTo(cfmt) && me->currCapture)
 		{
 			Text::StringBuilderUTF8 sb;
 			me->txtInterval->GetText(sb);

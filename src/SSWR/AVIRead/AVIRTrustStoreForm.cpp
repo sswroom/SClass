@@ -15,8 +15,8 @@ public:
 void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTrustStoreForm>();
-	Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)me->lvTrustCert->GetItem(index);
-	if (cert)
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	if (me->lvTrustCert->GetItem(index).GetOpt<Crypto::Cert::X509Cert>().SetTo(cert))
 	{
 		me->core->OpenObject(cert->Clone());
 	}

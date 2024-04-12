@@ -12,9 +12,10 @@
 void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
-	if (me->btCtrl)
+	NotNullPtr<IO::BTController> btCtrl;
+	if (me->btCtrl.SetTo(btCtrl))
 	{
-		me->btCtrl->LEScanEnd();
+		btCtrl->LEScanEnd();
 		me->btCtrl = 0;
 		me->cboInterface->SetEnabled(true);
 		return;
@@ -22,8 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(AnyType userOb
 	me->ClearDevices();
 	me->lvDevices->ClearItems();
 
-	IO::BTController *btCtrl = (IO::BTController*)me->cboInterface->GetSelectedItem();
-	if (btCtrl == 0)
+	if (!me->cboInterface->GetSelectedItem().GetOpt<IO::BTController>().SetTo(btCtrl))
 		return;
 	btCtrl->LEScanHandleResult(OnLEScanItem, me);
 	if (btCtrl->LEScanBegin())
@@ -50,8 +50,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(AnyType use
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt8 mac[8];
-	BTDevice *dev = (BTDevice*)me->lvDevices->GetItem(index);
-	if (dev)
+	NotNullPtr<BTDevice> dev;
+	if (me->lvDevices->GetItem(index).GetOpt<BTDevice>().SetTo(dev))
 	{
 		WriteMUInt64(mac, dev->mac);
 		sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	BTDevice *dev;
+	NotNullPtr<BTDevice> dev;
 	NotNullPtr<Text::String> s;
 
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 	j = me->devMap.GetCount();
 	while (i < j)
 	{
-		dev = me->devMap.GetItem(i);
+		dev = me->devMap.GetItemNoCheck(i);
 		if (!dev->shown)
 		{
 			dev->shown = true;
@@ -110,10 +110,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
-	BTDevice *dev;
+	NotNullPtr<BTDevice> dev;
 	Sync::MutexUsage mutUsage(me->devMut);
-	dev = me->devMap.Get(mac);
-	if (dev)
+	if (me->devMap.Get(mac).SetTo(dev))
 	{
 		dev->rssi = rssi;
 		if (name.leng > 0)
@@ -132,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj,
 	}
 	else
 	{
-		dev = MemAlloc(BTDevice, 1);
+		dev = MemAllocNN(BTDevice);
 		dev->mac = mac;
 		dev->rssi = rssi;
 		if (name.leng)
@@ -152,13 +151,13 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj,
 void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 {
 	UOSInt i;
-	BTDevice *dev;
+	NotNullPtr<BTDevice> dev;
 	i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		dev = this->devMap.GetItem(i);
+		dev = this->devMap.GetItemNoCheck(i);
 		SDEL_STRING(dev->name);
-		MemFree(dev);
+		MemFreeNN(dev);
 	}
 	this->devMap.Clear();
 }
@@ -169,7 +168,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 	this->SetText(CSTR("Bluetooth LE"));
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->btMgr.CreateControllers(&this->btList);
+	this->btMgr.CreateControllers(this->btList);
 	this->btCtrl = 0;
 
 	this->pnlControl = ui->NewPanel(*this);
@@ -197,10 +196,10 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 
 	UOSInt i = 0;
 	UOSInt j = this->btList.GetCount();
-	IO::BTController *btCtrl;
+	NotNullPtr<IO::BTController> btCtrl;
 	while (i < j)
 	{
-		btCtrl = this->btList.GetItem(i);
+		btCtrl = this->btList.GetItemNoCheck(i);
 		this->cboInterface->AddItem(btCtrl->GetName(), btCtrl);
 		i++;
 	}
@@ -214,18 +213,18 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 SSWR::AVIRead::AVIRBluetoothLEForm::~AVIRBluetoothLEForm()
 {
 	UOSInt i;
-	IO::BTController *btCtrl;
-	if (this->btCtrl)
+	NotNullPtr<IO::BTController> btCtrl;
+	if (this->btCtrl.SetTo(btCtrl))
 	{
-		this->btCtrl->LEScanEnd();
+		btCtrl->LEScanEnd();
 		this->btCtrl = 0;
 	}
 
 	i = this->btList.GetCount();
 	while (i-- > 0)
 	{
-		btCtrl = this->btList.GetItem(i);
-		DEL_CLASS(btCtrl);
+		btCtrl = this->btList.GetItemNoCheck(i);
+		btCtrl.Delete();
 	}
 
 	this->ClearDevices();

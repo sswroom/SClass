@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt val = (OSInt)me->cboType->GetSelectedItem();
+	OSInt val = me->cboType->GetSelectedItem().GetOSInt();
 	me->handType = (IO::SNBDongle::HandleType)val;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBImg"));

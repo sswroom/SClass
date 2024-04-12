@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please input Data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::SQLType sqlType = (DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
+	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt();
 	Bool axisAware = me->chkAxisAware->IsChecked();
 	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChgSQL", true);
 	dlg->SetAllowMultiSel(false);
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 		me->ui->ShowMsgOK(CSTR("Connection does not support SQL Execution"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	DB::SQLType sqlType = (DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
+	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt();
 	Bool axisAware = me->chkAxisAware->IsChecked();
 	Bool succ;
 	SQLSession sess;
@@ -482,9 +482,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	UOSInt keyCol1 = (UOSInt)this->cboKeyCol1->GetSelectedItem();
+	UOSInt keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUOSInt();
 	UOSInt keyDCol1;
-	UOSInt keyCol2 = (UOSInt)this->cboKeyCol2->GetSelectedItem();
+	UOSInt keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUOSInt();
 	UOSInt keyDCol2;
 	UOSInt i;
 	UOSInt k;
@@ -987,9 +987,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Bool intKey = false;
 	NotNullPtr<DB::ColDef> col;
 	Text::StringBuilderUTF8 sbId;
-	UOSInt keyCol1 = (UOSInt)this->cboKeyCol1->GetSelectedItem();
+	UOSInt keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUOSInt();
 	UOSInt keyDCol1;
-	UOSInt keyCol2 = (UOSInt)this->cboKeyCol2->GetSelectedItem();
+	UOSInt keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUOSInt();
 	UOSInt keyDCol2;
 	UOSInt i = 0;
 	UOSInt dbCnt = table->GetColCnt();

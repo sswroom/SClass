@@ -175,7 +175,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 
 Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 {
-	this->selectedFile->cate = ((SSWR::DiscDB::DiscDBEnv::CategoryInfo*)this->cboCategory->GetSelectedItem())->id->ToCString();
+	this->selectedFile->cate = this->cboCategory->GetSelectedItem().GetNN<SSWR::DiscDB::DiscDBEnv::CategoryInfo>()->id->ToCString();
 	this->BurntFileUpdateVideo(this->selectedFile);
 
 	Text::StringBuilderUTF8 sbName;
@@ -1196,8 +1196,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnRemoveFileClicked(AnyType us
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCategorySelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
-	SSWR::DiscDB::DiscDBEnv::CategoryInfo *cate = (SSWR::DiscDB::DiscDBEnv::CategoryInfo *)me->cboCategory->GetSelectedItem();
-	if (cate)
+	NotNullPtr<SSWR::DiscDB::DiscDBEnv::CategoryInfo> cate;
+	if (me->cboCategory->GetSelectedItem().GetOpt<SSWR::DiscDB::DiscDBEnv::CategoryInfo>().SetTo(cate))
 	{
 		if (cate->id->Equals(UTF8STRC("ISO")))
 		{

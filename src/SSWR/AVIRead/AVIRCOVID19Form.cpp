@@ -58,8 +58,8 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnCountrySelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
-	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country = (SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*)me->lvCountry->GetSelectedItem();
-	if (country == 0)
+	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
+	if (!me->lvCountry->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo>().SetTo(country))
 		return;
 	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();

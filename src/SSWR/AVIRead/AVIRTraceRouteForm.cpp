@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Error in resolving target host"), CSTR("Trace Route"), me);
 		return;
 	}
-	UInt32 ip = (UInt32)(OSInt)me->cboSelfIP->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboSelfIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
 		Data::ArrayList<UInt32> ipList;

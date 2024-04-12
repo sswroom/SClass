@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
-	UInt32 threadId = (UInt32)(UOSInt)me->lvDetThread->GetItem(index);
+	UInt32 threadId = (UInt32)me->lvDetThread->GetItem(index).GetUOSInt();
 	SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId);
 	frm.ShowDialog(me);
 }
@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(AnyType user
 	if (i == INVALID_INDEX)
 		return;
 	Text::StringBuilderUTF8 sb;
-	UOSInt addr = (UOSInt)me->lvDetHeap->GetItem((UOSInt)i);
+	UOSInt addr = me->lvDetHeap->GetItem((UOSInt)i).GetUOSInt();
 	UOSInt size;
 	me->lvDetHeap->GetSubItem((UOSInt)i, 1, sb);
 	size = 0;

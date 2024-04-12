@@ -21,8 +21,8 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		me->cboHashType->Focus();
 		return;
 	}
-	Text::TextBinEnc::ITextBinEnc *srcEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncrypt->GetSelectedItem();
-	if (srcEnc == 0)
+	NotNullPtr<Text::TextBinEnc::ITextBinEnc> srcEnc;
+	if (!me->cboEncrypt->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(srcEnc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
 		return;
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		else
 		{
 			Crypto::Hash::IHash *hash;
-			hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboHashType->GetItem(i));
+			hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboHashType->GetItem(i).GetOSInt());
 			hash->Calc(decBuff, buffSize);
 			hash->GetValue(buff);
 			sb.ClearStr();

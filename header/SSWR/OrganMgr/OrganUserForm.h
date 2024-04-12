@@ -14,7 +14,7 @@ namespace SSWR
 		class OrganUserForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnModify;
@@ -25,7 +25,7 @@ namespace SSWR
 			static void __stdcall OnModifyClicked(AnyType userObj);
 			void UpdateUserList();
 		public:
-			OrganUserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env);
+			OrganUserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
 			virtual ~OrganUserForm();
 
 			virtual void OnMonitorChanged();

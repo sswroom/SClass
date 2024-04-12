@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		Int64 currTime = dt.ToTicks();
-		OSInt interval = (OSInt)me->cboReqInterval->GetSelectedItem();
+		OSInt interval = me->cboReqInterval->GetSelectedItem().GetOSInt();
 		if ((currTime - me->lastSentTime) >= interval)
 		{
 			me->lastSentTime = currTime;

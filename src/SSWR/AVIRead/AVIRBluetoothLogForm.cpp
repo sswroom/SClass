@@ -54,8 +54,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
-	const IO::BTDevLog::DevEntry *log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(index);
-	if (log == 0)
+	NotNullPtr<const IO::BTDevLog::DevEntry> log;
+	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTDevLog::DevEntry>().SetTo(log))
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
 	Text::CString name = entry?Text::CString(entry->name, entry->nameLen):CSTR_NULL;
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 		j = me->lvContent->GetCount();
 		while (i < j)
 		{
-			log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(i);
+			log = me->lvContent->GetItem(i).GetNN<const IO::BTDevLog::DevEntry>();
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});

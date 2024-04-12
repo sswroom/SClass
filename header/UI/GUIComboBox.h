@@ -10,7 +10,7 @@ namespace UI
 	{
 	protected:
 		Data::ArrayList<UI::UIEvent> selChgHdlrs;
-		Data::ArrayList<void *> selChgObjs;
+		Data::ArrayList<AnyType> selChgObjs;
 		Data::ArrayListStringNN itemTexts;
 		Bool autoComplete;
 		UOSInt lastTextLeng;
@@ -29,17 +29,17 @@ namespace UI
 
 		virtual void BeginUpdate() = 0;
 		virtual void EndUpdate() = 0;
-		virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj) = 0;
-		virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj) = 0;
-		virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj) = 0;
-		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj) = 0;
-		virtual void *RemoveItem(UOSInt index) = 0;
+		virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
+		virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj) = 0;
+		virtual AnyType RemoveItem(UOSInt index) = 0;
 		virtual void ClearItems() = 0;
 		virtual UOSInt GetCount() = 0;
 		virtual void SetSelectedIndex(UOSInt index) = 0;
 		virtual UOSInt GetSelectedIndex() = 0;
-		virtual void *GetSelectedItem() = 0;
-		virtual void *GetItem(UOSInt index) = 0;
+		virtual AnyType GetSelectedItem() = 0;
+		virtual AnyType GetItem(UOSInt index) = 0;
 
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
@@ -51,7 +51,7 @@ namespace UI
 		virtual void UpdatePos(Bool redraw) = 0;
 		virtual void SetTextSelection(UOSInt startPos, UOSInt endPos) = 0;
 
-		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);
+		virtual void HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj);
 		void SetAutoComplete(Bool autoComplete);
 	};
 }

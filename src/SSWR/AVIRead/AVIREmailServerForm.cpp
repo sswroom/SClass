@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType us
 		{
 			ssl->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
 		}
-		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
+		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetOSInt();
 		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->smtpSSL, port, connType, me->log, SERVER_DOMAIN, CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me, true));
 		if (me->smtpSvr->IsError())
 		{
@@ -211,9 +211,8 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnLogFileClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType userObj, UOSInt index)
 {
 	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
-	Net::Email::EmailStore::EmailInfo *email;
-	email = (Net::Email::EmailStore::EmailInfo*)me->lvEmail->GetItem(index);
-	if (email)
+	NotNullPtr<Net::Email::EmailStore::EmailInfo> email;
+	if (me->lvEmail->GetItem(index).GetOpt<Net::Email::EmailStore::EmailInfo>().SetTo(email))
 	{
 		Text::MIMEObj::MailMessage *mail;
 		NotNullPtr<IO::StreamData> fd;
@@ -431,7 +430,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPTypeSelChg(AnyType user
 	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
-	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
+	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetOSInt();
 	me->txtSMTPPort->GetText(sb);
 	if (sb.ToUInt16(port))
 	{

@@ -82,8 +82,8 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
-	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = (SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry*)me->lvContent->GetSelectedItem();
-	if (log == 0 || log->ieLen <= 0)
+	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
+	if (!me->lvContent->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry>().SetTo(log) || log->ieLen <= 0)
 	{
 		me->txtFileIE->SetText(CSTR(""));
 		return;

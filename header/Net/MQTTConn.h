@@ -1,7 +1,7 @@
 #ifndef _SM_NET_MQTTCONN
 #define _SM_NET_MQTTCONN
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ByteArray.h"
 #include "Data/CallbackStorage.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
@@ -34,7 +34,7 @@ namespace Net
 			UInt8 content[1];
 		} PacketInfo;
 
-		typedef void (__stdcall *PublishMessageHdlr)(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff);
+		typedef void (__stdcall *PublishMessageHdlr)(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
 		typedef void (__stdcall *DisconnectHdlr)(AnyType userObj);
 	private:
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
@@ -46,7 +46,7 @@ namespace Net
 		Data::ArrayList<Data::CallbackStorage<PublishMessageHdlr>> hdlrList;
 		Data::CallbackStorage<DisconnectHdlr> discHdlr;
 
-		Data::ArrayList<PacketInfo *> packetList;
+		Data::ArrayListNN<PacketInfo> packetList;
 		Sync::Mutex packetMut;
 		Sync::Event packetEvt;
 		Sync::Mutex cliMut;
@@ -57,8 +57,8 @@ namespace Net
 		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 
-		void OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize);
-		PacketInfo *GetNextPacket(UInt8 packetType, Data::Duration timeout);
+		void OnPublishMessage(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize);
+		Optional<PacketInfo> GetNextPacket(UInt8 packetType, Data::Duration timeout);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 
 		void InitStream(NotNullPtr<IO::Stream> stm);

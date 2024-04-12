@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &buff)
+void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
 	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Ptr(), buff.GetSize());
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 	Optional<Text::String> name;
 	NotNullPtr<Text::String> mac;
 	NotNullPtr<Text::String> rssi;
-	DeviceEntry *entry;
+	NotNullPtr<DeviceEntry> entry;
 	UInt8 macBuff[8];
 	Int32 irssi;
 	UInt64 macInt;
@@ -50,8 +50,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 					macBuff[1] = 0;
 					macInt = ReadMUInt64(macBuff);
 					irssi = rssi->ToInt32();
-					entry = me->dataMap.Get(macInt);
-					if (entry)
+					if (me->dataMap.Get(macInt).SetTo(entry))
 					{
 						if (entry->name.IsNull())
 						{
@@ -64,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 					}
 					else
 					{
-						entry = MemAlloc(DeviceEntry, 1);
+						entry = MemAllocNN(DeviceEntry);
 						entry->mac[0] = macBuff[2];
 						entry->mac[1] = macBuff[3];
 						entry->mac[2] = macBuff[4];
@@ -126,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 	UTF8Char *sptr;
 	if (me->dataChg)
 	{
-		DeviceEntry *entry;
+		NotNullPtr<DeviceEntry> entry;
 		const Net::MACInfo::MACEntry *macEntry;
 		NotNullPtr<Text::String> s;
 		Sync::MutexUsage mutUsage(me->dataMut);
@@ -135,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 		UOSInt j = me->dataMap.GetCount();
 		while (i < j)
 		{
-			entry = me->dataMap.GetItem(i);
+			entry = me->dataMap.GetItemNoCheck(i);
 			sptr = Text::StrHexBytes(sbuff, entry->mac, 6, ':');
 			me->lvDevices->AddItem(CSTRP(sbuff, sptr), entry);
 			if (entry->name.SetTo(s))
@@ -164,14 +163,14 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 {
-	DeviceEntry *entry;
+	NotNullPtr<DeviceEntry> entry;
 	UOSInt i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->dataMap.GetItem(i);
+		entry = this->dataMap.GetItemNoCheck(i);
 		OPTSTR_DEL(entry->name);
 		SDEL_STRING(entry->remark);
-		MemFree(entry);
+		MemFreeNN(entry);
 	}
 	this->dataMap.Clear();
 }

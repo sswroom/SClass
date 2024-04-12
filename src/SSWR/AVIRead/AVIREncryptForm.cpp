@@ -11,14 +11,15 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt8 *decBuff;
 	UOSInt buffSize;
-	Text::TextBinEnc::ITextBinEnc *srcEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboSrc->GetSelectedItem();
-	Text::TextBinEnc::ITextBinEnc *destEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboDest->GetSelectedItem();
+	NotNullPtr<Text::TextBinEnc::ITextBinEnc> srcEnc;
+	Optional<Text::TextBinEnc::ITextBinEnc> destEnc = me->cboDest->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>();
+	NotNullPtr<Text::TextBinEnc::ITextBinEnc> nndestEnc;
 	me->txtSrc->GetText(sb);
-	if (srcEnc == 0)
+	if (!me->cboSrc->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(srcEnc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
 	}
-	else if (destEnc == 0 && me->cboDest->GetSelectedIndex() != me->fileIndex)
+	else if (destEnc.IsNull() && me->cboDest->GetSelectedIndex() != me->fileIndex)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select dest encryption"), CSTR("Encrypt"), me);
 	}
@@ -36,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
 			}
-			else if (destEnc == 0)
+			else if (!destEnc.SetTo(nndestEnc))
 			{
 				NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TextEncFile", true);
 				if (dlg->ShowDialog(me->GetHandle()))
@@ -52,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 			else
 			{
 				sb.ClearStr();
-				destEnc->EncodeBin(sb, decBuff, buffSize);
+				nndestEnc->EncodeBin(sb, decBuff, buffSize);
 				me->txtDest->SetText(sb.ToCString());
 			}
 			MemFree(decBuff);

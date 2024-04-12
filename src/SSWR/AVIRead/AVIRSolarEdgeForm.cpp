@@ -119,10 +119,10 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->lvSiteList->GetSelectedItem();
+	NotNullPtr<Net::SolarEdgeAPI::Site> site;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (site)
+	if (me->lvSiteList->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site))
 	{
 		me->txtSiteCountry->SetText(Text::String::OrEmpty(site->country)->ToCString());
 		me->txtSiteCity->SetText(Text::String::OrEmpty(site->city)->ToCString());
@@ -184,14 +184,14 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->cboSiteEnergySite->GetSelectedItem();
-	if (site && me->seAPI)
+	NotNullPtr<Net::SolarEdgeAPI::Site> site;
+	if (me->cboSiteEnergySite->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site) && me->seAPI)
 	{
-		Net::SolarEdgeAPI::TimeUnit timeUnit = (Net::SolarEdgeAPI::TimeUnit)(UOSInt)me->cboSiteEnergyInterval->GetSelectedItem();
+		Net::SolarEdgeAPI::TimeUnit timeUnit = (Net::SolarEdgeAPI::TimeUnit)me->cboSiteEnergyInterval->GetSelectedItem().GetUOSInt();
 		Data::DateTimeUtil::TimeValue timeVal;
-		timeVal.year = (UInt16)(UOSInt)me->cboSiteEnergyYear->GetSelectedItem();
-		timeVal.month = (UInt8)(UOSInt)me->cboSiteEnergyMonth->GetSelectedItem();
-		timeVal.day = (UInt8)(UOSInt)me->cboSiteEnergyDay->GetSelectedItem();
+		timeVal.year = (UInt16)me->cboSiteEnergyYear->GetSelectedItem().GetUOSInt();
+		timeVal.month = (UInt8)me->cboSiteEnergyMonth->GetSelectedItem().GetUOSInt();
+		timeVal.day = (UInt8)me->cboSiteEnergyDay->GetSelectedItem().GetUOSInt();
 		timeVal.hour = 0;
 		timeVal.minute = 0;
 		timeVal.second = 0;
@@ -216,14 +216,14 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergySizeChg(AnyType use
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->cboSitePowerSite->GetSelectedItem();
-	if (site && me->seAPI)
+	NotNullPtr<Net::SolarEdgeAPI::Site> site;
+	if (me->cboSitePowerSite->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site) && me->seAPI)
 	{
 		Net::SolarEdgeAPI::TimeUnit timeUnit = Net::SolarEdgeAPI::TimeUnit::QUARTER_OF_AN_HOUR;
 		Data::DateTimeUtil::TimeValue timeVal;
-		timeVal.year = (UInt16)(UOSInt)me->cboSitePowerYear->GetSelectedItem();
-		timeVal.month = (UInt8)(UOSInt)me->cboSitePowerMonth->GetSelectedItem();
-		timeVal.day = (UInt8)(UOSInt)me->cboSitePowerDay->GetSelectedItem();
+		timeVal.year = (UInt16)me->cboSitePowerYear->GetSelectedItem().GetUOSInt();
+		timeVal.month = (UInt8)me->cboSitePowerMonth->GetSelectedItem().GetUOSInt();
+		timeVal.day = (UInt8)me->cboSitePowerDay->GetSelectedItem().GetUOSInt();
 		timeVal.hour = 0;
 		timeVal.minute = 0;
 		timeVal.second = 0;

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTSUBSCRIBEFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTSUBSCRIBEFORM
-#include "Data/StringMap.h"
+#include "Data/StringMapNN.h"
 #include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -42,9 +42,9 @@ namespace SSWR
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 			Sync::Mutex topicMut;
-			Data::StringMap<TopicStatus*> topicMap;
+			Data::StringMapNN<TopicStatus> topicMap;
 			Bool topicListChanged;
-			TopicStatus *currTopic;
+			Optional<TopicStatus> currTopic;
 			Media::DrawImage *dispImg;
 
 			NotNullPtr<UI::GUITabControl> tcMain;
@@ -89,7 +89,7 @@ namespace SSWR
 			static void __stdcall OnPublishClicked(AnyType userObj);
 			static void __stdcall OnPingTimerTick(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnPublishMessage(AnyType userObj, Text::CString topic, const Data::ByteArrayR &message);
+			static void __stdcall OnPublishMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &message);
 
 			void UpdateTopicChart();
 			void ServerStop();

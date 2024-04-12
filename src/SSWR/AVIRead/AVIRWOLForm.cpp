@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 	UInt8 macBuff[16];
 	Net::WOLClient *cli;
 	Text::StringBuilderUTF8 sb;
-	UInt32 ip = (UInt32)(OSInt)me->cboAdapter->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboAdapter->GetSelectedItem().GetUOSInt();
 	if (ip == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select an adapter"), CSTR("WOL"), me);

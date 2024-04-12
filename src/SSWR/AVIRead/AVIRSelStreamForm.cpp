@@ -12,7 +12,7 @@
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
-	IO::StreamType st = (IO::StreamType)(OSInt)me->cboStreamType->GetSelectedItem();
+	IO::StreamType st = (IO::StreamType)me->cboStreamType->GetSelectedItem().GetOSInt();
 	UTF8Char sbuff[256];
 
 	switch (st)
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::SerialPort:
 		{
 			UOSInt i = me->cboSerialPort->GetSelectedIndex();
-			UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
+			UInt32 portNum = (UInt32)me->cboSerialPort->GetItem(i).GetUOSInt();
 			if (portNum == 0)
 			{
 				me->ui->ShowMsgOK(CSTR("Please select a port"), CSTR("Select Serial Port"), me);
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				me->ui->ShowMsgOK(CSTR("Please input a valid baud rate"), CSTR("Select Serial Port"), me);
 				return;
 			}
-			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)(OSInt)me->cboParity->GetSelectedItem();
+			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)me->cboParity->GetSelectedItem().GetOSInt();
 			IO::SerialPort *port;
 			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, parity, false));
 			if (port->IsError())
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				me->ui->ShowMsgOK(CSTR("Please input baud rate"), CSTR("Error"), me);
 				return;
 			}
-			me->stm = me->siLabDriver->OpenPort((UInt32)(OSInt)me->lvSLPort->GetSelectedItem(), baudRate);
+			me->stm = me->siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUOSInt(), baudRate);
 			if (me->stm)
 			{
 				me->stmType = st;
@@ -375,7 +375,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(AnyType userObj)
 	UOSInt i = me->cboStreamType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		IO::StreamType st = (IO::StreamType)(OSInt)me->cboStreamType->GetItem(i);
+		IO::StreamType st = (IO::StreamType)me->cboStreamType->GetItem(i).GetOSInt();
 		if (st == IO::StreamType::SerialPort)
 		{
 			me->tcConfig->SetSelectedPage(me->tpSerialPort);
@@ -700,7 +700,7 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(IO::StreamType stype)
 	j = this->cboStreamType->GetCount();
 	while (i < j)
 	{
-		st = (IO::StreamType)(OSInt)this->cboStreamType->GetItem(i);
+		st = (IO::StreamType)this->cboStreamType->GetItem(i).GetOSInt();
 		if (st == stype)
 		{
 			this->cboStreamType->SetSelectedIndex(i);
@@ -719,7 +719,7 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UOSInt port)
 	j = this->cboSerialPort->GetCount();
 	while (i < j)
 	{
-		p = (UOSInt)(OSInt)this->cboSerialPort->GetItem(i);
+		p = this->cboSerialPort->GetItem(i).GetUOSInt();
 		if (p == port)
 		{
 			this->cboSerialPort->SetSelectedIndex(i);

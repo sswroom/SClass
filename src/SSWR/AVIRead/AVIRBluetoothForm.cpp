@@ -6,8 +6,8 @@
 void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
-	BTStatus *btStatus = (BTStatus*)me->lbCtrl->GetSelectedItem().p;
-	if (btStatus)
+	NotNullPtr<BTStatus> btStatus;
+	if (me->lbCtrl->GetSelectedItem().GetOpt<BTStatus>().SetTo(btStatus))
 	{
 		Text::StringBuilderUTF8 sb;
 
@@ -42,16 +42,16 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSrchClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
-	BTStatus *btStatus = (BTStatus*)me->lbCtrl->GetSelectedItem().p;
-	IO::BTController::BTDevice *dev;
+	NotNullPtr<BTStatus> btStatus;
+	NotNullPtr<IO::BTController::BTDevice> dev;
 	UOSInt i;
-	if (btStatus)
+	if (me->lbCtrl->GetSelectedItem().GetOpt<BTStatus>().SetTo(btStatus))
 	{
 		i = btStatus->devList->GetCount();
 		while (i-- > 0)
 		{
-			dev = btStatus->devList->GetItem(i);
-			DEL_CLASS(dev);
+			dev = btStatus->devList->GetItemNoCheck(i);
+			dev.Delete();
 		}
 		btStatus->devList->Clear();
 
@@ -63,16 +63,16 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSrchClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceUpdateClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
-	BTStatus *btStatus = (BTStatus*)me->lbCtrl->GetSelectedItem().p;
-	IO::BTController::BTDevice *dev;
+	NotNullPtr<BTStatus> btStatus;
+	NotNullPtr<IO::BTController::BTDevice> dev;
 	UOSInt i;
-	if (btStatus)
+	if (me->lbCtrl->GetSelectedItem().GetOpt<BTStatus>().SetTo(btStatus))
 	{
 		i = btStatus->devList->GetCount();
 		while (i-- > 0)
 		{
-			dev = btStatus->devList->GetItem(i);
-			DEL_CLASS(dev);
+			dev = btStatus->devList->GetItemNoCheck(i);
+			dev.Delete();
 		}
 		btStatus->devList->Clear();
 
@@ -84,10 +84,10 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceUpdateClicked(AnyType u
 void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
-	IO::BTController::BTDevice *dev = (IO::BTController::BTDevice*)me->lvDevice->GetSelectedItem();
+	NotNullPtr<IO::BTController::BTDevice> dev;
+	me->currDev = me->lvDevice->GetSelectedItem().GetOpt<IO::BTController::BTDevice>();
 	me->ClearGUIDs();
-	me->currDev = dev;
-	if (dev)
+	if (me->currDev.SetTo(dev))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -110,9 +110,10 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDevAuthenClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
-	if (me->currDev)
+	NotNullPtr<IO::BTController::BTDevice> currDev;
+	if (me->currDev.SetTo(currDev))
 	{
-		if (me->currDev->Pair((const UTF8Char*)"0000"))
+		if (currDev->Pair((const UTF8Char*)"0000"))
 		{
 			OnDeviceUpdateClicked(userObj);
 		}
@@ -122,9 +123,10 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDevAuthenClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDevUnauthenClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothForm>();
-	if (me->currDev)
+	NotNullPtr<IO::BTController::BTDevice> currDev;
+	if (me->currDev.SetTo(currDev))
 	{
-		if (me->currDev->Unpair())
+		if (currDev->Unpair())
 		{
 			OnDeviceUpdateClicked(userObj);
 		}
@@ -133,20 +135,21 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDevUnauthenClicked(AnyType us
 
 void SSWR::AVIRead::AVIRBluetoothForm::ClearGUIDs()
 {
-	if (this->currDev)
+	NotNullPtr<IO::BTController::BTDevice> currDev;
+	if (this->currDev.SetTo(currDev))
 	{
-		this->currDev->FreeServices(&this->guidList);
+		currDev->FreeServices(&this->guidList);
 		this->lbDevServices->ClearItems();
 	}
 }
 
-void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(BTStatus *btStatus)
+void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(NotNullPtr<BTStatus> btStatus)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	IO::BTController::BTDevice *dev;
+	NotNullPtr<IO::BTController::BTDevice> dev;
 	this->ClearGUIDs();
 	this->currDev = 0;
 	this->lvDevice->ClearItems();
@@ -154,7 +157,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(BTStatus *btStatus)
 	j = btStatus->devList->GetCount();
 	while (i < j)
 	{
-		dev = btStatus->devList->GetItem(i);
+		dev = btStatus->devList->GetItemNoCheck(i);
 		k = this->lvDevice->AddItem(dev->GetName(), dev);
 		sb.ClearStr();
 		IO::BTUtil::GetAddrText(sb, dev->GetAddress());
@@ -247,21 +250,21 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<IO::BTController*> btList;
-	BTStatus *btStatus;
+	Data::ArrayListNN<IO::BTController> btList;
+	NotNullPtr<BTStatus> btStatus;
 	Text::CString cstr;
 	Text::StringBuilderUTF8 sb;
 	this->currDev = 0;
 
 	IO::BTManager btMgr;
-	btMgr.CreateControllers(&btList);
+	btMgr.CreateControllers(btList);
 	i = 0;
 	j = btList.GetCount();
 	while (i < j)
 	{
-		btStatus = MemAlloc(BTStatus, 1);
-		btStatus->bt = btList.GetItem(i);
-		NEW_CLASS(btStatus->devList, Data::ArrayList<IO::BTController::BTDevice*>());
+		btStatus = MemAllocNN(BTStatus);
+		btStatus->bt = btList.GetItemNoCheck(i);
+		NEW_CLASSNN(btStatus->devList, Data::ArrayListNN<IO::BTController::BTDevice>());
 		this->btList.Add(btStatus);
 		btStatus->bt->CreateDevices(btStatus->devList, false);
 
@@ -283,22 +286,22 @@ SSWR::AVIRead::AVIRBluetoothForm::~AVIRBluetoothForm()
 {
 	UOSInt i;
 	UOSInt j;
-	BTStatus *btStatus;
-	IO::BTController::BTDevice *dev;
+	NotNullPtr<BTStatus> btStatus;
+	NotNullPtr<IO::BTController::BTDevice> dev;
 	this->ClearGUIDs();
 	i = this->btList.GetCount();
 	while (i-- > 0)
 	{
-		btStatus = this->btList.GetItem(i);
+		btStatus = this->btList.GetItemNoCheck(i);
 		j = btStatus->devList->GetCount();
 		while (j-- > 0)
 		{
-			dev = btStatus->devList->GetItem(j);
-			DEL_CLASS(dev);
+			dev = btStatus->devList->GetItemNoCheck(j);
+			dev.Delete();
 		}
-		DEL_CLASS(btStatus->devList);
-		DEL_CLASS(btStatus->bt);
-		MemFree(btStatus);
+		btStatus->devList.Delete();
+		btStatus->bt.Delete();
+		MemFreeNN(btStatus);
 	}
 }
 

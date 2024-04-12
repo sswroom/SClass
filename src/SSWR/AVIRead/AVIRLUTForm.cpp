@@ -15,7 +15,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	UOSInt currCh = (UOSInt)this->cboChannels->GetSelectedItem();
+	UOSInt currCh = this->cboChannels->GetSelectedItem().GetUOSInt();
 	UOSInt inputLev = this->lut->GetInputLevel();
 	UOSInt outputCh = this->lut->GetOutputCh();
 	Media::LUT::DataFormat fmt = this->lut->GetFormat();

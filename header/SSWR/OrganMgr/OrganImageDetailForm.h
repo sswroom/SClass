@@ -14,7 +14,7 @@ namespace SSWR
 		class OrganImageDetailForm : public UI::GUIForm
 		{
 		private:
-			OrganEnv *env;
+			NotNullPtr<OrganEnv> env;
 			const UTF8Char *descript;
 
 			NotNullPtr<UI::GUILabel> lblId;
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganImageDetailForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, OrganEnv *env, UserFileInfo *userFile);
+			OrganImageDetailForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, UserFileInfo *userFile);
 			virtual ~OrganImageDetailForm();
 
 			virtual void OnMonitorChanged();

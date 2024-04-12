@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj,
 		return;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
-	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem(index);
+	UInt16 port = (UInt16)me->lvPorts->GetItem(index).GetUOSInt();
 	if (port != 0)
 	{
 		sptr = Text::StrUInt16(sbuff, port);

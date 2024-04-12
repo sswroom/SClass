@@ -38,8 +38,8 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 	if (me->radPredefine->IsSelected())
 	{
 		UOSInt i = me->cboPredefine->GetSelectedIndex();
-		MapServer *v = (MapServer*)me->cboPredefine->GetItem(i);
-		if (v)
+		NotNullPtr<MapServer> v;
+		if (me->cboPredefine->GetItem(i).GetOpt<MapServer>().SetTo(v))
 		{
 			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl, false));
 		}

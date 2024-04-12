@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 	}
 	else
 	{
-		UInt32 ifIp = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
+		UInt32 ifIp = (UInt32)me->cboIP->GetSelectedItem().GetUOSInt();
 		UInt32 subnet = 0;
 		UInt32 firstIP = 0;
 		UInt32 devCount = 0;
@@ -153,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *dhcpList = me->svr->StatusGetList();
 		if (dhcpList->GetCount() != me->lvDevices->GetCount())
 		{
-			Net::DHCPServer::DeviceStatus *currSel = (Net::DHCPServer::DeviceStatus*)me->lvDevices->GetSelectedItem();
+			Optional<Net::DHCPServer::DeviceStatus> currSel = me->lvDevices->GetSelectedItem().GetOpt<Net::DHCPServer::DeviceStatus>();
 			me->lvDevices->ClearItems();
 			i = 0;
 			j = dhcpList->GetCount();
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 				me->lvDevices->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);
 				me->lvDevices->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
-				if (dhcp == currSel)
+				if (dhcp == currSel.OrNull())
 				{
 					me->lvDevices->SetSelectedIndex(i);
 				}

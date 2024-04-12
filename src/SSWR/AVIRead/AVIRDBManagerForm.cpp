@@ -446,7 +446,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(AnyType us
 		UOSInt index = me->lvSvrConn->GetSelectedIndex();
 		if (index != INVALID_INDEX)
 		{
-			Int32 id = (Int32)(OSInt)me->lvSvrConn->GetItem(index);
+			Int32 id = (Int32)me->lvSvrConn->GetItem(index).GetOSInt();
 			if (NotNullPtr<DB::DBTool>::ConvertFrom(currDB)->KillConnection(id))
 			{
 				me->UpdateSvrConnList();

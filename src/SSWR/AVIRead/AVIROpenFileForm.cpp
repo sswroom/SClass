@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(sb);
 	me->fileName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-	me->parserType = (IO::ParserType)(UOSInt)me->cboType->GetSelectedItem();
+	me->parserType = (IO::ParserType)me->cboType->GetSelectedItem().GetUOSInt();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 

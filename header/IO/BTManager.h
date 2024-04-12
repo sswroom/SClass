@@ -1,6 +1,6 @@
 #ifndef _SM_IO_BTMANAGER
 #define _SM_IO_BTMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/BTController.h"
 
 namespace IO
@@ -13,7 +13,7 @@ namespace IO
 		BTManager();
 		~BTManager();
 	public:
-		OSInt CreateControllers(Data::ArrayList<IO::BTController*> *ctrlList);
+		UOSInt CreateControllers(NotNullPtr<Data::ArrayListNN<IO::BTController>> ctrlList);
 	};
 }
 #endif

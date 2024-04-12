@@ -85,9 +85,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			OrganGroup *newGrp;
-			OrganGroupType *grpType;
+			NotNullPtr<OrganGroupType> grpType;
 			NEW_CLASS(newGrp, OrganGroup());
-			grpType = (OrganGroupType*)me->cboGroupType->GetItem((UOSInt)me->cboGroupType->GetSelectedIndex());
+			grpType = me->cboGroupType->GetItem((UOSInt)me->cboGroupType->GetSelectedIndex()).GetNN<OrganGroupType>();
 			newGrp->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
 			me->txtGroupEName->GetText(sb);
@@ -1162,7 +1162,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Please select a book to add"), CSTR("Add Book"), me);
 		return;
 	}
-	OrganBook *bk = (OrganBook*)me->cboSpBook->GetItem(i);
+	NotNullPtr<OrganBook> bk = me->cboSpBook->GetItem(i).GetNN<OrganBook>();
 	sb.ClearStr();
 	me->txtSpBook->GetText(sb);
 	if (sb.ToString()[0] == 0)
@@ -2199,9 +2199,9 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 		{
 //			Int32 id = this->lastGroupObj->GetGroupId();
 
-			OrganGroupType *grpType;
+			NotNullPtr<OrganGroupType> grpType;
 			i = this->cboGroupType->GetSelectedIndex();
-			grpType = (OrganGroupType*)this->cboGroupType->GetItem(i);
+			grpType = this->cboGroupType->GetItem(i).GetNN<OrganGroupType>();
 			this->lastGroupObj->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
 			this->txtGroupEName->GetText(sb);
@@ -2496,7 +2496,7 @@ NotNullPtr<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetIm
 	return lyr;
 }
 
-SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

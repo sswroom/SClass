@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
-	PredefData *data = (PredefData*)me->cboPredef->GetSelectedItem();
-	if (data && data->data)
+	NotNullPtr<PredefData> data;
+	if (me->cboPredef->GetSelectedItem().GetOpt<PredefData>().SetTo(data) && data->data)
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;

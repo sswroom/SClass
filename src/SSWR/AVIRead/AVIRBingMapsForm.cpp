@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 	NotNullPtr<SSWR::AVIRead::AVIRBingMapsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBingMapsForm>();
 	Text::StringBuilderUTF8 sbKey;
 	Text::StringBuilderUTF8 sb;
-	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)(OSInt)me->cboImagerySet->GetSelectedItem();
+	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)me->cboImagerySet->GetSelectedItem().GetOSInt();
 	Map::BingMapsTile::GetDefaultCacheDir(is, sb);
 	me->txtKey->GetText(sbKey);
 	if (sbKey.GetLength() == 0)

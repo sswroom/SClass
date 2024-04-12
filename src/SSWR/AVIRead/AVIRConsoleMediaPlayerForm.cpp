@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType use
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	me->player->SetRotateType((Media::RotateType)(OSInt)me->cboRotate->GetSelectedItem());
+	me->player->SetRotateType((Media::RotateType)me->cboRotate->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(AnyType userObj, Bool newVal)
@@ -68,21 +68,21 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(AnyType u
 {
 	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
-		me->player->GetVideoRenderer()->SetSrcYUVType((Media::ColorProfile::YUVType)(OSInt)me->cboYUVType->GetSelectedItem());
+		me->player->GetVideoRenderer()->SetSrcYUVType((Media::ColorProfile::YUVType)me->cboYUVType->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
-		me->player->GetVideoRenderer()->SetSrcRGBType((Media::CS::TransferType)(OSInt)me->cboRGBTrans->GetSelectedItem());
+		me->player->GetVideoRenderer()->SetSrcRGBType((Media::CS::TransferType)me->cboRGBTrans->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
-		me->player->GetVideoRenderer()->SetSrcPrimaries((Media::ColorProfile::ColorType)(OSInt)me->cboColorPrimaries->GetSelectedItem());
+		me->player->GetVideoRenderer()->SetSrcPrimaries((Media::ColorProfile::ColorType)me->cboColorPrimaries->GetSelectedItem().GetOSInt());
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddYUVType(Media::ColorProfile::YUVType yuvType)

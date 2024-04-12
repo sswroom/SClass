@@ -141,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj
 		return;
 	}
 
-	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
 		Socket *soc;
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
-	UInt32 ip = (UInt32)(OSInt)me->cboIP->GetSelectedItem();
+	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
 		me->adapterIP = ip;
@@ -1015,7 +1015,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		const Data::ReadingList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
 		if (dhcpList->GetCount() != me->lvDHCP->GetCount())
 		{
-			Net::EthernetAnalyzer::DHCPInfo *currSel = (Net::EthernetAnalyzer::DHCPInfo*)me->lvDHCP->GetSelectedItem();
+			Optional<Net::EthernetAnalyzer::DHCPInfo> currSel = me->lvDHCP->GetSelectedItem().GetOpt<Net::EthernetAnalyzer::DHCPInfo>();
 			me->lvDHCP->ClearItems();
 			i = 0;
 			j = dhcpList->GetCount();
@@ -1027,7 +1027,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 				me->lvDHCP->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
 				me->lvDHCP->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
-				if (dhcp == currSel)
+				if (dhcp == currSel.OrNull())
 				{
 					me->lvDHCP->SetSelectedIndex(i);
 				}
@@ -1094,12 +1094,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
-	Net::EthernetAnalyzer::MACStatus *mac = (Net::EthernetAnalyzer::MACStatus *)me->lvDevice->GetSelectedItem();
+	NotNullPtr<Net::EthernetAnalyzer::MACStatus> mac;
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	if (mac)
+	if (me->lvDevice->GetSelectedItem().GetOpt<Net::EthernetAnalyzer::MACStatus>().SetTo(mac))
 	{
 		UOSInt cnt;
 		UOSInt i;
@@ -1544,7 +1544,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	}
 	if (this->cboIP->GetCount() > 0)
 	{
-		this->adapterIP = (UInt32)(OSInt)this->cboIP->GetItem(0);
+		this->adapterIP = (UInt32)this->cboIP->GetItem(0).GetOSInt();
 		this->cboIP->SetSelectedIndex(0);
 		this->adapterChanged = true;
 	}
