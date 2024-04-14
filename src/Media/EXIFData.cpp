@@ -1113,7 +1113,7 @@ Media::EXIFData::EXIFInfo Media::EXIFData::appleInfos[] = {
 	{0x004e, CSTR("Camera")}
 };
 
-void Media::EXIFData::FreeItem(Media::EXIFData::EXIFItem *item)
+void Media::EXIFData::FreeItem(NotNullPtr<Media::EXIFData::EXIFItem> item)
 {
 	if (item->dataBuff)
 	{
@@ -1127,24 +1127,24 @@ void Media::EXIFData::FreeItem(Media::EXIFData::EXIFItem *item)
 			MemFree(item->dataBuff);
 		}
 	}
-	MemFree(item);
+	MemFreeNN(item);
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXIFData::EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const
+void Media::EXIFData::ToExifBuffImpl(UInt8 *buff, NotNullPtr<const Data::ReadingListNN<Media::EXIFData::EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
 {
 	UInt32 objCnt;
 	UOSInt i;
 	UInt32 j;
 	UInt64 k;
-	EXIFItem *exif;
+	NotNullPtr<EXIFItem> exif;
 
 	objCnt = 0;
-	k = *otherOfst;
-	j = *startOfst + 2;
+	k = otherOfst.Get();
+	j = startOfst.Get() + 2;
 	i = 0;
 	while (i < exifList->GetCount())
 	{
-		exif = exifList->GetItem(i);
+		exif = exifList->GetItemNoCheck(i);
 		switch (exif->type)
 		{
 		case Media::EXIFData::ET_BYTES:
@@ -1344,38 +1344,38 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXI
 		i++;
 	}
 	WriteInt32(&buff[j], 0);
-	WriteInt16(&buff[*startOfst], objCnt);
+	WriteInt16(&buff[startOfst.Get()], objCnt);
 	j += 4;
 
 	UInt32 k32 = (UInt32)k;
 	i = 0;
 	while (i < exifList->GetCount())
 	{
-		exif = exifList->GetItem(i);
+		exif = exifList->GetItemNoCheck(i);
 		if (exif->type == Media::EXIFData::ET_SUBEXIF)
 		{
 			WriteUInt32(&buff[exif->value], j);
-			((Media::EXIFData*)exif->dataBuff)->ToExifBuff(buff, &j, &k32);
+			((Media::EXIFData*)exif->dataBuff)->ToExifBuff(buff, j, k32);
 		}
 		i++;
 	}
-	*startOfst = j;
-	*otherOfst = k32;
+	startOfst.Set(j);
+	otherOfst.Set(k32);
 }
 
-void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt64 *size, UInt64 *endOfst) const
+void Media::EXIFData::GetExifBuffSize(NotNullPtr<const Data::ReadingListNN<EXIFItem>> exifList, OutParam<UInt64> size, OutParam<UInt64> endOfst) const
 {
 	UInt64 i = 6;
 	UInt64 j = 6;
 	UOSInt k;
 	UInt64 l;
 	UInt64 m;
-	EXIFItem *exif;
+	NotNullPtr<EXIFItem> exif;
 
 	k = exifList->GetCount();
 	while (k-- > 0)
 	{
-		exif = exifList->GetItem(k);
+		exif = exifList->GetItemNoCheck(k);
 		if (exif->type == Media::EXIFData::ET_BYTES)
 		{
 			i += 12;
@@ -1445,7 +1445,7 @@ void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifLi
 		{
 			i += 12;
 			j += 12;
-			((Media::EXIFData*)exif->dataBuff)->GetExifBuffSize(&l, &m);
+			((Media::EXIFData*)exif->dataBuff)->GetExifBuffSize(l, m);
 			i += m;
 			j += l;
 		}
@@ -1460,8 +1460,8 @@ void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifLi
 			j += 12 + (exif->cnt << 3);
 		}
 	}
-	*size = j;
-	*endOfst = i;
+	size.Set(j);
+	endOfst.Set(i);
 }
 
 Media::EXIFData::EXIFData(EXIFMaker exifMaker)
@@ -1474,7 +1474,7 @@ Media::EXIFData::~EXIFData()
 	UOSInt i = this->exifMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->exifMap.GetItem(i));
+		FreeItem(this->exifMap.GetItemNoCheck(i));
 	}
 }
 
@@ -1485,7 +1485,7 @@ Media::EXIFData::EXIFMaker Media::EXIFData::GetEXIFMaker() const
 
 NotNullPtr<Media::EXIFData> Media::EXIFData::Clone() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	UOSInt i;
 	UOSInt j;
 	NotNullPtr<Media::EXIFData> newExif;
@@ -1494,7 +1494,7 @@ NotNullPtr<Media::EXIFData> Media::EXIFData::Clone() const
 	j = this->exifMap.GetCount();
 	while (i < j)
 	{
-		item = this->exifMap.GetItem(i);
+		item = this->exifMap.GetItemNoCheck(i);
 		switch (item->type)
 		{
 		case ET_BYTES:
@@ -1582,7 +1582,7 @@ NotNullPtr<Media::EXIFData> Media::EXIFData::Clone() const
 
 void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_BYTES;
 	item->cnt = cnt;
@@ -1597,8 +1597,7 @@ void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
 		item->dataBuff = MemAlloc(UInt8, cnt);
 		MemCopyNO(item->dataBuff, buff, cnt);
 	}
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1606,15 +1605,14 @@ void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
 
 void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, const Char *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_STRING;
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(UInt8, cnt);
 	MemCopyNO(item->dataBuff, buff, cnt);
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1622,7 +1620,7 @@ void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, const Char *buff)
 
 void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_UINT16;
 	item->cnt = cnt;
@@ -1637,8 +1635,7 @@ void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
 		item->dataBuff = MemAlloc(UInt16, cnt);
 		MemCopyNO(item->dataBuff, buff, cnt * sizeof(UInt16));
 	}
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1646,7 +1643,7 @@ void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
 
 void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_UINT32;
 	item->cnt = cnt;
@@ -1661,8 +1658,7 @@ void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
 		item->dataBuff = MemAlloc(UInt32, cnt);
 		MemCopyNO(item->dataBuff, buff, cnt * sizeof(UInt32));
 	}
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1670,7 +1666,7 @@ void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
 
 void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_INT16;
 	item->cnt = cnt;
@@ -1685,8 +1681,7 @@ void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
 		item->dataBuff = MemAlloc(Int16, cnt);
 		MemCopyNO(item->dataBuff, buff, cnt * sizeof(Int16));
 	}
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1694,7 +1689,7 @@ void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
 
 void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_INT32;
 	item->cnt = cnt;
@@ -1709,8 +1704,7 @@ void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
 		item->dataBuff = MemAlloc(Int32, cnt);
 		MemCopyNO(item->dataBuff, buff, cnt * sizeof(Int32));
 	}
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1718,7 +1712,7 @@ void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
 
 void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_RATIONAL;
 	item->cnt = cnt;
@@ -1726,8 +1720,7 @@ void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
 	item->dataBuff = MemAlloc(UInt32, cnt << 1);
 	MemCopyNO(item->dataBuff, buff, cnt * sizeof(UInt32) * 2);
 
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1735,7 +1728,7 @@ void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
 
 void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_SRATIONAL;
 	item->cnt = cnt;
@@ -1743,8 +1736,7 @@ void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
 	item->dataBuff = MemAlloc(Int32, cnt << 1);
 	MemCopyNO(item->dataBuff, buff, cnt * sizeof(Int32) * 2);
 
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1752,7 +1744,7 @@ void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
 
 void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_OTHER;
 	item->cnt = cnt;
@@ -1760,8 +1752,7 @@ void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff)
 	item->dataBuff = MemAlloc(UInt8, cnt);
 	MemCopyNO(item->dataBuff, buff, cnt);
 
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1769,14 +1760,13 @@ void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff)
 
 void Media::EXIFData::AddSubEXIF(UInt32 id, NotNullPtr<Media::EXIFData> exif)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_SUBEXIF;
 	item->cnt = 1;
 	item->value = 0;
 	item->dataBuff = exif.Ptr();
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1784,15 +1774,14 @@ void Media::EXIFData::AddSubEXIF(UInt32 id, NotNullPtr<Media::EXIFData> exif)
 
 void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, const Double *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_DOUBLE;
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(Double, cnt);
 	MemCopyNO(item->dataBuff, buff, cnt * sizeof(Double));
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1800,15 +1789,14 @@ void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, const Double *buff)
 
 void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_UINT64;
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(UInt64, cnt);
 	MemCopyNO(item->dataBuff, buff, cnt * sizeof(UInt64));
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1816,15 +1804,14 @@ void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff)
 
 void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff)
 {
-	EXIFItem *item = MemAlloc(EXIFItem, 1);
+	NotNullPtr<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
 	item->type = ET_INT64;
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(Int64, cnt);
 	MemCopyNO(item->dataBuff, buff, cnt * sizeof(Int64));
-	item = this->exifMap.Put(id, item);
-	if (item)
+	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1832,9 +1819,8 @@ void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff)
 
 void Media::EXIFData::Remove(UInt32 id)
 {
-	EXIFItem *item;
-	item = this->exifMap.Remove(id);
-	if (item)
+	NotNullPtr<EXIFItem> item;
+	if (this->exifMap.Remove(id).SetTo(item))
 	{
 		FreeItem(item);
 	}
@@ -1846,7 +1832,7 @@ UOSInt Media::EXIFData::GetExifIds(Data::ArrayList<UInt32> *idArr) const
 	UOSInt i = 0;
 	while (i < cnt)
 	{
-		idArr->Add(this->exifMap.GetItem(i)->id);
+		idArr->Add(this->exifMap.GetItemNoCheck(i)->id);
 		i++;
 	}
 	return cnt;
@@ -1854,29 +1840,29 @@ UOSInt Media::EXIFData::GetExifIds(Data::ArrayList<UInt32> *idArr) const
 
 Media::EXIFData::EXIFType Media::EXIFData::GetExifType(UInt32 id) const
 {
-	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(id).SetTo(item))
 		return ET_UNKNOWN;
 	return item->type;
 }
 
 UInt64 Media::EXIFData::GetExifCount(UInt32 id) const
 {
-	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	return item->cnt;
 }
 
-Media::EXIFData::EXIFItem *Media::EXIFData::GetExifItem(UInt32 id) const
+Optional<Media::EXIFData::EXIFItem> Media::EXIFData::GetExifItem(UInt32 id) const
 {
 	return this->exifMap.Get(id);
 }
 
 UInt16 *Media::EXIFData::GetExifUInt16(UInt32 id) const
 {
-	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	if (item->type != ET_UINT16)
 		return 0;
@@ -1892,8 +1878,8 @@ UInt16 *Media::EXIFData::GetExifUInt16(UInt32 id) const
 
 UInt32 *Media::EXIFData::GetExifUInt32(UInt32 id) const
 {
-	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	if (item->type != ET_UINT32)
 		return 0;
@@ -1909,8 +1895,8 @@ UInt32 *Media::EXIFData::GetExifUInt32(UInt32 id) const
 
 Media::EXIFData *Media::EXIFData::GetExifSubexif(UInt32 id) const
 {
-	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	if (item->type != ET_SUBEXIF)
 		return 0;
@@ -1919,8 +1905,8 @@ Media::EXIFData *Media::EXIFData::GetExifSubexif(UInt32 id) const
 
 UInt8 *Media::EXIFData::GetExifOther(UInt32 id) const
 {
-	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	if (item->type != ET_OTHER)
 		return 0;
@@ -1929,10 +1915,10 @@ UInt8 *Media::EXIFData::GetExifOther(UInt32 id) const
 
 Bool Media::EXIFData::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(36867)) != 0)
+		if (this->exifMap.Get(36867).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -1940,7 +1926,7 @@ Bool Media::EXIFData::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
 				return true;
 			}
 		}
-		if ((item = this->exifMap.Get(36868)) != 0)
+		if (this->exifMap.Get(36868).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -1948,7 +1934,7 @@ Bool Media::EXIFData::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
 				return true;
 			}
 		}
-		if ((item = this->exifMap.Get(34665)) != 0)
+		if (this->exifMap.Get(34665).SetTo(item))
 		{
 			if (item->type == ET_SUBEXIF)
 			{
@@ -1957,7 +1943,7 @@ Bool Media::EXIFData::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
 					return true;
 			}
 		}
-		if ((item = this->exifMap.Get(306)) != 0)
+		if (this->exifMap.Get(306).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -1971,10 +1957,10 @@ Bool Media::EXIFData::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
 
 Bool Media::EXIFData::GetPhotoDate(OutParam<Data::Timestamp> ts) const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(36867)) != 0)
+		if (this->exifMap.Get(36867).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -1982,7 +1968,7 @@ Bool Media::EXIFData::GetPhotoDate(OutParam<Data::Timestamp> ts) const
 				return true;
 			}
 		}
-		if ((item = this->exifMap.Get(36868)) != 0)
+		if (this->exifMap.Get(36868).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -1990,7 +1976,7 @@ Bool Media::EXIFData::GetPhotoDate(OutParam<Data::Timestamp> ts) const
 				return true;
 			}
 		}
-		if ((item = this->exifMap.Get(34665)) != 0)
+		if (this->exifMap.Get(34665).SetTo(item))
 		{
 			if (item->type == ET_SUBEXIF)
 			{
@@ -1999,7 +1985,7 @@ Bool Media::EXIFData::GetPhotoDate(OutParam<Data::Timestamp> ts) const
 					return true;
 			}
 		}
-		if ((item = this->exifMap.Get(306)) != 0)
+		if (this->exifMap.Get(306).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -2013,10 +1999,10 @@ Bool Media::EXIFData::GetPhotoDate(OutParam<Data::Timestamp> ts) const
 
 Text::CString Media::EXIFData::GetPhotoMake() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(271)) != 0)
+		if (this->exifMap.Get(271).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -2029,10 +2015,10 @@ Text::CString Media::EXIFData::GetPhotoMake() const
 
 Text::CString Media::EXIFData::GetPhotoModel() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(272)) != 0)
+		if (this->exifMap.Get(272).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -2042,7 +2028,7 @@ Text::CString Media::EXIFData::GetPhotoModel() const
 	}
 	if (this->exifMaker == EM_CANON)
 	{
-		if ((item = this->exifMap.Get(6)) != 0)
+		if (this->exifMap.Get(6).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -2055,10 +2041,10 @@ Text::CString Media::EXIFData::GetPhotoModel() const
 
 Text::CString Media::EXIFData::GetPhotoLens() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_CANON)
 	{
-		if ((item = this->exifMap.Get(149)) != 0)
+		if (this->exifMap.Get(149).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -2068,7 +2054,7 @@ Text::CString Media::EXIFData::GetPhotoLens() const
 	}
 	if (this->exifMaker == EM_PANASONIC)
 	{
-		if ((item = this->exifMap.Get(81)) != 0)
+		if (this->exifMap.Get(81).SetTo(item))
 		{
 			if (item->type == ET_STRING)
 			{
@@ -2081,10 +2067,10 @@ Text::CString Media::EXIFData::GetPhotoLens() const
 
 Double Media::EXIFData::GetPhotoFNumber() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(33437)) != 0)
+		if (this->exifMap.Get(33437).SetTo(item))
 		{
 			if (item->type == ET_RATIONAL && item->cnt == 1)
 			{
@@ -2092,7 +2078,7 @@ Double Media::EXIFData::GetPhotoFNumber() const
 				return dataBuff[0] / (Double)dataBuff[1];
 			}
 		}
-		if ((item = this->exifMap.Get(34665)) != 0)
+		if (this->exifMap.Get(34665).SetTo(item))
 		{
 			if (item->type == ET_SUBEXIF)
 			{
@@ -2106,10 +2092,10 @@ Double Media::EXIFData::GetPhotoFNumber() const
 
 Double Media::EXIFData::GetPhotoExpTime() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(33434)) != 0)
+		if (this->exifMap.Get(33434).SetTo(item))
 		{
 			if (item->type == ET_RATIONAL && item->cnt == 1)
 			{
@@ -2117,7 +2103,7 @@ Double Media::EXIFData::GetPhotoExpTime() const
 				return dataBuff[0] / (Double)dataBuff[1];
 			}
 		}
-		if ((item = this->exifMap.Get(34665)) != 0)
+		if (this->exifMap.Get(34665).SetTo(item))
 		{
 			if (item->type == ET_SUBEXIF)
 			{
@@ -2131,10 +2117,10 @@ Double Media::EXIFData::GetPhotoExpTime() const
 
 UInt32 Media::EXIFData::GetPhotoISO() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(34855)) != 0)
+		if (this->exifMap.Get(34855).SetTo(item))
 		{
 			if (item->type == ET_UINT16 && item->cnt == 1)
 			{
@@ -2145,7 +2131,7 @@ UInt32 Media::EXIFData::GetPhotoISO() const
 				return *(UInt32*)&item->value;
 			}
 		}
-		if ((item = this->exifMap.Get(34665)) != 0)
+		if (this->exifMap.Get(34665).SetTo(item))
 		{
 			if (item->type == ET_SUBEXIF)
 			{
@@ -2159,10 +2145,10 @@ UInt32 Media::EXIFData::GetPhotoISO() const
 
 Double Media::EXIFData::GetPhotoFocalLength() const
 {
-	Media::EXIFData::EXIFItem *item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
 	if (this->exifMaker == EM_STANDARD)
 	{
-		if ((item = this->exifMap.Get(37386)) != 0)
+		if (this->exifMap.Get(37386).SetTo(item))
 		{
 			if (item->type == ET_RATIONAL && item->cnt == 1)
 			{
@@ -2170,7 +2156,7 @@ Double Media::EXIFData::GetPhotoFocalLength() const
 				return dataBuff[0] / (Double)dataBuff[1];
 			}
 		}
-		if ((item = this->exifMap.Get(34665)) != 0)
+		if (this->exifMap.Get(34665).SetTo(item))
 		{
 			if (item->type == ET_SUBEXIF)
 			{
@@ -2196,12 +2182,10 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 	{5, L"GPSAltitudeRef"},
 	{6, L"GPSAltitude"},
 	{7, L"GPSTimeStamp"},*/
-		Media::EXIFData::EXIFItem *item1;
-		Media::EXIFData::EXIFItem *item2;
+		NotNullPtr<Media::EXIFData::EXIFItem> item1;
+		NotNullPtr<Media::EXIFData::EXIFItem> item2;
 		Double val = 0;
-		item1 = subExif->GetExifItem(1);
-		item2 = subExif->GetExifItem(2);
-		if (item1 && item2)
+		if (subExif->GetExifItem(1).SetTo(item1) && subExif->GetExifItem(2).SetTo(item2))
 		{
 			if (item2->type == Media::EXIFData::ET_RATIONAL)
 			{
@@ -2244,9 +2228,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 		{
 			succ = false;
 		}
-		item1 = subExif->GetExifItem(3);
-		item2 = subExif->GetExifItem(4);
-		if (item1 && item2)
+		if (subExif->GetExifItem(3).SetTo(item1) && subExif->GetExifItem(4).SetTo(item2))
 		{
 			if (item2->type == Media::EXIFData::ET_RATIONAL)
 			{
@@ -2289,9 +2271,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 		{
 			succ = false;
 		}
-		item1 = subExif->GetExifItem(5);
-		item2 = subExif->GetExifItem(6);
-		if (item1 && item2)
+		if (subExif->GetExifItem(5).SetTo(item1) && subExif->GetExifItem(6).SetTo(item2))
 		{
 			if (item2->type == Media::EXIFData::ET_RATIONAL)
 			{
@@ -2338,9 +2318,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 				*altitude = 0;
 			}
 		}
-		item1 = subExif->GetExifItem(7);
-		item2 = subExif->GetExifItem(29);
-		if (item1 && item2)
+		if (subExif->GetExifItem(7).SetTo(item1) && subExif->GetExifItem(29).SetTo(item2))
 		{
 			Int32 hh = 0;
 			Int32 mm = 0;
@@ -2404,11 +2382,9 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 
 Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const
 {
-	Media::EXIFData::EXIFItem *item;
-	Media::EXIFData::EXIFItem *item2;
-	item = this->exifMap.Get(33922);
-	item2 = this->exifMap.Get(33550);
-	if (item != 0 && item2 != 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	NotNullPtr<Media::EXIFData::EXIFItem> item2;
+	if (this->exifMap.Get(33922).SetTo(item) && this->exifMap.Get(33550).SetTo(item2))
 	{
 		if (srid)
 		{
@@ -2440,9 +2416,7 @@ Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, UInt32 *srid, D
 		return true;
 	}
 
-	item = this->exifMap.Get(34264);
-	item2 = this->exifMap.Get(34735);
-	if (item != 0 && item2 != 0)
+	if (this->exifMap.Get(34264).SetTo(item) && this->exifMap.Get(34735).SetTo(item2))
 	{
 		UInt32 fileSRID = 0;
 		UInt16 *keyBuff = (UInt16*)item2->dataBuff;
@@ -2474,9 +2448,8 @@ Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, UInt32 *srid, D
 
 Media::RotateType Media::EXIFData::GetRotateType() const
 {
-	Media::EXIFData::EXIFItem *item;
-	item = this->exifMap.Get(274);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(274).SetTo(item))
 	{
 		return Media::RotateType::None;
 	}
@@ -2551,9 +2524,8 @@ void Media::EXIFData::SetRotateType(RotateType rotType)
 
 Double Media::EXIFData::GetHDPI() const
 {
-	Media::EXIFData::EXIFItem *item;
-	item = this->exifMap.Get(282);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(282).SetTo(item))
 	{
 		return 0;
 	}
@@ -2567,9 +2539,8 @@ Double Media::EXIFData::GetHDPI() const
 
 Double Media::EXIFData::GetVDPI() const
 {
-	Media::EXIFData::EXIFItem *item;
-	item = this->exifMap.Get(283);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!this->exifMap.Get(283).SetTo(item))
 	{
 		return 0;
 	}
@@ -2585,9 +2556,8 @@ void Media::EXIFData::SetWidth(UInt32 width)
 {
 	this->AddUInt32(256, 1, &width);
 
-	Media::EXIFData::EXIFItem *item;
-	item = this->exifMap.Get(34665);
-	if (item && item->type == Media::EXIFData::ET_SUBEXIF)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (this->exifMap.Get(34665).SetTo(item) && item->type == Media::EXIFData::ET_SUBEXIF)
 	{
 		((EXIFData*)item->dataBuff)->AddUInt32(40962, 1, &width);
 	}
@@ -2597,9 +2567,8 @@ void Media::EXIFData::SetHeight(UInt32 height)
 {
 	this->AddUInt32(257, 1, &height);
 
-	Media::EXIFData::EXIFItem *item;
-	item = this->exifMap.Get(34665);
-	if (item && item->type == Media::EXIFData::ET_SUBEXIF)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (this->exifMap.Get(34665).SetTo(item) && item->type == Media::EXIFData::ET_SUBEXIF)
 	{
 		((EXIFData*)item->dataBuff)->AddUInt32(40963, 1, &height);
 	}
@@ -2608,7 +2577,7 @@ void Media::EXIFData::SetHeight(UInt32 height)
 Bool Media::EXIFData::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const
 {
 	Data::ArrayList<UInt32> exifIds;
-	Media::EXIFData::EXIFItem *exItem;
+	NotNullPtr<Media::EXIFData::EXIFItem> exItem;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -2628,97 +2597,413 @@ Bool Media::EXIFData::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CSt
 		sb->AppendU32(v);
 		sb->AppendC(UTF8STRC(", name = "));
 		sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v));
-		exItem = this->GetExifItem(v);
-		if (exItem->type == Media::EXIFData::ET_SUBEXIF)
+		if (this->GetExifItem(v).SetTo(exItem))
 		{
-			Data::ArrayList<UInt32> subExIds;
-			UOSInt i2;
-			UOSInt j2;
-			UInt32 v2;
-			Media::EXIFData::EXIFItem *subExItem;
-			Media::EXIFData *subExif = (Media::EXIFData*)exItem->dataBuff;
-			i2 = 0;
-			j2 = subExif->GetExifIds(&subExIds);
-			while (i2 < j2)
+			if (exItem->type == Media::EXIFData::ET_SUBEXIF)
 			{
-				v2 = subExIds.GetItem(i2);
-				sb->AppendC(UTF8STRC("\r\n"));
-				if (linePrefix.v)
-					sb->Append(linePrefix);
-				sb->AppendC(UTF8STRC(" Subid = "));
-				sb->AppendU32(v2);
-				sb->AppendC(UTF8STRC(", name = "));
-				sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v, v2));
+				Data::ArrayList<UInt32> subExIds;
+				UOSInt i2;
+				UOSInt j2;
+				UInt32 v2;
+				NotNullPtr<Media::EXIFData::EXIFItem> subExItem;
+				Media::EXIFData *subExif = (Media::EXIFData*)exItem->dataBuff;
+				i2 = 0;
+				j2 = subExif->GetExifIds(&subExIds);
+				while (i2 < j2)
+				{
+					v2 = subExIds.GetItem(i2);
+					sb->AppendC(UTF8STRC("\r\n"));
+					if (linePrefix.v)
+						sb->Append(linePrefix);
+					sb->AppendC(UTF8STRC(" Subid = "));
+					sb->AppendU32(v2);
+					sb->AppendC(UTF8STRC(", name = "));
+					sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v, v2));
 
-				subExItem = subExif->GetExifItem(v2);
-				if (subExItem->type == Media::EXIFData::ET_STRING)
-				{
-					sb->AppendC(UTF8STRC(", value = "));
-					if (((Char*)subExItem->dataBuff)[subExItem->cnt - 1])
+					if (subExif->GetExifItem(v2).SetTo(subExItem))
 					{
-						sb->AppendC((UTF8Char*)subExItem->dataBuff, subExItem->cnt);
-					}
-					else
-					{
-						sb->AppendSlow((UTF8Char*)subExItem->dataBuff);
-					}
-				}
-				else if (subExItem->type == Media::EXIFData::ET_DOUBLE)
-				{
-					Double *valBuff = (Double*)subExItem->dataBuff;
-					k = 0;
-					while (k < subExItem->cnt)
-					{
-						if (k == 0)
+						if (subExItem->type == Media::EXIFData::ET_STRING)
 						{
 							sb->AppendC(UTF8STRC(", value = "));
+							if (((Char*)subExItem->dataBuff)[subExItem->cnt - 1])
+							{
+								sb->AppendC((UTF8Char*)subExItem->dataBuff, subExItem->cnt);
+							}
+							else
+							{
+								sb->AppendSlow((UTF8Char*)subExItem->dataBuff);
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_DOUBLE)
+						{
+							Double *valBuff = (Double*)subExItem->dataBuff;
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								Text::SBAppendF64(sb, valBuff[k]);
+								k++;
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_BYTES)
+						{
+							UInt8 *valBuff;
+							if (subExItem->cnt <= 4)
+							{
+								valBuff = (UInt8*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (UInt8*)subExItem->dataBuff;
+							}
+							sb->AppendC(UTF8STRC(", value = "));
+							if (subExItem->cnt > 1024)
+							{
+								sb->AppendU64(subExItem->cnt);
+								sb->AppendC(UTF8STRC(" bytes: "));
+								sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
+								sb->AppendC(UTF8STRC("\r\n...\r\n"));
+								sb->AppendHexBuff(&valBuff[((Int32)subExItem->cnt & ~15) - 256], 256 + (subExItem->cnt & 15), ' ', Text::LineBreakType::CRLF);
+							}
+							else
+							{
+								sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_UINT16)
+						{
+							UInt16 *valBuff;
+							if (subExItem->cnt <= 2)
+							{
+								valBuff = (UInt16*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (UInt16*)subExItem->dataBuff;
+							}
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								sb->AppendU16(valBuff[k]);
+								k++;
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_UINT32)
+						{
+							UInt32 *valBuff;
+							if (subExItem->cnt <= 1)
+							{
+								valBuff = (UInt32*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (UInt32*)subExItem->dataBuff;
+							}
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								sb->AppendU32(valBuff[k]);
+								k++;
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_RATIONAL)
+						{
+							UInt32 *valBuff;
+							valBuff = (UInt32*)subExItem->dataBuff;
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								sb->AppendU32(valBuff[k * 2]);
+								sb->AppendC(UTF8STRC(" / "));
+								sb->AppendU32(valBuff[k * 2 + 1]);
+								if (valBuff[k * 2 + 1] != 0)
+								{
+									sb->AppendC(UTF8STRC(" ("));
+									Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
+									sb->AppendC(UTF8STRC(")"));
+								}
+								k++;
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_SRATIONAL)
+						{
+							Int32 *valBuff;
+							valBuff = (Int32*)subExItem->dataBuff;
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								sb->AppendI32(valBuff[k * 2]);
+								sb->AppendC(UTF8STRC(" / "));
+								sb->AppendI32(valBuff[k * 2 + 1]);
+								if (valBuff[k * 2 + 1] != 0)
+								{
+									sb->AppendC(UTF8STRC(" ("));
+									Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
+									sb->AppendC(UTF8STRC(")"));
+								}
+								k++;
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_INT16)
+						{
+							Int16 *valBuff;
+							if (subExItem->cnt <= 2)
+							{
+								valBuff = (Int16*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (Int16*)subExItem->dataBuff;
+							}
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								sb->AppendI16(valBuff[k]);
+								k++;
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_INT32)
+						{
+							Int32 *valBuff;
+							if (subExItem->cnt <= 1)
+							{
+								valBuff = (Int32*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (Int32*)subExItem->dataBuff;
+							}
+							k = 0;
+							while (k < subExItem->cnt)
+							{
+								if (k == 0)
+								{
+									sb->AppendC(UTF8STRC(", value = "));
+								}
+								else
+								{
+									sb->AppendC(UTF8STRC(", "));
+								}
+								sb->AppendI32(valBuff[k]);
+								k++;
+							}
+						}
+						else if (subExItem->id == 37500)
+						{
+							UInt8 *valBuff;
+							if (subExItem->cnt <= 4)
+							{
+								valBuff = (UInt8*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (UInt8*)subExItem->dataBuff;
+							}
+							NotNullPtr<Media::EXIFData> innerExif;
+							if (ParseMakerNote(valBuff, subExItem->cnt).SetTo(innerExif))
+							{
+								UTF8Char sbuff[32];
+								UTF8Char *sptr;
+								sb->AppendC(UTF8STRC(", Format = "));
+								sb->Append(GetEXIFMakerName(innerExif->GetEXIFMaker()));
+								sb->AppendC(UTF8STRC(", Inner "));
+								if (linePrefix.v)
+								{
+									sptr = linePrefix.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("  ")));
+								}
+								else
+								{
+									sptr = Text::StrConcatC(sbuff, UTF8STRC("  "));
+								}
+								innerExif->ToString(sb, CSTRP(sbuff, sptr));
+								innerExif.Delete();
+							}
+							else
+							{
+								sb->AppendC(UTF8STRC(", value (Other) = "));
+								sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
+							}
+						}
+						else if (subExItem->type == Media::EXIFData::ET_OTHER)
+						{
+							UInt8 *valBuff;
+							valBuff = (UInt8*)subExItem->dataBuff;
+							if (this->exifMaker == Media::EXIFData::EM_OLYMPUS && subExItem->id == 0)
+							{
+								sb->AppendC(UTF8STRC(", value = "));
+								sb->AppendC((const UTF8Char*)valBuff, subExItem->cnt);
+							}
+							else
+							{
+								sb->AppendC(UTF8STRC(", value (Other) = "));
+								sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
+							}
 						}
 						else
 						{
-							sb->AppendC(UTF8STRC(", "));
+							UInt8 *valBuff;
+							if (subExItem->cnt <= 4 && subExItem->type != Media::EXIFData::ET_OTHER)
+							{
+								valBuff = (UInt8*)&subExItem->value;
+							}
+							else
+							{
+								valBuff = (UInt8*)subExItem->dataBuff;
+							}
+							sb->AppendC(UTF8STRC(", value (Unk) = "));
+							sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
 						}
-						Text::SBAppendF64(sb, valBuff[k]);
-						k++;
-					}
+					}	
+					i2++;
 				}
-				else if (subExItem->type == Media::EXIFData::ET_BYTES)
+			}
+			else if (exItem->type == Media::EXIFData::ET_STRING)
+			{
+				sb->AppendC(UTF8STRC(", value = "));
+				if (((Char*)exItem->dataBuff)[exItem->cnt - 1])
 				{
-					UInt8 *valBuff;
-					if (subExItem->cnt <= 4)
+					sb->AppendC((UTF8Char*)exItem->dataBuff, exItem->cnt);
+				}
+				else
+				{
+					sb->AppendSlow((UTF8Char*)exItem->dataBuff);
+				}
+			}
+			else if (exItem->type == Media::EXIFData::ET_DOUBLE)
+			{
+				Double *valBuff = (Double*)exItem->dataBuff;
+				k = 0;
+				while (k < exItem->cnt)
+				{
+					if (k == 0)
 					{
-						valBuff = (UInt8*)&subExItem->value;
+						sb->AppendC(UTF8STRC(", value = "));
 					}
 					else
 					{
-						valBuff = (UInt8*)subExItem->dataBuff;
+						sb->AppendC(UTF8STRC(", "));
 					}
-					sb->AppendC(UTF8STRC(", value = "));
-					if (subExItem->cnt > 1024)
+					Text::SBAppendF64(sb, valBuff[k]);
+					k++;
+				}
+			}
+			else if (exItem->type == Media::EXIFData::ET_BYTES)
+			{
+				UInt8 *valBuff;
+				if (exItem->cnt <= 4)
+				{
+					valBuff = (UInt8*)&exItem->value;
+				}
+				else
+				{
+					valBuff = (UInt8*)exItem->dataBuff;
+				}
+				sb->AppendC(UTF8STRC(", value = "));
+				if (exItem->id >= 40091 && exItem->id <= 40095)
+				{
+					if (valBuff[exItem->cnt - 2] == 0)
 					{
-						sb->AppendU64(subExItem->cnt);
+						NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)valBuff);
+						sb->Append(s);
+						s->Release();
+					}
+					else
+					{
+						NotNullPtr<Text::String> s = Text::String::New((const UTF16Char*)valBuff, exItem->cnt >> 1);
+						sb->Append(s);
+						s->Release();
+					}
+				}
+				else
+				{
+					if (exItem->cnt > 1024)
+					{
+						sb->AppendU64(exItem->cnt);
 						sb->AppendC(UTF8STRC(" bytes: "));
 						sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
 						sb->AppendC(UTF8STRC("\r\n...\r\n"));
-						sb->AppendHexBuff(&valBuff[((Int32)subExItem->cnt & ~15) - 256], 256 + (subExItem->cnt & 15), ' ', Text::LineBreakType::CRLF);
+						sb->AppendHexBuff(&valBuff[((Int32)exItem->cnt & ~15) - 256], 256 + (exItem->cnt & 15), ' ', Text::LineBreakType::CRLF);
 					}
 					else
 					{
-						sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
+						sb->AppendHexBuff(valBuff, exItem->cnt, ' ', Text::LineBreakType::CRLF);
 					}
 				}
-				else if (subExItem->type == Media::EXIFData::ET_UINT16)
+			}
+			else if (exItem->type == Media::EXIFData::ET_UINT16)
+			{
+				UInt16 *valBuff;
+				if (exItem->cnt <= 2)
 				{
-					UInt16 *valBuff;
-					if (subExItem->cnt <= 2)
-					{
-						valBuff = (UInt16*)&subExItem->value;
-					}
-					else
-					{
-						valBuff = (UInt16*)subExItem->dataBuff;
-					}
+					valBuff = (UInt16*)&exItem->value;
+				}
+				else
+				{
+					valBuff = (UInt16*)exItem->dataBuff;
+				}
+				if (this->exifMaker == Media::EXIFData::EM_CANON && exItem->id == 1)
+				{
+					this->ToStringCanonCameraSettings(sb, linePrefix, valBuff, exItem->cnt);
+				}
+				else if (this->exifMaker == Media::EXIFData::EM_CANON && exItem->id == 2)
+				{
+					this->ToStringCanonFocalLength(sb, linePrefix, valBuff, exItem->cnt);
+				}
+				else if (this->exifMaker == Media::EXIFData::EM_CANON && exItem->id == 4)
+				{
+					this->ToStringCanonShotInfo(sb, linePrefix, valBuff, exItem->cnt);
+				}
+				else
+				{
 					k = 0;
-					while (k < subExItem->cnt)
+					while (k < exItem->cnt)
 					{
 						if (k == 0)
 						{
@@ -2732,305 +3017,18 @@ Bool Media::EXIFData::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CSt
 						k++;
 					}
 				}
-				else if (subExItem->type == Media::EXIFData::ET_UINT32)
+			}
+			else if (exItem->type == Media::EXIFData::ET_UINT32)
+			{
+				UInt32 *valBuff;
+				if (exItem->cnt <= 1)
 				{
-					UInt32 *valBuff;
-					if (subExItem->cnt <= 1)
-					{
-						valBuff = (UInt32*)&subExItem->value;
-					}
-					else
-					{
-						valBuff = (UInt32*)subExItem->dataBuff;
-					}
-					k = 0;
-					while (k < subExItem->cnt)
-					{
-						if (k == 0)
-						{
-							sb->AppendC(UTF8STRC(", value = "));
-						}
-						else
-						{
-							sb->AppendC(UTF8STRC(", "));
-						}
-						sb->AppendU32(valBuff[k]);
-						k++;
-					}
-				}
-				else if (subExItem->type == Media::EXIFData::ET_RATIONAL)
-				{
-					UInt32 *valBuff;
-					valBuff = (UInt32*)subExItem->dataBuff;
-					k = 0;
-					while (k < subExItem->cnt)
-					{
-						if (k == 0)
-						{
-							sb->AppendC(UTF8STRC(", value = "));
-						}
-						else
-						{
-							sb->AppendC(UTF8STRC(", "));
-						}
-						sb->AppendU32(valBuff[k * 2]);
-						sb->AppendC(UTF8STRC(" / "));
-						sb->AppendU32(valBuff[k * 2 + 1]);
-						if (valBuff[k * 2 + 1] != 0)
-						{
-							sb->AppendC(UTF8STRC(" ("));
-							Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
-							sb->AppendC(UTF8STRC(")"));
-						}
-						k++;
-					}
-				}
-				else if (subExItem->type == Media::EXIFData::ET_SRATIONAL)
-				{
-					Int32 *valBuff;
-					valBuff = (Int32*)subExItem->dataBuff;
-					k = 0;
-					while (k < subExItem->cnt)
-					{
-						if (k == 0)
-						{
-							sb->AppendC(UTF8STRC(", value = "));
-						}
-						else
-						{
-							sb->AppendC(UTF8STRC(", "));
-						}
-						sb->AppendI32(valBuff[k * 2]);
-						sb->AppendC(UTF8STRC(" / "));
-						sb->AppendI32(valBuff[k * 2 + 1]);
-						if (valBuff[k * 2 + 1] != 0)
-						{
-							sb->AppendC(UTF8STRC(" ("));
-							Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
-							sb->AppendC(UTF8STRC(")"));
-						}
-						k++;
-					}
-				}
-				else if (subExItem->type == Media::EXIFData::ET_INT16)
-				{
-					Int16 *valBuff;
-					if (subExItem->cnt <= 2)
-					{
-						valBuff = (Int16*)&subExItem->value;
-					}
-					else
-					{
-						valBuff = (Int16*)subExItem->dataBuff;
-					}
-					k = 0;
-					while (k < subExItem->cnt)
-					{
-						if (k == 0)
-						{
-							sb->AppendC(UTF8STRC(", value = "));
-						}
-						else
-						{
-							sb->AppendC(UTF8STRC(", "));
-						}
-						sb->AppendI16(valBuff[k]);
-						k++;
-					}
-				}
-				else if (subExItem->type == Media::EXIFData::ET_INT32)
-				{
-					Int32 *valBuff;
-					if (subExItem->cnt <= 1)
-					{
-						valBuff = (Int32*)&subExItem->value;
-					}
-					else
-					{
-						valBuff = (Int32*)subExItem->dataBuff;
-					}
-					k = 0;
-					while (k < subExItem->cnt)
-					{
-						if (k == 0)
-						{
-							sb->AppendC(UTF8STRC(", value = "));
-						}
-						else
-						{
-							sb->AppendC(UTF8STRC(", "));
-						}
-						sb->AppendI32(valBuff[k]);
-						k++;
-					}
-				}
-				else if (subExItem->id == 37500)
-				{
-					UInt8 *valBuff;
-					if (subExItem->cnt <= 4)
-					{
-						valBuff = (UInt8*)&subExItem->value;
-					}
-					else
-					{
-						valBuff = (UInt8*)subExItem->dataBuff;
-					}
-					NotNullPtr<Media::EXIFData> innerExif;
-					if (ParseMakerNote(valBuff, subExItem->cnt).SetTo(innerExif))
-					{
-						UTF8Char sbuff[32];
-						UTF8Char *sptr;
-						sb->AppendC(UTF8STRC(", Format = "));
-						sb->Append(GetEXIFMakerName(innerExif->GetEXIFMaker()));
-						sb->AppendC(UTF8STRC(", Inner "));
-						if (linePrefix.v)
-						{
-							sptr = linePrefix.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("  ")));
-						}
-						else
-						{
-							sptr = Text::StrConcatC(sbuff, UTF8STRC("  "));
-						}
-						innerExif->ToString(sb, CSTRP(sbuff, sptr));
-						innerExif.Delete();
-					}
-					else
-					{
-						sb->AppendC(UTF8STRC(", value (Other) = "));
-						sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
-					}
-				}
-				else if (subExItem->type == Media::EXIFData::ET_OTHER)
-				{
-					UInt8 *valBuff;
-					valBuff = (UInt8*)subExItem->dataBuff;
-					if (this->exifMaker == Media::EXIFData::EM_OLYMPUS && subExItem->id == 0)
-					{
-						sb->AppendC(UTF8STRC(", value = "));
-						sb->AppendC((const UTF8Char*)valBuff, subExItem->cnt);
-					}
-					else
-					{
-						sb->AppendC(UTF8STRC(", value (Other) = "));
-						sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
-					}
+					valBuff = (UInt32*)&exItem->value;
 				}
 				else
 				{
-					UInt8 *valBuff;
-					if (subExItem->cnt <= 4 && subExItem->type != Media::EXIFData::ET_OTHER)
-					{
-						valBuff = (UInt8*)&subExItem->value;
-					}
-					else
-					{
-						valBuff = (UInt8*)subExItem->dataBuff;
-					}
-					sb->AppendC(UTF8STRC(", value (Unk) = "));
-					sb->AppendHexBuff(valBuff, subExItem->cnt, ' ', Text::LineBreakType::CRLF);
+					valBuff = (UInt32*)exItem->dataBuff;
 				}
-				
-				i2++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_STRING)
-		{
-			sb->AppendC(UTF8STRC(", value = "));
-			if (((Char*)exItem->dataBuff)[exItem->cnt - 1])
-			{
-				sb->AppendC((UTF8Char*)exItem->dataBuff, exItem->cnt);
-			}
-			else
-			{
-				sb->AppendSlow((UTF8Char*)exItem->dataBuff);
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_DOUBLE)
-		{
-			Double *valBuff = (Double*)exItem->dataBuff;
-			k = 0;
-			while (k < exItem->cnt)
-			{
-				if (k == 0)
-				{
-					sb->AppendC(UTF8STRC(", value = "));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC(", "));
-				}
-				Text::SBAppendF64(sb, valBuff[k]);
-				k++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_BYTES)
-		{
-			UInt8 *valBuff;
-			if (exItem->cnt <= 4)
-			{
-				valBuff = (UInt8*)&exItem->value;
-			}
-			else
-			{
-				valBuff = (UInt8*)exItem->dataBuff;
-			}
-			sb->AppendC(UTF8STRC(", value = "));
-			if (exItem->id >= 40091 && exItem->id <= 40095)
-			{
-				if (valBuff[exItem->cnt - 2] == 0)
-				{
-					NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)valBuff);
-					sb->Append(s);
-					s->Release();
-				}
-				else
-				{
-					NotNullPtr<Text::String> s = Text::String::New((const UTF16Char*)valBuff, exItem->cnt >> 1);
-					sb->Append(s);
-					s->Release();
-				}
-			}
-			else
-			{
-				if (exItem->cnt > 1024)
-				{
-					sb->AppendU64(exItem->cnt);
-					sb->AppendC(UTF8STRC(" bytes: "));
-					sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
-					sb->AppendC(UTF8STRC("\r\n...\r\n"));
-					sb->AppendHexBuff(&valBuff[((Int32)exItem->cnt & ~15) - 256], 256 + (exItem->cnt & 15), ' ', Text::LineBreakType::CRLF);
-				}
-				else
-				{
-					sb->AppendHexBuff(valBuff, exItem->cnt, ' ', Text::LineBreakType::CRLF);
-				}
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_UINT16)
-		{
-			UInt16 *valBuff;
-			if (exItem->cnt <= 2)
-			{
-				valBuff = (UInt16*)&exItem->value;
-			}
-			else
-			{
-				valBuff = (UInt16*)exItem->dataBuff;
-			}
-			if (this->exifMaker == Media::EXIFData::EM_CANON && exItem->id == 1)
-			{
-				this->ToStringCanonCameraSettings(sb, linePrefix, valBuff, exItem->cnt);
-			}
-			else if (this->exifMaker == Media::EXIFData::EM_CANON && exItem->id == 2)
-			{
-				this->ToStringCanonFocalLength(sb, linePrefix, valBuff, exItem->cnt);
-			}
-			else if (this->exifMaker == Media::EXIFData::EM_CANON && exItem->id == 4)
-			{
-				this->ToStringCanonShotInfo(sb, linePrefix, valBuff, exItem->cnt);
-			}
-			else
-			{
 				k = 0;
 				while (k < exItem->cnt)
 				{
@@ -3042,182 +3040,155 @@ Bool Media::EXIFData::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CSt
 					{
 						sb->AppendC(UTF8STRC(", "));
 					}
-					sb->AppendU16(valBuff[k]);
+					sb->AppendU32(valBuff[k]);
 					k++;
 				}
 			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_UINT32)
-		{
-			UInt32 *valBuff;
-			if (exItem->cnt <= 1)
+			else if (exItem->type == Media::EXIFData::ET_RATIONAL)
 			{
-				valBuff = (UInt32*)&exItem->value;
-			}
-			else
-			{
+				UInt32 *valBuff;
 				valBuff = (UInt32*)exItem->dataBuff;
+				k = 0;
+				while (k < exItem->cnt)
+				{
+					if (k == 0)
+					{
+						sb->AppendC(UTF8STRC(", value = "));
+					}
+					else
+					{
+						sb->AppendC(UTF8STRC(", "));
+					}
+					sb->AppendU32(valBuff[k * 2]);
+					sb->AppendC(UTF8STRC(" / "));
+					sb->AppendU32(valBuff[k * 2 + 1]);
+					if (valBuff[k * 2 + 1] != 0)
+					{
+						sb->AppendC(UTF8STRC(" ("));
+						Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
+						sb->AppendC(UTF8STRC(")"));
+					}
+					k++;
+				}
 			}
-			k = 0;
-			while (k < exItem->cnt)
+			else if (exItem->type == Media::EXIFData::ET_SRATIONAL)
 			{
-				if (k == 0)
-				{
-					sb->AppendC(UTF8STRC(", value = "));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC(", "));
-				}
-				sb->AppendU32(valBuff[k]);
-				k++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_RATIONAL)
-		{
-			UInt32 *valBuff;
-			valBuff = (UInt32*)exItem->dataBuff;
-			k = 0;
-			while (k < exItem->cnt)
-			{
-				if (k == 0)
-				{
-					sb->AppendC(UTF8STRC(", value = "));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC(", "));
-				}
-				sb->AppendU32(valBuff[k * 2]);
-				sb->AppendC(UTF8STRC(" / "));
-				sb->AppendU32(valBuff[k * 2 + 1]);
-				if (valBuff[k * 2 + 1] != 0)
-				{
-					sb->AppendC(UTF8STRC(" ("));
-					Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
-					sb->AppendC(UTF8STRC(")"));
-				}
-				k++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_SRATIONAL)
-		{
-			Int32 *valBuff;
-			valBuff = (Int32*)exItem->dataBuff;
-			k = 0;
-			while (k < exItem->cnt)
-			{
-				if (k == 0)
-				{
-					sb->AppendC(UTF8STRC(", value = "));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC(", "));
-				}
-				sb->AppendI32(valBuff[k * 2]);
-				sb->AppendC(UTF8STRC(" / "));
-				sb->AppendI32(valBuff[k * 2 + 1]);
-				if (valBuff[k * 2 + 1] != 0)
-				{
-					sb->AppendC(UTF8STRC(" ("));
-					Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
-					sb->AppendC(UTF8STRC(")"));
-				}
-				k++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_INT16)
-		{
-			Int16 *valBuff;
-			if (exItem->cnt <= 2)
-			{
-				valBuff = (Int16*)&exItem->value;
-			}
-			else
-			{
-				valBuff = (Int16*)exItem->dataBuff;
-			}
-			k = 0;
-			while (k < exItem->cnt)
-			{
-				if (k == 0)
-				{
-					sb->AppendC(UTF8STRC(", value = "));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC(", "));
-				}
-				sb->AppendI16(valBuff[k]);
-				k++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_INT32)
-		{
-			Int32 *valBuff;
-			if (exItem->cnt <= 2)
-			{
-				valBuff = (Int32*)&exItem->value;
-			}
-			else
-			{
+				Int32 *valBuff;
 				valBuff = (Int32*)exItem->dataBuff;
+				k = 0;
+				while (k < exItem->cnt)
+				{
+					if (k == 0)
+					{
+						sb->AppendC(UTF8STRC(", value = "));
+					}
+					else
+					{
+						sb->AppendC(UTF8STRC(", "));
+					}
+					sb->AppendI32(valBuff[k * 2]);
+					sb->AppendC(UTF8STRC(" / "));
+					sb->AppendI32(valBuff[k * 2 + 1]);
+					if (valBuff[k * 2 + 1] != 0)
+					{
+						sb->AppendC(UTF8STRC(" ("));
+						Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
+						sb->AppendC(UTF8STRC(")"));
+					}
+					k++;
+				}
 			}
-			k = 0;
-			while (k < exItem->cnt)
+			else if (exItem->type == Media::EXIFData::ET_INT16)
 			{
-				if (k == 0)
+				Int16 *valBuff;
+				if (exItem->cnt <= 2)
+				{
+					valBuff = (Int16*)&exItem->value;
+				}
+				else
+				{
+					valBuff = (Int16*)exItem->dataBuff;
+				}
+				k = 0;
+				while (k < exItem->cnt)
+				{
+					if (k == 0)
+					{
+						sb->AppendC(UTF8STRC(", value = "));
+					}
+					else
+					{
+						sb->AppendC(UTF8STRC(", "));
+					}
+					sb->AppendI16(valBuff[k]);
+					k++;
+				}
+			}
+			else if (exItem->type == Media::EXIFData::ET_INT32)
+			{
+				Int32 *valBuff;
+				if (exItem->cnt <= 2)
+				{
+					valBuff = (Int32*)&exItem->value;
+				}
+				else
+				{
+					valBuff = (Int32*)exItem->dataBuff;
+				}
+				k = 0;
+				while (k < exItem->cnt)
+				{
+					if (k == 0)
+					{
+						sb->AppendC(UTF8STRC(", value = "));
+					}
+					else
+					{
+						sb->AppendC(UTF8STRC(", "));
+					}
+					sb->AppendI32(valBuff[k]);
+					k++;
+				}
+			}
+			else if (exItem->type == Media::EXIFData::ET_OTHER)
+			{
+				if (this->exifMaker == EM_OLYMPUS && exItem->id == 521)
 				{
 					sb->AppendC(UTF8STRC(", value = "));
+					if (((Char*)exItem->dataBuff)[exItem->cnt - 1])
+					{
+						sb->AppendC((UTF8Char*)exItem->dataBuff, exItem->cnt);
+					}
+					else
+					{
+						sb->AppendSlow((UTF8Char*)exItem->dataBuff);
+					}
 				}
 				else
 				{
-					sb->AppendC(UTF8STRC(", "));
-				}
-				sb->AppendI32(valBuff[k]);
-				k++;
-			}
-		}
-		else if (exItem->type == Media::EXIFData::ET_OTHER)
-		{
-			if (this->exifMaker == EM_OLYMPUS && exItem->id == 521)
-			{
-				sb->AppendC(UTF8STRC(", value = "));
-				if (((Char*)exItem->dataBuff)[exItem->cnt - 1])
-				{
-					sb->AppendC((UTF8Char*)exItem->dataBuff, exItem->cnt);
-				}
-				else
-				{
-					sb->AppendSlow((UTF8Char*)exItem->dataBuff);
+		//			UInt8 *valBuff;
+		//			valBuff = (UInt8*)exItem->dataBuff;
+					sb->AppendC(UTF8STRC(", Other: size = "));
+					sb->AppendU64(exItem->cnt);
+		//			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
 				}
 			}
 			else
 			{
-	//			UInt8 *valBuff;
-	//			valBuff = (UInt8*)exItem->dataBuff;
-				sb->AppendC(UTF8STRC(", Other: size = "));
+	/*			UInt8 *valBuff;
+				if (exItem->cnt <= 4)
+				{
+					valBuff = (UInt8*)&exItem->value;
+				}
+				else
+				{
+					valBuff = (UInt8*)exItem->dataBuff;
+				}*/
+				sb->AppendC(UTF8STRC(", Unknown: size = "));
 				sb->AppendU64(exItem->cnt);
 	//			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
 			}
 		}
-		else
-		{
-/*			UInt8 *valBuff;
-			if (exItem->cnt <= 4)
-			{
-				valBuff = (UInt8*)&exItem->value;
-			}
-			else
-			{
-				valBuff = (UInt8*)exItem->dataBuff;
-			}*/
-			sb->AppendC(UTF8STRC(", Unknown: size = "));
-			sb->AppendU64(exItem->cnt);
-//			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
-		}
-
 		i++;
 	}
 	Double lat;
@@ -4523,14 +4494,14 @@ Bool Media::EXIFData::ToStringCanonLensType(NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst) const
+void Media::EXIFData::ToExifBuff(UInt8 *buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
 {
-	ToExifBuff(buff, &this->exifMap, startOfst, otherOfst);
+	ToExifBuffImpl(buff, this->exifMap, startOfst, otherOfst);
 }
 
-void Media::EXIFData::GetExifBuffSize(UInt64 *size, UInt64 *endOfst) const
+void Media::EXIFData::GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> endOfst) const
 {
-	GetExifBuffSize(&this->exifMap, size, endOfst);
+	GetExifBuffSize(this->exifMap, size, endOfst);
 }
 
 Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const

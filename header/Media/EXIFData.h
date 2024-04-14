@@ -2,7 +2,7 @@
 #define _SM_MEDIA_EXIFDATA
 #include "Data/ByteOrder.h"
 #include "Data/DateTime.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Media/FrameInfo.h"
@@ -79,13 +79,13 @@ namespace Media
 		static EXIFInfo nikon3Infos[];
 		static EXIFInfo sanyo1Infos[];
 		static EXIFInfo appleInfos[];
-		Data::FastMap<UInt32, EXIFItem*> exifMap;
+		Data::FastMapNN<UInt32, EXIFItem> exifMap;
 		EXIFMaker exifMaker;
 
 	private:
-		void FreeItem(EXIFItem *item);
-		void ToExifBuff(UInt8 *buff, const Data::ReadingList<EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const;
-		void GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt64 *size, UInt64 *endOfst) const;
+		void FreeItem(NotNullPtr<EXIFItem> item);
+		void ToExifBuffImpl(UInt8 *buff, NotNullPtr<const Data::ReadingListNN<EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
+		void GetExifBuffSize(NotNullPtr<const Data::ReadingListNN<EXIFItem>> exifList, OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 	public:
 		EXIFData(EXIFMaker exifMaker);
 		~EXIFData();
@@ -109,7 +109,7 @@ namespace Media
 		UOSInt GetExifIds(Data::ArrayList<UInt32> *idArr) const;
 		EXIFType GetExifType(UInt32 id) const;
 		UInt64 GetExifCount(UInt32 id) const;
-		EXIFItem *GetExifItem(UInt32 id) const;
+		Optional<EXIFItem> GetExifItem(UInt32 id) const;
 		UInt16 *GetExifUInt16(UInt32 id) const;
 		UInt32 *GetExifUInt32(UInt32 id) const;
 		Media::EXIFData *GetExifSubexif(UInt32 id) const;
@@ -138,8 +138,8 @@ namespace Media
 		Bool ToStringCanonFocalLength(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
 		Bool ToStringCanonShotInfo(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
 		Bool ToStringCanonLensType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt16 lensType) const;
-		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst) const;
-		void GetExifBuffSize(UInt64 *size, UInt64 *endOfst) const;
+		void ToExifBuff(UInt8 *buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
+		void GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 
 		Optional<EXIFData> ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const;
 

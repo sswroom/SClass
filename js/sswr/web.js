@@ -776,6 +776,23 @@ export class Dialog
 		this.darkColor = null;
 	}
 
+	getDocBody()
+	{
+		if (top.document.body.nodeName.toLowerCase() == "frameset")
+		{
+			let w = window;
+			while (w.parent && w.parent.document.body.nodeName.toLowerCase() != "frameset")
+			{
+				w = w.parent;
+			}
+			return w.document.body;
+		}
+		else
+		{
+			return top.document.body;
+		}
+	}
+
 	show()
 	{
 		if (this.darkColor)
@@ -789,10 +806,11 @@ export class Dialog
 		darkColor.style.display = "flex";
 		darkColor.style.alignItems = "center";
 		darkColor.style.justifyContent = "center";
-		if (top.document.body.children.length > 0)
-			top.document.body.insertBefore(darkColor, top.document.body.children[0]);
+		let docBody = this.getDocBody();
+		if (docBody.children.length > 0)
+			docBody.insertBefore(darkColor, docBody.children[0]);
 		else
-			top.document.body.appendChild(darkColor);
+			docBody.appendChild(darkColor);
 		this.darkColor = darkColor;
 		let dialog = document.createElement("div");
 		dialog.style.backgroundColor = "#ffffff";
@@ -868,7 +886,7 @@ export class Dialog
 	{
 		if (this.darkColor)
 		{
-			top.document.body.removeChild(this.darkColor);
+			this.getDocBody().removeChild(this.darkColor);
 			this.darkColor = null;
 		}
 	}

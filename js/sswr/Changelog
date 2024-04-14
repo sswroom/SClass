@@ -1,3 +1,7 @@
+1.6.3
+-Added hash.MD5
+-Support web.Dialog in frameset
+
 1.6.2
 -Fixed data.DateTimeUtil.totalDays2DateValue bigint problem
 
