@@ -125,7 +125,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 			{
 				simg->exif.Delete();
 				UInt64 nextOfst;
-				simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
+				simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, nextOfst, Media::EXIFData::EM_STANDARD, buff);
 			}
 			bo.Delete();
 		}

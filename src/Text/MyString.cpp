@@ -1443,7 +1443,7 @@ UTF8Char *Text::StrToCapital(UTF8Char *oriStr, const UTF8Char *strToJoin)
 	return oriStr;
 }
 
-Bool Text::StrEquals(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrEquals(UnsafeArray<const UTF8Char> str1, const UTF8Char *str2)
 {
 	UTF8Char c;
 	while ((c = *str1++) != 0)

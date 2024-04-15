@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_EXIFDATA
 #define _SM_MEDIA_EXIFDATA
+#include "AnyType.h"
 #include "Data/ByteOrder.h"
 #include "Data/DateTime.h"
 #include "Data/FastMapNN.h"
@@ -38,7 +39,7 @@ namespace Media
 			EXIFType type;
 			UInt64 cnt;
 			Int32 value;
-			void *dataBuff;
+			AnyType dataBuff;
 		} EXIFItem;
 
 		typedef struct
@@ -105,8 +106,9 @@ namespace Media
 		void AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff);
 		void AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff);
 		void Remove(UInt32 id);
+		Bool RemoveLargest();
 
-		UOSInt GetExifIds(Data::ArrayList<UInt32> *idArr) const;
+		UOSInt GetExifIds(NotNullPtr<Data::ArrayList<UInt32>> idArr) const;
 		EXIFType GetExifType(UInt32 id) const;
 		UInt64 GetExifCount(UInt32 id) const;
 		Optional<EXIFItem> GetExifItem(UInt32 id) const;
@@ -124,8 +126,8 @@ namespace Media
 		Double GetPhotoExpTime() const;
 		UInt32 GetPhotoISO() const;
 		Double GetPhotoFocalLength() const;
-		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick) const;
-		Bool GetGeoBounds(Math::Size2D<UOSInt> imgSize, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const;
+		Bool GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lon, OptOut<Double> altitude, OptOut<Int64> gpsTimeTick) const;
+		Bool GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32> srid, OutParam<Double> minX, OutParam<Double> minY, OutParam<Double> maxX, OutParam<Double> maxY) const;
 		RotateType GetRotateType() const;
 		void SetRotateType(RotateType rotateType);
 		Double GetHDPI() const;
@@ -141,18 +143,18 @@ namespace Media
 		void ToExifBuff(UInt8 *buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
 		void GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 
-		Optional<EXIFData> ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const;
+		Optional<EXIFData> ParseMakerNote(UnsafeArray<const UInt8> buff, UOSInt buffSize) const;
 
 		static Text::CString GetEXIFMakerName(EXIFMaker exifMaker);
 		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id);
 		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId);
 		static Text::CString GetEXIFTypeName(EXIFType type);
 		static Text::CString GetFieldTypeName(UInt32 ftype);
-		static Optional<EXIFData> ParseIFD(const UInt8 *buff, UOSInt buffSize, NotNullPtr<Data::ByteOrder> byteOrder, UInt64 *nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);
-		static Optional<EXIFData> ParseIFD(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, UInt64 *nextOfst, UInt64 readBase);
-		static Optional<EXIFData> ParseIFD64(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, UInt64 *nextOfst, UInt64 readBase);
+		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);
+		static Optional<EXIFData> ParseIFD(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
+		static Optional<EXIFData> ParseIFD64(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
 		static Bool ParseEXIFFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst);
-		static Bool ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, UInt32 *nextOfst, UInt32 ifdId, UInt64 readBase);
+		static Bool ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase);
 		static Optional<EXIFData> ParseExif(const UInt8 *buff, UOSInt buffSize);
 	};
 }

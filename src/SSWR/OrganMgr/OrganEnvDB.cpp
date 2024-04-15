@@ -1594,7 +1594,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						{
 							camera = Text::String::New(cstr2).Ptr();
 						}
-						if (exif->GetPhotoLocation(&pos.y, &pos.x, 0, 0))
+						if (exif->GetPhotoLocation(pos.y, pos.x, 0, 0))
 						{
 							locType = LocType::PhotoExif;
 						}

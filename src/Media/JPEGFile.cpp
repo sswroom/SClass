@@ -80,7 +80,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Rast
 					break;
 				}
 				img->exif.Delete();
-				img->exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
+				img->exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, nextOfst, ofst + 10);
 				bo.Delete();
 				ofst += j + 4;
 			}
@@ -282,7 +282,7 @@ Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamDa
 					bo.Delete();
 					return 0;
 				}
-				Optional<Media::EXIFData> exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
+				Optional<Media::EXIFData> exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, nextOfst, ofst + 10);
 				bo.Delete();
 				if (!exif.IsNull())
 					return exif;
@@ -355,7 +355,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 					bo.Delete();
 					return false;
 				}
-				exif.Set(Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10));
+				exif.Set(Media::EXIFData::ParseIFD(fd, ofst + 18, bo, nextOfst, ofst + 10));
 				bo.Delete();
 				ofst += j + 4;
 			}
@@ -491,7 +491,14 @@ void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jp
 					UInt32 l;
 
 					UInt8 *exifBuff;
-					exif->GetExifBuffSize(&exifSize, &endOfst);
+					exif->GetExifBuffSize(exifSize, endOfst);
+					while (exifSize + 16 >= 65536)
+					{
+						printf("Image EXIF oversized (%lld), removing largest\r\n", exifSize);
+						if (!exif->RemoveLargest())
+							break;
+						exif->GetExifBuffSize(exifSize, endOfst);
+					}
 					exifBuff = MemAlloc(UInt8, exifSize + 18);
 					exifBuff[0] = 0xff;
 					exifBuff[1] = 0xe1;
@@ -503,7 +510,7 @@ void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jp
 					WriteInt32(&exifBuff[14], 8);
 					k = 8;
 					l = (UInt32)(endOfst + 8);
-					exif->ToExifBuff(&exifBuff[10], &k, &l);
+					exif->ToExifBuff(&exifBuff[10], k, l);
 					stm->Write(exifBuff, exifSize + 18);
 					MemFree(exifBuff);
 					exif.Delete();

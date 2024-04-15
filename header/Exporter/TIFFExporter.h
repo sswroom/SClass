@@ -8,7 +8,7 @@ namespace Exporter
 	class TIFFExporter : public IO::FileExporter
 	{
 	private:
-		static void GenSubExifBuff(NotNullPtr<IO::SeekableStream> stm, UInt64 buffOfst, Media::EXIFData *exif);
+		static void GenSubExifBuff(NotNullPtr<IO::SeekableStream> stm, UInt64 buffOfst, NotNullPtr<Media::EXIFData> exif);
 	public:
 		TIFFExporter();
 		virtual ~TIFFExporter();

@@ -66,9 +66,9 @@ extern "C"
 
 namespace Text
 {
-	FORCEINLINE UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
+	FORCEINLINE UTF8Char *StrConcatC(UTF8Char *oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt charCnt)
 	{
-		MemCopyO(oriStr, strToJoin, charCnt);
+		MemCopyO(oriStr, strToJoin.Ptr(), charCnt);
 		oriStr += charCnt;
 		*oriStr = 0;
 		return oriStr;
@@ -116,7 +116,7 @@ namespace Text
 	UTF8Char *StrToLowerC(UTF8Char *oriStr, const UTF8Char *strToProc, UOSInt strLen);
 	UTF8Char *StrToCapital(UTF8Char *oriStr, const UTF8Char *strToProc);
 
-	Bool StrEquals(const UTF8Char *str1, const UTF8Char *str2);
+	Bool StrEquals(UnsafeArray<const UTF8Char> str1, const UTF8Char *str2);
 	Bool StrEqualsN(const UTF8Char *str1, const UTF8Char *str2);
 	FORCEINLINE Bool StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2);

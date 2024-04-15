@@ -106,11 +106,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		img = 0;
 		if (fmt == 42)
 		{
-			exif = Media::EXIFData::ParseIFD(fd, nextOfst, bo, &nextOfst, 0);
+			exif = Media::EXIFData::ParseIFD(fd, nextOfst, bo, nextOfst, 0);
 		}
 		else
 		{
-			exif = Media::EXIFData::ParseIFD64(fd, nextOfst, bo, &nextOfst, 0);;
+			exif = Media::EXIFData::ParseIFD64(fd, nextOfst, bo, nextOfst, 0);;
 		}
 		if (!exif.SetTo(nnexif))
 		{
@@ -156,9 +156,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		planarConfiguration = GetUInt(nnexif, 284);
 		rowsPerStrip = GetUInt(nnexif, 278);
 		storeBPP = bpp;
-		Media::EXIFData::EXIFItem *item = nnexif->GetExifItem(0x111);
+		NotNullPtr<Media::EXIFData::EXIFItem> item;
 		Media::PixelFormat pf = Media::PixelFormatGetDef(0, bpp);
-		if (item == 0)
+		if (!nnexif->GetExifItem(0x111).SetTo(item))
 		{
 			valid = false;
 		}
@@ -199,8 +199,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				valid = false;
 			}
 		}
-		item = nnexif->GetExifItem(0x117);
-		if (item == 0)
+		if (!nnexif->GetExifItem(0x117).SetTo(item))
 		{
 			valid = false;
 		}
@@ -406,17 +405,16 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		else
 		{
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-			item = nnexif->GetExifItem(34675);
-			if (item)
+			if (nnexif->GetExifItem(34675).SetTo(item))
 			{
 				NotNullPtr<Media::ICCProfile> icc;
-				if (Media::ICCProfile::Parse(Data::ByteArrayR((UInt8*)item->dataBuff, item->cnt)).SetTo(icc))
+				if (Media::ICCProfile::Parse(Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt)).SetTo(icc))
 				{
 					icc->GetRedTransferParam(color.GetRTranParam());
 					icc->GetGreenTransferParam(color.GetGTranParam());
 					icc->GetBlueTransferParam(color.GetBTranParam());
 					icc->GetColorPrimaries(color.GetPrimaries());
-					color.SetRAWICC((UInt8*)item->dataBuff);
+					color.SetRAWICC(item->dataBuff.GetOpt<UInt8>().OrNull());
 					icc.Delete();
 				}
 			}
@@ -1520,7 +1518,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		Double maxX;
 		Double maxY;
 		UInt32 srid;
-		if (img->exif.SetTo(nnexif) && nnexif->GetGeoBounds(img->info.dispSize, &srid, &minX, &minY, &maxX, &maxY))
+		if (img->exif.SetTo(nnexif) && nnexif->GetGeoBounds(img->info.dispSize, srid, minX, minY, maxX, maxY))
 		{
 			Map::VectorLayer *lyr;
 			NotNullPtr<Math::Geometry::VectorImage> vimg;
@@ -1623,8 +1621,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 
 UInt32 Parser::FileParser::TIFFParser::GetUInt(NotNullPtr<Media::EXIFData> exif, UInt32 id)
 {
-	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	if (item->cnt != 1)
 		return 0;
@@ -1637,8 +1635,8 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt(NotNullPtr<Media::EXIFData> exif,
 
 UInt32 Parser::FileParser::TIFFParser::GetUInt0(NotNullPtr<Media::EXIFData> exif, UInt32 id)
 {
-	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	if (item->type == Media::EXIFData::ET_UINT16)
 		return *exif->GetExifUInt16(id);
@@ -1649,8 +1647,8 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(NotNullPtr<Media::EXIFData> exif
 
 UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NotNullPtr<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels)
 {
-	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
-	if (item == 0)
+	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	UInt32 sum = 0;
 	UOSInt i = item->cnt;

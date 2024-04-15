@@ -15,58 +15,58 @@ Bool Data::ByteOrderMSB::IsBigEndian()
 	return true;
 }
 
-Int16 Data::ByteOrderMSB::GetInt16(const UInt8 *pVal) const
+Int16 Data::ByteOrderMSB::GetInt16(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMInt16(pVal);
+	return ReadMInt16(pVal.Ptr());
 }
 
-UInt16 Data::ByteOrderMSB::GetUInt16(const UInt8 *pVal) const
+UInt16 Data::ByteOrderMSB::GetUInt16(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMUInt16(pVal);
+	return ReadMUInt16(pVal.Ptr());
 }
 
-Int32 Data::ByteOrderMSB::GetInt32(const UInt8 *pVal) const
+Int32 Data::ByteOrderMSB::GetInt32(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMInt32(pVal);
+	return ReadMInt32(pVal.Ptr());
 }
 
-UInt32 Data::ByteOrderMSB::GetUInt32(const UInt8 *pVal) const
+UInt32 Data::ByteOrderMSB::GetUInt32(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMUInt32(pVal);
+	return ReadMUInt32(pVal.Ptr());
 }
 
-Int64 Data::ByteOrderMSB::GetInt64(const UInt8 *pVal) const
+Int64 Data::ByteOrderMSB::GetInt64(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMInt64(pVal);
+	return ReadMInt64(pVal.Ptr());
 }
 
-UInt64 Data::ByteOrderMSB::GetUInt64(const UInt8 *pVal) const
+UInt64 Data::ByteOrderMSB::GetUInt64(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMUInt64(pVal);
+	return ReadMUInt64(pVal.Ptr());
 }
 
-Single Data::ByteOrderMSB::GetFloat16(const UInt8 *pVal) const
+Single Data::ByteOrderMSB::GetFloat16(UnsafeArray<const UInt8> pVal) const
 {
-	UInt32 v = ReadMUInt16(pVal);
+	UInt32 v = ReadMUInt16(pVal.Ptr());
 	v = ((v & 0xc000) << 16) | 0x38000000 | ((v & 0x3fff) << 13);
 	return *(Single*)&v;
 }
 
-Single Data::ByteOrderMSB::GetFloat24(const UInt8 *pVal) const
+Single Data::ByteOrderMSB::GetFloat24(UnsafeArray<const UInt8> pVal) const
 {
-	UInt32 v = ReadMUInt24(pVal);
+	UInt32 v = ReadMUInt24(pVal.Ptr());
 	v = ((v & 0xc00000) << 8) | 0x20000000 | ((v & 0x3fffff) << 7);
 	return *(Single*)&v;
 }
 
-Single Data::ByteOrderMSB::GetFloat32(const UInt8 *pVal) const
+Single Data::ByteOrderMSB::GetFloat32(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMFloat(pVal);
+	return ReadMFloat(pVal.Ptr());
 }
 
-Double Data::ByteOrderMSB::GetFloat64(const UInt8 *pVal) const
+Double Data::ByteOrderMSB::GetFloat64(UnsafeArray<const UInt8> pVal) const
 {
-	return ReadMDouble(pVal);
+	return ReadMDouble(pVal.Ptr());
 }
 
 void Data::ByteOrderMSB::SetInt32(UInt8 *pVal, Int32 v) const

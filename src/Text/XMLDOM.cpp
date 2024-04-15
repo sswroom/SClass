@@ -1173,7 +1173,7 @@ Text::XMLDocument::~XMLDocument()
 	SDEL_STRING(this->version);
 }
 
-Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt size)
+Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *newDoc = 0;
@@ -1208,7 +1208,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 	}
 	else if (buff[0] == '<' && buff[1] == '?' && buff[2] == 'x' && buff[3] == 'm' && buff[4] == 'l' && buff[5] == ' ')
 	{
-		const UInt8 *currPos = buff;
+		UnsafeArray<const UInt8> currPos = buff;
 		const UInt8 *attName = 0;
 		const UInt8 *attNameEnd = 0;
 		const UInt8 *attVal = 0;
@@ -1230,7 +1230,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 			{
 				if (quoted)
 				{
-					attValEnd = currPos;
+					attValEnd = currPos.Ptr();
 					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UOSInt)(attNameEnd - attName)))
 					{
 						src = attVal;
@@ -1265,7 +1265,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 			{
 				if (lastSpace)
 				{
-					attVal = currPos;
+					attVal = currPos.Ptr();
 					attValEnd = 0;
 					lastSpace = false;
 					lastEq = false;
@@ -1275,7 +1275,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 			{
 				if (attVal)
 				{
-					attValEnd = currPos;
+					attValEnd = currPos.Ptr();
 					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UOSInt)(attNameEnd - attName)))
 					{
 						src = attVal;
@@ -1302,7 +1302,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 				{
 					if (attNameEnd == 0)
 					{
-						attNameEnd = currPos;
+						attNameEnd = currPos.Ptr();
 					}
 				}
 				lastEq = true;
@@ -1311,12 +1311,12 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 			{
 				if (quoted)
 				{
-					attVal = currPos;
+					attVal = currPos.Ptr();
 					attValEnd = 0;
 				}
 				else
 				{
-					attName = currPos;
+					attName = currPos.Ptr();
 					attNameEnd = 0;
 					attVal = 0;
 					attValEnd = 0;
@@ -1326,7 +1326,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, con
 			}
 			else if (lastEq)
 			{
-				attVal = currPos;
+				attVal = currPos.Ptr();
 				attValEnd = 0;
 				lastSpace = false;
 				lastEq = false;

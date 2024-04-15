@@ -1220,6 +1220,7 @@ OutParam.h:
 sdefs.h:
 Stdafx.h:
 SIMD.h:
+UnsafeArray.h:
 
 Core/ConsoleControl.h:
 Core/Core.h:

@@ -1,6 +1,7 @@
 #ifndef _SM_ANYTYPE
 #define _SM_ANYTYPE
 #include "NotNullPtr.h"
+#include "UnsafeArray.h"
 
 struct AnyType
 {
@@ -26,6 +27,11 @@ struct AnyType
 	template<typename T> Optional<T> GetOpt() const
 	{
 		return Optional<T>((T*)this->p);
+	}
+
+	template<typename T> UnsafeArray<T> GetArray() const
+	{
+		return UnsafeArray<T>((T*)this->p);
 	}
 
 	OSInt GetOSInt() const

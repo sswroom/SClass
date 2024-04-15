@@ -89,7 +89,7 @@ namespace Text
 	public:
 		XMLDocument();
 		virtual ~XMLDocument();
-		Bool ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt size);
+		Bool ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size);
 		Bool ParseStream(NotNullPtr<Text::EncodingFactory> encFact, IO::Stream *stm);
 		void AppendXmlDeclaration(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};

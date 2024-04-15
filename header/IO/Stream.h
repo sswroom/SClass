@@ -1,5 +1,6 @@
 #ifndef _SM_IO_STREAM
 #define _SM_IO_STREAM
+#include "UnsafeArray.h"
 #include "Data/ByteArray.h"
 #include "IO/ParsedObject.h"
 #include "IO/StreamData.h"
@@ -55,6 +56,7 @@ namespace IO
 		virtual Bool IsDown() const = 0;
 		virtual UOSInt Read(const Data::ByteArray &buff) = 0;
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size) = 0;
+		UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
 
 		virtual void *BeginRead(const Data::ByteArray &buff, Sync::Event *evt);
 		virtual UOSInt EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete);

@@ -2275,7 +2275,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						}
 						Double altitude;
 						Int64 gpsTimeTick;
-						if (exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
+						if (exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
 						{
 							locType = LocType::PhotoExif;
 						}

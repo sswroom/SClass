@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/SerialPort.h"

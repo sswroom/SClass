@@ -107,22 +107,22 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 				NEW_CLASS(this->photoDate, Data::DateTime(dt));
 			}
 
-			Media::EXIFData::EXIFItem *item;
-			if ((item = nnexif->GetExifItem(34665)) != 0)
+			NotNullPtr<Media::EXIFData::EXIFItem> item;
+			if (nnexif->GetExifItem(34665).SetTo(item))
 			{
 				if (item->type == Media::EXIFData::ET_SUBEXIF)
 				{
-					Media::EXIFData *exif2 = (Media::EXIFData*)item->dataBuff;
-					if ((item = exif2->GetExifItem(37500)) != 0)
+					NotNullPtr<Media::EXIFData> exif2 = item->dataBuff.GetNN<Media::EXIFData>();
+					if (exif2->GetExifItem(37500).SetTo(item))
 					{
-						UInt8 *valBuff;
+						UnsafeArray<UInt8> valBuff;
 						if (item->cnt <= 4)
 						{
-							valBuff = (UInt8*)&item->value;
+							valBuff = UnsafeArray<UInt8>((UInt8*)&item->value);
 						}
 						else
 						{
-							valBuff = (UInt8*)item->dataBuff;
+							valBuff = item->dataBuff.GetArray<UInt8>();
 						}
 						NotNullPtr<Media::EXIFData> innerExif;
 						if (nnexif->ParseMakerNote(valBuff, item->cnt).SetTo(innerExif))
@@ -145,11 +145,11 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 					}
 				}
 			}
-			else if ((item = nnexif->GetExifItem(700)) != 0)
+			else if (nnexif->GetExifItem(700).SetTo(item))
 			{
 				Text::XMLDocument doc;
 				Text::EncodingFactory encFact;
-				if (doc.ParseBuff(encFact, (const UInt8*)item->dataBuff, item->cnt))
+				if (doc.ParseBuff(encFact, item->dataBuff.GetArray<const UInt8>(), item->cnt))
 				{
 					ParseXMF(doc);
 				}

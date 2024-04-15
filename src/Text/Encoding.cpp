@@ -258,7 +258,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 	}
 }
 
-UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
+UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byteSize)
 {
 	if (this->codePage == 65001)
 	{
@@ -272,7 +272,7 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 		byteSize = byteSize >> 1;
 		while (byteSize-- > 0)
 		{
-			c = ReadUInt16(bytes);
+			c = ReadUInt16(bytes.Ptr());
 			bytes += 2;
 			if (c < 0x80)
 				byteCnt++;
@@ -280,7 +280,7 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 				byteCnt += 2;
 			else if (byteSize > 0)
 			{
-				c2 = ReadUInt16(bytes);
+				c2 = ReadUInt16(bytes.Ptr());
 				if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 				{
 					UInt32 code = (UInt32)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
@@ -373,7 +373,7 @@ UOSInt Text::Encoding::CountUTF8Chars(const UInt8 *bytes, UOSInt byteSize)
 	}
 }
 
-UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
 	if (this->codePage == 65001)
 	{
@@ -389,7 +389,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 		UOSInt retSize = byteSize << 1;
 		while (byteSize-- > 0)
 		{
-			c = ReadUInt16(bytes);
+			c = ReadUInt16(bytes.Ptr());
 			bytes += 2;
 			if (c < 0x80)
 			{
@@ -402,7 +402,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, const UInt8 *bytes, UOSI
 			}
 			else if (byteSize > 0)
 			{
-				c2 = ReadUInt16(bytes);
+				c2 = ReadUInt16(bytes.Ptr());
 				if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 				{
 					UInt32 code = 0x10000 + ((UInt32)(c - 0xd800) << 10) + (UInt32)(c2 - 0xdc00);

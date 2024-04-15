@@ -19,5 +19,6 @@
 #include "InOutParam.h"
 #include "OptOut.h"
 #include "Optional.h"
+#include "UnsafeArray.h"
 #endif
 // TODO: reference additional headers your program requires here
