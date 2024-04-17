@@ -123,10 +123,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			}
 		}
 
-		Data::ArrayList<ISMonitorCore::DeviceInfo *> devList;
-		ISMonitorCore::DeviceInfo *dev;
+		Data::ArrayListNN<ISMonitorCore::DeviceInfo> devList;
+		NotNullPtr<ISMonitorCore::DeviceInfo> dev;
 		Data::DateTime dt;
-		me->core->UserGetDevices(userId, userType, &devList);
+		me->core->UserGetDevices(userId, userType, devList);
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -137,7 +137,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		j = devList.GetCount();
 		while (i < j)
 		{
-			dev = devList.GetItem(i);
+			dev = devList.GetItemNoCheck(i);
 			Sync::RWMutexUsage mutUsage(dev->mut, false);
 			writer->WriteStrC(UTF8STRC("<tr><td>"));
 			if (dev->devName.SetTo(s))
@@ -302,8 +302,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 		{
 			if (s2->v[0])
 			{
-				SSWR::SMonitor::ISMonitorCore::LoginInfo *login = me->core->UserLogin(s2->v, s3->v);
-				if (login != 0)
+				NotNullPtr<SSWR::SMonitor::ISMonitorCore::LoginInfo> login;
+				if (me->core->UserLogin(s2->v, s3->v).SetTo(login))
 				{
 					sess = me->sessMgr->CreateSession(req, resp);
 					sess->SetValueInt32(CSTR("UserId"), login->userId);
@@ -398,10 +398,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	me->WriteMenu(writer, sess);
 	writer->WriteLineC(UTF8STRC("</td><td>"));
 
-	Data::ArrayList<ISMonitorCore::DeviceInfo *> devList;
-	ISMonitorCore::DeviceInfo *dev;
+	Data::ArrayListNN<ISMonitorCore::DeviceInfo> devList;
+	NotNullPtr<ISMonitorCore::DeviceInfo> dev;
 	Data::DateTime dt;
-	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), &devList);
+	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), devList);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -412,7 +412,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	j = devList.GetCount();
 	while (i < j)
 	{
-		dev = devList.GetItem(i);
+		dev = devList.GetItemNoCheck(i);
 		writer->WriteStrC(UTF8STRC("<tr><td>"));
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
 		if (dev->devName.SetTo(s))
@@ -559,7 +559,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
-	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId))
+	NotNullPtr<ISMonitorCore::DeviceInfo> dev;
+	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId) || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
@@ -603,7 +604,6 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	writer->WriteLineC(UTF8STRC("</td><td>"));
 
 	writer->WriteLineC(UTF8STRC("<h2>Edit Device</h2>"));
-	ISMonitorCore::DeviceInfo *dev = me->core->DeviceGet(cliId);
 	writer->WriteStrC(UTF8STRC("<form name=\"modifyForm\" method=\"POST\" action=\"devedit?id="));
 	sptr = Text::StrInt64(sbuff, cliId);
 	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
@@ -663,7 +663,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	ISMonitorCore::DeviceInfo *dev;
+	NotNullPtr<ISMonitorCore::DeviceInfo> dev;
 	NotNullPtr<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -680,13 +680,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
-	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId))
+	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId) || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
-	dev = me->core->DeviceGet(cliId);
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
@@ -804,7 +803,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	ISMonitorCore::DeviceInfo *dev;
+	NotNullPtr<ISMonitorCore::DeviceInfo> dev;
 	NotNullPtr<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -821,13 +820,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
-	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId))
+	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId) || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
 
-	dev = me->core->DeviceGet(cliId);
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
@@ -929,6 +927,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Int32 readingId = 0;
 	Int32 readingType = 0;
 	Bool valid = true;
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+
 	if (!req->GetQueryValue(CSTR("id")).SetTo(s))
 	{
 		valid = false;
@@ -937,7 +937,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		valid = false;
 	}
-
+	
 	if (!req->GetQueryValue(CSTR("sensor")).SetTo(s))
 	{
 		valid = false;
@@ -965,7 +965,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	if (!valid)
+	if (!valid || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
@@ -985,11 +985,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		return true;
 	}
 
-	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev = me->core->DeviceGet(cliId);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	IO::MemoryStream *mstm;
+	NotNullPtr<IO::MemoryStream> mstm;
 	UInt8 *buff;
 	UOSInt buffSize;
 
@@ -1000,15 +999,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		i = dev->imgCaches.GetCount();
 		while (i-- > 0)
 		{
-			mstm = dev->imgCaches.GetItem(i);
-			DEL_CLASS(mstm);
+			mstm = dev->imgCaches.GetItemNoCheck(i);
+			mstm.Delete();
 		}
 		dev->imgCaches.Clear();
 	}
 	
 	Sync::RWMutexUsage mutUsage(dev->mut, false);
-	mstm = dev->imgCaches.Get((sensorId << 16) + (readingId << 8) + (readingType));
-	if (mstm)
+	if (dev->imgCaches.Get((sensorId << 16) + (readingId << 8) + (readingType)).SetTo(mstm))
 	{
 		buff = mstm->GetBuff(buffSize);
 		resp->AddDefHeaders(req);
@@ -1064,7 +1062,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		{
 			Data::ArrayListInt64 dateList;
 			Data::ArrayListDbl valList;
-			SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
+			NotNullPtr<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec;
 			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
 				UOSInt treadingIndex = (UOSInt)-1;
@@ -1088,7 +1086,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				j = dev->todayRecs.GetCount();
 				while (i < j)
 				{
-					rec = dev->todayRecs.GetItem(i);
+					rec = dev->todayRecs.GetItemNoCheck(i);
 					hasTemp = false;
 					hasRH = false;
 					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
@@ -1146,7 +1144,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				j = dev->todayRecs.GetCount();
 				while (i < j)
 				{
-					rec = dev->todayRecs.GetItem(i);
+					rec = dev->todayRecs.GetItemNoCheck(i);
 					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
 					{
 						if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
@@ -1245,7 +1243,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 					j = dev->yesterdayRecs.GetCount();
 					while (i < j)
 					{
-						rec = dev->yesterdayRecs.GetItem(i);
+						rec = dev->yesterdayRecs.GetItemNoCheck(i);
 						hasTemp = false;
 						hasRH = false;
 						if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
@@ -1329,7 +1327,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 					j = dev->yesterdayRecs.GetCount();
 					while (i < j)
 					{
-						rec = dev->yesterdayRecs.GetItem(i);
+						rec = dev->yesterdayRecs.GetItemNoCheck(i);
 						if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
 						{
 							if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
@@ -1427,14 +1425,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		imgList->AddImage(dimg->ToStaticImage(), 0);
 		deng->DeleteImage(dimg);
 
-		NotNullPtr<IO::MemoryStream> nnmstm;
-		NEW_CLASSNN(nnmstm, IO::MemoryStream());
+		NEW_CLASSNN(mstm, IO::MemoryStream());
 		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-		exporter->ExportFile(nnmstm, CSTR("temp.png"), imgList, 0);
+		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
 		DEL_CLASS(exporter);
 		imgList.Delete();
 
-		buff = nnmstm->GetBuff(buffSize);
+		buff = mstm->GetBuff(buffSize);
 		resp->AddDefHeaders(req);
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
@@ -1442,11 +1439,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		resp->Write(buff, buffSize);
 
 		mutUsage.ReplaceMutex(dev->mut, true);
-		mstm = dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), nnmstm.Ptr());
-		mutUsage.EndUse();
-		if (mstm)
+		if (dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), mstm).SetTo(mstm))
 		{
-			DEL_CLASS(mstm);
+			mstm.Delete();
 		}
 		return true;
 	}
@@ -1477,8 +1472,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
-	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
+	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devList;
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
 	IO::MemoryStream mstm;
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
@@ -1486,12 +1481,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	writer->WriteLineC(UTF8STRC("var clients = new Object();"));
 	writer->WriteLineC(UTF8STRC("var cli;"));
 	writer->WriteLineC(UTF8STRC("var reading;"));
-	me->core->UserGetDevices(userId, userType, &devList);
+	me->core->UserGetDevices(userId, userType, devList);
 	i = 0;
 	j = devList.GetCount();
 	while (i < j)
 	{
-		dev = devList.GetItem(i);
+		dev = devList.GetItemNoCheck(i);
 		writer->WriteLineC(UTF8STRC("cli = new Object();"));
 		writer->WriteStrC(UTF8STRC("cli.cliId = "));
 		sptr = Text::StrInt64(sbuff, dev->cliId);
@@ -1632,15 +1627,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		userType = sess->GetValueInt32(CSTR("UserType"));
 		sess->EndUse();
 	}
-
-	if (!me->core->UserHasDevice(userId, userType, cliId))
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	if (!me->core->UserHasDevice(userId, userType, cliId) || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
 
-	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev = me->core->DeviceGet(cliId);
-	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DevRecord2*> recList;
+	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::DevRecord2> recList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -1685,13 +1679,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 			UTF8Char *sptr;
 			Data::ArrayListInt64 dateList;
 			Data::ArrayListDbl valList;
-			SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
-			me->core->DeviceQueryRec(cliId, startTime, startTime + 86400000, &recList);
+			NotNullPtr<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec;
+			me->core->DeviceQueryRec(cliId, startTime, startTime + 86400000, recList);
 			i = 0;
 			j = recList.GetCount();
 			while (i < j)
 			{
-				rec = recList.GetItem(i);
+				rec = recList.GetItemNoCheck(i);
 				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
 				{
 					if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
@@ -1716,7 +1710,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 						}
 					}
 				}
-				MemFree(rec);
+				MemFreeNN(rec);
 				i++;
 			}
 
@@ -1899,11 +1893,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 
-	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::WebUser*> userList;
-	SSWR::SMonitor::ISMonitorCore::WebUser *user;
+	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::WebUser> userList;
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::WebUser> user;
 	UOSInt i;
 	UOSInt j;
-	me->core->UserGetList(&userList);
+	me->core->UserGetList(userList);
 	IO::MemoryStream mstm;
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
@@ -1919,7 +1913,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	j = userList.GetCount();
 	while (i < j)
 	{
-		user = userList.GetItem(i);
+		user = userList.GetItemNoCheck(i);
 		writer->WriteStrC(UTF8STRC("<tr><td>"));
 		Sync::RWMutexUsage mutUsage(user->mut, false);
 		sptr = Text::StrInt32(sbuff, user->userId);
@@ -2020,7 +2014,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	NotNullPtr<Net::WebServer::IWebSession> sess;
-	SSWR::SMonitor::ISMonitorCore::WebUser *user;
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::WebUser> user;
 	Int32 userId;
 	UOSInt i;
 	UOSInt j;
@@ -2030,8 +2024,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 	}
-	user = me->core->UserGet(userId);
-	if (user == 0 || user->userType != 2)
+	if (!me->core->UserGet(userId).SetTo(user) || user->userType != 2)
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
 	}
@@ -2072,7 +2065,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 					break;
 			}
 
-			if (valid && me->core->UserAssign(userId, &devIds))
+			if (valid && me->core->UserAssign(userId, devIds))
 			{
 				sess->EndUse();
 				return resp->RedirectURL(req, CSTR("/monitor/users"), 0);
@@ -2080,9 +2073,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		}
 	}
 
-	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
-	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
-	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), 1, &devList);
+	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devList;
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), 1, devList);
 
 	IO::MemoryStream mstm;
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -2107,7 +2100,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	j = devList.GetCount();
 	while (i < j)
 	{
-		dev = devList.GetItem(i);
+		dev = devList.GetItemNoCheck(i);
 		Sync::RWMutexUsage devMutUsage(dev->mut, false);
 		writer->WriteStrC(UTF8STRC("<input type=\"checkbox\" name=\"device\" id=\"device"));
 		sptr = Text::StrInt64(sbuff, dev->cliId);
@@ -2115,7 +2108,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		writer->WriteStrC(UTF8STRC("\" value=\""));
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteStrC(UTF8STRC("\""));
-		if (user->devMap.Get(dev->cliId))
+		if (user->devMap.Get(dev->cliId).NotNull())
 		{
 			writer->WriteStrC(UTF8STRC(" checked"));
 		}

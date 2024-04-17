@@ -108,20 +108,20 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtIPWhois->SetReadOnly(true);
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	this->sockf->GetConnInfoList(&connInfoList);
+	this->sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		k = 0;
 		while (true)
 		{
@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 			this->cboSelfIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 			k++;
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 	if (this->cboSelfIP->GetCount() > 0)

@@ -24,7 +24,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 		sb.AppendTSNoZone(lastScanTime);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		Sync::MutexUsage mutUsage;
-		NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> logList = me->wifiCapture->GetLogList(mutUsage);
+		NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = me->wifiCapture->GetLogList(mutUsage);
 		sb.AppendC(UTF8STRC("<a href=\"wifidet.html\">"));
 		sb.AppendC(UTF8STRC("Wifi Record count = "));
 		sb.AppendUOSInt(logList->GetCount());
@@ -33,7 +33,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 		UOSInt j = 0;
 		while (i-- > 0)
 		{
-			if (logList->GetItem(i)->lastScanTime == lastScanTime)
+			if (logList->GetItemNoCheck(i)->lastScanTime == lastScanTime)
 			{
 				j++;
 			}
@@ -47,8 +47,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 	{
 		Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		Sync::MutexUsage mutUsage;
-		IO::BTScanLog::ScanRecord3 *entry;
-		Data::ArrayList<IO::BTScanLog::ScanRecord3*> logList;
+		NotNullPtr<IO::BTScanLog::ScanRecord3> entry;
+		Data::ArrayListNN<IO::BTScanLog::ScanRecord3> logList;
 		logList.AddAll(me->btCapture->GetPublicList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdetpub.html\">"));
 		sb.AppendC(UTF8STRC("BT Public count = "));
@@ -63,7 +63,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 		UOSInt j = 0;
 		while (i-- > 0)
 		{
-			entry = logList.GetItem(i);
+			entry = logList.GetItemNoCheck(i);
 			if (entry->inRange && (currTime - entry->lastSeenTime) <= BTTIMEOUT)
 			{
 				j++;
@@ -103,7 +103,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net:
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> entryList;
+	Data::ArrayListNN<IO::BTScanLog::ScanRecord3> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList.AddAll(me->btCapture->GetPublicList(mutUsage));
@@ -135,7 +135,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> entryList;
+	Data::ArrayListNN<IO::BTScanLog::ScanRecord3> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList.AddAll(me->btCapture->GetPublicList(mutUsage));
@@ -168,7 +168,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Ne
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList;
+	NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetPublicList(mutUsage);
@@ -199,7 +199,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Ne
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList;
+	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(mutUsage);
@@ -233,7 +233,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList;
+	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(mutUsage);
@@ -269,15 +269,15 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<N
 	UOSInt j;
 	UOSInt k;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList;
-	Net::WiFiLogFile::LogFileEntry *entry;
+	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
+	NotNullPtr<Net::WiFiLogFile::LogFileEntry> entry;
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(mutUsage);
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
 	{
-		entry = entryList->GetItem(i);
+		entry = entryList->GetItemNoCheck(i);
 		sb.AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendUTF8Char('\t');
 		sb.Append(entry->ssid);
@@ -337,7 +337,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<N
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -345,7 +345,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	UOSInt i;
 	UOSInt j;
 	NotNullPtr<Text::String> s;
-	Net::WiFiLogFile::LogFileEntry *entry;
+	NotNullPtr<Net::WiFiLogFile::LogFileEntry> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
@@ -359,20 +359,20 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	s->Release();
 	sb->AppendC(UTF8STRC(">RSSI</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n"));
 
-	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> sortList;
+	Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry> sortList;
 	req->GetQueryValueU32(CSTR("sort"), sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		Data::Sort::ArtificialQuickSortFunc<Net::WiFiLogFile::LogFileEntry*>::Sort(sortList, WiFiLogRSSICompare);
+		Data::Sort::ArtificialQuickSortFunc<NotNullPtr<Net::WiFiLogFile::LogFileEntry>>::Sort(sortList, WiFiLogRSSICompare);
 	}
 
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
 	{
-		entry = entryList->GetItem(i);
+		entry = entryList->GetItemNoCheck(i);
 		if (scanTime.IsNull() || scanTime == entry->lastScanTime)
 		{
 			sb->AppendC(UTF8STRC("<tr><td>"));
@@ -401,7 +401,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -410,7 +410,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	UOSInt i;
 	UOSInt j;
-	IO::BTScanLog::ScanRecord3 *entry;
+	NotNullPtr<IO::BTScanLog::ScanRecord3> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
@@ -424,20 +424,20 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	s->Release();
 	sb->AppendC(UTF8STRC(">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n"));
 
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> sortList;
+	Data::ArrayListNN<IO::BTScanLog::ScanRecord3> sortList;
 	req->GetQueryValueU32(CSTR("sort"), sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		Data::Sort::ArtificialQuickSortFunc<IO::BTScanLog::ScanRecord3*>::Sort(sortList, BTLogRSSICompare);
+		Data::Sort::ArtificialQuickSortFunc<NotNullPtr<IO::BTScanLog::ScanRecord3>>::Sort(sortList, BTLogRSSICompare);
 	}
 
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
 	{
-		entry = entryList->GetItem(i);
+		entry = entryList->GetItemNoCheck(i);
 		if (!inRangeOnly || (entry->inRange && (currTime - entry->lastSeenTime) <= BTTIMEOUT))
 		{
 			sb->AppendC(UTF8STRC("<tr><td>"));
@@ -514,7 +514,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(Net::WiFiLogFile::LogFileEntry *obj1, Net::WiFiLogFile::LogFileEntry *obj2)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NotNullPtr<Net::WiFiLogFile::LogFileEntry> obj1, NotNullPtr<Net::WiFiLogFile::LogFileEntry> obj2)
 {
 	if (obj1->lastRSSI == obj2->lastRSSI)
 	{
@@ -549,7 +549,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(Net::WiFi
 	}
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(IO::BTScanLog::ScanRecord3 *obj1, IO::BTScanLog::ScanRecord3 *obj2)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NotNullPtr<IO::BTScanLog::ScanRecord3> obj1, NotNullPtr<IO::BTScanLog::ScanRecord3> obj2)
 {
 	if (obj1->rssi == obj2->rssi)
 	{

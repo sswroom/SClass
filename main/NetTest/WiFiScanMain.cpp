@@ -31,11 +31,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UInt8 buff[8];
 		const UInt8 *macPtr;
 		NotNullPtr<Text::String> s;
-		Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
-		Data::ArrayList<Net::WirelessLAN::BSSInfo *> bssList;
-		Net::WirelessLAN::BSSInfo *bss;
-		Net::WirelessLAN::Interface *interface;
-		wlan->GetInterfaces(&interfaces);
+		Data::ArrayListNN<Net::WirelessLAN::Interface> interfaces;
+		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+		NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+		NotNullPtr<Net::WirelessLAN::Interface> interface;
+		wlan->GetInterfaces(interfaces);
 		i = interfaces.GetCount();
 		if (i <= 0)
 		{
@@ -43,7 +43,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 		while (i-- > 0)
 		{
-			interface = interfaces.GetItem(i);
+			interface = interfaces.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Using interface "));
 			sb.Append(interface->GetName());
@@ -53,7 +53,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				console.WriteLineC(UTF8STRC("Scan requested, waiting for 5 seconds"));
 				Sync::SimpleThread::Sleep(5000);
-				interface->GetBSSList(&bssList);
+				interface->GetBSSList(bssList);
 				console.WriteLineC(UTF8STRC("Scan result"));
 				maxSSIDLen = 0;
 				maxManuLen = 0;
@@ -62,7 +62,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				j = bssList.GetCount();
 				while (j-- > 0)
 				{
-					bss = bssList.GetItem(j);
+					bss = bssList.GetItemNoCheck(j);
 					thisLen = bss->GetSSID()->leng;
 					if (thisLen > maxSSIDLen)
 						maxSSIDLen = thisLen;
@@ -92,7 +92,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				k = bssList.GetCount();
 				while (j < k)
 				{
-					bss = bssList.GetItem(j);
+					bss = bssList.GetItemNoCheck(j);
 					sb.ClearStr();
 					macPtr = bss->GetMAC();
 					sb.AppendHexBuff(macPtr, 6, ':', Text::LineBreakType::None);
@@ -162,7 +162,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfo(ReadMUInt64(buff));
 					sb.AppendC(macEntry->name, macEntry->nameLen);
 					console.WriteLineC(sb.ToString(), sb.GetLength());
-					DEL_CLASS(bss);
+					bss.Delete();
 					j++;
 				}
 				bssList.Clear();
@@ -171,7 +171,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				console.WriteLineC(UTF8STRC("Error in scanning"));
 			}			
-			DEL_CLASS(interface);
+			interface.Delete();
 		}
 	}
 	

@@ -61,18 +61,18 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(scanner, Net::ICMPScanner(sockf));
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	sockf->GetConnInfoList(&connInfoList);
+	sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionStatus() == Net::ConnectionInfo::CS_UP)
 		{
 			k = 0;
@@ -89,7 +89,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				k++;
 			}
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 

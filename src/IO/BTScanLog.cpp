@@ -2,11 +2,11 @@
 #include "Data/ByteTool.h"
 #include "IO/BTScanLog.h"
 
-void IO::BTScanLog::FreeDev(DevEntry* dev)
+void IO::BTScanLog::FreeDev(NotNullPtr<DevEntry> dev)
 {
 	SDEL_STRING(dev->name);
-	DEL_CLASS(dev->logs);
-	MemFree(dev);
+	dev->logs.Delete();
+	MemFreeNN(dev);
 }
 
 IO::BTScanLog::BTScanLog(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
@@ -23,26 +23,27 @@ IO::ParserType IO::BTScanLog::GetParserType() const
 	return IO::ParserType::BTScanLog;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
+NotNullPtr<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
 {
-	LogEntry *log = MemAlloc(LogEntry, 1);
+	NotNullPtr<LogEntry> log = MemAllocNN(LogEntry);
 	log->macInt = macInt;
 	log->timeTicks = timeTicks;
 	log->rssi = rssi;
 	log->txPower = txPower;
 	this->logs.Add(log);
-	DevEntry *dev;
+	Optional<DevEntry> optdev;
+	NotNullPtr<DevEntry> dev;
 	if (addrType == AT_RANDOM)
 	{
-		dev = this->randDevs.Get(macInt);
+		optdev = this->randDevs.Get(macInt);
 	}
 	else
 	{
-		dev = this->pubDevs.Get(macInt);
+		optdev = this->pubDevs.Get(macInt);
 	}
-	if (dev == 0)
+	if (!optdev.SetTo(dev))
 	{
-		dev = MemAlloc(DevEntry, 1);
+		dev = MemAllocNN(DevEntry);
 		dev->macInt = macInt;
 		dev->company = company;
 		dev->radioType = radioType;
@@ -50,7 +51,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 		dev->measurePower = measurePower;
 		dev->name = SCOPY_STRING(name);
 		dev->lastAdvType = advType;
-		NEW_CLASS(dev->logs, Data::ArrayList<LogEntry*>());
+		NEW_CLASSNN(dev->logs, Data::ArrayListNN<LogEntry>());
 		if (addrType == AT_RANDOM)
 		{
 			this->randDevs.Put(macInt, dev);
@@ -76,17 +77,17 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	return log;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddScanRec(const IO::BTScanLog::ScanRecord3 *rec)
+NotNullPtr<IO::BTScanLog::LogEntry> IO::BTScanLog::AddScanRec(NotNullPtr<const IO::BTScanLog::ScanRecord3> rec)
 {
 	return this->AddEntry(rec->lastSeenTime, rec->macInt, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower, rec->advType);
 }
 
-void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
+void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff)
 {
 	IO::BTScanLog::ScanRecord3 rec;
-	if (ParseBTRAWPacket(&rec, timeTicks, buff, buffSize))
+	if (ParseBTRAWPacket(rec, timeTicks, buff))
 	{
-		this->AddScanRec(&rec);
+		this->AddScanRec(rec);
 		SDEL_STRING(rec.name);
 		return;
 	}
@@ -94,20 +95,17 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 
 void IO::BTScanLog::ClearList()
 {
-	LIST_FREE_FUNC(&this->logs, MemFree);
-	LIST_CALL_FUNC(&this->pubDevs, this->FreeDev);
-	LIST_CALL_FUNC(&this->randDevs, this->FreeDev);
-	this->logs.Clear();
-	this->pubDevs.Clear();
-	this->randDevs.Clear();
+	this->logs.MemFreeAll();
+	this->pubDevs.FreeAll(FreeDev);
+	this->randDevs.FreeAll(FreeDev);
 }
 
-NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> IO::BTScanLog::GetPublicList() const
+NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> IO::BTScanLog::GetPublicList() const
 {
 	return this->pubDevs;
 }
 
-NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> IO::BTScanLog::GetRandomList() const
+NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> IO::BTScanLog::GetRandomList() const
 {
 	return this->randDevs;
 }
@@ -182,9 +180,9 @@ Text::CStringNN IO::BTScanLog::AdvTypeGetName(AdvType advType)
 	}
 }
 
-Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize)
+Bool IO::BTScanLog::ParseBTRAWPacket(NotNullPtr<IO::BTScanLog::ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff)
 {
-	if (buffSize < 19)
+	if (buff.GetSize() < 19)
 	{
 		return false;
 	}
@@ -204,7 +202,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 	if (buff[4] == 4 && buff[5] == 0x3E) //HCI Event, LE Meta
 	{
 		UInt8 len = buff[6];
-		if ((UOSInt)len + 7 > buffSize)
+		if ((UOSInt)len + 7 > buff.GetSize())
 		{
 			return false;
 		}
@@ -252,7 +250,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 
 			optEnd = (UOSInt)buff[17] + 18;
 			i = 18;
-			if (optEnd < buffSize)
+			if (optEnd < buff.GetSize())
 			{
 				rec->rssi = (Int8)buff[optEnd];
 			}
@@ -266,11 +264,11 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 			return false;
 		}
 
-		if (optEnd > buffSize)
+		if (optEnd > buff.GetSize())
 		{
-			optEnd = buffSize;
+			optEnd = buff.GetSize();
 		}
-		ParseAdvisement(rec, buff, i, optEnd);
+		ParseAdvisement(rec, buff.Ptr(), i, optEnd);
 
 		if (addrType == 0)
 		{
@@ -297,7 +295,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 	else if (buff[4] == 4 && buff[5] == 0x2F) //HCI Event, Extended Inquiry Result
 	{
 		UInt8 len = buff[6];
-		if ((UOSInt)len + 7 > buffSize || len < 15)
+		if ((UOSInt)len + 7 > buff.GetSize() || len < 15)
 		{
 			return false;
 		}
@@ -317,10 +315,10 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 		mac[5] = buff[10];
 		mac[6] = buff[9];
 		mac[7] = buff[8];
-		optEnd = buffSize;
+		optEnd = buff.GetSize();
 		i = 22;
 
-		ParseAdvisement(rec, buff, i, optEnd);
+		ParseAdvisement(rec, buff.Ptr(), i, optEnd);
 
 		rec->addrType = AT_PUBLIC;
 		rec->txPower = 0;
@@ -337,7 +335,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 	return false;
 }
 
-void IO::BTScanLog::ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst)
+void IO::BTScanLog::ParseAdvisement(NotNullPtr<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRARPSCANFORM
 #define _SM_SSWR_AVIREAD_AVIRARPSCANFORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
 #include "UI/GUIButton.h"
@@ -39,9 +39,9 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			Data::ArrayList<AdapterInfo*> adapters;
+			Data::ArrayListNN<AdapterInfo> adapters;
 			Sync::Mutex arpMut;
-			Data::FastMap<UInt32, IPMapInfo *> arpMap;
+			Data::FastMapNN<UInt32, IPMapInfo> arpMap;
 			Bool arpUpdated;
 
 			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj);

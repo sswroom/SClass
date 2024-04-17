@@ -172,8 +172,8 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			Data::ArrayList<Net::ConnectionInfo *> *conns;
-			Data::ArrayList<Net::WirelessLAN::Interface *> *wlanIfs;
+			Data::ArrayListNN<Net::ConnectionInfo> conns;
+			Data::ArrayListNN<Net::WirelessLAN::Interface> wlanIfs;
 			Net::WirelessLAN *wlan;
 			OSInt wlanScanCnt;
 

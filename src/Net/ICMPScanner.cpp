@@ -168,13 +168,13 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 		i++;
 	}
 
-	Data::ArrayList<Net::ConnectionInfo *> connList;
-	Net::ConnectionInfo *conn;
-	this->sockf->GetConnInfoList(&connList);
+	Data::ArrayListNN<Net::ConnectionInfo> connList;
+	NotNullPtr<Net::ConnectionInfo> conn;
+	this->sockf->GetConnInfoList(connList);
 	i = connList.GetCount();
 	while (i-- > 0)
 	{
-		conn = connList.GetItem(i);
+		conn = connList.GetItemNoCheck(i);
 		j = 0;
 		while (true)
 		{
@@ -197,7 +197,7 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 			}
 			j++;
 		}
-		DEL_CLASS(conn);
+		conn.Delete();
 	}
 }
 

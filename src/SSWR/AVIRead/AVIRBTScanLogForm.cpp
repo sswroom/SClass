@@ -109,8 +109,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
 	Text::StringBuilderUTF8 sb;
-	IO::BTScanLog::DevEntry *log;
-	Data::ArrayList<IO::BTScanLog::DevEntry*> logList;
+	NotNullPtr<IO::BTScanLog::DevEntry> log;
+	Data::ArrayListNN<IO::BTScanLog::DevEntry> logList;
 	logList.AddAll(this->btLog->GetPublicList());
 	logList.AddAll(this->btLog->GetRandomList());
 	UTF8Char sbuff[64];
@@ -126,7 +126,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	j = logList.GetCount();
 	while (i < j)
 	{
-		log = logList.GetItem(i);
+		log = logList.GetItemNoCheck(i);
 		WriteMUInt64(mac, log->macInt);
 		sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 		l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);

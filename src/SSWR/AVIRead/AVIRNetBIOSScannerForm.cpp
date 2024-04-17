@@ -163,20 +163,20 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	}
 	this->netbios->SetAnswerHandler(OnAnswerUpdated, this);
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
 	UInt32 netmask;
-	sockf->GetConnInfoList(&connInfoList);
+	sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		ip = connInfo->GetDefaultGW();
 		if (ip)
 		{
@@ -185,7 +185,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
 			this->txtTargetAddr->SetText(CSTRP(sbuff, sptr));
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 

@@ -33,7 +33,7 @@ namespace SSWR
 				Int64 cliId;
 				NotNullPtr<SMonitorSvrCore> me;
 				AnyType stmData;
-				DeviceInfo *dev;
+				Optional<DeviceInfo> dev;
 			} ClientStatus;
 
 		private:
@@ -63,9 +63,9 @@ namespace SSWR
 			Sync::RWMutex dateMut;
 
 			Sync::RWMutex devMut;
-			Data::FastMap<Int64, DeviceInfo*> devMap;
+			Data::FastMapNN<Int64, DeviceInfo> devMap;
 			Sync::RWMutex userMut;
-			Data::FastMap<Int32, WebUser*> userMap;
+			Data::FastMapNN<Int32, WebUser> userMap;
 			Data::StringUTF8Map<WebUser*> userNameMap;
 
 			IO::StringLogger uaLog;
@@ -109,9 +109,9 @@ namespace SSWR
 			Bool IsError();
 			virtual NotNullPtr<Media::DrawEngine> GetDrawEngine();
 
-			DeviceInfo *DevGet(Int64 cliId, Bool toAdd);
-			NotNullPtr<DeviceInfo> DevGetOrAdd(Int64 cliId);
-			DeviceInfo *DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
+			Optional<DeviceInfo> DevGet(Int64 cliId);
+			Optional<DeviceInfo> DevGetOrAdd(Int64 cliId);
+			Optional<DeviceInfo> DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
 			Bool DeviceRecvReading(NotNullPtr<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
 			Bool DeviceKARecv(NotNullPtr<DeviceInfo> dev, Int64 kaTime);
 			Bool DeviceSetName(Int64 cliId, NotNullPtr<Text::String> devName);
@@ -119,23 +119,23 @@ namespace SSWR
 			Bool DeviceSetCPUName(Int64 cliId, NotNullPtr<Text::String> cpuName);
 			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
 			Bool DeviceSetVersion(Int64 cliId, Int64 version);
-			virtual DeviceInfo *DeviceGet(Int64 cliId);
+			virtual Optional<DeviceInfo> DeviceGet(Int64 cliId);
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags);
-			virtual Bool DeviceSetReadings(DeviceInfo *dev, const UTF8Char *readings);
-			virtual Bool DeviceSetDigitals(DeviceInfo *dev, const UTF8Char *digitals);
-			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList);
+			virtual Bool DeviceSetReadings(NotNullPtr<DeviceInfo> dev, const UTF8Char *readings);
+			virtual Bool DeviceSetDigitals(NotNullPtr<DeviceInfo> dev, const UTF8Char *digitals);
+			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NotNullPtr<Data::ArrayListNN<DevRecord2>> recList);
 			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh);
 
 			virtual Bool UserExist();
 			virtual Bool UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType);
 			virtual Bool UserSetPassword(Int32 userId, const UTF8Char *password);
-			virtual LoginInfo *UserLogin(const UTF8Char *userName, const UTF8Char *password);
-			virtual void UserFreeLogin(LoginInfo *login);
-			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList);
+			virtual Optional<LoginInfo> UserLogin(const UTF8Char *userName, const UTF8Char *password);
+			virtual void UserFreeLogin(NotNullPtr<LoginInfo> login);
+			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NotNullPtr<Data::ArrayListNN<DeviceInfo>> devList);
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId);
-			virtual UOSInt UserGetList(Data::ArrayList<WebUser*> *userList);
-			virtual WebUser *UserGet(Int32 userId);
-			virtual Bool UserAssign(Int32 userId, Data::ArrayList<Int64> *devIdList);
+			virtual UOSInt UserGetList(NotNullPtr<Data::ArrayListNN<WebUser>> userList);
+			virtual Optional<WebUser> UserGet(Int32 userId);
+			virtual Bool UserAssign(Int32 userId, NotNullPtr<Data::ArrayList<Int64>> devIdList);
 
 			virtual Bool SendCapturePhoto(Int64 cliId);
 

@@ -101,7 +101,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&hdr[0]), ReadUInt32(&hdr[8])), Data::DateTimeUtil::GetLocalTzQhr());
 	UInt32 ip;
 	UInt16 port;
-	Net::SocketFactory::FromSocketId(ReadUInt64(&hdr[12]), &ip, &port);
+	Net::SocketFactory::FromSocketId(ReadUInt64(&hdr[12]), ip, port);
 	sb->AppendTSNoZone(ts);
 	sb->AppendC(UTF8STRC(", "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
@@ -187,7 +187,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	frame->AddField(0, 12, CSTR("Time"), CSTRP(sbuff, sptr));
 	UInt32 ip;
 	UInt16 port;
-	Net::SocketFactory::FromSocketId(this->packetBuff.ReadU64(12), &ip, &port);
+	Net::SocketFactory::FromSocketId(this->packetBuff.ReadU64(12), ip, port);
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	frame->AddField(12, 8, CSTR("Client IP"), CSTRP(sbuff, sptr));
 	Bool hasData = false;

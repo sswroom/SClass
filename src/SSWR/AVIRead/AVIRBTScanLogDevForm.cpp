@@ -21,17 +21,17 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 		{
 			IO::BufferedOutputStream stm(fs, 8192);
 			Data::DateTime dt;
-			IO::BTScanLog::LogEntry *log;
+			NotNullPtr<IO::BTScanLog::LogEntry> log;
 			Int64 lastTick;
 			UOSInt i = 0;
 			UOSInt j = me->entry->logs->GetCount();
 			if (j > 0)
 			{
-				lastTick = me->entry->logs->GetItem(0)->timeTicks;
+				lastTick = me->entry->logs->GetItemNoCheck(0)->timeTicks;
 			}
 			while (i < j)
 			{
-				log = me->entry->logs->GetItem(i);
+				log = me->entry->logs->GetItemNoCheck(i);
 				dt.SetTicks(log->timeTicks);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
@@ -102,18 +102,18 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	Data::DateTime dt;
-	IO::BTScanLog::LogEntry *log;
+	NotNullPtr<IO::BTScanLog::LogEntry> log;
 	Int64 lastTick;
 	UOSInt i = 0;
 	UOSInt j = entry->logs->GetCount();
 	UOSInt k;
 	if (j > 0)
 	{
-		lastTick = entry->logs->GetItem(0)->timeTicks;
+		lastTick = entry->logs->GetItemNoCheck(0)->timeTicks;
 	}
 	while (i < j)
 	{
-		log = entry->logs->GetItem(i);
+		log = entry->logs->GetItemNoCheck(i);
 		dt.SetTicks(log->timeTicks);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");

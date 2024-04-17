@@ -577,9 +577,9 @@ Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
+UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(NotNullPtr<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList)
 {
-	Net::ConnectionInfo *connInfo;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if ((sptr = this->modem->NetGetIFAddr(sbuff)) != 0)
@@ -600,7 +600,7 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 		ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
 		ent.connStatus = Net::ConnectionInfo::CS_UP;
 		///////////////////////////////////////
-		NEW_CLASS(connInfo, Net::ConnectionInfo(&ent));
+		NEW_CLASSNN(connInfo, Net::ConnectionInfo(&ent));
 		connInfoList->Add(connInfo);
 		return 1;
 	}
@@ -622,7 +622,7 @@ Bool IO::Device::SIM7000SocketFactory::GetUDPInfo(NotNullPtr<UDPInfo> info)
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId)
 {
 	UOSInt i = 8;
 	if (protoType == PT_UDP)
@@ -648,12 +648,12 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(Data::ArrayList<PortInfo
 	return 0;
 }
 
-void IO::Device::SIM7000SocketFactory::FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList)
+void IO::Device::SIM7000SocketFactory::FreePortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList)
 {
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId)
 {
 	UOSInt i = 8;
 	if (protoType == PT_UDP)
@@ -679,7 +679,7 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInf
 	return 0;
 }
 
-void IO::Device::SIM7000SocketFactory::FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList)
+void IO::Device::SIM7000SocketFactory::FreePortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList)
 {
 
 }

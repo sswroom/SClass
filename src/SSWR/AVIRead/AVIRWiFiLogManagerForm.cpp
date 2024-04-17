@@ -148,8 +148,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
 	const Net::MACInfo::MACEntry *entry2;
-	Net::WiFiLogFile::LogFileEntry *log;
-	NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> logList = this->wifiLogFile->GetLogList();
+	NotNullPtr<Net::WiFiLogFile::LogFileEntry> log;
+	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = this->wifiLogFile->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	j = logList->GetCount();
 	while (i < j)
 	{
-		log = logList->GetItem(i);
+		log = logList->GetItemNoCheck(i);
 		entry = this->macList->GetEntry(log->macInt);
 		valid = true;
 		if (unkOnly && (entry != 0 && entry->nameLen != 0))

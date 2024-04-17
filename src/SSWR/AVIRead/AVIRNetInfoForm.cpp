@@ -446,13 +446,13 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 
 void SSWR::AVIRead::AVIRNetInfoForm::ReleaseConns()
 {
-	Net::ConnectionInfo *connInfo;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UOSInt i;
-	i = this->conns->GetCount();
+	i = this->conns.GetCount();
 	while (i-- > 0)
 	{
-		connInfo = this->conns->RemoveAt(i);
-		DEL_CLASS(connInfo);
+		connInfo = this->conns.GetItemNoCheck(i);
+		connInfo.Delete();
 	}
 }
 
@@ -464,13 +464,13 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	this->core->GetSocketFactory()->GetConnInfoList(this->conns);
 	UOSInt i;
 	UOSInt j;
-	Net::ConnectionInfo *connInfo;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	this->lbAdaptors->ClearItems();
 	i = 0;
-	j = this->conns->GetCount();
+	j = this->conns.GetCount();
 	while (i < j)
 	{
-		connInfo = this->conns->GetItem(i);
+		connInfo = this->conns.GetItemNoCheck(i);
 		sptr = connInfo->GetName(sbuff);
 		this->lbAdaptors->AddItem(CSTRP(sbuff, sptr), connInfo);
 		i++;
@@ -479,30 +479,24 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 
 void SSWR::AVIRead::AVIRNetInfoForm::ReleaseWIFIIFs()
 {
-	Net::WirelessLAN::Interface *interf;
-	UOSInt i = this->wlanIfs->GetCount();
-	while (i-- > 0)
-	{
-		interf = this->wlanIfs->RemoveAt(i);
-		DEL_CLASS(interf);
-	}
+	this->wlanIfs.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFIIFs()
 {
 	UOSInt i;
 	UOSInt j;
-	Net::WirelessLAN::Interface *interf;
+	NotNullPtr<Net::WirelessLAN::Interface> interf;
 	if (!this->wlan->IsError())
 	{
 		this->ReleaseWIFIIFs();
 		this->wlan->GetInterfaces(this->wlanIfs);
 		this->lbWIFIIFs->ClearItems();
 		i = 0;
-		j = this->wlanIfs->GetCount();
+		j = this->wlanIfs.GetCount();
 		while (i < j)
 		{
-			interf = this->wlanIfs->GetItem(i);
+			interf = this->wlanIfs.GetItemNoCheck(i);
 			this->lbWIFIIFs->AddItem(interf->GetName(), interf);
 			i++;
 		}
@@ -523,32 +517,32 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		Data::ArrayList<Net::WirelessLAN::Network*> networks;
-		Net::WirelessLAN::Network *network;
-		interf->GetNetworks(&networks);
+		Data::ArrayListNN<Net::WirelessLAN::Network> networks;
+		NotNullPtr<Net::WirelessLAN::Network> network;
+		interf->GetNetworks(networks);
 		this->lvWIFINetwork->ClearItems();
 		i = 0;
 		j = networks.GetCount();
 		while (i < j)
 		{
-			network = networks.GetItem(i);
+			network = networks.GetItemNoCheck(i);
 			k = this->lvWIFINetwork->AddItem(network->GetSSID(), 0);
 			sptr = Text::StrDouble(sbuff, network->GetRSSI());
 			this->lvWIFINetwork->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-			DEL_CLASS(network);
+			network.Delete();
 			i++;
 		}
 
-		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
-		Net::WirelessLAN::BSSInfo *bss;
-		interf->GetBSSList(&bssList);
+		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+		NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+		interf->GetBSSList(bssList);
 		NotNullPtr<Text::String> s;
 		this->lvWIFIBSS->ClearItems();
 		i = 0;
 		j = bssList.GetCount();
 		while (i < j)
 		{
-			bss = bssList.GetItem(i);
+			bss = bssList.GetItemNoCheck(i);
 			k = this->lvWIFIBSS->AddItem(bss->GetSSID(), 0);
 			sptr = Text::StrUInt32(sbuff, bss->GetPHYId());
 			this->lvWIFIBSS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
@@ -574,7 +568,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 			{
 				this->lvWIFIBSS->SetSubItem(k, 9, s);
 			}
-			DEL_CLASS(bss);
+			bss.Delete();
 			i++;
 		}
 		if (wlanScanCnt-- <= 0)
@@ -587,20 +581,20 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 {
-	Data::ArrayList<Net::SocketFactory::PortInfo3 *> portInfoList;
+	Data::ArrayListNN<Net::SocketFactory::PortInfo3> portInfoList;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Net::SocketFactory::PortInfo3 *portInfo;
+	NotNullPtr<Net::SocketFactory::PortInfo3> portInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	this->lvPortInfo->ClearItems();
-	this->core->GetSocketFactory()->QueryPortInfos2(&portInfoList, Net::SocketFactory::PT_ALL, 0);
+	this->core->GetSocketFactory()->QueryPortInfos2(portInfoList, Net::SocketFactory::PT_ALL, 0);
 	i = 0;
 	j = portInfoList.GetCount();
 	while (i < j)
 	{
-		portInfo = portInfoList.GetItem(i);
+		portInfo = portInfoList.GetItemNoCheck(i);
 		if (portInfo->protoType == Net::SocketFactory::PT_TCP || portInfo->protoType == Net::SocketFactory::PT_TCP6)
 		{
 			if (portInfo->protoType == Net::SocketFactory::PT_TCP)
@@ -697,7 +691,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 		}
 		i++;
 	}
-	this->core->GetSocketFactory()->FreePortInfos2(&portInfoList);
+	this->core->GetSocketFactory()->FreePortInfos2(portInfoList);
 }
 
 SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -1078,8 +1072,6 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 		this->lvWIFIBSS->AddColumn(CSTR("S/N"), 100);
 	}
 
-	NEW_CLASS(this->conns, Data::ArrayList<Net::ConnectionInfo*>());
-	NEW_CLASS(this->wlanIfs, Data::ArrayList<Net::WirelessLAN::Interface*>());
 	this->UpdateConns();
 	this->UpdateIPStats();
 	this->UpdateTCPStats();
@@ -1095,8 +1087,6 @@ SSWR::AVIRead::AVIRNetInfoForm::~AVIRNetInfoForm()
 {
 	this->ReleaseConns();
 	this->ReleaseWIFIIFs();
-	DEL_CLASS(this->conns);
-	DEL_CLASS(this->wlanIfs);
 	DEL_CLASS(this->wlan);
 }
 

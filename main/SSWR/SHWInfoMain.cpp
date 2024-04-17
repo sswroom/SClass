@@ -686,11 +686,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UInt32 ipv4;
 		UInt8 mac[16];
 		Data::Timestamp ts;
-		Net::ConnectionInfo *connInfo;
-		Data::ArrayList<Net::ConnectionInfo*> connInfoList;
+		NotNullPtr<Net::ConnectionInfo> connInfo;
+		Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 		NotNullPtr<Net::SocketFactory> sockf;
 		NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
-		sockf->GetConnInfoList(&connInfoList);
+		sockf->GetConnInfoList(connInfoList);
 		console->WriteLine();
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("Network Info:"));
@@ -699,7 +699,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		j = connInfoList.GetCount();
 		while (i < j)
 		{
-			connInfo = connInfoList.GetItem(i);
+			connInfo = connInfoList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connection "));
 			sb.AppendUOSInt(i);
@@ -845,7 +845,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console->WriteLine();
 			writer->WriteLine();
 
-			DEL_CLASS(connInfo);
+			connInfo.Delete();
 			i++;
 		}
 		sockf.Delete();

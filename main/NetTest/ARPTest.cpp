@@ -31,8 +31,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
@@ -41,12 +41,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	sockf->GetConnInfoList(&connInfoList);
+	sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		k = 0;
 		while (arp == 0)
 		{
@@ -73,7 +73,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			k++;
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 

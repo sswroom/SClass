@@ -2,7 +2,7 @@
 #define _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #include "AnyType.h"
 #include "Data/ArrayListUInt32.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/BTScanner.h"
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"
@@ -19,8 +19,8 @@ namespace IO
 		private:
 			Manage::ProcessExecution *prog;
 			Sync::Mutex devMut;
-			Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> devMap;
-			Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> randDevMap;
+			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> devMap;
+			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> randDevMap;
 			Sync::Mutex lastCmdMut;
 			Text::String *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
@@ -33,8 +33,8 @@ namespace IO
 			static void __stdcall ReadThread(NotNullPtr<Sync::Thread> thread);
 			void SendCmd(const UTF8Char *cmd, UOSInt cmdLen);
 
-			IO::BTScanLog::ScanRecord3 *DeviceGetByStr(const UTF8Char *s, UOSInt len);
-			void DeviceFree(IO::BTScanLog::ScanRecord3 *dev);
+			Optional<IO::BTScanLog::ScanRecord3> DeviceGetByStr(Text::CStringNN s);
+			static void DeviceFree(NotNullPtr<IO::BTScanLog::ScanRecord3> dev);
 		public:
 			BluetoothCtlProgCtrl();
 			virtual ~BluetoothCtlProgCtrl();
@@ -47,8 +47,8 @@ namespace IO
 			virtual void Close();
 			virtual Bool SetScanMode(ScanMode scanMode);
 
-			virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage);
-			virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage);
+			virtual NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage);
+			virtual NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage);
 
 			Bool WaitForCmdReady();
 		};

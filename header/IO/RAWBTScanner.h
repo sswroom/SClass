@@ -12,12 +12,12 @@ namespace IO
 		
 		struct ClassData *clsData;
 		Sync::Thread thread;
-		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> pubRecMap;
-		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> randRecMap;
+		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> pubRecMap;
+		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> randRecMap;
 		Sync::Mutex recMut;
 
 		static void __stdcall RecvThread(NotNullPtr<Sync::Thread> thread);
-		void FreeRec(IO::BTScanLog::ScanRecord3* rec);
+		static void FreeRec(NotNullPtr<IO::BTScanLog::ScanRecord3> rec);
 	public:
 		RAWBTScanner(Bool noCtrl);
 		virtual ~RAWBTScanner();
@@ -31,10 +31,10 @@ namespace IO
 		virtual void Close();
 		virtual Bool SetScanMode(ScanMode scanMode);
 
-		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage);
-		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage);
+		virtual NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage);
+		virtual NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage);
 
-		void OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt packetSize);
+		void OnPacket(Int64 timeTicks, Data::ByteArrayR packet);
 	};
 }
 #endif

@@ -1,7 +1,9 @@
 #ifndef _SM_IO_BTSCANLOG
 #define _SM_IO_BTSCANLOG
+#include "Data/ArrayListNN.h"
 #include "Data/ArrayListUInt32.h"
-#include "Data/FastMap.h"
+#include "Data/ByteArray.h"
+#include "Data/FastMapNN.h"
 #include "IO/ParsedObject.h"
 #include "Text/String.h"
 
@@ -79,32 +81,32 @@ namespace IO
 			Int8 measurePower;
 			AdvType lastAdvType;
 			Text::String *name;
-			Data::ArrayList<LogEntry*> *logs;
+			NotNullPtr<Data::ArrayListNN<LogEntry>> logs;
 		};
 	private:
-		Data::FastMap<UInt64, DevEntry*> pubDevs;
-		Data::FastMap<UInt64, DevEntry*> randDevs;
-		Data::ArrayList<LogEntry*> logs;
+		Data::FastMapNN<UInt64, DevEntry> pubDevs;
+		Data::FastMapNN<UInt64, DevEntry> randDevs;
+		Data::ArrayListNN<LogEntry> logs;
 
-		void FreeDev(DevEntry* dev);
+		static void FreeDev(NotNullPtr<DevEntry> dev);
 	public:
 		BTScanLog(NotNullPtr<Text::String> sourceName);
 		virtual ~BTScanLog();
 
 		virtual IO::ParserType GetParserType() const;
 
-		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
-		LogEntry *AddScanRec(const ScanRecord3 *rec);
-		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
+		NotNullPtr<LogEntry> AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
+		NotNullPtr<LogEntry> AddScanRec(NotNullPtr<const ScanRecord3> rec);
+		void AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff);
 		void ClearList();
-		NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> GetPublicList() const;
-		NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> GetRandomList() const;
+		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetPublicList() const;
+		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetRandomList() const;
 
 		static Text::CStringNN RadioTypeGetName(RadioType radioType);
 		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 		static Text::CStringNN AdvTypeGetName(AdvType advType);
-		static Bool ParseBTRAWPacket(ScanRecord3 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
-		static void ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst);
+		static Bool ParseBTRAWPacket(NotNullPtr<ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff);
+		static void ParseAdvisement(NotNullPtr<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst);
 	};
 }
 #endif

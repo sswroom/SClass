@@ -13,12 +13,11 @@
 void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
-	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Sync::MutexUsage mutUsage(me->arpMut);
-	ipInfo = me->arpMap.Get(ipAddr);
-	if (ipInfo == 0)
+	if (!me->arpMap.Get(ipAddr).SetTo(ipInfo))
 	{
-		ipInfo = MemAlloc(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo, 1);
+		ipInfo = MemAllocNN(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo);
 		MemCopyNO(ipInfo->hwAddr, hwAddr, 6);
 		ipInfo->ipAddr = ipAddr;
 		me->arpMap.Put(ipInfo->ipAddr, ipInfo);
@@ -51,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
 	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
-	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	if (me->cboAdapter->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo>().SetTo(adapter))
 	{
 		UInt8 buff[4];
@@ -76,8 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 			Sync::MutexUsage mutUsage(me->arpMut);
 			while (buff[3] < 255)
 			{
-				ipInfo = me->arpMap.Get(ReadNUInt32(buff));
-				if (ipInfo == 0)
+				if (!me->arpMap.Get(ReadNUInt32(buff)).SetTo(ipInfo))
 				{
 					arp->MakeRequest(ReadNUInt32(buff));
 				}
@@ -99,14 +97,14 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	UTF8Char *sptr;
 
 	const Net::MACInfo::MACEntry *macEntry;
-	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Sync::MutexUsage mutUsage(this->arpMut);
 	this->lvARP->ClearItems();
 	i = 0;
 	j = this->arpMap.GetCount();
 	while (i < j)
 	{
-		ipInfo = this->arpMap.GetItem(i);
+		ipInfo = this->arpMap.GetItemNoCheck(i);
 		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ipAddr);
 		k = this->lvARP->AddItem(CSTRP(sbuff, sptr), ipInfo);
 		sptr = Text::StrHexBytes(sbuff, ipInfo->hwAddr, 6, ':');
@@ -151,7 +149,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 
 	UOSInt i;
 	UOSInt j;
-	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Data::ArrayList<Net::ARPInfo *> arpList;
 	Net::ARPInfo::ARPType arpType;
 	Net::ARPInfo *arp;
@@ -164,13 +162,12 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 		arpType = arp->GetARPType();
 		if (arpType == Net::ARPInfo::ARPT_STATIC || arpType == Net::ARPInfo::ARPT_DYNAMIC)
 		{
-			ipInfo = MemAlloc(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo, 1);
+			ipInfo = MemAllocNN(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo);
 			ipInfo->ipAddr = arp->GetIPAddress();
 			arp->GetPhysicalAddr(ipInfo->hwAddr);
-			ipInfo = this->arpMap.Put(ipInfo->ipAddr, ipInfo);
-			if (ipInfo)
+			if (this->arpMap.Put(ipInfo->ipAddr, ipInfo).SetTo(ipInfo))
 			{
-				MemFree(ipInfo);
+				MemFreeNN(ipInfo);
 			}
 		}
 
@@ -179,21 +176,21 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 	}
 	this->UpdateARPList();
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
-	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt k;
 	UInt32 ip;
-	this->core->GetSocketFactory()->GetConnInfoList(&connInfoList);
+	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		k = 0;
 		while (true)
 		{
@@ -205,7 +202,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 			{
 				if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 				{
-					adapter = MemAlloc(SSWR::AVIRead::AVIRARPScanForm::AdapterInfo, 1);
+					adapter = MemAllocNN(SSWR::AVIRead::AVIRARPScanForm::AdapterInfo);
 					sbuff[0] = 0;
 					connInfo->GetName(sbuff);
 					adapter->ifName = Text::StrCopyNew(sbuff).Ptr();
@@ -218,7 +215,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 			}
 			k++;
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 	if (this->adapters.GetCount() > 0)
@@ -232,21 +229,21 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 {
 	UOSInt i;
-	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
-	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
+	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	i = this->adapters.GetCount();
 	while (i-- > 0)
 	{
-		adapter = this->adapters.GetItem(i);
+		adapter = this->adapters.GetItemNoCheck(i);
 		Text::StrDelNew(adapter->ifName);
-		MemFree(adapter);
+		MemFreeNN(adapter);
 	}
 
 	i = this->arpMap.GetCount();
 	while (i-- > 0)
 	{
-		ipInfo = this->arpMap.GetItem(i);
-		MemFree(ipInfo);
+		ipInfo = this->arpMap.GetItemNoCheck(i);
+		MemFreeNN(ipInfo);
 	}
 }
 

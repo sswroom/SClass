@@ -52,7 +52,7 @@ namespace SSWR
 			IO::SensorManager sensorMgr;
 			IO::MotionDetectorAccelerometer *motion;
 			Net::WirelessLAN *wlan;
-			Net::WirelessLAN::Interface *wlanInterf;
+			Optional<Net::WirelessLAN::Interface> wlanInterf;
 			UOSInt wlanScan;
 			Data::FastMap<UInt64, BSSStatus*> bssMap;
 			Data::FastMap<UInt64, WifiLog*> wifiLogMap;

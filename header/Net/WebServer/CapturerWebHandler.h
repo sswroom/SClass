@@ -25,10 +25,10 @@ namespace Net
 			static Bool __stdcall WiFiDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc);
 			static Bool __stdcall WiFiDownloadFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc);
 
-			static void AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> entryList, const Data::Timestamp &scanTime);
-			static void AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> entryList, Bool inRangeOnly);
-			static OSInt __stdcall WiFiLogRSSICompare(Net::WiFiLogFile::LogFileEntry *obj1, Net::WiFiLogFile::LogFileEntry *obj2);
-			static OSInt __stdcall BTLogRSSICompare(IO::BTScanLog::ScanRecord3 *obj1, IO::BTScanLog::ScanRecord3 *obj2);
+			static void AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime);
+			static void AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList, Bool inRangeOnly);
+			static OSInt __stdcall WiFiLogRSSICompare(NotNullPtr<Net::WiFiLogFile::LogFileEntry> obj1, NotNullPtr<Net::WiFiLogFile::LogFileEntry> obj2);
+			static OSInt __stdcall BTLogRSSICompare(NotNullPtr<IO::BTScanLog::ScanRecord3> obj1, NotNullPtr<IO::BTScanLog::ScanRecord3> obj2);
 		public:
 			CapturerWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger);
 			virtual ~CapturerWebHandler();

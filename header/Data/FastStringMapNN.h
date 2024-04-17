@@ -377,7 +377,7 @@ namespace Data
 	{
 		if (index < this->cnt)
 		{
-			T oldVal = this->items[index].val;
+			NotNullPtr<T> oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)

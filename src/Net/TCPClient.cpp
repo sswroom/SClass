@@ -434,7 +434,7 @@ UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 	{
 		UInt32 ip;
 		UInt16 port;
-		Net::SocketFactory::FromSocketId(this->cliId, &ip, &port);
+		Net::SocketFactory::FromSocketId(this->cliId, ip, port);
 		return Net::SocketUtil::GetIPv4Name(buff, ip, port);
 	}
 	else

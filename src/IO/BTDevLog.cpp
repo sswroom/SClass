@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListNN.h" 
 #include "Data/ByteTool.h"
 #include "IO/BTDevLog.h"
 #include "IO/FileStream.h"
@@ -22,10 +23,10 @@ Bool IO::BTDevLog::IsDefaultName(NotNullPtr<Text::String> name)
 	return false;
 }
 
-void IO::BTDevLog::FreeDev(DevEntry *dev)
+void IO::BTDevLog::FreeDev(NotNullPtr<DevEntry> dev)
 {
 	OPTSTR_DEL(dev->name);
-	MemFree(dev);
+	MemFreeNN(dev);
 }
 
 IO::BTDevLog::BTDevLog()
@@ -37,10 +38,11 @@ IO::BTDevLog::~BTDevLog()
 	this->ClearList();
 }
 
-IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
+NotNullPtr<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
 {
 	UInt8 mac[8];
-	DevEntry *log;
+	Optional<DevEntry> log;
+	NotNullPtr<DevEntry> nnlog;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
 		log = this->randDevs.Get(macInt);
@@ -49,81 +51,79 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::Str
 	{
 		log = this->pubDevs.Get(macInt);
 	}
-	if (log)
+	if (log.SetTo(nnlog))
 	{
 		if (advType != IO::BTScanLog::ADVT_UNKNOWN)
 		{
-			log->advType = advType;
+			nnlog->advType = advType;
 		}
-		if (log->txPower == 0 || txPower != 0)
+		if (nnlog->txPower == 0 || txPower != 0)
 		{
-			log->txPower = txPower;
+			nnlog->txPower = txPower;
 		}
-		if (log->company == 0 && company != 0)
+		if (nnlog->company == 0 && company != 0)
 		{
-			log->company = company;
+			nnlog->company = company;
 		}
-		if (log->measurePower == 0 && measurePower != 0)
+		if (nnlog->measurePower == 0 && measurePower != 0)
 		{
-			log->measurePower = measurePower;
+			nnlog->measurePower = measurePower;
 		}
 		NotNullPtr<Text::String> name1;
 		NotNullPtr<Text::String> name2;
-		if (log->name.IsNull() && name.SetTo(name2))
+		if (nnlog->name.IsNull() && name.SetTo(name2))
 		{
-			log->name = name2->Clone();
+			nnlog->name = name2->Clone();
 		}
-		else if (log->name.SetTo(name1) && name.SetTo(name2) && IsDefaultName(name1) && !IsDefaultName(name2))
+		else if (nnlog->name.SetTo(name1) && name.SetTo(name2) && IsDefaultName(name1) && !IsDefaultName(name2))
 		{
-			OPTSTR_DEL(log->name);
-			log->name = name2->Clone();
+			OPTSTR_DEL(nnlog->name);
+			nnlog->name = name2->Clone();
 		}
-		return log;
+		return nnlog;
 	}
 	WriteMUInt64(mac, macInt);
-	log = MemAlloc(DevEntry, 1);
-	log->mac[0] = mac[2];
-	log->mac[1] = mac[3];
-	log->mac[2] = mac[4];
-	log->mac[3] = mac[5];
-	log->mac[4] = mac[6];
-	log->mac[5] = mac[7];
-	log->macInt = macInt;
-	log->name = Text::String::CopyOrNull(name);
-	log->radioType = radioType;
-	log->addrType = addrType;
-	log->txPower = txPower;
-	log->measurePower = measurePower;
-	log->company = company;
-	log->advType = advType;
+	nnlog = MemAllocNN(DevEntry);
+	nnlog->mac[0] = mac[2];
+	nnlog->mac[1] = mac[3];
+	nnlog->mac[2] = mac[4];
+	nnlog->mac[3] = mac[5];
+	nnlog->mac[4] = mac[6];
+	nnlog->mac[5] = mac[7];
+	nnlog->macInt = macInt;
+	nnlog->name = Text::String::CopyOrNull(name);
+	nnlog->radioType = radioType;
+	nnlog->addrType = addrType;
+	nnlog->txPower = txPower;
+	nnlog->measurePower = measurePower;
+	nnlog->company = company;
+	nnlog->advType = advType;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		this->randDevs.Put(macInt, log);
+		this->randDevs.Put(macInt, nnlog);
 	}
 	else
 	{
-		this->pubDevs.Put(macInt, log);
+		this->pubDevs.Put(macInt, nnlog);
 	}
-	return log;
+	return nnlog;
 }
 
-void IO::BTDevLog::AppendList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap)
+void IO::BTDevLog::AppendList(NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap)
 {
-	IO::BTScanLog::ScanRecord3 *rec;
+	NotNullPtr<IO::BTScanLog::ScanRecord3> rec;
 	UOSInt i = devMap->GetCount();
 	while (i-- > 0)
 	{
-		rec = devMap->GetItem(i);
+		rec = devMap->GetItemNoCheck(i);
 		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company, rec->advType);
 	}
 }
 
 void IO::BTDevLog::ClearList()
 {
-	LIST_CALL_FUNC(&this->randDevs, this->FreeDev);
-	LIST_CALL_FUNC(&this->pubDevs, this->FreeDev);
-	this->randDevs.Clear();
-	this->pubDevs.Clear();
+	this->randDevs.FreeAll(FreeDev);
+	this->pubDevs.FreeAll(FreeDev);
 }
 
 Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
@@ -220,15 +220,15 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 		return false;
 	}
 	Text::UTF8Writer writer(fs);
-	Data::ArrayList<DevEntry*> logList;
+	Data::ArrayListNN<DevEntry> logList;
 	logList.AddAll(this->pubDevs);
 	logList.AddAll(this->randDevs);
-	DevEntry *log;
+	NotNullPtr<DevEntry> log;
 	UOSInt i = 0;
 	UOSInt j = logList.GetCount();
 	while (i < j)
 	{
-		log = logList.GetItem(i);
+		log = logList.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendUTF8Char('\t');
@@ -275,12 +275,12 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 	return true;
 }
 
-NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> IO::BTDevLog::GetPublicList() const
+NotNullPtr<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> IO::BTDevLog::GetPublicList() const
 {
 	return this->pubDevs;
 }
 
-NotNullPtr<const Data::ReadingList<IO::BTDevLog::DevEntry*>> IO::BTDevLog::GetRandomList() const
+NotNullPtr<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> IO::BTDevLog::GetRandomList() const
 {
 	return this->randDevs;
 }

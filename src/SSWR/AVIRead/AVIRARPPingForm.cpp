@@ -162,8 +162,8 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 
 	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*>());
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
@@ -171,12 +171,12 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
-	this->core->GetSocketFactory()->GetConnInfoList(&connInfoList);
+	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionType() != Net::ConnectionInfo::ConnectionType::Loopback)
 		{
 			if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 				this->cboAdapter->AddItem(adapter->ifName, adapter);
 			}
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 	if (this->adapters->GetCount() > 0)

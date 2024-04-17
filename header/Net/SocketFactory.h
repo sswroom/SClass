@@ -214,14 +214,14 @@ namespace Net
 
 		virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4) = 0;
 
-		virtual UOSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList) = 0;
+		virtual UOSInt GetConnInfoList(NotNullPtr<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList) = 0;
 		virtual Bool GetIPInfo(NotNullPtr<IPInfo> info) = 0; //////////////////////////////////
 		virtual Bool GetTCPInfo(NotNullPtr<TCPInfo> info) = 0; //////////////////////////////////
 		virtual Bool GetUDPInfo(NotNullPtr<UDPInfo> info) = 0; //////////////////////////////////
-		virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
-		virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList) = 0;
-		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
-		virtual void FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList) = 0;
+		virtual UOSInt QueryPortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual void FreePortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList) = 0;
+		virtual UOSInt QueryPortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual void FreePortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList) = 0;
 
 		virtual Bool AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr);
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
@@ -241,7 +241,7 @@ namespace Net
 		UTF8Char *GetLocalName(UTF8Char *buff, Socket *socket);
 #ifdef HAS_INT64
 		UInt64 GenSocketId(Socket *socket);
-		static void FromSocketId(UInt64 socketId, UInt32 *ip, UInt16 *port);
+		static void FromSocketId(UInt64 socketId, OptOut<UInt32> ip, OptOut<UInt16> port);
 #endif
 
 		static ErrorType FromSystemError(Int32 sysErr);

@@ -87,20 +87,20 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 	this->lvIP->AddColumn(CSTR("Vendor"), 250);
 	this->lvIP->AddColumn(CSTR("Resp"), 80);
 	
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	this->sockf->GetConnInfoList(&connInfoList);
+	this->sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionStatus() == Net::ConnectionInfo::CS_UP)
 		{
 			k = 0;
@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 				k++;
 			}
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 	if (this->cboIP->GetCount() > 0)

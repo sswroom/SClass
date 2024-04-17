@@ -206,14 +206,8 @@ UInt64 Net::SocketFactory::GenSocketId(Socket *socket)
 		return 0;
 }
 
-void Net::SocketFactory::FromSocketId(UInt64 socketId, UInt32 *ip, UInt16 *port)
+void Net::SocketFactory::FromSocketId(UInt64 socketId, OptOut<UInt32> ip, OptOut<UInt16> port)
 {
-	if (ip)
-	{
-		*ip = ReadUInt32((UInt8*)&socketId);
-	}
-	if (port)
-	{
-		*port = ReadUInt16(((UInt8*)&socketId) + 4);
-	}
+	ip.Set(ReadUInt32((UInt8*)&socketId));
+	port.Set(ReadUInt16(((UInt8*)&socketId) + 4));
 }

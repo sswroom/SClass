@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN *wlan;
-			Net::WirelessLAN::Interface *wlanInterf;
+			Optional<Net::WirelessLAN::Interface> wlanInterf;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnScan;

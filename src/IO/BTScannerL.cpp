@@ -3,22 +3,22 @@
 #include "IO/RAWBTScanner.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 
-IO::BTScanner *IO::BTScanner::CreateScanner()
+Optional<IO::BTScanner> IO::BTScanner::CreateScanner()
 {
-	IO::RAWBTScanner *rawBT;
-	NEW_CLASS(rawBT, IO::RAWBTScanner(false));
+	NotNullPtr<IO::RAWBTScanner> rawBT;
+	NEW_CLASSNN(rawBT, IO::RAWBTScanner(false));
 	if (!rawBT->IsError())
 	{
 		return rawBT;
 	}
-	DEL_CLASS(rawBT);
+	rawBT.Delete();
 
-	IO::ProgCtrl::BluetoothCtlProgCtrl *bt;
-	NEW_CLASS(bt, IO::ProgCtrl::BluetoothCtlProgCtrl());
+	NotNullPtr<IO::ProgCtrl::BluetoothCtlProgCtrl> bt;
+	NEW_CLASSNN(bt, IO::ProgCtrl::BluetoothCtlProgCtrl());
 	if (bt->WaitForCmdReady())
 	{
 		return bt;
 	}
-	DEL_CLASS(bt);
+	bt.Delete();
 	return 0;
 }

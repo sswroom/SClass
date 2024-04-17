@@ -30,16 +30,16 @@ void __stdcall IO::RAWBTScanner::RecvThread(NotNullPtr<Sync::Thread> thread)
 		packetSize = me->clsData->btMon->NextPacket(buff, &timeTicks);
 		if (packetSize > 0)
 		{
-			me->OnPacket(timeTicks, buff, packetSize);
+			me->OnPacket(timeTicks, Data::ByteArrayR(buff, packetSize));
 		}
 	}
 	MemFree(buff);
 }
 
-void IO::RAWBTScanner::FreeRec(IO::BTScanLog::ScanRecord3* rec)
+void IO::RAWBTScanner::FreeRec(NotNullPtr<IO::BTScanLog::ScanRecord3> rec)
 {
 	SDEL_STRING(rec->name);
-	MemFree(rec);
+	MemFreeNN(rec);
 }
 
 IO::RAWBTScanner::RAWBTScanner(Bool noCtrl) : thread(RecvThread, this, CSTR("RAWBTScanner"))
@@ -68,8 +68,8 @@ IO::RAWBTScanner::~RAWBTScanner()
 	this->Close();
 	SDEL_CLASS(this->clsData->btCtrl);
 	MemFree(this->clsData);
-	LIST_CALL_FUNC(&this->pubRecMap, this->FreeRec);
-	LIST_CALL_FUNC(&this->randRecMap, this->FreeRec);
+	this->pubRecMap.FreeAll(FreeRec);
+	this->randRecMap.FreeAll(FreeRec);
 }
 
 Bool IO::RAWBTScanner::IsError()
@@ -150,37 +150,38 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::RAWBTScanner::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->pubRecMap;	
 }
 
-NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> IO::RAWBTScanner::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::RAWBTScanner::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->randRecMap;	
 }
 
-void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt packetSize)
+void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 {
 	IO::BTScanLog::ScanRecord3 rec;
-	if (IO::BTScanLog::ParseBTRAWPacket(&rec, timeTicks, packet, packetSize))
+	if (IO::BTScanLog::ParseBTRAWPacket(rec, timeTicks, packet))
 	{
-		IO::BTScanLog::ScanRecord3 *dev;
+		Optional<IO::BTScanLog::ScanRecord3> optdev;
+		NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
 		Sync::MutexUsage mutUsage(this->recMut);
 		if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 		{
-			dev = this->randRecMap.Get(rec.macInt);
+			optdev = this->randRecMap.Get(rec.macInt);
 		}
 		else
 		{
-			dev = this->pubRecMap.Get(rec.macInt);
+			optdev = this->pubRecMap.Get(rec.macInt);
 		}
-		if (dev == 0)
+		if (!optdev.SetTo(dev))
 		{
-			dev = MemAlloc(IO::BTScanLog::ScanRecord3, 1);
-			MemCopyNO(dev, &rec, sizeof(IO::BTScanLog::ScanRecord3));
+			dev = MemAllocNN(IO::BTScanLog::ScanRecord3);
+			dev.CopyFrom(rec);
 			dev->name = SCOPY_STRING(rec.name);
 			if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 			{
@@ -211,7 +212,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		mutUsage.EndUse();
 		
 		if (this->clsData->hdlr)
-			this->clsData->hdlr(&rec, IO::BTScanner::UT_RSSI, this->clsData->hdlrObj);
+			this->clsData->hdlr(rec, IO::BTScanner::UT_RSSI, this->clsData->hdlrObj);
 		SDEL_STRING(rec.name);
 	}
 }

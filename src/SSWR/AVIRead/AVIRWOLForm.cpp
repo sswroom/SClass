@@ -61,20 +61,20 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, N
 	this->btnSend->SetRect(104, 52, 100, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	this->core->GetSocketFactory()->GetConnInfoList(&connInfoList);
+	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionStatus() == Net::ConnectionInfo::CS_UP && connInfo->GetConnectionType() != Net::ConnectionInfo::ConnectionType::Loopback)
 		{
 			k = 0;
@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, N
 				k++;
 			}
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 	if (this->cboAdapter->GetCount() > 0)

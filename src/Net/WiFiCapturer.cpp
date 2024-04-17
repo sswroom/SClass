@@ -8,8 +8,12 @@
 void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 {
 	NotNullPtr<Net::WiFiCapturer> me = thread->GetUserObj().GetNN<Net::WiFiCapturer>();
-	Net::WirelessLAN::Interface *interf = me->interf;
-	Net::WirelessLAN::BSSInfo *bss;
+	NotNullPtr<Net::WirelessLAN::Interface> interf;
+	if (!me->interf.SetTo(interf))
+	{
+		return;
+	}
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -17,14 +21,14 @@ void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 	UInt64 imac;
 	UInt8 mac[8];
 	const UInt8 *macPtr;
-	Net::WiFiLogFile::LogFileEntry *entry;
+	NotNullPtr<Net::WiFiLogFile::LogFileEntry> entry;
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Data::Timestamp lastStoreTime;
 	Data::Timestamp currTime;
 
 	{
-		Data::ArrayList<Net::WirelessLAN::BSSInfo *> bssList;
+		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
 		mac[0] = 0;
 		mac[1] = 0;
 		lastStoreTime = Data::Timestamp::Now();
@@ -34,7 +38,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 			{
 				thread->Wait(10000);
 				if (thread->IsStopping()) break;
-				interf->GetBSSList(&bssList);
+				interf->GetBSSList(bssList);
 				currTime = Data::Timestamp::Now();
 				me->lastScanTime = currTime;
 				
@@ -44,7 +48,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 				j = bssList.GetCount();
 				while (i < j)
 				{
-					bss = bssList.GetItem(i);
+					bss = bssList.GetItemNoCheck(i);
 					macPtr = bss->GetMAC();
 					mac[2] = macPtr[0];
 					mac[3] = macPtr[1];
@@ -59,7 +63,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 						maxIMAC = imac;
 					}
 					Sync::MutexUsage mutUsage(me->logMut);
-					entry = me->wifiLog.AddBSSInfo(bss, &si);
+					entry = me->wifiLog.AddBSSInfo(bss, si);
 					entry->lastScanTime = currTime;
 					mutUsage.EndUse();
 
@@ -73,67 +77,69 @@ void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 				if (maxRSSI >= -60 && maxRSSI < 0)
 				{
 					Sync::MutexUsage mutUsage(me->logMut);
-					entry = me->wifiLog.Get(maxIMAC);
-					i = 0;
-					j = bssList.GetCount();
-					while (i < j)
+					if (me->wifiLog.Get(maxIMAC).SetTo(entry))
 					{
-						bss = bssList.GetItem(i);
-	//					ssid = bss->GetSSID();
-						MemCopyNO(&mac[2], bss->GetMAC(), 6);
-						mac[0] = 0;
-						mac[1] = 0;
-						imac = ReadMUInt64(mac);
-						if (imac != maxIMAC)
+						i = 0;
+						j = bssList.GetCount();
+						while (i < j)
 						{
-							Bool found = false;
-							Int32 minRSSI;
-							UOSInt minIndex;
-							Int32 rssi1 = Double2Int32(bss->GetRSSI());
-							minRSSI = 0;
-							minIndex = 0;
-							k = 0;
-							while (k < 20)
+							bss = bssList.GetItemNoCheck(i);
+		//					ssid = bss->GetSSID();
+							MemCopyNO(&mac[2], bss->GetMAC(), 6);
+							mac[0] = 0;
+							mac[1] = 0;
+							imac = ReadMUInt64(mac);
+							if (imac != maxIMAC)
 							{
-								Int8 rssi2 = (Int8)((entry->neighbour[k] >> 48) & 0xff);
-								if ((entry->neighbour[k] & 0xffffffffffffLL) == imac)
+								Bool found = false;
+								Int32 minRSSI;
+								UOSInt minIndex;
+								Int32 rssi1 = Double2Int32(bss->GetRSSI());
+								minRSSI = 0;
+								minIndex = 0;
+								k = 0;
+								while (k < 20)
 								{
-									found = true;
-									if (rssi1 > rssi2)
+									Int8 rssi2 = (Int8)((entry->neighbour[k] >> 48) & 0xff);
+									if ((entry->neighbour[k] & 0xffffffffffffLL) == imac)
+									{
+										found = true;
+										if (rssi1 > rssi2)
+										{
+											entry->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
+										}
+										break;
+									}
+									else if (entry->neighbour[k] == 0)
 									{
 										entry->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
+										found = true;
+										break;
 									}
-									break;
+									else if (rssi2 < minRSSI)
+									{
+										minRSSI = rssi2;
+										minIndex = k;
+									}
+									
+									k++;
 								}
-								else if (entry->neighbour[k] == 0)
-								{
-									entry->neighbour[k] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
-									found = true;
-									break;
-								}
-								else if (rssi2 < minRSSI)
-								{
-									minRSSI = rssi2;
-									minIndex = k;
-								}
-								
-								k++;
-							}
 
-							if (!found && minRSSI < rssi1)
-							{
-								entry->neighbour[minIndex] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
+								if (!found && minRSSI < rssi1)
+								{
+									entry->neighbour[minIndex] = imac | (((UInt64)rssi1 & 0xff) << 48) | (((UInt64)bss->GetLinkQuality()) << 56);
+								}
 							}
+							i++;
 						}
-						i++;
 					}
 				}
 
 				i = bssList.GetCount();
 				while (i-- > 0)
 				{
-					bss = bssList.GetItem(i);
-					DEL_CLASS(bss);
+					bss = bssList.GetItemNoCheck(i);
+					bss.Delete();
 				}
 				bssList.Clear();
 			}
@@ -164,7 +170,7 @@ Net::WiFiCapturer::~WiFiCapturer()
 {
 	this->Stop();
 	SDEL_TEXT(this->lastFileName);
-	SDEL_CLASS(this->interf);
+	this->interf.Delete();
 }
 
 Bool Net::WiFiCapturer::IsError()
@@ -188,17 +194,17 @@ Bool Net::WiFiCapturer::Start()
 	{
 		return false;
 	}
-	SDEL_CLASS(this->interf);
+	this->interf.Delete();
 	UOSInt i;
 	NotNullPtr<Text::String> namePtr;
-	Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
-	Net::WirelessLAN::Interface *ifObj;
-	this->wlan.GetInterfaces(&interfaces);
+	Data::ArrayListNN<Net::WirelessLAN::Interface> interfaces;
+	NotNullPtr<Net::WirelessLAN::Interface> ifObj;
+	this->wlan.GetInterfaces(interfaces);
 	i = interfaces.GetCount();
 	Bool found = false;
 	while (i-- > 0)
 	{
-		ifObj = interfaces.GetItem(i);
+		ifObj = interfaces.GetItemNoCheck(i);
 		namePtr = ifObj->GetName();
 		if (namePtr->StartsWith(UTF8STRC("rai")))
 		{
@@ -216,10 +222,10 @@ Bool Net::WiFiCapturer::Start()
 	i = interfaces.GetCount();
 	while (i-- > 0)
 	{
-		ifObj = interfaces.GetItem(i);
-		if (ifObj != this->interf)
+		ifObj = interfaces.GetItemNoCheck(i);
+		if (ifObj.Ptr() != this->interf.OrNull())
 		{
-			DEL_CLASS(ifObj);
+			ifObj.Delete();
 		}
 	}			
 	return found;	
@@ -230,7 +236,7 @@ void Net::WiFiCapturer::Stop()
 	if (this->thread.IsRunning())
 	{
 		this->thread.Stop();
-		SDEL_CLASS(this->interf);
+		this->interf.Delete();
 	}
 }
 
@@ -260,7 +266,7 @@ void Net::WiFiCapturer::StoreStatus()
 	}
 }
 
-NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> Net::WiFiCapturer::GetLogList(NotNullPtr<Sync::MutexUsage> mutUsage)
+NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> Net::WiFiCapturer::GetLogList(NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->logMut);
 	return this->wifiLog.GetLogList();

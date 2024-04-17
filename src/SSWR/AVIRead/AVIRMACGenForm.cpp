@@ -135,23 +135,23 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	}
 
 	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt j;
-	sockf->GetConnInfoList(&connInfoList);
+	sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionType() != Net::ConnectionInfo::ConnectionType::Loopback)
 		{
 			sptr = connInfo->GetName(sbuff);
 			this->cboAdapter->AddItem(CSTRP(sbuff, sptr), 0);
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 	if (this->cboAdapter->GetCount() > 0)

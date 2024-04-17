@@ -26,7 +26,7 @@ typedef struct
 	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
-	Data::ArrayList<Net::WirelessLANIE*> ieList;
+	Data::ArrayListNN<Net::WirelessLANIE> ieList;
 } BSSEntry;
 
 void Net::WLANLinuxMTKInterface::Reopen()
@@ -74,13 +74,13 @@ Bool Net::WLANLinuxMTKInterface::Scan()
 	return ret >= 0;
 }
 
-UOSInt Net::WLANLinuxMTKInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
+UOSInt Net::WLANLinuxMTKInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
 	UOSInt retVal = 0;
-	Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
-	Net::WirelessLAN::BSSInfo *bss;
-	Net::WirelessLAN::Network *network;
-	this->GetBSSList(&bssList);
+	Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+	NotNullPtr<Net::WirelessLAN::Network> network;
+	this->GetBSSList(bssList);
 	if (bssList.GetCount() > 0)
 	{
 		UOSInt i;
@@ -88,9 +88,9 @@ UOSInt Net::WLANLinuxMTKInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN:
 		i = 0;
 		while (i < retVal)
 		{
-			bss = bssList.GetItem(i);
-			NEW_CLASS(network, Net::WirelessLAN::Network(bss->GetSSID(), bss->GetRSSI()));
-			DEL_CLASS(bss);
+			bss = bssList.GetItemNoCheck(i);
+			NEW_CLASSNN(network, Net::WirelessLAN::Network(bss->GetSSID(), bss->GetRSSI()));
+			bss.Delete();
 			networkList->Add(network);
 			i++;
 		}
@@ -98,10 +98,10 @@ UOSInt Net::WLANLinuxMTKInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN:
 	return retVal;
 }
 
-UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList)
+UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
 	UOSInt retVal = 0;
-	Net::WirelessLAN::BSSInfo *bssInfo;
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bssInfo;
 	BSSEntry bss;
 	struct iwreq wrq;
 	int ret;
@@ -377,7 +377,7 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 					else
 						bss.rssi = quality;
 					
-					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(cols[1].ToCString(), &bss));
+					NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(cols[1].ToCString(), &bss));
 					bssList->Add(bssInfo);
 					retVal++;
 				}

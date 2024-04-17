@@ -29,10 +29,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 	Int32 maxRSSI;
 	Text::StringBuilderUTF8 sb;
 	UOSInt ieLen;
-	Net::WirelessLANIE *ie;
+	NotNullPtr<Net::WirelessLANIE> ie;
 	const UInt8 *ieBuff;
 	dt.SetCurrTimeUTC();
-	if (me->wlanInterf)
+	NotNullPtr<Net::WirelessLAN::Interface> wlanInterf;
+	if (me->wlanInterf.SetTo(wlanInterf))
 	{
 		dt.SetCurrTimeUTC();
 		if (dt.ToTicks() - me->lastTimeTick > 900)
@@ -42,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 				NotNullPtr<Text::String> s;
 				Text::String *str;
 				NotNullPtr<Text::String> ssid;
-				Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
-				Net::WirelessLAN::BSSInfo *bss;
-				me->wlanInterf->GetBSSList(&bssList);
+				Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+				NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+				wlanInterf->GetBSSList(bssList);
 				me->lvCurrWifi->ClearItems();
 
 				maxIMAC = 0;
@@ -53,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 				j = bssList.GetCount();
 				while (i < j)
 				{
-					bss = bssList.GetItem(i);
+					bss = bssList.GetItemNoCheck(i);
 					ssid = bss->GetSSID();
 					MemCopyNO(&id[2], bss->GetMAC(), 6);
 					id[0] = 0;
@@ -97,8 +98,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 					k = bss->GetIECount();
 					while (k-- > 0)
 					{
-						ie = bss->GetIE(k);
-						ieLen += (UOSInt)ie->GetIEBuff()[1] + 2;
+						if (bss->GetIE(k).SetTo(ie))
+						{
+							ieLen += (UOSInt)ie->GetIEBuff()[1] + 2;
+						}
 					}
 					if (wifiLog == 0)
 					{
@@ -133,10 +136,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 							m = 0;
 							while (k < l)
 							{
-								ie = bss->GetIE(k);
-								ieBuff = ie->GetIEBuff();
-								MemCopyNO(&wifiLog->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
-								m += (UOSInt)ieBuff[1] + 2;
+								if (bss->GetIE(k).SetTo(ie))
+								{
+									ieBuff = ie->GetIEBuff();
+									MemCopyNO(&wifiLog->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+									m += (UOSInt)ieBuff[1] + 2;
+								}
 								k++;
 							}
 						}
@@ -286,10 +291,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 							m = 0;
 							while (k < l)
 							{
-								ie = bss->GetIE(k);
-								ieBuff = ie->GetIEBuff();
-								MemCopyNO(&wifiLog->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
-								m += (UOSInt)ieBuff[1] + 2;
+								if (bss->GetIE(k).SetTo(ie))
+								{
+									ieBuff = ie->GetIEBuff();
+									MemCopyNO(&wifiLog->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+									m += (UOSInt)ieBuff[1] + 2;
+								}
 								k++;
 							}
 						}
@@ -318,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 					j = bssList.GetCount();
 					while (i < j)
 					{
-						bss = bssList.GetItem(i);
+						bss = bssList.GetItemNoCheck(i);
 						ssid = bss->GetSSID();
 						MemCopyNO(&id[2], bss->GetMAC(), 6);
 						id[0] = 0;
@@ -372,11 +379,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 				i = bssList.GetCount();
 				while (i-- > 0)
 				{
-					bss = bssList.GetItem(i);
-					DEL_CLASS(bss);
+					bss = bssList.GetItemNoCheck(i);
+					bss.Delete();
 				}
 
-				me->wlanInterf->Scan();
+				wlanInterf->Scan();
 
 				me->wlanScan = 10;
 			}
@@ -598,14 +605,14 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUI
 	this->lastTimeTick = 0;
 	UOSInt i;
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
-	Data::ArrayList<Net::WirelessLAN::Interface*> interfList;
-	this->wlan->GetInterfaces(&interfList);
+	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
+	this->wlan->GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
 	i = interfList.GetCount();
 	while (i-- > 1)
 	{
-		Net::WirelessLAN::Interface *interf = interfList.GetItem(i);
-		DEL_CLASS(interf);
+		NotNullPtr<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
+		interf.Delete();
 	}
 	this->wlanScan = 0;
 
@@ -665,7 +672,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUI
 
 SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 {
-	SDEL_CLASS(this->wlanInterf);
+	this->wlanInterf.Delete();
 	DEL_CLASS(this->wlan);
 	UOSInt i;
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus *bss;

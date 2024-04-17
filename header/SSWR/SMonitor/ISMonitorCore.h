@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SMONITOR_ISMONITORCORE
 #define _SM_SSWR_SMONITOR_ISMONITORCORE
-#include "Data/ArrayList.h"
-#include "Data/FastMap.h"
+#include "Data/ArrayListNN.h"
+#include "Data/FastMapNN.h"
 #include "IO/MemoryStream.h"
 #include "Media/DrawEngine.h"
 #include "Sync/RWMutex.h"
@@ -81,10 +81,10 @@ namespace SSWR
 				const UTF8Char *readingNames[SMONITORCORE_DEVREADINGCNT];
 				const UTF8Char *digitalNames[SMONITORCORE_DIGITALCNT];
 
-				Data::ArrayList<DevRecord2*> recToStore;
-				Data::FastMap<Int64, DevRecord2*> todayRecs;
-				Data::FastMap<Int64, DevRecord2*> yesterdayRecs;
-				Data::FastMap<Int32, IO::MemoryStream*> imgCaches;
+				Data::ArrayListNN<DevRecord2> recToStore;
+				Data::FastMapNN<Int64, DevRecord2> todayRecs;
+				Data::FastMapNN<Int64, DevRecord2> yesterdayRecs;
+				Data::FastMapNN<Int32, IO::MemoryStream> imgCaches;
 				Bool valUpdated;
 			};
 
@@ -95,29 +95,29 @@ namespace SSWR
 				Sync::RWMutex mut;
 				const UTF8Char *userName;
 				UInt8 md5Pwd[16];
-				Data::FastMap<Int64, DeviceInfo*> devMap;
+				Data::FastMapNN<Int64, DeviceInfo> devMap;
 			};
 
 		public:
 			virtual NotNullPtr<Media::DrawEngine> GetDrawEngine() = 0;
 
-			virtual DeviceInfo *DeviceGet(Int64 cliId) = 0;
+			virtual Optional<DeviceInfo> DeviceGet(Int64 cliId) = 0;
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags) = 0;
-			virtual Bool DeviceSetReadings(DeviceInfo *dev, const UTF8Char *readings) = 0;
-			virtual Bool DeviceSetDigitals(DeviceInfo *dev, const UTF8Char *digitals) = 0;
-			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList) = 0;
+			virtual Bool DeviceSetReadings(NotNullPtr<DeviceInfo> dev, const UTF8Char *readings) = 0;
+			virtual Bool DeviceSetDigitals(NotNullPtr<DeviceInfo> dev, const UTF8Char *digitals) = 0;
+			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NotNullPtr<Data::ArrayListNN<DevRecord2>> recList) = 0;
 			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh) = 0;
 
 			virtual Bool UserExist() = 0;
 			virtual Bool UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType) = 0;
 			virtual Bool UserSetPassword(Int32 userId, const UTF8Char *password) = 0;
-			virtual LoginInfo *UserLogin(const UTF8Char *userName, const UTF8Char *password) = 0;
-			virtual void UserFreeLogin(LoginInfo *login) = 0;
-			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList) = 0;
+			virtual Optional<LoginInfo> UserLogin(const UTF8Char *userName, const UTF8Char *password) = 0;
+			virtual void UserFreeLogin(NotNullPtr<LoginInfo> login) = 0;
+			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NotNullPtr<Data::ArrayListNN<DeviceInfo>> devList) = 0;
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId) = 0;
-			virtual UOSInt UserGetList(Data::ArrayList<WebUser*> *userList) = 0;
-			virtual WebUser *UserGet(Int32 userId) = 0;
-			virtual Bool UserAssign(Int32 userId, Data::ArrayList<Int64> *devIdList) = 0;
+			virtual UOSInt UserGetList(NotNullPtr<Data::ArrayListNN<WebUser>> userList) = 0;
+			virtual Optional<WebUser> UserGet(Int32 userId) = 0;
+			virtual Bool UserAssign(Int32 userId, NotNullPtr<Data::ArrayList<Int64>> devIdList) = 0;
 
 			virtual Bool SendCapturePhoto(Int64 cliId) = 0;
 		};

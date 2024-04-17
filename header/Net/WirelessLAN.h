@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WIRELESSLAN
 #define _SM_NET_WIRELESSLAN
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/Library.h"
 #include "Net/WirelessLANIE.h"
 #include "Text/String.h"
@@ -62,7 +62,7 @@ namespace Net
 			Text::String *devSN;
 			UTF8Char devCountry[3];
 			UInt8 chipsetOUIs[WLAN_OUI_CNT][3];
-			Data::ArrayList<Net::WirelessLANIE*> ieList;
+			Data::ArrayListNN<Net::WirelessLANIE> ieList;
 		public:
 			BSSInfo(Text::CString ssid, const void *bssEntry);
 			~BSSInfo();
@@ -80,7 +80,7 @@ namespace Net
 			const UTF8Char *GetCountry();
 			const UInt8 *GetChipsetOUI(OSInt index);
 			UOSInt GetIECount();
-			Net::WirelessLANIE *GetIE(UOSInt index);
+			Optional<Net::WirelessLANIE> GetIE(UOSInt index);
 		};
 
 		class Interface
@@ -94,8 +94,8 @@ namespace Net
 
 			NotNullPtr<Text::String> GetName() const;
 			virtual Bool Scan() = 0;
-			virtual UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList) = 0;
-			virtual UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) = 0;
+			virtual UOSInt GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList) = 0;
+			virtual UOSInt GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList) = 0;
 		};
 
 	public:
@@ -103,7 +103,7 @@ namespace Net
 		~WirelessLAN();
 
 		Bool IsError();
-		UOSInt GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr);
+		UOSInt GetInterfaces(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr);
 	};
 }
 #endif

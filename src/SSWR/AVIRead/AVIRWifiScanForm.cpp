@@ -24,18 +24,20 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(AnyType userObj)
 	{
 		UOSInt i;
 		UOSInt j;
-		Net::WirelessLANIE *ie;
+		NotNullPtr<Net::WirelessLANIE> ie;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
 		j = bss->GetIECount();
 		while (i < j)
 		{
-			ie = bss->GetIE(i);
-			if (i > 0)
+			if (bss->GetIE(i).SetTo(ie))
 			{
-				sb.AppendC(UTF8STRC("\r\n"));
+				if (i > 0)
+				{
+					sb.AppendC(UTF8STRC("\r\n"));
+				}
+				Net::WirelessLANIE::ToString(ie->GetIEBuff(), sb);
 			}
-			Net::WirelessLANIE::ToString(ie->GetIEBuff(), sb);
 			i++;
 		}
 		me->txtWifi->SetText(sb.ToCString());
@@ -46,7 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(AnyType userObj)
 void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 {
 	this->WifiClear();
-	if (this->wlanInterf)
+	NotNullPtr<Net::WirelessLAN::Interface> wlanInterf;
+	if (this->wlanInterf.SetTo(wlanInterf))
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
@@ -56,18 +59,18 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		NotNullPtr<Text::String> s;
 		const UTF8Char *csptr;
 		NotNullPtr<Text::String> ssid;
-		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
-		Net::WirelessLAN::BSSInfo *bss;
+		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+		NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
 		Double t1;
 		Double t2;
 		UOSInt i;
 		UOSInt j;
-		this->wlanInterf->Scan();
+		wlanInterf->Scan();
 		t1 = clk.GetTimeDiff();
 		Sync::SimpleThread::Sleep(5000);
 
 		clk.Start();
-		this->wlanInterf->GetBSSList(&bssList);
+		wlanInterf->GetBSSList(bssList);
 		t2 = clk.GetTimeDiff();
 
 		sptr = Text::StrDouble(sbuff, t1);
@@ -79,7 +82,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		j = bssList.GetCount();
 		while (i < j)
 		{
-			bss = bssList.GetItem(i);
+			bss = bssList.GetItemNoCheck(i);
 			ssid = bss->GetSSID();
 			MemCopyNO(&id[2], bss->GetMAC(), 6);
 			id[0] = 0;
@@ -159,14 +162,14 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl>
 
 	this->core = core;
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
-	Data::ArrayList<Net::WirelessLAN::Interface*> interfList;
-	this->wlan->GetInterfaces(&interfList);
+	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
+	this->wlan->GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
 	UOSInt i = interfList.GetCount();
 	while (i-- > 1)
 	{
-		Net::WirelessLAN::Interface *interf = interfList.GetItem(i);
-		DEL_CLASS(interf);
+		NotNullPtr<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
+		interf.Delete();
 	}
 
 	this->pnlControl = ui->NewPanel(*this);
@@ -218,7 +221,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl>
 SSWR::AVIRead::AVIRWifiScanForm::~AVIRWifiScanForm()
 {
 	this->WifiClear();
-	SDEL_CLASS(this->wlanInterf);
+	this->wlanInterf.Delete();
 	DEL_CLASS(this->wlan);
 }
 

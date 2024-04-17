@@ -415,21 +415,21 @@ Bool IO::Device::OlympusCameraControl::GetModel(NotNullPtr<Text::StringBuilderUT
 
 IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact)
 {
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	Bool found = false;
-	if (sockf->GetConnInfoList(&connInfoList) == 0)
+	if (sockf->GetConnInfoList(connInfoList) == 0)
 		return 0;
 	UInt32 ip = Net::SocketUtil::GetIPAddr(CSTR("192.168.0.10"));
 	UOSInt i = connInfoList.GetCount();
 	while (i-- > 0)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionStatus() == Net::ConnectionInfo::CS_UP && connInfo->GetDefaultGW() == ip)
 		{
 			found = true;
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 	}
 	if (found)
 	{

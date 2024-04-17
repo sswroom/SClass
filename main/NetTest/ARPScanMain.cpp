@@ -92,17 +92,17 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 
 
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
 	Net::IPType ipType;
 	UOSInt k;
 	UInt32 ip;
-	sockf->GetConnInfoList(&connInfoList);
+	sockf->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		k = 0;
 		while (true)
 		{
@@ -160,7 +160,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			k++;
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 		i++;
 	}
 

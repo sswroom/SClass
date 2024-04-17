@@ -107,7 +107,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 			me->txtGPSActive->SetText(CSTR("Void"));
 		}
 	}
-	if (me->wlanInterf)
+	NotNullPtr<Net::WirelessLAN::Interface> wlanInterf;
+	if (me->wlanInterf.SetTo(wlanInterf))
 	{
 		ts = Data::Timestamp::UtcNow();
 		if (ts.ToTicks() - me->lastTimeTick > 900)
@@ -118,9 +119,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				Text::String *str;
 				NotNullPtr<Text::String> ssid;
 				Bool bssListUpd = false;
-				Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
-				Net::WirelessLAN::BSSInfo *bss;
-				me->wlanInterf->GetBSSList(&bssList);
+				Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+				NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+				wlanInterf->GetBSSList(bssList);
 				me->lvCurrWifi->ClearItems();
 
 				maxIMAC = 0;
@@ -135,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					j = bssList.GetCount();
 					while (i < j)
 					{
-						bss = bssList.GetItem(i);
+						bss = bssList.GetItemNoCheck(i);
 
 						sb.AppendUTF8Char('|');
 						sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
@@ -156,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				j = bssList.GetCount();
 				while (i < j)
 				{
-					bss = bssList.GetItem(i);
+					bss = bssList.GetItemNoCheck(i);
 					ssid = bss->GetSSID();
 					MemCopyNO(&id[2], bss->GetMAC(), 6);
 					id[0] = 0;
@@ -374,7 +375,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					j = bssList.GetCount();
 					while (i < j)
 					{
-						bss = bssList.GetItem(i);
+						bss = bssList.GetItemNoCheck(i);
 						ssid = bss->GetSSID();
 						MemCopyNO(&id[2], bss->GetMAC(), 6);
 						id[0] = 0;
@@ -428,13 +429,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				i = bssList.GetCount();
 				while (i-- > 0)
 				{
-					bss = bssList.GetItem(i);
-					DEL_CLASS(bss);
+					bss = bssList.GetItemNoCheck(i);
+					bss.Delete();
 				}
 
 				sptr = Text::StrUOSInt(sbuff, j);
 				me->txtCurrWifiCnt->SetText(CSTRP(sbuff, sptr));
-				me->wlanInterf->Scan();
+				wlanInterf->Scan();
 
 				me->wlanScan = 10;
 
@@ -504,7 +505,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 			me->ui->ShowMsgOK(CSTR("GPS not connected"), CSTR("Error"), me);
 			return;
 		}
-		else if (me->wlanInterf == 0)
+		else if (me->wlanInterf.IsNull())
 		{
 			me->ui->ShowMsgOK(CSTR("Wifi adapter not found"), CSTR("Error"), me);
 			return;
@@ -811,14 +812,14 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 		i++;
 	}
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
-	Data::ArrayList<Net::WirelessLAN::Interface*> interfList;
-	this->wlan->GetInterfaces(&interfList);
+	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
+	this->wlan->GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
 	i = interfList.GetCount();
 	while (i-- > 1)
 	{
-		Net::WirelessLAN::Interface *interf = interfList.GetItem(i);
-		DEL_CLASS(interf);
+		NotNullPtr<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
+		interf.Delete();
 	}
 	this->wlanScan = 0;
 
@@ -937,7 +938,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 {
 	SDEL_CLASS(this->motion);
-	SDEL_CLASS(this->wlanInterf);
+	this->wlanInterf.Delete();
 	if (this->locSvc)
 	{
 		this->locSvc->UnregisterLocationHandler(OnGPSData, this);

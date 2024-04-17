@@ -95,6 +95,11 @@ public:
 		MemCopyNO(this->p, p.Ptr(), sizeof(T));
 	}
 
+	void ClearContent()
+	{
+		MemClear(this->p, sizeof(T));
+	}
+
 	static NotNullPtr<T> FromPtr(T *p)
 	{
 		return NotNullPtr<T>(p);

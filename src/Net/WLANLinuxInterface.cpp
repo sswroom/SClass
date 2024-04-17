@@ -26,7 +26,7 @@ typedef struct
 	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
-	Data::ArrayList<Net::WirelessLANIE*> ieList;
+	Data::ArrayListNN<Net::WirelessLANIE> ieList;
 } BSSEntry;
 
 void Net::WLANLinuxInterface::Reopen()
@@ -71,13 +71,13 @@ Bool Net::WLANLinuxInterface::Scan()
 }
 
 
-UOSInt Net::WLANLinuxInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
+UOSInt Net::WLANLinuxInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
 	UOSInt retVal = 0;
-	Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
-	Net::WirelessLAN::BSSInfo *bss;
-	Net::WirelessLAN::Network *network;
-	this->GetBSSList(&bssList);
+	Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+	NotNullPtr<Net::WirelessLAN::Network> network;
+	this->GetBSSList(bssList);
 	if (bssList.GetCount() > 0)
 	{
 		UOSInt i;
@@ -85,9 +85,9 @@ UOSInt Net::WLANLinuxInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Ne
 		i = 0;
 		while (i < retVal)
 		{
-			bss = bssList.GetItem(i);
-			NEW_CLASS(network, Net::WirelessLAN::Network(bss->GetSSID(), bss->GetRSSI()));
-			DEL_CLASS(bss);
+			bss = bssList.GetItemNoCheck(i);
+			NEW_CLASSNN(network, Net::WirelessLAN::Network(bss->GetSSID(), bss->GetRSSI()));
+			bss.Delete();
 			networkList->Add(network);
 			i++;
 		}
@@ -95,12 +95,12 @@ UOSInt Net::WLANLinuxInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Ne
 	return retVal;
 }
 
-UOSInt Net::WLANLinuxInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList)
+UOSInt Net::WLANLinuxInterface::GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
 	UOSInt retVal = 0;
-	Net::WirelessLAN::BSSInfo *bssInfo;
+	NotNullPtr<Net::WirelessLAN::BSSInfo> bssInfo;
 	BSSEntry bss;
-	Net::WirelessLANIE *ie;
+	NotNullPtr<Net::WirelessLANIE> ie;
 	struct iwreq wrq;
 	int ret;
 	UInt8 *buff;
@@ -269,7 +269,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 			{
 				if (retVal > 0)
 				{
-					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
+					NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 					bssList->Add(bssInfo);
 					SDEL_STRING(bss.devManuf);
 					SDEL_STRING(bss.devModel);
@@ -302,7 +302,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 			{
 				if (retVal > 0)
 				{
-					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
+					NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 					bssList->Add(bssInfo);
 					SDEL_STRING(bss.devManuf);
 					SDEL_STRING(bss.devModel);
@@ -439,7 +439,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 					{
 						break;
 					}
-					NEW_CLASS(ie, Net::WirelessLANIE(ptrCurr - 2));
+					NEW_CLASSNN(ie, Net::WirelessLANIE(ptrCurr - 2));
 					bss.ieList.Add(ie);
 					switch (ieCmd)
 					{
@@ -535,7 +535,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	}
 	if (retVal > 0)
 	{
-		NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
+		NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 		bssList->Add(bssInfo);
 		SDEL_STRING(bss.devManuf);
 		SDEL_STRING(bss.devModel);

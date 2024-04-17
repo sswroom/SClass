@@ -118,14 +118,14 @@ namespace IO
 
 			virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4);
 
-			virtual UOSInt GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList);
+			virtual UOSInt GetConnInfoList(NotNullPtr<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList);
 			virtual Bool GetIPInfo(NotNullPtr<IPInfo> info); //////////////////////////////////
 			virtual Bool GetTCPInfo(NotNullPtr<TCPInfo> info); //////////////////////////////////
 			virtual Bool GetUDPInfo(NotNullPtr<UDPInfo> info); //////////////////////////////////
-			virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId);
-			virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList);
-			virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId);
-			virtual void FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList);
+			virtual UOSInt QueryPortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual void FreePortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList);
+			virtual UOSInt QueryPortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual void FreePortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList);
 		};
 	}
 }

@@ -21,7 +21,7 @@ namespace SSWR
 			Sync::Mutex devMut;
 			Data::FastMap<UInt64, UInt32> randDevMap;
 			Data::FastMap<UInt64, UInt32> pubDevMap;
-			IO::BTScanner *bt;
+			Optional<IO::BTScanner> bt;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnStart;
@@ -32,8 +32,8 @@ namespace SSWR
 			static void __stdcall OnStoreListClicked(AnyType userObj);
 			static void __stdcall OnDevicesDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
-			UOSInt UpdateList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex);
+			static void __stdcall OnDeviceUpdated(NotNullPtr<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
+			UOSInt UpdateList(NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex);
 		public:
 			AVIRBluetoothCtlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothCtlForm();

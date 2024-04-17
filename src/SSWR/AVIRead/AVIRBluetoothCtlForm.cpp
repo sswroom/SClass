@@ -14,42 +14,47 @@
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
-	if (me->bt)
+	NotNullPtr<IO::BTScanner> bt;
+	if (me->bt.SetTo(bt))
 	{
-		if (me->bt->IsScanOn())
+		if (bt->IsScanOn())
 		{
-			me->bt->ScanOff();
+			bt->ScanOff();
 			return;
 		}
 
-		me->bt->ScanOn();
+		bt->ScanOn();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
-	UTF8Char sbuff[128];
-	UTF8Char *sptr;
-	Data::DateTime dt;
-	IO::BTDevLog btLog;
-	dt.SetCurrTimeUTC();
-	sptr = Text::StrConcatC(Text::StrInt64(sbuff, dt.ToTicks()), UTF8STRC("bt.txt"));
-	Sync::MutexUsage mutUsage;
-	btLog.AppendList(me->bt->GetPublicMap(mutUsage));
-	mutUsage.EndUse();
-	btLog.AppendList(me->bt->GetRandomMap(mutUsage));
-	mutUsage.EndUse();
-	if (btLog.StoreFile(CSTRP(sbuff, sptr)))
+	NotNullPtr<IO::BTScanner> bt;
+	if (me->bt.SetTo(bt))
 	{
-		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("Stored as "));
-		sb.AppendP(sbuff, sptr);
-		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Bluetooth Ctrl"), me);
-	}
-	else
-	{
-		me->ui->ShowMsgOK(CSTR("Error in storing file"), CSTR("Bluetooth Ctrl"), me);
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		Data::DateTime dt;
+		IO::BTDevLog btLog;
+		dt.SetCurrTimeUTC();
+		sptr = Text::StrConcatC(Text::StrInt64(sbuff, dt.ToTicks()), UTF8STRC("bt.txt"));
+		Sync::MutexUsage mutUsage;
+		btLog.AppendList(bt->GetPublicMap(mutUsage));
+		mutUsage.EndUse();
+		btLog.AppendList(bt->GetRandomMap(mutUsage));
+		mutUsage.EndUse();
+		if (btLog.StoreFile(CSTRP(sbuff, sptr)))
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Stored as "));
+			sb.AppendP(sbuff, sptr);
+			me->ui->ShowMsgOK(sb.ToCString(), CSTR("Bluetooth Ctrl"), me);
+		}
+		else
+		{
+			me->ui->ShowMsgOK(CSTR("Error in storing file"), CSTR("Bluetooth Ctrl"), me);
+		}
 	}
 }
 
@@ -69,12 +74,16 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType us
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
-	Sync::MutexUsage mutUsage;
-	UOSInt i = me->UpdateList(me->bt->GetPublicMap(mutUsage), &me->pubDevMap, 0);
-	me->UpdateList(me->bt->GetRandomMap(mutUsage), &me->randDevMap, i);
+	NotNullPtr<IO::BTScanner> bt;
+	if (me->bt.SetTo(bt))
+	{
+		Sync::MutexUsage mutUsage;
+		UOSInt i = me->UpdateList(bt->GetPublicMap(mutUsage), &me->pubDevMap, 0);
+		me->UpdateList(bt->GetRandomMap(mutUsage), &me->randDevMap, i);
+	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NotNullPtr<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -94,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLo
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex)
+UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -104,13 +113,13 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMap<
 	Data::DateTime dt;
 	NotNullPtr<Text::String> s;
 	Sync::MutexUsage mutUsage;
-	IO::BTScanLog::ScanRecord3 *dev;
+	NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
 
 	j = 0;
 	k = devMap->GetCount();
 	while (j < k)
 	{
-		dev = devMap->GetItem(j);
+		dev = devMap->GetItemNoCheck(j);
 		i = j + baseIndex;
 		Sync::MutexUsage devMutUsage(this->devMut);
 		if (statusMap->GetIndex(dev->macInt) < 0)
@@ -220,10 +229,11 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->lvDevices->AddColumn(CSTR("Company"), 200);
 	this->lvDevices->AddColumn(CSTR("AdvType"), 80);
 
-	if (this->bt)
+	NotNullPtr<IO::BTScanner> bt;
+	if (this->bt.SetTo(bt))
 	{
-		this->bt->HandleRecordUpdate(OnDeviceUpdated, this);
-		this->bt->ScanOn();
+		bt->HandleRecordUpdate(OnDeviceUpdated, this);
+		bt->ScanOn();
 	}
 	else
 	{
@@ -234,11 +244,11 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRBluetoothCtlForm::~AVIRBluetoothCtlForm()
 {
-	if (this->bt)
+	NotNullPtr<IO::BTScanner> bt;
+	if (this->bt.SetTo(bt))
 	{
-		this->bt->ScanOff();
-
-		DEL_CLASS(this->bt);
+		bt->ScanOff();
+		this->bt.Delete();
 	}
 }
 

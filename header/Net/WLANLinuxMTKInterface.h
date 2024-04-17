@@ -17,8 +17,8 @@ namespace Net
 		virtual ~WLANLinuxMTKInterface();
 
 		virtual Bool Scan();
-		virtual UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList);
-		virtual UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList);
+		virtual UOSInt GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList);
+		virtual UOSInt GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList);
 	};
 }
 #endif

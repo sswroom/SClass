@@ -281,13 +281,13 @@ Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, 
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
-	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
-	Net::ConnectionInfo *connInfo;
-	this->sockf->GetConnInfoList(&connInfoList);
+	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
+	NotNullPtr<Net::ConnectionInfo> connInfo;
+	this->sockf->GetConnInfoList(connInfoList);
 	i = connInfoList.GetCount();
 	while (i-- > 0)
 	{
-		connInfo = connInfoList.GetItem(i);
+		connInfo = connInfoList.GetItemNoCheck(i);
 		j = 0;
 		while ((ip = connInfo->GetIPAddress(j)) != 0)
 		{
@@ -298,7 +298,7 @@ Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, 
 			}
 			j++;
 		}
-		DEL_CLASS(connInfo);
+		connInfo.Delete();
 	}
 
 	UInt32 lastIP = firstIP + devCount;

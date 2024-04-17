@@ -105,8 +105,8 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
-	IO::BTDevLog::DevEntry *log;
-	Data::ArrayList<IO::BTDevLog::DevEntry*> logList;
+	NotNullPtr<IO::BTDevLog::DevEntry> log;
+	Data::ArrayListNN<IO::BTDevLog::DevEntry> logList;
 	logList.AddAll(this->btLog.GetPublicList());
 	logList.AddAll(this->btLog.GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
@@ -121,7 +121,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	j = logList.GetCount();
 	while (i < j)
 	{
-		log = logList.GetItem(i);
+		log = logList.GetItemNoCheck(i);
 		entry = this->macList.GetEntry(log->macInt);
 		if (unkOnly && (entry != 0 && entry->nameLen != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{

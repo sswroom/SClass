@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WIFILOGFILE
 #define _SM_NET_WIFILOGFILE
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Net/WirelessLAN.h"
 
 namespace Net
@@ -28,9 +28,9 @@ namespace Net
 		} LogFileEntry;
 
 	private:
-		Data::ArrayList<LogFileEntry*> logList;
+		Data::ArrayListNN<LogFileEntry> logList;
 
-		UOSInt DirectInsert(LogFileEntry *log);
+		UOSInt DirectInsert(NotNullPtr<LogFileEntry> log);
 	public:
 		WiFiLogFile();
 		~WiFiLogFile();
@@ -38,12 +38,12 @@ namespace Net
 		void LoadFile(Text::CStringNN fileName);
 		Bool StoreFile(Text::CStringNN fileName);
 		void Clear();
-		LogFileEntry *Get(UInt64 iMAC);
+		Optional<LogFileEntry> Get(UInt64 iMAC);
 		OSInt GetIndex(UInt64 iMAC);
-		NotNullPtr<Data::ArrayList<LogFileEntry*>> GetLogList();
-		const LogFileEntry *GetItem(UOSInt index);
+		NotNullPtr<Data::ArrayListNN<LogFileEntry>> GetLogList();
+		Optional<const LogFileEntry> GetItem(UOSInt index);
 
-		LogFileEntry *AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex);
+		NotNullPtr<LogFileEntry> AddBSSInfo(NotNullPtr<Net::WirelessLAN::BSSInfo> bss, OutParam<OSInt> lastIndex);
 	};
 }
 #endif

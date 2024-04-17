@@ -10,7 +10,7 @@ namespace IO
 	class BTCapturer
 	{
 	private:
-		IO::BTScanner *bt;
+		Optional<IO::BTScanner> bt;
 		const UTF8Char *lastFileName;
 		Sync::Thread thread;
 		Bool autoStore;
@@ -27,8 +27,8 @@ namespace IO
 		void Stop();
 
 		void StoreStatus();
-		NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> GetPublicList(NotNullPtr<Sync::MutexUsage> mutUsage) const;
-		NotNullPtr<const Data::ReadingList<IO::BTScanLog::ScanRecord3*>> GetRandomList(NotNullPtr<Sync::MutexUsage> mutUsage) const;
+		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetPublicList(NotNullPtr<Sync::MutexUsage> mutUsage) const;
+		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetRandomList(NotNullPtr<Sync::MutexUsage> mutUsage) const;
 		void SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj);
 	};
 }
