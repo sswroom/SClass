@@ -340,6 +340,14 @@ Bool Net::Email::EmailMessage::SetSentDate(NotNullPtr<Data::DateTime> dt)
 	return this->SetHeader(UTF8STRC("Date"), sbuff, (UOSInt)(sptr - sbuff));
 }
 
+Bool Net::Email::EmailMessage::SetSentDate(Data::Timestamp ts)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	sptr = Net::WebUtil::Date2Str(sbuff, ts);
+	return this->SetHeader(UTF8STRC("Date"), sbuff, (UOSInt)(sptr - sbuff));
+}
+
 Bool Net::Email::EmailMessage::SetMessageId(Text::CString msgId)
 {
 	Text::StringBuilderUTF8 sb;

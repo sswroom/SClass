@@ -75,6 +75,7 @@ namespace Net
 			Bool SetSubject(Text::CStringNN subject);
 			Bool SetContent(Text::CStringNN content, Text::CStringNN contentType);
 			Bool SetSentDate(NotNullPtr<Data::DateTime> dt);
+			Bool SetSentDate(Data::Timestamp ts);
 			Bool SetMessageId(Text::CString msgId);
 			Bool SetFrom(Text::CString name, Text::CStringNN addr);
 			Bool AddTo(Text::CString name, Text::CStringNN addr);

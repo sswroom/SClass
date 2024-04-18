@@ -1,5 +1,6 @@
 #ifndef _SM_NET_EMAIL_SMTPCLIENT
 #define _SM_NET_EMAIL_SMTPCLIENT
+#include "IO/LogTool.h"
 #include "IO/Writer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -20,12 +21,14 @@ namespace Net
 			NotNullPtr<Text::String> host;
 			UInt16 port;
 			Data::Duration timeout;
-			IO::Writer *logWriter;
+			Optional<IO::Writer> logWriter;
+			Bool logRelease;
 			Optional<Text::String> authUser;
 			Optional<Text::String> authPassword;
 
 		public:
-			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
+			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout);
 			virtual ~SMTPClient();
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);

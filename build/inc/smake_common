@@ -3304,8 +3304,12 @@ Net/WOLClient.h:
 Net/Email/EmailMessage.h:
 @EmailMessage.o
 Net/Email/EmailSender.h:
+Net/Email/EmailSenderConfig.h:
+@EmailSenderConfig.o
 Net/Email/EmailStore.h:
 @EmailStore.o
+Net/Email/EmailTemplate.h:
+@EmailTemplate.o
 Net/Email/EmailUtil.h:
 @EmailUtil.o
 Net/Email/EmailValidator.h:

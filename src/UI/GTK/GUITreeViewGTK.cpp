@@ -198,7 +198,7 @@ void UI::GUITreeView::EventDragItem(NotNullPtr<UI::GUITreeView::TreeItem> dragIt
 {
 }
 
-NotNullPtr<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NotNullPtr<Text::String> itemText, AnyType itemObj)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	ClassData *data = this->clsData;
 	NotNullPtr<TreeItem> item;
@@ -233,7 +233,7 @@ NotNullPtr<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeI
 	return item;
 }
 
-NotNullPtr<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj)
 {
 	ClassData *data = this->clsData;
 	NotNullPtr<TreeItem> item;

@@ -1,9 +1,10 @@
 #include "Stdafx.h"
+#include "IO/LogWriter.h"
 #include "IO/MemoryStream.h"
 #include "Net/Email/SMTPClient.h"
 #include "Sync/SimpleThread.h"
 
-Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -11,9 +12,32 @@ Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optiona
 	this->port = port;
 	this->connType = connType;
 	this->logWriter = logWriter;
+	this->logRelease = false;
 	this->authUser = 0;
 	this->authPassword = 0;
 	this->timeout = timeout;
+}
+
+Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout)
+{
+	this->sockf = sockf;
+	this->ssl = ssl;
+	this->host = Text::String::New(host);
+	this->port = port;
+	this->connType = connType;
+	this->logWriter = 0;
+	this->logRelease = false;
+	this->authUser = 0;
+	this->authPassword = 0;
+	this->timeout = timeout;
+	NotNullPtr<IO::LogTool> nnlog;
+	if (log.SetTo(nnlog))
+	{
+		NotNullPtr<IO::LogWriter> writer;
+		NEW_CLASSNN(writer, IO::LogWriter(nnlog, IO::LogHandler::LogLevel::Raw));
+		this->logWriter = writer;
+		this->logRelease = true;
+	}
 }
 
 Net::Email::SMTPClient::~SMTPClient()
@@ -21,6 +45,10 @@ Net::Email::SMTPClient::~SMTPClient()
 	this->host->Release();
 	OPTSTR_DEL(this->authUser);
 	OPTSTR_DEL(this->authPassword);
+	if (this->logRelease)
+	{
+		this->logWriter.Delete();
+	}
 }
 
 void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString password)

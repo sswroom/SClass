@@ -1,171 +1,148 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
 #include "Net/Email/EmailTemplate.h"
+#include "Text/UTF8Reader.h"
 #include "Text/XML.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 
-Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char *> *vars)
+Bool Net::Email::EmailTemplate::ParseTemplate(NotNullPtr<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log)
 {
 	UOSInt i;
-	const UTF8Char *paramName;
-	const UTF8Char *param;
-	Text::String *s;
+	UOSInt j;
+	Text::StringBuilderUTF8 sbParam;
+	Text::StringBuilderUTF8 sb;
+	Text::CStringNN paramName;
+	NotNullPtr<Text::String> param;
+	i = 0;
 	while (true)
 	{
-		i = Text::StrIndexOfChar(tpl, '[');
-		if (i == INVALID_INDEX)
+		j = tpl.IndexOf('[', i);
+		if (j == INVALID_INDEX)
 		{
-			sb->AppendSlow(tpl);
+			sbOut->Append(tpl.Substring(i));
 			return true;
 		}
-		if (i > 0)
+		if (i != j)
 		{
-			sb->AppendC(tpl, i);
+			sbOut->AppendC(tpl.v + i, j - i);
 		}
-		tpl += i;
-		if (tpl[1] == '[')
+		i = j + 1;
+		if (tpl.v[i] == '[')
 		{
-			sb->AppendUTF8Char('[');
-			tpl += 2;
+			sbOut->AppendUTF8Char('[');
+			i++;
 		}
 		else
 		{
-			i = Text::StrIndexOfChar(tpl, ']');
-			if (i == INVALID_INDEX)
+			j = tpl.IndexOf(']', i);
+			if (j == INVALID_INDEX)
 			{
+				log->LogMessage(CSTR("EmailTemplate ']' not found after '['"), IO::LogHandler::LogLevel::Error);
 				return false;
 			}
-			if (tpl[1] == '@' || tpl[1] == '#')
+			sbParam.ClearStr();
+			sbParam.AppendC(tpl.v + i, j - i);
+			paramName = sbParam.ToCString();
+			while (paramName.v[0] == '@' || paramName.v[0] == '#' || paramName.v[0] == '^' || paramName.v[0] == '$')
 			{
-				paramName = Text::StrCopyNewC(tpl + 2, i - 2);
+				paramName = paramName.Substring(1);
 			}
-			else
+			if (!items->GetC(paramName).SetTo(param))
 			{
-				paramName = Text::StrCopyNewC(tpl + 1, i - 1);
-			}
-			param = vars->Get(paramName);
-			if (param == 0)
-			{
-				Text::StrDelNew(paramName);
+				sbParam.ClearStr();
+				sbParam.Append(CSTR("EmailTemplate item ["));
+				sbParam.AppendC(tpl.v + i, j - i);
+				sbParam.Append(CSTR("] not found"));
+				log->LogMessage(sbParam.ToCString(), IO::LogHandler::LogLevel::Error);
 				return false;
 			}
-			if (tpl[1] == '@')
+			sbParam.ClearStr();
+			sbParam.Append(param);
+			while (true)
 			{
-				s = Text::XML::ToNewAttrText(param);
-				sb->Append(s);
-				s->Release();
+				if (tpl.v[i] == '@')
+				{
+					param = Text::XML::ToNewXMLText(sbParam.v);
+					sbParam.ClearStr();
+					sbParam.Append(param);
+					param->Release();
+				}
+				else if (tpl.v[i] == '#')
+				{
+					param = Text::XML::ToNewHTMLBodyText(sbParam.v);
+					sbParam.ClearStr();
+					sbParam.Append(param);
+					param->Release();
+				}
+				else if (tpl.v[i] == '^')
+				{
+					sb.ClearStr();
+					Text::TextBinEnc::FormEncoding::FormEncode(sb, sbParam.v, sbParam.leng);
+					sbParam.ClearStr();
+					sb.Append(sbParam);
+				}
+				else if (tpl.v[i] == '$')
+				{
+				}
+				else
+				{
+					sbOut->Append(sbParam);
+					break;
+				}
+				i++;
 			}
-			else if (tpl[1] == '#')
-			{
-				s = Text::XML::ToNewHTMLText(param);
-				sb->Append(s);
-				s->Release();
-			}
-			else
-			{
-				sb->AppendSlow(param);
-			}
-			tpl += i + 1;
+			i = j + 1;
 		}
 	}
 }
 
-Net::Email::EmailTemplate::EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Map<const UTF8Char *> *vars)
+Net::Email::EmailTemplate::EmailTemplate(Text::CStringNN subject, Text::CStringNN content, Bool htmlContent)
 {
-	this->itemTemplate = 0;
-	this->itemOfst = 0;
-	this->sbSubj = 0;
-	this->sbPre = 0;
-	this->sbItem = 0;
-	this->sbPost = 0;
-	this->error = false;
-
-	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(this->sbSubj, Text::StringBuilderUTF8());
-	Text::PString sarr[2];
-	sb.AppendSlow(tpl);
-	UOSInt i = Text::StrSplitLineP(sarr, 2, sb);
-	if (i == 1)
-	{
-		this->error = true;
-		return;
-	}
-	if (!this->ParseTemplate(sarr[0].v, this->sbSubj, vars))
-	{
-		this->error = true;
-		return;
-	}
-	this->itemOfst = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC("[item]"));
-	if (this->itemOfst == INVALID_INDEX)
-	{
-		NEW_CLASS(this->sbPre, Text::StringBuilderUTF8());
-		if (!this->ParseTemplate(sarr[1].v, this->sbPre, vars))
-		{
-			this->error = true;
-		}
-	}
-	else
-	{
-		i = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC("[/item]"));
-		if (i == INVALID_INDEX || i < this->itemOfst)
-		{
-			this->error = true;
-			return;
-		}
-		this->itemTemplate = Text::StrCopyNewC(sarr[1].v + this->itemOfst + 6, i - this->itemOfst - 6);
-		NEW_CLASS(this->sbPre, Text::StringBuilderUTF8());
-		NEW_CLASS(this->sbPost, Text::StringBuilderUTF8());
-		NEW_CLASS(this->sbItem, Text::StringBuilderUTF8());
-		
-		sarr[1].v[this->itemOfst] = 0;
-		sarr[1].leng = this->itemOfst;
-		if (!this->ParseTemplate(sarr[1].v, this->sbPre, vars))
-		{
-			this->error = true;
-		}
-		if (!this->ParseTemplate(sarr[1].v + i + 7, this->sbPost, vars))
-		{
-			this->error = true;
-		}
-	}
+	this->subject = Text::String::New(subject);
+	this->content = Text::String::New(content);
+	this->htmlContent = htmlContent;
 }
 
 Net::Email::EmailTemplate::~EmailTemplate()
 {
-	SDEL_TEXT(this->itemTemplate);
-	SDEL_CLASS(this->sbItem);
-	SDEL_CLASS(this->sbPre);
-	SDEL_CLASS(this->sbPost);
-	SDEL_CLASS(this->sbSubj);
+	this->subject->Release();
+	this->content->Release();
 }
 
-Bool Net::Email::EmailTemplate::IsError()
+Bool Net::Email::EmailTemplate::FillEmailMessage(NotNullPtr<Net::Email::EmailMessage> msg, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log)
 {
-	return this->error;
-}
-
-Bool Net::Email::EmailTemplate::AddItem(Data::StringUTF8Map<const UTF8Char *> *itemVars)
-{
-	if (this->itemTemplate == 0)
-	{
+	Text::StringBuilderUTF8 sb;
+	if (!ParseTemplate(sb, this->subject->ToCString(), items, log))
 		return false;
-	}
-	return this->ParseTemplate(this->itemTemplate, this->sbItem, itemVars);
+	msg->SetSubject(sb.ToCString());
+	sb.ClearStr();		
+	if (!ParseTemplate(sb, this->content->ToCString(), items, log))
+		return false;
+	msg->SetContent(sb.ToCString(), this->htmlContent?CSTR("text/html"):CSTR("text/plain"));
+	return true;
 }
 
-const UTF8Char *Net::Email::EmailTemplate::GetSubject()
+Optional<Net::Email::EmailTemplate> Net::Email::EmailTemplate::LoadFromFile(Text::CStringNN fileName, Bool htmlContent)
 {
-	return this->sbSubj->ToString();
-}
-
-void Net::Email::EmailTemplate::GetContent(NotNullPtr<Text::StringBuilderUTF8> sb)
-{
-	if (this->itemTemplate == 0)
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+		return 0;
+	Text::StringBuilderUTF8 sbSubject;
+	Text::StringBuilderUTF8 sbContent;
+	Text::UTF8Reader reader(fs);
+	while (true)
 	{
-		sb->Append(this->sbPre);
+		if (!reader.ReadLine(sbSubject, 2048))
+			return 0;
+		if (reader.IsLineBreak())
+			break;
 	}
-	else
+	reader.ReadToEnd(sbContent);
+	if (sbSubject.leng > 0 && sbContent.leng > 0)
 	{
-		sb->Append(this->sbPre);
-		sb->Append(this->sbItem);
-		sb->Append(this->sbPost);
+		NotNullPtr<Net::Email::EmailTemplate> tpl;
+		NEW_CLASSNN(tpl, Net::Email::EmailTemplate(sbSubject.ToCString(), sbContent.ToCString(), htmlContent));
+		return tpl;
 	}
+	return 0;
 }

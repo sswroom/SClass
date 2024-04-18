@@ -1464,7 +1464,9 @@ WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
 EmailMessage.o: ../../src/Net/Email/EmailMessage.cpp
+EmailSenderConfig.o: ../../src/Net/Email/EmailSenderConfig.cpp
 EmailStore.o: ../../src/Net/Email/EmailStore.cpp
+EmailTemplate.o: ../../src/Net/Email/EmailTemplate.cpp
 EmailUtil.o: ../../src/Net/Email/EmailUtil.cpp
 EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
 FileEmailStore.o: ../../src/Net/Email/FileEmailStore.cpp

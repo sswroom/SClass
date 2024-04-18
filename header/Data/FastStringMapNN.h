@@ -299,7 +299,7 @@ namespace Data
 		}
 		else
 		{
-			T oldVal = this->items[index].val;
+			NotNullPtr<T> oldVal = this->items[index].val;
 			this->items[index].val = val;
 			return oldVal;
 		}

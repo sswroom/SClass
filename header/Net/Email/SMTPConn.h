@@ -32,7 +32,7 @@ namespace Net
 			UInt32 lastStatus;
 			UTF8Char *msgRet;
 			Sync::Event evt;
-			IO::Writer *logWriter;
+			Optional<IO::Writer> logWriter;
 			UInt32 initCode;
 			UOSInt maxSize;
 			Bool authPlain;
@@ -41,7 +41,7 @@ namespace Net
 			static UInt32 __stdcall SMTPThread(AnyType userObj);
 			UInt32 WaitForResult(UTF8Char **msgRetEnd);
 		public:
-			SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
 			~SMTPConn();
 
 			Bool IsError();

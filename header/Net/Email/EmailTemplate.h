@@ -1,33 +1,36 @@
 #ifndef _SM_NET_EMAIL_EMAILTEMPLATE
 #define _SM_NET_EMAIL_EMAILTEMPLATE
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMapNN.h"
+#include "IO/LogTool.h"
+#include "Net/Email/EmailMessage.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
 	namespace Email
 	{
+		// Template format:
+		// [@xxxx] Attribute Text
+		// [^xxxx] Form Encoded Text
+		// [#xxxx] HTML Text
+		// [$xxxx] Direct HTML Tag
+		// [xxxx]  Subject Text
+		// [[ output [ character
 		class EmailTemplate
 		{
 		private:
-			const UTF8Char *itemTemplate;
-			UOSInt itemOfst;
-			NotNullPtr<Text::StringBuilderUTF8> sbSubj;
-			NotNullPtr<Text::StringBuilderUTF8> sbPre;
-			NotNullPtr<Text::StringBuilderUTF8> sbItem;
-			NotNullPtr<Text::StringBuilderUTF8> sbPost;
-			Bool error;
+			NotNullPtr<Text::String> subject;
+			NotNullPtr<Text::String> content;
+			Bool htmlContent;
 
-			Bool ParseTemplate(const UTF8Char *tpl, NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char *> *vars);
+			Bool ParseTemplate(NotNullPtr<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log);
 		public:
-			EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Map<const UTF8Char *> *vars);
+			EmailTemplate(Text::CStringNN subject, Text::CStringNN content, Bool htmlContent);
 			~EmailTemplate();
 
-			Bool IsError();
-			
-			Bool AddItem(Data::StringUTF8Map<const UTF8Char *> *itemVars);
-			const UTF8Char *GetSubject();
-			void GetContent(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool FillEmailMessage(NotNullPtr<Net::Email::EmailMessage> msg, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log);
+
+			static Optional<EmailTemplate> LoadFromFile(Text::CStringNN fileName, Bool htmlContent);
 		};
 	}
 }
