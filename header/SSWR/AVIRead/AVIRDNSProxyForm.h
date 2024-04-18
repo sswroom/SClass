@@ -38,7 +38,7 @@ namespace SSWR
 				UInt32 cliId;
 				Net::SocketUtil::AddressInfo addr;
 				Sync::Mutex mut;
-				Data::ArrayList<HourInfo*> hourInfos;
+				Data::ArrayListNN<HourInfo> hourInfos;
 			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
@@ -185,14 +185,14 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLog;
 
 			Sync::Mutex cliInfoMut;
-			Data::FastMap<UInt32, ClientInfo*> cliInfos;
+			Data::FastMapNN<UInt32, ClientInfo> cliInfos;
 			Bool cliChg;
 			UInt32 currServer;
 
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> v4ansList;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> v6ansList;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> othansList;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> v4sansList;
+			Data::ArrayListNN<Net::DNSClient::RequestAnswer> v4ansList;
+			Data::ArrayListNN<Net::DNSClient::RequestAnswer> v6ansList;
+			Data::ArrayListNN<Net::DNSClient::RequestAnswer> othansList;
+			Data::ArrayListNN<Net::DNSClient::RequestAnswer> v4sansList;
 			Net::DNSProxy::TargetInfo *currTarget;
 			Net::DNSProxy *proxy;
 			Net::WhoisHandler whois;
@@ -217,7 +217,7 @@ namespace SSWR
 			static void __stdcall OnDisableV6Chg(AnyType userObj, Bool isChecked);
 			static void __stdcall OnBlackListClicked(AnyType userObj);
 			static void __stdcall OnWPADClicked(AnyType userObj);
-			static void __stdcall OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 			void UpdateDNSList();
 			void UpdateBlackList();

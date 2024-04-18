@@ -18,8 +18,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NotNullPtr<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		UI::GUITreeView::TreeItem *item1;
-		UI::GUITreeView::TreeItem *item2;
+		NotNullPtr<UI::GUITreeView::TreeItem> item1;
+		NotNullPtr<UI::GUITreeView::TreeItem> item2;
 		NotNullPtr<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 6 - TreeView"));
@@ -27,15 +27,21 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		tv->SetDockType(UI::GUIControl::DOCK_FILL);
 		tv->SetHasLines(true);
 		tv->SetHasCheckBox(true);
-		item1 = tv->InsertItem(0, 0, CSTR("Root Item"), 0);
-		item2 = tv->InsertItem(item1, 0, CSTR("Item 1"), 0);
-		tv->InsertItem(item2, 0, CSTR("Item 1-1"), 0);
-		tv->ExpandItem(item1);
-		tv->ExpandItem(item2);
-		item2 = tv->InsertItem(item1, 0, CSTR("Item 2"), 0);
-		tv->InsertItem(item2, 0, CSTR("Item 2-1"), 0);
-		tv->InsertItem(item2, 0, CSTR("Item 2-2"), 0);
-		tv->ExpandItem(item2);
+		if (tv->InsertItem(0, 0, CSTR("Root Item"), 0).SetTo(item1))
+		{
+			if (tv->InsertItem(item1, 0, CSTR("Item 1"), 0).SetTo(item2))
+			{
+				tv->InsertItem(item2, 0, CSTR("Item 1-1"), 0);
+				tv->ExpandItem(item2);
+			}
+			tv->ExpandItem(item1);
+			if (tv->InsertItem(item1, 0, CSTR("Item 2"), 0).SetTo(item2))
+			{
+				tv->InsertItem(item2, 0, CSTR("Item 2-1"), 0);
+				tv->InsertItem(item2, 0, CSTR("Item 2-2"), 0);
+				tv->ExpandItem(item2);
+			}
+		}
 		frm->SetExitOnClose(true);
 		frm->Show();
 		core->Run();

@@ -5,7 +5,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	NotNullPtr<SSWR::SDNSProxy::SDNSProxyCore> me = userObj.GetNN<SSWR::SDNSProxy::SDNSProxyCore>();
 	UTF8Char sbuff[32];
@@ -24,14 +24,13 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Tex
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
 	Data::DateTime dt;
-	ClientInfo *cli;
+	NotNullPtr<ClientInfo> cli;
 	dt.SetCurrTimeUTC();
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
 	Sync::MutexUsage mutUsage(me->cliInfoMut);
-	cli = me->cliInfos.Get(cliId);
-	if (cli == 0)
+	if (!me->cliInfos.Get(cliId).SetTo(cli))
 	{
-		NEW_CLASS(cli, ClientInfo());
+		NEW_CLASSNN(cli, ClientInfo());
 		cli->cliId = cliId;
 		cli->addr = reqAddr.Ptr()[0];
 		me->cliInfos.Put(cliId, cli);
@@ -50,22 +49,20 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Tex
 	}
 	mutUsage.EndUse();
 
-	HourInfo *hInfo;
+	NotNullPtr<HourInfo> hInfo;
 	mutUsage.ReplaceMutex(cli->mut);
-	hInfo = cli->hourInfos.GetItem(0);
-	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
+	if (cli->hourInfos.GetItem(0).SetTo(hInfo) && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{
 		hInfo->reqCount++;
 	}
 	else
 	{
-		if (cli->hourInfos.GetCount() >= 72)
+		if (cli->hourInfos.GetCount() >= 72 && cli->hourInfos.RemoveAt(71).SetTo(hInfo))
 		{
-			hInfo = cli->hourInfos.RemoveAt(71);
 		}
 		else
 		{
-			hInfo = MemAlloc(HourInfo, 1);
+			hInfo = MemAllocNN(HourInfo);
 		}
 		hInfo->year = dt.GetYear();
 		hInfo->month = dt.GetMonth();
@@ -195,7 +192,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 {
 	UOSInt i;
 	UOSInt j;
-	ClientInfo *cli;
+	NotNullPtr<ClientInfo> cli;
 	SDEL_CLASS(this->listener);
 	SDEL_CLASS(this->hdlr);
 
@@ -203,13 +200,13 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 	i = this->cliInfos.GetCount();
 	while (i-- > 0)
 	{
-		cli = this->cliInfos.GetItem(i);
+		cli = this->cliInfos.GetItemNoCheck(i);
 		j = cli->hourInfos.GetCount();
 		while (j-- > 0)
 		{
-			MemFree(cli->hourInfos.GetItem(j));
+			MemFreeNN(cli->hourInfos.GetItemNoCheck(j));
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 
 	this->sockf.Delete();
@@ -227,7 +224,7 @@ void SSWR::SDNSProxy::SDNSProxyCore::Run(NotNullPtr<Core::IProgControl> progCtrl
 	this->console->WriteLineC(UTF8STRC("SDNSProxy exiting"));
 }
 
-UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList)
+UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(NotNullPtr<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList)
 {
 	UOSInt initSize = cliList->GetCount();
 	Sync::MutexUsage mutUsage(this->cliInfoMut);

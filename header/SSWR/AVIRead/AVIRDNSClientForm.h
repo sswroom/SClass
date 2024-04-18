@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAnsRD;
 			NotNullPtr<UI::GUITextBox> txtAnsRD;
 
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
+			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 			NotNullPtr<Net::SocketFactory> sockf;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);

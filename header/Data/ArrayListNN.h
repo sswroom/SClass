@@ -4,6 +4,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayCollection.h"
 #include "Data/DataArray.h"
+#include "Data/ReadingList.h"
 #include "Data/ReadingListNN.h"
 
 namespace Data
@@ -28,6 +29,7 @@ namespace Data
 		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
 		UOSInt AddAll(NotNullPtr<const ReadingListNN<T>> list);
 		UOSInt AddAll(Data::ArrayIterator<NotNullPtr<T>> it);
+		UOSInt AddAllOpt(NotNullPtr<const ReadingList<T*>> list);
 		virtual Bool Remove(NotNullPtr<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, NotNullPtr<T> val);
@@ -135,6 +137,24 @@ namespace Data
 		{
 			this->Add(it->Next());
 			ret++;
+		}
+		return ret;
+	}
+
+	template <class T> UOSInt ArrayListNN<T>::AddAllOpt(NotNullPtr<const ReadingList<T*>> list)
+	{
+		UOSInt ret = 0;
+		UOSInt i = 0;
+		UOSInt j = list->GetCount();
+		NotNullPtr<T> s;
+		while (i < j)
+		{
+			if (s.Set(list->GetItem(i)))
+			{
+				this->Add(s);
+				ret++;
+			}
+			i++;
 		}
 		return ret;
 	}

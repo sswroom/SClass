@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_MAPENV
 #define _SM_MAP_MAPENV
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/RandomOS.h"
-#include "Data/StringMap.h"
+#include "Data/StringMapNN.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapView.h"
@@ -71,7 +71,7 @@ namespace Map
 
 		struct GroupItem : public MapItem
 		{
-			Data::ArrayList<MapItem*> *subitems;
+			Data::ArrayListNN<MapItem> subitems;
 			NotNullPtr<Text::String> groupName;
 			Bool groupHide;
 		};
@@ -99,7 +99,7 @@ namespace Map
 		class LineStyle
 		{
 		public:
-			Data::ArrayList<LineStyleLayer*> layers;
+			Data::ArrayListNN<LineStyleLayer> layers;
 			Optional<Text::String> name;
 
 			LineStyle() : layers(4) { this->name = 0; }
@@ -119,11 +119,11 @@ namespace Map
 	private:
 		Sync::Mutex mut;
 		UInt32 bgColor;
-		Data::ArrayList<MapItem*> mapLayers;
-		Data::ArrayList<LineStyle*> lineStyles;
-		Data::ArrayList<FontStyle*> fontStyles;
-		Data::StringMap<ImageInfo*> images;
-		Data::ArrayList<ImageInfo*> imgList;
+		Data::ArrayListNN<MapItem> mapLayers;
+		Data::ArrayListNN<LineStyle> lineStyles;
+		Data::ArrayListNN<FontStyle> fontStyles;
+		Data::StringMapNN<ImageInfo> images;
+		Data::ArrayListNN<ImageInfo> imgList;
 		Data::RandomOS random;
 		UOSInt nStr;
 		UOSInt defLineStyle;
@@ -134,9 +134,9 @@ namespace Map
 
 	private:
 		UInt8 GetRandomColor();
-		UOSInt GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, const Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType) const;
-		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
-		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
+		UOSInt GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, NotNullPtr<const Data::ArrayListNN<MapItem>> list, Map::DrawLayerType lyrType) const;
+		void AddGroupUpdatedHandler(Optional<GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
+		void RemoveGroupUpdatedHandler(Optional<GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 	public:
 		MapEnv(Text::CStringNN fileName, UInt32 bgColor, NotNullPtr<Math::CoordinateSystem> csys);
 		virtual ~MapEnv();
@@ -163,7 +163,7 @@ namespace Map
 		UOSInt GetLineStyleLayerCnt(UOSInt index) const;
 
 		//-1 = error
-		UOSInt AddFontStyle(Text::CString styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
+		UOSInt AddFontStyle(Text::CStringNN styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, Text::CString name);
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff) const;
 		Bool RemoveFontStyle(UOSInt index);
@@ -171,21 +171,21 @@ namespace Map
 		Bool GetFontStyle(UOSInt index, OutParam<NotNullPtr<Text::String>> fontName, OutParam<Double> fontSizePt, OutParam<Bool> bold, OutParam<UInt32> fontColor, OutParam<UOSInt> buffSize, OutParam<UInt32> buffColor) const;
 		Bool ChgFontStyle(UOSInt index, NotNullPtr<Text::String> fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
-		UOSInt AddLayer(GroupItem *group, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease);
-		Bool ReplaceLayer(GroupItem *group, UOSInt index, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease);
-		GroupItem *AddGroup(GroupItem *group, NotNullPtr<Text::String> subgroupName);
-		GroupItem *AddGroup(GroupItem *group, Text::CString subgroupName);
-		void RemoveItem(GroupItem *group, UOSInt index);
-		void MoveItem(GroupItem *group, UOSInt fromIndex, UOSInt toIndex);
-		void MoveItem(GroupItem *fromGroup, UOSInt fromIndex, GroupItem *toGroup, UOSInt toIndex);
-		UOSInt GetItemCount(GroupItem *group) const;
-		MapItem *GetItem(GroupItem *group, UOSInt index) const;
-		NotNullPtr<Text::String> GetGroupName(GroupItem *group) const;
-		void SetGroupName(GroupItem *group, Text::CString name);
-		void SetGroupHide(GroupItem *group, Bool isHide);
-		Bool GetGroupHide(GroupItem *group) const;
-		Bool GetLayerProp(NotNullPtr<LayerItem> setting, GroupItem *group, UOSInt index) const;
-		Bool SetLayerProp(NotNullPtr<LayerItem> setting, GroupItem *group, UOSInt index);
+		UOSInt AddLayer(Optional<GroupItem> group, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease);
+		Bool ReplaceLayer(Optional<GroupItem> group, UOSInt index, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease);
+		NotNullPtr<GroupItem> AddGroup(Optional<GroupItem> group, NotNullPtr<Text::String> subgroupName);
+		NotNullPtr<GroupItem> AddGroup(Optional<GroupItem> group, Text::CString subgroupName);
+		void RemoveItem(Optional<GroupItem> group, UOSInt index);
+		void MoveItem(Optional<GroupItem> group, UOSInt fromIndex, UOSInt toIndex);
+		void MoveItem(Optional<GroupItem> fromGroup, UOSInt fromIndex, Optional<GroupItem> toGroup, UOSInt toIndex);
+		UOSInt GetItemCount(Optional<GroupItem> group) const;
+		Optional<MapItem> GetItem(Optional<GroupItem> group, UOSInt index) const;
+		NotNullPtr<Text::String> GetGroupName(NotNullPtr<GroupItem> group) const;
+		void SetGroupName(NotNullPtr<GroupItem> group, Text::CString name);
+		void SetGroupHide(NotNullPtr<GroupItem> group, Bool isHide);
+		Bool GetGroupHide(NotNullPtr<GroupItem> group) const;
+		Bool GetLayerProp(NotNullPtr<LayerItem> setting, Optional<GroupItem> group, UOSInt index) const;
+		Bool SetLayerProp(NotNullPtr<LayerItem> setting, Optional<GroupItem> group, UOSInt index);
 		UOSInt GetNString() const;
 		void SetNString(UOSInt nStr);
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);
@@ -197,20 +197,20 @@ namespace Map
 		UOSInt AddImageSquare(UInt32 color, UOSInt size);
 		
 		UOSInt GetImageFileCnt() const;
-		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info) const;
+		Bool GetImageFileInfo(UOSInt index, NotNullPtr<Map::MapEnv::ImageInfo> info) const;
 		UOSInt GetImageFileIndex(UOSInt index) const;
 
 		UOSInt GetLayersOfType(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, Map::DrawLayerType lyrType) const;
 		void AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 		void RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 
-		Int64 GetTimeEndTS(GroupItem *group) const;
-		Int64 GetTimeStartTS(GroupItem *group) const;
-		void SetCurrTimeTS(GroupItem *group, Int64 timeStamp);
+		Int64 GetTimeEndTS(Optional<GroupItem> group) const;
+		Int64 GetTimeStartTS(Optional<GroupItem> group) const;
+		void SetCurrTimeTS(Optional<GroupItem> group, Int64 timeStamp);
 
-		Map::MapDrawLayer *GetFirstLayer(GroupItem *group) const;
-		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers) const;
-		Bool GetBounds(Map::MapEnv::GroupItem *group, OutParam<Math::RectAreaDbl> bounds) const;
+		Optional<Map::MapDrawLayer> GetFirstLayer(Optional<GroupItem> group) const;
+		UOSInt GetLayersInGroup(Optional<Map::MapEnv::GroupItem> group, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers) const;
+		Bool GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Math::RectAreaDbl> bounds) const;
 		NotNullPtr<Map::MapView> CreateMapView(Math::Size2DDbl scnSize) const;
 		NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		UInt32 GetSRID() const;

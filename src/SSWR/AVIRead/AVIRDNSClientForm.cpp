@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	UInt32 reqIP;
 	Text::StringBuilderUTF8 sb;
 	Net::DNSClient *dnsCli;
-	Net::DNSClient::RequestAnswer *ans;
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
 	Manage::HiResClock *clk;
 	UOSInt i;
 	UOSInt j;
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	j = me->ansList.GetCount();
 	while (i < j)
 	{
-		ans = me->ansList.GetItem(i);
+		ans = me->ansList.GetItemNoCheck(i);
 		if (bestInd == (UOSInt)-1 && ans->recType == 1)
 		{
 			bestInd = i;

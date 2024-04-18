@@ -271,7 +271,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		Math::Coord2DDbl max;
 		UInt32 srid;
 		NotNullPtr<Media::EXIFData> exif;
-		if (img->exif.SetTo(exif) && exif->GetGeoBounds(img->info.dispSize, &srid, &min.x, &min.y, &max.x, &max.y))
+		if (img->exif.SetTo(exif) && exif->GetGeoBounds(img->info.dispSize, srid, min.x, min.y, max.x, max.y))
 		{
 			Map::VectorLayer *lyr;
 			NotNullPtr<Math::Geometry::VectorImage> vimg;

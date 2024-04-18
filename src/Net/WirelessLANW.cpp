@@ -63,7 +63,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 	}
 	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry;
 	const UInt8 *ptrEnd = ptrCurr + bss->ulIeSize;
-	Net::WirelessLANIE *ie;
+	NotNullPtr<Net::WirelessLANIE> ie;
 	Text::StringBuilderUTF8 sbTmp;
 	UInt8 ieCmd;
 	UInt8 ieSize;
@@ -76,7 +76,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 		{
 			break;
 		}
-		NEW_CLASS(ie, Net::WirelessLANIE(ptrCurr - 2));
+		NEW_CLASSNN(ie, Net::WirelessLANIE(ptrCurr - 2));
 		this->ieList.Add(ie);
 		switch (ieCmd)
 		{
@@ -168,11 +168,11 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
 	UOSInt i = this->ieList.GetCount();
-	Net::WirelessLANIE *ie;
+	NotNullPtr<Net::WirelessLANIE> ie;
 	while (i-- > 0)
 	{
-		ie = this->ieList.GetItem(i);
-		DEL_CLASS(ie);
+		ie = this->ieList.GetItemNoCheck(i);
+		ie.Delete();
 	}
 	this->ssid->Release();
 	SDEL_STRING(this->devManuf);
@@ -255,7 +255,7 @@ UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 	return this->ieList.GetCount();
 }
 
-Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
+Optional<Net::WirelessLANIE> Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
 	return this->ieList.GetItem(index);
 }
@@ -295,7 +295,7 @@ Bool Net::WirelessLAN::IsError()
 	return core->IsError();
 }
 
-UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
+UOSInt Net::WirelessLAN::GetInterfaces(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
 	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
 	WLAN_INTERFACE_INFO_LIST *list;
@@ -308,9 +308,9 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		j = list->dwNumberOfItems;
 		while (i < j)
 		{
-			Net::WirelessLAN::Interface *interf;
+			NotNullPtr<Net::WirelessLAN::Interface> interf;
 			NotNullPtr<Text::String> s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
-			NEW_CLASS(interf, Net::WLANWindowsInterface(s.Ptr(), &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
+			NEW_CLASSNN(interf, Net::WLANWindowsInterface(s.Ptr(), &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
 			s->Release();
 			outArr->Add(interf);
 			retVal++;

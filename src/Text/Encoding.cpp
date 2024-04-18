@@ -361,9 +361,9 @@ UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byt
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
+		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
 		WChar *buff = MemAlloc(WChar, charCnt + 1);
-		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, buff, (Int32)charCnt);
+		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, buff, (Int32)charCnt);
 		charCnt = Text::StrWChar_UTF8Cnt(buff);
 		MemFree(buff);
 		return charCnt;
@@ -525,9 +525,9 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8>
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
+		UOSInt charCnt = (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
 		WChar *wbuff = MemAlloc(WChar, charCnt + 1);
-		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, wbuff, (Int32)charCnt);
+		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, wbuff, (Int32)charCnt);
 		wbuff[charCnt] = 0;
 		UTF8Char *dest = Text::StrWChar_UTF8(buff, wbuff);
 		MemFree(wbuff);

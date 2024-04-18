@@ -95,7 +95,7 @@ public:
 		MemCopyNO(this->p, p.Ptr(), sizeof(T));
 	}
 
-	void ClearContent()
+	void ZeroContent()
 	{
 		MemClear(this->p, sizeof(T));
 	}

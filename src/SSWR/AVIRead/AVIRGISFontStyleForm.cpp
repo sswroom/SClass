@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
-	UOSInt newStyle = me->env->AddFontStyle(CSTR_NULL, CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
+	UOSInt newStyle = me->env->AddFontStyle(CSTR("Unnamed"), CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
 
 	SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)

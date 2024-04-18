@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/FastMap.h"
 #include "Media/DDrawManager.h"
 #include "Media/DDrawSurface.h"
 #include <windows.h>

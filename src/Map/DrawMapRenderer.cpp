@@ -1305,10 +1305,10 @@ OSInt Map::DrawMapRenderer::VImgCompare(Math::Geometry::VectorImage *obj1, Math:
 	}
 }
 
-void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Map::MapEnv::GroupItem *group)
+void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group)
 {
 	Map::MapEnv::LayerItem layer;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 
 	Sync::MutexUsage mutUsage;
 	denv->env->BeginUse(mutUsage);
@@ -1317,207 +1317,208 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 
 	while (i < j)
 	{
-		item = denv->env->GetItem(group, i);
-		if (item->itemType == Map::MapEnv::IT_GROUP)
+		if (denv->env->GetItem(group, i).SetTo(item))
 		{
-			DrawLayers(denv, (Map::MapEnv::GroupItem*)item);
-		}
-		else if (item->itemType == Map::MapEnv::IT_LAYER)
-		{
-			Double scale = denv->view->GetMapScale();
-			if (denv->env->GetLayerProp(layer, group, i))
+			if (item->itemType == Map::MapEnv::IT_GROUP)
 			{
-				if (layer.minScale <= scale && layer.maxScale >= scale)
+				DrawLayers(denv, NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+			}
+			else if (item->itemType == Map::MapEnv::IT_LAYER)
+			{
+				Double scale = denv->view->GetMapScale();
+				if (denv->env->GetLayerProp(layer, group, i))
 				{
-					Map::DrawLayerType layerType = layer.layer->GetLayerType();
-					layer.layer->SetDispSize(denv->dispSize, denv->img->GetHDPI());
-					if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
+					if (layer.minScale <= scale && layer.maxScale >= scale)
 					{
-						if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
+						Map::DrawLayerType layerType = layer.layer->GetLayerType();
+						layer.layer->SetDispSize(denv->dispSize, denv->img->GetHDPI());
+						if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 						{
-							if (layer.lineType == 0)
+							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
 							{
-								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
-							}
-							else
-							{
-								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
-							}
-
-						}
-						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
-						{
-							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
-							{
-								if (layer.fontStyle < denv->fontStyleCnt)
+								if (layer.lineType == 0)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-								}
-							}
-							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
-							{
-								UOSInt fs = denv->layerFont.GetCount();
-								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont.Add(f);
-								denv->layerFontColor.Add(b);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-							}
-						}
-					}
-					else if (layerType == Map::DRAW_LAYER_POLYGON)
-					{
-						if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
-						{
-							if (layer.lineType == 0)
-							{
-								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
-							}
-							else
-							{
-								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
-							}
-						}
-						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
-						{
-							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
-							{
-								if (layer.fontStyle < denv->fontStyleCnt)
-								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-								}
-							}
-							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
-							{
-								UOSInt fs = denv->layerFont.GetCount();
-								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont.Add(f);
-								denv->layerFontColor.Add(b);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-							}
-						}
-					}
-					else if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
-					{
-						if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
-							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
-						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
-						{
-							Media::RasterImage *pimg = 0;
-							Double spotX;
-							Double spotY;
-							if (layer.layer->HasIconStyle())
-							{
-								pimg = layer.layer->GetIconStyleImg()->GetImage(0);
-								spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
-								spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
-								if (pimg != 0 && (spotX == -1 || spotY == -1))
-								{
-									spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
-									spotY = UOSInt2Double(pimg->info.dispSize.y) * 0.5;
-								}
-							}
-							if (pimg == 0)
-							{
-								pimg = denv->env->GetImage(layer.imgIndex, 0);
-								if (pimg)
-								{
-									spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
-									spotY = UOSInt2Double(pimg->info.dispSize.y) * 0.5;
+									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 								}
 								else
 								{
-									spotX = 0;
-									spotY = 0;
+									DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 								}
-							}
 
-							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
+							}
+							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 							{
-								if (layer.fontStyle < denv->fontStyleCnt)
+								if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
 								{
-									if (pimg)
-									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.x) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.y) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
-									}
-									else
+									if (layer.fontStyle < denv->fontStyleCnt)
 									{
 										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 									}
 								}
-							}
-							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
-							{
-								UOSInt fs = denv->layerFont.GetCount();
-								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont.Add(f);
-								denv->layerFontColor.Add(b);
-								if (pimg)
+								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 								{
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.x) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.y) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
-								}
-								else
-								{
+									UOSInt fs = denv->layerFont.GetCount();
+									NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+									denv->layerFont.Add(f);
+									denv->layerFontColor.Add(b);
 									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
 						}
-					}
-					else if (layerType == Map::DRAW_LAYER_MIXED)
-					{
-						if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
+						else if (layerType == Map::DRAW_LAYER_POLYGON)
 						{
-							if (layer.lineType == 0)
+							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
 							{
-								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
-							}
-							else
-							{
-								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
-							}
-							layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
-							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
-							layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
-						}
-						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
-						{
-							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
-							{
-								if (layer.fontStyle < denv->fontStyleCnt)
+								if (layer.lineType == 0)
 								{
-									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+								}
+								else
+								{
+									DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 								}
 							}
-							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
+							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 							{
-								UOSInt fs = denv->layerFont.GetCount();
-								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont.Add(f);
-								denv->layerFontColor.Add(b);
-								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
-								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+								if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
+								{
+									if (layer.fontStyle < denv->fontStyleCnt)
+									{
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									}
+								}
+								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
+								{
+									UOSInt fs = denv->layerFont.GetCount();
+									NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+									denv->layerFont.Add(f);
+									denv->layerFontColor.Add(b);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+								}
 							}
 						}
-						layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
-					}
-					else if (layerType == Map::DRAW_LAYER_IMAGE)
-					{
-						DrawImageLayer(denv, layer.layer);
+						else if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
+						{
+							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
+								DrawShapesPoint(denv, layer.layer, layer.imgIndex);
+							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
+							{
+								Media::RasterImage *pimg = 0;
+								Double spotX;
+								Double spotY;
+								if (layer.layer->HasIconStyle())
+								{
+									pimg = layer.layer->GetIconStyleImg()->GetImage(0);
+									spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
+									spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
+									if (pimg != 0 && (spotX == -1 || spotY == -1))
+									{
+										spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
+										spotY = UOSInt2Double(pimg->info.dispSize.y) * 0.5;
+									}
+								}
+								if (pimg == 0)
+								{
+									pimg = denv->env->GetImage(layer.imgIndex, 0);
+									if (pimg)
+									{
+										spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
+										spotY = UOSInt2Double(pimg->info.dispSize.y) * 0.5;
+									}
+									else
+									{
+										spotX = 0;
+										spotY = 0;
+									}
+								}
+
+								if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
+								{
+									if (layer.fontStyle < denv->fontStyleCnt)
+									{
+										if (pimg)
+										{
+											DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.x) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.y) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
+										}
+										else
+										{
+											DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										}
+									}
+								}
+								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
+								{
+									UOSInt fs = denv->layerFont.GetCount();
+									NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+									denv->layerFont.Add(f);
+									denv->layerFontColor.Add(b);
+									if (pimg)
+									{
+										DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.x) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.y) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
+									}
+									else
+									{
+										DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									}
+								}
+							}
+						}
+						else if (layerType == Map::DRAW_LAYER_MIXED)
+						{
+							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
+							{
+								if (layer.lineType == 0)
+								{
+									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
+									DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+								}
+								else
+								{
+									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
+									DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+								}
+								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
+								DrawShapesPoint(denv, layer.layer, layer.imgIndex);
+								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
+							}
+							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
+							{
+								if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
+								{
+									if (layer.fontStyle < denv->fontStyleCnt)
+									{
+										layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+										layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									}
+								}
+								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
+								{
+									UOSInt fs = denv->layerFont.GetCount();
+									NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+									denv->layerFont.Add(f);
+									denv->layerFontColor.Add(b);
+									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::PointOnly);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+								}
+							}
+							layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::AllData);
+						}
+						else if (layerType == Map::DRAW_LAYER_IMAGE)
+						{
+							DrawImageLayer(denv, layer.layer);
+						}
 					}
 				}
 			}
 		}
-
 		i++;
 	}
 	mutUsage.EndUse();

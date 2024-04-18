@@ -170,7 +170,7 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
-UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
@@ -179,7 +179,7 @@ UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, void *itemObj
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)ws;
 	item.cchTextMax = 256;
 	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
@@ -187,7 +187,7 @@ UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, void *itemObj
 	return strLen;
 }
 
-UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
@@ -196,7 +196,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, void *itemObj)
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)ws;
 	item.cchTextMax = 256;
 	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
@@ -204,25 +204,25 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, void *itemObj)
 	return strLen;
 }
 
-UOSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(const WChar *itemText, AnyType itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)itemText;
 	item.cchTextMax = 256;
 	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
 
-UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, void *itemObj, UOSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj, UOSInt imageIndex)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText.v);
 	item.cchTextMax = (int)itemText.leng;
 	item.iImage = (Int32)imageIndex;
@@ -301,13 +301,13 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text:
 	return ret;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	item.pszText = (LPWSTR)wptr;
 	item.cchTextMax = 256;
@@ -316,26 +316,26 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, void 
 	return ret;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)itemText;
 	item.cchTextMax = 256;
 	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 }
 
-void *UI::GUIListView::RemoveItem(UOSInt index)
+AnyType UI::GUIListView::RemoveItem(UOSInt index)
 {
-	void *item = GetItem(index);
+	AnyType item = GetItem(index);
 	SendMessage((HWND)this->hwnd, LVM_DELETEITEM, index, 0);
 	return item;
 }
 
-void *UI::GUIListView::GetItem(UOSInt index)
+AnyType UI::GUIListView::GetItem(UOSInt index)
 {
 	LVITEM item;
 	item.iItem = (Int32)index;
@@ -385,7 +385,7 @@ UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 	return ret;
 }
 
-void *UI::GUIListView::GetSelectedItem()
+AnyType UI::GUIListView::GetSelectedItem()
 {
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
@@ -484,13 +484,13 @@ void UI::GUIListView::EnsureVisible(UOSInt index)
 	SendMessage((HWND)this->hwnd, LVM_ENSUREVISIBLE, index, (LPARAM)TRUE);
 }
 
-void *UI::GUIListView::SetItem(UOSInt index, void *itemObj)
+AnyType UI::GUIListView::SetItem(UOSInt index, AnyType itemObj)
 {
 	LVITEM item;
 	item.iItem = (Int32)index;
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM;
-	item.lParam = (LPARAM)itemObj;
+	item.lParam = (LPARAM)itemObj.p;
     SendMessage((HWND)this->hwnd, LVM_SETITEM, 0, (LPARAM)&item);
 	return (void*)item.lParam;
 

@@ -32,8 +32,8 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 ip;
-				Net::EthernetAnalyzer::IPTranStatus *sendStatus;
-				Net::EthernetAnalyzer::IPTranStatus *recvStatus;
+				Optional<Net::EthernetAnalyzer::IPTranStatus> sendStatus;
+				Optional<Net::EthernetAnalyzer::IPTranStatus> recvStatus;
 			} IPTranInfo;
 
 			typedef struct
@@ -61,11 +61,11 @@ namespace SSWR
 			Bool adapterChanged;
 			Bool dataUpdated;
 			Sync::Mutex pingIPMut;
-			Data::FastMap<UInt32, PingIPInfo*> pingIPMap;
+			Data::FastMapNN<UInt32, PingIPInfo> pingIPMap;
 			Bool pingIPListUpdated;
 			Bool pingIPContUpdated;
 			PingIPInfo *currPingIP;
-			Data::FastMap<UInt32, IPTranInfo*> ipTranMap;
+			Data::FastMapNN<UInt32, IPTranInfo> ipTranMap;
 			UOSInt ipTranCnt;
 			UOSInt tcp4synLastIndex;
 

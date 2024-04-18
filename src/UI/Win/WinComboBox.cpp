@@ -95,69 +95,69 @@ void UI::Win::WinComboBox::EndUpdate()
 	
 }
 
-UOSInt UI::Win::WinComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Win::WinComboBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Add(itemText->Clone());
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Add(Text::String::New(itemText));
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Insert(index, itemText->Clone());
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
-	if (itemObj)
+	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Insert(index, Text::String::New(itemText));
 	return (UOSInt)i;
 }
 
-void *UI::Win::WinComboBox::RemoveItem(UOSInt index)
+AnyType UI::Win::WinComboBox::RemoveItem(UOSInt index)
 {
-	void *obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
+	AnyType obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, CB_DELETESTRING, index, 0);
 	OPTSTR_DEL(this->itemTexts.RemoveAt(index));
 	return obj;
@@ -206,7 +206,7 @@ UOSInt UI::Win::WinComboBox::GetSelectedIndex()
 	return INVALID_INDEX;
 }
 
-void *UI::Win::WinComboBox::GetSelectedItem()
+AnyType UI::Win::WinComboBox::GetSelectedItem()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -214,7 +214,7 @@ void *UI::Win::WinComboBox::GetSelectedItem()
 	return GetItem(currSel);
 }
 
-void *UI::Win::WinComboBox::GetItem(UOSInt index)
+AnyType UI::Win::WinComboBox::GetItem(UOSInt index)
 {
 	return (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 }

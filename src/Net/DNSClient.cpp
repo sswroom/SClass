@@ -12,10 +12,9 @@ extern Char MyString_STRhexarr[];
 void __stdcall Net::DNSClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 	NotNullPtr<Net::DNSClient> me = userData.GetNN<Net::DNSClient>();
-	RequestStatus *req;
+	NotNullPtr<RequestStatus> req;
 	Sync::MutexUsage mutUsage(me->reqMut);
-	req = me->reqMap.Get(ReadMUInt16(buff));
-	if (req)
+	if (me->reqMap.Get(ReadMUInt16(buff)).SetTo(req))
 	{
 		MemCopyNO(req->respBuff, buff, dataSize);
 		req->respSize = dataSize;
@@ -24,10 +23,10 @@ void __stdcall Net::DNSClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	mutUsage.EndUse();
 }
 
-Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
+NotNullPtr<Net::DNSClient::RequestStatus> Net::DNSClient::NewReq(UInt32 id)
 {
-	RequestStatus *req;
-	NEW_CLASS(req, RequestStatus());
+	NotNullPtr<RequestStatus> req;
+	NEW_CLASSNN(req, RequestStatus());
 	req->respSize = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap.Put(id, req);
@@ -37,13 +36,12 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 
 void Net::DNSClient::DelReq(UInt32 id)
 {
-	RequestStatus *req;
+	NotNullPtr<RequestStatus> req;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	req = this->reqMap.Remove(id);
-	mutUsage.EndUse();
-	if (req)
+	if (this->reqMap.Remove(id).SetTo(req))
 	{
-		DEL_CLASS(req);
+		mutUsage.EndUse();
+		req.Delete();
 	}
 }
 
@@ -69,17 +67,17 @@ Net::DNSClient::~DNSClient()
 	DEL_CLASS(this->svr);
 }
 
-UOSInt Net::DNSClient::GetByEmailDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain)
+UOSInt Net::DNSClient::GetByEmailDomainName(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 15);
 }
 
-UOSInt Net::DNSClient::GetByDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain)
+UOSInt Net::DNSClient::GetByDomainName(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 1);
 }
 
-UOSInt Net::DNSClient::GetByType(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain, UInt16 reqType)
+UOSInt Net::DNSClient::GetByType(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain, UInt16 reqType)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -173,7 +171,7 @@ UOSInt Net::DNSClient::GetByType(NotNullPtr<Data::ArrayList<RequestAnswer*>> ans
 	ptr1 += 4;
 	ptr2 = (Char*)buff;
 	
-	RequestStatus *req = this->NewReq(currId);
+	NotNullPtr<RequestStatus> req = this->NewReq(currId);
 	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
@@ -184,7 +182,7 @@ UOSInt Net::DNSClient::GetByType(NotNullPtr<Data::ArrayList<RequestAnswer*>> ans
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetByIPv4Name(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, UInt32 ip)
+UOSInt Net::DNSClient::GetByIPv4Name(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers, UInt32 ip)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -222,7 +220,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(NotNullPtr<Data::ArrayList<RequestAnswer*>>
 	ptr1 += 4;
 	ptr2 = (Char*)buff;
 	
-	RequestStatus *req = this->NewReq(currId);
+	NotNullPtr<RequestStatus> req = this->NewReq(currId);
 	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
@@ -233,7 +231,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(NotNullPtr<Data::ArrayList<RequestAnswer*>>
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetByAddrName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
+UOSInt Net::DNSClient::GetByAddrName(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers, NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -358,7 +356,7 @@ UOSInt Net::DNSClient::GetByAddrName(NotNullPtr<Data::ArrayList<RequestAnswer*>>
 		return 0;
 	}
 	
-	RequestStatus *req = this->NewReq(currId);
+	NotNullPtr<RequestStatus> req = this->NewReq(currId);
 	this->svr->SendTo(this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
 	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
@@ -369,12 +367,12 @@ UOSInt Net::DNSClient::GetByAddrName(NotNullPtr<Data::ArrayList<RequestAnswer*>>
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetServerName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers)
+UOSInt Net::DNSClient::GetServerName(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers)
 {
 	return GetByAddrName(answers, this->serverAddr);
 }
 
-UOSInt Net::DNSClient::GetCAARecord(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain)
+UOSInt Net::DNSClient::GetCAARecord(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 257);
 }
@@ -447,10 +445,10 @@ UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt st
 	return i;
 }
 
-UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NotNullPtr<Data::ArrayList<RequestAnswer*>> answers)
+UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers)
 {
 	UTF8Char sbuff[512];
-	RequestAnswer *ans;
+	NotNullPtr<RequestAnswer> ans;
 	UOSInt ansCount = ReadMUInt16(&buff[6]);
 	UOSInt cnt2 = ReadMUInt16(&buff[8]);
 	UOSInt cnt3 = ReadMUInt16(&buff[10]);
@@ -463,7 +461,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NotNullP
 	j = 0;
 	while (j < ansCount && i < dataSize)
 	{
-		ans = ParseAnswer(buff, dataSize, &i);
+		ans = ParseAnswer(buff, dataSize, i);
 		answers->Add(ans);
 
 		j++;
@@ -471,15 +469,15 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NotNullP
 	return ansCount;
 }
 
-Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UOSInt dataSize, UOSInt *index)
+NotNullPtr<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff, UOSInt dataSize, InOutParam<UOSInt> index)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	RequestAnswer *ans;
-	UOSInt i = *index;
+	NotNullPtr<RequestAnswer> ans;
+	UOSInt i = index.Get();
 	UOSInt k;
 	i = ParseString(sbuff, buff, i, dataSize, &sptr);
-	ans = MemAlloc(RequestAnswer, 1);
+	ans = MemAllocNN(RequestAnswer);
 	ans->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	ans->recType = ReadMUInt16(&buff[i]);
 	ans->recClass = ReadMUInt16(&buff[i + 2]);
@@ -635,20 +633,20 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 		ans->rd = 0;
 		break;
 	}
-	*index = i + k + 10;
+	index.Set(i + k + 10);
 	return ans;
 }
 
-void Net::DNSClient::FreeAnswers(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers)
+void Net::DNSClient::FreeAnswers(NotNullPtr<Data::ArrayListNN<RequestAnswer>> answers)
 {
-	LIST_FREE_FUNC(answers, FreeAnswer);
+	answers->FreeAll(FreeAnswer);
 }
 
-void Net::DNSClient::FreeAnswer(RequestAnswer *ans)
+void Net::DNSClient::FreeAnswer(NotNullPtr<RequestAnswer> ans)
 {
 	ans->name->Release();;
 	SDEL_STRING(ans->rd);
-	MemFree(ans);
+	MemFreeNN(ans);
 }
 
 UInt32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)

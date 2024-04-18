@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			UI::GUIForm *ctrlForm;
-			UI::GUITreeView::TreeItem *ctrlItem;
+			Optional<UI::GUITreeView::TreeItem> ctrlItem;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<UI::GUIForm> subForms;
 			UI::GUIMapControl *mapCtrl;
@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<Map::MapEnv> env;
 			Map::DrawMapRenderer *envRenderer;
 			Bool scaleChanging;
-			UI::GUITreeView::TreeItem *popNode;
+			Optional<UI::GUITreeView::TreeItem> popNode;
 			Text::TextAnalyzer ta;
 			NotNullPtr<Math::GeographicCoordinateSystem> wgs84CSys;
 
@@ -86,12 +86,12 @@ namespace SSWR
 			static void __stdcall OnMapLayerUpdated(AnyType userObj);
 			static void __stdcall OnTimeScrolled(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTimeChecked(AnyType userObj, Bool newState);
-			static void __stdcall OnTreeDrag(AnyType userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem);
+			static void __stdcall OnTreeDrag(AnyType userObj, NotNullPtr<UI::GUIMapTreeView::ItemIndex> dragItem, NotNullPtr<UI::GUIMapTreeView::ItemIndex> dropItem);
 			static void __stdcall OnVAngleScrolled(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
-			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
+			void SetCtrlForm(UI::GUIForm *frm, Optional<UI::GUITreeView::TreeItem> item);
 			Bool ParseObject(NotNullPtr<IO::ParsedObject> pobj);
 			void OpenURL(Text::CStringNN url, Text::CString customName);
 			void HKOPortal(Text::CString listFile, Text::CString filePath);

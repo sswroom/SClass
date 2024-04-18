@@ -55,7 +55,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	UOSInt i;
 	UOSInt j;
 	Data::Timestamp currTime;
-	Net::DNSClient::RequestAnswer *ans;
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map.Get(domain);
 	if (dnsStat)
@@ -71,7 +71,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 			currTime = Data::Timestamp::UtcNow();
 			if (currTime > dnsStat->timeout)
 			{
-				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
+				Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansArr;
 				mutUsage.EndUse();
 
 				j = this->dnsCli.GetByType(ansArr, domain, 1);
@@ -85,7 +85,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 			j = dnsStat->answers.GetCount();
 			while (i < j)
 			{
-				ans = dnsStat->answers.GetItem(i);
+				ans = dnsStat->answers.GetItemNoCheck(i);
 				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 				{
 					addr.SetVal(ans->addr);
@@ -111,7 +111,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	j = dnsStat->answers.GetCount();
 	while (i < j)
 	{
-		ans = dnsStat->answers.GetItem(i);
+		ans = dnsStat->answers.GetItemNoCheck(i);
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
 			addr.SetVal(ans->addr);
@@ -142,7 +142,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
-	Net::DNSClient::RequestAnswer *ans;
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
 	Data::Timestamp currTime;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	dnsStat = this->reqv6Map.Get(domain);
@@ -159,7 +159,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 			currTime = Data::Timestamp::UtcNow();
 			if (currTime > dnsStat->timeout)
 			{
-				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
+				Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansArr;
 				mutUsage.EndUse();
 
 				j = this->dnsCli.GetByType(ansArr, domain, 28);
@@ -173,7 +173,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 			j = dnsStat->answers.GetCount();
 			while (i < j)
 			{
-				ans = dnsStat->answers.GetItem(i);
+				ans = dnsStat->answers.GetItemNoCheck(i);
 				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 				{
 					addr.SetVal(ans->addr);
@@ -200,7 +200,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 	j = dnsStat->answers.GetCount();
 	while (i < j)
 	{
-		ans = dnsStat->answers.GetItem(i);
+		ans = dnsStat->answers.GetItemNoCheck(i);
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
 			addr.SetVal(ans->addr);
@@ -235,7 +235,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	UOSInt i;
 	UOSInt j;
 	Data::Timestamp currTime;
-	Net::DNSClient::RequestAnswer *ans;
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
 	UOSInt ret = 0;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map.Get(domain);
@@ -252,7 +252,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 			currTime = Data::Timestamp::UtcNow();
 			if (currTime > dnsStat->timeout)
 			{
-				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
+				Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansArr;
 				mutUsage.EndUse();
 
 				j = this->dnsCli.GetByType(ansArr, domain, 1);
@@ -266,7 +266,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 			j = dnsStat->answers.GetCount();
 			while (i < j)
 			{
-				ans = dnsStat->answers.GetItem(i);
+				ans = dnsStat->answers.GetItemNoCheck(i);
 				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 				{
 					addrs[ret] = ans->addr;
@@ -295,7 +295,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	j = dnsStat->answers.GetCount();
 	while (i < j)
 	{
-		ans = dnsStat->answers.GetItem(i);
+		ans = dnsStat->answers.GetItemNoCheck(i);
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
 			addrs[ret] = ans->addr;
@@ -332,7 +332,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
-	Net::DNSClient::RequestAnswer *ans;
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
 	Data::Timestamp currTime;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	UOSInt ret = 0;
@@ -350,7 +350,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 			currTime = Data::Timestamp::UtcNow();
 			if (currTime > dnsStat->timeout)
 			{
-				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
+				Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansArr;
 				mutUsage.EndUse();
 
 				j = this->dnsCli.GetByType(ansArr, domain, 28);
@@ -364,7 +364,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 			j = dnsStat->answers.GetCount();
 			while (i < j)
 			{
-				ans = dnsStat->answers.GetItem(i);
+				ans = dnsStat->answers.GetItemNoCheck(i);
 				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 				{
 					addrs[ret] = ans->addr;
@@ -392,7 +392,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	j = dnsStat->answers.GetCount();
 	while (i < j)
 	{
-		ans = dnsStat->answers.GetItem(i);
+		ans = dnsStat->answers.GetItemNoCheck(i);
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
 			addrs[ret] = ans->addr;

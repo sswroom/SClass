@@ -34,7 +34,7 @@ gboolean GUITreeView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	return false;
 }
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, NotNullPtr<Text::String> txt)
+UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NotNullPtr<Text::String> txt)
 {
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
@@ -42,7 +42,7 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, NotNullPtr<Text::String> txt)
 	this->txt = txt->Clone();
 }
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CStringNN txt)
+UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 {
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
@@ -52,13 +52,13 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CStringNN txt)
 
 UI::GUITreeView::TreeItem::~TreeItem()
 {
-	TreeItem *item;
+	NotNullPtr<TreeItem> item;
 	UOSInt i;
 	i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		item = this->children.GetItem(i);
-		DEL_CLASS(item);
+		item = this->children.GetItemNoCheck(i);
+		item.Delete();
 	}
 	this->txt->Release();
 	if (this->hTreeItem)
@@ -67,22 +67,22 @@ UI::GUITreeView::TreeItem::~TreeItem()
 	}
 }
 
-void UI::GUITreeView::TreeItem::AddChild(UI::GUITreeView::TreeItem *child)
+void UI::GUITreeView::TreeItem::AddChild(NotNullPtr<UI::GUITreeView::TreeItem> child)
 {
 	this->children.Add(child);
 	child->SetParent(this);
 }
-void UI::GUITreeView::TreeItem::SetParent(UI::GUITreeView::TreeItem *parent)
+void UI::GUITreeView::TreeItem::SetParent(Optional<UI::GUITreeView::TreeItem> parent)
 {
 	this->parent = parent;
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetParent()
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetParent()
 {
 	return this->parent;
 }
 
-void *UI::GUITreeView::TreeItem::GetItemObj()
+AnyType UI::GUITreeView::TreeItem::GetItemObj()
 {
 	return this->itemObj;
 }
@@ -117,21 +117,14 @@ UOSInt UI::GUITreeView::TreeItem::GetChildCount()
 	return this->children.GetCount();
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(UOSInt index)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetChild(UOSInt index)
 {
 	return this->children.GetItem(index);
 }
 
 void UI::GUITreeView::FreeItems()
 {
-	UI::GUITreeView::TreeItem *item;
-	UOSInt i;
-	i = this->treeItems.GetCount();
-	while (i-- > 0)
-	{
-		item = this->treeItems.RemoveAt(i);
-		DEL_CLASS(item);
-	}
+	this->treeItems.DeleteAll();
 }
 
 UI::GUITreeView::GUITreeView(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
@@ -191,33 +184,34 @@ void UI::GUITreeView::EventRightClicked()
 	}
 }
 
-OSInt UI::GUITreeView::EventBeginLabelEdit(UI::GUITreeView::TreeItem *item)
+OSInt UI::GUITreeView::EventBeginLabelEdit(NotNullPtr<UI::GUITreeView::TreeItem> item)
 {
 	return 0;
 }
 
-OSInt UI::GUITreeView::EventEndLabelEdit(UI::GUITreeView::TreeItem *item, const UTF8Char *newLabel)
+OSInt UI::GUITreeView::EventEndLabelEdit(NotNullPtr<UI::GUITreeView::TreeItem> item, const UTF8Char *newLabel)
 {
 	return 0;
 }
 
-void UI::GUITreeView::EventDragItem(UI::GUITreeView::TreeItem *dragItem, TreeItem *dropItem)
+void UI::GUITreeView::EventDragItem(NotNullPtr<UI::GUITreeView::TreeItem> dragItem, NotNullPtr<TreeItem> dropItem)
 {
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeItem *insertAfter, NotNullPtr<Text::String> itemText, void *itemObj)
+NotNullPtr<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NotNullPtr<Text::String> itemText, AnyType itemObj)
 {
 	ClassData *data = this->clsData;
-	TreeItem *item;
+	NotNullPtr<TreeItem> item;
+	NotNullPtr<TreeItem> nnparent;
 	GtkTreeIter *parentIter = 0;
-	if (parent)
+	if (parent.SetTo(nnparent))
 	{
-		parentIter = (GtkTreeIter*)parent->GetHItem();
+		parentIter = (GtkTreeIter*)nnparent->GetHItem();
 	}
 	GtkTreeIter *iter = MemAlloc(GtkTreeIter, 1);
-	if (insertAfter)
+	if (insertAfter.SetTo(item))
 	{
-		GtkTreeIter *siblingIter = (GtkTreeIter*)insertAfter->GetHItem();
+		GtkTreeIter *siblingIter = (GtkTreeIter*)item->GetHItem();
 		gtk_tree_store_insert_after(data->treeStore, iter, parentIter, siblingIter);
 	}
 	else
@@ -225,12 +219,12 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeIte
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
 	gtk_tree_store_set(data->treeStore, iter, 0, itemText->v, -1);
-	NEW_CLASS(item, TreeItem(itemObj, itemText));
+	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 
-	if (parent)
+	if (parent.SetTo(nnparent))
 	{
-		parent->AddChild(item);
+		nnparent->AddChild(item);
 	}
 	else
 	{
@@ -239,19 +233,20 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeIte
 	return item;
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, TreeItem *insertAfter, Text::CStringNN itemText, void *itemObj)
+NotNullPtr<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj)
 {
 	ClassData *data = this->clsData;
-	TreeItem *item;
+	NotNullPtr<TreeItem> item;
+	NotNullPtr<TreeItem> nnparent;
 	GtkTreeIter *parentIter = 0;
-	if (parent)
+	if (parent.SetTo(nnparent))
 	{
-		parentIter = (GtkTreeIter*)parent->GetHItem();
+		parentIter = (GtkTreeIter*)nnparent->GetHItem();
 	}
 	GtkTreeIter *iter = MemAlloc(GtkTreeIter, 1);
-	if (insertAfter)
+	if (insertAfter.SetTo(item))
 	{
-		GtkTreeIter *siblingIter = (GtkTreeIter*)insertAfter->GetHItem();
+		GtkTreeIter *siblingIter = (GtkTreeIter*)item->GetHItem();
 		gtk_tree_store_insert_after(data->treeStore, iter, parentIter, siblingIter);
 	}
 	else
@@ -259,12 +254,12 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
 	gtk_tree_store_set(data->treeStore, iter, 0, itemText.v, -1);
-	NEW_CLASS(item, TreeItem(itemObj, itemText));
+	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 
-	if (parent)
+	if (parent.SetTo(nnparent))
 	{
-		parent->AddChild(item);
+		nnparent->AddChild(item);
 	}
 	else
 	{
@@ -273,16 +268,16 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	return item;
 }
 
-void *UI::GUITreeView::RemoveItem(TreeItem *item)
+AnyType UI::GUITreeView::RemoveItem(NotNullPtr<TreeItem> item)
 {
 	ClassData *data = this->clsData;
 	UOSInt i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
-		void *obj = item->GetItemObj();
+		AnyType obj = item->GetItemObj();
 		gtk_tree_store_remove(data->treeStore, (GtkTreeIter*)item->GetHItem());
 		this->treeItems.RemoveAt(i);
-		DEL_CLASS(item);
+		item.Delete();
 		return obj;
 	}
 	else
@@ -303,12 +298,12 @@ UOSInt UI::GUITreeView::GetRootCount()
 	return this->treeItems.GetCount();
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(UOSInt index)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UOSInt index)
 {
 	return this->treeItems.GetItem(index);
 }
 
-void UI::GUITreeView::ExpandItem(TreeItem *item)
+void UI::GUITreeView::ExpandItem(NotNullPtr<TreeItem> item)
 {
 	ClassData *data = this->clsData;
 	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
@@ -316,7 +311,7 @@ void UI::GUITreeView::ExpandItem(TreeItem *item)
 	gtk_tree_path_free(path);
 }
 
-Bool UI::GUITreeView::IsExpanded(TreeItem *item)
+Bool UI::GUITreeView::IsExpanded(NotNullPtr<TreeItem> item)
 {
 	ClassData *data = this->clsData;
 	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
@@ -343,31 +338,33 @@ void UI::GUITreeView::SetAutoFocus(Bool autoFocus)
 {
 }
 
-UI::GUITreeView::TreeItem *GUITreeView_SearchChildSelected(UI::GUITreeView::ClassData *data, GtkTreePath *selPath, UI::GUITreeView::TreeItem *item)
+Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeView::ClassData *data, GtkTreePath *selPath, NotNullPtr<UI::GUITreeView::TreeItem> item)
 {
 	UOSInt i = item->GetChildCount();
 	GtkTreePath *itemPath;
-	UI::GUITreeView::TreeItem *child;
+	NotNullPtr<UI::GUITreeView::TreeItem> child;
 	while (i-- > 0)
 	{
-		child = item->GetChild(i);
-		itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)child->GetHItem());
-		if (gtk_tree_path_compare(selPath, itemPath) == 0)
+		if (item->GetChild(i).SetTo(child))
 		{
+			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)child->GetHItem());
+			if (gtk_tree_path_compare(selPath, itemPath) == 0)
+			{
+				gtk_tree_path_free(itemPath);
+				return child;
+			}
+			if (GUITreeView_SearchChildSelected(data, selPath, child).SetTo(child))
+			{
+				gtk_tree_path_free(itemPath);
+				return child;
+			}
 			gtk_tree_path_free(itemPath);
-			return child;
-		}
-		child = GUITreeView_SearchChildSelected(data, selPath, child);
-		gtk_tree_path_free(itemPath);
-		if (child)
-		{
-			return child;
 		}
 	}
 	return 0;
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 {
 	ClassData *data = this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
@@ -378,10 +375,10 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
 		GtkTreePath *itemPath;
 		UOSInt i = 0;
 		UOSInt j = this->treeItems.GetCount();
-		UI::GUITreeView::TreeItem *item;
+		NotNullPtr<UI::GUITreeView::TreeItem> item;
 		while (i < j)
 		{
-			item = this->treeItems.GetItem(i);
+			item = this->treeItems.GetItemNoCheck(i);
 			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
 			if (gtk_tree_path_compare(selPath, itemPath) == 0)
 			{
@@ -389,13 +386,13 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
 				gtk_tree_path_free(selPath);
 				return item;
 			}
-			item = GUITreeView_SearchChildSelected(data, selPath, item);
-			gtk_tree_path_free(itemPath);
-			if (item)
+			if (GUITreeView_SearchChildSelected(data, selPath, item).SetTo(item))
 			{
+				gtk_tree_path_free(itemPath);
 				gtk_tree_path_free(selPath);
 				return item;
 			}
+			gtk_tree_path_free(itemPath);
 		}
 		gtk_tree_path_free(selPath);
 		return 0;
@@ -406,12 +403,12 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
 	}
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::GetHighlightItem()
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 {
 	return this->GetSelectedItem();
 }
 
-void UI::GUITreeView::BeginEdit(TreeItem *item)
+void UI::GUITreeView::BeginEdit(NotNullPtr<TreeItem> item)
 {
 }
 
@@ -425,13 +422,13 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUITreeView::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
+void UI::GUITreeView::HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj)
 {
 	this->selChgHdlrs.Add(hdlr);
 	this->selChgObjs.Add(userObj);
 }
 
-void UI::GUITreeView::HandleRightClick(UI::UIEvent hdlr, void *userObj)
+void UI::GUITreeView::HandleRightClick(UI::UIEvent hdlr, AnyType userObj)
 {
 	this->rightClkHdlrs.Add(hdlr);
 	this->rightClkObjs.Add(userObj);

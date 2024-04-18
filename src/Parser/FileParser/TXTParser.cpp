@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && parsers.Set(this->parsers) && this->mapMgr != 0)
 	{
 		Map::MapEnv *env;
-		Map::MapEnv::GroupItem *currGroup = 0;
+		Optional<Map::MapEnv::GroupItem> currGroup = 0;
 		if (Text::StrSplitTrimP(sarr, 8, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 		{
 			return 0;
@@ -212,7 +212,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				}
 				else if (addFont == 2)
 				{
-					env->AddFontStyle(CSTR_NULL, pfontName, fontSize, bold, fontColor, buffSize, buffColor);
+					env->AddFontStyle(CSTR("Unamed"), pfontName, fontSize, bold, fontColor, buffSize, buffColor);
 				}
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("6,")))

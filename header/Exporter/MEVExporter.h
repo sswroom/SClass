@@ -29,10 +29,10 @@ namespace Exporter
 		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 	private:
-		static void GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Map::MapEnv::GroupItem *group);
+		static void GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group);
 		static UInt32 AddString(Data::StringMap<MEVStrRecord*> *strArr, Text::String *strVal, UInt32 fileOfst);
 		static UInt32 AddString(Data::StringMap<MEVStrRecord*> *strArr, const UTF8Char *strVal, UOSInt strLen, UInt32 fileOfst);
-		static void WriteGroupItems(NotNullPtr<Map::MapEnv> env, Map::MapEnv::GroupItem *group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr);
+		static void WriteGroupItems(NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr);
 	};
 }
 #endif

@@ -364,7 +364,7 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	if (this->devMap.Get(macInt).SetTo(dev))
 		return dev;
 	dev = MemAllocNN(IO::BTScanLog::ScanRecord3);
-	dev.ClearContent();
+	dev.ZeroContent();
 	dev->mac[0] = macBuff[2];
 	dev->mac[1] = macBuff[3];
 	dev->mac[2] = macBuff[4];

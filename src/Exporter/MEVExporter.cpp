@@ -68,7 +68,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	i = env->GetImageFileCnt();
 	while (i-- > 0)
 	{
-		env->GetImageFileInfo(i, &imgInfo);
+		env->GetImageFileInfo(i, imgInfo);
 		sptr = imgInfo.fileName->ConcatTo(sbuff);
 		j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
@@ -124,7 +124,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	j = env->GetImageFileCnt();
 	while (i < j)
 	{
-		env->GetImageFileInfo(i, &imgInfo);
+		env->GetImageFileInfo(i, imgInfo);
 		sptr = imgInfo.fileName->ConcatTo(sbuff);
 		k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 
@@ -261,7 +261,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	return true;
 }
 
-void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Map::MapEnv::GroupItem *group)
+void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group)
 {
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
@@ -269,28 +269,31 @@ void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayL
 	OSInt si;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 
 	while (i < j)
 	{
-		Map::MapEnv::MapItem *item = env->GetItem(group, i);
-		if (item->itemType == Map::MapEnv::IT_GROUP)
+		if (env->GetItem(group, i).SetTo(item))
 		{
-			GetMapDirs(env, dirArr, (Map::MapEnv::GroupItem*)item);
-		}
-		else
-		{
-			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
-			NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
-			if ((sptr = layer->GetSourceName(sbuff)) != 0)
+			if (item->itemType == Map::MapEnv::IT_GROUP)
 			{
-				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-				if (k != INVALID_INDEX)
+				GetMapDirs(env, dirArr, NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+			}
+			else
+			{
+				NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item);
+				NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
+				if ((sptr = layer->GetSourceName(sbuff)) != 0)
 				{
-					sbuff[k] = 0;
-					si = dirArr->SortedIndexOfPtr(sbuff, k);
-					if (si < 0)
+					k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					if (k != INVALID_INDEX)
 					{
-						dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k).Ptr());
+						sbuff[k] = 0;
+						si = dirArr->SortedIndexOfPtr(sbuff, k);
+						if (si < 0)
+						{
+							dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k).Ptr());
+						}
 					}
 				}
 			}
@@ -329,7 +332,7 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 	return strRec->byteSize;
 }
 
-void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Map::MapEnv::GroupItem *group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
+void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
@@ -338,92 +341,94 @@ void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Map::Ma
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
 	UOSInt k;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 	while (i < j)
 	{
-		Map::MapEnv::MapItem *item = env->GetItem(group, i);
-
-		if (item->itemType == Map::MapEnv::IT_GROUP)
+		if (env->GetItem(group, i).SetTo(item))
 		{
-			*(Int32*)&buff[0] = item->itemType;
-
-			NotNullPtr<Text::String> groupName = env->GetGroupName((Map::MapEnv::GroupItem*)item);
-			*(Int32*)&buff[4] = 0;
-			*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
-			*(Int32*)&buff[12] = (Int32)env->GetItemCount((Map::MapEnv::GroupItem*)item);
-			stm->Write(buff, 16);
-			*stmPos = 16 + *stmPos;
-
-			WriteGroupItems(env, (Map::MapEnv::GroupItem*)item, stmPos, stm, strArr, dirArr);
-		}
-		else if (item->itemType == Map::MapEnv::IT_LAYER)
-		{
-			Map::DrawLayerType ltype;
-			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
-			NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
-			*(Int32*)&buff[0] = item->itemType;
-			sptr = layer->GetSourceName(sbuff);
-			*(Int32*)&buff[4] = 0;
-			k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-			*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UOSInt)(sptr - &sbuff[k + 1]), 4 + *stmPos);
-			if (k != INVALID_INDEX)
+			if (item->itemType == Map::MapEnv::IT_GROUP)
 			{
-				sbuff[k] = 0;
-				*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOfPtr(sbuff, k);
+				*(Int32*)&buff[0] = item->itemType;
+
+				NotNullPtr<Text::String> groupName = env->GetGroupName(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+				*(Int32*)&buff[4] = 0;
+				*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
+				*(Int32*)&buff[12] = (Int32)env->GetItemCount(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+				stm->Write(buff, 16);
+				*stmPos = 16 + *stmPos;
+
+				WriteGroupItems(env, NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item), stmPos, stm, strArr, dirArr);
+			}
+			else if (item->itemType == Map::MapEnv::IT_LAYER)
+			{
+				Map::DrawLayerType ltype;
+				NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item);
+				NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
+				*(Int32*)&buff[0] = item->itemType;
+				sptr = layer->GetSourceName(sbuff);
+				*(Int32*)&buff[4] = 0;
+				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+				*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UOSInt)(sptr - &sbuff[k + 1]), 4 + *stmPos);
+				if (k != INVALID_INDEX)
+				{
+					sbuff[k] = 0;
+					*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOfPtr(sbuff, k);
+				}
+				else
+				{
+					*(Int32*)&buff[12] = -1;
+				}
+				env->GetLayerProp(setting, group, i);
+				ltype = layer->GetLayerType();
+				*(UInt32*)&buff[16] = layer->GetCodePage();
+				WriteUInt32(&buff[24], (UInt32)setting.labelCol);
+				*(Int32*)&buff[28] = setting.flags;
+				*(Int32*)&buff[32] = Double2Int32(setting.minScale);
+				*(Int32*)&buff[36] = Double2Int32(setting.maxScale);
+				*(Int32*)&buff[40] = setting.priority;
+				*(Int32*)&buff[44] = (Int32)setting.fontStyle;
+				if (ltype == Map::DRAW_LAYER_POINT || ltype == Map::DRAW_LAYER_POINT3D)
+				{
+					*(Int32*)&buff[20] = 1;
+					UInt32 i = (UInt32)env->GetImageFileIndex(setting.imgIndex);
+					Map::MapEnv::ImageInfo imgInfo;
+					env->GetImageFileInfo(i, imgInfo);
+					*(UInt32*)&buff[48] = i;
+					*(Int32*)&buff[52] = (Int32)(setting.imgIndex - imgInfo.index);
+
+					stm->Write(buff, 56);
+					*stmPos = 56 + *stmPos;
+				}
+				else if (ltype == Map::DRAW_LAYER_POLYLINE || ltype == Map::DRAW_LAYER_POLYLINE3D)
+				{
+					*(Int32*)&buff[20] = 3;
+					*(Int32*)&buff[48] = (Int32)setting.lineStyle;
+
+					stm->Write(buff, 52);
+					*stmPos = 52 + *stmPos;
+				}
+				else if (ltype == Map::DRAW_LAYER_POLYGON)
+				{
+					*(Int32*)&buff[20] = 5;
+					*(Int32*)&buff[48] = (Int32)setting.lineStyle;
+					*(Int32*)&buff[52] = (Int32)setting.fillStyle;
+
+					stm->Write(buff, 56);
+					*stmPos = 56 + *stmPos;
+				}
+				else
+				{
+					*(Int32*)&buff[20] = 0;
+					stm->Write(buff, 48);
+					*stmPos = 48 + *stmPos;
+				}
 			}
 			else
 			{
-				*(Int32*)&buff[12] = -1;
+				*(Int32*)&buff[0] = item->itemType;
+				stm->Write(buff, 4);
+				*stmPos = 4 + *stmPos;
 			}
-			env->GetLayerProp(setting, group, i);
-			ltype = layer->GetLayerType();
-			*(UInt32*)&buff[16] = layer->GetCodePage();
-			WriteUInt32(&buff[24], (UInt32)setting.labelCol);
-			*(Int32*)&buff[28] = setting.flags;
-			*(Int32*)&buff[32] = Double2Int32(setting.minScale);
-			*(Int32*)&buff[36] = Double2Int32(setting.maxScale);
-			*(Int32*)&buff[40] = setting.priority;
-			*(Int32*)&buff[44] = (Int32)setting.fontStyle;
-			if (ltype == Map::DRAW_LAYER_POINT || ltype == Map::DRAW_LAYER_POINT3D)
-			{
-				*(Int32*)&buff[20] = 1;
-				UInt32 i = (UInt32)env->GetImageFileIndex(setting.imgIndex);
-				Map::MapEnv::ImageInfo imgInfo;
-				env->GetImageFileInfo(i, &imgInfo);
-				*(UInt32*)&buff[48] = i;
-				*(Int32*)&buff[52] = (Int32)(setting.imgIndex - imgInfo.index);
-
-				stm->Write(buff, 56);
-				*stmPos = 56 + *stmPos;
-			}
-			else if (ltype == Map::DRAW_LAYER_POLYLINE || ltype == Map::DRAW_LAYER_POLYLINE3D)
-			{
-				*(Int32*)&buff[20] = 3;
-				*(Int32*)&buff[48] = (Int32)setting.lineStyle;
-
-				stm->Write(buff, 52);
-				*stmPos = 52 + *stmPos;
-			}
-			else if (ltype == Map::DRAW_LAYER_POLYGON)
-			{
-				*(Int32*)&buff[20] = 5;
-				*(Int32*)&buff[48] = (Int32)setting.lineStyle;
-				*(Int32*)&buff[52] = (Int32)setting.fillStyle;
-
-				stm->Write(buff, 56);
-				*stmPos = 56 + *stmPos;
-			}
-			else
-			{
-				*(Int32*)&buff[20] = 0;
-				stm->Write(buff, 48);
-				*stmPos = 48 + *stmPos;
-			}
-		}
-		else
-		{
-			*(Int32*)&buff[0] = item->itemType;
-			stm->Write(buff, 4);
-			*stmPos = 4 + *stmPos;
 		}
 		i++;
 	}

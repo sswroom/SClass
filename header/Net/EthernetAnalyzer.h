@@ -5,7 +5,7 @@
 #include "Data/CallbackStorage.h"
 #include "Data/FastMap.h"
 #include "Data/FixedCircularBuff.h"
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMapNN.h"
 #include "IO/Writer.h"
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
@@ -81,7 +81,7 @@ namespace Net
 			UInt32 cliId;
 			Net::SocketUtil::AddressInfo addr;
 			Sync::Mutex mut;
-			Data::ArrayList<DNSCliHourInfo*> hourInfos;
+			Data::ArrayListNN<DNSCliHourInfo> hourInfos;
 		};
 
 		struct DNSRequestResult
@@ -158,25 +158,25 @@ namespace Net
 	private:
 		AnalyzeType atype;
 		Sync::Mutex ipTranMut;
-		Data::FastMap<Int64, IPTranStatus*> ipTranMap;
+		Data::FastMapNN<Int64, IPTranStatus> ipTranMap;
 		Sync::Mutex macMut;
-		Data::FastMap<UInt64, MACStatus*> macMap;
+		Data::FastMapNN<UInt64, MACStatus> macMap;
 		Sync::Mutex dnsCliInfoMut;
-		Data::FastMap<UInt32, DNSClientInfo*> dnsCliInfos;
+		Data::FastMapNN<UInt32, DNSClientInfo> dnsCliInfos;
 		Sync::Mutex dnsReqv4Mut;
-		Data::ICaseStringMap<DNSRequestResult*> dnsReqv4Map;
+		Data::ICaseStringMapNN<DNSRequestResult> dnsReqv4Map;
 		Sync::Mutex dnsReqv6Mut;
-		Data::ICaseStringMap<DNSRequestResult*> dnsReqv6Map;
+		Data::ICaseStringMapNN<DNSRequestResult> dnsReqv6Map;
 		Sync::Mutex dnsReqOthMut;
-		Data::ICaseStringMap<DNSRequestResult*> dnsReqOthMap;
+		Data::ICaseStringMapNN<DNSRequestResult> dnsReqOthMap;
 		Sync::Mutex dnsTargetMut;
-		Data::FastMap<UInt32, DNSTargetInfo*> dnsTargetMap;
+		Data::FastMapNN<UInt32, DNSTargetInfo> dnsTargetMap;
 		Sync::Mutex ipLogMut;
-		Data::FastMap<UInt32, IPLogInfo*> ipLogMap;
+		Data::FastMapNN<UInt32, IPLogInfo> ipLogMap;
 		Sync::Mutex dhcpMut;
-		Data::FastMap<UInt64, DHCPInfo*> dhcpMap;
+		Data::FastMapNN<UInt64, DHCPInfo> dhcpMap;
 		Sync::Mutex mdnsMut;
-		Data::ArrayList<Net::DNSClient::RequestAnswer*> mdnsList;
+		Data::ArrayListNN<Net::DNSClient::RequestAnswer> mdnsList;
 		Sync::Mutex tcp4synMut;
 		Data::FixedCircularBuff<TCP4SYNInfo> tcp4synList;
 
@@ -189,8 +189,8 @@ namespace Net
 
 		static void NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize);
 
-		MACStatus *MACGet(UInt64 macAddr);
-		void MDNSAdd(Net::DNSClient::RequestAnswer *ans);
+		NotNullPtr<MACStatus> MACGet(UInt64 macAddr);
+		void MDNSAdd(NotNullPtr<Net::DNSClient::RequestAnswer> ans);
 	public:
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, NotNullPtr<Text::String> name);
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::CStringNN name);
@@ -201,30 +201,30 @@ namespace Net
 		UInt64 GetPacketCnt() const;
 		UInt64 GetPacketTotalSize() const;
 		void UseIPTran(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingList<IPTranStatus*>> IPTranGetList() const;
+		NotNullPtr<const Data::ReadingListNN<IPTranStatus>> IPTranGetList() const;
 		UOSInt IPTranGetCount() const;
 		void UseMAC(NotNullPtr<Sync::MutexUsage> mutUsage);
-		const Data::ReadingList<MACStatus*> *MACGetList() const;
+		NotNullPtr<const Data::ReadingListNN<MACStatus>> MACGetList() const;
 		void UseDNSCli(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingList<DNSClientInfo*>> DNSCliGetList() const;
+		NotNullPtr<const Data::ReadingListNN<DNSClientInfo>> DNSCliGetList() const;
 		UOSInt DNSCliGetCount();
-		UOSInt DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList); //no need release
+		UOSInt DNSReqv4GetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
 		UOSInt DNSReqv4GetCount();
-		Bool DNSReqv4GetInfo(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSReqv6GetList(Data::ArrayList<Text::String *> *reqList); //no need release
+		Bool DNSReqv4GetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt DNSReqv6GetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
 		UOSInt DNSReqv6GetCount();
-		Bool DNSReqv6GetInfo(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSReqOthGetList(Data::ArrayList<Text::String *> *reqList); //no need release
+		Bool DNSReqv6GetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt DNSReqOthGetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
 		UOSInt DNSReqOthGetCount();
-		Bool DNSReqOthGetInfo(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release
+		Bool DNSReqOthGetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt DNSTargetGetList(NotNullPtr<Data::ArrayListNN<DNSTargetInfo>> targetList); //no need release
 		UOSInt DNSTargetGetCount();
-		UOSInt MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList); //no need release
+		UOSInt MDNSGetList(NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList); //no need release
 		UOSInt MDNSGetCount();
 		void UseDHCP(NotNullPtr<Sync::MutexUsage> mutUsage);
-		const Data::ReadingList<DHCPInfo*> *DHCPGetList() const;
+		NotNullPtr<const Data::ReadingListNN<DHCPInfo>> DHCPGetList() const;
 		void UseIPLog(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingList<IPLogInfo*>> IPLogGetList() const;
+		NotNullPtr<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
 		UOSInt TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const;

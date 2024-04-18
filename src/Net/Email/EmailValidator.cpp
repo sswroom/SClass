@@ -34,14 +34,14 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 	}
 
 	Text::String *emailSvr = 0;
-	Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
-	Net::DNSClient::RequestAnswer *ans;
+	Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
+	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
 	this->dnsClient->GetByEmailDomainName(ansList, emailDomain);
 	i = 0;
 	j = ansList.GetCount();
 	while (i < j)
 	{
-		ans = ansList.GetItem(i);
+		ans = ansList.GetItemNoCheck(i);
 		if (ans->recType == 15)
 		{
 			emailSvr = ans->rd->Clone().Ptr();

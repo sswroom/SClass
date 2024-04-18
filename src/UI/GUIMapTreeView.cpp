@@ -11,40 +11,39 @@
 
 void UI::GUIMapTreeView::RemoveItems()
 {
-	if (this->GetRootCount() > 0)
+	NotNullPtr<TreeItem> item;
+	if (this->GetRootCount() > 0 && this->GetRootItem(0).SetTo(item))
 	{
-		FreeItem(this->GetRootItem(0));
+		FreeItem(item);
 		this->ClearItems();
 	}
 }
 
-void UI::GUIMapTreeView::FreeItem(UI::GUITreeView::TreeItem *item)
+void UI::GUIMapTreeView::FreeItem(NotNullPtr<UI::GUITreeView::TreeItem> item)
 {
-	ItemIndex *ind = (ItemIndex*)item->GetItemObj();
-	MemFree(ind);
+	NotNullPtr<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
+	MemFreeNN(ind);
+	NotNullPtr<TreeItem> child;
 	UOSInt i = item->GetChildCount();
 	while (i-- > 0)
 	{
-		FreeItem(item->GetChild(i));
+		if (item->GetChild(i).SetTo(child))
+			FreeItem(child);
 	}
 }
 
-void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::MapEnv::GroupItem *group, UOSInt index)
+void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeItem, Optional<Map::MapEnv::GroupItem> group, UOSInt index)
 {
-	Map::MapEnv::MapItem *item;
-
-	item = this->env->GetItem(group, index);
-
-	ItemIndex *ind;
-
-	if (item)
+	NotNullPtr<Map::MapEnv::MapItem> item;
+	NotNullPtr<ItemIndex> ind;
+	if (this->env->GetItem(group, index).SetTo(item))
 	{
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			Map::MapEnv::LayerItem *layer = (Map::MapEnv::LayerItem*)item;
+			NotNullPtr<Map::MapEnv::LayerItem> layer = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item);
 			NotNullPtr<Text::String> name = layer->layer->GetName();
 			UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			ind = MemAlloc(ItemIndex, 1);
+			ind = MemAllocNN(ItemIndex);
 			ind->group = group;
 			ind->index = index;
 			ind->itemType = Map::MapEnv::IT_LAYER;
@@ -53,48 +52,54 @@ void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::M
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
-			Map::MapEnv::GroupItem *grp = (Map::MapEnv::GroupItem*)item;
+			NotNullPtr<Map::MapEnv::GroupItem> grp = NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item);
 			UOSInt i;
 			UOSInt j = this->env->GetItemCount(grp);
-			ind = MemAlloc(ItemIndex, 1);
+			ind = MemAllocNN(ItemIndex);
 			ind->group = group;
 			ind->index = index;
 			ind->itemType = Map::MapEnv::IT_GROUP;
 			ind->item = item;
-			treeItem = this->InsertItem(treeItem, 0, this->env->GetGroupName(grp), ind);
-			i = 0;
-			while (i < j)
+			NotNullPtr<TreeItem> nntreeItem;
+			if (this->InsertItem(treeItem, 0, this->env->GetGroupName(grp), ind).SetTo(nntreeItem))
 			{
-				AddTreeNode(treeItem, grp, i);
-				i++;
-			}
-			if (env->GetGroupHide(grp))
-			{
-			}
-			else
-			{
-				this->ExpandItem(treeItem);
+				i = 0;
+				while (i < j)
+				{
+					AddTreeNode(nntreeItem, grp, i);
+					i++;
+				}
+				if (env->GetGroupHide(grp))
+				{
+				}
+				else
+				{
+					this->ExpandItem(nntreeItem);
+				}
 			}
 		}
 	}
 }
 
-void UI::GUIMapTreeView::UpdateTreeStatus(UI::GUITreeView::TreeItem *item)
+void UI::GUIMapTreeView::UpdateTreeStatus(NotNullPtr<UI::GUITreeView::TreeItem> item)
 {
-	ItemIndex *ind = (ItemIndex *)item->GetItemObj();
+	NotNullPtr<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
 	if (ind->itemType == Map::MapEnv::IT_GROUP)
 	{
-		if (ind->item != 0)
+		NotNullPtr<Map::MapEnv::MapItem> mitem;
+		if (ind->item.SetTo(mitem))
 		{
-			env->SetGroupHide((Map::MapEnv::GroupItem*)ind->item, !this->IsExpanded(item));
+			env->SetGroupHide(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(mitem), !this->IsExpanded(item));
 		}
 	}
 	if (ind->itemType != Map::MapEnv::IT_UNKNOWN)
 	{
+		NotNullPtr<TreeItem> child;
 		UOSInt i = item->GetChildCount();
 		while (i-- > 0)
 		{
-			UpdateTreeStatus(item->GetChild(i));
+			if (item->GetChild(i).SetTo(child))
+				UpdateTreeStatus(child);
 		}
 	}
 }
@@ -114,34 +119,35 @@ UI::GUIMapTreeView::~GUIMapTreeView()
 	RemoveItems();
 }
 
-OSInt UI::GUIMapTreeView::EventBeginLabelEdit(TreeItem *item)
+OSInt UI::GUIMapTreeView::EventBeginLabelEdit(NotNullPtr<TreeItem> item)
 {
-	ItemIndex *ind = (ItemIndex*)item->GetItemObj();
-	if (ind->item != 0 && ind->itemType == Map::MapEnv::IT_GROUP)
+	NotNullPtr<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
+	if (ind->item.NotNull() && ind->itemType == Map::MapEnv::IT_GROUP)
 		return 0;
 	else
 		return 1;
 }
 
-OSInt UI::GUIMapTreeView::EventEndLabelEdit(TreeItem *item, const UTF8Char *newLabel)
+OSInt UI::GUIMapTreeView::EventEndLabelEdit(NotNullPtr<TreeItem> item, const UTF8Char *newLabel)
 {
-	ItemIndex *ind = (ItemIndex*)item->GetItemObj();
+	NotNullPtr<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
 	if (newLabel == 0)
 		return 0;
-	if (ind->item != 0 && ind->itemType == Map::MapEnv::IT_GROUP)
+	NotNullPtr<Map::MapEnv::MapItem> mitem;
+	if (ind->item.SetTo(mitem) && ind->itemType == Map::MapEnv::IT_GROUP)
 	{
-		this->env->SetGroupName((Map::MapEnv::GroupItem*)ind->item, Text::CString::FromPtr(newLabel));
+		this->env->SetGroupName(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(mitem), Text::CString::FromPtr(newLabel));
 		return 1;
 	}
 	else
 		return 0;
 }
 
-void UI::GUIMapTreeView::EventDragItem(TreeItem *dragItem, TreeItem *dropItem)
+void UI::GUIMapTreeView::EventDragItem(NotNullPtr<TreeItem> dragItem, NotNullPtr<TreeItem> dropItem)
 {
 	if (this->dragHdlr.func)
 	{
-		this->dragHdlr.func(this->dragHdlr.userObj, (UI::GUIMapTreeView::ItemIndex*)dragItem->GetItemObj(), (UI::GUIMapTreeView::ItemIndex*)dropItem->GetItemObj());
+		this->dragHdlr.func(this->dragHdlr.userObj, dragItem->GetItemObj().GetNN<ItemIndex>(), dropItem->GetItemObj().GetNN<ItemIndex>());
 	}
 }
 
@@ -165,89 +171,97 @@ void UI::GUIMapTreeView::UpdateTree()
 {
 	UOSInt i;
 	UOSInt j;
-	ItemIndex *ind;
+	NotNullPtr<ItemIndex> ind;
+	NotNullPtr<TreeItem> item;
 
-	if (this->GetRootCount() > 0)
+	if (this->GetRootCount() > 0 && this->GetRootItem(0).SetTo(item))
 	{
-		UpdateTreeStatus(this->GetRootItem(0));
+		UpdateTreeStatus(item);
 	}
 	this->RemoveItems();
-	ind = MemAlloc(ItemIndex, 1);
+	ind = MemAllocNN(ItemIndex);
 	ind->group = 0;
 	ind->index = (UOSInt)-1;
 	ind->itemType = Map::MapEnv::IT_GROUP;
 	ind->item = 0;
-	UI::GUIMapTreeView::TreeItem *item = this->InsertItem(0, 0, CSTR("ROOT"), ind);
-
-	j = this->env->GetItemCount(0);
-	i = 0;
-	while (i < j)
+	if (this->InsertItem(0, 0, CSTR("ROOT"), ind).SetTo(item))
 	{
-		this->AddTreeNode(item, 0, i);
-		i++;
+		j = this->env->GetItemCount(0);
+		i = 0;
+		while (i < j)
+		{
+			this->AddTreeNode(item, 0, i);
+			i++;
+		}
+		this->ExpandItem(item);
 	}
-	this->ExpandItem(item);
 }
 
-void UI::GUIMapTreeView::AddSubGroup(UI::GUITreeView::TreeItem *item)
+void UI::GUIMapTreeView::AddSubGroup(NotNullPtr<UI::GUITreeView::TreeItem> item)
 {
-	UI::GUITreeView::TreeItem *n;
-	UI::GUIMapTreeView::ItemIndex *ind;
-	ind = (UI::GUIMapTreeView::ItemIndex*)item->GetItemObj();
+	NotNullPtr<UI::GUITreeView::TreeItem> n;
+	NotNullPtr<UI::GUIMapTreeView::ItemIndex> ind;
+	ind = item->GetItemObj().GetNN<ItemIndex>();
 	if (ind->itemType == Map::MapEnv::IT_GROUP)
 	{
-		Map::MapEnv::GroupItem *grp = this->env->AddGroup((Map::MapEnv::GroupItem*)ind->item, CSTR("Group"));
-		ind = MemAlloc(ItemIndex, 1);
+		NotNullPtr<Map::MapEnv::GroupItem> grp = this->env->AddGroup(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), CSTR("Group"));
+		ind = MemAllocNN(ItemIndex);
 		ind->itemType = Map::MapEnv::IT_GROUP;
-		ind->group = (Map::MapEnv::GroupItem*)(((ItemIndex*)item->GetItemObj())->item);
+		ind->group = Optional<Map::MapEnv::GroupItem>::ConvertFrom(item->GetItemObj().GetNN<ItemIndex>()->item);
 		ind->item = grp;
-		ind->index = this->env->GetItemCount((Map::MapEnv::GroupItem*) ((UI::GUIMapTreeView::ItemIndex*)item->GetItemObj())->item) - 1;
-		n = this->InsertItem(item, 0, CSTR("Group"), ind);
-		this->ExpandItem(n);
-		this->BeginEdit(n);
+		ind->index = this->env->GetItemCount(Optional<Map::MapEnv::GroupItem>::ConvertFrom(item->GetItemObj().GetNN<ItemIndex>()->item)) - 1;
+		if (this->InsertItem(item, 0, CSTR("Group"), ind).SetTo(n))
+		{
+			this->ExpandItem(n);
+			this->BeginEdit(n);
+		}
 	}
 	else if (ind->itemType == Map::MapEnv::IT_LAYER)
 	{
-		Map::MapEnv::GroupItem *grp = this->env->AddGroup(((UI::GUIMapTreeView::ItemIndex*)item->GetItemObj())->group, CSTR("Group"));
-		ind = MemAlloc(ItemIndex, 1);
+		NotNullPtr<Map::MapEnv::GroupItem> grp = this->env->AddGroup(item->GetItemObj().GetNN<ItemIndex>()->group, CSTR("Group"));
+		ind = MemAllocNN(ItemIndex);
 		ind->itemType = Map::MapEnv::IT_GROUP;
-		ind->group = ((ItemIndex*)item->GetItemObj())->group;
+		ind->group = item->GetItemObj().GetNN<ItemIndex>()->group;
 		ind->item = grp;
-		if (ind->group == 0)
+		if (ind->group.IsNull())
 		{
 			ind->index = this->env->GetItemCount(0) - 1;
-			n = this->InsertItem(0, 0, CSTR("Group"), ind);
-			this->ExpandItem(n);
-			this->BeginEdit(n);
+			if (this->InsertItem(0, 0, CSTR("Group"), ind).SetTo(n))
+			{
+				this->ExpandItem(n);
+				this->BeginEdit(n);
+			}
 		}
 		else
 		{
-			ind->index = this->env->GetItemCount(((ItemIndex*)item->GetItemObj())->group) - 1;
-			n = this->InsertItem(item->GetParent(), 0, CSTR("Group"), ind);
-			this->ExpandItem(n);
-			this->BeginEdit(n);
+			ind->index = this->env->GetItemCount(item->GetItemObj().GetNN<ItemIndex>()->group) - 1;
+			if (this->InsertItem(item->GetParent(), 0, CSTR("Group"), ind).SetTo(n))
+			{
+				this->ExpandItem(n);
+				this->BeginEdit(n);
+			}
 		}
 	}
 }
 
-void UI::GUIMapTreeView::RemoveItem(UI::GUITreeView::TreeItem *item)
+void UI::GUIMapTreeView::RemoveItem(NotNullPtr<UI::GUITreeView::TreeItem> item)
 {
-	ItemIndex *ind = (ItemIndex*)item->GetItemObj();
+	NotNullPtr<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
 	item->GetChild(ind->index);
 	this->env->RemoveItem(ind->group, ind->index);
 	ind->itemType = Map::MapEnv::IT_UNKNOWN;
 	this->UpdateTree();
 }
 
-void UI::GUIMapTreeView::ExpandColl(UI::GUIMapTreeView::ItemIndex *ind)
+void UI::GUIMapTreeView::ExpandColl(NotNullPtr<UI::GUIMapTreeView::ItemIndex> ind)
 {
-	if (ind->itemType == Map::MapEnv::IT_LAYER)
+	NotNullPtr<Map::MapEnv::LayerItem> lyr;
+	if (ind->itemType == Map::MapEnv::IT_LAYER && Optional<Map::MapEnv::LayerItem>::ConvertFrom(ind->item).SetTo(lyr))
 	{
-		Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)ind->item;
 		if (lyr->layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 		{
-			Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)lyr;
-			Map::MapEnv::GroupItem *grp;
+			NotNullPtr<Map::MapLayerCollection> lyrColl = NotNullPtr<Map::MapLayerCollection>::ConvertFrom(lyr);
+			NotNullPtr<Map::MapEnv::GroupItem> grp;
 			NotNullPtr<Map::MapDrawLayer> layer;
 			UOSInt i = this->env->GetItemCount(ind->group);
 			grp = this->env->AddGroup(ind->group, lyrColl->GetName());

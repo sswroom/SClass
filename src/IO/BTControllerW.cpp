@@ -246,7 +246,7 @@ IO::BTController::~BTController()
 	}
 }
 
-OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
+OSInt IO::BTController::CreateDevices(NotNullPtr<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
 {
 	InternalData *me = (InternalData*)this->internalData;
 	BluetoothFindFirstDeviceFunc FindFirst = (BluetoothFindFirstDeviceFunc)me->lib->GetFunc("BluetoothFindFirstDevice");
@@ -258,7 +258,7 @@ OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool 
 	OSInt ret = 0;
 	BLUETOOTH_DEVICE_SEARCH_PARAMS dsp;
 	BLUETOOTH_DEVICE_INFO devInfo;
-	IO::BTController::BTDevice *btDev;
+	NotNullPtr<IO::BTController::BTDevice> btDev;
 	dsp.dwSize = sizeof(BLUETOOTH_DEVICE_SEARCH_PARAMS);
 	dsp.fReturnAuthenticated = TRUE;
 	dsp.fReturnRemembered = TRUE;
@@ -277,7 +277,7 @@ OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool 
 	}
 	while (true)
 	{
-		NEW_CLASS(btDev, IO::BTController::BTDevice(this->internalData, this->hand, &devInfo));
+		NEW_CLASSNN(btDev, IO::BTController::BTDevice(this->internalData, this->hand, &devInfo));
 		devList->Add(btDev);
 		ret++;
 		if (!FindNext(hSrch, &devInfo))

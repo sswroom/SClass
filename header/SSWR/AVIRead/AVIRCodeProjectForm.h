@@ -30,7 +30,7 @@ namespace SSWR
 
 			static void __stdcall OnItemSelected(AnyType userObj);
 			void DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);
-			void AddTreeObj(UI::GUITreeView::TreeItem *parent, Text::CodeContainer *container);
+			void AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, Text::CodeContainer *container);
 		public:
 			AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj);
 			virtual ~AVIRCodeProjectForm();

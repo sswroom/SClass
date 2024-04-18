@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUITREEVIEW
 #define _SM_UI_GUITREEVIEW
+#include "Data/ArrayListNN.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -10,37 +11,37 @@ namespace UI
 		class TreeItem
 		{
 		private:
-			Data::ArrayList<TreeItem *> children;
+			Data::ArrayListNN<TreeItem> children;
 			void *hTreeItem;
-			void *itemObj;
+			AnyType itemObj;
 			NotNullPtr<Text::String> txt;
-			TreeItem *parent;
+			Optional<TreeItem> parent;
 
 		public:
-			TreeItem(void *itemObj, NotNullPtr<Text::String> txt);
-			TreeItem(void *itemObj, Text::CStringNN txt);
+			TreeItem(AnyType itemObj, NotNullPtr<Text::String> txt);
+			TreeItem(AnyType itemObj, Text::CStringNN txt);
 			~TreeItem();
 
-			void AddChild(TreeItem *child);
-			void SetParent(TreeItem *parent);
-			TreeItem *GetParent();
-			void *GetItemObj();
+			void AddChild(NotNullPtr<TreeItem> child);
+			void SetParent(Optional<TreeItem> parent);
+			Optional<TreeItem> GetParent();
+			AnyType GetItemObj();
 			void SetHItem(void *hTreeItem);
 			void *GetHItem();
 			void SetText(Text::CStringNN txt);
 			NotNullPtr<Text::String> GetText() const;
 			UOSInt GetChildCount();
-			TreeItem *GetChild(UOSInt index);
+			Optional<TreeItem> GetChild(UOSInt index);
 		};
 
 		struct ClassData;
 
 	private:
 		Data::ArrayList<UI::UIEvent> selChgHdlrs;
-		Data::ArrayList<void *> selChgObjs;
+		Data::ArrayList<AnyType> selChgObjs;
 		Data::ArrayList<UI::UIEvent> rightClkHdlrs;
-		Data::ArrayList<void *> rightClkObjs;
-		Data::ArrayList<TreeItem*> treeItems;
+		Data::ArrayList<AnyType> rightClkObjs;
+		Data::ArrayListNN<TreeItem> treeItems;
 		Bool autoFocus;
 		Bool editing;
 		void *oriWndProc;
@@ -58,31 +59,31 @@ namespace UI
 		void EventSelectionChange();
 		void EventDoubleClick();
 		void EventRightClicked();
-		virtual OSInt EventBeginLabelEdit(TreeItem *item);
-		virtual OSInt EventEndLabelEdit(TreeItem *item, const UTF8Char *newLabel);
-		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
+		virtual OSInt EventBeginLabelEdit(NotNullPtr<TreeItem> item);
+		virtual OSInt EventEndLabelEdit(NotNullPtr<TreeItem> item, const UTF8Char *newLabel);
+		virtual void EventDragItem(NotNullPtr<TreeItem> dragItem, NotNullPtr<TreeItem> dropItem);
 
-		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, NotNullPtr<Text::String> itemText, void *itemObj);
-		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::CStringNN itemText, void *itemObj);
-		void *RemoveItem(TreeItem *item);
+		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NotNullPtr<Text::String> itemText, AnyType itemObj);
+		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj);
+		AnyType RemoveItem(NotNullPtr<TreeItem> item);
 		void ClearItems();
 		UOSInt GetRootCount();
-		TreeItem *GetRootItem(UOSInt index);
-		void ExpandItem(TreeItem *item);
-		Bool IsExpanded(TreeItem *item);
+		Optional<TreeItem> GetRootItem(UOSInt index);
+		void ExpandItem(NotNullPtr<TreeItem> item);
+		Bool IsExpanded(NotNullPtr<TreeItem> item);
 		void SetHasLines(Bool hasLines);
 		void SetHasCheckBox(Bool hasCheckBox);
 		void SetHasButtons(Bool hasButtons);
 		void SetAutoFocus(Bool autoFocus);
-		UI::GUITreeView::TreeItem *GetSelectedItem();
-		UI::GUITreeView::TreeItem *GetHighlightItem();
-		void BeginEdit(TreeItem *item);
+		Optional<UI::GUITreeView::TreeItem> GetSelectedItem();
+		Optional<UI::GUITreeView::TreeItem> GetHighlightItem();
+		void BeginEdit(NotNullPtr<TreeItem> item);
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);
-		virtual void HandleRightClick(UI::UIEvent hdlr, void *userObj);
+		virtual void HandleSelectionChange(UI::UIEvent hdlr, AnyType userObj);
+		virtual void HandleRightClick(UI::UIEvent hdlr, AnyType userObj);
 	};
 }
 #endif

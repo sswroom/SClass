@@ -217,7 +217,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 	env->SetDefLineStyle(defLineStyle);
 	env->SetDefFontStyle(defFontStyle);
 
-	ReadItems(fd, env, itemCnt, &currPos, 0, dirArr, imgFileArr);
+	ReadItems(fd, env, itemCnt, currPos, 0, dirArr, imgFileArr);
 
 	i = dirCnt;
 	while (i-- > 0)
@@ -232,32 +232,33 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 	return env;
 }
 
-void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, UInt32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
+void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos)
 {
 	UInt8 buff[512];
 	WChar wbuff[256];
 	WChar *wptr;
+	UInt32 pos = currPos.Get();
 	UOSInt i = 0;
 	while (i < itemCnt)
 	{
-		fd->GetRealData(*currPos, 4, BYTEARR(buff));
-		*currPos = 4 + *currPos;
+		fd->GetRealData(pos, 4, BYTEARR(buff));
+		pos = 4 + pos;
 		if (*(Int32*)&buff[0] == Map::MapEnv::IT_GROUP)
 		{
-			fd->GetRealData(*currPos, 12, BYTEARR(buff));
+			fd->GetRealData(pos, 12, BYTEARR(buff));
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(12));
 			Text::StrUTF8_WCharC(wbuff, &buff[12], ReadUInt32(&buff[4]), 0);
-			*currPos = 12 + *currPos;
+			pos = 12 + pos;
 			
 			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
-			Map::MapEnv::GroupItem *item = env->AddGroup(group, s->ToCString());
+			NotNullPtr<Map::MapEnv::GroupItem> item = env->AddGroup(group, s->ToCString());
 			s->Release();
 			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
 		}
 		else if (*(Int32*)&buff[0] == Map::MapEnv::IT_LAYER)
 		{
-			fd->GetRealData(*currPos, 20, BYTEARR(buff));
-			*currPos = 20 + *currPos;
+			fd->GetRealData(pos, 20, BYTEARR(buff));
+			pos = 20 + pos;
 
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(20));
 			wptr = Text::StrConcat(Text::StrConcat(wbuff, dirArr[ReadUInt32(&buff[8])]), L"\\");
@@ -277,8 +278,8 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 
 				if (ReadUInt32(&buff[16]) == 1)
 				{
-					fd->GetRealData(*currPos, 32, BYTEARR(buff));
-					*currPos = 32 + *currPos;
+					fd->GetRealData(pos, 32, BYTEARR(buff));
+					pos = 32 + pos;
 
 					setting.labelCol = ReadUInt32(&buff[0]);
 					setting.flags = ReadInt32(&buff[4]);
@@ -292,8 +293,8 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 				}
 				else if (ReadUInt32(&buff[16]) == 3)
 				{
-					fd->GetRealData(*currPos, 28, BYTEARR(buff));
-					*currPos = 28 + *currPos;
+					fd->GetRealData(pos, 28, BYTEARR(buff));
+					pos = 28 + pos;
 
 					setting.labelCol = ReadUInt32(&buff[0]);
 					setting.flags = ReadInt32(&buff[4]);
@@ -307,8 +308,8 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 				}
 				else if (ReadUInt32(&buff[16]) == 5)
 				{
-					fd->GetRealData(*currPos, 32, BYTEARR(buff));
-					*currPos = 32 + *currPos;
+					fd->GetRealData(pos, 32, BYTEARR(buff));
+					pos = 32 + pos;
 
 					setting.labelCol = ReadUInt32(&buff[0]);
 					setting.flags = ReadInt32(&buff[4]);
@@ -323,8 +324,8 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 				}
 				else
 				{
-					fd->GetRealData(*currPos, 24, BYTEARR(buff));
-					*currPos = 24 + *currPos;
+					fd->GetRealData(pos, 24, BYTEARR(buff));
+					pos = 24 + pos;
 					setting.labelCol = ReadUInt32(&buff[0]);
 					setting.flags = ReadInt32(&buff[4]);
 					setting.minScale = ReadInt32(&buff[8]);
@@ -340,22 +341,23 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 				s->Release();
 				if (ReadUInt32(&buff[16]) == 1)
 				{
-					*currPos = 32 + *currPos;
+					pos = 32 + pos;
 				}
 				else if (ReadUInt32(&buff[16]) == 3)
 				{
-					*currPos = 28 + *currPos;
+					pos = 28 + pos;
 				}
 				else if (ReadUInt32(&buff[16]) == 5)
 				{
-					*currPos = 32 + *currPos;
+					pos = 32 + pos;
 				}
 				else
 				{
-					*currPos = 24 + *currPos;
+					pos = 24 + pos;
 				}
 			}
 		}
 		i++;
 	}
+	currPos.Set(pos);
 }

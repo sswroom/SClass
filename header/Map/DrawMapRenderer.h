@@ -88,7 +88,7 @@ namespace Map
 		static void DrawLabels(NotNullPtr<DrawEnv> denv);
 		static OSInt __stdcall VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2);
 	private:
-		void DrawLayers(NotNullPtr<DrawEnv> denv, Map::MapEnv::GroupItem *group);
+		void DrawLayers(NotNullPtr<DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group);
 		void DrawShapes(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor);
 		void DrawShapesPoint(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt imgIndex);
 		void DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType);

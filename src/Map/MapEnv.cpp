@@ -29,17 +29,17 @@ UInt8 Map::MapEnv::GetRandomColor()
 	return (UInt8)i;
 }
 
-UOSInt Map::MapEnv::GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, const Data::ArrayList<Map::MapEnv::MapItem*> *list, Map::DrawLayerType lyrType) const
+UOSInt Map::MapEnv::GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, NotNullPtr<const Data::ArrayListNN<Map::MapEnv::MapItem>> list, Map::DrawLayerType lyrType) const
 {
-	MapItem *item;
+	NotNullPtr<MapItem> item;
 	UOSInt retCnt = 0;
 	UOSInt i = list->GetCount();
 	while (i-- > 0)
 	{
-		item = list->GetItem(i);
+		item = list->GetItemNoCheck(i);
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
+			NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item);
 			if (lyr->layer->GetLayerType() == lyrType)
 			{
 				retCnt++;
@@ -48,68 +48,70 @@ UOSInt Map::MapEnv::GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLay
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
-			Map::MapEnv::GroupItem *grp = (Map::MapEnv::GroupItem*)item;
+			NotNullPtr<Map::MapEnv::GroupItem> grp = NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item);
 			retCnt += GetLayersInList(layers, grp->subitems, lyrType);
 		}
 	}
 	return retCnt;
 }
 
-void Map::MapEnv::AddGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
+void Map::MapEnv::AddGroupUpdatedHandler(Optional<Map::MapEnv::GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
-	Data::ArrayList<Map::MapEnv::MapItem *> *objs;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
+	NotNullPtr<GroupItem> nngroup;
 	UOSInt i;
-	if (group)
+	if (group.SetTo(nngroup))
 	{
-		objs = group->subitems;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = &this->mapLayers;
+		objs = this->mapLayers;
 	}
 
 	i = objs->GetCount();
 	while (i-- > 0)
 	{
-		item = objs->GetItem(i);
+		item = objs->GetItemNoCheck(i);
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			((Map::MapEnv::LayerItem*)item)->layer->AddUpdatedHandler(hdlr, obj);
+			NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->AddUpdatedHandler(hdlr, obj);
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
-			this->AddGroupUpdatedHandler((Map::MapEnv::GroupItem*)item, hdlr, obj);
+			this->AddGroupUpdatedHandler(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item), hdlr, obj);
 		}
 	}
 	
 }
 
-void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
+void Map::MapEnv::RemoveGroupUpdatedHandler(Optional<Map::MapEnv::GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
-	Data::ArrayList<Map::MapEnv::MapItem *> *objs;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
+	NotNullPtr<GroupItem> nngroup;
 	UOSInt i;
-	if (group)
+	if (group.SetTo(nngroup))
 	{
-		objs = group->subitems;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = &this->mapLayers;
+		objs = this->mapLayers;
 	}
 
 	i = objs->GetCount();
 	while (i-- > 0)
 	{
-		item = objs->GetItem(i);
+		item = objs->GetItemNoCheck(i);
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			((Map::MapEnv::LayerItem*)item)->layer->RemoveUpdatedHandler(hdlr, obj);
+			NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->RemoveUpdatedHandler(hdlr, obj);
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
-			this->RemoveGroupUpdatedHandler((Map::MapEnv::GroupItem*)item, hdlr, obj);
+			this->RemoveGroupUpdatedHandler(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item), hdlr, obj);
 		}
 	}
 	
@@ -137,14 +139,14 @@ Map::MapEnv::~MapEnv()
 		RemoveItem(0, i);
 	}
 
-	NotNullPtr<const Data::ArrayList<ImageInfo*>> imgs = this->images.GetValues();
+	NotNullPtr<const Data::ArrayListNN<ImageInfo>> imgs = this->images.GetValues();
 	i = imgs->GetCount();
 	while (i-- > 0)
 	{
-		ImageInfo *imgInfo = imgs->GetItem(i);
+		NotNullPtr<ImageInfo> imgInfo = imgs->GetItemNoCheck(i);
 		imgInfo->fileName->Release();
 		DEL_CLASS(imgInfo->imgs);
-		MemFree(imgInfo);
+		MemFreeNN(imgInfo);
 	}
 
 	i = this->lineStyles.GetCount();
@@ -213,21 +215,21 @@ UOSInt Map::MapEnv::AddLineStyle()
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
-	Map::MapEnv::LineStyle *style;
+	NotNullPtr<Map::MapEnv::LineStyle> style;
 	if (cnt == 0)
 	{
-		NEW_CLASS(style, Map::MapEnv::LineStyle());
+		NEW_CLASSNN(style, Map::MapEnv::LineStyle());
 		style->name = 0;
 		return this->lineStyles.Add(style);
 	}
 	else
 	{
-		style = this->lineStyles.GetItem(cnt - 1);
+		style = this->lineStyles.GetItemNoCheck(cnt - 1);
 		if (style->layers.GetCount() == 0)
 		{
 			return cnt - 1;
 		}
-		NEW_CLASS(style, Map::MapEnv::LineStyle());
+		NEW_CLASSNN(style, Map::MapEnv::LineStyle());
 		style->name = 0;
 		return this->lineStyles.Add(style);
 	}
@@ -241,8 +243,8 @@ Bool Map::MapEnv::SetLineStyleName(UOSInt index, Text::CString name)
 	{
 		return false;
 	}
-	LineStyle *style;
-	style = (LineStyle*)this->lineStyles.GetItem(index);
+	NotNullPtr<LineStyle> style;
+	style = this->lineStyles.GetItemNoCheck(index);
 	OPTSTR_DEL(style->name);
 	style->name = Text::String::NewOrNull(name);
 	return true;
@@ -255,8 +257,8 @@ UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff) const
 	{
 		return 0;
 	}
-	LineStyle *style;
-	style = (LineStyle*)this->lineStyles.GetItem(index);
+	NotNullPtr<LineStyle> style;
+	style = this->lineStyles.GetItemNoCheck(index);
 	NotNullPtr<Text::String> s;
 	if (style->name.SetTo(s))
 	{
@@ -276,10 +278,10 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, co
 	{
 		return false;
 	}
-	Map::MapEnv::LineStyleLayer *layer;
-	Map::MapEnv::LineStyle *style;
-	style = this->lineStyles.GetItem(index);
-	layer = MemAlloc(Map::MapEnv::LineStyleLayer, 1);
+	NotNullPtr<Map::MapEnv::LineStyleLayer> layer;
+	NotNullPtr<Map::MapEnv::LineStyle> style;
+	style = this->lineStyles.GetItemNoCheck(index);
+	layer = MemAllocNN(Map::MapEnv::LineStyleLayer);
 	layer->color = color;
 	layer->thick = thick;
 	if (npattern)
@@ -304,14 +306,14 @@ Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, 
 	{
 		return false;
 	}
-	Map::MapEnv::LineStyleLayer *layer;
-	Map::MapEnv::LineStyle *style;
-	style = this->lineStyles.GetItem(index);
+	NotNullPtr<Map::MapEnv::LineStyleLayer> layer;
+	NotNullPtr<Map::MapEnv::LineStyle> style;
+	style = this->lineStyles.GetItemNoCheck(index);
 	if (style->layers.GetCount() <= layerId)
 	{
 		return false;
 	}
-	layer = style->layers.GetItem(layerId);
+	layer = style->layers.GetItemNoCheck(layerId);
 	if (layer->pattern)
 	{
 		MemFree(layer->pattern);
@@ -340,46 +342,43 @@ Bool Map::MapEnv::RemoveLineStyleLayer(UOSInt index, UOSInt layerId)
 	{
 		return false;
 	}
-	Map::MapEnv::LineStyleLayer *layer;
-	Map::MapEnv::LineStyle *style;
-	style = this->lineStyles.GetItem(index);
-	if (style->layers.GetCount() <= layerId)
+	NotNullPtr<Map::MapEnv::LineStyleLayer> layer;
+	NotNullPtr<Map::MapEnv::LineStyle> style;
+	style = this->lineStyles.GetItemNoCheck(index);
+	if (!style->layers.RemoveAt(layerId).SetTo(layer))
 	{
 		return false;
 	}
-	layer = style->layers.RemoveAt(layerId);
 	if (layer->pattern)
 	{
 		MemFree(layer->pattern);
 	}
-	MemFree(layer);
+	MemFreeNN(layer);
 	return true;
 }
 
 Bool Map::MapEnv::RemoveLineStyle(UOSInt index)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	UOSInt cnt = this->lineStyles.GetCount();
-	if (index >= cnt)
+	NotNullPtr<Map::MapEnv::LineStyle> style;
+	if (!this->lineStyles.RemoveAt(index).SetTo(style))
 	{
 		return false;
 	}
-	Map::MapEnv::LineStyleLayer *layer;
-	Map::MapEnv::LineStyle *style;
+	NotNullPtr<Map::MapEnv::LineStyleLayer> layer;
 	UOSInt i;
-	style = this->lineStyles.RemoveAt(index);
 	i = style->layers.GetCount();
 	while (i-- > 0)
 	{
-		layer = style->layers.RemoveAt(i);
+		layer = style->layers.GetItemNoCheck(i);
 		if (layer->pattern)
 		{
 			MemFree(layer->pattern);
 		}
-		MemFree(layer);
+		MemFreeNN(layer);
 	}
 	OPTSTR_DEL(style->name);
-	DEL_CLASS(style);
+	style.Delete();
 	return true;
 }
 
@@ -395,14 +394,13 @@ Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt3
 	{
 		return false;
 	}
-	Map::MapEnv::LineStyleLayer *layer;
-	Map::MapEnv::LineStyle *style;
-	style = this->lineStyles.GetItem(index);
-	if (style->layers.GetCount() <= layerId)
+	NotNullPtr<Map::MapEnv::LineStyleLayer> layer;
+	NotNullPtr<Map::MapEnv::LineStyle> style;
+	style = this->lineStyles.GetItemNoCheck(index);
+	if (!style->layers.GetItem(layerId).SetTo(layer))
 	{
 		return false;
 	}
-	layer = style->layers.GetItem(layerId);
 	color.Set(layer->color);
 	thick.Set(layer->thick);
 	pattern.Set(layer->pattern);
@@ -412,23 +410,21 @@ Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt3
 
 UOSInt Map::MapEnv::GetLineStyleLayerCnt(UOSInt index) const
 {
-	UOSInt cnt = this->lineStyles.GetCount();
-	if (index >= cnt)
+	NotNullPtr<Map::MapEnv::LineStyle> style;
+	if (this->lineStyles.GetItem(index).SetTo(style))
 	{
-		return 0;
+		return style->layers.GetCount();
 	}
-	Map::MapEnv::LineStyle *style;
-	style = this->lineStyles.GetItem(index);
-	return style->layers.GetCount();
+	return 0;
 }
 
-UOSInt Map::MapEnv::AddFontStyle(Text::CString styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
+UOSInt Map::MapEnv::AddFontStyle(Text::CStringNN styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
-	Map::MapEnv::FontStyle *style;
+	NotNullPtr<Map::MapEnv::FontStyle> style;
 	if (fontName.leng == 0)
-		return (UOSInt)-1;
+		return INVALID_INDEX;
 	Sync::MutexUsage mutUsage(this->mut);
-	style = MemAlloc(Map::MapEnv::FontStyle, 1);
+	style = MemAllocNN(Map::MapEnv::FontStyle);
 	style->styleName = Text::String::NewOrNull(styleName);
 	style->fontName = Text::String::New(fontName);
 	style->fontSizePt = fontSizePt;
@@ -442,8 +438,8 @@ UOSInt Map::MapEnv::AddFontStyle(Text::CString styleName, Text::CString fontName
 Bool Map::MapEnv::SetFontStyleName(UOSInt index, Text::CString name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
-	if (style == 0)
+	NotNullPtr<Map::MapEnv::FontStyle> style;
+	if (!this->fontStyles.GetItem(index).SetTo(style))
 		return false;
 	OPTSTR_DEL(style->styleName);
 	style->styleName = Text::String::NewOrNull(name);
@@ -452,8 +448,9 @@ Bool Map::MapEnv::SetFontStyleName(UOSInt index, Text::CString name)
 
 UTF8Char *Map::MapEnv::GetFontStyleName(UOSInt index, UTF8Char *buff) const
 {
-	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
-	if (style == 0)
+	Sync::MutexUsage mutUsage(this->mut);
+	NotNullPtr<Map::MapEnv::FontStyle> style;
+	if (!this->fontStyles.GetItem(index).SetTo(style))
 		return 0;
 	NotNullPtr<Text::String> s;
 	if (style->styleName.SetTo(s))
@@ -464,12 +461,12 @@ UTF8Char *Map::MapEnv::GetFontStyleName(UOSInt index, UTF8Char *buff) const
 Bool Map::MapEnv::RemoveFontStyle(UOSInt index)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Map::MapEnv::FontStyle *style = this->fontStyles.RemoveAt(index);
-	if (style == 0)
+	NotNullPtr<Map::MapEnv::FontStyle> style;
+	if (!this->fontStyles.RemoveAt(index).SetTo(style))
 		return false;
 	OPTSTR_DEL(style->styleName);
 	style->fontName->Release();
-	MemFree(style);
+	MemFreeNN(style);
 	return true;
 }
 
@@ -480,8 +477,8 @@ UOSInt Map::MapEnv::GetFontStyleCount() const
 
 Bool Map::MapEnv::GetFontStyle(UOSInt index, OutParam<NotNullPtr<Text::String>> fontName, OutParam<Double> fontSizePt, OutParam<Bool> bold, OutParam<UInt32> fontColor, OutParam<UOSInt> buffSize, OutParam<UInt32> buffColor) const
 {
-	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
-	if (style == 0)
+	NotNullPtr<Map::MapEnv::FontStyle> style;
+	if (!this->fontStyles.GetItem(index).SetTo(style))
 	{
 		fontSizePt.Set(0);
 		bold.Set(false);
@@ -501,8 +498,8 @@ Bool Map::MapEnv::GetFontStyle(UOSInt index, OutParam<NotNullPtr<Text::String>> 
 
 Bool Map::MapEnv::ChgFontStyle(UOSInt index, NotNullPtr<Text::String> fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
-	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
-	if (style == 0)
+	NotNullPtr<Map::MapEnv::FontStyle> style;
+	if (!this->fontStyles.GetItem(index).SetTo(style))
 		return false;
 
 	if (!style->fontName->Equals(fontName))
@@ -518,7 +515,7 @@ Bool Map::MapEnv::ChgFontStyle(UOSInt index, NotNullPtr<Text::String> fontName, 
 	return true;
 }
 
-UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease)
+UOSInt Map::MapEnv::AddLayer(Optional<Map::MapEnv::GroupItem> group, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)// && layer->GetLayerType() == Map::DRAW_LAYER_MIXED)
@@ -529,7 +526,7 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapD
 		NotNullPtr<Map::MapLayerCollection> layerColl = NotNullPtr<Map::MapLayerCollection>::ConvertFrom(layer);
 		sptr = layerColl->GetName()->ConcatTo(sbuff);
 		sptr2 = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\') + 1];
-		Map::MapEnv::GroupItem *grp = this->AddGroup(group, CSTRP(sptr2, sptr));
+		NotNullPtr<Map::MapEnv::GroupItem> grp = this->AddGroup(group, CSTRP(sptr2, sptr));
 
 		NotNullPtr<Map::MapDrawLayer> layer;
 		UOSInt k;
@@ -564,8 +561,8 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapD
 	}
 	else
 	{
-		Map::MapEnv::LayerItem *lyr;
-		lyr = MemAlloc(Map::MapEnv::LayerItem, 1);
+		NotNullPtr<Map::MapEnv::LayerItem> lyr;
+		lyr = MemAllocNN(Map::MapEnv::LayerItem);
 		lyr->itemType = Map::MapEnv::IT_LAYER;
 		lyr->layer = layer;
 		lyr->needRelease = needRelease;
@@ -629,9 +626,10 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapD
 			}
 		}
 
-		if (group)
+		NotNullPtr<GroupItem> nngroup;
+		if (group.SetTo(nngroup))
 		{
-			return group->subitems->Add(lyr);
+			return nngroup->subitems.Add(lyr);
 		}
 		else
 		{
@@ -640,20 +638,22 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapD
 	}
 }
 
-Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease)
+Bool Map::MapEnv::ReplaceLayer(Optional<Map::MapEnv::GroupItem> group, UOSInt index, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease)
 {
-	Map::MapEnv::MapItem *item;
-	if (group)
+	Optional<Map::MapEnv::MapItem> item;
+	NotNullPtr<MapItem> nnitem;
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		item = group->subitems->GetItem(index);
+		item = nngroup->subitems.GetItem(index);
 	}
 	else
 	{
 		item = this->mapLayers.GetItem(index);
 	}
-	if (item && item->itemType == Map::MapEnv::IT_LAYER)
+	if (item.SetTo(nnitem) && nnitem->itemType == Map::MapEnv::IT_LAYER)
 	{
-		Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
+		NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(nnitem);
 		if (lyr->needRelease)
 		{
 			lyr->layer.Delete();
@@ -668,19 +668,18 @@ Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, NotN
 	}
 }
 
-Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Text::String> subgroupName)
+NotNullPtr<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem> group, NotNullPtr<Text::String> subgroupName)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Map::MapEnv::GroupItem *newG;
-	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
+	NotNullPtr<Map::MapEnv::GroupItem> newG;
+	NEW_CLASSNN(newG, Map::MapEnv::GroupItem());
 	newG->itemType = Map::MapEnv::IT_GROUP;
 	newG->groupName = subgroupName->Clone();
 	newG->groupHide = false;
-	NEW_CLASS(newG->subitems, Data::ArrayList<Map::MapEnv::MapItem*>());
-
-	if (group)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		group->subitems->Add(newG);
+		nngroup->subitems.Add(newG);
 	}
 	else
 	{
@@ -689,19 +688,18 @@ Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Not
 	return newG;
 }
 
-Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Text::CString subgroupName)
+NotNullPtr<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem> group, Text::CString subgroupName)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Map::MapEnv::GroupItem *newG;
-	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
+	NotNullPtr<Map::MapEnv::GroupItem> newG;
+	NEW_CLASSNN(newG, Map::MapEnv::GroupItem());
 	newG->itemType = Map::MapEnv::IT_GROUP;
 	newG->groupName = Text::String::New(subgroupName);
 	newG->groupHide = false;
-	NEW_CLASS(newG->subitems, Data::ArrayList<Map::MapEnv::MapItem*>());
-
-	if (group)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		group->subitems->Add(newG);
+		nngroup->subitems.Add(newG);
 	}
 	else
 	{
@@ -710,106 +708,74 @@ Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Tex
 	return newG;
 }
 
-void Map::MapEnv::RemoveItem(Map::MapEnv::GroupItem *group, UOSInt index)
+void Map::MapEnv::RemoveItem(Optional<Map::MapEnv::GroupItem> group, UOSInt index)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Map::MapEnv::MapItem *item;
-
-	if (group)
+	Optional<Map::MapEnv::MapItem> item;
+	NotNullPtr<Map::MapEnv::MapItem> nnitem;
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		item = group->subitems->RemoveAt(index);
+		item = nngroup->subitems.RemoveAt(index);
 	}
 	else
 	{
 		item = this->mapLayers.RemoveAt(index);
 	}
-	if (item->itemType == Map::MapEnv::IT_LAYER)
+	if (item.SetTo(nnitem))
 	{
-		Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
-		if (lyr->needRelease)
+		if (nnitem->itemType == Map::MapEnv::IT_LAYER)
 		{
-			lyr->layer.Delete();
+			NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(nnitem);
+			if (lyr->needRelease)
+			{
+				lyr->layer.Delete();
+			}
+			SDEL_STRING(lyr->fontName);
+			MemFreeNN(lyr);
 		}
-		SDEL_STRING(lyr->fontName);
-		MemFree(lyr);
-	}
-	else if (item->itemType == Map::MapEnv::IT_GROUP)
-	{
-		Map::MapEnv::GroupItem *g = (Map::MapEnv::GroupItem*)item;
-		UOSInt i = g->subitems->GetCount();
-		while (i-- > 0)
+		else if (nnitem->itemType == Map::MapEnv::IT_GROUP)
 		{
-			this->RemoveItem(g, i);
+			NotNullPtr<Map::MapEnv::GroupItem> g = NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(nnitem);
+			UOSInt i = g->subitems.GetCount();
+			while (i-- > 0)
+			{
+				this->RemoveItem(g, i);
+			}
+			g->groupName->Release();
+			g.Delete();
 		}
-		g->groupName->Release();
-		DEL_CLASS(g->subitems);
-		MemFree(g);
 	}
 }
 
-void Map::MapEnv::MoveItem(Map::MapEnv::GroupItem *group, UOSInt fromIndex, UOSInt toIndex)
+void Map::MapEnv::MoveItem(Optional<Map::MapEnv::GroupItem> group, UOSInt fromIndex, UOSInt toIndex)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (fromIndex == toIndex)
 		return;
 
-	if (group)
+	NotNullPtr<MapItem> item;
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
+		if (!nngroup->subitems.RemoveAt(fromIndex).SetTo(item))
+			return;
 		if (fromIndex < toIndex)
 		{
-			group->subitems->Insert(toIndex - 1, group->subitems->RemoveAt(fromIndex));
+			nngroup->subitems.Insert(toIndex - 1, item);
 		}
 		else
 		{
-			group->subitems->Insert(toIndex, group->subitems->RemoveAt(fromIndex));
+			nngroup->subitems.Insert(toIndex, item);
 		}
 	}
 	else
 	{
+		if (!this->mapLayers.RemoveAt(fromIndex).SetTo(item))
+			return;
 		if (fromIndex < toIndex)
 		{
-			this->mapLayers.Insert(toIndex - 1, this->mapLayers.RemoveAt(fromIndex));
-		}
-		else
-		{
-			this->mapLayers.Insert(toIndex, this->mapLayers.RemoveAt(fromIndex));
-		}
-	}
-}
-
-void Map::MapEnv::MoveItem(Map::MapEnv::GroupItem *fromGroup, UOSInt fromIndex, Map::MapEnv::GroupItem *toGroup, UOSInt toIndex)
-{
-	Map::MapEnv::MapItem *item;
-	if (fromGroup == toGroup)
-	{
-		MoveItem(fromGroup, fromIndex, toIndex);
-		return;
-	}
-	Sync::MutexUsage mutUsage(this->mut);
-	if (fromGroup)
-	{
-		item = fromGroup->subitems->RemoveAt(fromIndex);
-	}
-	else
-	{
-		item = this->mapLayers.RemoveAt(fromIndex);
-	}
-	if (toIndex == (UOSInt)-1)
-	{
-		if (toGroup)
-		{
-			toGroup->subitems->Add(item);
-		}
-		else
-		{
-			this->mapLayers.Add(item);
-		}
-	}
-	else
-	{
-		if (toGroup)
-		{
-			toGroup->subitems->Insert(toIndex, item);
+			this->mapLayers.Insert(toIndex - 1, item);
 		}
 		else
 		{
@@ -818,72 +784,120 @@ void Map::MapEnv::MoveItem(Map::MapEnv::GroupItem *fromGroup, UOSInt fromIndex, 
 	}
 }
 
-UOSInt Map::MapEnv::GetItemCount(Map::MapEnv::GroupItem *group) const
+void Map::MapEnv::MoveItem(Optional<Map::MapEnv::GroupItem> fromGroup, UOSInt fromIndex, Optional<Map::MapEnv::GroupItem> toGroup, UOSInt toIndex)
 {
-	if (group == 0)
+	NotNullPtr<Map::MapEnv::MapItem> item;
+	if (fromGroup == toGroup)
+	{
+		MoveItem(fromGroup, fromIndex, toIndex);
+		return;
+	}
+	Sync::MutexUsage mutUsage(this->mut);
+	NotNullPtr<GroupItem> nngroup;
+	if (fromGroup.SetTo(nngroup))
+	{
+		if (!nngroup->subitems.RemoveAt(fromIndex).SetTo(item))
+			return;
+	}
+	else
+	{
+		if (!this->mapLayers.RemoveAt(fromIndex).SetTo(item))
+			return;
+	}
+	if (toIndex == INVALID_INDEX)
+	{
+		if (toGroup.SetTo(nngroup))
+		{
+			nngroup->subitems.Add(item);
+		}
+		else
+		{
+			this->mapLayers.Add(item);
+		}
+	}
+	else
+	{
+		if (toGroup.SetTo(nngroup))
+		{
+			nngroup->subitems.Insert(toIndex, item);
+		}
+		else
+		{
+			this->mapLayers.Insert(toIndex, item);
+		}
+	}
+}
+
+UOSInt Map::MapEnv::GetItemCount(Optional<Map::MapEnv::GroupItem> group) const
+{
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
+	{
+		return nngroup->subitems.GetCount();
+	}
+	else
 	{
 		return this->mapLayers.GetCount();
 	}
-	else
-	{
-		return group->subitems->GetCount();
-	}
 }
 
-Map::MapEnv::MapItem *Map::MapEnv::GetItem(Map::MapEnv::GroupItem *group, UOSInt index) const
+Optional<Map::MapEnv::MapItem> Map::MapEnv::GetItem(Optional<Map::MapEnv::GroupItem> group, UOSInt index) const
 {
-	if (group == 0)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
+	{
+		return nngroup->subitems.GetItem(index);
+	}
+	else
 	{
 		return this->mapLayers.GetItem(index);
 	}
-	else
-	{
-		return group->subitems->GetItem(index);
-	}
 }
 
-NotNullPtr<Text::String> Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group) const
+NotNullPtr<Text::String> Map::MapEnv::GetGroupName(NotNullPtr<Map::MapEnv::GroupItem> group) const
 {
 	return group->groupName;
 }
 
-void Map::MapEnv::SetGroupName(Map::MapEnv::GroupItem *group, Text::CString name)
+void Map::MapEnv::SetGroupName(NotNullPtr<Map::MapEnv::GroupItem> group, Text::CString name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	group->groupName->Release();
 	group->groupName = Text::String::New(name);
 }
 
-void Map::MapEnv::SetGroupHide(Map::MapEnv::GroupItem *group, Bool isHide)
+void Map::MapEnv::SetGroupHide(NotNullPtr<Map::MapEnv::GroupItem> group, Bool isHide)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	group->groupHide = isHide;
 }
 
-Bool Map::MapEnv::GetGroupHide(Map::MapEnv::GroupItem *group) const
+Bool Map::MapEnv::GetGroupHide(NotNullPtr<Map::MapEnv::GroupItem> group) const
 {
 	return group->groupHide;
 }
 
-Bool Map::MapEnv::GetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Map::MapEnv::GroupItem *group, UOSInt index) const
+Bool Map::MapEnv::GetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Optional<Map::MapEnv::GroupItem> group, UOSInt index) const
 {
-	Map::MapEnv::MapItem *item;
-	if (group == 0)
+	Optional<Map::MapEnv::MapItem> item;
+	NotNullPtr<MapItem> nnitem;
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		item = this->mapLayers.GetItem(index);
+		item = nngroup->subitems.GetItem(index);
 	}
 	else
 	{
-		item = group->subitems->GetItem(index);
+		item = this->mapLayers.GetItem(index);
 	}
-	if (item)
+	if (item.SetTo(nnitem))
 	{
-		if (item->itemType == Map::MapEnv::IT_LAYER)
+		if (nnitem->itemType == Map::MapEnv::IT_LAYER)
 		{
-			MemCopyNO(setting.Ptr(), item, sizeof(Map::MapEnv::LayerItem));
+			MemCopyNO(setting.Ptr(), nnitem.Ptr(), sizeof(Map::MapEnv::LayerItem));
 			return true;
 		}
-		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		else if (nnitem->itemType == Map::MapEnv::IT_GROUP)
 		{
 			return false;
 		}
@@ -898,23 +912,25 @@ Bool Map::MapEnv::GetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Map::
 	}
 }
 
-Bool Map::MapEnv::SetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Map::MapEnv::GroupItem *group, UOSInt index)
+Bool Map::MapEnv::SetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Optional<Map::MapEnv::GroupItem> group, UOSInt index)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Map::MapEnv::MapItem *item;
-	if (group == 0)
+	Optional<Map::MapEnv::MapItem> item;
+	NotNullPtr<MapItem> nnitem;
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		item = this->mapLayers.GetItem(index);
+		item = nngroup->subitems.GetItem(index);
 	}
 	else
 	{
-		item = group->subitems->GetItem(index);
+		item = this->mapLayers.GetItem(index);
 	}
-	if (item)
+	if (item.SetTo(nnitem))
 	{
-		if (item->itemType == Map::MapEnv::IT_LAYER)
+		if (nnitem->itemType == Map::MapEnv::IT_LAYER)
 		{
-			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
+			NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(nnitem);
 			Map::DrawLayerType layerType;
 			layerType = lyr->layer->GetLayerType();
 			if (setting->minScale > setting->maxScale)
@@ -1008,7 +1024,7 @@ Bool Map::MapEnv::SetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Map::
 				return false;
 			}
 		}
-		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		else if (nnitem->itemType == Map::MapEnv::IT_GROUP)
 		{
 			return false;
 		}
@@ -1038,8 +1054,8 @@ void Map::MapEnv::SetNString(UOSInt nStr)
 
 UOSInt Map::MapEnv::GetImageCnt() const
 {
-	ImageInfo *imgInfo = this->imgList.GetItem(this->imgList.GetCount() - 1);
-	if (imgInfo)
+	NotNullPtr<ImageInfo> imgInfo;
+	if (this->imgList.GetItem(this->imgList.GetCount() - 1).SetTo(imgInfo))
 	{
 		return imgInfo->index + imgInfo->cnt;
 	}
@@ -1052,11 +1068,11 @@ UOSInt Map::MapEnv::GetImageCnt() const
 Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS) const
 {
 	UOSInt i;
-	ImageInfo *imgInfo;
+	NotNullPtr<ImageInfo> imgInfo;
 	i = this->imgList.GetCount();
 	while (i-- > 0)
 	{
-		imgInfo = this->imgList.GetItem(i);
+		imgInfo = this->imgList.GetItemNoCheck(i);
 		if (index >= imgInfo->index && index < (imgInfo->index + imgInfo->cnt))
 		{
 			if (imgInfo->isAni)
@@ -1095,8 +1111,8 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS)
 OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NotNullPtr<Parser::ParserList> parserList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	ImageInfo *imgInfo;
-	if ((imgInfo = this->images.Get(fileName)) != 0)
+	NotNullPtr<ImageInfo> imgInfo;
+	if (this->images.Get(fileName).SetTo(imgInfo))
 	{
 		return (OSInt)imgInfo->index;
 	}
@@ -1110,7 +1126,7 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NotNullPtr<Parser::ParserL
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
 			UOSInt i;
-			imgInfo = MemAlloc(ImageInfo, 1);
+			imgInfo = MemAllocNN(ImageInfo);
 			Media::ImageList *imgList = (Media::ImageList*)pobj;
 			imgInfo->fileName = Text::String::New(fileName.v, fileName.leng);
 			imgInfo->index = this->GetImageCnt();
@@ -1146,14 +1162,14 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NotNullPtr<Parser::ParserL
 UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Media::ImageList *imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	ImageInfo *imgInfo;
-	if ((imgInfo = this->images.Get(fileName)) != 0)
+	NotNullPtr<ImageInfo> imgInfo;
+	if (this->images.Get(fileName).SetTo(imgInfo))
 	{
 		DEL_CLASS(imgList);
 		return imgInfo->index;
 	}
 	UOSInt i;
-	imgInfo = MemAlloc(ImageInfo, 1);
+	imgInfo = MemAllocNN(ImageInfo);
 	imgInfo->fileName = Text::String::New(fileName.v, fileName.leng);
 	imgInfo->index = this->GetImageCnt();
 	imgInfo->cnt = imgList->GetCount();
@@ -1181,9 +1197,9 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	ImageInfo *imgInfo;
+	NotNullPtr<ImageInfo> imgInfo;
 	Sync::MutexUsage mutUsage(this->mut);
-	imgInfo = MemAlloc(ImageInfo, 1);
+	imgInfo = MemAllocNN(ImageInfo);
 	imgInfo->index = this->GetImageCnt();
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), imgInfo->index), UTF8STRC(".png"));
 	imgInfo->fileName = Text::String::NewP(sbuff, sptr);
@@ -1211,23 +1227,22 @@ UOSInt Map::MapEnv::GetImageFileCnt() const
 	return this->imgList.GetCount();
 }
 
-Bool Map::MapEnv::GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info) const
+Bool Map::MapEnv::GetImageFileInfo(UOSInt index, NotNullPtr<Map::MapEnv::ImageInfo> info) const
 {
-	Map::MapEnv::ImageInfo *imgInfo;
-	imgInfo = this->imgList.GetItem(index);
-	if (imgInfo == 0)
+	NotNullPtr<Map::MapEnv::ImageInfo> imgInfo;
+	if (!this->imgList.GetItem(index).SetTo(imgInfo))
 		return false;
-	MemCopyNO(info, imgInfo, sizeof(Map::MapEnv::ImageInfo));
+	info.CopyFrom(imgInfo);
 	return true;
 }
 
 UOSInt Map::MapEnv::GetImageFileIndex(UOSInt index) const
 {
 	UOSInt i = this->imgList.GetCount();
-	ImageInfo *info;
+	NotNullPtr<ImageInfo> info;
 	while (i-- > 0)
 	{
-		info = this->imgList.GetItem(i);
+		info = this->imgList.GetItemNoCheck(i);
 		if (index >= info->index && index < info->index + info->cnt)
 		{
 			return i;
@@ -1238,7 +1253,7 @@ UOSInt Map::MapEnv::GetImageFileIndex(UOSInt index) const
 
 UOSInt Map::MapEnv::GetLayersOfType(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, Map::DrawLayerType lyrType) const
 {
-	return this->GetLayersInList(layers, &this->mapLayers, lyrType);
+	return this->GetLayersInList(layers, this->mapLayers, lyrType);
 }
 
 void Map::MapEnv::AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
@@ -1253,203 +1268,188 @@ void Map::MapEnv::RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, A
 	this->RemoveGroupUpdatedHandler(0, hdlr, obj);
 }
 
-Int64 Map::MapEnv::GetTimeEndTS(Map::MapEnv::GroupItem *group) const
+Int64 Map::MapEnv::GetTimeEndTS(Optional<Map::MapEnv::GroupItem> group) const
 {
-	const Data::ArrayList<Map::MapEnv::MapItem*> *objs;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<const Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 	UOSInt i;
 	Int64 val = 0;
 	Int64 val2 = 0;
-
-	if (group == 0)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		objs = &this->mapLayers;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = group->subitems;
+		objs = this->mapLayers;
 	}
 	i = objs->GetCount();
 	while (i-- > 0)
 	{
-		item = objs->GetItem(i);
-		if (item)
+		item = objs->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			if (item->itemType == Map::MapEnv::IT_LAYER)
-			{
-				val2 = ((Map::MapEnv::LayerItem*)item)->layer->GetTimeEndTS();
-			}
-			else if (item->itemType == Map::MapEnv::IT_GROUP)
-			{
-				val2 = this->GetTimeEndTS((Map::MapEnv::GroupItem*)item);
-			}
-			if (val2 != 0)
-			{
-				if (val == 0)
-					val = val2;
-				else if (val2 > val)
-					val = val2;
-			}
+			val2 = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->GetTimeEndTS();
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			val2 = this->GetTimeEndTS(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+		}
+		if (val2 != 0)
+		{
+			if (val == 0)
+				val = val2;
+			else if (val2 > val)
+				val = val2;
 		}
 	}
 	return val;
 }
 
-Int64 Map::MapEnv::GetTimeStartTS(Map::MapEnv::GroupItem *group) const
+Int64 Map::MapEnv::GetTimeStartTS(Optional<Map::MapEnv::GroupItem> group) const
 {
-	const Data::ArrayList<Map::MapEnv::MapItem*> *objs;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<const Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 	UOSInt i;
 	Int64 val = 0;
 	Int64 val2 = 0;
-
-	if (group == 0)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		objs = &this->mapLayers;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = group->subitems;
+		objs = this->mapLayers;
 	}
 	i = objs->GetCount();
 	while (i-- > 0)
 	{
-		item = objs->GetItem(i);
-		if (item)
+		item = objs->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			if (item->itemType == Map::MapEnv::IT_LAYER)
-			{
-				val2 = ((Map::MapEnv::LayerItem*)item)->layer->GetTimeStartTS();
-			}
-			else if (item->itemType == Map::MapEnv::IT_GROUP)
-			{
-				val2 = GetTimeStartTS((Map::MapEnv::GroupItem*)item);
-			}
-			if (val2 != 0)
-			{
-				if (val == 0)
-					val = val2;
-				else if (val2 < val)
-					val = val2;
-			}
+			val2 = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->GetTimeStartTS();
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			val2 = GetTimeStartTS(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+		}
+		if (val2 != 0)
+		{
+			if (val == 0)
+				val = val2;
+			else if (val2 < val)
+				val = val2;
 		}
 	}
 	return val;
 }
 
-void Map::MapEnv::SetCurrTimeTS(Map::MapEnv::GroupItem *group, Int64 timeStamp)
+void Map::MapEnv::SetCurrTimeTS(Optional<Map::MapEnv::GroupItem> group, Int64 timeStamp)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Data::ArrayList<Map::MapEnv::MapItem*> *objs;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 	UOSInt i;
-
-	if (group == 0)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		objs = &this->mapLayers;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = group->subitems;
+		objs = this->mapLayers;
 	}
 	i = objs->GetCount();
 	while (i-- > 0)
 	{
-		item = objs->GetItem(i);
-		if (item)
+		item = objs->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			if (item->itemType == Map::MapEnv::IT_LAYER)
-			{
-				((Map::MapEnv::LayerItem*)item)->layer->SetCurrTimeTS(timeStamp);
-			}
-			else if (item->itemType == Map::MapEnv::IT_GROUP)
-			{
-				mutUsage.EndUse();
-				this->SetCurrTimeTS((Map::MapEnv::GroupItem*)item, timeStamp);
-				mutUsage.BeginUse();
-			}
+			NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->SetCurrTimeTS(timeStamp);
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			mutUsage.EndUse();
+			this->SetCurrTimeTS(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item), timeStamp);
+			mutUsage.BeginUse();
 		}
 	}
 }
 
-Map::MapDrawLayer *Map::MapEnv::GetFirstLayer(Map::MapEnv::GroupItem *group) const
+Optional<Map::MapDrawLayer> Map::MapEnv::GetFirstLayer(Optional<Map::MapEnv::GroupItem> group) const
 {
-	const Data::ArrayList<Map::MapEnv::MapItem*> *objs;
-	Map::MapEnv::MapItem *item;
-	Map::MapDrawLayer *lyrObj;
+	NotNullPtr<const Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
+	Optional<Map::MapDrawLayer> lyrObj;
 	UOSInt i;
 	UOSInt j;
-
-	if (group == 0)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		objs = &this->mapLayers;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = group->subitems;
+		objs = this->mapLayers;
 	}
 	i = 0;
 	j = objs->GetCount();
 	while (i < j)
 	{
-		item = objs->GetItem(i);
-		if (item)
+		item = objs->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			if (item->itemType == Map::MapEnv::IT_LAYER)
-			{
-				return ((Map::MapEnv::LayerItem*)item)->layer.Ptr();
-			}
-			else if (item->itemType == Map::MapEnv::IT_GROUP)
-			{
-				lyrObj = this->GetFirstLayer((Map::MapEnv::GroupItem*)item);
-				if (lyrObj)
-					return lyrObj;
-			}
+			return NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer;
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			lyrObj = this->GetFirstLayer(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+			if (lyrObj.NotNull())
+				return lyrObj;
 		}
 		i++;
 	}
 	return 0;
 }
 
-UOSInt Map::MapEnv::GetLayersInGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers) const
+UOSInt Map::MapEnv::GetLayersInGroup(Optional<Map::MapEnv::GroupItem> group, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers) const
 {
-	const Data::ArrayList<Map::MapEnv::MapItem*> *objs;
-	Map::MapEnv::MapItem *item;
+	NotNullPtr<const Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NotNullPtr<Map::MapEnv::MapItem> item;
 	UOSInt i;
 	UOSInt j;
 	UOSInt ret = 0;
-
-	if (group == 0)
+	NotNullPtr<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
 	{
-		objs = &this->mapLayers;
+		objs = nngroup->subitems;
 	}
 	else
 	{
-		objs = group->subitems;
+		objs = this->mapLayers;
 	}
 	i = 0;
 	j = objs->GetCount();
 	while (i < j)
 	{
-		item = objs->GetItem(i);
-		if (item)
+		item = objs->GetItemNoCheck(i);
+		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			if (item->itemType == Map::MapEnv::IT_LAYER)
-			{
-				layers->Add(((Map::MapEnv::LayerItem*)item)->layer);
-				ret++;
-			}
-			else if (item->itemType == Map::MapEnv::IT_GROUP)
-			{
-				ret += this->GetLayersInGroup((Map::MapEnv::GroupItem*)item, layers);
-			}
+			layers->Add(NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer);
+			ret++;
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			ret += this->GetLayersInGroup(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item), layers);
 		}
 		i++;
 	}
 	return ret;
 }
 
-Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, OutParam<Math::RectAreaDbl> bounds) const
+Bool Map::MapEnv::GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Math::RectAreaDbl> bounds) const
 {
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
 	this->GetLayersInGroup(group, layers);
@@ -1487,8 +1487,8 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, OutParam<Math::RectAr
 
 NotNullPtr<Map::MapView> Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 {
-	Map::MapDrawLayer *baseLayer = GetFirstLayer(0);
-	if (baseLayer)
+	NotNullPtr<Map::MapDrawLayer> baseLayer;
+	if (GetFirstLayer(0).SetTo(baseLayer))
 	{
 		return baseLayer->CreateMapView(scnSize);
 	}

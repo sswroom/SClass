@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SDNSPROXY_SDNSPROXYCORE
 #define _SM_SSWR_SDNSPROXY_SDNSPROXYCORE
 #include "Core/Core.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
@@ -32,7 +32,7 @@ namespace SSWR
 				UInt32 cliId;
 				Net::SocketUtil::AddressInfo addr;
 				Sync::Mutex mut;
-				Data::ArrayList<HourInfo*> hourInfos;
+				Data::ArrayListNN<HourInfo> hourInfos;
 			};
 
 		private:
@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<Net::SocketFactory> sockf;
 
 			Sync::Mutex cliInfoMut;
-			Data::FastMap<UInt32, ClientInfo*> cliInfos;
+			Data::FastMapNN<UInt32, ClientInfo> cliInfos;
 			IO::LogTool log;
 			Net::WebServer::WebListener *listener;
 			SSWR::SDNSProxy::SDNSProxyWebHandler *hdlr;
@@ -51,7 +51,7 @@ namespace SSWR
 			UOSInt lastCnt;
 			UOSInt currCnt;
 
-			static void __stdcall OnDNSRequest(AnyType userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 		public:
 			SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console);
@@ -60,7 +60,7 @@ namespace SSWR
 			Bool IsError();
 			void Run(NotNullPtr<Core::IProgControl> progCtrl);
 
-			UOSInt GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList);
+			UOSInt GetClientList(NotNullPtr<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList);
 			UOSInt GetRequestPerMin();
 		};
 	}

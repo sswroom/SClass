@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Map::MapEnv::GroupItem *group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
+SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
 {
 	NotNullPtr<UI::GUILabel> lbl;
 	this->SetNoResize(true);
@@ -357,12 +357,11 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->imgLine = 0;
 	this->imgFont = 0;
 	Map::MapEnv::LayerItem setting;
-	Map::MapEnv::LayerItem *lyr;
+	NotNullPtr<Map::MapEnv::LayerItem> lyr;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	if (this->env->GetLayerProp(setting, this->group, this->index))
+	if (this->env->GetLayerProp(setting, this->group, this->index) && Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(this->group, this->index)).SetTo(lyr))
 	{
-		lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(this->group, this->index);
 		UOSInt j = lyr->layer->GetColumnCnt();
 		UOSInt i = 0;
 		while (i < j)
