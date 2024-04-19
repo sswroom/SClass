@@ -1400,6 +1400,8 @@ Data/ArrayListDbl.h:
 @ArrayListDbl.o
 Data/ArrayListICaseString.h:
 @ArrayListICaseString.o
+Data/ArrayListICaseStringNN.h:
+@ArrayListICaseStringNN.o
 Data/ArrayListICaseStrUTF8.h:
 @ArrayListICaseStrUTF8.o
 Data/ArrayListInt32.h:

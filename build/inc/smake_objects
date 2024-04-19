@@ -105,6 +105,7 @@ ArrayListCStr.o: ../../src/Data/ArrayListCStr.cpp
 ArrayListCStrFast.o: ../../src/Data/ArrayListCStrFast.cpp
 ArrayListDbl.o: ../../src/Data/ArrayListDbl.cpp
 ArrayListICaseString.o: ../../src/Data/ArrayListICaseString.cpp
+ArrayListICaseStringNN.o: ../../src/Data/ArrayListICaseStringNN.cpp
 ArrayListICaseStrUTF8.o: ../../src/Data/ArrayListICaseStrUTF8.cpp
 ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
 ArrayListInt32.o: ../../src/Data/ArrayListInt32.cpp
