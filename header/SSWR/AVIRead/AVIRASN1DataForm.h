@@ -78,7 +78,7 @@ namespace SSWR
 			static void __stdcall OnEncryptDecryptClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
 			UOSInt ParseSignature(Text::PString *s, UInt8 *sign);
-			Crypto::Cert::X509Key *GetNewKey();
+			Optional<Crypto::Cert::X509Key> GetNewKey();
 		public:
 			AVIRASN1DataForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::ASN1Data> asn1);
 			virtual ~AVIRASN1DataForm();

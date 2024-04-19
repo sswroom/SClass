@@ -35,7 +35,7 @@ void Crypto::Cert::X509CertReq::ToShortName(NotNullPtr<Text::StringBuilderUTF8> 
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	SignedInfo signedInfo;
 	if (!this->GetSignedInfo(signedInfo))
@@ -79,11 +79,11 @@ void Crypto::Cert::X509CertReq::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509CertReq::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509CertReq::CreateNames() const
 {
-	Net::ASN1Names *names;
-	NEW_CLASS(names, Net::ASN1Names());
-	return names->SetCertificationRequest().Ptr();
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
+	return names->SetCertificationRequest();
 }
 
 Bool Crypto::Cert::X509CertReq::GetNames(NotNullPtr<CertNames> names) const

@@ -3,10 +3,10 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRTrustStoreForm.h"
 
-class CertComparator : public Data::Comparator<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry*>
+class CertComparator : public Data::Comparator<NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry>>
 {
 public:
-	virtual OSInt Compare(SSWR::AVIRead::AVIRTrustStoreForm::CertEntry* a, SSWR::AVIRead::AVIRTrustStoreForm::CertEntry* b) const
+	virtual OSInt Compare(NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> a, NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> b) const
 	{
 		return a->subjectCN->CompareToFast(b->subjectCN->ToCString());
 	}
@@ -22,14 +22,15 @@ void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType 
 	}
 }
 
-SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Crypto::Cert::CertStore *store) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Crypto::Cert::CertStore> store) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->SetFont(0, 0, 8.25, false);
-	if (store)
+	NotNullPtr<Crypto::Cert::CertStore> trusts;
+	if (store.SetTo(trusts))
 	{
 		sb.AppendC(UTF8STRC("Trust Store - "));
-		sb.Append(store->GetStoreName());
+		sb.Append(trusts->GetStoreName());
 		this->SetText(sb.ToCString());
 	}
 	else
@@ -54,25 +55,25 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	this->lvTrustCert->AddColumn(CSTR("Valid Status"), 150);
 
 	NotNullPtr<Net::SSLEngine> ssl;
-	if (this->store == 0 && this->ssl.SetTo(ssl))
+	if (!this->store.SetTo(trusts) && this->ssl.SetTo(ssl))
 	{
-		store = ssl->GetTrustStore();
+		this->store = ssl->GetTrustStore();
 	}
-	Data::ArrayList<CertEntry*> certs;
-	Crypto::Cert::X509Cert *cert;
-	CertEntry *entry;
+	Data::ArrayListNN<CertEntry> certs;
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NotNullPtr<CertEntry> entry;
 	UOSInt i;
 	UOSInt j;
-	if (store)
+	if (this->store.SetTo(trusts))
 	{
 		i = 0;
-		j = store->GetCount();
+		j = trusts->GetCount();
 		while (i < j)
 		{
-			cert = store->GetItem(i);
+			cert = trusts->GetItemNoCheck(i);
 			sb.ClearStr();
 			cert->GetSubjectCN(sb);
-			entry = MemAlloc(CertEntry, 1);
+			entry = MemAllocNN(CertEntry);
 			entry->cert = cert;
 			entry->subjectCN = Text::String::New(sb.ToCString());
 			certs.Add(entry);
@@ -80,7 +81,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 		}
 	}
 	CertComparator comp;
-	Data::Sort::ArtificialQuickSort::Sort<CertEntry*>(&certs, comp);
+	Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<CertEntry>>(&certs, comp);
 
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
@@ -90,7 +91,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	j = certs.GetCount();
 	while (i < j)
 	{
-		entry = certs.GetItem(i);
+		entry = certs.GetItemNoCheck(i);
 		k = this->lvTrustCert->AddItem(entry->subjectCN, entry->cert);
 		sb.ClearStr();
 		entry->cert->GetIssuerCN(sb);
@@ -114,7 +115,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 			this->lvTrustCert->SetSubItem(k, 4, CSTR("SSL engine error"));
 		}
 		entry->subjectCN->Release();
-		MemFree(entry);
+		MemFreeNN(entry);
 		i++;
 	}
 }
@@ -122,7 +123,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRTrustStoreForm::~AVIRTrustStoreForm()
 {
 	this->ssl.Delete();
-	SDEL_CLASS(this->store);
+	this->store.Delete();
 }
 
 void SSWR::AVIRead::AVIRTrustStoreForm::OnMonitorChanged()

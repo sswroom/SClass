@@ -30,7 +30,7 @@ namespace Net
 		static UOSInt GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver);
 	public:
 		static UOSInt GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver);
-		static void ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb, OutParam<Crypto::Cert::X509File*> cert);
+		static void ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert);
 		static Bool IncompleteHandshake(const UInt8 *buff, UOSInt packetSize);
 
 		static Text::CStringNN AlertLevelGetName(UInt8 level);

@@ -2,6 +2,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Data/DateTime.h"
+#include "Data/FastStringMap.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Net/OpenSSLClient.h"
 #include "Net/OpenSSLCore.h"
@@ -327,15 +328,15 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 	}
 	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key && NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)->IsPrivateKey())
 	{
-		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1));
-		if (privKey)
+		NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
+		if (Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)).SetTo(privKey))
 		{
 			Crypto::Cert::X509File::KeyType keyType = privKey->GetKeyType();
 			if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
 			{
 				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
 				{
-					DEL_CLASS(privKey);
+					privKey.Delete();
 					return false;
 				}
 			}
@@ -343,11 +344,11 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 			{
 				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
 				{
-					DEL_CLASS(privKey);
+					privKey.Delete();
 					return false;
 				}
 			}
-			DEL_CLASS(privKey);
+			privKey.Delete();
 			return true;
 		}
 		else
@@ -662,7 +663,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 	return succ;
 }
 
-Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
+Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
 {
 #if !defined(OSSL_DEPRECATEDIN_3_0)
 	BIGNUM *bn = BN_new();
@@ -702,7 +703,8 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[4096];
-		Crypto::Cert::X509File *pobjKey = 0;
+		Optional<Crypto::Cert::X509File> pobjKey = 0;
+		NotNullPtr<Crypto::Cert::X509File> nnpobjKey;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
@@ -711,18 +713,18 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		{
 			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
-			if (pobjKey && pobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+			if (pobjKey.SetTo(nnpobjKey) && nnpobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 			{
-				Crypto::Cert::X509PrivKey *privKey = (Crypto::Cert::X509PrivKey*)pobjKey;
+				NotNullPtr<Crypto::Cert::X509PrivKey> privKey = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(nnpobjKey);
 				pobjKey = privKey->CreateKey();
-				DEL_CLASS(privKey);
+				privKey.Delete();
 			}
 			fileName->Release();
 		}
 		BIO_free(bio1);
 		BIO_free(bio2);
 		EVP_PKEY_free(pkey);
-		return (Crypto::Cert::X509Key*)pobjKey;
+		return Optional<Crypto::Cert::X509Key>::ConvertFrom(pobjKey);
 	}
 	return 0;
 #endif

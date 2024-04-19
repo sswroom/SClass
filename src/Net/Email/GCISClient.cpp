@@ -43,7 +43,7 @@ Net::Email::GCISClient::~GCISClient()
 	this->notifyURL->Release();
 	this->cert.Delete();
 	this->key.Delete();
-	SDEL_CLASS(this->svrCert);
+	this->svrCert.Delete();
 }
 
 Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Text::StringBuilderUTF8 *sbError)
@@ -92,15 +92,15 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 		cli.Delete();
 		return false;
 	}
-	SDEL_CLASS(this->svrCert);
-	const Data::ReadingList<Crypto::Cert::Certificate*> *svrCert = cli->GetServerCerts();
-	if (svrCert == 0 || svrCert->GetCount() == 0)
+	this->svrCert.Delete();
+	NotNullPtr<const Data::ReadingListNN<Crypto::Cert::Certificate>> svrCert;
+	if (!cli->GetServerCerts().SetTo(svrCert) || svrCert->GetCount() == 0)
 	{
 
 	}
 	else if (svrCert->GetCount() == 1)
 	{
-		this->svrCert = svrCert->GetItem(0)->CreateX509Cert();
+		this->svrCert = svrCert->GetItemNoCheck(0)->CreateX509Cert();
 	}
 	else
 	{
@@ -110,7 +110,7 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 		UOSInt j = svrCert->GetCount();
 		while (i < j)
 		{
-			if (cert.Set(svrCert->GetItem(i)->CreateX509Cert()))
+			if (svrCert->GetItemNoCheck(i)->CreateX509Cert().SetTo(cert))
 			{
 				if (certList == 0)
 				{
@@ -132,7 +132,7 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 	return true;
 }
 
-Crypto::Cert::X509File *Net::Email::GCISClient::GetServerCertChain() const
+Optional<Crypto::Cert::X509File> Net::Email::GCISClient::GetServerCertChain() const
 {
 	return this->svrCert;
 }

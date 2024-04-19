@@ -19,17 +19,17 @@ namespace Crypto
 			
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const;
+			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
 			virtual NotNullPtr<ASN1Data> Clone() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual Net::ASN1Names *CreateNames() const;
+			virtual NotNullPtr<Net::ASN1Names> CreateNames() const;
 
 			Bool IsSignData() const;
 			Crypto::Hash::HashType GetDigestType() const;
-			const UInt8 *GetMessageDigest(UOSInt *digestSize) const;
-			const UInt8 *GetEncryptedDigest(UOSInt *encSize) const;
+			const UInt8 *GetMessageDigest(OutParam<UOSInt> digestSize) const;
+			const UInt8 *GetEncryptedDigest(OutParam<UOSInt> encSize) const;
 		};
 	}
 }

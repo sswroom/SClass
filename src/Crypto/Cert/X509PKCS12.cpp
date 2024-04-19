@@ -43,12 +43,12 @@ Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, NotNullPtr<Text::String
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
 {
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
@@ -68,9 +68,9 @@ void Crypto::Cert::X509PKCS12::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509PKCS12::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509PKCS12::CreateNames() const
 {
-	Net::ASN1Names *names;
-	NEW_CLASS(names, Net::ASN1Names());
-	return names->SetPFX().Ptr();
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
+	return names->SetPFX();
 }

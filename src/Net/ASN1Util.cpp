@@ -257,7 +257,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 	return PDUToString(pdu, pduEnd, sb, level, pduNext, 0);
 }
 
-Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, ASN1Names *names)
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, Optional<ASN1Names> names)
 {
 	while (pdu < pduEnd)
 	{
@@ -279,10 +279,11 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 		}
 
 		Text::CString name;
-		if (names == 0)
+		NotNullPtr<ASN1Names> nnnames;
+		if (!names.SetTo(nnnames))
 			name = CSTR_NULL;
 		else
-			name = names->ReadNameNoDef((Net::ASN1Util::ItemType)type, len, &pdu[ofst]);
+			name = nnnames->ReadNameNoDef((Net::ASN1Util::ItemType)type, len, &pdu[ofst]);
 		switch (type)
 		{
 		case 0x1:
@@ -336,9 +337,9 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (PDUIsValid(&pdu[ofst + 1], &pdu[ofst + len]))
 			{
 				Text::StringBuilderUTF8 innerSb;
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				PDUToString(&pdu[ofst + 1], &pdu[ofst + len], innerSb, level + 1, 0, names);
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				sb->AppendC(UTF8STRC(" {\r\n"));
 				sb->Append(&innerSb);
 				sb->AppendChar('\t', level);
@@ -359,9 +360,9 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 			{
 				Text::StringBuilderUTF8 innerSb;
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				sb->AppendC(UTF8STRC("{\r\n"));
 				sb->Append(&innerSb);
 				sb->AppendChar('\t', level);
@@ -551,9 +552,9 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 				{
 					Text::StringBuilderUTF8 innerSb;
-					if (names) names->ReadContainerBegin();
+					if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-					if (names) names->ReadContainerEnd();
+					if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 					sb->AppendC(UTF8STRC(" {\r\n"));
 					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
@@ -582,22 +583,22 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (pdu[1] == 0x80)
 			{
 				pdu += ofst;
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 			}
 			else
 			{
 				pdu += ofst;
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				if (!PDUToString(pdu, pdu + len, sb, level + 1, 0, names))
 				{
 					return false;
 				}
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				pdu += len;
 			}
 			sb->AppendChar('\t', level);
@@ -610,22 +611,22 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (pdu[1] == 0x80)
 			{
 				pdu += ofst;
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 			}
 			else
 			{
 				pdu += ofst;
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				if (!PDUToString(pdu, pdu + len, sb, level + 1, 0, names))
 				{
 					return false;
 				}
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				pdu += len;
 			}
 			sb->AppendChar('\t', level);
@@ -648,12 +649,12 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (pdu[1] == 0x80)
 			{
 				sb->AppendC(UTF8STRC("{\r\n"));
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
@@ -662,9 +663,9 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 				{
 					Text::StringBuilderUTF8 innerSb;
-					if (names) names->ReadContainerBegin();
+					if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-					if (names) names->ReadContainerEnd();
+					if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 					sb->AppendC(UTF8STRC("{\r\n"));
 					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
@@ -703,12 +704,12 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (pdu[1] == 0x80)
 			{
 				sb->AppendC(UTF8STRC("{\r\n"));
-				if (names) names->ReadContainerBegin();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 				if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
-				if (names) names->ReadContainerEnd();
+				if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
@@ -717,9 +718,9 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				Text::StringBuilderUTF8 innerSb;
 				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 				{
-					if (names) names->ReadContainerBegin();
+					if (names.SetTo(nnnames)) nnnames->ReadContainerBegin();
 					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
-					if (names) names->ReadContainerEnd();
+					if (names.SetTo(nnnames)) nnnames->ReadContainerEnd();
 					sb->AppendC(UTF8STRC("{\r\n"));
 					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
@@ -1038,7 +1039,7 @@ Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
 	return true;
 }
 
-void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names)
+void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Optional<Net::ASN1Names> names)
 {
 	UInt8 itemType;
 	UInt32 len;
@@ -1087,8 +1088,9 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 		if (pduOfst + len > pduEndOfst)
 			return;
 		Text::CStringNN itemName;
-		if (names)
-			itemName = names->ReadName((Net::ASN1Util::ItemType)itemType, len, &buff[pduOfst]);
+		NotNullPtr<ASN1Names> nnnames;
+		if (names.SetTo(nnnames))
+			itemName = nnnames->ReadName((Net::ASN1Util::ItemType)itemType, len, &buff[pduOfst]);
 		else
 			itemName = Net::ASN1Util::ItemTypeGetName(itemType);
 		switch (itemType)
@@ -1113,11 +1115,11 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			if (PDUIsValid(&buff[pduOfst + 1], &buff[pduOfst + len]))
 			{
 				frame->AddArea(pduOfst + 1, len - 1, itemName);
-				if (names)
+				if (names.SetTo(nnnames))
 				{
-					names->ReadContainerBegin();
+					nnnames->ReadContainerBegin();
 					PDUAnalyse(frame, buff, pduOfst + 1, pduOfst + len, names);
-					names->ReadContainerEnd();
+					nnnames->ReadContainerEnd();
 				}
 				else
 				{
@@ -1149,11 +1151,11 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			break;
 		case IT_SEQUENCE:
 			frame->AddArea(pduOfst, len, itemName);
-			if (names)
+			if (names.SetTo(nnnames))
 			{
-				names->ReadContainerBegin();
+				nnnames->ReadContainerBegin();
 				PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
-				names->ReadContainerEnd();
+				nnnames->ReadContainerEnd();
 			}
 			else
 			{
@@ -1162,11 +1164,11 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			break;
 		case IT_SET:
 			frame->AddArea(pduOfst, len, itemName);
-			if (names)
+			if (names.SetTo(nnnames))
 			{
-				names->ReadContainerBegin();
+				nnnames->ReadContainerBegin();
 				PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
-				names->ReadContainerEnd();
+				nnnames->ReadContainerEnd();
 			}
 			else
 			{
@@ -1181,11 +1183,11 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			if (PDUIsValid(&buff[pduOfst], &buff[pduOfst + len]))
 			{
 				frame->AddArea(pduOfst, len, itemName);
-				if (names)
+				if (names.SetTo(nnnames))
 				{
-					names->ReadContainerBegin();
+					nnnames->ReadContainerBegin();
 					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
-					names->ReadContainerEnd();
+					nnnames->ReadContainerEnd();
 				}
 				else
 				{
@@ -1209,11 +1211,11 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			if (PDUIsValid(&buff[pduOfst], &buff[pduOfst + len]))
 			{
 				frame->AddArea(pduOfst, len, itemName);
-				if (names)
+				if (names.SetTo(nnnames))
 				{
-					names->ReadContainerBegin();
+					nnnames->ReadContainerBegin();
 					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
-					names->ReadContainerEnd();
+					nnnames->ReadContainerEnd();
 				}
 				else
 				{

@@ -22,7 +22,7 @@ Production:
 https://acme-v02.api.letsencrypt.org/directory
 */
 
-Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
+Optional<Text::String> Net::ACMEConn::JWK(NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	switch (key->GetKeyType())
@@ -44,8 +44,8 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 			sb.AppendC(UTF8STRC("\",\"kty\":\"RSA\",\"n\":\""));
 			b64.EncodeBin(sb, m, mSize);
 			sb.AppendC(UTF8STRC("\"}"));
-			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
-			return Text::String::New(sb.ToCString()).Ptr();
+			alg.Set(Crypto::Token::JWSignature::Algorithm::RS256);
+			return Text::String::New(sb.ToCString());
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
 	case Crypto::Cert::X509Key::KeyType::ECPublic:
@@ -58,16 +58,18 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 	}
 }
 
-Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId)
+Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId)
 {
-	Text::String *jwk = JWK(key, alg);
-	if (jwk == 0)
+	NotNullPtr<Text::String> jwk;
+	Crypto::Token::JWSignature::Algorithm palg;
+	if (!JWK(key, palg).SetTo(jwk))
 	{
 		return 0;
 	}
+	alg.Set(palg);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("{\"alg\":\""));
-	sb.Append(Crypto::Token::JWSignature::AlgorithmGetName(*alg));
+	sb.Append(Crypto::Token::JWSignature::AlgorithmGetName(palg));
 	sb.AppendC(UTF8STRC("\",\"nonce\":\""));
 	sb.Append(nonce);
 	sb.AppendC(UTF8STRC("\",\"url\":\""));
@@ -88,7 +90,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NotNullPtr<Text::
 	return Text::String::New(sb.ToCString()).Ptr();
 }
 
-NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
+NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
@@ -114,11 +116,11 @@ NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, 
 	return Text::String::New(sb.ToString(), sb.GetLength());
 }
 
-Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::ACMEConn::KeyHash(NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Crypto::Token::JWSignature::Algorithm alg;
-	Text::String *jwk = JWK(key, &alg);
-	if (jwk == 0)
+	NotNullPtr<Text::String> jwk;
+	if (!JWK(key, alg).SetTo(jwk))
 	{
 		return false;
 	}
@@ -134,19 +136,20 @@ Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, NotNullPtr<Text::StringB
 
 Net::HTTPClient *Net::ACMEConn::ACMEPost(NotNullPtr<Text::String> url, Text::CString data)
 {
-	if (this->nonce == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (this->nonce == 0 || !this->key.SetTo(key))
 	{
 		return 0;
 	}
 	Text::String *protStr;
 	Crypto::Token::JWSignature::Algorithm alg;
-	protStr = ProtectedJWK(this->nonce, url, this->key, &alg, this->accountId);
+	protStr = ProtectedJWK(this->nonce, url, key, alg, this->accountId);
 	if (protStr == 0)
 	{
 		return 0;
 	}
 	NotNullPtr<Text::String> jws;
-	jws = EncodeJWS(ssl, protStr->ToCString(), data, this->key, alg);
+	jws = EncodeJWS(ssl, protStr->ToCString(), data, key, alg);
 	protStr->Release();
 	UOSInt jwsLen = jws->leng;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
@@ -353,7 +356,7 @@ Net::ACMEConn::~ACMEConn()
 	SDEL_STRING(this->urlWebsite);
 	SDEL_STRING(this->nonce);
 	SDEL_STRING(this->accountId);
-	SDEL_CLASS(this->key);
+	this->key.Delete();
 }
 
 Bool Net::ACMEConn::IsError()
@@ -702,10 +705,10 @@ Bool Net::ACMEConn::NewKey()
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (this->ssl.SetTo(ssl))
 	{
-		Crypto::Cert::X509Key *key = ssl->GenerateRSAKey();
-		if (key)
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (ssl->GenerateRSAKey().SetTo(key))
 		{
-			SDEL_CLASS(this->key);
+			this->key.Delete();
 			this->key = key;
 			return true;
 		}
@@ -717,8 +720,8 @@ Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
 {
 	if (key && key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
-		SDEL_CLASS(this->key);
-		this->key = (Crypto::Cert::X509Key*)key->Clone().Ptr();
+		this->key.Delete();
+		this->key =	NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(key->Clone());
 		return true;
 	}
 	return false;
@@ -741,7 +744,7 @@ Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 	}
 	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && ((Crypto::Cert::X509Key*)x509)->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
-		SDEL_CLASS(this->key);
+		this->key.Delete();
 		this->key = (Crypto::Cert::X509Key*)x509;
 		return true;
 	}
@@ -751,8 +754,8 @@ Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 
 Bool Net::ACMEConn::SaveKey(Text::CStringNN fileName)
 {
-	NotNullPtr<Crypto::Cert::X509File> key;
-	if (!key.Set(this->key))
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!this->key.SetTo(key))
 	{
 		return false;
 	}

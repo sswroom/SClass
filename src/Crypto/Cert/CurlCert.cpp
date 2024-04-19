@@ -70,7 +70,7 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert() const
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 {
 	Crypto::Cert::X509Cert *pobjCert;
 	curl_slist *slist = (curl_slist*)this->certinfo;

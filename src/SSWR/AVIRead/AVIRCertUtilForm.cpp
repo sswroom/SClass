@@ -31,6 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 				{
 					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
 					Crypto::Cert::X509Key *key;
+					NotNullPtr<Crypto::Cert::X509Key> nnkey;
 					Crypto::Cert::X509PrivKey *privKey;
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
@@ -82,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 						key = (Crypto::Cert::X509Key*)x509;
 						if (key->IsPrivateKey())
 						{
-							SDEL_CLASS(me->key);
+							me->key.Delete();
 							me->key = key;
 							me->DisplayKeyDetail();
 						}
@@ -93,11 +94,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 						break;
 					case Crypto::Cert::X509File::FileType::PrivateKey:
 						privKey = (Crypto::Cert::X509PrivKey*)x509;
-						key = privKey->CreateKey();
-						if (key)
+						if (privKey->CreateKey().SetTo(nnkey))
 						{
-							SDEL_CLASS(me->key);
-							me->key = key;
+							me->key.Delete();
+							me->key = nnkey;
 							me->DisplayKeyDetail();
 						}
 						DEL_CLASS(x509);
@@ -156,10 +156,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType use
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl))
 	{
-		Crypto::Cert::X509Key *key = ssl->GenerateRSAKey();
-		if (key)
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (ssl->GenerateRSAKey().SetTo(key))
 		{
-			SDEL_CLASS(me->key);
+			me->key.Delete();
 			me->key = key;
 			me->DisplayKeyDetail();
 		}
@@ -169,9 +169,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	if (me->key)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (me->key.SetTo(key))
 	{
-		me->core->OpenObject(me->key->Clone());
+		me->core->OpenObject(key->Clone());
 	}
 }
 
@@ -179,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(AnyType userObj
 {
 	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (key.Set(me->key))
+	if (me->key.SetTo(key))
 	{
 		me->core->SaveData(me.Ptr(), key, L"CertUtilSaveKey");
 	}
@@ -215,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->key))
+	if (!me->key.SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
@@ -262,7 +263,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->key))
+	if (!me->key.SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
@@ -285,9 +286,9 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 	MemClear(&ext, sizeof(ext));
 	ext.subjectAltName = me->sanList;
 	ext.useSubjKeyId = true;
-	me->key->GetKeyId(BYTEARR(ext.subjKeyId));
+	key->GetKeyId(BYTEARR(ext.subjKeyId));
 	ext.useAuthKeyId = true;
-	me->key->GetKeyId(BYTEARR(ext.authKeyId));
+	key->GetKeyId(BYTEARR(ext.authKeyId));
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	NotNullPtr<Crypto::Cert::X509Cert> cert;
@@ -313,35 +314,35 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 			this->ui->ShowMsgOK(CSTR("C must be 2 chars"), CSTR("Cert Util"), this);
 			return false;
 		}
-		SDEL_STRING(names->countryName);
+		OPTSTR_DEL(names->countryName);
 		names->countryName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtStateOrProvinceName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_STRING(names->stateOrProvinceName);
+		OPTSTR_DEL(names->stateOrProvinceName);
 		names->stateOrProvinceName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtLocalityName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_STRING(names->localityName);
+		OPTSTR_DEL(names->localityName);
 		names->localityName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtOrganizationName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_STRING(names->organizationName);
+		OPTSTR_DEL(names->organizationName);
 		names->organizationName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
 	this->txtOrganizationUnitName->GetText(sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_STRING(names->organizationUnitName);
+		OPTSTR_DEL(names->organizationUnitName);
 		names->organizationUnitName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	sb.ClearStr();
@@ -351,7 +352,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 		this->ui->ShowMsgOK(CSTR("CN cannot be null"), CSTR("Cert Util"), this);
 		return false;
 	}
-	SDEL_STRING(names->commonName);
+	OPTSTR_DEL(names->commonName);
 	names->commonName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 
 	sb.ClearStr();
@@ -363,7 +364,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 			this->ui->ShowMsgOK(CSTR("Email address is not valid"), CSTR("Cert Util"), this);
 			return false;
 		}
-		SDEL_STRING(names->emailAddress);
+		OPTSTR_DEL(names->emailAddress);
 		names->emailAddress = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	}
 	return true;
@@ -371,7 +372,8 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 
 void SSWR::AVIRead::AVIRCertUtilForm::DisplayKeyDetail()
 {
-	if (this->key == 0)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (!this->key.SetTo(key))
 	{
 		this->txtKeyDetail->SetText(CSTR("-"));
 	}
@@ -379,11 +381,11 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayKeyDetail()
 	{
 		UInt8 keyId[20];
 		Text::StringBuilderUTF8 sb;
-		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(this->key->GetKeyType()));
+		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(key->GetKeyType()));
 		sb.AppendC(UTF8STRC(", "));
 		sb.AppendUOSInt(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
-		if (this->key->GetKeyId(BYTEARR(keyId)))
+		if (key->GetKeyId(BYTEARR(keyId)))
 		{
 			sb.AppendC(UTF8STRC(", id="));
 			sb.AppendHexBuff(BYTEARR(keyId), 0, Text::LineBreakType::None);
@@ -406,9 +408,10 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::Cert
 void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NotNullPtr<Crypto::Cert::CertExtensions> exts)
 {
 	this->ClearExtensions();
-	if (exts->subjectAltName)
+	NotNullPtr<Data::ArrayListStringNN> nameList;
+	if (exts->subjectAltName.SetTo(nameList))
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = exts->subjectAltName->Iterator();
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = nameList->Iterator();
 		NotNullPtr<Text::String> s;
 		while (it.HasNext())
 		{
@@ -523,7 +526,7 @@ SSWR::AVIRead::AVIRCertUtilForm::~AVIRCertUtilForm()
 {
 	this->sanList->FreeAll();
 	DEL_CLASS(this->sanList);
-	SDEL_CLASS(this->key);
+	this->key.Delete();
 	this->ssl.Delete();
 }
 

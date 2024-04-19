@@ -16,15 +16,17 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 	SDEL_STRING(this->metadataPath);
 	SDEL_STRING(this->logoutPath);
 	SDEL_STRING(this->ssoPath);
-	SDEL_CLASS(this->signCert);
-	SDEL_CLASS(this->signKey);
+	this->signCert.Delete();
+	this->signKey.Delete();
 }
 
 Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	if (this->initErr == SAMLError::None)
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
+	if (this->initErr == SAMLError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey))
 	{
 		if (this->metadataPath->Equals(subReq.v, subReq.leng))
 		{
@@ -49,7 +51,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
 			sb.AppendC(UTF8STRC("<ds:X509Data>"));
 			sb.AppendC(UTF8STRC("<ds:X509Certificate>"));
-			b64.EncodeBin(sb, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
+			b64.EncodeBin(sb, cert->GetASN1Buff(), cert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
 			sb.AppendC(UTF8STRC("</ds:X509Certificate>"));
 			sb.AppendC(UTF8STRC("</ds:X509Data>"));
 			sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
@@ -58,7 +60,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
 			sb.AppendC(UTF8STRC("<ds:X509Data>"));
 			sb.AppendC(UTF8STRC("<ds:X509Certificate>"));
-			b64.EncodeBin(sb, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
+			b64.EncodeBin(sb, cert->GetASN1Buff(), cert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
 			sb.AppendC(UTF8STRC("</ds:X509Certificate>"));
 			sb.AppendC(UTF8STRC("</ds:X509Data>"));
 			sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
@@ -197,27 +199,36 @@ Net::WebServer::SAMLHandler::SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Ne
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	Crypto::Cert::X509File *x509;
-	x509 = Parser::FileParser::X509Parser::ToType(parser.ParseFilePath(cfg->signCertPath), Crypto::Cert::X509File::FileType::Cert);
-	if (x509 == 0)
+	NotNullPtr<IO::ParsedObject> pobj;
+	if (!pobj.Set(parser.ParseFilePath(cfg->signCertPath)))
 	{
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	this->signCert = (Crypto::Cert::X509Cert*)x509;
+	NotNullPtr<Crypto::Cert::X509File> x509;
+	if (!Parser::FileParser::X509Parser::ToType(pobj, Crypto::Cert::X509File::FileType::Cert).SetTo(x509))
+	{
+		this->initErr = SAMLError::SignCert;
+		return;
+	}
+	this->signCert = NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 
 	if (cfg->signKeyPath.leng == 0)
 	{
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	x509 = Parser::FileParser::X509Parser::ToType(parser.ParseFilePath(cfg->signKeyPath), Crypto::Cert::X509File::FileType::PrivateKey);
-	if (x509 == 0)
+	if (!pobj.Set(parser.ParseFilePath(cfg->signKeyPath)))
 	{
 		this->initErr = SAMLError::SignKey;
 		return;
 	}
-	this->signKey = (Crypto::Cert::X509PrivKey*)x509;
+	if (!Parser::FileParser::X509Parser::ToType(pobj, Crypto::Cert::X509File::FileType::PrivateKey).SetTo(x509))
+	{
+		this->initErr = SAMLError::SignKey;
+		return;
+	}
+	this->signKey = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(x509);
 
 	this->initErr = SAMLError::None;
 }
@@ -263,7 +274,7 @@ void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, AnyType
 	this->loginObj = userObj;
 }
 
-Crypto::Cert::X509PrivKey *Net::WebServer::SAMLHandler::GetKey()
+Optional<Crypto::Cert::X509PrivKey> Net::WebServer::SAMLHandler::GetKey()
 {
 	return this->signKey;
 }

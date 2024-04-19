@@ -2,12 +2,12 @@
 #include "Crypto/Cert/TrustStore.h"
 #include "IO/Path.h"
 
-Crypto::Cert::CertStore *Crypto::Cert::TrustStore::Load()
+NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Crypto::Cert::CertStore *store;
-	NEW_CLASS(store, Crypto::Cert::CertStore(CSTR("Default Trust Store")));
+	NotNullPtr<Crypto::Cert::CertStore> store;
+	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Default Trust Store")));
 	
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("trustcerts"));
@@ -17,12 +17,12 @@ Crypto::Cert::CertStore *Crypto::Cert::TrustStore::Load()
 	return store;
 }
 
-Crypto::Cert::CertStore *Crypto::Cert::TrustStore::LoadJavaCA()
+NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::LoadJavaCA()
 {
 //	UTF8Char sbuff[512];
 //	UTF8Char *sptr;
-	Crypto::Cert::CertStore *store;
-	NEW_CLASS(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
+	NotNullPtr<Crypto::Cert::CertStore> store;
+	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
 	
 	if (store->LoadJavaCACerts(CSTR("/etc/ssl/certs/java/cacerts"))) return store;
 	if (store->LoadJavaCACerts(CSTR("/etc/pki/ca-trust/extracted/java/cacerts"))) return store;

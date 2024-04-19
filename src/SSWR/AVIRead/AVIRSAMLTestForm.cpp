@@ -301,7 +301,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 		me->txtSAMLRespWF->SetText(sb.ToCString());
 
 		NotNullPtr<Crypto::Cert::X509Key> key;
-		if (key.Set(me->samlHdlr->GetKey()->CreateKey()))
+		if (me->CreateSAMLKey().SetTo(key))
 		{
 			sb.ClearStr();
 			NotNullPtr<Net::SSLEngine> ssl;
@@ -345,7 +345,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 	Text::StringBuilderUTF8 sb;
 	Text::String *decMsg = 0;
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (key.Set(me->samlHdlr->GetKey()->CreateKey()))
+	if (me->CreateSAMLKey().SetTo(key))
 	{
 		NotNullPtr<Net::SSLEngine> ssl;
 		if (me->ssl.SetTo(ssl) && Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
@@ -387,6 +387,16 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 void SSWR::AVIRead::AVIRSAMLTestForm::ClearCACerts()
 {
 	this->caCerts.DeleteAll();
+}
+
+Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRSAMLTestForm::CreateSAMLKey()
+{
+	if (this->samlHdlr == 0)
+		return 0;
+	NotNullPtr<Crypto::Cert::X509PrivKey> key;
+	if (this->samlHdlr->GetKey().SetTo(key))
+		return key->CreateKey();
+	return 0;
 }
 
 SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

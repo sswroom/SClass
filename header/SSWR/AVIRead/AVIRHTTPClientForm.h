@@ -154,9 +154,9 @@ namespace SSWR
 			Text::String *respContType;
 			IO::MemoryStream *respData;
 			Text::String *respCertText;
-			Crypto::Cert::X509File *respCert;
-			Data::ArrayList<ParamValue*> params;
-			Data::ArrayList<HTTPCookie *> cookieList;
+			Optional<Crypto::Cert::X509File> respCert;
+			Data::ArrayListNN<ParamValue> params;
+			Data::ArrayListNN<HTTPCookie> cookieList;
 			Sync::Mutex cookieMut;
 			Data::ArrayListStringNN fileList;
 			Sync::Thread procThread;
@@ -176,7 +176,7 @@ namespace SSWR
 			void ClearParams();
 			void ClearCookie();
 			void ClearFiles();
-			HTTPCookie *SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL);
+			Optional<HTTPCookie> SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL);
 			UTF8Char *AppendCookie(UTF8Char *sbuff, Text::CStringNN reqURL);
 		public:
 			AVIRHTTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

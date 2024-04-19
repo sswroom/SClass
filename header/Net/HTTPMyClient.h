@@ -59,7 +59,7 @@ namespace Net
 
 		virtual Bool IsSecureConn() const;
 		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key);
-		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts();
+		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetServerCerts();
 	};
 }
 #endif

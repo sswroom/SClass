@@ -79,7 +79,7 @@ Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NotNullPtr<Text::StringB
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS7::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS7::GetNewCert(UOSInt index)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -94,14 +94,14 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS7::GetNewCert(UOSInt index)
 	const UInt8 *certPDU = Net::ASN1Util::PDUGetItemRAW(certListPDU, certListPDU + len, sbuff, len, ofst);
 	if (certPDU)
 	{
-		Crypto::Cert::X509Cert *cert;
-		NEW_CLASS(cert, Crypto::Cert::X509Cert(this->GetSourceNameObj(), Data::ByteArrayR(certPDU, len + ofst)));
+		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(this->GetSourceNameObj(), Data::ByteArrayR(certPDU, len + ofst)));
 		return cert;
 	}
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
@@ -121,11 +121,11 @@ void Crypto::Cert::X509PKCS7::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) c
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509PKCS7::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509PKCS7::CreateNames() const
 {
-	Net::ASN1Names *names;
-	NEW_CLASS(names, Net::ASN1Names());
-	return names->SetPKCS7ContentInfo().Ptr();
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
+	return names->SetPKCS7ContentInfo();
 }
 
 Bool Crypto::Cert::X509PKCS7::IsSignData() const
@@ -156,7 +156,7 @@ Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType() const
 	return Crypto::Hash::HashType::Unknown;
 }
 
-const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize) const
+const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(OutParam<UOSInt> digestSize) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -182,7 +182,7 @@ const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize) const
 				if ((subitemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subitemLen, itemType)) != 0 &&
 					itemType == Net::ASN1Util::IT_OCTET_STRING)
 				{
-					*digestSize = subitemLen;
+					digestSize.Set(subitemLen);
 					return subitemPDU;
 				}
 			}
@@ -191,14 +191,14 @@ const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize) const
 	return 0;
 }
 
-const UInt8 *Crypto::Cert::X509PKCS7::GetEncryptedDigest(UOSInt *signSize) const
+const UInt8 *Crypto::Cert::X509PKCS7::GetEncryptedDigest(OutParam<UOSInt> signSize) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
 	const UInt8 *itemPDU;
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2.1.5.1.6", itemLen, itemType)) != 0 && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{
-		*signSize = itemLen;
+		signSize.Set(itemLen);
 		return itemPDU;
 	}
 	return 0;

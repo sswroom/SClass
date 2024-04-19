@@ -20,7 +20,7 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 			static Crypto::Cert::X509File *ParseBuff(Data::ByteArrayR buff, NotNullPtr<Text::String> fileName);
-			static Crypto::Cert::X509File *ToType(IO::ParsedObject *pobj, Crypto::Cert::X509File::FileType ftype);
+			static Optional<Crypto::Cert::X509File> ToType(NotNullPtr<IO::ParsedObject> pobj, Crypto::Cert::X509File::FileType ftype);
 			static Crypto::Cert::X509File *ParseBinary(Data::ByteArrayR buff);
 		};
 	}

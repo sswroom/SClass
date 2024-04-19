@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCert;
 			NotNullPtr<UI::GUIButton> btnRAW;
 
-			Crypto::Cert::X509File *currCerts;
+			Optional<Crypto::Cert::X509File> currCerts;
 			UInt8 *packetBuff;
 			UOSInt packetSize;
 

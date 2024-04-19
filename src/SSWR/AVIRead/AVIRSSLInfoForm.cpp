@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		}
 		else
 		{
-			SDEL_CLASS(me->currCerts);
+			me->currCerts.Delete();
 			Text::StringBuilderUTF8 sb;
 			Net::SSLUtil::ParseResponse(&packetBuff[8], retSize - 8, sb, me->currCerts);
 			if (me->packetBuff)
@@ -178,10 +178,11 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 			MemCopyNO(me->packetBuff, &packetBuff[8], retSize - 8);
 			me->packetSize = retSize - 8;
 			me->txtStatus->SetText(sb.ToCString());
-			if (me->currCerts)
+			NotNullPtr<Crypto::Cert::X509File> cert;
+			if (me->currCerts.SetTo(cert))
 			{
 				Text::StringBuilderUTF8 sb;
-				me->currCerts->ToString(sb);
+				cert->ToString(sb);
 				me->txtCert->SetText(sb.ToCString());
 			}
 			return;
@@ -216,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		}
 		
 		me->sockf->DestroySocket(s);
-		SDEL_CLASS(me->currCerts);
+		me->currCerts.Delete();
 		Text::StringBuilderUTF8 sb;
 		Net::SSLUtil::ParseResponse(packetBuff, retSize, sb, me->currCerts);
 		if (me->packetBuff)
@@ -227,10 +228,11 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		MemCopyNO(me->packetBuff, packetBuff, retSize);
 		me->packetSize = retSize;
 		me->txtStatus->SetText(sb.ToCString());
-		if (me->currCerts)
+		NotNullPtr<Crypto::Cert::X509File> cert;
+		if (me->currCerts.SetTo(cert))
 		{
 			Text::StringBuilderUTF8 sb;
-			me->currCerts->ToString(sb);
+			cert->ToString(sb);
 			me->txtCert->SetText(sb.ToCString());
 		}
 		return;
@@ -240,9 +242,10 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
-	if (me->currCerts)
+	NotNullPtr<Crypto::Cert::X509File> cert;
+	if (me->currCerts.SetTo(cert))
 	{
-		me->core->OpenObject(me->currCerts->Clone());
+		me->core->OpenObject(cert->Clone());
 	}
 }
 
@@ -320,7 +323,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRSSLInfoForm::~AVIRSSLInfoForm()
 {
 	this->ssl.Delete();
-	SDEL_CLASS(this->currCerts);
+	this->currCerts.Delete();
 	if (this->packetBuff)
 	{
 		MemFree(this->packetBuff);

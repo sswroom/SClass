@@ -122,18 +122,19 @@ Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, NotNullPtr<Text::StringBu
 	return true;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::GetNewCert(UOSInt index)
 {
 	if (index != 0)
 		return 0;
-	return (Crypto::Cert::X509Cert*)this->Clone().Ptr();
+	return NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->Clone());
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
-	if (trustStore == 0)
+	NotNullPtr<Crypto::Cert::CertStore> trusts;
+	if (!trustStore.SetTo(trusts))
 	{
-		trustStore = ssl->GetTrustStore();
+		trusts = ssl->GetTrustStore();
 	}
 	Text::StringBuilderUTF8 sb;
 	if (!this->GetIssuerCN(sb))
@@ -169,8 +170,8 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NotNullPtr<N
 		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
 	}
 
-	Crypto::Cert::X509Cert *issuer = trustStore->GetCertByCN(sb.ToCString());
-	if (issuer == 0)
+	NotNullPtr<Crypto::Cert::X509Cert> issuer;
+	if (!trusts->GetCertByCN(sb.ToCString()).SetTo(issuer))
 	{
 		if (!this->IsSelfSigned())
 		{
@@ -219,10 +220,10 @@ NotNullPtr<Net::ASN1Data> Crypto::Cert::X509Cert::Clone() const
 	return asn1;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::CreateX509Cert() const
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::CreateX509Cert() const
 {
-	Crypto::Cert::X509Cert *asn1;
-	NEW_CLASS(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
+	NotNullPtr<Crypto::Cert::X509Cert> asn1;
+	NEW_CLASSNN(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
@@ -234,11 +235,11 @@ void Crypto::Cert::X509Cert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) co
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509Cert::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509Cert::CreateNames() const
 {
-	Net::ASN1Names *names;
-	NEW_CLASS(names, Net::ASN1Names());
-	return names->SetCertificate().Ptr();
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
+	return names->SetCertificate();
 }
 
 Bool Crypto::Cert::X509Cert::GetIssuerNames(NotNullPtr<CertNames> names) const
@@ -419,7 +420,7 @@ Bool Crypto::Cert::X509Cert::DomainValid(Text::CString domain) const
 	if (this->GetSubjNames(subjNames))
 	{
 		NotNullPtr<Text::String> cn;
-		if (cn.Set(subjNames.commonName))
+		if (subjNames.commonName.SetTo(cn))
 		{
 			if (cn->v[0] == '*' && cn->v[1] == '.')
 			{
@@ -440,9 +441,10 @@ Bool Crypto::Cert::X509Cert::DomainValid(Text::CString domain) const
 	MemClear(&exts, sizeof(exts));
 	if (this->GetExtensions(exts))
 	{
-		if (exts.subjectAltName)
+		NotNullPtr<Data::ArrayListStringNN> strList;
+		if (exts.subjectAltName.SetTo(strList))
 		{
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = exts.subjectAltName->Iterator();
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = strList->Iterator();
 			while (it.HasNext())
 			{
 				s = it.Next();

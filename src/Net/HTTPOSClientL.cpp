@@ -24,7 +24,7 @@ struct Net::HTTPOSClient::ClassData
 	NotNullPtr<Text::String> userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
-	Data::ArrayList<Crypto::Cert::Certificate *> *certs;
+	Optional<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
 };
 
 size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *userdata)
@@ -109,16 +109,17 @@ Net::HTTPOSClient::~HTTPOSClient()
 	if (this->clsData->curl)
 		curl_easy_cleanup(this->clsData->curl);
 	this->clsData->userAgent->Release();
-	if (this->clsData->certs)
+	NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+	if (this->clsData->certs.SetTo(certList))
 	{
-		UOSInt i = this->clsData->certs->GetCount();
-		Crypto::Cert::Certificate *cert;
+		UOSInt i = certList->GetCount();
+		NotNullPtr<Crypto::Cert::Certificate> cert;
 		while (i-- > 0)
 		{
-			cert = this->clsData->certs->GetItem(i);
-			DEL_CLASS(cert);
+			cert = certList->GetItemNoCheck(i);
+			cert.Delete();
 		}
-		DEL_CLASS(this->clsData->certs);
+		certList.Delete();
 	}
 	DEL_CLASS(this->clsData->respData);
 	MemFree(this->clsData);
@@ -590,27 +591,29 @@ Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, N
 }
 
 
-const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
+Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient::GetServerCerts()
 {
 	if (this->IsSecureConn() && this->clsData->curl)
 	{
-		if (this->clsData->certs)
+		if (this->clsData->certs.NotNull())
 			return this->clsData->certs;
 		struct curl_certinfo *ci;
 		if (!curl_easy_getinfo(this->clsData->curl, CURLINFO_CERTINFO, &ci))
 		{
 			if (ci->num_of_certs > 0)
 			{
-				NEW_CLASS(this->clsData->certs, Data::ArrayList<Crypto::Cert::Certificate*>());
-				Crypto::Cert::Certificate *cert;
+				NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+				NEW_CLASSNN(certList, Data::ArrayListNN<Crypto::Cert::Certificate>());
+				this->clsData->certs = certList;
+				NotNullPtr<Crypto::Cert::Certificate> cert;
 				int i = 0;
 				while (i < ci->num_of_certs)
 				{
-					NEW_CLASS(cert, Crypto::Cert::CurlCert(ci->certinfo[i]));
-					this->clsData->certs->Add(cert);
+					NEW_CLASSNN(cert, Crypto::Cert::CurlCert(ci->certinfo[i]));
+					certList->Add(cert);
 					i++;
 				}
-				return this->clsData->certs;
+				return certList;
 			}
 		}
 	}

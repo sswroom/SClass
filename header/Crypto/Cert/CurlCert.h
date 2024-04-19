@@ -19,7 +19,7 @@ namespace Crypto
 			Data::Timestamp GetNotAfter() const;
 			Bool IsSelfSigned() const;
 
-			virtual Crypto::Cert::X509Cert *CreateX509Cert() const;
+			virtual Optional<Crypto::Cert::X509Cert> CreateX509Cert() const;
 
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};

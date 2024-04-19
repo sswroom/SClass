@@ -13,8 +13,8 @@ namespace Net
 
 		virtual Bool IsSSL() const;
 		virtual IO::StreamType GetStreamType() const;
-		virtual Crypto::Cert::Certificate *GetRemoteCert() = 0;
-		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetRemoteCerts() = 0;
+		virtual Optional<Crypto::Cert::Certificate> GetRemoteCert() = 0;
+		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetRemoteCerts() = 0;
 	};
 }
 #endif

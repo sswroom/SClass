@@ -24,9 +24,9 @@ IO::ParserType Net::ASN1Data::GetParserType() const
 
 Bool Net::ASN1Data::ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
-	Net::ASN1Names *names = this->CreateNames();
+	NotNullPtr<Net::ASN1Names> names = this->CreateNames();
 	Bool ret = Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0, 0, names);
-	SDEL_CLASS(names);
+	names.Delete();
 	return ret;
 }
 

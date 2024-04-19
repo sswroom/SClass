@@ -11,7 +11,7 @@
 struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
-	Data::ArrayList<Crypto::Cert::Certificate*> *remoteCerts;
+	Optional<Data::ArrayListNN<Crypto::Cert::Certificate>> remoteCerts;
 	Bool shutdown;
 };
 
@@ -42,14 +42,16 @@ Net::OpenSSLClient::OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ss
 #endif
 	if (certs != 0)
 	{
-		Crypto::Cert::OpenSSLCert *cert;
-		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayList<Crypto::Cert::Certificate*>());
+		NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+		NotNullPtr<Crypto::Cert::OpenSSLCert> cert;
+		NEW_CLASSNN(certList, Data::ArrayListNN<Crypto::Cert::Certificate>());
+		this->clsData->remoteCerts = certList;
 		int i = 0;
 		int j = sk_X509_num(certs);
 		while (i < j)
 		{
-			NEW_CLASS(cert, Crypto::Cert::OpenSSLCert(sk_X509_value(certs, i)));
-			this->clsData->remoteCerts->Add(cert);
+			NEW_CLASSNN(cert, Crypto::Cert::OpenSSLCert(sk_X509_value(certs, i)));
+			certList->Add(cert);
 			i++;
 		}
 	}
@@ -67,16 +69,17 @@ Net::OpenSSLClient::OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ss
 
 Net::OpenSSLClient::~OpenSSLClient()
 {
-	if (this->clsData->remoteCerts)
+	NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+	if (this->clsData->remoteCerts.SetTo(certList))
 	{
-		UOSInt i = this->clsData->remoteCerts->GetCount();
-		Crypto::Cert::Certificate *cert;
+		UOSInt i = certList->GetCount();
+		NotNullPtr<Crypto::Cert::Certificate> cert;
 		while (i-- > 0)
 		{
-			cert = this->clsData->remoteCerts->GetItem(i);
-			DEL_CLASS(cert);
+			cert = certList->GetItemNoCheck(i);
+			cert.Delete();
 		}
-		DEL_CLASS(this->clsData->remoteCerts);
+		certList.Delete();
 		this->clsData->remoteCerts = 0;
 	}
 	SSL_free(this->clsData->ssl);
@@ -207,15 +210,16 @@ void Net::OpenSSLClient::ShutdownSend()
 	SSL_shutdown(this->clsData->ssl);
 }
 
-Crypto::Cert::Certificate *Net::OpenSSLClient::GetRemoteCert()
+Optional<Crypto::Cert::Certificate> Net::OpenSSLClient::GetRemoteCert()
 {
-	if (this->clsData->remoteCerts)
-		return this->clsData->remoteCerts->GetItem(0);
+	NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
+	if (this->clsData->remoteCerts.SetTo(certs))
+		return certs->GetItem(0);
 	else
 		return 0;
 }
 
-const Data::ReadingList<Crypto::Cert::Certificate *> *Net::OpenSSLClient::GetRemoteCerts()
+Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::OpenSSLClient::GetRemoteCerts()
 {
 	return this->clsData->remoteCerts;
 }

@@ -54,7 +54,7 @@ namespace Net
 
 		virtual Bool IsSecureConn() const = 0;
 		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key) = 0;
-		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts() = 0;
+		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetServerCerts() = 0;
 
 		Bool FormBegin();
 		Bool FormAdd(Text::CStringNN name, Text::CString value);

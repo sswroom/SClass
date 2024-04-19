@@ -33,6 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 				{
 					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
 					NotNullPtr<Crypto::Cert::X509Key> key;
+					NotNullPtr<Text::String> s;
 					Crypto::Cert::X509PrivKey *privKey;
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
@@ -47,7 +48,14 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 						{
 							SDEL_CLASS(me->caCert);
 							me->caCert = cert;
-							me->txtCACert->SetText(names.commonName->ToCString());
+							if (names.commonName.SetTo(s))
+							{
+								me->txtCACert->SetText(s->ToCString());
+							}
+							else
+							{
+								me->txtCACert->SetText(CSTR("Unnamed"));
+							}
 							Crypto::Cert::CertNames::FreeNames(names);
 							NotNullPtr<Net::SSLEngine> ssl;
 							if (key.Set(me->key) && me->ssl.SetTo(ssl))
@@ -73,20 +81,28 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 							SDEL_CLASS(me->csr);
 							me->csr = csr;
 							me->DisplayNames(names);
-							me->txtCSR->SetText(names.commonName->ToCString());
+							if (names.commonName.SetTo(s))
+							{
+								me->txtCSR->SetText(s->ToCString());
+							}
+							else
+							{
+								me->txtCSR->SetText(CSTR("Unnamed"));
+							}
 							Crypto::Cert::CertNames::FreeNames(names);
 
 							me->lbSAN->ClearItems();
 							MemClear(&exts, sizeof(exts));
 							if (csr->GetExtensions(exts))
 							{
-								if (exts.subjectAltName)
+								NotNullPtr<Data::ArrayListStringNN> nameList;
+								if (exts.subjectAltName.SetTo(nameList))
 								{
 									UOSInt j = 0;
-									UOSInt k = exts.subjectAltName->GetCount();
+									UOSInt k = nameList->GetCount();
 									while (j < k)
 									{
-										me->lbSAN->AddItem(Text::String::OrEmpty(exts.subjectAltName->GetItem(j)), 0);
+										me->lbSAN->AddItem(nameList->GetItemNoCheck(j), 0);
 										j++;
 									}
 								}
@@ -124,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 						break;
 					case Crypto::Cert::X509File::FileType::PrivateKey:
 						privKey = (Crypto::Cert::X509PrivKey*)x509;
-						if (key.Set(privKey->CreateKey()))
+						if (privKey->CreateKey().SetTo(key))
 						{
 							SDEL_CLASS(me->key);
 							me->key = key.Ptr();
@@ -139,7 +155,14 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 						{
 							SDEL_CLASS(me->caCert);
 							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
-							me->txtCACert->SetText(names.commonName->ToCString());
+							if (names.commonName.SetTo(s))
+							{
+								me->txtCACert->SetText(s->ToCString());
+							}
+							else
+							{
+								me->txtCACert->SetText(CSTR("Unnamed"));
+							}
 							Crypto::Cert::CertNames::FreeNames(names);
 							NotNullPtr<Net::SSLEngine> ssl;
 							if (key.Set(me->key) && me->ssl.SetTo(ssl))

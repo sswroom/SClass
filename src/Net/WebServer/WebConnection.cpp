@@ -534,8 +534,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						}
 						else
 						{
-							Text::String *s2 = currReq->GetHeaderValue(i);
-							httpCli->AddHeaderC(s->ToCString(), s2->ToCString());
+							Optional<Text::String> s2 = currReq->GetHeaderValue(i);
+							httpCli->AddHeaderC(s->ToCString(), OPTSTR_CSTR(s2));
 						}
 						i++;
 					}

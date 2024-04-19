@@ -18,7 +18,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Data::ArrayListStringNN *sanList;
-			Crypto::Cert::X509Key *key;
+			Optional<Crypto::Cert::X509Key> key;
 
 			NotNullPtr<UI::GUILabel> lblKey;
 			NotNullPtr<UI::GUITextBox> txtKeyDetail;

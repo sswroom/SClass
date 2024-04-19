@@ -17,11 +17,11 @@ Crypto::Cert::CertStore::CertStore(NotNullPtr<Text::String> name)
 Crypto::Cert::CertStore::~CertStore()
 {
 	UOSInt i = this->certMap.GetCount();
-	Crypto::Cert::X509Cert *cert;
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
 	while (i-- > 0)
 	{
-		cert = this->certMap.GetItem(i);
-		DEL_CLASS(cert);
+		cert = this->certMap.GetItemNoCheck(i);
+		cert.Delete();
 	}
 	this->storeName->Release();
 }
@@ -34,7 +34,7 @@ NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::CertStore::Clone() const
 	UOSInt j = this->certMap.GetCount();
 	while (i < j)
 	{
-		newStore->certMap.Put(this->certMap.GetKey(i), (Crypto::Cert::X509Cert*)this->certMap.GetItem(i)->Clone().Ptr());
+		newStore->certMap.Put(this->certMap.GetKey(i), NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->certMap.GetItemNoCheck(i)->Clone()));
 		i++;
 	}
 	return newStore;
@@ -127,7 +127,7 @@ void Crypto::Cert::CertStore::AddCert(NotNullPtr<Crypto::Cert::X509Cert> cert)
 	cert->GetSubjectCN(sb);
 	if (sb.GetLength() > 0)
 	{
-		if (cert.Set(this->certMap.PutC(sb.ToCString(), cert.Ptr())))
+		if (this->certMap.PutC(sb.ToCString(), cert).SetTo(cert))
 		{
 			cert.Delete();
 		}
@@ -174,7 +174,7 @@ NotNullPtr<Text::String> Crypto::Cert::CertStore::GetStoreName() const
 	return this->storeName;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertStore::GetCertByCN(Text::CStringNN commonName)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetCertByCN(Text::CStringNN commonName)
 {
 	return this->certMap.GetC(commonName);
 }
@@ -184,8 +184,12 @@ UOSInt Crypto::Cert::CertStore::GetCount() const
 	return this->certMap.GetCount();
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertStore::GetItem(UOSInt index) const
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetItem(UOSInt index) const
 {
 	return this->certMap.GetItem(index);
 }
 
+NotNullPtr<Crypto::Cert::X509Cert> Crypto::Cert::CertStore::GetItemNoCheck(UOSInt index) const
+{
+	return this->certMap.GetItemNoCheck(index);
+}

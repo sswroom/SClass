@@ -88,11 +88,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 			{
 				sb.AppendUTF8Char('?');
 			}
-			SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+			NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 			Text::StringBuilderUTF8 sb2;
 			while (i < j)
 			{
-				param = me->params.GetItem(i);
+				param = me->params.GetItemNoCheck(i);
 				if (sb2.GetCharCnt() > 0)
 				{
 					sb2.AppendUTF8Char('&');
@@ -152,11 +152,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
 		UOSInt k;
-		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+		NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 		NotNullPtr<Text::String> s;
 		while (i < j)
 		{
-			param = me->params.GetItem(i);
+			param = me->params.GetItemNoCheck(i);
 			mstm.Write((const UInt8*)"--", 2);
 			mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
 			mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; name=\""));
@@ -235,11 +235,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		UOSInt j = me->params.GetCount();
 		if (j > 0)
 		{
-			SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+			NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 			while (i < j)
 			{
-				param = me->params.GetItem(i);
+				param = me->params.GetItemNoCheck(i);
 				json.ObjectAddStrUTF8(param->name->ToCString(), param->value->v);
 				i++;
 			}
@@ -270,11 +270,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 	{
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
-		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+		NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 		Text::StringBuilderUTF8 sb2;
 		while (i < j)
 		{
-			param = me->params.GetItem(i);
+			param = me->params.GetItemNoCheck(i);
 			if (sb2.GetCharCnt() > 0)
 			{
 				sb2.AppendUTF8Char('&');
@@ -410,7 +410,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userO
 {
 	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Text::StringBuilderUTF8 sb;
-	SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 	UTF8Char *sbuff;
 	UTF8Char sbuffLocal[512];
 	UTF8Char *sbuffPtr = 0;
@@ -441,7 +441,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userO
 				sptr[spInd] = 0;
 			}
 			eqInd = Text::StrIndexOfChar(sptr, '=');
-			param = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::ParamValue, 1);
+			param = MemAllocNN(SSWR::AVIRead::AVIRHTTPClientForm::ParamValue);
 			if (eqInd != INVALID_INDEX)
 			{
 				sptr[eqInd] = 0;
@@ -513,9 +513,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(AnyType userObj)
 {
 	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	if (me->respCert)
+	NotNullPtr<Crypto::Cert::X509File> file;
+	if (me->respCert.SetTo(file))
 	{
-		me->core->OpenObject(me->respCert->Clone());
+		me->core->OpenObject(file->Clone());
 	}
 }
 
@@ -782,13 +783,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 				me->respContType = contType;
 				me->respData = mstm;
 				SDEL_STRING(me->respCertText);
-				SDEL_CLASS(me->respCert);
-				NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs;
-				if (certs.Set(cli->GetServerCerts()))
+				me->respCert.Delete();
+				NotNullPtr<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs;
+				if (cli->GetServerCerts().SetTo(certs))
 				{
 					Text::StringBuilderUTF8 sb;
-					Crypto::Cert::X509File *x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
-					if (x509)
+					NotNullPtr<Crypto::Cert::X509File> x509;
+					if (Crypto::Cert::X509File::CreateFromCerts(certs).SetTo(x509))
 					{
 						x509->ToString(sb);
 						me->respCert = x509;
@@ -814,7 +815,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 				SDEL_STRING(me->respContType);
 				me->respReqURL = currURL->Clone().Ptr();
 				SDEL_STRING(me->respCertText);
-				SDEL_CLASS(me->respCert);
+				me->respCert.Delete();
 			}
 
 			cli.Delete();
@@ -936,8 +937,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 			hdr = Text::String::OrEmpty(me->respHeaders.GetItem(i));
 			if (hdr->StartsWithICase(UTF8STRC("Set-Cookie: ")))
 			{
-				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString());
-				if (cookie)
+				NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
+				if (me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString()).SetTo(cookie))
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
 					if (s.Set(cookie->path))
@@ -973,14 +974,14 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 {
 	UOSInt i;
-	SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 	i = this->params.GetCount();
 	while (i-- > 0)
 	{
-		param = this->params.GetItem(i);
+		param = this->params.GetItemNoCheck(i);
 		param->name->Release();
 		param->value->Release();
-		MemFree(param);
+		MemFreeNN(param);
 	}
 	this->params.Clear();
 }
@@ -988,16 +989,16 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 {
 	UOSInt i;
-	SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
+	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
 	i = this->cookieList.GetCount();
 	while (i-- > 0)
 	{
-		cookie = this->cookieList.GetItem(i);
+		cookie = this->cookieList.GetItemNoCheck(i);
 		cookie->name->Release();
 		cookie->value->Release();
 		cookie->domain->Release();
 		SDEL_STRING(cookie->path);
-		MemFree(cookie);
+		MemFreeNN(cookie);
 	}
 	this->cookieList.Clear();
 
@@ -1013,7 +1014,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearFiles()
 	this->fileList.Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm::SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL)
+Optional<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> SSWR::AVIRead::AVIRHTTPClientForm::SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL)
 {
 	UTF8Char domain[512];
 	UTF8Char path[512];
@@ -1099,12 +1100,12 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	if (valid)
 	{
 		NotNullPtr<Text::String> cookieName = Text::String::New(cookieValue, (UOSInt)i);
-		SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
+		NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
 		Bool eq;
 		UOSInt j = this->cookieList.GetCount();
 		while (j-- > 0)
 		{
-			cookie = this->cookieList.GetItem(j);
+			cookie = this->cookieList.GetItemNoCheck(j);
 			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName);
 			if (cookie->path == 0)
 			{
@@ -1124,7 +1125,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 				return cookie;
 			}
 		}
-		cookie = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie, 1);
+		cookie = MemAllocNN(SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie);
 		cookie->domain = Text::String::NewP(domain, domainEnd);
 		if (path[0])
 		{
@@ -1153,7 +1154,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 {
 	UInt8 buff[4096];
 	UTF8Char *sptr;
-	HTTPCookie *cookie;
+	NotNullPtr<HTTPCookie> cookie;
 	UOSInt len1;
 	UOSInt len2;
 	UOSInt i;
@@ -1170,7 +1171,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 	j = this->cookieList.GetCount();
 	while (i < j)
 	{
-		cookie = this->cookieList.GetItem(i);
+		cookie = this->cookieList.GetItemNoCheck(i);
 		len2 = cookie->domain->leng;
 		Bool valid = false;
 		if (len1 == len2 && cookie->domain->Equals(buff, len1))
@@ -1444,7 +1445,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_STRING(this->respContType);
 	SDEL_CLASS(this->respData);
 	SDEL_STRING(this->respCertText);
-	SDEL_CLASS(this->respCert);
+	this->respCert.Delete();
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
 	this->userAgent->Release();

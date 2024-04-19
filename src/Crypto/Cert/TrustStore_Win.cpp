@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-void TrustStore_LoadStore(Crypto::Cert::CertStore *store, const WChar *storeName)
+void TrustStore_LoadStore(NotNullPtr<Crypto::Cert::CertStore> store, const WChar *storeName)
 {
 	HCERTSTORE hSystemStore = CertOpenSystemStoreW(0, storeName);
 	if (hSystemStore)
@@ -21,21 +21,21 @@ void TrustStore_LoadStore(Crypto::Cert::CertStore *store, const WChar *storeName
 	}
 }
 
-Crypto::Cert::CertStore *Crypto::Cert::TrustStore::Load()
+NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
 {
-	Crypto::Cert::CertStore *store;
-	NEW_CLASS(store, Crypto::Cert::CertStore(CSTR("Default Trust Store")));
+	NotNullPtr<Crypto::Cert::CertStore> store;
+	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Default Trust Store")));
 	TrustStore_LoadStore(store, L"CA");
 	TrustStore_LoadStore(store, L"ROOT");
 	return store;
 }
 
-Crypto::Cert::CertStore *Crypto::Cert::TrustStore::LoadJavaCA()
+NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::LoadJavaCA()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Crypto::Cert::CertStore *store;
-	NEW_CLASS(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
+	NotNullPtr<Crypto::Cert::CertStore> store;
+	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
 
 	Manage::EnvironmentVar env;
 	const UTF8Char *csptr = env.GetValue(CSTR("JAVA_HOME"));

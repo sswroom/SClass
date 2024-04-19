@@ -54,7 +54,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 						{
 							Crypto::Cert::X509PKCS7 *pkcs7 = (Crypto::Cert::X509PKCS7*)x509;
 							Crypto::Hash::HashType hashType = pkcs7->GetDigestType();
-							data = pkcs7->GetMessageDigest(&dataSize);
+							data = pkcs7->GetMessageDigest(dataSize);
 							if (data == 0)
 							{
 								this->txtSignState->SetText(CSTR("Message Digest not found"));
@@ -82,15 +82,15 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 								else
 								{
 									UOSInt encLen;
-									const UInt8 *encDigestData = pkcs7->GetEncryptedDigest(&encLen);
+									const UInt8 *encDigestData = pkcs7->GetEncryptedDigest(encLen);
 									if (encDigestData == 0)
 									{
 										this->txtSignState->SetText(CSTR("Signature data not found"));
 									}
 									else
 									{
-										Crypto::Cert::X509Cert *crt = pkcs7->GetNewCert(0);
-										if (crt == 0)
+										NotNullPtr<Crypto::Cert::X509Cert> crt;
+										if (!pkcs7->GetNewCert(0).SetTo(crt))
 										{
 											this->txtSignState->SetText(CSTR("Cert not found"));
 										}
@@ -143,7 +143,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 
 												key.Delete();
 											}
-											DEL_CLASS(crt);
+											crt.Delete();
 										}
 									}
 								}

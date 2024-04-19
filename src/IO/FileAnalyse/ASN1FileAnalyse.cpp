@@ -2,7 +2,7 @@
 #include "Data/ByteBuffer.h"
 #include "IO/FileAnalyse/ASN1FileAnalyse.h"
 
-IO::FileAnalyse::ASN1FileAnalyse::ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd, Net::ASN1Names *names)
+IO::FileAnalyse::ASN1FileAnalyse::ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd, Optional<Net::ASN1Names> names)
 {
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->names = names;
@@ -12,7 +12,7 @@ IO::FileAnalyse::ASN1FileAnalyse::ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd,
 IO::FileAnalyse::ASN1FileAnalyse::~ASN1FileAnalyse()
 {
 	this->fd.Delete();
-	SDEL_CLASS(this->names);
+	this->names.Delete();
 }
 
 Text::CStringNN IO::FileAnalyse::ASN1FileAnalyse::GetFormatName()

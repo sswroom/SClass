@@ -81,7 +81,7 @@ namespace Net
 			virtual NotNullPtr<Net::NetConnection> GetNetConn() const = 0;
 			virtual UInt16 GetClientPort() const = 0;
 			virtual Bool IsSecure() const = 0;
-			virtual Crypto::Cert::X509Cert *GetClientCert() = 0;
+			virtual Optional<Crypto::Cert::X509Cert> GetClientCert() = 0;
 			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize) = 0;
 			void GetRequestAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const;
 

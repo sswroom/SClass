@@ -84,6 +84,7 @@ namespace SSWR
 			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CString msg);
 			static Bool __stdcall OnLoginRequest(AnyType userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg);
 			void ClearCACerts();
+			Optional<Crypto::Cert::X509Key> CreateSAMLKey();
 		public:
 			AVIRSAMLTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLTestForm();

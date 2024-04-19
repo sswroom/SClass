@@ -308,7 +308,7 @@ UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, 
 	return len + 5;
 }
 
-void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb, OutParam<Crypto::Cert::X509File*> cert)
+void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert)
 {
 	cert.Set(0);
 	if (buff[0] == 21 && packetSize == 7)
@@ -326,8 +326,8 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPt
 	}
 	else if (buff[0] == 22 && packetSize >= 9)
 	{
-		Data::ArrayList<Crypto::Cert::X509Cert*> certs;
-		Crypto::Cert::X509Cert *c;
+		Data::ArrayListNN<Crypto::Cert::X509Cert> certs;
+		NotNullPtr<Crypto::Cert::X509Cert> c;
 		Bool hasServerHello = false;
 		UOSInt i = 0;
 		UOSInt j;
@@ -371,7 +371,7 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPt
 					while (k < certsLeng - 3)
 					{
 						certLeng = ReadMUInt24(&buff[i + j + k + 12]);
-						NEW_CLASS(c, Crypto::Cert::X509Cert(CSTR("Cert.crt"), Data::ByteArrayR(&buff[i + j + k + 15], certLeng)));
+						NEW_CLASSNN(c, Crypto::Cert::X509Cert(CSTR("Cert.crt"), Data::ByteArrayR(&buff[i + j + k + 15], certLeng)));
 						c->SetDefaultSourceName();
 						certs.Add(c);
 						k += certLeng + 3;

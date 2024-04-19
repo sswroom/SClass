@@ -44,7 +44,7 @@ void Crypto::Cert::X509PrivKey::ToShortName(NotNullPtr<Text::StringBuilderUTF8> 
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PrivKey::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PrivKey::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
@@ -64,9 +64,11 @@ void Crypto::Cert::X509PrivKey::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509PrivKey::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509PrivKey::CreateNames() const
 {
-	return 0;
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
+	return names;;
 }
 
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType() const
@@ -81,7 +83,7 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType() const
 	return Crypto::Cert::X509File::KeyType::Unknown;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey() const
+Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PrivKey::CreateKey() const
 {
 	KeyType keyType = GetKeyType();
 	if (keyType == KeyType::Unknown)
@@ -100,7 +102,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey() const
 	return 0;
 }
 
-Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName)
+NotNullPtr<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName)
 {
 	NotNullPtr<Text::String> mySourceName;
 	if (!mySourceName.Set(sourceName))
@@ -117,12 +119,12 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 	keyPDU.EndLevel();
 	keyPDU.AppendOctetString(buff, buffSize);
 	keyPDU.EndLevel();
-	Crypto::Cert::X509PrivKey *key;
-	NEW_CLASS(key, Crypto::Cert::X509PrivKey(mySourceName, keyPDU.GetArray()));
+	NotNullPtr<Crypto::Cert::X509PrivKey> key;
+	NEW_CLASSNN(key, Crypto::Cert::X509PrivKey(mySourceName, keyPDU.GetArray()));
 	return key;
 }
 
-Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key)
+Optional<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key)
 {
 	KeyType keyType = key->GetKeyType();
 	if (keyType == KeyType::ECDSA)
@@ -154,8 +156,8 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<C
 		keyPDU.EndLevel();
 		keyPDU.EndLevel();
 		keyPDU.EndLevel();
-		Crypto::Cert::X509PrivKey *pkey;
-		NEW_CLASS(pkey, Crypto::Cert::X509PrivKey(key->GetSourceNameObj(), keyPDU.GetArray()));
+		NotNullPtr<Crypto::Cert::X509PrivKey> pkey;
+		NEW_CLASSNN(pkey, Crypto::Cert::X509PrivKey(key->GetSourceNameObj(), keyPDU.GetArray()));
 		return pkey;
 	}
 	else if (keyType == KeyType::RSA)

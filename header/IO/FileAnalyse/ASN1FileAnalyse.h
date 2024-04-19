@@ -11,9 +11,9 @@ namespace IO
 		{
 		private:
 			NotNullPtr<IO::StreamData> fd;
-			Net::ASN1Names *names;
+			Optional<Net::ASN1Names> names;
 		public:
-			ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd, Net::ASN1Names *names);
+			ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd, Optional<Net::ASN1Names> names);
 			virtual ~ASN1FileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();

@@ -17,13 +17,13 @@ namespace Crypto
 	{
 		struct CertNames
 		{
-			Text::String *countryName;
-			Text::String *stateOrProvinceName;
-			Text::String *localityName;
-			Text::String *organizationName;
-			Text::String *organizationUnitName;
-			Text::String *commonName;
-			Text::String *emailAddress;
+			Optional<Text::String> countryName;
+			Optional<Text::String> stateOrProvinceName;
+			Optional<Text::String> localityName;
+			Optional<Text::String> organizationName;
+			Optional<Text::String> organizationUnitName;
+			Optional<Text::String> commonName;
+			Optional<Text::String> emailAddress;
 
 			static void FreeNames(NotNullPtr<CertNames> names);
 		};
@@ -37,8 +37,8 @@ namespace Crypto
 
 		struct CertExtensions
 		{
-			Data::ArrayListStringNN *subjectAltName;
-			Data::ArrayList<Text::String *> *issuerAltName;
+			Optional<Data::ArrayListStringNN> subjectAltName;
+			Optional<Data::ArrayListStringNN> issuerAltName;
 			Bool useSubjKeyId;
 			UInt8 subjKeyId[20];
 			Bool useAuthKeyId;
@@ -157,7 +157,7 @@ namespace Crypto
 		protected:
 			static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, NotNullPtr<Text::StringBuilderUTF8> sb); // AuthenticationFramework
 
-			static void AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut); // PKCS-5
+			static void AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, OptOut<KeyType> keyTypeOut); // PKCS-5
 			static void AppendValidity(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
 			static void AppendSubjectPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
 			static void AppendName(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
@@ -212,8 +212,8 @@ namespace Crypto
 
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const = 0;
+			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const = 0;
 
 			void ToShortString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			Bool IsSignatureKey(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key) const;
@@ -229,8 +229,8 @@ namespace Crypto
 			static Text::CStringNN ValidStatusGetName(ValidStatus validStatus);
 			static Text::CStringNN ValidStatusGetDesc(ValidStatus validStatus);
 			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
-			static X509File *CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs);
-			static X509File *CreateFromCertsAndClear(NotNullPtr<Data::ArrayList<Crypto::Cert::X509Cert *>> certs);
+			static Optional<X509File> CreateFromCerts(NotNullPtr<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs);
+			static Optional<X509File> CreateFromCertsAndClear(NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> certs);
 		};
 	}
 }

@@ -11,27 +11,28 @@
 
 void Crypto::Cert::CertNames::FreeNames(NotNullPtr<CertNames> names)
 {
-	SDEL_STRING(names->countryName);
-	SDEL_STRING(names->stateOrProvinceName);
-	SDEL_STRING(names->localityName);
-	SDEL_STRING(names->organizationName);
-	SDEL_STRING(names->organizationUnitName);
-	SDEL_STRING(names->commonName);
-	SDEL_STRING(names->emailAddress);
+	OPTSTR_DEL(names->countryName);
+	OPTSTR_DEL(names->stateOrProvinceName);
+	OPTSTR_DEL(names->localityName);
+	OPTSTR_DEL(names->organizationName);
+	OPTSTR_DEL(names->organizationUnitName);
+	OPTSTR_DEL(names->commonName);
+	OPTSTR_DEL(names->emailAddress);
 }
 
 void Crypto::Cert::CertExtensions::FreeExtensions(NotNullPtr<CertExtensions> ext)
 {
-	if (ext->subjectAltName)
+	NotNullPtr<Data::ArrayListStringNN> strList;
+	if (ext->subjectAltName.SetTo(strList))
 	{
-		ext->subjectAltName->FreeAll();
-		DEL_CLASS(ext->subjectAltName);
+		strList->FreeAll();
+		strList.Delete();
 		ext->subjectAltName = 0;
 	}
-	if (ext->issuerAltName)
+	if (ext->issuerAltName.SetTo(strList))
 	{
-		LIST_FREE_STRING(ext->issuerAltName);
-		DEL_CLASS(ext->issuerAltName);
+		strList->FreeAll();
+		strList.Delete();
 		ext->issuerAltName = 0;
 	}
 }
@@ -270,14 +271,13 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 				name = CSTRP(sbuff, sptr);
 			}
 			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, name);
-			Crypto::Cert::X509Key *key;
+			NotNullPtr<Crypto::Cert::X509Key> key;
 			Crypto::Cert::X509PubKey pubKey(name, Data::ByteArrayR(itemPDU, itemOfst + itemLen));
-			key = pubKey.CreateKey();
-			if (key)
+			if (pubKey.CreateKey().SetTo(key))
 			{
 				key->ToString(sb);
 				sb->AppendLB(Text::LineBreakType::CRLF);
-				DEL_CLASS(key);
+				key.Delete();
 			}
 		}
 	}
@@ -604,7 +604,7 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, CSTR("privateKeyAlgorithm"), false, &keyType);
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, CSTR("privateKeyAlgorithm"), false, keyType);
 		}
 	}
 	Text::StrConcat(sptr, ".3");
@@ -693,17 +693,14 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 		if (itemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 		{
 			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, CSTR("subjectPublicKeyInfo"));
-			Crypto::Cert::X509PubKey *pubKey;
-			Crypto::Cert::X509Key *key;
-			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), Data::ByteArrayR(itemPDU, itemOfst + itemLen)));
-			key = pubKey->CreateKey();
-			if (key)
+			Crypto::Cert::X509PubKey pubKey(CSTR("PubKey"), Data::ByteArrayR(itemPDU, itemOfst + itemLen));
+			NotNullPtr<Crypto::Cert::X509Key> key;
+			if (pubKey.CreateKey().SetTo(key))
 			{
 				key->ToString(sb);
 				sb->AppendLB(Text::LineBreakType::CRLF);
-				DEL_CLASS(key);
+				key.Delete();
 			}
-			DEL_CLASS(pubKey);
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -787,17 +784,14 @@ void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *
 	if (buff[0] == Net::ASN1Util::IT_SEQUENCE)
 	{
 		AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, CSTR("PubKey"));
-		Crypto::Cert::X509PubKey *pubKey;
-		Crypto::Cert::X509Key *key;
-		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), Data::ByteArrayR(buff, itemOfst + buffSize)));
-		key = pubKey->CreateKey();
-		if (key)
+		Crypto::Cert::X509PubKey pubKey(CSTR("PubKey"), Data::ByteArrayR(buff, itemOfst + buffSize));
+		NotNullPtr<Crypto::Cert::X509Key> key;
+		if (pubKey.CreateKey().SetTo(key))
 		{
 			key->ToString(sb);
 			sb->AppendLB(Text::LineBreakType::CRLF);
-			DEL_CLASS(key);
+			key.Delete();
 		}
-		DEL_CLASS(pubKey);
 	}
 }
 
@@ -1004,7 +998,7 @@ void Crypto::Cert::X509File::AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
-void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut)
+void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, OptOut<KeyType> keyTypeOut)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1044,7 +1038,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 				if (itemType == Net::ASN1Util::IT_SEQUENCE)
 				{
 					sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".pbes2.kdf"));
-					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &innerKeyType);
+					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, innerKeyType);
 				}
 			}
 			if ((itemPDU = Net::ASN1Util::PDUGetItem(parameters, parameters + parametersLen, "2", itemLen, itemType)) != 0)
@@ -1052,7 +1046,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 				if (itemType == Net::ASN1Util::IT_SEQUENCE)
 				{
 					sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".pbes2.encryptScheme"));
-					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &innerKeyType);
+					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, innerKeyType);
 				}
 			}
 		}
@@ -1083,7 +1077,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 				if (itemType == Net::ASN1Util::IT_SEQUENCE)
 				{
 					sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".pbkdf2.prf"));
-					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &innerKeyType);
+					AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, innerKeyType);
 				}
 			}
 		}
@@ -1120,10 +1114,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
-	if (keyTypeOut)
-	{
-		*keyTypeOut = keyType;
-	}
+	keyTypeOut.Set(keyType);
 }
 
 void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString varName)
@@ -1169,7 +1160,7 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".algorithm"));
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &keyType);
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, keyType);
 		}
 	}
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", itemLen, itemType)) != 0)
@@ -2625,38 +2616,38 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Not
 					{
 						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.6")))
 						{
-							SDEL_STRING(names->countryName);
-							names->countryName = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->countryName);
+							names->countryName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.8")))
 						{
-							SDEL_STRING(names->stateOrProvinceName);
-							names->stateOrProvinceName = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->stateOrProvinceName);
+							names->stateOrProvinceName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.7")))
 						{
-							SDEL_STRING(names->localityName);
-							names->localityName = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->localityName);
+							names->localityName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.10")))
 						{
-							SDEL_STRING(names->organizationName);
-							names->organizationName = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->organizationName);
+							names->organizationName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.11")))
 						{
-							SDEL_STRING(names->organizationUnitName);
-							names->organizationUnitName = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->organizationUnitName);
+							names->organizationUnitName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.3")))
 						{
-							SDEL_STRING(names->commonName);
-							names->commonName = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->commonName);
+							names->commonName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.1")))
 						{
-							SDEL_STRING(names->emailAddress);
-							names->emailAddress = Text::String::New(strPDU, strLen).Ptr();
+							OPTSTR_DEL(names->emailAddress);
+							names->emailAddress = Text::String::New(strPDU, strLen);
 						}
 					}
 				}
@@ -2702,12 +2693,14 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 					{
 						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.17"))) //id-ce-subjectAltName
 						{
-							if (ext->subjectAltName)
+							NotNullPtr<Data::ArrayListStringNN> strList;
+							if (ext->subjectAltName.SetTo(strList))
 							{
-								ext->subjectAltName->FreeAll();
-								SDEL_CLASS(ext->subjectAltName)
+								strList->FreeAll();
+								strList.Delete();
 							}
-							NEW_CLASS(ext->subjectAltName, Data::ArrayListStringNN());
+							NEW_CLASSNN(strList, Data::ArrayListStringNN());
+							ext->subjectAltName = strList;
 							UOSInt j = 0;
 							UOSInt k = Net::ASN1Util::PDUCountItem(strPDU, strPDU + strLen, "1");
 							while (j < k)
@@ -2720,11 +2713,11 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 									if (itemType == 0x87)
 									{
 										sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(subItemPDU));
-										ext->subjectAltName->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+										strList->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 									}
 									else
 									{
-										ext->subjectAltName->Add(Text::String::New(subItemPDU, subItemLen));
+										strList->Add(Text::String::New(subItemPDU, subItemLen));
 									}
 								}
 							}
@@ -3062,7 +3055,7 @@ Bool Crypto::Cert::X509File::GetCertName(UOSInt index, NotNullPtr<Text::StringBu
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509File::GetNewCert(UOSInt index)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509File::GetNewCert(UOSInt index)
 {
 	return 0;
 }
@@ -3349,11 +3342,15 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 	return Crypto::Hash::HashType::Unknown;
 }
 
-Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs)
+Optional<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs)
 {
-	if (certs->GetCount() == 1)
+	if (certs->GetCount() == 0)
 	{
-		return certs->GetItem(0)->CreateX509Cert();
+		return 0;
+	}
+	else if (certs->GetCount() == 1)
+	{
+		return certs->GetItemNoCheck(0)->CreateX509Cert();
 	}
 	else
 	{
@@ -3361,13 +3358,13 @@ Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const
 		UOSInt j = certs->GetCount();
 		Crypto::Cert::X509FileList *certList = 0;
 		NotNullPtr<Crypto::Cert::X509Cert> cert;
-		if (cert.Set(certs->GetItem(0)->CreateX509Cert()))
+		if (certs->GetItemNoCheck(0)->CreateX509Cert().SetTo(cert))
 		{
 			NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
 		}
 		while (i < j)
 		{
-			if (cert.Set(certs->GetItem(i)->CreateX509Cert()))
+			if (certs->GetItemNoCheck(i)->CreateX509Cert().SetTo(cert))
 			{
 				if (certList)
 					certList->AddFile(cert);
@@ -3382,9 +3379,13 @@ Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const
 	}
 }
 
-Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCertsAndClear(NotNullPtr<Data::ArrayList<Crypto::Cert::X509Cert *>> certs)
+Optional<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCertsAndClear(NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> certs)
 {
-	if (certs->GetCount() == 1)
+	if (certs->GetCount() == 0)
+	{
+		return 0;
+	}
+	else if (certs->GetCount() == 1)
 	{
 		return certs->RemoveAt(0);
 	}
@@ -3392,23 +3393,12 @@ Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCertsAndClear(NotNullP
 	{
 		UOSInt i = 1;
 		UOSInt j = certs->GetCount();
-		Crypto::Cert::X509FileList *certList = 0;
-		NotNullPtr<Crypto::Cert::X509Cert> cert;
-		if (cert.Set(certs->GetItem(0)))
-		{
-			NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
-		}
+		NotNullPtr<Crypto::Cert::X509FileList> certList;
+		NotNullPtr<Crypto::Cert::X509Cert> cert = certs->GetItemNoCheck(0);
+		NEW_CLASSNN(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
 		while (i < j)
 		{
-			if (cert.Set(certs->GetItem(i)))
-			{
-				if (certList)
-					certList->AddFile(cert);
-				else
-				{
-					NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
-				}
-			}
+			certList->AddFile(certs->GetItemNoCheck(i));
 			i++;
 		}
 		certs->Clear();

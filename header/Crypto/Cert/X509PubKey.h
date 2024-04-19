@@ -16,16 +16,16 @@ namespace Crypto
 
 			virtual FileType GetFileType() const;
 			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const;
+			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
 			virtual NotNullPtr<ASN1Data> Clone() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual Net::ASN1Names *CreateNames() const;
+			virtual NotNullPtr<Net::ASN1Names> CreateNames() const;
 			
-			Crypto::Cert::X509Key *CreateKey() const;
+			Optional<Crypto::Cert::X509Key> CreateKey() const;
 
-			static X509PubKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> sourceName);
-			static X509PubKey *CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key);
+			static NotNullPtr<X509PubKey> CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> sourceName);
+			static NotNullPtr<X509PubKey> CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key);
 		};
 	}
 }

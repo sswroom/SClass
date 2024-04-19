@@ -48,8 +48,8 @@ namespace Net
 			Text::String *metadataPath;
 			Text::String *logoutPath;
 			Text::String *ssoPath;
-			Crypto::Cert::X509Cert *signCert;
-			Crypto::Cert::X509PrivKey *signKey;
+			Optional<Crypto::Cert::X509Cert> signCert;
+			Optional<Crypto::Cert::X509PrivKey> signKey;
 			SAMLError initErr;
 			SAMLStrFunc rawRespHdlr;
 			AnyType rawRespObj;
@@ -68,7 +68,7 @@ namespace Net
 			Bool GetSSOURL(NotNullPtr<Text::StringBuilderUTF8> sb);
 			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, AnyType userObj);
 			void HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj);
-			Crypto::Cert::X509PrivKey *GetKey();
+			Optional<Crypto::Cert::X509PrivKey> GetKey();
 		};
 		Text::CString SAMLErrorGetName(SAMLError err);
 	}

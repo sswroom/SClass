@@ -8,10 +8,10 @@
 Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
 {
 	NotNullPtr<GCISNotifyHandler> me = NotNullPtr<GCISNotifyHandler>::ConvertFrom(hdlr);
-	Crypto::Cert::X509Cert *cert = req->GetClientCert();
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
 	Text::StringBuilderUTF8 sb2;
 	Text::JSONBuilder builder(Text::JSONBuilder::OT_OBJECT);
-	if (cert == 0)
+	if (!req->GetClientCert().SetTo(cert))
 	{
 		resp->SetStatusCode(Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
 		builder.ObjectAddStr(CSTR("description"), CSTR("Client Cert is missing"));

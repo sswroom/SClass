@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_CERTSTORE
 #define _SM_CRYPTO_CERT_CERTSTORE
 #include "Crypto/Cert/X509Cert.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Data/ReadingList.h"
 #include "IO/PackageFile.h"
 
@@ -9,10 +9,10 @@ namespace Crypto
 {
 	namespace Cert
 	{
-		class CertStore : public Data::ReadingList<Crypto::Cert::X509Cert*>
+		class CertStore : public Data::ReadingListNN<Crypto::Cert::X509Cert>
 		{
 		private:
-			Data::FastStringMap<Crypto::Cert::X509Cert*> certMap;
+			Data::FastStringMapNN<Crypto::Cert::X509Cert> certMap;
 			NotNullPtr<Text::String> storeName;
 		public:
 			CertStore(Text::CString name);
@@ -26,9 +26,10 @@ namespace Crypto
 			void FromPackageFile(IO::PackageFile *pkg);
 			NotNullPtr<Text::String> GetStoreName() const;
 
-			Crypto::Cert::X509Cert *GetCertByCN(Text::CStringNN commonName);
+			Optional<Crypto::Cert::X509Cert> GetCertByCN(Text::CStringNN commonName);
 			virtual UOSInt GetCount() const;
-			virtual Crypto::Cert::X509Cert *GetItem(UOSInt index) const;
+			virtual Optional<Crypto::Cert::X509Cert> GetItem(UOSInt index) const;
+			virtual NotNullPtr<Crypto::Cert::X509Cert> GetItemNoCheck(UOSInt index) const;
 		};
 	}
 }

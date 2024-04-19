@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 	IO::MemoryStream mstm;
 	fs.ReadToEnd(mstm, 65536);
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->GetNewKey()))
+	if (!me->GetNewKey().SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
@@ -137,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->GetNewKey()))
+	if (!me->GetNewKey().SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
@@ -218,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->GetNewKey()))
+	if (!me->GetNewKey().SetTo(key))
 	{
 		MemFree(buff);
 		me->ui->ShowMsgOK(CSTR("Error in getting key from file"), CSTR("Encrypt"), me);
@@ -306,7 +306,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->GetNewKey()))
+	if (!me->GetNewKey().SetTo(key))
 	{
 		MemFree(buff);
 		me->ui->ShowMsgOK(CSTR("Error in getting key from file"), CSTR("Decrypt"), me);
@@ -481,7 +481,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 	return signLen;
 }
 
-Crypto::Cert::X509Key *SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
+Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 {
 	NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1);
 	switch (x509->GetFileType())
@@ -811,7 +811,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_KEY_CREATE:
 		{
 			NotNullPtr<Crypto::Cert::X509Key> key;
-			if (key.Set(NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(this->asn1)->CreateKey()))
+			if (NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(this->asn1)->CreateKey().SetTo(key))
 			{
 				this->core->OpenObject(key);
 			}
@@ -828,7 +828,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 		if (cmdId >= MNU_CERT_0)
 		{
 			NotNullPtr<Crypto::Cert::X509Cert> cert;
-			if (cert.Set(NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0))))
+			if (NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0)).SetTo(cert))
 			{
 				this->core->OpenObject(cert);
 			}

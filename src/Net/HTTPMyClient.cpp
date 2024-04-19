@@ -1260,7 +1260,7 @@ Bool Net::HTTPMyClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, N
 	return ssl->ClientSetCertASN1(cert, key);
 }
 
-const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPMyClient::GetServerCerts()
+Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPMyClient::GetServerCerts()
 {
 	if (this->cli && this->cli->IsSSL())
 	{

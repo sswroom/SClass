@@ -26,7 +26,7 @@ namespace Net
 		virtual ASN1Type GetASN1Type() const = 0;
 		virtual NotNullPtr<ASN1Data> Clone() const = 0;
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
-		virtual ASN1Names *CreateNames() const = 0;
+		virtual NotNullPtr<ASN1Names> CreateNames() const = 0;
 
 		Bool ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		const UInt8 *GetASN1Buff() const;

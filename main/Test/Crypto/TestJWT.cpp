@@ -92,7 +92,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		Crypto::Cert::X509Key *key = 0;
+		Optional<Crypto::Cert::X509Key> key = 0;
+		NotNullPtr<Crypto::Cert::X509Key> nnkey;
 		NotNullPtr<Text::String> s = Text::String::New(CSTR("JWTRSAPub.key"));
 		Crypto::Cert::X509File *x509;// = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArray(keyBuff, keySize), s);
 		NEW_CLASS(x509, Crypto::Cert::X509PubKey(s, Data::ByteArrayR(keyBuff, keySize)));
@@ -123,7 +124,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)x509;
 				key = cert->GetNewPublicKey();
 			}
-			if (key == 0)
+			if (key.IsNull())
 			{
 				DEL_CLASS(x509);
 				ssl.Delete();
@@ -131,22 +132,22 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			DEL_CLASS(x509);
 		}
-		if (key && (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA || key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSAPublic))
+		if (key.SetTo(nnkey) && (nnkey->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA || nnkey->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSAPublic))
 		{
 			token = Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.NHVaYe26MbtOYhSKkoKYdFVomg4i8ZJd8_-RU8VNbftc4TSMb4bXP3l3YlNWACwyXPGffz5aXHc6lty1Y2t4SWRqGteragsVdZufDn5BlnJl9pdR_kdVFUsra2rWKEofkZeIC4yWytE58sMIihvo9H1ScmmVwBcQP6XETqYd0aSHp1gOa9RdUPDvoXQ5oqygTqVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9RiwrV7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ"), 0);
 			if (token)
 			{
-				if (!token->SignatureValid(ssl, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()))
+				if (!token->SignatureValid(ssl, nnkey->GetASN1Buff(), nnkey->GetASN1BuffSize(), nnkey->GetKeyType()))
 				{
 					DEL_CLASS(token);
-					SDEL_CLASS(key);
+					key.Delete();
 					ssl.Delete();
 					return 11;
 				}
 				DEL_CLASS(token);
 			}
 		}
-		SDEL_CLASS(key);
+		key.Delete();
 	}
 	ssl.Delete();
 	return 0;

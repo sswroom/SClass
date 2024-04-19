@@ -24,13 +24,13 @@ namespace Crypto
 
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const;
+			virtual Optional<X509Cert> GetNewCert(UOSInt index);
+			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
 			virtual NotNullPtr<ASN1Data> Clone() const;
-			virtual X509Cert *CreateX509Cert() const;
+			virtual Optional<X509Cert> CreateX509Cert() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual Net::ASN1Names *CreateNames() const;
+			virtual NotNullPtr<Net::ASN1Names> CreateNames() const;
 
 			Bool GetIssuerNames(NotNullPtr<CertNames> names) const;
 			Bool GetSubjNames(NotNullPtr<CertNames> names) const;

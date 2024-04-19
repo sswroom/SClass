@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBREQUEST
 #define _SM_NET_WEBSERVER_WEBREQUEST
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"
@@ -25,25 +25,25 @@ namespace Net
 		private:
 			NotNullPtr<Text::String> requestURI;
 			Net::WebUtil::RequestMethod reqMeth;
-			Data::FastStringMap<Text::String*> headers;
-			Data::FastStringMap<Text::String*> *queryMap;
+			Data::FastStringMapNN<Text::String> headers;
+			Data::FastStringMapNN<Text::String> *queryMap;
 			Net::SocketUtil::AddressInfo cliAddr;
 			UInt16 cliPort;
 			UInt16 svrPort;
 			RequestProtocol reqProto;
 			NotNullPtr<Net::TCPClient> cli;
-			Data::FastStringMap<Text::String *> *formMap;
-			Data::ArrayList<FormFileInfo*> *formFileList;
+			Data::FastStringMapNN<Text::String> *formMap;
+			Data::ArrayListNN<FormFileInfo> *formFileList;
 
 			UInt8 *reqData;
 			UOSInt reqDataSize;
 			UOSInt reqCurrSize;
 			IO::MemoryStream *chunkMStm;
-			Crypto::Cert::X509Cert *remoteCert;
+			Optional<Crypto::Cert::X509Cert> remoteCert;
 
 		private:
 			void ParseQuery();
-			void ParseFormStr(Data::FastStringMap<Text::String *> *formMap, const UInt8 *buff, UOSInt buffSize);
+			void ParseFormStr(NotNullPtr<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize);
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			Text::CString ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
@@ -57,7 +57,7 @@ namespace Net
 			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) const;
 			UOSInt GetHeaderCnt() const;
 			Text::String *GetHeaderName(UOSInt index) const;
-			Text::String *GetHeaderValue(UOSInt index) const;
+			Optional<Text::String> GetHeaderValue(UOSInt index) const;
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const;
 			virtual RequestProtocol GetProtocol() const;
@@ -73,7 +73,7 @@ namespace Net
 			virtual NotNullPtr<Net::NetConnection> GetNetConn() const;
 			virtual UInt16 GetClientPort() const;
 			virtual Bool IsSecure() const;
-			virtual Crypto::Cert::X509Cert *GetClientCert();
+			virtual Optional<Crypto::Cert::X509Cert> GetClientCert();
 			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize);
 
 			Bool HasData();

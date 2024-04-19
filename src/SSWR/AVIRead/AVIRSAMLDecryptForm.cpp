@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	NotNullPtr<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<Net::SSLEngine> ssl;
-	Crypto::Cert::X509Key *key = 0;
+	Optional<Crypto::Cert::X509Key> key = 0;
 	IO::ParsedObject *pobj;
 	me->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -86,9 +86,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 		{
 		case Crypto::Cert::X509File::FileType::Key:
 			key = (Crypto::Cert::X509Key*)x509;
-			if (!key->IsPrivateKey())
+			if (!((Crypto::Cert::X509Key*)x509)->IsPrivateKey())
 			{
-				DEL_CLASS(key);
+				key.Delete();
 				me->ui->ShowMsgOK(CSTR("Key file is not a private key"), CSTR("SAML Response Decrypt"), me);
 				return;
 			}
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 		case Crypto::Cert::X509File::FileType::PrivateKey:
 			key = ((Crypto::Cert::X509PrivKey*)x509)->CreateKey();
 			DEL_CLASS(x509);
-			if (key == 0)
+			if (key.IsNull())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in converting key file to private key"), CSTR("SAML Response Decrypt"), me);
 				return;
@@ -124,9 +124,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	sb.ClearStr();
 	me->txtRAWResponse->GetText(sb);
 	NotNullPtr<Crypto::Cert::X509Key> keyNN;
-	if (sb.GetLength() == 0 || !keyNN.Set(key))
+	if (sb.GetLength() == 0 || !key.SetTo(keyNN))
 	{
-		DEL_CLASS(key);
+		key.Delete();
 		me->ui->ShowMsgOK(CSTR("Please input raw response"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}

@@ -13,7 +13,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 	Bool found = false;
 	NotNullPtr<Text::String> s;
 	builder->BeginSequence();
-	if (s.Set(names->countryName))
+	if (names->countryName.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -23,7 +23,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 		builder->EndLevel();
 		found = true;
 	}
-	if (s.Set(names->stateOrProvinceName))
+	if (names->stateOrProvinceName.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -33,7 +33,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 		builder->EndLevel();
 		found = true;
 	}
-	if (s.Set(names->localityName))
+	if (names->localityName.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -43,7 +43,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 		builder->EndLevel();
 		found = true;
 	}
-	if (s.Set(names->organizationName))
+	if (names->organizationName.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -53,7 +53,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 		builder->EndLevel();
 		found = true;
 	}
-	if (s.Set(names->organizationUnitName))
+	if (names->organizationUnitName.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -63,7 +63,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 		builder->EndLevel();
 		found = true;
 	}
-	if (s.Set(names->commonName))
+	if (names->commonName.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -73,7 +73,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 		builder->EndLevel();
 		found = true;
 	}
-	if (s.Set(names->emailAddress))
+	if (names->emailAddress.SetTo(s))
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
@@ -123,7 +123,8 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(NotNullPtr<Net::ASN1PDUBuilder> bui
 Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertExtensions> ext)
 {
 	Bool found = false;
-	if (ext->subjectAltName && ext->subjectAltName->GetCount() > 0)
+	NotNullPtr<Data::ArrayListStringNN> strList;
+	if (ext->subjectAltName.SetTo(strList) && strList->GetCount() > 0)
 	{
 		if (!found)
 		{
@@ -134,7 +135,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		builder->AppendOIDString(CSTR("2.5.29.17"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = ext->subjectAltName->Iterator();
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = strList->Iterator();
 		NotNullPtr<Text::String> s;
 		Net::SocketUtil::AddressInfo addr;
 		while (it.HasNext())
@@ -160,7 +161,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		builder->EndLevel();
 		builder->EndLevel();
 	}
-	if (ext->issuerAltName && ext->issuerAltName->GetCount() > 0)
+	if (ext->issuerAltName.SetTo(strList) && strList->GetCount() > 0)
 	{
 		if (!found)
 		{
@@ -172,12 +173,12 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
 		UOSInt i = 0;
-		UOSInt j = ext->issuerAltName->GetCount();
-		Text::String *s;
+		UOSInt j = strList->GetCount();
+		NotNullPtr<Text::String> s;
 		Net::SocketUtil::AddressInfo addr;
 		while (i < j)
 		{
-			s = ext->issuerAltName->GetItem(i);
+			s = strList->GetItemNoCheck(i);
 			if (Net::SocketUtil::SetAddrInfo(addr, s->ToCString()))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
@@ -341,7 +342,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NotNullPtr<Net:
 	builder.EndLevel();
 
 	Text::StringBuilderUTF8 sb;
-	sb.Append(names->commonName);
+	sb.AppendOpt(names->commonName);
 	sb.AppendC(UTF8STRC(".csr"));
 	Crypto::Cert::X509CertReq *csr;
 	NEW_CLASS(csr, Crypto::Cert::X509CertReq(sb.ToCString(), builder.GetArray()));
@@ -397,7 +398,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NotNullPtr<
 	if (!AppendSign(builder, ssl, key, Crypto::Hash::HashType::SHA256)) return 0;
 	builder.EndLevel();
 	Text::StringBuilderUTF8 sb;
-	sb.Append(names->commonName);
+	sb.AppendOpt(names->commonName);
 	sb.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;
 	NEW_CLASS(cert, Crypto::Cert::X509Cert(sb.ToCString(), builder.GetArray()));
@@ -470,7 +471,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NotNullPtr<Net::SSLEng
 		Crypto::Cert::CertNames::FreeNames(names);
  		return 0;
 	}
-	sbFileName.Append(names.commonName);
+	sbFileName.AppendOpt(names.commonName);
 	Crypto::Cert::CertNames::FreeNames(names);
 	NotNullPtr<Crypto::Cert::X509Key> pubKey;;
 	if (!pubKey.Set(csr->GetNewPublicKey()))

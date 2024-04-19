@@ -78,9 +78,9 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sbErr;
 	cli.SendMessage(false, CSTR("UTF-8"), sbContType.ToCString(), sbSubject.ToCString(), sbContent.ToCString(), sbTo.ToCString(), sbCC.ToCString(), sbBCC.ToCString(), &sbErr);
 	me->txtResponseStatus->SetText(sbErr.ToCString());
-	Crypto::Cert::X509File *cert = cli.GetServerCertChain();
 	SDEL_CLASS(me->svrCert);
-	if (cert)
+	NotNullPtr<Crypto::Cert::X509File> cert;
+	if (cli.GetServerCertChain().SetTo(cert))
 	{
 		me->svrCert = (Crypto::Cert::X509File*)cert->Clone().Ptr();
 		sbErr.ClearStr();

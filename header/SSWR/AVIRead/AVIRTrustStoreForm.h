@@ -13,18 +13,18 @@ namespace SSWR
 		public:
 			struct CertEntry
 			{
-				Crypto::Cert::X509Cert *cert;
+				NotNullPtr<Crypto::Cert::X509Cert> cert;
 				NotNullPtr<Text::String> subjectCN;
 			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Crypto::Cert::CertStore *store;
+			Optional<Crypto::Cert::CertStore> store;
 
 			NotNullPtr<UI::GUIListView> lvTrustCert;
 			static void __stdcall OnTrustCertDblClicked(AnyType userObj, UOSInt index);
 		public:
-			AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Crypto::Cert::CertStore *store);
+			AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Crypto::Cert::CertStore> store);
 			virtual ~AVIRTrustStoreForm();
 
 			virtual void OnMonitorChanged();

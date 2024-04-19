@@ -32,7 +32,7 @@ void Crypto::Cert::X509Key::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	sb->AppendC(UTF8STRC(" bits"));
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	if (this->keyType == KeyType::Unknown)
 	{
@@ -230,16 +230,16 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509Key::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509Key::CreateNames() const
 {
-	Net::ASN1Names *names;
-	NEW_CLASS(names, Net::ASN1Names());
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
 	switch (this->keyType)
 	{
 	case KeyType::RSA:
-		return names->SetRSAPrivateKey().Ptr();
+		return names->SetRSAPrivateKey();
 	case KeyType::RSAPublic:
-		return names->SetRSAPublicKey().Ptr();
+		return names->SetRSAPublicKey();
 	default:
 	case KeyType::DSA:
 	case KeyType::ECDSA:

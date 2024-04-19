@@ -10,7 +10,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-Crypto::Cert::CertStore *Net::SSLEngine::trustStore = 0;
+Optional<Crypto::Cert::CertStore> Net::SSLEngine::trustStore = 0;
 UInt32 Net::SSLEngine::trustStoreCnt = 0;
 
 UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
@@ -54,7 +54,7 @@ Net::SSLEngine::SSLEngine(NotNullPtr<Net::SocketFactory> sockf)
 	this->sockf = sockf;
 	this->maxThreadCnt = 10;
 	this->currThreadCnt = 0;
-	this->trustStoreUsed = false;
+	this->usedTrustStore = 0;
 	this->threadMut.SetDebName((const UTF8Char*)"SSLEngine");
 	this->threadSt = MemAlloc(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
@@ -102,11 +102,11 @@ Net::SSLEngine::~SSLEngine()
 		DEL_CLASS(this->threadSt[i].evt);
 	}
 	MemFree(this->threadSt);
-	if (this->trustStoreUsed)
+	if (this->usedTrustStore.NotNull())
 	{
 		if (Sync::Interlocked::DecrementU32(trustStoreCnt) == 0)
 		{
-			SDEL_CLASS(trustStore);
+			trustStore.Delete();
 		}
 	}
 }
@@ -295,17 +295,24 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, AnyType
 	}
 }
 
-Crypto::Cert::CertStore *Net::SSLEngine::GetTrustStore()
+NotNullPtr<Crypto::Cert::CertStore> Net::SSLEngine::GetTrustStore()
 {
-	if (!this->trustStoreUsed)
+	NotNullPtr<Crypto::Cert::CertStore> store;
+	if (!this->usedTrustStore.SetTo(store))
 	{
-		this->trustStoreUsed = true;
-		if (Sync::Interlocked::IncrementU32(trustStoreCnt) == 1)
+		Sync::Interlocked::IncrementU32(trustStoreCnt);
+		if (!trustStore.SetTo(store))
 		{
-			trustStore = Crypto::Cert::TrustStore::Load();
+			store = Crypto::Cert::TrustStore::Load();
+			trustStore = store;
 		}
+		this->usedTrustStore = store;
+		return store;
 	}
-	return trustStore;
+	else
+	{
+		return store;
+	}
 }
 
 Text::CStringNN Net::SSLEngine::ErrorTypeGetName(ErrorType err)

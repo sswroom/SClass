@@ -511,43 +511,39 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 	return ret;
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ToType(IO::ParsedObject *pobj, Crypto::Cert::X509File::FileType ftype)
+Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ToType(NotNullPtr<IO::ParsedObject> pobj, Crypto::Cert::X509File::FileType ftype)
 {
-	Net::ASN1Data *asn1;
-	if (pobj == 0)
-	{
-		return 0;
-	}
+	NotNullPtr<Net::ASN1Data> asn1;
 	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
-		DEL_CLASS(pobj);
+		pobj.Delete();
 		return 0;
 	}
-	asn1 = (Net::ASN1Data*)pobj;
+	asn1 = NotNullPtr<Net::ASN1Data>::ConvertFrom(pobj);
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
-		DEL_CLASS(pobj);
+		pobj.Delete();
 		return 0;
 	}
-	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+	NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(asn1);
 	if (x509->GetFileType() == ftype)
 	{
 		return x509;
 	}
 	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key;
-		if (key.Set((Crypto::Cert::X509Key*)x509) && ftype == Crypto::Cert::X509File::FileType::PrivateKey)
+		NotNullPtr<Crypto::Cert::X509Key> key = NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(x509);
+		if (ftype == Crypto::Cert::X509File::FileType::PrivateKey)
 		{
 			if (key->IsPrivateKey())
 			{
-				Crypto::Cert::X509PrivKey *pkey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
+				Optional<Crypto::Cert::X509PrivKey> pkey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
 				key.Delete();
 				return pkey;
 			}
 		}
 	}
-	DEL_CLASS(x509);
+	x509.Delete();
 	return 0;
 }
 

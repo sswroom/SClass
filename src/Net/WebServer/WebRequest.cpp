@@ -22,10 +22,11 @@ void Net::WebServer::WebRequest::ParseQuery()
 	UOSInt urlLen = url->leng;
 	Text::PString strs1[2];
 	Text::PString strs2[2];
-	Text::String *s;
+	NotNullPtr<Text::String> s;
+	Optional<Text::String> opts;
 
 	sbuff = MemAlloc(UTF8Char, urlLen);
-	NEW_CLASS(this->queryMap, Data::FastStringMap<Text::String *>());
+	NEW_CLASS(this->queryMap, Data::FastStringMapNN<Text::String>());
 	if ((sptr = this->GetQueryString(sbuff, urlLen)) != 0)
 	{
 		sbuff2 = MemAlloc(UTF8Char, urlLen);
@@ -48,20 +49,19 @@ void Net::WebServer::WebRequest::ParseQuery()
 				sbuff2[0] = 0;
 				sptr = sbuff2;
 			}
-			s = this->queryMap->GetC(strs2[0].ToCString());
-			if (s)
+			if (this->queryMap->GetC(strs2[0].ToCString()).SetTo(s))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
 				sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
+				opts = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 			else
 			{
-				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)).Ptr());
+				opts = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
 			}
-			if (s)
+			if (opts.SetTo(s))
 			{
 				s->Release();
 			}
@@ -71,7 +71,7 @@ void Net::WebServer::WebRequest::ParseQuery()
 	MemFree(sbuff);
 }
 
-void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *> *formMap, const UInt8 *buff, UOSInt buffSize)
+void Net::WebServer::WebRequest::ParseFormStr(NotNullPtr<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 *tmpBuff;
 	UInt8 b;
@@ -80,7 +80,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	UTF8Char *tmpName;
 	UOSInt tmpNameLen;
 	UOSInt nameLen = 0;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt buffPos;
 	UOSInt charCnt;
 
@@ -98,20 +98,19 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 #if defined(VERBOSE)
 				printf("WebRequest: Form: %s = %s\r\n", tmpBuff, tmpName);
 #endif
-				s = formMap->GetC({tmpBuff, nameLen});
-				if (s)
+				if (formMap->GetC({tmpBuff, nameLen}).SetTo(s))
 				{
 					charCnt = s->leng + 1;
 					tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - tmpName);
 					charCnt += tmpNameLen;
 					tmpStr = Text::String::New(charCnt);
 					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-					formMap->PutC({tmpBuff, nameLen}, tmpStr.Ptr());
+					formMap->PutC({tmpBuff, nameLen}, tmpStr);
 					s->Release();
 				}
 				else
 				{
-					formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)).Ptr());
+					formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -166,20 +165,19 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 #if defined(VERBOSE)
 		printf("WebRequest: Form: %s = %s\r\n", tmpBuff, tmpName);
 #endif
-		s = formMap->GetC({tmpBuff, nameLen});
-		if (s)
+		if (formMap->GetC({tmpBuff, nameLen}).SetTo(s))
 		{
 			charCnt = s->leng + 1;
 			tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - tmpName);
 			charCnt += tmpNameLen;
 			tmpStr = Text::String::New(charCnt);
 			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-			formMap->PutC({tmpBuff, nameLen}, tmpStr.Ptr());
+			formMap->PutC({tmpBuff, nameLen}, tmpStr);
 			s->Release();
 		}
 		else
 		{
-			formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)).Ptr());
+			formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
 		}
 		tmpName = 0;
 		buffPos = 0;
@@ -257,19 +255,18 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 
 	if (contType == 1)
 	{
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		if (formName.v && dataSize >= i)
 		{
 			Text::CStringNN formNameNN = formName.OrEmpty();
-			s = this->formMap->GetC(formNameNN);
-			if (s)
+			if (this->formMap->GetC(formNameNN).SetTo(s))
 			{
 				s->Release();
-				formMap->PutC(formNameNN, Text::String::New(&data[i], dataSize - i).Ptr());
+				formMap->PutC(formNameNN, Text::String::New(&data[i], dataSize - i));
 			}
 			else
 			{
-				formMap->PutC(formNameNN, Text::String::New(&data[i], dataSize - i).Ptr());
+				formMap->PutC(formNameNN, Text::String::New(&data[i], dataSize - i));
 			}
 		}
 	}
@@ -277,7 +274,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	{
 		if (formName.v)
 		{
-			FormFileInfo *info = MemAlloc(FormFileInfo, 1);
+			NotNullPtr<FormFileInfo> info = MemAllocNN(FormFileInfo);
 			info->ofst = startOfst + i;
 			info->leng = dataSize - i;
 			info->formName = Text::String::New(formName);
@@ -330,27 +327,27 @@ Net::WebServer::WebRequest::~WebRequest()
 {
 	UOSInt i;
 	this->requestURI->Release();
-	LIST_FREE_STRING(&this->headers);
+	NNLIST_FREE_STRING(&this->headers);
 	if (this->queryMap)
 	{
-		LIST_FREE_STRING(this->queryMap);
+		NNLIST_FREE_STRING(this->queryMap);
 		DEL_CLASS(this->queryMap);
 	}
 	if (this->formMap)
 	{
-		LIST_FREE_STRING(this->formMap);
+		NNLIST_FREE_STRING(this->formMap);
 		DEL_CLASS(this->formMap);
 	}
 	if (this->formFileList)
 	{
-		FormFileInfo *fileInfo;
+		NotNullPtr<FormFileInfo> fileInfo;
 		i = this->formFileList->GetCount();
 		while (i-- > 0)
 		{
-			fileInfo = this->formFileList->GetItem(i);
+			fileInfo = this->formFileList->GetItemNoCheck(i);
 			fileInfo->formName->Release();
 			fileInfo->fileName->Release();
-			MemFree(fileInfo);
+			MemFreeNN(fileInfo);
 		}
 		DEL_CLASS(this->formFileList);
 	}
@@ -360,13 +357,13 @@ Net::WebServer::WebRequest::~WebRequest()
 		this->reqData = 0;
 	}
 	SDEL_CLASS(this->chunkMStm);
-	SDEL_CLASS(this->remoteCert);
+	this->remoteCert.Delete();
 }
 
 void Net::WebServer::WebRequest::AddHeader(Text::CStringNN name, Text::CStringNN value)
 {
-	Text::String *s = this->headers.PutC(name, Text::String::New(value).Ptr());
-	SDEL_STRING(s);
+	Optional<Text::String> s = this->headers.PutC(name, Text::String::New(value));
+	OPTSTR_DEL(s);
 }
 
 Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN name) const
@@ -376,8 +373,8 @@ Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN na
 
 UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const
 {
-	Text::String *s = this->headers.GetC(name);
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (this->headers.GetC(name).SetTo(s))
 	{
 		return s->ConcatToS(sbuff, buffLen);
 	}
@@ -389,8 +386,8 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN
 
 Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) const
 {
-	Text::String *hdr = this->headers.GetC(name);
-	if (hdr == 0)
+	NotNullPtr<Text::String> hdr;
+	if (!this->headers.GetC(name).SetTo(hdr))
 		return false;
 	sb->Append(hdr);
 	return true;
@@ -421,7 +418,7 @@ Text::String *Net::WebServer::WebRequest::GetHeaderName(UOSInt index) const
 	return this->headers.GetKey(index);
 }
 
-Text::String *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index) const
+Optional<Text::String> Net::WebServer::WebRequest::GetHeaderValue(UOSInt index) const
 {
 	return this->headers.GetItem(index);
 }
@@ -451,8 +448,7 @@ Bool Net::WebServer::WebRequest::HasQuery(Text::CStringNN name)
 	{
 		this->ParseQuery();
 	}
-	Text::String *sptr = this->queryMap->GetC(name);
-	return sptr != 0;
+	return this->queryMap->GetC(name).NotNull();
 }
 
 Net::WebUtil::RequestMethod Net::WebServer::WebRequest::GetReqMethod() const
@@ -476,8 +472,10 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	{
 		if (sb.StartsWith(UTF8STRC("application/x-www-form-urlencoded")))
 		{
-			NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
-			ParseFormStr(this->formMap, this->reqData, this->reqDataSize);
+			NotNullPtr<Data::FastStringMapNN<Text::String>> formMap;
+			NEW_CLASSNN(formMap, Data::FastStringMapNN<Text::String>());
+			this->formMap = formMap.Ptr();
+			ParseFormStr(formMap, this->reqData, this->reqDataSize);
 		}
 		else if (sb.StartsWith(UTF8STRC("multipart/form-data")))
 		{
@@ -487,8 +485,8 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 			{
 				UInt8 *boundary = &sptr[i + 9];
 				UOSInt boundSize = sb.GetLength() - i - 9;
-				NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
-				NEW_CLASS(this->formFileList, Data::ArrayList<FormFileInfo *>());
+				NEW_CLASS(this->formMap, Data::FastStringMapNN<Text::String>());
+				NEW_CLASS(this->formFileList, Data::ArrayListNN<FormFileInfo>());
 
 				UOSInt formStart;
 				UOSInt formCurr;
@@ -549,7 +547,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formNam
 	UOSInt j = this->formFileList->GetCount();
 	while (i < j)
 	{
-		FormFileInfo *info = this->formFileList->GetItem(i);
+		NotNullPtr<FormFileInfo> info = this->formFileList->GetItemNoCheck(i);
 		if (info->formName->Equals(formName.v, formName.leng))
 		{
 			if (index == 0)
@@ -624,9 +622,9 @@ Bool Net::WebServer::WebRequest::IsSecure() const
 	return this->cli->IsSSL();
 }
 
-Crypto::Cert::X509Cert *Net::WebServer::WebRequest::GetClientCert()
+Optional<Crypto::Cert::X509Cert> Net::WebServer::WebRequest::GetClientCert()
 {
-	if (this->remoteCert)
+	if (this->remoteCert.NotNull())
 	{
 		return this->remoteCert;
 	}
@@ -635,8 +633,8 @@ Crypto::Cert::X509Cert *Net::WebServer::WebRequest::GetClientCert()
 		return 0;
 	}
 	Net::SSLClient *cli = (Net::SSLClient*)this->cli.Ptr();
-	Crypto::Cert::Certificate *cert = cli->GetRemoteCert();
-	if (cert)
+	NotNullPtr<Crypto::Cert::Certificate> cert;
+	if (cli->GetRemoteCert().SetTo(cert))
 	{
 		this->remoteCert = cert->CreateX509Cert();
 		return this->remoteCert;

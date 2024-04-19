@@ -54,7 +54,7 @@ namespace Net
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		Crypto::Cert::X509Key *key;
+		Optional<Crypto::Cert::X509Key> key;
 		NotNullPtr<Text::String> serverHost;
 		UInt16 port;
 		Text::String *urlNewNonce;
@@ -68,10 +68,10 @@ namespace Net
 		Text::String *nonce;
 		Text::String *accountId;
 
-		static Text::String *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
-		static Text::String *ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId);
-		static NotNullPtr<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
-		static Bool KeyHash(Crypto::Cert::X509Key *key, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Optional<Text::String> JWK(NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg);
+		static Text::String *ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId);
+		static NotNullPtr<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
+		static Bool KeyHash(NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::StringBuilderUTF8> sb);
 		Net::HTTPClient *ACMEPost(NotNullPtr<Text::String> url, Text::CString data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);
 		Challenge *ChallengeJSON(Text::JSONBase *json);

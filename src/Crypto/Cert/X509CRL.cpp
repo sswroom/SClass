@@ -42,11 +42,12 @@ void Crypto::Cert::X509CRL::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
-	if (trustStore == 0)
+	NotNullPtr<Crypto::Cert::CertStore> trusts;
+	if (!trustStore.SetTo(trusts))
 	{
-		trustStore = ssl->GetTrustStore();
+		trusts = ssl->GetTrustStore();
 	}
 	Text::StringBuilderUTF8 sb;
 	if (!this->GetIssuerCN(sb))
@@ -81,8 +82,8 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NotNullPtr<Ne
 		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
 	}
 
-	Crypto::Cert::X509Cert *issuer = trustStore->GetCertByCN(sb.ToCString());
-	if (issuer == 0)
+	NotNullPtr<Crypto::Cert::X509Cert> issuer;
+	if (!trusts->GetCertByCN(sb.ToCString()).SetTo(issuer))
 	{
 		return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
 	}
@@ -115,12 +116,12 @@ void Crypto::Cert::X509CRL::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 }
 
-Net::ASN1Names *Crypto::Cert::X509CRL::CreateNames() const
+NotNullPtr<Net::ASN1Names> Crypto::Cert::X509CRL::CreateNames() const
 {
-/*	Net::ASN1Names *names;
-	NEW_CLASS(names, Net::ASN1Names());
-	return names->SetCertificateList().Ptr();*/
-	return 0;
+	NotNullPtr<Net::ASN1Names> names;
+	NEW_CLASSNN(names, Net::ASN1Names());
+	return names;
+//	return names->SetCertificateList();*/
 }
 
 Bool Crypto::Cert::X509CRL::HasVersion() const
