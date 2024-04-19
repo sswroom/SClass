@@ -43,7 +43,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::GetEncKey(const UInt8 *salt, UInt8 *key
 	case KA_PBEWITHHMACSHA512:
 		{
 			Crypto::Hash::SHA512 sha512;
-			Crypto::Hash::HMAC hmac(sha512, this->key, this->keyLen);
+			Crypto::Hash::HMAC hmac(sha512, this->key.Ptr(), this->key.GetSize());
 			Crypto::PBKDF2::Calc(salt, this->saltSize, this->iterCnt, this->dkLen, hmac, key);
 		}
 		return this->dkLen;
@@ -65,7 +65,7 @@ NotNullPtr<Crypto::Encrypt::ICrypto> Crypto::Encrypt::JasyptEncryptor::CreateCry
 	}
 }
 
-Crypto::Encrypt::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen)
+Crypto::Encrypt::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, Data::ByteArrayR key) : key(key)
 {
 	this->keyAlgorithmn = keyAlg;
 	this->cipherAlgorithm = cipherAlg;
@@ -86,14 +86,10 @@ Crypto::Encrypt::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlg
 	}
 	this->salt = 0;
 	this->iv = 0;
-	this->key = MemAlloc(UInt8, keyLen);
-	MemCopyNO(this->key, key, keyLen);
-	this->keyLen = keyLen;
 }
 
 Crypto::Encrypt::JasyptEncryptor::~JasyptEncryptor()
 {
-	MemFree(this->key);
 	if (this->salt)
 	{
 		MemFree(this->salt);

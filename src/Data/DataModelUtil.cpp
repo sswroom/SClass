@@ -80,11 +80,11 @@ Bool Data::DataModelUtil::FillFromDBReader(NotNullPtr<Data::Class> cls, AnyType 
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 				break;
 			case Data::VariItem::ItemType::I32:
-				item.SetI32((Int16)r->GetInt32(i));
+				item.SetI32((Int32)r->GetInt32(i));
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 				break;
 			case Data::VariItem::ItemType::U32:
-				item.SetU32((UInt16)r->GetInt32(i));
+				item.SetU32((UInt32)r->GetInt32(i));
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 				break;
 			case Data::VariItem::ItemType::I64:

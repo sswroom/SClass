@@ -127,7 +127,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Ch
 	return false;
 }
 
-IO::Device::SIM7000::SIM7000(IO::ATCommandChannel *channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::Device::SIM7000::SIM7000(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 	this->dnsReq = CSTR_NULL;
 	this->dnsResp = 0;

@@ -22,6 +22,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 	UTF8Char *sptr;
 	Bool init = false;
 	IO::GSMModemController::BER ber;
+	NotNullPtr<IO::ATCommandChannel> channel;
 
 	nextSignalTime = Data::Timestamp::UtcNow();
 	me->running = true;
@@ -39,11 +40,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 			if ((sptr = me->modem->GSMGetManufacturer(sbuff)) != 0)
 			{
 				me->initModemManu = Text::String::NewP(sbuff, sptr).Ptr();
-				if (me->initModemManu->StartsWith(UTF8STRC("Huawei")))
+				if (me->initModemManu->StartsWith(UTF8STRC("Huawei")) && channel.Set(me->channel))
 				{
 					IO::HuaweiGSMModemController *huawei;
 					IO::GSMModemController *oldModem;
-					NEW_CLASS(huawei, IO::HuaweiGSMModemController(me->channel, false));
+					NEW_CLASS(huawei, IO::HuaweiGSMModemController(channel, false));
 					me->huawei = huawei;
 					oldModem = me->modem;
 					me->modem = huawei;
@@ -89,7 +90,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 				me->operUpdated = true;
 			}
-			if (me->modem->GSMGetRegisterNetwork(&me->regNetN, &me->regNetStat, me->regNetLAC, me->regNetCI, &me->regNetACT))
+			if (me->modem->GSMGetRegisterNetwork(me->regNetN, me->regNetStat, me->regNetLAC, me->regNetCI, me->regNetACT))
 			{
 				me->regNetUpdated = true;
 			}
@@ -107,7 +108,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 		if (currTime >= nextSignalTime)
 		{
 			nextSignalTime = nextSignalTime.AddSecond(10);
-			me->modem->GSMGetSignalQuality(&me->signalQuality, &ber);
+			me->modem->GSMGetSignalQuality(me->signalQuality, ber);
 			if (me->huawei)
 			{
 				me->huaweiCSQUpdated = me->huawei->HuaweiGetSignalStrength(&me->huaweiCSQ);
@@ -380,11 +381,10 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(AnyType userObj
 	{
 		return;
 	}
-	IO::GSMModemController::SMSMessage *sms;
+	NotNullPtr<IO::GSMModemController::SMSMessage> sms;
 	UOSInt index = me->lvSMS->GetSelectedIndex();
-	if (index != INVALID_INDEX)
+	if (index != INVALID_INDEX && me->msgList.GetItem(index).SetTo(sms))
 	{
-		sms = me->msgList.GetItem(index);
 		if (me->modem->SMSDeleteMessage(sms->index))
 		{
 			me->modem->SMSFreeMessage(sms);
@@ -751,15 +751,15 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayList<IO::GSMModemController::PBEntry*> phoneList;
-	IO::GSMModemController::PBEntry *ent;
+	Data::ArrayListNN<IO::GSMModemController::PBEntry> phoneList;
+	NotNullPtr<IO::GSMModemController::PBEntry> ent;
 	this->lvPhone->ClearItems();
 	if (!this->modem->PBSetStorage(store))
 	{
 		this->lblPhoneStatus->SetText(CSTR("Error in setting Phonebook Storage"));
 		return;
 	}
-	if (!this->modem->PBReadAllEntries(&phoneList))
+	if (!this->modem->PBReadAllEntries(phoneList))
 	{
 		this->lblPhoneStatus->SetText(CSTR("Error in reading Phonebook entries"));
 		return;
@@ -768,18 +768,18 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 	j = phoneList.GetCount();
 	while (i < j)
 	{
-		ent = phoneList.GetItem(i);
+		ent = phoneList.GetItemNoCheck(i);
 		k = this->lvPhone->AddItem(ent->name, 0);
 		this->lvPhone->SetSubItem(k, 1, ent->number);
 		i++;
 	}
-	this->modem->PBFreeEntries(&phoneList);
+	this->modem->PBFreeEntries(phoneList);
 	this->lblPhoneStatus->SetText(CSTR("Success"));
 }
 
 void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 {
-	IO::GSMModemController::SMSMessage *sms;
+	NotNullPtr<IO::GSMModemController::SMSMessage> sms;
 	Text::SMSMessage *smsMsg;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
@@ -790,7 +790,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	UOSInt k;
 	UOSInt i;
 	UOSInt j;
-	this->modem->SMSFreeMessages(&this->msgList);
+	this->modem->SMSFreeMessages(this->msgList);
 	this->lvSMS->ClearItems();
 	this->msgList.Clear();
 
@@ -806,13 +806,13 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	{
 		this->txtSMSC->SetText(CSTR(""));
 	}
-	this->modem->SMSListMessages(&this->msgList, IO::GSMModemController::SMSS_ALL);
+	this->modem->SMSListMessages(this->msgList, IO::GSMModemController::SMSS_ALL);
 
 	i = 0;
 	j = this->msgList.GetCount();
 	while (i < j)
 	{
-		sms = this->msgList.GetItem(i);
+		sms = this->msgList.GetItemNoCheck(i);
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 #if _WCHAR_SIZE == 2
 		k = this->lvSMS->AddItem(smsMsg->GetAddress(), sms);
@@ -842,8 +842,8 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 
 void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 {
-	Data::ArrayList<IO::GSMModemController::PDPContext*> ctxList;
-	if (!this->modem->GPRSGetPDPContext(&ctxList))
+	Data::ArrayListNN<IO::GSMModemController::PDPContext> ctxList;
+	if (!this->modem->GPRSGetPDPContext(ctxList))
 	{
 		this->txtPDPContextStatus->SetText(CSTR("Error in getting PDP Context"));
 		return;
@@ -851,14 +851,14 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	this->lvPDPContext->ClearItems();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	IO::GSMModemController::PDPContext *ctx;
+	NotNullPtr<IO::GSMModemController::PDPContext> ctx;
 	Data::UInt32FastMap<UOSInt> dataMap;
 	UOSInt i = 0;
 	UOSInt j = ctxList.GetCount();
 	UOSInt k;
 	while (i < j)
 	{
-		ctx = ctxList.GetItem(i);
+		ctx = ctxList.GetItemNoCheck(i);
 		sptr = Text::StrUInt32(sbuff, ctx->cid);
 		k = this->lvPDPContext->AddItem(CSTRP(sbuff, sptr), (void*)(UOSInt)ctx->cid);
 		dataMap.Put(ctx->cid, k);
@@ -866,10 +866,10 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 		this->lvPDPContext->SetSubItem(k, 2, ctx->apn);
 		i++;
 	}
-	this->modem->GPRSFreePDPContext(&ctxList);
+	this->modem->GPRSFreePDPContext(ctxList);
 
 	Data::ArrayList<IO::GSMModemController::ActiveState> actList;
-	if (!this->modem->GPRSGetPDPActive(&actList))
+	if (!this->modem->GPRSGetPDPActive(actList))
 	{
 		this->txtPDPContextStatus->SetText(CSTR("Error in getting PDP Active State"));
 		return;
@@ -899,7 +899,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	}
 
 	Bool attached;
-	if (!this->modem->GPRSServiceIsAttached(&attached))
+	if (!this->modem->GPRSServiceIsAttached(attached))
 	{
 		this->txtPDPContextStatus->SetText(CSTR("Error in getting Attach status"));	
 	}
@@ -937,9 +937,11 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NotNullPtr<IO::Stream> stm, Boo
 		this->btnDeviceSerial->SetEnabled(false);
 		this->btnDeviceOther->SetText(CSTR("Close"));
 
-		NEW_CLASS(this->channel, IO::ATCommandChannel(stm, false));
-		this->channel->SetLogger(&this->log);
-		NEW_CLASS(this->modem, IO::GSMModemController(this->channel, false));
+		NotNullPtr<IO::ATCommandChannel> channel;
+		NEW_CLASSNN(channel, IO::ATCommandChannel(stm, false));
+		channel->SetLogger(&this->log);
+		this->channel = channel.Ptr();
+		NEW_CLASS(this->modem, IO::GSMModemController(channel, false));
 
 		this->simChanged = true;
 		this->toStop = false;
@@ -965,7 +967,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 			Sync::SimpleThread::Sleep(10);
 		}
 
-		this->modem->SMSFreeMessages(&this->msgList);
+		this->modem->SMSFreeMessages(this->msgList);
 
 		DEL_CLASS(this->modem);
 		DEL_CLASS(this->channel);

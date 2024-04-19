@@ -17,7 +17,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::CString password = CSTR("VN1iRYekV9DqHzJ/yIcXWslczjhI98SYkXpw58FmBsMWour1vYSWf++Sx7AD26Br");
 	UInt8 decBuff[256];
 	UOSInt decSize;
-	Crypto::Encrypt::JasyptEncryptor enc(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, encPwd.v, encPwd.leng);
+	Crypto::Encrypt::JasyptEncryptor enc(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, encPwd.ToByteArray());
 	decSize = enc.DecryptB64(userName, decBuff);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Username = "));

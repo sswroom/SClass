@@ -31,7 +31,7 @@ namespace IO
 
 			static Bool __stdcall CheckATCommand(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			SIM7000(IO::ATCommandChannel *channel, Bool needRelease);
+			SIM7000(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~SIM7000();
 
 			void SetReceiveHandler(ReceiveHandler recvHdlr, AnyType userObj);

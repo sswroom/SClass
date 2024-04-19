@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CONFIGFILE
 #define _SM_IO_CONFIGFILE
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 
 namespace IO
 {
@@ -10,9 +10,9 @@ namespace IO
 	protected:
 		NotNullPtr<Text::String> defCate;
 	private:
-		Data::FastStringMap<Data::FastStringMap<Text::String *>*> cfgVals;
+		Data::FastStringMapNN<Data::FastStringMapNN<Text::String>> cfgVals;
 
-		void MergeCate(Data::FastStringMap<Text::String *> *myCate, Data::FastStringMap<Text::String *> *cateToMerge);
+		void MergeCate(NotNullPtr<Data::FastStringMapNN<Text::String>> myCate, NotNullPtr<Data::FastStringMapNN<Text::String>> cateToMerge);
 	public:
 		ConfigFile();
 		virtual ~ConfigFile();
@@ -29,9 +29,9 @@ namespace IO
 		UOSInt GetKeys(NotNullPtr<Text::String> category, NotNullPtr<Data::ArrayListStringNN> keyList);
 		UOSInt GetKeys(Text::CStringNN category, NotNullPtr<Data::ArrayListStringNN> keyList);
 		UOSInt GetCount(Text::CString category) const;
-		Text::String *GetKey(Text::CString category, UOSInt index) const;
+		Optional<Text::String> GetKey(Text::CString category, UOSInt index) const;
 		Bool HasCategory(Text::CString category) const;
-		IO::ConfigFile *CloneCate(Text::CString category);
+		Optional<IO::ConfigFile> CloneCate(Text::CString category);
 
 		void MergeConfig(NotNullPtr<IO::ConfigFile> cfg);
 	};

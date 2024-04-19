@@ -38,7 +38,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	else
 	{
 		IO::ATCommandChannel channel(port, false);
-		IO::GSMModemController modem(&channel, false);
+		IO::GSMModemController modem(channel, false);
 
 		Test::TestModem::GSMModemTest(&console, &modem, false);		
 	}

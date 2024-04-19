@@ -143,6 +143,20 @@ Int32 DB::DBTool::GetLastIdentity32()
 		}
 		return id;
 	}
+	else if (this->sqlType == DB::SQLType::PostgreSQL)
+	{
+		Int32 id = 0;
+		NotNullPtr<DB::DBReader> reader;
+		if (this->ExecuteReader(CSTR("select lastval()")).SetTo(reader))
+		{
+			if (reader->ReadNext())
+			{
+				id = reader->GetInt32(0);
+			}
+			this->CloseReader(reader);
+		}
+		return id;
+	}
 	else
 	{
 		return 0;
@@ -156,6 +170,20 @@ Int64 DB::DBTool::GetLastIdentity64()
 		Int64 id = 0;
 		NotNullPtr<DB::DBReader> reader;
 		if (this->ExecuteReader(CSTR("select @@identity")).SetTo(reader))
+		{
+			if (reader->ReadNext())
+			{
+				id = reader->GetInt64(0);
+			}
+			this->CloseReader(reader);
+		}
+		return id;
+	}
+	else if (this->sqlType == DB::SQLType::PostgreSQL)
+	{
+		Int64 id = 0;
+		NotNullPtr<DB::DBReader> reader;
+		if (this->ExecuteReader(CSTR("select lastval()")).SetTo(reader))
 		{
 			if (reader->ReadNext())
 			{

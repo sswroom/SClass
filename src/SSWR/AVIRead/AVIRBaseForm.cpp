@@ -1828,10 +1828,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> innerFrm;
-				IO::Device::RockwellModemController *modem;
-				IO::ATCommandChannel *channel;
-				NEW_CLASS(channel, IO::ATCommandChannel(dlg.GetStream(), false));
-				NEW_CLASS(modem, IO::Device::RockwellModemController(channel, false));
+				NotNullPtr<IO::Device::RockwellModemController> modem;
+				NotNullPtr<IO::ATCommandChannel> channel;
+				NEW_CLASSNN(channel, IO::ATCommandChannel(dlg.GetStream(), false));
+				NEW_CLASSNN(modem, IO::Device::RockwellModemController(channel, false));
 
 				NEW_CLASSNN(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, dlg.GetStream()));
 				this->core->ShowForm(innerFrm);

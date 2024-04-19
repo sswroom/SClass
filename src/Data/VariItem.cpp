@@ -1612,7 +1612,7 @@ NotNullPtr<Data::VariItem> Data::VariItem::NewFromPtr(void *ptr, ItemType itemTy
 
 void Data::VariItem::SetFromPtr(NotNullPtr<Data::VariItem> item, void *ptr, ItemType itemType)
 {
-	if (!ptr == 0)
+	if (ptr == 0)
 	{
 		item->SetNull();
 		return;
@@ -1674,7 +1674,17 @@ void Data::VariItem::SetFromPtr(NotNullPtr<Data::VariItem> item, void *ptr, Item
 		item->SetByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
 		return;
 	case ItemType::Vector:
-		item->SetVector(*(NotNullPtr<Math::Geometry::Vector2D>*)ptr);
+		{
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if ((*(Optional<Math::Geometry::Vector2D>*)ptr).SetTo(vec))
+			{
+				item->SetVector(vec);
+			}
+			else
+			{
+				item->SetNull();
+			}
+		}
 		return;
 	case ItemType::UUID:
 		item->SetUUID(*(NotNullPtr<Data::UUID>*)ptr);

@@ -21,7 +21,7 @@ namespace IO
 		} DialResult;
 
 	protected:
-		IO::ATCommandChannel *channel;
+		NotNullPtr<IO::ATCommandChannel> channel;
 		Bool needRelease;
 		Data::ArrayListStringNN cmdResults;
 		Sync::Mutex cmdMut;
@@ -39,10 +39,10 @@ namespace IO
 		DialResult SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen);
 
 	public:
-		ModemController(IO::ATCommandChannel *channel, Bool needRelease);
+		ModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
 		virtual ~ModemController();
 
-		IO::ATCommandChannel *GetChannel();
+		NotNullPtr<IO::ATCommandChannel> GetChannel() const;
 		
 		// General Commands V.25TER
 		Bool HangUp(); //ATH

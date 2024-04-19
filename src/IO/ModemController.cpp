@@ -233,7 +233,7 @@ IO::ModemController::DialResult IO::ModemController::SendDialCommand(const UTF8C
 	}
 }
 
-IO::ModemController::ModemController(IO::ATCommandChannel *channel, Bool needRelease)
+IO::ModemController::ModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease)
 {
 	this->channel = channel;
 	this->needRelease = needRelease;
@@ -243,11 +243,11 @@ IO::ModemController::~ModemController()
 {
 	if (needRelease)
 	{
-		DEL_CLASS(this->channel);
+		this->channel.Delete();
 	}
 }
 
-IO::ATCommandChannel *IO::ModemController::GetChannel()
+NotNullPtr<IO::ATCommandChannel> IO::ModemController::GetChannel() const
 {
 	return this->channel;
 }

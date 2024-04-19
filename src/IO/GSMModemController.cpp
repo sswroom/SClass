@@ -24,7 +24,7 @@ Bool IO::GSMModemController::SetSMSFormat(IO::GSMModemController::SMSFormat smsF
 	return false;
 }
 
-Bool IO::GSMModemController::GetSMSFormat(SMSFormat *smsFormat)
+Bool IO::GSMModemController::GetSMSFormat(OutParam<SMSFormat> smsFormat)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = SendStringCommand(sbuff, UTF8STRC("AT+CMGF?"), 3000);
@@ -32,12 +32,12 @@ Bool IO::GSMModemController::GetSMSFormat(SMSFormat *smsFormat)
 		return false;
 	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CMGF: 1")))
 	{
-		*smsFormat = IO::GSMModemController::SMSF_TEXT;
+		smsFormat.Set(IO::GSMModemController::SMSF_TEXT);
 		return true;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CMGF: 0")))
 	{
-		*smsFormat = IO::GSMModemController::SMSF_PDU;
+		smsFormat.Set(IO::GSMModemController::SMSF_PDU);
 		return true;
 	}
 	else
@@ -46,14 +46,14 @@ Bool IO::GSMModemController::GetSMSFormat(SMSFormat *smsFormat)
 	}
 }
 
-void IO::GSMModemController::FreeOperator(Operator *oper)
+void IO::GSMModemController::FreeOperator(NotNullPtr<Operator> oper)
 {
 	oper->longName->Release();
 	oper->shortName->Release();
-	MemFree(oper);
+	MemFreeNN(oper);
 }
 
-IO::GSMModemController::GSMModemController(IO::ATCommandChannel *channel, Bool needRelease) : IO::ModemController(channel, needRelease)
+IO::GSMModemController::GSMModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::ModemController(channel, needRelease)
 {
 	this->smsFormat = -1;
 }
@@ -108,7 +108,7 @@ Bool IO::GSMModemController::GSMSetTECharset(const UTF8Char *cs)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GSMGetTECharsetsSupported(Data::ArrayListStringNN *csList)
+Bool IO::GSMModemController::GSMGetTECharsetsSupported(NotNullPtr<Data::ArrayListStringNN> csList)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr2;
@@ -203,7 +203,7 @@ Bool IO::GSMModemController::GSMConnectPLMN(Int32 plmn)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 300000);
 }
 
-Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *operList)
+Bool IO::GSMModemController::GSMGetAllowedOperators(NotNullPtr<Data::ArrayListNN<Operator>> operList)
 {
 	UTF8Char sbuff[256];
 	UTF8Char lbuff[256];
@@ -229,7 +229,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 		{
 			Int32 status;
 			Int32 plmn = 0;
-			Operator *newOper;
+			NotNullPtr<Operator> newOper;
 			j -= 1;
 			i = 1;
 			while (i < j)
@@ -275,7 +275,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 											plmn = Text::StrToInt32(tmpBuff);
 										}
 										tmpBuff[l] = 0;
-										newOper = MemAlloc(Operator, 1);
+										newOper = MemAllocNN(Operator);
 										newOper->status = (OperStatus)status;
 										newOper->plmn = plmn;
 										newOper->longName = Text::String::New(lbuff, lbuffLen);
@@ -414,28 +414,24 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	}
 }
 
-void IO::GSMModemController::GSMFreeOperators(Data::ArrayList<Operator*> *operList)
+void IO::GSMModemController::GSMFreeOperators(NotNullPtr<Data::ArrayListNN<Operator>> operList)
 {
-	UOSInt i = operList->GetCount();
-	while (i-- > 0)
-	{
-		FreeOperator(operList->RemoveAt(i));
-	}
+	operList->FreeAll(FreeOperator);
 }
 
 Int32 IO::GSMModemController::GSMSearchOperatorPLMN(Int32 netact)
 {
-	Data::ArrayList<IO::GSMModemController::Operator *> operList;
-	IO::GSMModemController::Operator *oper;
+	Data::ArrayListNN<IO::GSMModemController::Operator> operList;
+	NotNullPtr<IO::GSMModemController::Operator> oper;
 	Int32 plmn = 0;
 	UOSInt i;
 	UOSInt j;
-	this->GSMGetAllowedOperators(&operList);
+	this->GSMGetAllowedOperators(operList);
 	i = 0;
 	j = operList.GetCount();
 	while (i < j)
 	{
-		oper = operList.GetItem(i);
+		oper = operList.GetItemNoCheck(i);
 		if (oper->status == IO::GSMModemController::OSTAT_AVAILABLE || oper->status == IO::GSMModemController::OSTAT_CURRENT)
 		{
 			plmn = oper->plmn;
@@ -443,7 +439,7 @@ Int32 IO::GSMModemController::GSMSearchOperatorPLMN(Int32 netact)
 		}
 		i++;
 	}
-	this->GSMFreeOperators(&operList);
+	this->GSMFreeOperators(operList);
 	return plmn;
 }
 
@@ -480,7 +476,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 	return sims;
 }
 
-Bool IO::GSMModemController::GSMGetSignalQuality(RSSI *rssi, BER *ber)
+Bool IO::GSMModemController::GSMGetSignalQuality(OutParam<RSSI> rssi, OutParam<BER> ber)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CSQ"), 3000);
@@ -491,8 +487,8 @@ Bool IO::GSMModemController::GSMGetSignalQuality(RSSI *rssi, BER *ber)
 	{
 		if (Text::StrSplitTrim(sbuffs, 3, &sbuff[6], ',') == 2)
 		{
-			*rssi = (RSSI)Text::StrToInt32(sbuffs[0]);
-			*ber = (BER)Text::StrToInt32(sbuffs[1]);
+			rssi.Set((RSSI)Text::StrToInt32(sbuffs[0]));
+			ber.Set((BER)Text::StrToInt32(sbuffs[1]));
 			return true;
 		}
 		else
@@ -590,7 +586,7 @@ Bool IO::GSMModemController::GSMSetModemTime(NotNullPtr<Data::DateTime> date)
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, OutParam<UInt16> lac, OutParam<UInt32> ci, AccessTech *act)
+Bool IO::GSMModemController::GSMGetRegisterNetwork(OutParam<NetworkResult> n, OutParam<RegisterStatus> stat, OutParam<UInt16> lac, OutParam<UInt32> ci, OutParam<AccessTech> act)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CREG?"), 3000);
@@ -602,9 +598,10 @@ Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterSta
 		UOSInt sarrCnt = Text::StrSplitP(sarr, 5, Text::PString(&sbuff[7], (UOSInt)(sptr - &sbuff[7])), ',');
 		if (sarrCnt < 2)
 			return false;
-		*n = (NetworkResult)sarr[0].ToInt32();
-		*stat = (RegisterStatus)sarr[1].ToInt32();
-		if (*n == NetworkResult::Enable_w_Location)
+		NetworkResult nres = (NetworkResult)sarr[0].ToInt32();
+		n.Set(nres);
+		stat.Set((RegisterStatus)sarr[1].ToInt32());
+		if (nres == NetworkResult::Enable_w_Location)
 		{
 			if (sarrCnt != 5)
 			{
@@ -632,13 +629,13 @@ Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterSta
 				if (!sarr[3].Hex2UInt32(ci))
 					return false;
 			}
-			*act = (AccessTech)sarr[4].ToInt32();
+			act.Set((AccessTech)sarr[4].ToInt32());
 		}
 		else
 		{
 			lac.Set(0);
 			ci.Set(0);
-			*act = AccessTech::GSM;
+			act.Set(AccessTech::GSM);
 		}
 
 		//////////////////////////////////
@@ -695,7 +692,7 @@ Bool IO::GSMModemController::GPRSNetworkReg()
 	return this->SendBoolCommandC(UTF8STRC("AT+CGREG=1"));
 }
 
-Bool IO::GSMModemController::GPRSServiceIsAttached(Bool *attached)
+Bool IO::GSMModemController::GPRSServiceIsAttached(OutParam<Bool> attached)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CGATT?"), 3000);
@@ -703,7 +700,7 @@ Bool IO::GSMModemController::GPRSServiceIsAttached(Bool *attached)
 	{
 		return false;
 	}
-	*attached = Text::StrToInt32(&sbuff[8]) != 0;
+	attached.Set(Text::StrToInt32(&sbuff[8]) != 0);
 	return true;
 }
 
@@ -738,7 +735,7 @@ Bool IO::GSMModemController::GPRSSetPDPContext(UInt32 cid, Text::CString type, T
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctxList)
+Bool IO::GSMModemController::GPRSGetPDPContext(NotNullPtr<Data::ArrayListNN<PDPContext>> ctxList)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -748,7 +745,7 @@ Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctx
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	NotNullPtr<Text::String> val;
-	PDPContext *ctx;
+	NotNullPtr<PDPContext> ctx;
 
 	if (j > 1)
 	{
@@ -763,7 +760,7 @@ Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctx
 					sptr = Text::StrConcatC(sbuff, &val->v[10], val->leng - 10);
 					if (Text::StrSplitP(sarr, 4, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 3)
 					{
-						ctx = MemAlloc(PDPContext, 1);
+						ctx = MemAllocNN(PDPContext);
 						ctx->cid = sarr[0].ToUInt32();
 						if (sarr[1].v[0] == '"' && sarr[1].EndsWith('"'))
 						{
@@ -804,16 +801,16 @@ Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctx
 	}
 }
 
-void IO::GSMModemController::GPRSFreePDPContext(Data::ArrayList<PDPContext*> *ctxList)
+void IO::GSMModemController::GPRSFreePDPContext(NotNullPtr<Data::ArrayListNN<PDPContext>> ctxList)
 {
-	PDPContext *ctx;
+	NotNullPtr<PDPContext> ctx;
 	UOSInt i = ctxList->GetCount();
 	while (i-- > 0)
 	{
-		ctx = ctxList->GetItem(i);
+		ctx = ctxList->GetItemNoCheck(i);
 		ctx->type->Release();
 		ctx->apn->Release();
-		MemFree(ctx);
+		MemFreeNN(ctx);
 	}
 	ctxList->Clear();
 }
@@ -846,7 +843,7 @@ Bool IO::GSMModemController::GPRSSetPDPActive(Bool active, UInt32 cid)
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000);
 }
 
-Bool IO::GSMModemController::GPRSGetPDPActive(Data::ArrayList<ActiveState> *actList)
+Bool IO::GSMModemController::GPRSGetPDPActive(NotNullPtr<Data::ArrayList<ActiveState>> actList)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -894,7 +891,7 @@ Bool IO::GSMModemController::GPRSGetPDPActive(Data::ArrayList<ActiveState> *actL
 	}
 }
 
-Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemController::SMSMessage*> *msgList, IO::GSMModemController::SMSStatus status)
+Bool IO::GSMModemController::SMSListMessages(NotNullPtr<Data::ArrayListNN<IO::GSMModemController::SMSMessage>> msgList, IO::GSMModemController::SMSStatus status)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -912,7 +909,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	Int32 lastIndex = 0;
 	NotNullPtr<Text::String> val;
 	NotNullPtr<Text::String> val2;
-	IO::GSMModemController::SMSMessage *msg;
+	NotNullPtr<IO::GSMModemController::SMSMessage> msg;
 
 	if (j > 1)
 	{
@@ -937,7 +934,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 						if (Text::StrSplit(sbuffs, 5, sbuff, ',') == 4)
 						{
 							strLen = val2->leng;
-							msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
+							msg = MemAllocNN(IO::GSMModemController::SMSMessage);
 							lastIndex = msg->index = Text::StrToInt32(sbuffs[0]);
 							msg->status = (SMSStatus)Text::StrToInt32(sbuffs[1]);
 							msg->pduLeng = (strLen >> 1);
@@ -952,7 +949,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 						{
 							strLen = val->leng;
 							lastIndex++;
-							msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
+							msg = MemAllocNN(IO::GSMModemController::SMSMessage);
 							msg->index = lastIndex + 1;
 							msg->status = (SMSStatus)0;
 							msg->pduLeng = (strLen >> 1);
@@ -984,19 +981,15 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	}
 }
 
-void IO::GSMModemController::SMSFreeMessages(Data::ArrayList<SMSMessage*> *msgList)
+void IO::GSMModemController::SMSFreeMessages(NotNullPtr<Data::ArrayListNN<SMSMessage>> msgList)
 {
-	UOSInt i = msgList->GetCount();
-	while (i-- > 0)
-	{
-		SMSFreeMessage(msgList->RemoveAt(i));
-	}
+	msgList->FreeAll(SMSFreeMessage);
 }
 
-void IO::GSMModemController::SMSFreeMessage(SMSMessage *msg)
+void IO::GSMModemController::SMSFreeMessage(NotNullPtr<SMSMessage> msg)
 {
 	MemFree(msg->pduMessage);
-	MemFree(msg);
+	MemFreeNN(msg);
 }
 
 Bool IO::GSMModemController::SMSDeleteMessage(Int32 index)
@@ -1007,7 +1000,7 @@ Bool IO::GSMModemController::SMSDeleteMessage(Int32 index)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::SMSSendMessage(Text::SMSMessage *msg)
+Bool IO::GSMModemController::SMSSendMessage(NotNullPtr<Text::SMSMessage> msg)
 {
 	UTF8Char sbuff1[32];
 	UTF8Char *sptr1;
@@ -1096,7 +1089,7 @@ Bool IO::GSMModemController::SMSSetStorage(SMSStorage reading, SMSStorage writin
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::SMSGetStorageInfo(SMSStorageInfo *reading, SMSStorageInfo *writing, SMSStorageInfo *store)
+Bool IO::GSMModemController::SMSGetStorageInfo(Optional<SMSStorageInfo> reading, Optional<SMSStorageInfo> writing, Optional<SMSStorageInfo> store)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1107,50 +1100,51 @@ Bool IO::GSMModemController::SMSGetStorageInfo(SMSStorageInfo *reading, SMSStora
 		return false;
 	if (Text::StrSplitP(buffs, 10, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 9)
 		return false;
-	if (reading)
+	NotNullPtr<SMSStorageInfo> info;
+	if (reading.SetTo(info))
 	{
 		if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SM\"")))
-			reading->storage = IO::GSMModemController::SMSSTORE_SIM;
+			info->storage = IO::GSMModemController::SMSSTORE_SIM;
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"ME\"")))
-			reading->storage = IO::GSMModemController::SMSSTORE_FLASH;
+			info->storage = IO::GSMModemController::SMSSTORE_FLASH;
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SR\"")))
-			reading->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
+			info->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"BM\"")))
-			reading->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
+			info->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
 		else
-			reading->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
-		reading->used = Text::StrToInt32(buffs[1].v);
-		reading->available = Text::StrToInt32(buffs[2].v);
+			info->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
+		info->used = Text::StrToInt32(buffs[1].v);
+		info->available = Text::StrToInt32(buffs[2].v);
 	}
-	if (writing)
+	if (writing.SetTo(info))
 	{
 		if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"SM\"")))
-			writing->storage = IO::GSMModemController::SMSSTORE_SIM;
+			info->storage = IO::GSMModemController::SMSSTORE_SIM;
 		else if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"ME\"")))
-			writing->storage = IO::GSMModemController::SMSSTORE_FLASH;
+			info->storage = IO::GSMModemController::SMSSTORE_FLASH;
 		else if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"SR\"")))
-			writing->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
+			info->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
 		else if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"BM\"")))
-			writing->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
+			info->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
 		else
-			writing->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
-		writing->used = Text::StrToInt32(buffs[4].v);
-		writing->available = Text::StrToInt32(buffs[5].v);
+			info->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
+		info->used = Text::StrToInt32(buffs[4].v);
+		info->available = Text::StrToInt32(buffs[5].v);
 	}
-	if (store)
+	if (store.SetTo(info))
 	{
 		if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"SM\"")))
-			store->storage = IO::GSMModemController::SMSSTORE_SIM;
+			info->storage = IO::GSMModemController::SMSSTORE_SIM;
 		else if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"ME\"")))
-			store->storage = IO::GSMModemController::SMSSTORE_FLASH;
+			info->storage = IO::GSMModemController::SMSSTORE_FLASH;
 		else if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"SR\"")))
-			store->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
+			info->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
 		else if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"BM\"")))
-			store->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
+			info->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
 		else
-			store->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
-		store->used = Text::StrToInt32(buffs[7].v);
-		store->available = Text::StrToInt32(buffs[8].v);
+			info->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
+		info->used = Text::StrToInt32(buffs[7].v);
+		info->available = Text::StrToInt32(buffs[8].v);
 	}
 	return true;
 }
@@ -1241,7 +1235,7 @@ Bool IO::GSMModemController::PBSetStorage(PBStorage storage)
 	return this->SendBoolCommandC(cmd.v, cmd.leng);
 }
 
-Bool IO::GSMModemController::PBGetStorage(PBStorage *storage, Int32 *usedEntry, Int32 *freeEntry)
+Bool IO::GSMModemController::PBGetStorage(OptOut<PBStorage> storage, OptOut<Int32> usedEntry, OptOut<Int32> freeEntry)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1252,43 +1246,44 @@ Bool IO::GSMModemController::PBGetStorage(PBStorage *storage, Int32 *usedEntry, 
 		return false;
 	if (Text::StrSplitP(buffs, 4, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 3)
 		return false;
-	if (storage)
+
+	if (storage.IsNotNull())
 	{
 		if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SM\"")))
-			*storage = IO::GSMModemController::PBSTORE_SIM;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_SIM);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"FD\"")))
-			*storage = IO::GSMModemController::PBSTORE_SIM_RESTRICTED;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_SIM_RESTRICTED);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"ON\"")))
-			*storage = IO::GSMModemController::PBSTORE_SIM_OWN_NUMBERS;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_SIM_OWN_NUMBERS);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"EN\"")))
-			*storage = IO::GSMModemController::PBSTORE_EMERGENCY;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_EMERGENCY);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"LD\"")))
-			*storage = IO::GSMModemController::PBSTORE_LASTNUMDIAL;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_LASTNUMDIAL);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"MC\"")))
-			*storage = IO::GSMModemController::PBSTORE_UNANSWERED;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_UNANSWERED);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"ME\"")))
-			*storage = IO::GSMModemController::PBSTORE_ME;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_ME);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"MT\"")))
-			*storage = IO::GSMModemController::PBSTORE_ME_SIM;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_ME_SIM);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"RC\"")))
-			*storage = IO::GSMModemController::PBSTORE_RECEIVED_CALL;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_RECEIVED_CALL);
 		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SN\"")))
-			*storage = IO::GSMModemController::PBSTORE_SERVICE_DIALING_NUMBERS;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_SERVICE_DIALING_NUMBERS);
 		else
-			*storage = IO::GSMModemController::PBSTORE_UNKNOWN;
+			storage.SetNoCheck(IO::GSMModemController::PBSTORE_UNKNOWN);
 	}
-	if (usedEntry)
+	if (usedEntry.IsNotNull())
 	{
-		*usedEntry = Text::StrToInt32(buffs[1].v);
+		usedEntry.SetNoCheck(Text::StrToInt32(buffs[1].v));
 	}
-	if (freeEntry)
+	if (freeEntry.IsNotNull())
 	{
-		*freeEntry = Text::StrToInt32(buffs[2].v);
+		freeEntry.SetNoCheck(Text::StrToInt32(buffs[2].v));
 	}
 	return true;
 }
 
-Bool IO::GSMModemController::PBGetStorageStatus(Int32 *startEntry, Int32 *endEntry, Int32 *maxNumberLen, Int32 *maxTextLen)
+Bool IO::GSMModemController::PBGetStorageStatus(OptOut<Int32> startEntry, OptOut<Int32> endEntry, OptOut<Int32> maxNumberLen, OptOut<Int32> maxTextLen)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1301,22 +1296,22 @@ Bool IO::GSMModemController::PBGetStorageStatus(Int32 *startEntry, Int32 *endEnt
 		{
 			sarr2[1].v[sarr2[1].leng - 1] = 0;
 			sarr2[1].leng -= 1;
-			if (startEntry)
+			if (startEntry.IsNotNull())
 			{
-				*startEntry = Text::StrToInt32(sarr2[0].v);
+				startEntry.SetNoCheck(Text::StrToInt32(sarr2[0].v));
 			}
-			if (endEntry)
+			if (endEntry.IsNotNull())
 			{
-				*endEntry = Text::StrToInt32(sarr2[1].v);
+				endEntry.SetNoCheck(Text::StrToInt32(sarr2[1].v));
 			}
 		}
-		if (maxNumberLen)
+		if (maxNumberLen.IsNotNull())
 		{
-			*maxNumberLen = Text::StrToInt32(sarr[1].v);
+			maxNumberLen.SetNoCheck(Text::StrToInt32(sarr[1].v));
 		}
-		if (maxTextLen)
+		if (maxTextLen.IsNotNull())
 		{
-			*maxTextLen = Text::StrToInt32(sarr[2].v);
+			maxTextLen.SetNoCheck(Text::StrToInt32(sarr[2].v));
 		}
 		return true;
 	}
@@ -1326,7 +1321,7 @@ Bool IO::GSMModemController::PBGetStorageStatus(Int32 *startEntry, Int32 *endEnt
 	}
 }
 
-Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList, Int32 startEntry, Int32 endEntry)
+Bool IO::GSMModemController::PBReadEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList, Int32 startEntry, Int32 endEntry)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1344,7 +1339,7 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	NotNullPtr<Text::String> val;
-	IO::GSMModemController::PBEntry *ent;
+	NotNullPtr<IO::GSMModemController::PBEntry> ent;
 	if (j > 1)
 	{
 		if (this->cmdResults.GetItem(j - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
@@ -1358,7 +1353,7 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 					sptr = Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
 					if (Text::StrCSVSplitP(sbuffs, 5, sbuff) >= 4)
 					{
-						ent = MemAlloc(PBEntry, 1);
+						ent = MemAllocNN(PBEntry);
 						ent->number = Text::String::New(sbuffs[1].ToCString());
 						ent->name = Text::String::New(sbuffs[3].ToCString());
 						ent->index = Text::StrToInt32(sbuffs[0].v);
@@ -1389,31 +1384,25 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 	return false;
 }
 
-Bool IO::GSMModemController::PBReadAllEntries(Data::ArrayList<PBEntry*> *phoneList)
+Bool IO::GSMModemController::PBReadAllEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList)
 {
 	Int32 startEntry;
 	Int32 endEntry;
-	Int32 maxNumberLen;
-	Int32 maxTextLen;
-	if (!PBGetStorageStatus(&startEntry, &endEntry, &maxNumberLen, &maxTextLen))
+	if (!PBGetStorageStatus(startEntry, endEntry, 0, 0))
 		return false;
 	return PBReadEntries(phoneList, startEntry, endEntry);
 }
 
-void IO::GSMModemController::PBFreeEntry(PBEntry *entry)
+void IO::GSMModemController::PBFreeEntry(NotNullPtr<PBEntry> entry)
 {
 	entry->name->Release();
 	entry->number->Release();
-	MemFree(entry);
+	MemFreeNN(entry);
 }
 
-void IO::GSMModemController::PBFreeEntries(Data::ArrayList<PBEntry*> *phoneList)
+void IO::GSMModemController::PBFreeEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList)
 {
-	UOSInt i = phoneList->GetCount();
-	while (i-- > 0)
-	{
-		PBFreeEntry(phoneList->RemoveAt(i));
-	}
+	phoneList->FreeAll(PBFreeEntry);
 }
 
 Int32 IO::GSMModemController::RSSIGetdBm(RSSI rssi)

@@ -97,7 +97,7 @@ namespace DB
 		Optional<Text::String> GetConnSchema();
 
 		static UOSInt GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverList);
-		static IO::ConfigFile *GetDriverInfo(Text::CString driverName);
+		static Optional<IO::ConfigFile> GetDriverInfo(Text::CString driverName);
 		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		static Optional<DBTool> CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 	};

@@ -192,7 +192,7 @@ namespace SSWR
 			UInt16 regNetLAC;
 			UInt32 regNetCI;
 			IO::GSMModemController::AccessTech regNetACT;
-			Data::ArrayList<IO::GSMModemController::SMSMessage *> msgList;
+			Data::ArrayListNN<IO::GSMModemController::SMSMessage> msgList;
 
 			Bool signalUpdated;
 			IO::GSMModemController::RSSI signalQuality;

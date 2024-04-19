@@ -11,10 +11,10 @@ namespace IO
 		private:
 			static Bool __stdcall CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			TelitLE910(IO::ATCommandChannel *channel, Bool needRelease);
+			TelitLE910(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~TelitLE910();
 
-			Bool GPSIsPowerUp(Bool *result); //AT$GPSP?
+			Bool GPSIsPowerUp(OutParam<Bool> result); //AT$GPSP?
 			Bool GPSSetPower(Bool isUp); //AT$GPSP=
 			Bool GPSStartNMEAData(Bool ggaData, Bool gllData, Bool gsaData, Bool gsvData, Bool rmcData, Bool vtgData); //AT$GPSNMUN=2,?,?,?,?,?,?
 			Bool GPSEndNMEAData(); //AT$GPSNMUN=0

@@ -3,7 +3,7 @@
 #include "IO/Device/RockwellModemController.h"
 #include "Text/MyString.h"
 
-IO::Device::RockwellModemController::RockwellModemController(IO::ATCommandChannel *channel, Bool needRelease) : IO::ModemController(channel, needRelease)
+IO::Device::RockwellModemController::RockwellModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::ModemController(channel, needRelease)
 {
 }
 

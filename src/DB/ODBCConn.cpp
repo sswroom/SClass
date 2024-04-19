@@ -1159,7 +1159,7 @@ UOSInt DB::ODBCConn::GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverLis
 #endif
 }
 
-IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
+Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	return 0;
@@ -1167,7 +1167,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
 	if (cfg)
 	{
-		IO::ConfigFile *cfgRet = cfg->CloneCate(driverName);
+		Optional<IO::ConfigFile> cfgRet = cfg->CloneCate(driverName);
 		DEL_CLASS(cfg);
 		return cfgRet;
 	}

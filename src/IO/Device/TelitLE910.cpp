@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Device/TelitLE910.h"
 
-IO::Device::TelitLE910::TelitLE910(IO::ATCommandChannel *channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::Device::TelitLE910::TelitLE910(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 }
 
@@ -9,13 +9,13 @@ IO::Device::TelitLE910::~TelitLE910()
 {
 }
 
-Bool IO::Device::TelitLE910::GPSIsPowerUp(Bool *result)
+Bool IO::Device::TelitLE910::GPSIsPowerUp(OutParam<Bool> result)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT$GPSP?"), 3000);
 	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("$GPSP: ")))
 	{
-		*result = (sbuff[7] == '1');
+		result.Set(sbuff[7] == '1');
 		return true;
 	}
 	return false;

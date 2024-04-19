@@ -764,7 +764,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	if (IO::JavaProperties::ParseAppProp().SetTo(cfg))
 	{
-		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.v, key.leng);
+		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.ToByteArray());
 		jasypt.Decrypt(cfg);
 		NotNullPtr<DB::DBTool> db;
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.url")))->v);

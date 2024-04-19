@@ -1,10 +1,12 @@
 #ifndef _SM_DB_DBUTIL
 #define _SM_DB_DBUTIL
 #include "Data/ArrayList.h"
+#include "Data/NamedClass.h"
 #include "Data/Class.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Math/Geometry/Vector2D.h"
+#include "Text/JSONBuilder.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 namespace DB
@@ -124,6 +126,7 @@ namespace DB
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);
 		static Bool HasSchema(SQLType sqlType);
 		template <class T> static Bool SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls);
+		template <typename T> static Bool Model2JSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<T> obj);
 	};
 }
 
@@ -200,6 +203,26 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 		k++;
 	}
 	return succ;
+}
+
+template <typename T> Bool DB::DBUtil::Model2JSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<T> obj)
+{
+	NotNullPtr<Data::NamedClass<T>> cls = obj->CreateClass();
+	NotNullPtr<Text::String> name;
+	Data::VariItem item;
+	UOSInt i = 0;
+	UOSInt j = cls->GetFieldCount();
+	while (i < j)
+	{
+		if (cls->GetFieldName(i).SetTo(name))
+		{
+			cls->GetValue(item, i, obj.Ptr());
+			json->ObjectAddVarItem(name->ToCString(), item);
+		}
+		i++;
+	}
+	cls.Delete();
+	return true;
 }
 
 #endif

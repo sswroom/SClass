@@ -134,9 +134,9 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 
 	if (!quick)
 	{
-		Data::ArrayList<IO::GSMModemController::Operator *> operList;
-		IO::GSMModemController::Operator *oper;
-		if (modem->GSMGetAllowedOperators(&operList))
+		Data::ArrayListNN<IO::GSMModemController::Operator> operList;
+		NotNullPtr<IO::GSMModemController::Operator> oper;
+		if (modem->GSMGetAllowedOperators(operList))
 		{
 
 			writer->WriteLineC(UTF8STRC("Operator List:"));
@@ -144,7 +144,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 			j = operList.GetCount();
 			while (i < j)
 			{
-				oper = operList.GetItem(i);
+				oper = operList.GetItemNoCheck(i);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("-"));
 				sb.Append(oper->shortName);
@@ -159,7 +159,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				i++;
 			}
-			modem->GSMFreeOperators(&operList);
+			modem->GSMFreeOperators(operList);
 		}
 		else
 		{
@@ -174,7 +174,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 
 	IO::GSMModemController::RSSI rssi;
 	IO::GSMModemController::BER ber;
-	if (modem->GSMGetSignalQuality(&rssi, &ber))
+	if (modem->GSMGetSignalQuality(rssi, ber))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("RSSI: "));
@@ -215,9 +215,9 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLineC(UTF8STRC("SMSC: Error in getting the value"));
 	}
 
-	Data::ArrayList<IO::GSMModemController::SMSMessage *> smsList;
-	IO::GSMModemController::SMSMessage *sms;
-	if (modem->SMSListMessages(&smsList, IO::GSMModemController::SMSS_ALL))
+	Data::ArrayListNN<IO::GSMModemController::SMSMessage> smsList;
+	NotNullPtr<IO::GSMModemController::SMSMessage> sms;
+	if (modem->SMSListMessages(smsList, IO::GSMModemController::SMSS_ALL))
 	{
 
 		writer->WriteLineC(UTF8STRC("SMS List:"));
@@ -225,7 +225,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		j = smsList.GetCount();
 		while (i < j)
 		{
-			sms = smsList.GetItem(i);
+			sms = smsList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("-"));
 			sb.AppendI32(sms->index);
@@ -236,7 +236,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
-		modem->SMSFreeMessages(&smsList);
+		modem->SMSFreeMessages(smsList);
 	}
 	else
 	{

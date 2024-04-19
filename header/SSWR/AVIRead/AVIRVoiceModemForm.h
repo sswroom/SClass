@@ -19,8 +19,8 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			IO::Device::RockwellModemController *modem;
-			IO::ATCommandChannel *channel;
+			NotNullPtr<IO::Device::RockwellModemController> modem;
+			NotNullPtr<IO::ATCommandChannel> channel;
 			NotNullPtr<IO::Stream> port;
 
 			NotNullPtr<UI::GUITabControl> tcMain;
@@ -58,7 +58,7 @@ namespace SSWR
 			static void __stdcall OnModemEvent(AnyType userObj, UInt8 evtType);
 
 		public:
-			AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::Device::RockwellModemController *modem, IO::ATCommandChannel *channel, NotNullPtr<IO::Stream> port);
+			AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Device::RockwellModemController> modem, NotNullPtr<IO::ATCommandChannel> channel, NotNullPtr<IO::Stream> port);
 			virtual ~AVIRVoiceModemForm();
 
 			virtual void OnMonitorChanged();

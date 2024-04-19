@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_STRINGBASE
 #define _SM_TEXT_STRINGBASE
 #include "Data/ByteTool.h"
+#include "Data/ByteArray.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -12,6 +13,7 @@ namespace Text
 		UOSInt leng;
 
 		T *GetEndPtr();
+		Data::ByteArray ToByteArray() const;
 
 		UTF8Char *ConcatTo(UTF8Char *sbuff) const;
 		UTF8Char *ConcatWith(UTF8Char *sbuff, const UTF8Char *s1, UOSInt len1) const;
@@ -92,6 +94,11 @@ namespace Text
 template <typename T> T *Text::StringBase<T>::GetEndPtr()
 {
 	return &this->v[this->leng];
+}
+
+template <typename T> Data::ByteArray Text::StringBase<T>::ToByteArray() const
+{
+	return Data::ByteArray((UInt8*)this->v, this->leng * sizeof(T));
 }
 
 template <typename T> UTF8Char *Text::StringBase<T>::ConcatTo(UTF8Char *sbuff) const

@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(AnyType userObj, 
 	}
 }
 
-SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::Device::RockwellModemController *modem, IO::ATCommandChannel *channel, NotNullPtr<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Device::RockwellModemController> modem, NotNullPtr<IO::ATCommandChannel> channel, NotNullPtr<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Voice Modem"));
 	this->SetFont(0, 0, 8.25, false);
@@ -256,8 +256,8 @@ SSWR::AVIRead::AVIRVoiceModemForm::~AVIRVoiceModemForm()
 {
 	this->port->Close();
 	this->channel->Close();
-	DEL_CLASS(this->modem);
-	DEL_CLASS(this->channel);
+	this->modem.Delete();
+	this->channel.Delete();
 	this->port.Delete();
 }
 

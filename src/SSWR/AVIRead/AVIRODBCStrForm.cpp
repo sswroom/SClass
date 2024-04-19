@@ -26,8 +26,8 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userO
 	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
-		IO::ConfigFile *driver = DB::ODBCConn::GetDriverInfo(sb.ToCString());
-		if (driver)
+		NotNullPtr<IO::ConfigFile> driver;
+		if (DB::ODBCConn::GetDriverInfo(sb.ToCString()).SetTo(driver))
 		{
 			Data::ArrayListStringNN keys;
 			const UTF8Char *sarr[2];
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userO
 				frm.AddRow(sarr);
 			}
 			frm.ShowDialog(me);
-			DEL_CLASS(driver);
+			driver.Delete();
 		}
 	}
 }

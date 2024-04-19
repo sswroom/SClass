@@ -113,7 +113,7 @@ Bool IO::Device::SIM7000SocketFactory::NetworkStart()
 	Bool bVal;
 	modem->GPRSEPSReg();
 	modem->GPRSNetworkReg();
-	if (modem->GPRSServiceIsAttached(&bVal))
+	if (modem->GPRSServiceIsAttached(bVal))
 	{
 		if (!bVal)
 		{

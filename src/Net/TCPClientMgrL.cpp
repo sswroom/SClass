@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
+//#define VERBOSE
 /*
 TODO:
 http://man7.org/linux/man-pages/man2/pipe.2.html
@@ -158,7 +159,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 						readSize = cliStat->cli->GetRecvBuffSize();
 						if (!closed && readSize <= 0)
 						{
-//							printf("Cli Empty data found\r\n");
+#if defined(VERBOSE)
+							printf("Cli %d Empty data found\r\n", cliStat->cli->GetRemotePort());
+#endif
 							cliStat->recvDataExist = false;
 							readMutUsage.EndUse();
 							readSize = 0;
@@ -167,7 +170,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 						}
 						else
 						{
-//							printf("Cli Read Begin %d\r\n", readSize);
+#if defined(VERBOSE)
+							printf("Cli %d Read Begin %d\r\n", cliStat->cli->GetRemotePort(), (UInt32)readSize);
+#endif
 							readSize = cliStat->cli->Read(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE));
 //							printf("Cli Read End %d\r\n", readSize);
 							readMutUsage.EndUse();
@@ -175,11 +180,15 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 
 						if (readSize == (UOSInt)-1)
 						{
-//							printf("Cli readSize = -1\r\n");
+#if defined(VERBOSE)
+							printf("Cli %d readSize = -1\r\n", cliStat->cli->GetRemotePort());
+#endif
 							currTime = Data::Timestamp::UtcNow();
 							if (currTime.Diff(cliStat->lastDataTime) > me->timeout)
 							{
-//								printf("Cli disconnect\r\n");
+#if defined(VERBOSE)
+								printf("Cli %d disconnect\r\n", cliStat->cli->GetRemotePort());
+#endif
 								cliStat->cli->ShutdownSend();
 								cliStat->cli->Close();
 								Sync::SimpleThread::Sleep(1);
@@ -197,7 +206,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 						}
 						else if (readSize)
 						{
-//							printf("Cli read data\r\n");
+#if defined(VERBOSE)
+							printf("Cli %d read data, size = %d\r\n", cliStat->cli->GetRemotePort(), (UInt32)readSize);
+#endif
 							cliStat->reading = false;
 							cliStat->lastDataTime = Data::Timestamp::UtcNow();
 							mutUsage.EndUse();
@@ -208,7 +219,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 						}
 						else
 						{
-//							printf("Cli end conn\r\n");
+#if defined(VERBOSE)
+							printf("Cli %d end conn\r\n", cliStat->cli->GetRemotePort());
+#endif							
 							TCPClientMgr_RemoveCliStat(me->cliMap, cliStat);
 							mutUsage.EndUse();
 
@@ -257,7 +270,14 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 				cliStat->timeStart = currTime;
 				cliStat->timeAlerted = false;
 				cliStat->processing = true;
+#if defined(VERBOSE)
+				printf("Cli %d Begin Process %d\r\n", cliStat->cli->GetRemotePort(), currTime.inst.nanosec);
+#endif
 				me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, Data::ByteArrayR(cliStat->buff, cliStat->buffSize));
+#if defined(VERBOSE)
+				currTime = Data::Timestamp::UtcNow();
+				printf("Cli %d End Process %d\r\n", cliStat->cli->GetRemotePort(), currTime.inst.nanosec);
+#endif
 				cliStat->processing = false;
 				Sync::MutexUsage mutUsage(cliStat->readMut);
 				cliStat->recvDataExist = cliStat->cli->GetRecvBuffSize() > 0;
@@ -444,7 +464,9 @@ void Net::TCPClientMgr::SetLogFile(Text::CStringNN logFile)
 
 void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, AnyType cliData)
 {
-//	printf("Client added and set timeout to %d\r\n", this->timeOutSeconds);
+#if defined(VERBOSE)
+	printf("Cli %d added and set timeout to %lld\r\n", cli->GetRemotePort(), this->timeout.GetSeconds());
+#endif
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
 	UInt64 cliId = cli->GetCliId();

@@ -2,6 +2,7 @@
 #define _SM_CRYPTO_ENCRYPT_JASYPTENCRYPTOR
 #include "Crypto/Encrypt/ICrypto.h"
 #include "Crypto/Hash/IHash.h"
+#include "Data/ByteBuffer.h"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/ConfigFile.h"
 #include "Text/CString.h"
@@ -33,8 +34,7 @@ namespace Crypto
 		private:
 			KeyAlgorithm keyAlgorithmn;
 			CipherAlgorithm cipherAlgorithm;
-			UInt8 *key;
-			UOSInt keyLen;
+			Data::ByteBuffer key;
 			UInt8 *salt;
 			UOSInt saltSize;
 			UInt8 *iv;
@@ -49,7 +49,7 @@ namespace Crypto
 			NotNullPtr<Crypto::Encrypt::ICrypto> CreateCrypto(const UInt8 *iv, const UInt8 *keyBuff);
 
 		public:
-			JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen);
+			JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, Data::ByteArrayR key);
 			~JasyptEncryptor();
 
 			Bool Decrypt(NotNullPtr<IO::ConfigFile> cfg);

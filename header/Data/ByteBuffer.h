@@ -15,6 +15,11 @@ namespace Data
 		{
 		}
 
+		ByteBuffer(Data::ByteArrayR buff) : ByteArray(MemAlloc(UInt8, buff.GetSize()), buff.GetSize())
+		{
+			MemCopyNO(this->buff, buff.Ptr(), buff.GetSize());
+		}
+
 		~ByteBuffer()
 		{
 			if (this->buff)

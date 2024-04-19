@@ -210,7 +210,14 @@ Bool Data::Class::GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *o
 		return false;
 	}
 	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
-	Data::VariItem::SetFromPtr(itm, valPtr, field->itemType);
+	if (field->typeName.NotNull())
+	{
+		Data::VariItem::SetFromPtr(itm, valPtr, Data::VariItem::ItemType::I32);
+	}
+	else
+	{
+		Data::VariItem::SetFromPtr(itm, valPtr, field->itemType);
+	}
 	return true;
 }
 

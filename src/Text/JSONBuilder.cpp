@@ -135,6 +135,21 @@ void Text::JSONBuilder::AppendTSStr(Data::Timestamp ts)
 	}
 }
 
+void Text::JSONBuilder::AppendDateStr(Data::Date dat)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	if (dat.IsNull())
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		sptr = dat.ToString(sbuff);
+		this->AppendStr(CSTRP(sbuff, sptr));
+	}
+}
+
 void Text::JSONBuilder::AppendCoord2D(Math::Coord2DDbl coord)
 {
 	this->sb.AppendUTF8Char('[');
@@ -808,6 +823,22 @@ Bool Text::JSONBuilder::ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectAddDateStr(Text::CStringNN name, Data::Date dat)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendUTF8Char(':');
+	this->AppendDateStr(dat);
+	return true;
+}
+
 Bool Text::JSONBuilder::ObjectAddNull(Text::CStringNN name)
 {
 	if (this->currType != OT_OBJECT)
@@ -964,6 +995,51 @@ Bool Text::JSONBuilder::ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math
 		this->sb.AppendC(UTF8STRC("null"));
 	}
 	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NotNullPtr<Data::VariItem> item)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	switch (item->GetItemType())
+	{
+	default:
+	case Data::VariItem::ItemType::Unknown:
+	case Data::VariItem::ItemType::Null:
+	case Data::VariItem::ItemType::ByteArr:
+	case Data::VariItem::ItemType::UUID:
+		return ObjectAddNull(name);
+	case Data::VariItem::ItemType::Timestamp:
+		return ObjectAddTSStr(name, item->GetAsTimestamp());
+	case Data::VariItem::ItemType::F32:
+	case Data::VariItem::ItemType::F64:
+		return ObjectAddFloat64(name, item->GetAsF64());
+	case Data::VariItem::ItemType::I8:
+	case Data::VariItem::ItemType::U8:
+	case Data::VariItem::ItemType::I16:
+	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::I32:
+		return ObjectAddInt32(name, item->GetAsI32());
+	case Data::VariItem::ItemType::U32:
+		return ObjectAddUInt64(name, item->GetAsU32());
+	case Data::VariItem::ItemType::I64:
+		return ObjectAddInt64(name, item->GetAsI64());
+	case Data::VariItem::ItemType::U64:
+		return ObjectAddUInt64(name, item->GetAsU64());
+	case Data::VariItem::ItemType::BOOL:
+		return ObjectAddUInt64(name, item->GetAsBool());
+	case Data::VariItem::ItemType::CStr:
+	{
+		Data::VariItem::ItemValue v = item->GetItemValue();
+		return ObjectAddStr(name, Text::CString(v.cstr.v, v.cstr.leng));
+	}
+	case Data::VariItem::ItemType::Date:
+		return ObjectAddDateStr(name, item->GetAsDate());
+	case Data::VariItem::ItemType::Str:
+		return ObjectAddStr(name, item->GetItemValue().str);
+	case Data::VariItem::ItemType::Vector:
+		return ObjectAddGeometry(name, item->GetItemValue().vector);
+	}
 }
 
 Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)

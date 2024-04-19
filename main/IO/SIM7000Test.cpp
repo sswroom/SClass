@@ -59,9 +59,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		IO::ATCommandChannel *channel;
+		NotNullPtr<IO::ATCommandChannel> channel;
 		IO::Device::SIM7000 *modem;
-		NEW_CLASS(channel, IO::ATCommandChannel(port, false));
+		NEW_CLASSNN(channel, IO::ATCommandChannel(port, false));
 		NEW_CLASS(modem, IO::Device::SIM7000(channel, false));
 		modem->SetEcho(true);
 
@@ -278,7 +278,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		
 
 		DEL_CLASS(modem);
-		DEL_CLASS(channel);
+		channel.Delete();
 	}
 	port.Delete();
 	DEL_CLASS(console);

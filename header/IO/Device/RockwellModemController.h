@@ -39,7 +39,7 @@ namespace IO
 			} VoiceLineType;
 
 		public:
-			RockwellModemController(IO::ATCommandChannel *channel, Bool needRelease);
+			RockwellModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~RockwellModemController();
 
 			// Voice Commands
