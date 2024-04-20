@@ -446,7 +446,7 @@ DB::ColDef::GeometryType DB::ColDef::GeometryTypeAdjust(GeometryType geomType, B
 	}
 }
 
-Text::CString DB::ColDef::GeometryTypeGetName(GeometryType geomType)
+Text::CStringNN DB::ColDef::GeometryTypeGetName(GeometryType geomType)
 {
 	switch (geomType)
 	{

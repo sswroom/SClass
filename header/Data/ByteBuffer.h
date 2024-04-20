@@ -20,7 +20,7 @@ namespace Data
 			MemCopyNO(this->buff, buff.Ptr(), buff.GetSize());
 		}
 
-		~ByteBuffer()
+		virtual ~ByteBuffer()
 		{
 			if (this->buff)
 				MemFree(this->buff);

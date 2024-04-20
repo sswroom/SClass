@@ -114,7 +114,7 @@ namespace DB
 		NotNullPtr<ColDef> Clone() const;
 
 		static GeometryType GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM);
-		static Text::CString GeometryTypeGetName(GeometryType geomType);
+		static Text::CStringNN GeometryTypeGetName(GeometryType geomType);
 	};
 }
 #endif

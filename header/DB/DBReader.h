@@ -1,5 +1,6 @@
 #ifndef _SM_DB_DBREADER
 #define _SM_DB_DBREADER
+#include "Data/ByteBuffer.h"
 #include "Data/Class.h"
 #include "Data/StringMap.h"
 #include "Data/VariObject.h"
@@ -84,6 +85,19 @@ namespace DB
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff) = 0;
+		Optional<Data::ByteBuffer> GetNewByteBuff(UOSInt colIndex)
+		{
+			if (IsNull(colIndex))
+				return 0;
+			UOSInt byteSize = GetBinarySize(colIndex);
+			NotNullPtr<Data::ByteBuffer> buff;
+			NEW_CLASSNN(buff, Data::ByteBuffer(byteSize));
+			if (GetBinary(byteSize, buff->Ptr()) == byteSize)
+				return buff;
+			buff.Delete();
+			return 0;
+		}
+		
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex) = 0;
 		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid) = 0;
 		virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item);

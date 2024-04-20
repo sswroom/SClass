@@ -214,7 +214,7 @@ namespace Data
 #endif
 		}
 
-		~ByteArray()
+		virtual ~ByteArray()
 		{
 
 		}

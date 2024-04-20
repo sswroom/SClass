@@ -28,7 +28,7 @@ void DB::SQLBuilder::AppendCmdSlow(const UTF8Char *val)
 	this->sb.AppendSlow(val);
 }
 
-void DB::SQLBuilder::AppendCmdC(Text::CString val)
+void DB::SQLBuilder::AppendCmdC(Text::CStringNN val)
 {
 	this->sb.Append(val);
 }
