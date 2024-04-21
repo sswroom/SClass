@@ -23,7 +23,7 @@ export function appendUrl(targetUrl: string, docUrl: string): string;
 export function mimeFromFileName(fileName: string): string;
 export function mimeFromExt(ext: string): string;
 export function getImageInfo(url: string): Promise<ImageInfo|null>;
-export function propertiesToHTML(prop: object): string;
+export function propertiesToHTML(prop: object, nameMap?: object, timeFormat?: string): string;
 export function getCacheSize(name: string): Promise<number>;
 
 declare class DialogButton

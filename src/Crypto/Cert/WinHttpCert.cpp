@@ -42,7 +42,7 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned() const
 	return Text::StrEquals(this->clsData->certInfo->lpszSubjectInfo, this->clsData->certInfo->lpszIssuerInfo);
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::WinHttpCert::CreateX509Cert() const
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::WinHttpCert::CreateX509Cert() const
 {
 	return 0;
 }

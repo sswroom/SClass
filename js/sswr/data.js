@@ -328,6 +328,18 @@ export function shr32(v, n)
 	return ((v >> 1) & 0x7fffffff) >> (n - 1);
 }
 
+export function objectParseTS(o, items)
+{
+	let item;
+	for (item in items)
+	{
+		if (o[items[item]] && typeof o[items[item]] == "string")
+		{
+			o[items[item]] = Timestamp.fromStr(o[items[item]]);
+		}
+	}
+}
+
 export class DateValue
 {
 	constructor()

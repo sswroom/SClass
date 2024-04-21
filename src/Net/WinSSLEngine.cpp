@@ -548,15 +548,15 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
-	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
+	NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
+	if (keyType == Crypto::Cert::X509File::KeyType::RSA && Crypto::Cert::X509PrivKey::CreateFromKey(key).SetTo(privKey))
 	{
-		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
 		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), signature))
 		{
-			DEL_CLASS(privKey);
+			privKey.Delete();
 			return hKey;
 		}
-		DEL_CLASS(privKey);
+		privKey.Delete();
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: Import Key failed\r\n");
 #endif
@@ -568,13 +568,13 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509
 	}
 	else if (keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		Crypto::Cert::X509PubKey *pubKey = Crypto::Cert::X509PubKey::CreateFromKey(key);
+		NotNullPtr<Crypto::Cert::X509PubKey> pubKey = Crypto::Cert::X509PubKey::CreateFromKey(key);
 		if (WinSSLEngine_CryptImportPublicKey(&hKey, hProv, pubKey->GetASN1Buff(), (ULONG)pubKey->GetASN1BuffSize(), true))
 		{
-			DEL_CLASS(pubKey);
+			pubKey.Delete();
 			return hKey;
 		}
-		DEL_CLASS(pubKey);
+		pubKey.Delete();
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: Import Key failed\r\n");
 #endif
@@ -732,6 +732,7 @@ Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE 
 	NTSTATUS status;
 	NCRYPT_PROV_HANDLE hProv;
 	NCRYPT_KEY_HANDLE hKey;
+	NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
 	if((status = NCryptOpenStorageProvider(&hProv, MS_KEY_STORAGE_PROVIDER, 0)) != 0)
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
@@ -739,17 +740,21 @@ Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE 
 #endif
 		return false;
 	}
-	Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
+	if (!Crypto::Cert::X509PrivKey::CreateFromKey(key).SetTo(privKey))
+	{
+		NCryptFreeObject(hProv);
+		return false;
+	}
 	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff(), (DWORD)privKey->GetASN1BuffSize(), 0)) != 0)
     {
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: NCryptImportKey failed: 0x%x\r\n", (UInt32)status);
 #endif
-		DEL_CLASS(privKey);
+		privKey.Delete();
 		NCryptFreeObject(hProv);
 		return false;
     }
-	DEL_CLASS(privKey);
+	privKey.Delete();
 	*hProvOut = hProv;
 	*hKeyOut = hKey;
 	return true;
@@ -1597,7 +1602,7 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
 	NotNullPtr<Text::String> s = Text::String::New(sb2.ToString(), sb2.GetLength());
-	keyASN1.Set(Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr()));
+	keyASN1.Set(Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr()).Ptr());
 	s->Release();
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
@@ -1607,7 +1612,7 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	return true;
 }
 
-Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
+Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey()
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;

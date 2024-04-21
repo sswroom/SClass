@@ -721,22 +721,52 @@ export function getImageInfo(url)
     });
 }
 
-export function propertiesToHTML(prop)
+export function propertiesToHTML(prop, nameMap, timeFormat)
 {
 	let ret = ["<ul>"];
 	let i;
-	for (i in prop)
+	if (nameMap)
 	{
-		ret.push("<li><b>"+text.toHTMLText(i)+": </b>");
-		if (typeof prop[i] == "object")
+		for (i in prop)
 		{
-			ret.push(propertiesToHTML(prop[i]));
+			if (nameMap[i])
+			{
+				ret.push("<li><b>"+text.toHTMLText(nameMap[i])+": </b>");
+				if (prop[i] instanceof data.Timestamp)
+				{
+					ret.push(text.toHTMLText(prop[i].toString(timeFormat)));
+				}
+				else if (typeof prop[i] == "object")
+				{
+					ret.push(propertiesToHTML(prop[i], null, timeFormat));
+				}
+				else
+				{
+					ret.push(text.toHTMLText(""+prop[i]));
+				}
+				ret.push("</li>");
+			}
 		}
-		else
+	}
+	else
+	{
+		for (i in prop)
 		{
-			ret.push(text.toHTMLText(""+prop[i]));
+			ret.push("<li><b>"+text.toHTMLText(i)+": </b>");
+			if (prop[i] instanceof data.Timestamp)
+			{
+				ret.push(text.toHTMLText(prop[i].toString(timeFormat)));
+			}
+			else if (typeof prop[i] == "object")
+			{
+				ret.push(propertiesToHTML(prop[i], null, timeFormat));
+			}
+			else
+			{
+				ret.push(text.toHTMLText(""+prop[i]));
+			}
+			ret.push("</li>");
 		}
-		ret.push("</li>");
 	}
 	ret.push("</ul>");
 	return ret.join("");

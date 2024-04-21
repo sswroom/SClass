@@ -32,7 +32,7 @@ struct Net::HTTPOSClient::ClassData
 	HINTERNET hConnect;
 	HINTERNET hRequest;
 	Bool https;
-	Data::ArrayList<Crypto::Cert::Certificate*> *certs;
+	Data::ArrayListNN<Crypto::Cert::Certificate> *certs;
 	Crypto::Cert::X509Cert* cliCert;
 	Crypto::Cert::X509File* cliKey;
 };
@@ -143,8 +143,8 @@ Net::HTTPOSClient::~HTTPOSClient()
 		UOSInt i = data->certs->GetCount();
 		while (i-- > 0)
 		{
-			Crypto::Cert::Certificate *cert = data->certs->GetItem(i);
-			DEL_CLASS(cert);
+			NotNullPtr<Crypto::Cert::Certificate> cert = data->certs->GetItemNoCheck(i);
+			cert.Delete();
 		}
 		DEL_CLASS(data->certs);
 	}
@@ -704,7 +704,7 @@ Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, N
 	}
 }
 
-const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
+Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient::GetServerCerts()
 {
 	if (this->clsData->certs)
 		return this->clsData->certs;
@@ -717,14 +717,14 @@ const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServ
 	PCCERT_CONTEXT thisCert = 0;
 	PCCERT_CONTEXT lastCert = 0;
 	DWORD dwVerificationFlags = 0;
-	Crypto::Cert::X509Cert* cert;
-	NEW_CLASS(this->clsData->certs, Data::ArrayList<Crypto::Cert::Certificate*>());
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NEW_CLASS(this->clsData->certs, Data::ArrayListNN<Crypto::Cert::Certificate>());
+	NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
 	this->clsData->certs->Add(cert);
 	thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
 	while (thisCert)
 	{
-		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
+		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
 		this->clsData->certs->Add(cert);
 		lastCert = thisCert;
 		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);

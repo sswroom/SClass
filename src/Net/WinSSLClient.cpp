@@ -38,7 +38,7 @@ struct Net::WinSSLClient::ClassData
 	UOSInt readSize;
 	void *readData;
 	Sync::Event *readEvt;
-	Data::ArrayList<Crypto::Cert::Certificate *> *remoteCerts;
+	Data::ArrayListNN<Crypto::Cert::Certificate> *remoteCerts;
 };
 
 Net::WinSSLClient::WinSSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
@@ -71,14 +71,14 @@ Net::WinSSLClient::WinSSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s,
 	if (serverCert)
 	{
 		DWORD dwVerificationFlags = 0;
-		Crypto::Cert::X509Cert* cert;
-		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayList<Crypto::Cert::Certificate*>());
-		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
+		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayListNN<Crypto::Cert::Certificate>());
+		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
 		this->clsData->remoteCerts->Add(cert);
 		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
 		while (thisCert)
 		{
-			NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
+			NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
 			this->clsData->remoteCerts->Add(cert);
 			lastCert = thisCert;
 			thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);
@@ -109,8 +109,8 @@ Net::WinSSLClient::~WinSSLClient()
 		UOSInt i = this->clsData->remoteCerts->GetCount();
 		while (i-- > 0)
 		{
-			Crypto::Cert::Certificate *cert = this->clsData->remoteCerts->GetItem(i);
-			DEL_CLASS(cert);
+			NotNullPtr<Crypto::Cert::Certificate> cert = this->clsData->remoteCerts->GetItemNoCheck(i);
+			cert.Delete();
 		}
 		DEL_CLASS(this->clsData->remoteCerts);
 	}
@@ -700,7 +700,7 @@ Bool Net::WinSSLClient::Recover()
 	return false;
 }
 
-Crypto::Cert::Certificate *Net::WinSSLClient::GetRemoteCert()
+Optional<Crypto::Cert::Certificate> Net::WinSSLClient::GetRemoteCert()
 {
 	if (this->clsData->remoteCerts)
 		return this->clsData->remoteCerts->GetItem(0);
@@ -708,7 +708,7 @@ Crypto::Cert::Certificate *Net::WinSSLClient::GetRemoteCert()
 		return 0;
 }
 
-const Data::ReadingList<Crypto::Cert::Certificate *> *Net::WinSSLClient::GetRemoteCerts()
+Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::WinSSLClient::GetRemoteCerts()
 {
 	return this->clsData->remoteCerts;
 }
