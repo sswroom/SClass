@@ -1,6 +1,8 @@
 1.6.3
 -Added hash.MD5
 -Support web.Dialog in frameset
+-Added data.objectParseTS
+-web.propertiesToHTML support nameMap and timeFormat
 
 1.6.2
 -Fixed data.DateTimeUtil.totalDays2DateValue bigint problem
