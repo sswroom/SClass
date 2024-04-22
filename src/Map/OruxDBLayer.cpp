@@ -307,9 +307,10 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 		MemFree(buff);
 	}
 	this->db->CloseReader(r);
-	if (imgList)
+	NotNullPtr<Media::ImageList> nnimgList;
+	if (nnimgList.Set(imgList))
 	{
-		Media::SharedImage *shImg;
+		NotNullPtr<Media::SharedImage> shImg;
 		Math::Geometry::VectorImage *vimg;
 		Double x1;
 		Double y1;
@@ -317,7 +318,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 		Double n;
 		Double projY1;
 		Double projY2;
-		NEW_CLASS(shImg, Media::SharedImage(imgList, false));
+		NEW_CLASSNN(shImg, Media::SharedImage(nnimgList, false));
 		x1 = lyr->mapMin.x + (lyr->mapMax.x - lyr->mapMin.x) * x / lyr->max.x;
 		projY1 = lyr->projYMax - (lyr->projYMax - lyr->projYMin) * y / lyr->max.y;
 		projY2 = projY1 - (lyr->projYMax - lyr->projYMin) / lyr->max.y;
@@ -326,7 +327,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 		n = Math::PI - 2.0 * Math::PI * projY2;
 		y2 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(4326, shImg, Math::Coord2DDbl(x1, y2), Math::Coord2DDbl(x1 + (lyr->mapMax.x - lyr->mapMin.x) / lyr->max.x, y1), false, CSTR_NULL, 0, 0));
-		DEL_CLASS(shImg);
+		shImg.Delete();
 		return vimg;
 	}
 	else

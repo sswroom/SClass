@@ -34,7 +34,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
 		{
-			if (me->lyr->QueryInfos(mapPt, me->queryVecList, &me->queryValueOfstList, &me->queryNameList, &me->queryValueList) && me->queryVecList.GetCount() > 0)
+			if (me->lyr->QueryInfos(mapPt, me->queryVecList, me->queryValueOfstList, me->queryNameList, me->queryValueList) && me->queryVecList.GetCount() > 0)
 			{
 				me->cboObj->ClearItems();
 				i = 0;
@@ -72,7 +72,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 			mapPt2 = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt2);
 		}
 		sess = me->lyr->BeginGetObject();
-		Data::ArrayList<Map::MapDrawLayer::ObjectInfo*> objList;
+		Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> objList;
 		me->lyr->GetNearObjects(sess, objList, mapPt, mapPt2.x - mapPt.x);
 		if (!me->layerNames)
 		{
@@ -92,7 +92,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 		}
 		else
 		{
-			Map::MapDrawLayer::ObjectInfo *obj;
+			NotNullPtr<Map::MapDrawLayer::ObjectInfo> obj;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
@@ -102,7 +102,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 			k = objList.GetCount();
 			while (j < k)
 			{
-				obj = objList.GetItem(j);
+				obj = objList.GetItemNoCheck(j);
 
 				if (vec.Set(me->lyr->GetNewVectorById(sess, obj->objId)))
 				{
@@ -130,7 +130,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 					{
 						sb.ClearStr();
 						me->lyr->GetString(sb, nameArr, obj->objId, i);
-						me->queryValueList.Add(Text::String::New(sb.ToCString()).Ptr());
+						me->queryValueList.Add(Text::String::New(sb.ToCString()));
 						i++;
 					}
 				}
@@ -220,13 +220,13 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 
 void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 {
-	Text::String *value;
+	NotNullPtr<Text::String> value;
 	this->queryNameList.FreeAll();
 	UOSInt i = this->queryValueList.GetCount();
 	while (i-- > 0)
 	{
-		value = this->queryValueList.GetItem(i);
-		SDEL_STRING(value);
+		value = this->queryValueList.GetItemNoCheck(i);
+		value->Release();
 	}
 	this->queryNameList.Clear();
 	this->queryValueList.Clear();
@@ -251,7 +251,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	UOSInt j;
 	UOSInt k;
 	Optional<Text::String> name;
-	Text::String *value;
+	Optional<Text::String> value;
 	if (this->layerNames)
 	{
 		i = 0;
@@ -277,7 +277,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 			name = this->queryNameList.GetItem(i);
 			value = this->queryValueList.GetItem(i);
 			k = this->lvInfo->AddItem(Text::String::OrEmpty(name), 0);
-			if (valueStr.Set(value))
+			if (value.SetTo(valueStr))
 			{
 				this->lvInfo->SetSubItem(k, 1, valueStr);
 			}

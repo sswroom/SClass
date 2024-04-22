@@ -784,7 +784,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i = 0;
-		UOSInt j = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->GetVariables(&vars);
+		UOSInt j = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->GetVariables(vars);
 		while (i < j)
 		{
 			item = vars.GetItem(i);
@@ -792,7 +792,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 			if (item.value.SetTo(s)) this->lvVariable->SetSubItem(i, 1, s);
 			i++;
 		}
-		NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeVariables(&vars);
+		NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeVariables(vars);
 	}
 }
 
@@ -804,14 +804,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 	NotNullPtr<DB::ReadingDB> currDB;
 	if (this->currDB.SetTo(currDB) && currDB->IsDBTool())
 	{
-		Data::ArrayList<DB::ReadingDBTool::ConnectionInfo*> conns;
-		DB::ReadingDBTool::ConnectionInfo *conn;
+		Data::ArrayListNN<DB::ReadingDBTool::ConnectionInfo> conns;
+		NotNullPtr<DB::ReadingDBTool::ConnectionInfo> conn;
 		NotNullPtr<Text::String> s;
 		UOSInt i = 0;
-		UOSInt j = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->GetConnectionInfo(&conns);
+		UOSInt j = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->GetConnectionInfo(conns);
 		while (i < j)
 		{
-			conn = conns.GetItem(i);
+			conn = conns.GetItemNoCheck(i);
 			sptr = Text::StrInt32(sbuff, conn->id);
 			this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
 			if (conn->status.SetTo(s)) this->lvSvrConn->SetSubItem(i, 1, s);
@@ -824,7 +824,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 			if (conn->sql.SetTo(s)) this->lvSvrConn->SetSubItem(i, 7, s);
 			i++;
 		}
-		NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeConnectionInfo(&conns);
+		NotNullPtr<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeConnectionInfo(conns);
 	}
 }
 

@@ -21,7 +21,7 @@ namespace Map
 
 		struct LayerInfo
 		{
-			Data::ArrayList<LayerCRS*> crsList;
+			Data::ArrayListNN<LayerCRS> crsList;
 			NotNullPtr<Text::String> name;
 			Text::String *title;
 			Bool queryable;
@@ -42,14 +42,14 @@ namespace Map
 		NotNullPtr<Math::CoordinateSystem> envCsys;
 
 		Text::String *version;
-		Data::ArrayList<LayerInfo*> layers;
+		Data::ArrayListNN<LayerInfo> layers;
 		Data::ArrayListStringNN mapImageTypeNames;
 		Data::ArrayListStringNN infoTypeNames;
 		UOSInt layer;
 		UOSInt mapImageType;
 		UOSInt infoType;
 
-		LayerCRS *currCRS;
+		Optional<LayerCRS> currCRS;
 		NotNullPtr<Math::CoordinateSystem> csys;
 
 		void LoadXML(Version version);
@@ -65,8 +65,8 @@ namespace Map
 		virtual Math::RectAreaDbl GetInitBounds() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList);
-		virtual Media::ImageList *DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList);
+		virtual Optional<Media::ImageList> DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl);
 
 		Bool IsError() const;
 		UOSInt GetInfoType() const;
@@ -75,10 +75,10 @@ namespace Map
 		void SetLayer(UOSInt index);
 		void SetMapImageType(UOSInt index);
 		void SetLayerCRS(UOSInt index);
-		UOSInt GetLayerNames(Data::ArrayListStringNN *nameList) const;
-		UOSInt GetMapImageTypeNames(Data::ArrayListStringNN *nameList) const;
-		UOSInt GetInfoTypeNames(Data::ArrayListStringNN *nameList) const;
-		UOSInt GetLayerCRSNames(Data::ArrayList<Text::String*> *nameList) const;
+		UOSInt GetLayerNames(NotNullPtr<Data::ArrayListStringNN> nameList) const;
+		UOSInt GetMapImageTypeNames(NotNullPtr<Data::ArrayListStringNN> nameList) const;
+		UOSInt GetInfoTypeNames(NotNullPtr<Data::ArrayListStringNN> nameList) const;
+		UOSInt GetLayerCRSNames(NotNullPtr<Data::ArrayListNN<Text::String>> nameList) const;
 	};
 }
 #endif

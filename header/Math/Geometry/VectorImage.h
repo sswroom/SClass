@@ -10,7 +10,7 @@ namespace Math
 		class VectorImage : public Math::Geometry::Vector2D
 		{
 		private:
-			Media::SharedImage *img;
+			NotNullPtr<Media::SharedImage> img;
 			Text::String *srcAddr;
 			Math::Coord2DDbl tl;
 			Math::Coord2DDbl br;
@@ -25,10 +25,10 @@ namespace Math
 			Int32 zIndex;
 			
 		public:
-			VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 			virtual ~VectorImage();
 
 			virtual VectorType GetVectorType() const;
@@ -66,9 +66,9 @@ namespace Math
 			Bool IsScnCoord() const;
 			void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
 			Media::StaticImage *GetImage(OptOut<UInt32> imgTimeMS) const;
-			Media::StaticImage *GetImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
+			Optional<Media::StaticImage> GetImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
 
-			static Math::Geometry::VectorImage *CreateScreenImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
+			static NotNullPtr<Math::Geometry::VectorImage> CreateScreenImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
 		};
 	}
 }

@@ -79,7 +79,8 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 	if (isImage == 0)
 		return 0;
 
-	Media::ImageList *imgList = 0;
+	Optional<Media::ImageList> imgList = 0;
+	NotNullPtr<Media::ImageList> nnimgList;
 	UInt64 dataSize = fd->GetDataSize();
 	{
 		Data::ByteBuffer data((UOSInt)dataSize);
@@ -114,8 +115,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if (imgDest)
 				{
 					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-					NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-					imgList->AddImage(img, 0);
+					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+					nnimgList->AddImage(img, 0);
+					imgList = nnimgList;
 				}
 				else
 				{
@@ -130,8 +132,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if (imgDest)
 				{
 					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-					NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-					imgList->AddImage(img, 0);
+					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+					nnimgList->AddImage(img, 0);
+					imgList = nnimgList;
 				}
 				else
 				{
@@ -146,8 +149,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if (imgDest)
 				{
 					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-					NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-					imgList->AddImage(img, 0);
+					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+					nnimgList->AddImage(img, 0);
+					imgList = nnimgList;
 				}
 				else
 				{
@@ -160,13 +164,13 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				printf("GUIImgParser: unsupport: width = %d, height = %d, nChannels = %d, bps = %d, bpl = %d, xdpi = %lf, ydpi = %lf\r\n", width, height, nChannels, bps, bpl, xdpi, ydpi);
 			}
 
-			if (img)
+			if (img && imgList.SetTo(nnimgList))
 			{
 				img->info.hdpi = xdpi;
 				img->info.vdpi = ydpi;
 				if (isImage == 2)
 				{
-					Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
 				}
 			}
 			g_object_unref(pixBuf);
@@ -174,9 +178,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		g_input_stream_close(inpStream, 0, 0);
 	}
 
-	if (targetType != IO::ParserType::ImageList && imgList && imgList->GetCount() >= 1)
+	if (targetType != IO::ParserType::ImageList && imgList.SetTo(nnimgList) && nnimgList->GetCount() >= 1)
 	{
-		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
+		Media::StaticImage *img = (Media::StaticImage*)nnimgList->GetImage(0, 0);
 		Double minX;
 		Double minY;
 		Double maxX;
@@ -187,13 +191,13 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		{
 			Map::VectorLayer *lyr;
 			NotNullPtr<Math::Geometry::VectorImage> vimg;
-			Media::SharedImage *simg;
+			NotNullPtr<Media::SharedImage> simg;
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, 0));
-			NEW_CLASS(simg, Media::SharedImage(imgList, true));
+			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, true));
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, Math::Coord2DDbl(minX, minY), Math::Coord2DDbl(maxX, maxY), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
-			DEL_CLASS(simg);
+			simg.Delete();
 			
 			return lyr;
 		}
@@ -257,20 +261,20 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				{
 					Map::VectorLayer *lyr;
 					NotNullPtr<Math::Geometry::VectorImage> vimg;
-					Media::SharedImage *simg;
+					NotNullPtr<Media::SharedImage> simg;
 					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
-					NEW_CLASS(simg, Media::SharedImage(imgList, true));
+					NEW_CLASSNN(simg, Media::SharedImage(nnimgList, true));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
-					DEL_CLASS(simg);
+					simg.Delete();
 					
 					return lyr;
 				}
 			}
 		}
 	}
-	return imgList;
+	return imgList.OrNull();
 }
 

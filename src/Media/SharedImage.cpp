@@ -6,7 +6,7 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/MutexUsage.h"
 
-Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
+Media::SharedImage::SharedImage(NotNullPtr<Media::SharedImage::ImageStatus> status)
 {
 	this->imgStatus = status;
 	Sync::MutexUsage mutUsage(this->imgStatus->mut);
@@ -14,11 +14,11 @@ Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 	mutUsage.EndUse();
 }
 
-Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
+Media::SharedImage::SharedImage(NotNullPtr<Media::ImageList> imgList, Bool genPreview)
 {
 	NotNullPtr<Media::StaticImage> img;
 	UOSInt imgCnt = imgList->GetCount();
-	NEW_CLASS(this->imgStatus, ImageStatus());
+	NEW_CLASSNN(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
 	this->imgStatus->prevList = 0;
 	this->imgStatus->useCnt = 1;
@@ -36,18 +36,17 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 		{
 			UOSInt currWidth = img->info.dispSize.x;
 			UOSInt currHeight = img->info.dispSize.y;
-			Media::StaticImage *simg;
+			NotNullPtr<Media::StaticImage> simg;
 			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 			img->To32bpp();
-			NEW_CLASS(this->imgStatus->prevList, Data::ArrayList<Media::StaticImage*>());
+			NEW_CLASS(this->imgStatus->prevList, Data::ArrayListNN<Media::StaticImage>());
 
 			while (currWidth >= 640 || currHeight >= 640)
 			{
 				currWidth >>= 1;
 				currHeight >>= 1;
 				resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
-				simg = resizer.ProcessToNew(img);
-				if (simg)
+				if (simg.Set(resizer.ProcessToNew(img)))
 				{
 					this->imgStatus->prevList->Add(simg);
 				}
@@ -67,27 +66,27 @@ Media::SharedImage::~SharedImage()
 	mutUsage.EndUse();
 	if (toDelete)
 	{
-		DEL_CLASS(this->imgStatus->imgList);
+		this->imgStatus->imgList.Delete();
 		if (this->imgStatus->prevList)
 		{
 			UOSInt i;
-			Media::StaticImage *simg;
+			NotNullPtr<Media::StaticImage> simg;
 			i = this->imgStatus->prevList->GetCount();
 			while (i-- > 0)
 			{
-				simg = this->imgStatus->prevList->GetItem(i);
-				DEL_CLASS(simg);
+				simg = this->imgStatus->prevList->GetItemNoCheck(i);
+				simg.Delete();
 			}
 			DEL_CLASS(this->imgStatus->prevList);
 		}
-		DEL_CLASS(this->imgStatus);
+		this->imgStatus.Delete();
 	}
 }
 
-Media::SharedImage *Media::SharedImage::Clone() const
+NotNullPtr<Media::SharedImage> Media::SharedImage::Clone() const
 {
-	Media::SharedImage *newImg;
-	NEW_CLASS(newImg, Media::SharedImage(this->imgStatus));
+	NotNullPtr<Media::SharedImage> newImg;
+	NEW_CLASSNN(newImg, Media::SharedImage(this->imgStatus));
 	return newImg;
 }
 
@@ -131,23 +130,23 @@ Media::StaticImage *Media::SharedImage::GetImage(OptOut<UInt32> imgTimeMS) const
 	}
 }
 
-Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const
+Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const
 {
 	if (this->imgStatus->prevList == 0)
 	{
 		return this->GetImage(imgTimeMS);
 	}
-	Media::StaticImage *currImg;
+	NotNullPtr<Media::StaticImage> currImg;
 	UOSInt i;
-	Media::StaticImage *minImg = 0;
+	Optional<Media::StaticImage> minImg = 0;
 	UOSInt minWidth = 0;
 	i = this->imgStatus->prevList->GetCount();
 	while (i-- > 0)
 	{
-		currImg = this->imgStatus->prevList->GetItem(i);
+		currImg = this->imgStatus->prevList->GetItemNoCheck(i);
 		if (UOSInt2Double(currImg->info.dispSize.x) >= width && UOSInt2Double(currImg->info.dispSize.y) >= height)
 		{
-			if (minImg == 0 || minWidth > currImg->info.dispSize.x)
+			if (minImg.IsNull() || minWidth > currImg->info.dispSize.x)
 			{
 				minImg = currImg;
 				minWidth = currImg->info.dispSize.x;
@@ -155,7 +154,7 @@ Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height
 		}
 	}
 	imgTimeMS.Set(0);
-	if (minImg)
+	if (minImg.NotNull())
 		return minImg;
 	return (Media::StaticImage*)this->imgStatus->imgList->GetImage(0, 0);
 }

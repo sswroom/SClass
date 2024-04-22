@@ -91,13 +91,13 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 		this->txtProductType->SetText(CSTRP(sbuff, sptr));
 	}
 
-	NotNullPtr<const Data::ArrayList<IO::SystemInfoLog::DeviceInfo*>> devList = this->sysInfo->GetDeviceInfos();
-	IO::SystemInfoLog::DeviceInfo *dev;
+	NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> devList = this->sysInfo->GetDeviceInfos();
+	NotNullPtr<IO::SystemInfoLog::DeviceInfo> dev;
 	UOSInt i = 0;
 	UOSInt j = devList->GetCount();
 	while (i < j)
 	{
-		dev = devList->GetItem(i);
+		dev = devList->GetItemNoCheck(i);
 		this->lvDevices->AddItem(dev->desc, dev);
 		this->lvDevices->SetSubItem(i, 1, dev->hwId);
 		if (dev->service.SetTo(s))
@@ -111,13 +111,13 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 		i++;
 	}
 
-	NotNullPtr<const Data::ArrayList<IO::SystemInfoLog::DriverInfo*>> driverList = this->sysInfo->GetDriverInfos();
-	IO::SystemInfoLog::DriverInfo *driver;
+	NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::DriverInfo>> driverList = this->sysInfo->GetDriverInfos();
+	NotNullPtr<IO::SystemInfoLog::DriverInfo> driver;
 	i = 0;
 	j = driverList->GetCount();
 	while (i < j)
 	{
-		driver = driverList->GetItem(i);
+		driver = driverList->GetItemNoCheck(i);
 		this->lvDrivers->AddItem(driver->fileName, driver);
 		sptr = Text::StrUInt64(sbuff, driver->fileSize);
 		this->lvDrivers->SetSubItem(i, 1, CSTRP(sbuff, sptr));

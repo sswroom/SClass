@@ -13,7 +13,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::RasterImage *img, Media::ImageList *imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::RasterImage *img, NotNullPtr<Media::ImageList> imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;

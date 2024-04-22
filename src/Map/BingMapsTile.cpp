@@ -76,10 +76,10 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 		{
 			Parser::FileParser::PNGParser parser;
 			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-			IO::ParsedObject *pobj = parser.ParseFile(fd, 0, IO::ParserType::ImageList);
-			if (pobj)
+			NotNullPtr<IO::ParsedObject> pobj;
+			if (pobj.Set(parser.ParseFile(fd, 0, IO::ParserType::ImageList)))
 			{
-				NEW_CLASS(this->brandLogoImg, Media::SharedImage((Media::ImageList*)pobj, false));
+				NEW_CLASS(this->brandLogoImg, Media::SharedImage(NotNullPtr<Media::ImageList>::ConvertFrom(pobj), false));
 			}
 		}
 	}
@@ -160,15 +160,16 @@ UOSInt Map::BingMapsTile::GetScreenObjCnt()
 	return 0;
 }
 
-Math::Geometry::Vector2D *Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
+Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
 {
-	if (index == 0 && this->brandLogoImg && !this->hideLogo)
+	NotNullPtr<Media::SharedImage> brandLogoImg;
+	if (index == 0 && brandLogoImg.Set(this->brandLogoImg) && !this->hideLogo)
 	{
 		Math::Coord2DDbl size96 = this->dispSize * (96.0 / this->dispDPI);
 		Media::StaticImage *img = this->brandLogoImg->GetImage(0);
 		Math::Coord2DDbl imgSize = img->info.dispSize.ToDouble();
 		Math::Coord2DDbl pos = size96 - 16 - imgSize;
-		return Math::Geometry::VectorImage::CreateScreenImage(0, this->brandLogoImg, pos / size96, imgSize / size96, OPTSTR_CSTR(this->brandLogoUri));
+		return Math::Geometry::VectorImage::CreateScreenImage(0, brandLogoImg, pos / size96, imgSize / size96, OPTSTR_CSTR(this->brandLogoUri));
 	}
 	return 0;
 }

@@ -2,6 +2,7 @@
 #define _SM_MAP_WEBIMAGELAYER
 #include "AnyType.h"
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/CallbackStorage.h"
 #include "Data/IComparable.h"
 #include "Map/MapDrawLayer.h"
@@ -45,9 +46,9 @@ namespace Map
 	private:
 		Net::WebBrowser *browser;
 		Parser::ParserList *parsers;
-		Data::ArrayList<ImageStat *> pendingList;
-		Data::ArrayList<ImageStat *> loadingList;
-		Data::ArrayList<ImageStat *> loadedList;
+		Data::ArrayListNN<ImageStat> pendingList;
+		Data::ArrayListNN<ImageStat> loadingList;
+		Data::ArrayListNN<ImageStat> loadedList;
 		Sync::Mutex loadingMut;
 		Sync::RWMutex loadedMut;
 		Sync::Event loadEvt;
@@ -65,9 +66,9 @@ namespace Map
 		Bool threadToStop;
 
 		OSInt GetImageStatIndex(Int32 id);
-		ImageStat *GetImageStat(Int32 id);
+		Optional<ImageStat> GetImageStat(Int32 id);
 
-		void LoadImage(ImageStat *stat);
+		void LoadImage(NotNullPtr<ImageStat> stat);
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
 		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NotNullPtr<Math::CoordinateSystem> csys, Text::CString layerName);

@@ -81,7 +81,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 	{
 		return 0;
 	}
-	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> imgList;
 	Media::StaticImage *img;
 	Optional<Media::EXIFData> exif;
 	NotNullPtr<Media::EXIFData> nnexif;
@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		return 0;
 	}
 	
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	while (nextOfst)
 	{
 		img = 0;
@@ -114,7 +114,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		}
 		if (!exif.SetTo(nnexif))
 		{
-			DEL_CLASS(imgList);
+			imgList.Delete();
 			bo.Delete();
 			return 0;
 		}
@@ -390,11 +390,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			if (imgList->GetCount() > 0)
 			{
 				bo.Delete();
-				return imgList;
+				return imgList.Ptr();
 			}
 			else
 			{
-				DEL_CLASS(imgList);
+				imgList.Delete();
 				bo.Delete();
 				return 0;
 			}
@@ -1522,7 +1522,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		{
 			Map::VectorLayer *lyr;
 			NotNullPtr<Math::Geometry::VectorImage> vimg;
-			Media::SharedImage *simg;
+			NotNullPtr<Media::SharedImage> simg;
 			
 			NotNullPtr<Math::CoordinateSystem> csys;
 			if (srid == 0)
@@ -1535,11 +1535,10 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			}
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 			img->To32bpp();
-			NEW_CLASS(simg, Media::SharedImage(imgList, true));
+			NEW_CLASSNN(simg, Media::SharedImage(imgList, true));
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, Math::Coord2DDbl(minX, minY), Math::Coord2DDbl(maxX, maxY), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
-			DEL_CLASS(simg);
-			
+			simg.Delete();
 			bo.Delete();
 			return lyr;
 		}
@@ -1599,15 +1598,15 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				{
 					Map::VectorLayer *lyr;
 					NotNullPtr<Math::Geometry::VectorImage> vimg;
-					Media::SharedImage *simg;
+					NotNullPtr<Media::SharedImage> simg;
 					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
-					NEW_CLASS(simg, Media::SharedImage(imgList, true));
+					NEW_CLASSNN(simg, Media::SharedImage(imgList, true));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
-					DEL_CLASS(simg);
+					simg.Delete();
 					
 					bo.Delete();
 					return lyr;
@@ -1616,7 +1615,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		}
 	}
 	bo.Delete();
-	return imgList;
+	return imgList.Ptr();
 }
 
 UInt32 Parser::FileParser::TIFFParser::GetUInt(NotNullPtr<Media::EXIFData> exif, UInt32 id)

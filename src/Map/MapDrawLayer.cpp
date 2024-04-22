@@ -19,7 +19,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-OSInt __stdcall Map::MapDrawLayer::ObjectCompare(ObjectInfo *obj1, ObjectInfo *obj2)
+OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NotNullPtr<ObjectInfo> obj1, NotNullPtr<ObjectInfo> obj2)
 {
 	if (obj1->objDist > obj2->objDist)
 	{
@@ -76,7 +76,7 @@ Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text
 Map::MapDrawLayer::~MapDrawLayer()
 {
 	this->csys.Delete();
-	SDEL_CLASS(this->iconImg);
+	this->iconImg.Delete();
 	SDEL_STRING(this->layerName);
 }
 
@@ -383,7 +383,7 @@ Bool Map::MapDrawLayer::CanQuery()
 	return false;
 }
 
-Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
 {
 	return false;
 }
@@ -427,7 +427,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 	return nearObjId;
 }
 
-OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayList<ObjectInfo*>> objList, Math::Coord2DDbl pt, Double maxDist)
+OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -447,7 +447,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nearPt = Math::Coord2DDbl(0, 0);
 	Double sqrMaxDist = maxDist * maxDist;
-	ObjectInfo *objInfo;
+	NotNullPtr<ObjectInfo> objInfo;
 	OSInt ret = 0;
 
 	while (i-- > 0)
@@ -456,7 +456,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 		dist = vec->CalSqrDistance(pt, currPt);
 		if (dist <= sqrMaxDist)
 		{
-			objInfo = MemAllocA(ObjectInfo, 1);
+			objInfo = MemAllocANN(ObjectInfo);
 			objInfo->objId = objIds.GetItem(i);
 			objInfo->objPos = currPt;
 			objInfo->objDist = Math_Sqrt(dist);
@@ -474,11 +474,11 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 
 	if (ret > 0)
 	{
-		Data::Sort::ArtificialQuickSortFunc<ObjectInfo*>::Sort(objList, ObjectCompare);
+		Data::Sort::ArtificialQuickSortFunc<NotNullPtr<ObjectInfo>>::Sort(objList, ObjectCompare);
 	}
 	else if (nearObjId != -1)
 	{
-		objInfo = MemAllocA(ObjectInfo, 1);
+		objInfo = MemAllocANN(ObjectInfo);
 		objInfo->objId = nearObjId;
 		objInfo->objPos = nearPt;
 		objInfo->objDist = Math_Sqrt(minDist);
@@ -488,15 +488,15 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 	return ret;
 }
 
-void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> objList)
+void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayListNN<ObjectInfo>> objList)
 {
-	ObjectInfo *objInfo;
+	NotNullPtr<ObjectInfo> objInfo;
 	UOSInt i;
 	i = objList->GetCount();
 	while (i-- > 0)
 	{
-		objInfo = objList->GetItem(i);
-		MemFreeA(objInfo);
+		objInfo = objList->GetItemNoCheck(i);
+		MemFreeANN(objInfo);
 	}
 	objList->Clear();
 }
@@ -726,13 +726,10 @@ void Map::MapDrawLayer::SetPGStyle(UInt32 pgColor)
 	this->pgColor = pgColor;
 }
 
-void Map::MapDrawLayer::SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY)
+void Map::MapDrawLayer::SetIconStyle(NotNullPtr<Media::SharedImage> iconImg, OSInt iconSpotX, OSInt iconSpotY)
 {
-	SDEL_CLASS(this->iconImg);
-	if (iconImg)
-	{
-		this->iconImg = iconImg->Clone();
-	}
+	this->iconImg.Delete();
+	this->iconImg = iconImg->Clone();
 	this->iconSpotX = iconSpotX;
 	this->iconSpotY = iconSpotY;
 }
@@ -752,7 +749,7 @@ UInt32 Map::MapDrawLayer::GetPGStyleColor()
 	return this->pgColor;
 }
 
-Media::SharedImage *Map::MapDrawLayer::GetIconStyleImg()
+Optional<Media::SharedImage> Map::MapDrawLayer::GetIconStyleImg()
 {
 	return this->iconImg;
 }

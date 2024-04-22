@@ -52,12 +52,12 @@ namespace Map
 		UInt32 pgColor;
 		UInt32 lineColor;
 		Double lineWidth;
-		Media::SharedImage *iconImg;
+		Optional<Media::SharedImage> iconImg;
 		OSInt iconSpotX;
 		OSInt iconSpotY;
 		Int32 flags;
 
-		static OSInt __stdcall ObjectCompare(ObjectInfo *obj1, ObjectInfo *obj2);
+		static OSInt __stdcall ObjectCompare(NotNullPtr<ObjectInfo> obj1, NotNullPtr<ObjectInfo> obj2);
 	public:
 		enum class MixedData
 		{
@@ -144,11 +144,11 @@ namespace Map
 		virtual Bool GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex);
 		virtual Bool GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList);
 
 		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt);
-		OSInt GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayList<ObjectInfo*>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
-		void FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> objList);
+		OSInt GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
+		void FreeObjects(NotNullPtr<Data::ArrayListNN<ObjectInfo>> objList);
 		NotNullPtr<Map::VectorLayer> CreateEditableLayer();
 
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
@@ -161,11 +161,11 @@ namespace Map
 		Bool HasIconStyle();
 		void SetLineStyle(UInt32 lineColor, Double lineWidth);
 		void SetPGStyle(UInt32 pgColor);
-		void SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY);
+		void SetIconStyle(NotNullPtr<Media::SharedImage> iconImg, OSInt iconSpotX, OSInt iconSpotY);
 		UInt32 GetLineStyleColor();
 		Double GetLineStyleWidth();
 		UInt32 GetPGStyleColor();
-		Media::SharedImage *GetIconStyleImg();
+		Optional<Media::SharedImage> GetIconStyleImg();
 		OSInt GetIconStyleSpotX();
 		OSInt GetIconStyleSpotY();
 		Bool IsLabelVisible();

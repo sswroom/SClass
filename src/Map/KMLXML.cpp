@@ -448,7 +448,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 									}
 									else
 									{
-										style->img = style2->img->Clone();
+										style->img = style2->img->Clone().Ptr();
 									}
 								}
 							}
@@ -1346,8 +1346,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 							NotNullPtr<IO::StreamData> nnfd;
 							if (fd.SetTo(nnfd))
 							{
-								Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
-								if (imgList)
+								NotNullPtr<Media::ImageList> imgList;
+								if (imgList.Set((Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList)))
 								{
 									if (style->iconColor != 0)
 									{
@@ -1364,16 +1364,17 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 								nnfd.Delete();
 							}
 						}
-						if (style->img)
+						NotNullPtr<Media::SharedImage> shimg;
+						if (shimg.Set(style->img))
 						{
-							Media::RasterImage *img = style->img->GetImage(0);
+							Media::RasterImage *img = shimg->GetImage(0);
 							if (style->iconSpotX == -1 || style->iconSpotY == -1)
 							{
-								lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
+								lyr->SetIconStyle(shimg, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
 							}
 							else
 							{
-								lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
+								lyr->SetIconStyle(shimg, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
 							}
 						}
 					}

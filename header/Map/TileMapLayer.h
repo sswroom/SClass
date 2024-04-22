@@ -20,7 +20,7 @@ namespace Map
 			UOSInt level;
 			Bool isFinish;
 			Bool isCancel;
-			Media::SharedImage *img;
+			Optional<Media::SharedImage> img;
 		} CachedImage;
 
 		typedef struct
@@ -45,9 +45,9 @@ namespace Map
 		UOSInt lastLevel;
 		Sync::Mutex lastMut;
 		Data::ArrayListInt64 lastIds;
-		Data::ArrayList<CachedImage *> lastImgs;
+		Data::ArrayListNN<CachedImage> lastImgs;
 		Sync::Mutex idleMut;
-		Data::ArrayList<CachedImage *> idleImgs;
+		Data::ArrayListNN<CachedImage> idleImgs;
 
 		Data::SyncLinkedList taskQueued;
 		Sync::Event taskEvt;
@@ -58,7 +58,7 @@ namespace Map
 		static UInt32 __stdcall TaskThread(AnyType userObj);
 		static Math::Coord2D<Int32> IdToCoord(Int64 id);
 		static Int64 CoordToId(Math::Coord2D<Int32> tileId);
-		void AddTask(CachedImage *cimg);
+		void AddTask(NotNullPtr<CachedImage> cimg);
 		void CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs);
 	public:
 		TileMapLayer(NotNullPtr<Map::TileMap> tileMap, NotNullPtr<Parser::ParserList> parsers);
@@ -88,7 +88,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const;
 
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList);
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);

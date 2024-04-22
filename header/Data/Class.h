@@ -44,6 +44,7 @@ namespace Data
 		Bool AddField(Text::CStringNN name, const Optional<Text::String> *val);
 		Bool AddField(Text::CStringNN name, const NotNullPtr<Text::String> *val);
 		Bool AddField(Text::CStringNN name, const Data::Timestamp *val);
+		Bool AddField(Text::CStringNN name, const Data::Date *val);
 		Bool AddField(Text::CStringNN name, const Bool *val);
 		Bool AddField(Text::CStringNN name, Data::ReadonlyArray<UInt8> *const *val);
 		Bool AddField(Text::CStringNN name, const Optional<Math::Geometry::Vector2D> *val);

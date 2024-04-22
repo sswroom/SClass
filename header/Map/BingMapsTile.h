@@ -54,7 +54,7 @@ namespace Map
 		virtual Bool GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId);
 
 		virtual UOSInt GetScreenObjCnt();
-		virtual Math::Geometry::Vector2D *CreateScreenObjVector(UOSInt index);
+		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UOSInt index);
 		virtual UTF8Char *GetScreenObjURL(UTF8Char *sbuff, UOSInt index);
 		virtual Bool GetScreenObjURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index);
 

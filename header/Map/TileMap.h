@@ -49,7 +49,7 @@ namespace Map
 		virtual UOSInt GetTileSize() const = 0;
 		virtual ImageType GetImageType() const = 0;
 		virtual Bool CanQuery() const { return false; };
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids) = 0;
@@ -59,7 +59,7 @@ namespace Map
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it) = 0;
 
 		virtual UOSInt GetScreenObjCnt() { return 0; };
-		virtual Math::Geometry::Vector2D *CreateScreenObjVector(UOSInt index) { return 0; };
+		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UOSInt index) { return 0; };
 		virtual UTF8Char *GetScreenObjURL(UTF8Char *sbuff, UOSInt index) { return 0; };
 		virtual Bool GetScreenObjURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index) {return false;};
 	};

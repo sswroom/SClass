@@ -16,13 +16,13 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 	else
 	{
 		me->txtStatus->SetText(CSTR("Success"));
-		Data::ArrayList<Text::String*> nameList;
+		Data::ArrayListNN<Text::String> nameList;
 		UOSInt i = 0;
-		UOSInt j = me->wmts->GetLayerNames(&nameList);
+		UOSInt j = me->wmts->GetLayerNames(nameList);
 		me->cboLayer->ClearItems();
 		while (i < j)
 		{
-			me->cboLayer->AddItem(Text::String::OrEmpty(nameList.GetItem(i)), 0);
+			me->cboLayer->AddItem(nameList.GetItemNoCheck(i), 0);
 			i++;
 		}
 		if (j > 0)
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 		me->wmts->SetLayer(me->cboLayer->GetSelectedIndex());
 		Data::ArrayListStringNN nameList;
 		UOSInt i = 0;
-		UOSInt j = me->wmts->GetMatrixSetNames(&nameList);
+		UOSInt j = me->wmts->GetMatrixSetNames(nameList);
 		me->cboMatrixSet->ClearItems();
 		while (i < j)
 		{
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wmts->GetResourceTileTypeNames(&nameList);
+		j = me->wmts->GetResourceTileTypeNames(nameList);
 		me->cboResourceTileType->ClearItems();
 		while (i < j)
 		{
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wmts->GetResourceInfoTypeNames(&nameList);
+		j = me->wmts->GetResourceInfoTypeNames(nameList);
 		me->cboResourceInfoType->ClearItems();
 		while (i < j)
 		{

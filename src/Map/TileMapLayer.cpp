@@ -16,7 +16,8 @@
 UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 {
 	Math::RectAreaDbl bounds;
-	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> imgList;
+	NotNullPtr<Media::SharedImage> shimg;
 	CachedImage *cimg;
 	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
@@ -44,10 +45,10 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 				}
 				else
 				{
-					imgList = stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false);
-					if (imgList)
+					if (imgList.Set(stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false)))
 					{
-						NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
+						NEW_CLASSNN(shimg, Media::SharedImage(imgList, false));
+						cimg->img = shimg;
 						cimg->isFinish = true;
 						
 						Sync::MutexUsage mutUsage(stat->me->updMut);
@@ -85,10 +86,10 @@ Int64 Map::TileMapLayer::CoordToId(Math::Coord2D<Int32> tileId)
 	return (((Int64)(UInt32)tileId.x) << 32) | (UInt32)tileId.y;
 }
 
-void Map::TileMapLayer::AddTask(CachedImage *cimg)
+void Map::TileMapLayer::AddTask(NotNullPtr<CachedImage> cimg)
 {
 	Sync::MutexUsage mutUsage(this->taskMut);
-	this->taskQueued.Put(cimg);
+	this->taskQueued.Put(cimg.Ptr());
 	mutUsage.EndUse();
 	this->threads[this->threadNext].evt->Set();
 	this->threadNext = (this->threadNext + 1) % this->threadCnt;
@@ -99,9 +100,9 @@ void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 	if (this->lastIds.GetCount() <= 0)
 		return;
 
-	CachedImage *cimg;
+	NotNullPtr<CachedImage> cimg;
 	Data::ArrayListInt64 cacheIds;
-	Data::ArrayList<CachedImage *> cacheImgs;
+	Data::ArrayListNN<CachedImage> cacheImgs;
 	UOSInt i;
 	OSInt j;
 	UOSInt k;
@@ -118,7 +119,8 @@ void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 		if (j >= 0)
 		{
 			k = this->lastIds.SortedInsert(cacheIds.RemoveAt((UOSInt)j));
-			this->lastImgs.Insert(k, cimg = cacheImgs.RemoveAt((UOSInt)j));
+			this->lastImgs.Insert(k, cacheImgs.GetItemNoCheck((UOSInt)j));
+			cacheImgs.RemoveAt((UOSInt)j);
 		}
 	}
 	lastMutUsage.EndUse();
@@ -127,14 +129,11 @@ void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 	i = cacheImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = cacheImgs.GetItem(i);
+		cimg = cacheImgs.GetItemNoCheck(i);
 		if (cimg->isFinish)
 		{
-			if (cimg->img)
-			{
-				DEL_CLASS(cimg->img);
-			}
-			MemFreeA(cimg);
+			cimg->img.Delete();
+			MemFreeANN(cimg);
 		}
 		else
 		{
@@ -146,15 +145,12 @@ void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs.GetItem(i);
+		cimg = this->idleImgs.GetItemNoCheck(i);
 		if (cimg->isFinish)
 		{
 			this->idleImgs.RemoveAt(i);
-			if (cimg->img)
-			{
-				DEL_CLASS(cimg->img);
-			}
-			MemFreeA(cimg);
+			cimg->img.Delete();
+			MemFreeANN(cimg);
 		}
 	}
 	idleMutUsage.EndUse();
@@ -206,7 +202,7 @@ Map::TileMapLayer::TileMapLayer(NotNullPtr<Map::TileMap> tileMap, NotNullPtr<Par
 
 Map::TileMapLayer::~TileMapLayer()
 {
-	CachedImage *cimg;
+	NotNullPtr<CachedImage> cimg;
 	UOSInt i;
 	Bool running;
 	Sync::MutexUsage mutUsage(this->updMut);
@@ -241,29 +237,23 @@ Map::TileMapLayer::~TileMapLayer()
 	i = this->lastImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->lastImgs.GetItem(i);
-		if (cimg->img)
-		{
-			DEL_CLASS(cimg->img);
-		}
-		MemFreeA(cimg);
+		cimg = this->lastImgs.GetItemNoCheck(i);
+		cimg->img.Delete();
+		MemFreeANN(cimg);
 	}
 	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs.GetItem(i);
-		if (cimg->img)
-		{
-			DEL_CLASS(cimg->img);
-		}
-		MemFreeA(cimg);
+		cimg = this->idleImgs.GetItemNoCheck(i);
+		cimg->img.Delete();
+		MemFreeANN(cimg);
 	}
 	this->tileMap.Delete();
 }
 
 void Map::TileMapLayer::SetCurrScale(Double scale)
 {
-	CachedImage *cimg;
+	NotNullPtr<CachedImage> cimg;
 	UOSInt j;
 
 	this->scale = scale;
@@ -276,14 +266,11 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 		j = this->lastImgs.GetCount();
 		while (j-- > 0)
 		{
-			cimg = this->lastImgs.GetItem(j);
+			cimg = this->lastImgs.GetItemNoCheck(j);
 			if (cimg->isFinish)
 			{
-				if (cimg->img)
-				{
-					DEL_CLASS(cimg->img);
-				}
-				MemFreeA(cimg);
+				cimg->img.Delete();
+				MemFreeANN(cimg);
 			}
 			else
 			{
@@ -515,28 +502,30 @@ void Map::TileMapLayer::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	CachedImage *cimg;
+	NotNullPtr<CachedImage> cimg;
 	Math::Geometry::VectorImage *vimg;
 	OSInt i;
 	UOSInt k;
 	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> nnimgList;
 	Math::RectAreaDbl bounds;
+	NotNullPtr<Media::SharedImage> shimg;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	Math::Coord2D<Int32> tileId = IdToCoord(id);
 	if (tileId.x == (Int32)0x80000000)
 	{
-		return this->tileMap->CreateScreenObjVector((UInt32)tileId.y);
+		return this->tileMap->CreateScreenObjVector((UInt32)tileId.y).OrNull();
 	}
 	i = this->lastIds.SortedIndexOf(id);
 	if (i >= 0)
 	{
-		cimg = this->lastImgs.GetItem((UOSInt)i);
-		if (cimg->img == 0)
+		cimg = this->lastImgs.GetItemNoCheck((UOSInt)i);
+		if (!cimg->img.SetTo(shimg))
 			return 0;
 		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId);
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 
@@ -545,16 +534,17 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 		return 0;
 	}
 	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, bounds, true);
-	if (imgList)
+	if (nnimgList.Set(imgList))
 	{
-		cimg = MemAllocA(CachedImage, 1);
+		cimg = MemAllocANN(CachedImage);
 		cimg->imgId = id;
 		cimg->tl = bounds.min;
 		cimg->br = bounds.max;
 		cimg->level = level;
 		cimg->isFinish = true;
 		cimg->isCancel = false;
-		NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
+		NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, false));
+		cimg->img = shimg;
 
 		Sync::MutexUsage mutUsage(this->lastMut);
 		k = this->lastIds.SortedInsert(id);
@@ -562,12 +552,12 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 		mutUsage.EndUse();
 
 		sptr = this->tileMap->GetTileImageURL(sbuff, level, tileId);
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 	else
 	{
-		cimg = MemAllocA(CachedImage, 1);
+		cimg = MemAllocANN(CachedImage);
 		cimg->imgId = id;
 		cimg->tl = bounds.min;;
 		cimg->br = bounds.max;
@@ -596,7 +586,7 @@ Bool Map::TileMapLayer::CanQuery()
 	return this->tileMap->CanQuery();
 }
 
-Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
 {
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	return this->tileMap->QueryInfos(coord, level, vecList, valueOfstList, nameList, valueList);
@@ -628,12 +618,12 @@ Bool Map::TileMapLayer::IsCaching(UOSInt level, Int64 imgId)
 {
 	UOSInt i;
 	Bool found = false;
-	CachedImage *cimg;
+	NotNullPtr<CachedImage> cimg;
 	Sync::MutexUsage mutUsage(this->idleMut);
 	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs.GetItem(i);
+		cimg = this->idleImgs.GetItemNoCheck(i);
 		if (cimg->level == level && cimg->imgId == imgId && !cimg->isFinish)
 		{
 			found = true;

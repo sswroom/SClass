@@ -176,7 +176,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 
 		if (valid)
 		{
-			Media::ImageList *imgList = 0;
+			Optional<Media::ImageList> imgList = 0;
+			NotNullPtr<Media::ImageList> nnimgList;
 			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
 			{
@@ -184,11 +185,11 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 				imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
 			}
 
-			if (imgList)
+			if (imgList.SetTo(nnimgList))
 			{
 				NotNullPtr<Math::PointMappingCoordinateSystem> csys;
 				NotNullPtr<Math::Geometry::VectorImage> vimg;
-				Media::SharedImage *shimg;
+				NotNullPtr<Media::SharedImage> shimg;
 				NotNullPtr<Math::GeographicCoordinateSystem> gcs;
 				if (gcs.Set(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)))
 				{
@@ -199,7 +200,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 						csys->AddMappingPoint(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1], ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
 						currPt++;
 					}
-					NEW_CLASS(shimg, Media::SharedImage(imgList, true));
+					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, true));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
 					UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 					NotNullPtr<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));

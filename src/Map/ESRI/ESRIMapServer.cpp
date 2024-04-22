@@ -385,7 +385,7 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
@@ -448,7 +448,8 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 						NotNullPtr<Text::String> geometryType;
 						if (result->GetValueString(CSTR("geometryType")).SetTo(geometryType))
 						{
-							if (vec.Set(ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")))))
+							NotNullPtr<Text::JSONBase> geometryJSON;
+							if (geometryJSON.Set(result->GetObjectValue(CSTR("geometry"))) && ParseGeometry(this->csys->GetSRID(), geometryType, geometryJSON).SetTo(vec))
 							{
 								valueOfstList->Add(nameList->GetCount());
 								o = result->GetObjectValue(CSTR("attributes"));
@@ -466,7 +467,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 										sb.ClearStr();
 										attr->GetObjectValue(name->ToCString())->ToString(sb);
 										nameList->Add(name->Clone());
-										valueList->Add(Text::String::New(sb.ToCString()).Ptr());
+										valueList->Add(Text::String::New(sb.ToCString()));
 									}
 								}
 								vecList->Add(vec);
@@ -488,7 +489,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 	return succ;
 }
 
-Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl)
+Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl)
 {
 	UTF8Char url[1024];
 	UTF8Char *sptr;
@@ -520,8 +521,9 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	sptr = Text::StrUOSInt(sptr, height);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=image"));
 
-	if (sbUrl)
-		sbUrl->AppendC(url, (UOSInt)(sptr - url));
+	NotNullPtr<Text::StringBuilderUTF8> sb;
+	if (sbUrl.SetTo(sb))
+		sb->AppendC(url, (UOSInt)(sptr - url));
 
 	Media::ImageList *ret = 0;
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -541,10 +543,8 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	return ret;
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, NotNullPtr<Text::String> geometryType, Text::JSONBase *geometry)
+Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, NotNullPtr<Text::String> geometryType, NotNullPtr<Text::JSONBase> geometry)
 {
-	if (geometry == 0)
-		return 0;
 	Text::JSONBase *o;
 	o = geometry->GetValue(CSTR("spatialReference.wkid"));
 	if (o)

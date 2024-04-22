@@ -131,6 +131,11 @@ Bool Data::Class::AddField(Text::CStringNN name, const Data::Timestamp *val)
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Timestamp, false) != 0;
 }
 
+Bool Data::Class::AddField(Text::CStringNN name, const Data::Date *val)
+{
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Date, false) != 0;
+}
+
 Bool Data::Class::AddField(Text::CStringNN name, const Bool *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL, true) != 0;
@@ -1337,6 +1342,11 @@ Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 			{
 				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Timestamp, false);
 				ofst += 13;
+			}
+			else if (strType.Equals(CSTR("Data::Date")))
+			{
+				cls->AddField(strName.ToCString(), ofst, Data::VariItem::ItemType::Date, false);
+				ofst += 8;
 			}
 			else if (strType.Equals(CSTR("NotNullPtr<Math::Geometry::Vector2D>")))
 			{

@@ -109,11 +109,11 @@ namespace DB
 		virtual Text::String *GetCurrDBName();
 		Bool GetDBCollation(Text::CString databaseName, Collation *collation);
 
-		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> *vars);
-		void FreeVariables(Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> *vars);
+		UOSInt GetVariables(NotNullPtr<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
+		void FreeVariables(NotNullPtr<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
 
-		UOSInt GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);
-		void FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);
+		UOSInt GetConnectionInfo(NotNullPtr<Data::ArrayListNN<ConnectionInfo>> conns);
+		void FreeConnectionInfo(NotNullPtr<Data::ArrayListNN<ConnectionInfo>> conns);
 
 		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 

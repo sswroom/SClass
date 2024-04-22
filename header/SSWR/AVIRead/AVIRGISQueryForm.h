@@ -66,7 +66,7 @@ namespace SSWR
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
 			Data::ArrayList<UOSInt> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
-			Data::ArrayList<Text::String*> queryValueList;
+			Data::ArrayListNN<Text::String> queryValueList;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);

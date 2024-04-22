@@ -251,13 +251,13 @@ Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Op
 	this->LoadParkingInfo();
 	this->LoadVacancy();
 	Media::StaticImage *simg = Map::MapPOI::CreateParkingPOI();
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(CSTR("ParkingPOI")));
+	NotNullPtr<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("ParkingPOI")));
 	imgList->AddImage(simg, 0);
-	Media::SharedImage *shimg;
-	NEW_CLASS(shimg, Media::SharedImage(imgList, false));
+	NotNullPtr<Media::SharedImage> shimg;
+	NEW_CLASSNN(shimg, Media::SharedImage(imgList, false));
 	this->SetIconStyle(shimg, 8, 8);
-	DEL_CLASS(shimg);
+	shimg.Delete();
 }
 
 Map::HKParkingVacancy::~HKParkingVacancy()

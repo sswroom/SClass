@@ -1016,7 +1016,7 @@ Bool DB::ReadingDBTool::GetDBCollation(Text::CString databaseName, Collation *co
 	return false;
 }
 
-UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> *vars)
+UOSInt DB::ReadingDBTool::GetVariables(NotNullPtr<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars)
 {
 	UOSInt ret = 0;
 	NotNullPtr<DB::DBReader> r;
@@ -1088,7 +1088,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Optional<T
 	return ret;
 }
 
-void DB::ReadingDBTool::FreeVariables(Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> *vars)
+void DB::ReadingDBTool::FreeVariables(NotNullPtr<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars)
 {
 	Data::TwinItem<Optional<Text::String>, Optional<Text::String>> item = vars->GetItem(0);
 	UOSInt i = vars->GetCount();
@@ -1101,10 +1101,10 @@ void DB::ReadingDBTool::FreeVariables(Data::ArrayList<Data::TwinItem<Optional<Te
 	vars->Clear();
 }
 
-UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns)
+UOSInt DB::ReadingDBTool::GetConnectionInfo(NotNullPtr<Data::ArrayListNN<ConnectionInfo>> conns)
 {
 	UOSInt ret = 0;
-	ConnectionInfo *conn;
+	NotNullPtr<ConnectionInfo> conn;
 	NotNullPtr<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
 	{
@@ -1112,7 +1112,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 		{
 			while (r->ReadNext())
 			{
-				conn = MemAlloc(ConnectionInfo, 1);
+				conn = MemAllocNN(ConnectionInfo);
 				conn->id = r->GetInt32(0);
 				conn->user = r->GetNewStr(1);
 				conn->clientHostName = r->GetNewStr(2);
@@ -1133,7 +1133,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 		{
 			while (r->ReadNext())
 			{
-				conn = MemAlloc(ConnectionInfo, 1);
+				conn = MemAllocNN(ConnectionInfo);
 				conn->id = r->GetInt32(0);
 				conn->status = r->GetNewStr(2);
 				conn->user = r->GetNewStr(3);
@@ -1154,7 +1154,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 		{
 			while (r->ReadNext())
 			{
-				conn = MemAlloc(ConnectionInfo, 1);
+				conn = MemAllocNN(ConnectionInfo);
 				conn->id = r->GetInt32(0);
 				conn->status = r->GetNewStr(1);
 				conn->user = r->GetNewStr(2);
@@ -1172,20 +1172,20 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 	return ret;	
 }
 
-void DB::ReadingDBTool::FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns)
+void DB::ReadingDBTool::FreeConnectionInfo(NotNullPtr<Data::ArrayListNN<ConnectionInfo>> conns)
 {
-	ConnectionInfo *conn;
+	NotNullPtr<ConnectionInfo> conn;
 	UOSInt i = conns->GetCount();
 	while (i-- > 0)
 	{
-		conn = conns->GetItem(i);
+		conn = conns->GetItemNoCheck(i);
 		OPTSTR_DEL(conn->status);
 		OPTSTR_DEL(conn->user);
 		OPTSTR_DEL(conn->clientHostName);
 		OPTSTR_DEL(conn->dbName);
 		OPTSTR_DEL(conn->cmd);
 		OPTSTR_DEL(conn->sql);
-		MemFree(conn);
+		MemFreeNN(conn);
 	}
 	conns->Clear();
 }

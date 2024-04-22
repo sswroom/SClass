@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				Math::Coord2DDbl pt1;
 				Math::Coord2DDbl pt2;
 				Map::VectorLayer *lyr;
-				Media::SharedImage *simg;
+				NotNullPtr<Media::SharedImage> simg;
 				NotNullPtr<Math::Geometry::VectorImage> vimg;
 				Media::RasterImage *stimg;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
@@ -228,9 +228,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 					pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - calcImgW * 0.5, OSInt2Double(mousePos.y) - calcImgH * 0.5));
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 				}
-				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
+				NEW_CLASSNN(simg, Media::SharedImage(NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj), true));
 				NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
-				DEL_CLASS(simg);
+				simg.Delete();
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
 			}

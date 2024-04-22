@@ -2,7 +2,7 @@
 #define _SM_MAP_WEBMAPTILESERVICESOURCE
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Map/TileMap.h"
 #include "Net/SocketFactory.h"
 #include "Text/String.h"
@@ -42,7 +42,7 @@ namespace Map
 			Math::RectAreaDbl bounds;
 			NotNullPtr<Text::String> id;
 			NotNullPtr<Math::CoordinateSystem> csys;
-			Data::ArrayList<TileMatrix*> tiles;
+			Data::ArrayListNN<TileMatrix> tiles;
 		};
 
 		struct TileMatrixDef
@@ -61,18 +61,18 @@ namespace Map
 		{
 			Text::String *id;
 			NotNullPtr<Math::CoordinateSystem> csys;
-			Data::ArrayList<TileMatrixDef*> tiles;
+			Data::ArrayListNN<TileMatrixDef> tiles;
 		};
 
 		struct TileLayer
 		{
 			Math::RectAreaDbl wgs84Bounds;
-			Text::String *title;
-			Text::String *id;
+			Optional<Text::String> title;
+			Optional<Text::String> id;
 			Data::ArrayListStringNN format;
 			Data::ArrayListStringNN infoFormat;
-			Data::ArrayList<TileMatrixSet*> tileMatrixes;
-			Data::ArrayList<ResourceURL*> resourceURLs;
+			Data::ArrayListNN<TileMatrixSet> tileMatrixes;
+			Data::ArrayListNN<ResourceURL> resourceURLs;
 		};
 	private:
 		Optional<Text::EncodingFactory> encFact;
@@ -80,26 +80,26 @@ namespace Map
 		NotNullPtr<Text::String> cacheDir;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		Data::FastStringMap<TileLayer*> layers;
-		TileLayer *currLayer;
-		TileMatrixSet *currSet;
-		TileMatrixDefSet *currDef;
-		ResourceURL *currResource;
-		ResourceURL *currResourceInfo;
+		Data::FastStringMapNN<TileLayer> layers;
+		Optional<TileLayer> currLayer;
+		Optional<TileMatrixSet> currSet;
+		Optional<TileMatrixDefSet> currDef;
+		Optional<ResourceURL> currResource;
+		Optional<ResourceURL> currResourceInfo;
 		NotNullPtr<Math::CoordinateSystem> wgs84;
-		Data::FastStringMap<TileMatrixDefSet*> matrixDef;
+		Data::FastStringMapNN<TileMatrixDefSet> matrixDef;
 
 		void LoadXML();
 		void ReadLayer(NotNullPtr<Text::XMLReader> reader);
-		TileMatrixSet *ReadTileMatrixSetLink(NotNullPtr<Text::XMLReader> reader);
-		TileMatrixDefSet *ReadTileMatrixSet(NotNullPtr<Text::XMLReader> reader);
-		TileMatrix *GetTileMatrix(UOSInt level) const;
-		void ReleaseLayer(TileLayer *layer);
-		void ReleaseTileMatrix(TileMatrix *tileMatrix);
-		void ReleaseTileMatrixSet(TileMatrixSet *set);
-		void ReleaseTileMatrixDef(TileMatrixDef *tileMatrix);
-		void ReleaseTileMatrixDefSet(TileMatrixDefSet *set);
-		void ReleaseResourceURL(ResourceURL *resourceURL);
+		Optional<TileMatrixSet> ReadTileMatrixSetLink(NotNullPtr<Text::XMLReader> reader);
+		Optional<TileMatrixDefSet> ReadTileMatrixSet(NotNullPtr<Text::XMLReader> reader);
+		Optional<TileMatrix> GetTileMatrix(UOSInt level) const;
+		static void ReleaseLayer(NotNullPtr<TileLayer> layer);
+		static void ReleaseTileMatrix(NotNullPtr<TileMatrix> tileMatrix);
+		static void ReleaseTileMatrixSet(NotNullPtr<TileMatrixSet> set);
+		static void ReleaseTileMatrixDef(NotNullPtr<TileMatrixDef> tileMatrix);
+		static void ReleaseTileMatrixDefSet(NotNullPtr<TileMatrixDefSet> set);
+		static void ReleaseResourceURL(NotNullPtr<ResourceURL> resourceURL);
 	public:
 		WebMapTileServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmtsURL);
 		virtual ~WebMapTileServiceSource();
@@ -118,7 +118,7 @@ namespace Map
 		virtual UOSInt GetTileSize() const;
 		virtual ImageType GetImageType() const;
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const;
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList) const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
@@ -132,10 +132,10 @@ namespace Map
 		Bool SetResourceInfoType(UOSInt index);
 		Bool SetResourceInfoType(Text::CString name);
 		UOSInt GetResourceInfoType();
-		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *layerNames);
-		UOSInt GetMatrixSetNames(Data::ArrayListStringNN *matrixSetNames);
-		UOSInt GetResourceTileTypeNames(Data::ArrayListStringNN *resourceTypeNames);
-		UOSInt GetResourceInfoTypeNames(Data::ArrayListStringNN *resourceTypeNames);
+		UOSInt GetLayerNames(NotNullPtr<Data::ArrayListNN<Text::String>> layerNames);
+		UOSInt GetMatrixSetNames(NotNullPtr<Data::ArrayListStringNN> matrixSetNames);
+		UOSInt GetResourceTileTypeNames(NotNullPtr<Data::ArrayListStringNN> resourceTypeNames);
+		UOSInt GetResourceInfoTypeNames(NotNullPtr<Data::ArrayListStringNN> resourceTypeNames);
 		static Text::CString GetExt(Map::TileMap::ImageType imgType);
 	};
 }

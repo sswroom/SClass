@@ -474,13 +474,12 @@ Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN
 Bool Media::VectorGraph::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
 {
 	VectorStyles *style;
-	Media::SharedImage *simg;
 	Media::StaticImage *stImg;
 	Math::Geometry::VectorImage *vimg;
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
+	NotNullPtr<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
-	NEW_CLASS(simg, Media::SharedImage(imgList, false));
+	Media::SharedImage simg(imgList, false);
 	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
@@ -488,19 +487,17 @@ Bool Media::VectorGraph::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl
 	style->font = 0;
 	this->items.Add(vimg);
 	this->itemStyle.Add(style);
-	DEL_CLASS(simg);
 	return true;
 }
 
 Bool Media::VectorGraph::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	VectorStyles *style;
-	Media::SharedImage *simg;
 	Math::Geometry::VectorImage *vimg;
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
+	NotNullPtr<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
-	NEW_CLASS(simg, Media::SharedImage(imgList, false));
+	Media::SharedImage simg(imgList, false);
 	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, tl.y + UOSInt2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
@@ -508,7 +505,6 @@ Bool Media::VectorGraph::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::
 	style->font = 0;
 	this->items.Add(vimg);
 	this->itemStyle.Add(style);
-	DEL_CLASS(simg);
 	return true;
 }
 
@@ -516,12 +512,11 @@ Bool Media::VectorGraph::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDb
 {
 	VectorStyles *style;
 	Media::StaticImage *stImg;
-	Media::SharedImage *simg;
 	Math::Geometry::VectorImage *vimg;
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
+	NotNullPtr<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
-	NEW_CLASS(simg, Media::SharedImage(imgList, false));
+	Media::SharedImage simg(imgList, false);
 	NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
@@ -529,7 +524,6 @@ Bool Media::VectorGraph::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDb
 	style->font = 0;
 	this->items.Add(vimg);
 	this->itemStyle.Add(style);
-	DEL_CLASS(simg);
 	return true;
 }
 

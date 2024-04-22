@@ -13,7 +13,7 @@
 UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 {
 	Math::RectAreaDbl bounds;
-	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> imgList;
 	Math::Size2DDbl size;
 	Double dpi;
 	NotNullPtr<Map::DrawMapServiceLayer> me = userObj.GetNN<Map::DrawMapServiceLayer>();
@@ -34,8 +34,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 				dpi = me->dispDPI;
 				mutUsage.EndUse();
 				sb.ClearStr();
-				imgList = me->mapService->DrawMap(bounds, (UInt32)Double2Int32(size.x), (UInt32)Double2Int32(size.y), dpi, &sb);
-				if (imgList)
+				if (me->mapService->DrawMap(bounds, (UInt32)Double2Int32(size.x), (UInt32)Double2Int32(size.y), dpi, &sb).SetTo(imgList))
 				{
 					mutUsage.BeginUse();
 					if (me->dispId == thisId)
@@ -298,16 +297,17 @@ void Map::DrawMapServiceLayer::EndGetObject(GetObjectSess *session)
 Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
-	if (this->dispId == id && this->dispImage)
+	NotNullPtr<Media::SharedImage> shimg;
+	if (this->dispId == id && shimg.Set(this->dispImage))
 	{
 		Math::Geometry::Vector2D *vec;
-		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->dispImage, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
+		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
 		return vec;
 	}
-	else if (this->lastId == id && this->lastImage)
+	else if (this->lastId == id && shimg.Set(this->lastImage))
 	{
 		Math::Geometry::Vector2D *vec;
-		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->lastImage, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
+		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
 		return vec;
 	}
 	return 0;
@@ -323,7 +323,7 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 	return this->mapService->CanQuery();
 }
 
-Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
 {
 	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }

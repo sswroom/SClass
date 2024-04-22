@@ -1408,9 +1408,10 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 								Media::RasterImage *pimg = 0;
 								Double spotX;
 								Double spotY;
-								if (layer.layer->HasIconStyle())
+								NotNullPtr<Media::SharedImage> shimg;
+								if (layer.layer->HasIconStyle() && layer.layer->GetIconStyleImg().SetTo(shimg))
 								{
-									pimg = layer.layer->GetIconStyleImg()->GetImage(0);
+									pimg = shimg->GetImage(0);
 									spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
 									spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
 									if (pimg != 0 && (spotX == -1 || spotY == -1))
@@ -1668,10 +1669,11 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 
 	Media::RasterImage *img = 0;
 	NotNullPtr<Media::RasterImage> nnimg;
+	NotNullPtr<Media::SharedImage> shimg;
 	UInt32 imgTimeMS = 0;
-	if (layer->HasIconStyle())
+	if (layer->HasIconStyle() && layer->GetIconStyleImg().SetTo(shimg))
 	{
-		img = layer->GetIconStyleImg()->GetImage(imgTimeMS);
+		img = shimg->GetImage(imgTimeMS);
 		spotX = OSInt2Double(layer->GetIconStyleSpotX());
 		spotY = OSInt2Double(layer->GetIconStyleSpotY());
 		if (img != 0 && (spotX == -1 || spotY == -1))
@@ -2165,7 +2167,7 @@ void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<M
 		}
 		UInt32 imgTimeMS;
 		NotNullPtr<Media::StaticImage> simg;
-		if (simg.Set(vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, imgTimeMS)))
+		if (vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, imgTimeMS).SetTo(simg))
 		{
 			DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], vimg->GetSrcAlpha());
 			if (imgTimeMS != 0)
