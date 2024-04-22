@@ -227,7 +227,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(NotNullPtr<Data::ArrayListNN
 	{
 		if (val->Equals(UTF8STRC("OK")))
 		{
-			Int32 status;
+			Int32 status = 0;
 			Int32 plmn = 0;
 			NotNullPtr<Operator> newOper;
 			j -= 1;

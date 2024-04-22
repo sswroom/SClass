@@ -99,6 +99,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		return 0;
 
 	Media::ImageList *imgList = 0;
+	NotNullPtr<Media::ImageList> nnimgList;
 
 	Sync::MutexUsage mutUsage(this->clsData->mut);
 	NEW_CLASSNN(stm, IO::StreamDataStream(fd));
@@ -122,15 +123,16 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopyR(imgSrc, imgDest, bmpd.Width * 6, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
 				bmp->UnlockBits(&bmpd);
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
 				img->info.hdpi = bmp->GetHorizontalResolution();
 				img->info.vdpi = bmp->GetVerticalResolution();
 
 				if (isImage == 2)
 				{
-					Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
 				}
+				imgList = nnimgList.Ptr();
 			}
 		}
 		else if (pxFmt == PixelFormat64bppARGB || pxFmt == PixelFormat64bppPARGB)
@@ -153,15 +155,16 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest, bmpd.Width << 3, bmpd.Height, bmpd.Stride, bmpd.Width << 3);
 				bmp->UnlockBits(&bmpd);
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
 				img->info.hdpi = bmp->GetHorizontalResolution();
 				img->info.vdpi = bmp->GetVerticalResolution();
 
 				if (isImage == 2)
 				{
-					Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
 				}
+				imgList = nnimgList.Ptr();
 			}
 		}
 		else if (pxFmt == PixelFormat24bppRGB)
@@ -174,15 +177,16 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopyR(imgSrc, imgDest, bmpd.Width * 3, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
 				bmp->UnlockBits(&bmpd);
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
 				img->info.hdpi = bmp->GetHorizontalResolution();
 				img->info.vdpi = bmp->GetVerticalResolution();
 
 				if (isImage == 2)
 				{
-					Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
 				}
+				imgList = nnimgList.Ptr();
 			}
 		}
 		else if (pxFmt == PixelFormat8bppIndexed)
@@ -217,15 +221,16 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest, bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);
 				bmp->UnlockBits(&bmpd);
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
 				img->info.hdpi = bmp->GetHorizontalResolution();
 				img->info.vdpi = bmp->GetVerticalResolution();
 
 				if (isImage == 2)
 				{
-					Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, this->parsers);
+					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
 				}
+				imgList = nnimgList.Ptr();
 			}
 		}
 		if (isImage == 3)
@@ -264,7 +269,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 	stm.Delete();
 	mutUsage.EndUse();
 
-	if (targetType != IO::ParserType::ImageList && imgList && imgList->GetCount() == 1)
+	if (targetType != IO::ParserType::ImageList && nnimgList.Set(imgList) && imgList->GetCount() == 1)
 	{
 		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 		Math::Coord2DDbl min;
@@ -275,7 +280,6 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		{
 			Map::VectorLayer *lyr;
 			NotNullPtr<Math::Geometry::VectorImage> vimg;
-			Media::SharedImage *simg;
 			if (srid == 0)
 			{
 				srid = 4326;
@@ -284,11 +288,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid), 0, 0, 0, 0, 0));
 			img->To32bpp();
 			
-			NEW_CLASS(simg, Media::SharedImage(imgList, true));
+			Media::SharedImage simg(nnimgList, true);
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, min, max, false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
-			DEL_CLASS(simg);
-			
 			return lyr;
 		}
 
@@ -346,16 +348,14 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				{
 					Map::VectorLayer *lyr;
 					NotNullPtr<Math::Geometry::VectorImage> vimg;
-					Media::SharedImage *simg;
+					
 					
 					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
-					NEW_CLASS(simg, Media::SharedImage(imgList, true));
+					Media::SharedImage simg(nnimgList, true);
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
-					DEL_CLASS(simg);
-					
 					return lyr;
 				}
 			}
