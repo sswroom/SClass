@@ -4,7 +4,7 @@
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
-SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
+SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, NN<Data::ArrayListNN<UserFileInfo>> userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;
@@ -41,12 +41,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NotNullPtr<Data::Arr
 	UOSInt cnt = 0;
 	UOSInt i;
 	UOSInt j;
-	UserFileInfo *ufile;
+	NN<UserFileInfo> ufile;
 	i = 0;
 	j = this->userFileList->GetCount();
 	while (i < j)
 	{
-		ufile = this->userFileList->GetItem(i);
+		ufile = this->userFileList->GetItemNoCheck(i);
 		if (rect.ContainPt(ufile->lon, ufile->lat))
 		{
 			outArr->Add((Int64)i);
@@ -113,8 +113,8 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(Map::GetObjectSess *session
 
 Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
-	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
-	if (ufile == 0)
+	NN<UserFileInfo> ufile;
+	if (!this->userFileList->GetItem((UOSInt)id).SetTo(ufile))
 		return 0;
 	Math::Geometry::Point *pt;
 	NotNullPtr<Text::String> s;

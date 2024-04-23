@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANMAINFORM
 #define _SM_SSWR_ORGANMGR_ORGANMAINFORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/TileMap.h"
 #include "Map/TileMapLayer.h"
@@ -120,24 +120,24 @@ namespace SSWR
 			Media::ColorManager *colorMgr;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			NotNullPtr<OrganEnv> env;
-			OrganGroup *rootGroup;
+			NN<OrganGroup> rootGroup;
 			UOSInt lastDirIndex;
 			UOSInt lastObjIndex;
 			Bool restoreObj;
 			OrganSpecies *lastSpeciesObj;
 			OrganGroup *lastGroupObj;
 			InputMode inputMode;
-			Data::ArrayList<OrganGroupItem*> groupItems;
-			Data::ArrayList<OrganGroup*> groupList;
-			Data::ArrayList<OrganImageItem*> imgItems;
+			Data::ArrayListNN<OrganGroupItem> groupItems;
+			Data::ArrayListNN<OrganGroup> groupList;
+			Data::ArrayListNN<OrganImageItem> imgItems;
 			Bool indexChanged;
 			Media::StaticImage *lastBmp;
 			Bool newDirName;
-			Data::ArrayList<OrganGroupItem*> pickObjs;
+			Data::ArrayListNN<OrganGroupItem> pickObjs;
 
 			Media::ImageList *dispImage;
-			UserFileInfo *dispImageUF;
-			WebFileInfo *dispImageWF;
+			Optional<UserFileInfo> dispImageUF;
+			Optional<WebFileInfo> dispImageWF;
 			Bool dispImageToCrop;
 			Bool dispImageDown;
 			Math::Coord2D<OSInt> dispImageDownPos;
@@ -149,13 +149,13 @@ namespace SSWR
 			NotNullPtr<Map::TileMapLayer> mapTileLyr;
 			NotNullPtr<Map::TileMap> mapTile;
 			Bool mapUpdated;
-			Data::FastMap<UInt32, OrganSpImgLayer*> mapImgLyrs;
+			Data::FastMapNN<UInt32, OrganSpImgLayer> mapImgLyrs;
 			UOSInt imgFontStyle;
 
 			Text::String *initSelObj;
 			Text::String *initSelImg;
 
-			Data::ArrayList<UserFileInfo*> mapUFiles;
+			Data::ArrayListNN<UserFileInfo> mapUFiles;
 			UserFileInfo *mapCurrFile;
 			Media::DrawImage *mapCurrImage;
 			Media::Resizer::LanczosResizer8_C8 *mapResizer;
@@ -204,7 +204,7 @@ namespace SSWR
 			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnMapDraw(AnyType userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 
-			static OSInt __stdcall GroupCompare(OrganGroupItem *group1, OrganGroupItem *group2);
+			static OSInt __stdcall GroupCompare(NN<OrganGroupItem> group1, NN<OrganGroupItem> group2);
 
 			Bool CalcCropRect(Math::Coord2D<OSInt> *rect);
 
@@ -225,7 +225,7 @@ namespace SSWR
 			void FillGroupCboBox();
 			void InitCategory();
 			void SelectGroup(NotNullPtr<UI::GUIComboBox> cbo, Int32 groupType);
-			void GoToDir(OrganGroup *grp, Int32 parentId);
+			void GoToDir(NN<OrganGroup> grp, Int32 parentId);
 
 			void ClearImgLayers();
 			NotNullPtr<OrganSpImgLayer> GetImgLayer(UInt32 mapColor);

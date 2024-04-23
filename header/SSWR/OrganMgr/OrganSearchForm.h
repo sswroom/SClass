@@ -31,8 +31,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Text::String *GetFoundStr();
-			OrganGroup *GetFoundGroup();
+			NN<Text::String> GetFoundStr();
+			NN<OrganGroup> GetFoundGroup();
 			Int32 GetParentId();
 		};
 	}

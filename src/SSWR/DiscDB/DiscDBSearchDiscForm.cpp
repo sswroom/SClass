@@ -10,12 +10,12 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userO
 	if (sb.GetLength() <= 0)
 		return;
 
-	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->GetBurntDisc(sb.ToCString());
-	SSWR::DiscDB::DiscDBEnv::DiscFileInfo *file;
+	NN<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> disc;
+	NN<SSWR::DiscDB::DiscDBEnv::DiscFileInfo> file;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	if (disc)
+	if (me->env->GetBurntDisc(sb.ToCString()).SetTo(disc))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -32,20 +32,20 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userO
 		me->txtDiscIdOut->SetText(disc->discId->ToCString());
 
 		me->lvFiles->ClearItems();
-		Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DiscFileInfo*> fileList;
-		me->env->GetBurntFiles(disc->discId->ToCString(), &fileList);
+		Data::ArrayListNN<SSWR::DiscDB::DiscDBEnv::DiscFileInfo> fileList;
+		me->env->GetBurntFiles(disc->discId->ToCString(), fileList);
 		i = 0;
 		j = fileList.GetCount();
 		while (i < j)
 		{
-			file = fileList.GetItem(i);
+			file = fileList.GetItemNoCheck(i);
 			k = me->lvFiles->AddItem(file->fileName, 0);
 			sptr = Text::StrUInt64(sbuff, file->fileSize);
 			me->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			me->lvFiles->SetSubItem(k, 2, Text::CStringNN::FromPtr(file->category));
 			i++;
 		}
-		me->env->FreeBurntFiles(&fileList);
+		me->env->FreeBurntFiles(fileList);
 	}
 }
 

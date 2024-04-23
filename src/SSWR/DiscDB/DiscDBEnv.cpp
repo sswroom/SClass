@@ -16,61 +16,60 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 {
 	NotNullPtr<DB::DBReader> r;
 	Text::StringBuilderUTF8 sb;
-	BurntDiscInfo *disc;
+	NN<BurntDiscInfo> disc;
 	Data::DateTime dt;
 	if (this->db->ExecuteReader(CSTR("select DiscID, DiscTypeID, BurntDate, Status from BurntDisc")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
-			disc = MemAlloc(BurntDiscInfo, 1);
+			disc = MemAllocNN(BurntDiscInfo);
 			disc->discId = Text::String::OrEmpty(r->GetNewStr(0));
 			disc->discTypeId = Text::String::OrEmpty(r->GetNewStr(1));
 			disc->burntDate = r->GetTimestamp(2);
 			disc->status = r->GetInt32(3);
-			disc = this->discMap->PutNN(disc->discId, disc);
-			if (disc)
+			if (this->discMap.PutNN(disc->discId, disc).SetTo(disc))
 			{
 				disc->discId->Release();
 				disc->discTypeId->Release();
-				MemFree(disc);
+				MemFreeNN(disc);
 			}
 		}
 		this->db->CloseReader(r);
 	}
 
-	DVDTypeInfo *dvdType;
+	NN<DVDTypeInfo> dvdType;
 	if (this->db->ExecuteReader(CSTR("select DiscTypeID, Name, Description from DVDType")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
-			dvdType = MemAlloc(DVDTypeInfo, 1);
+			dvdType = MemAllocNN(DVDTypeInfo);
 			dvdType->discTypeID = Text::String::OrEmpty(r->GetNewStr(0));
 			dvdType->name = Text::String::OrEmpty(r->GetNewStr(1));
 			dvdType->description = Text::String::OrEmpty(r->GetNewStr(2));
-			this->dvdTypeMap->PutNN(dvdType->discTypeID, dvdType);
+			this->dvdTypeMap.PutNN(dvdType->discTypeID, dvdType);
 		}
 		this->db->CloseReader(r);
 	}
 
-	CategoryInfo *cate;
+	NN<CategoryInfo> cate;
 	if (this->db->ExecuteReader(CSTR("select ID, Name from Category")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
-			cate = MemAlloc(CategoryInfo, 1);
+			cate = MemAllocNN(CategoryInfo);
 			cate->id = r->GetNewStrNN(0);
 			cate->name = Text::String::OrEmpty(r->GetNewStr(1));
-			this->cateMap->PutNN(cate->id, cate);
+			this->cateMap.PutNN(cate->id, cate);
 		}
 		this->db->CloseReader(r);
 	}
 
-	DiscTypeInfo *discType;
+	NN<DiscTypeInfo> discType;
 	if (this->db->ExecuteReader(CSTR("select DiscTypeID, Brand, Name, Speed, DVDType, MadeIn, MID, TID, Revision, QCTest, Remark from DiscType")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
-			discType = MemAlloc(DiscTypeInfo, 1);
+			discType = MemAllocNN(DiscTypeInfo);
 			discType->discTypeId = r->GetNewStrNN(0);
 			discType->brand = r->GetNewStrNN(1);
 			sb.ClearStr();
@@ -96,23 +95,23 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			sb.ClearStr();
 			r->GetStr(10, sb);
 			discType->remark = Text::StrCopyNew(sb.ToString()).Ptr();
-			this->discTypeMap->PutNN(discType->discTypeId, discType);
+			this->discTypeMap.PutNN(discType->discTypeId, discType);
 		}
 		this->db->CloseReader(r);
 	}
 
-	DVDVideoInfo *dvdVideo;
+	NN<DVDVideoInfo> dvdVideo;
 	if (this->db->ExecuteReader(CSTR("select VIDEOID, ANIME, SERIES, VOLUME, DISCTYPE from DVDVIDEO order by VIDEOID")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
-			dvdVideo = MemAlloc(DVDVideoInfo, 1);
+			dvdVideo = MemAllocNN(DVDVideoInfo);
 			dvdVideo->videoId = r->GetInt32(0);
 			dvdVideo->anime = Text::String::OrEmpty(r->GetNewStr(1));
 			dvdVideo->series = r->GetNewStr(2);
 			dvdVideo->volume = r->GetNewStr(3);
 			dvdVideo->dvdType = Text::String::OrEmpty(r->GetNewStr(4));
-			this->dvdVideoMap->Put(dvdVideo->videoId, dvdVideo);
+			this->dvdVideoMap.Put(dvdVideo->videoId, dvdVideo);
 		}
 		this->db->CloseReader(r);
 	}
@@ -124,11 +123,6 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	this->db = 0;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
-	NEW_CLASSNN(this->discMap, Data::FastStringMap<BurntDiscInfo*>());
-	NEW_CLASS(this->dvdTypeMap, Data::FastStringMap<DVDTypeInfo*>());
-	NEW_CLASSNN(this->cateMap, Data::FastStringMap<CategoryInfo*>());
-	NEW_CLASSNN(this->discTypeMap, Data::FastStringMap<DiscTypeInfo*>());
-	NEW_CLASSNN(this->dvdVideoMap, Data::Int32FastMap<DVDVideoInfo*>());
 
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
@@ -179,45 +173,42 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	DEL_CLASS(this->monMgr);
 
 	UOSInt i;
-	BurntDiscInfo *disc;
-	i = this->discMap->GetCount();
+	NN<BurntDiscInfo> disc;
+	i = this->discMap.GetCount();
 	while (i-- > 0)
 	{
-		disc = this->discMap->GetItem(i);
+		disc = this->discMap.GetItemNoCheck(i);
 		disc->discId->Release();
 		disc->discTypeId->Release();
-		MemFree(disc);
+		MemFreeNN(disc);
 	}
-	this->discMap.Delete();
 
-	DVDTypeInfo *dvdType;
-	i = this->dvdTypeMap->GetCount();
+	NN<DVDTypeInfo> dvdType;
+	i = this->dvdTypeMap.GetCount();
 	while (i-- > 0)
 	{
-		dvdType = this->dvdTypeMap->GetItem(i);
+		dvdType = this->dvdTypeMap.GetItemNoCheck(i);
 		dvdType->discTypeID->Release();
 		dvdType->name->Release();
 		dvdType->description->Release();
-		MemFree(dvdType);
+		MemFreeNN(dvdType);
 	}
-	DEL_CLASS(this->dvdTypeMap);
 
-	CategoryInfo *cate;
-	i = this->cateMap->GetCount();
+	NN<CategoryInfo> cate;
+	i = this->cateMap.GetCount();
 	while (i-- > 0)
 	{
-		cate = this->cateMap->GetItem(i);
+		cate = this->cateMap.GetItemNoCheck(i);
 		cate->id->Release();
 		cate->name->Release();
-		MemFree(cate);
+		MemFreeNN(cate);
 	}
-	this->cateMap.Delete();
 
-	DiscTypeInfo *discType;
-	i = this->discTypeMap->GetCount();
+	NN<DiscTypeInfo> discType;
+	i = this->discTypeMap.GetCount();
 	while (i-- > 0)
 	{
-		discType = this->discTypeMap->GetItem(i);
+		discType = this->discTypeMap.GetItemNoCheck(i);
 		discType->discTypeId->Release();
 		discType->brand->Release();
 		Text::StrDelNew(discType->name);
@@ -227,22 +218,20 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		SDEL_TEXT(discType->tid);
 		SDEL_TEXT(discType->revision);
 		SDEL_TEXT(discType->remark);
-		MemFree(discType);
+		MemFreeNN(discType);
 	}
-	this->discTypeMap.Delete();
 
-	DVDVideoInfo *dvdVideo;
-	i = this->dvdVideoMap->GetCount();
+	NN<DVDVideoInfo> dvdVideo;
+	i = this->dvdVideoMap.GetCount();
 	while (i-- > 0)
 	{
-		dvdVideo = this->dvdVideoMap->GetItem(i);
+		dvdVideo = this->dvdVideoMap.GetItemNoCheck(i);
 		dvdVideo->anime->Release();
 		OPTSTR_DEL(dvdVideo->series);
 		OPTSTR_DEL(dvdVideo->volume);
 		dvdVideo->dvdType->Release();
-		MemFree(dvdVideo);
+		MemFreeNN(dvdVideo);
 	}
-	this->dvdVideoMap.Delete();
 	this->sockf.Delete();
 }
 
@@ -261,7 +250,7 @@ Double SSWR::DiscDB::DiscDBEnv::GetMonitorDDPI(MonitorHandle *hMon)
 	return this->monMgr->GetMonitorDDPI(hMon);
 }
 
-const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts)
+Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts)
 {
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -278,13 +267,13 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 	sql.AppendCmdC(CSTR(")"));
 	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
-		BurntDiscInfo *disc;
-		disc = MemAlloc(BurntDiscInfo, 1);
+		NN<BurntDiscInfo> disc;
+		disc = MemAllocNN(BurntDiscInfo);
 		disc->discId = Text::String::New(discId);
 		disc->discTypeId = Text::String::New(discTypeId);
 		disc->burntDate = ts;
 		disc->status = 0;
-		this->discMap->PutNN(disc->discId, disc);
+		this->discMap.PutNN(disc->discId, disc);
 		return disc;
 	}
 	else
@@ -293,20 +282,20 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 	}
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList)
 {
 	discList->AddAll(this->discMap);
-	return this->discMap->GetCount();
+	return this->discMap.GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::GetBurntDisc(Text::CStringNN discId)
+Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::GetBurntDisc(Text::CStringNN discId)
 {
-	return this->discMap->GetC(discId);
+	return this->discMap.GetC(discId);
 }
 
 OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CStringNN discId)
 {
-	return this->discMap->IndexOfC(discId);
+	return this->discMap.IndexOfC(discId);
 }
 
 Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, Text::CString category, Int32 videoId)
@@ -331,9 +320,9 @@ Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId
 	return db->ExecuteNonQuery(sql.ToCString()) > 0;
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayList<DiscFileInfo*> *fileList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, NN<Data::ArrayListNN<DiscFileInfo>> fileList)
 {
-	DiscFileInfo *file;
+	NN<DiscFileInfo> file;
 	UOSInt ret = 0;
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -349,7 +338,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayL
 
 		while (r->ReadNext())
 		{
-			file = MemAlloc(DiscFileInfo, 1);
+			file = MemAllocNN(DiscFileInfo);
 			file->fileId = (UInt32)r->GetInt32(0);
 			file->fileName = Text::String::OrEmpty(r->GetNewStr(1));
 			file->fileSize = (UInt64)r->GetInt64(2);
@@ -365,39 +354,39 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayL
 	return ret;
 }
 
-void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList)
+void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(NN<Data::ArrayListNN<DiscFileInfo>> fileList)
 {
 	UOSInt i;
-	DiscFileInfo *file;
+	NN<DiscFileInfo> file;
 	i = fileList->GetCount();
 	while (i-- > 0)
 	{
-		file = fileList->GetItem(i);
+		file = fileList->GetItemNoCheck(i);
 		file->fileName->Release();
-		MemFree(file);
+		MemFreeNN(file);
 	}
 	fileList->Clear();
 }
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeCount()
 {
-	return this->dvdTypeMap->GetCount();
+	return this->dvdTypeMap.GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDVDType(UOSInt index)
+Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::GetDVDType(UOSInt index)
 {
-	return this->dvdTypeMap->GetItem(index);
+	return this->dvdTypeMap.GetItem(index);
 }
 
 OSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeIndex(Text::CStringNN discTypeID)
 {
-	return this->dvdTypeMap->IndexOfC(discTypeID);
+	return this->dvdTypeMap.IndexOfC(discTypeID);
 }
 
 Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
 {
-	DVDTypeInfo *dvdType = this->dvdTypeMap->GetC(discTypeID);
-	if (dvdType == 0)
+	NN<DVDTypeInfo> dvdType;
+	if (!this->dvdTypeMap.GetC(discTypeID).SetTo(dvdType))
 		return false;
 	if (name.Equals(dvdType->name) && desc.Equals(dvdType->description))
 	{
@@ -424,10 +413,10 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CS
 	return false;
 }
 
-const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
+Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
 {
-	DVDTypeInfo *dvdType = this->dvdTypeMap->GetC(discTypeID);
-	if (dvdType != 0)
+	NN<DVDTypeInfo> dvdType;
+	if (this->dvdTypeMap.GetC(discTypeID).SetTo(dvdType))
 		return 0;
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -442,45 +431,45 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 	sql.AppendCmdC(CSTR(")"));
 	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
-		dvdType = MemAlloc(DVDTypeInfo, 1);
+		dvdType = MemAllocNN(DVDTypeInfo);
 		dvdType->discTypeID = Text::String::New(discTypeID.v, discTypeID.leng);
 		dvdType->name = Text::String::New(name);
 		dvdType->description = Text::String::New(desc);
-		this->dvdTypeMap->PutNN(dvdType->discTypeID, dvdType);
+		this->dvdTypeMap.PutNN(dvdType->discTypeID, dvdType);
 		return dvdType;
 	}
 	return 0;
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(Data::ArrayList<CategoryInfo*> *cateList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList)
 {
 	cateList->AddAll(this->cateMap);
-	return this->cateMap->GetCount();
+	return this->cateMap.GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *SSWR::DiscDB::DiscDBEnv::GetDiscType(Text::CStringNN discTypeId)
+Optional<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo> SSWR::DiscDB::DiscDBEnv::GetDiscType(Text::CStringNN discTypeId)
 {
-	return this->discTypeMap->GetC(discTypeId);
+	return this->discTypeMap.GetC(discTypeId);
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList)
 {
 	discTypeList->AddAll(this->discTypeMap);
-	return this->discTypeMap->GetCount();
+	return this->discTypeMap.GetCount();
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand, UOSInt brandLen)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, const UTF8Char *brand, UOSInt brandLen)
 {
 	UOSInt ret;
 	UOSInt i;
 	UOSInt j;
-	DiscTypeInfo *discType;
+	NN<DiscTypeInfo> discType;
 	ret = 0;
 	i = 0;
-	j = this->discTypeMap->GetCount();
+	j = this->discTypeMap.GetCount();
 	while (i < j)
 	{
-		discType = this->discTypeMap->GetItem(i);
+		discType = this->discTypeMap.GetItemNoCheck(i);
 		if (discType->brand->EqualsICase(brand, brandLen))
 		{
 			discTypeList->Add(discType);
@@ -508,13 +497,13 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 	sql.AppendCmdC(CSTR(")"));
 	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
-		DVDVideoInfo *dvdVideo = MemAlloc(DVDVideoInfo, 1);
+		NN<DVDVideoInfo> dvdVideo = MemAllocNN(DVDVideoInfo);
 		dvdVideo->videoId = this->db->GetLastIdentity32();
 		dvdVideo->anime = Text::String::NewNotNullSlow(anime);
 		dvdVideo->series = Text::String::NewOrNullSlow(series);
 		dvdVideo->volume = Text::String::NewOrNullSlow(volume);
 		dvdVideo->dvdType = Text::String::NewNotNullSlow(dvdType);
-		this->dvdVideoMap->Put(dvdVideo->videoId, dvdVideo);
+		this->dvdVideoMap.Put(dvdVideo->videoId, dvdVideo);
 		return dvdVideo->videoId;
 	}
 	else
@@ -523,15 +512,15 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 	}
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList)
 {
 	dvdVideoList->AddAll(this->dvdVideoMap);
-	return this->dvdVideoMap->GetCount();
+	return this->dvdVideoMap.GetCount();
 }
 
-const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *SSWR::DiscDB::DiscDBEnv::GetDVDVideo(Int32 videoId)
+Optional<const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> SSWR::DiscDB::DiscDBEnv::GetDVDVideo(Int32 videoId)
 {
-	return this->dvdVideoMap->Get(videoId);
+	return this->dvdVideoMap.Get(videoId);
 }
 
 Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NotNullPtr<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)

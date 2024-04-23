@@ -28,19 +28,19 @@ void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(AnyType userObj)
 void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 {
 	this->lvUser->ClearItems();
-	this->env->ReleaseWebUsers(&this->userList);
-	this->env->GetWebUsers(&this->userList);
+	this->env->ReleaseWebUsers(this->userList);
+	this->env->GetWebUsers(this->userList);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
-	OrganWebUser *user;
+	NN<OrganWebUser> user;
 	i = 0;
 	j = this->userList.GetCount();
 	while (i < j)
 	{
-		user = this->userList.GetItem(i);
+		user = this->userList.GetItemNoCheck(i);
 		sptr = Text::StrInt32(sbuff, user->id);
 		k = this->lvUser->AddItem(CSTRP(sbuff, sptr), user);
 		this->lvUser->SetSubItem(k, 1, user->userName);
@@ -79,7 +79,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(Optional<UI::GUIClientControl> pare
 
 SSWR::OrganMgr::OrganUserForm::~OrganUserForm()
 {
-	this->env->ReleaseWebUsers(&this->userList);
+	this->env->ReleaseWebUsers(this->userList);
 }
 
 void SSWR::OrganMgr::OrganUserForm::OnMonitorChanged()

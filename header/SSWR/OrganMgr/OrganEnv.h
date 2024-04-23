@@ -3,6 +3,7 @@
 
 #include "Data/ArrayListInt64.h"
 #include "Data/Comparator.h"
+#include "Data/FastMapNN.h"
 #include "Data/Timestamp.h"
 #include "IO/ConfigFile.h"
 #include "IO/Writer.h"
@@ -55,7 +56,7 @@ namespace SSWR
 		{
 			Int32 id;
 			NotNullPtr<Text::String> dispName;
-			OrganBook *book;
+			NN<OrganBook> book;
 		} SpeciesBook;
 
 		typedef struct
@@ -119,8 +120,8 @@ namespace SSWR
 		{
 		public:
 			Int32 id;
-			Data::ArrayList<UserFileInfo*> files;
-			Data::FastMap<Int32, WebFileInfo*> wfileMap;
+			Data::ArrayListNN<UserFileInfo> files;
+			Data::FastMapNN<Int32, WebFileInfo> wfileMap;
 		};
 
 		struct WebUserInfo
@@ -129,39 +130,39 @@ namespace SSWR
 			Data::SortableArrayListNative<Data::Timestamp> gpsFileIndex;
 			Data::ArrayListNN<DataFileInfo> gpsFileObj;
 			Data::SortableArrayListNative<Data::Timestamp> userFileIndex;
-			Data::ArrayList<UserFileInfo*> userFileObj;
+			Data::ArrayListNN<UserFileInfo> userFileObj;
 		};
 
-		class UserFileComparator : public Data::Comparator<UserFileInfo*>
+		class UserFileComparator : public Data::Comparator<NotNullPtr<UserFileInfo>>
 		{
 		public:
 			virtual ~UserFileComparator();
 
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
+			virtual OSInt Compare(NotNullPtr<UserFileInfo> a, NotNullPtr<UserFileInfo> b) const;
 		};
 
-		class UserFileTimeComparator : public Data::Comparator<UserFileInfo*>
+		class UserFileTimeComparator : public Data::Comparator<NotNullPtr<UserFileInfo>>
 		{
 		public:
 			virtual ~UserFileTimeComparator();
 
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
+			virtual OSInt Compare(NotNullPtr<UserFileInfo> a, NotNullPtr<UserFileInfo> b) const;
 		};
 
-		class UserFileSpeciesComparator : public Data::Comparator<UserFileInfo*>
+		class UserFileSpeciesComparator : public Data::Comparator<NotNullPtr<UserFileInfo>>
 		{
 		public:
 			virtual ~UserFileSpeciesComparator();
 
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
+			virtual OSInt Compare(NotNullPtr<UserFileInfo> a, NotNullPtr<UserFileInfo> b) const;
 		};
 
-		class WebFileSpeciesComparator : public Data::Comparator<WebFileInfo*>
+		class WebFileSpeciesComparator : public Data::Comparator<NotNullPtr<WebFileInfo>>
 		{
 		public:
 			virtual ~WebFileSpeciesComparator();
 
-			virtual OSInt Compare(WebFileInfo *a, WebFileInfo *b) const;
+			virtual OSInt Compare(NotNullPtr<WebFileInfo> a, NotNullPtr<WebFileInfo> b) const;
 		};
 
 		class OrganEnv
@@ -190,21 +191,21 @@ namespace SSWR
 			Media::MonitorMgr monMgr;
 			ErrorType errType;
 			IO::ConfigFile *langFile;
-			Data::ArrayList<Category*> categories;
-			Data::ArrayList<OrganGroupType*> grpTypes;
+			Data::ArrayListNN<Category> categories;
+			Data::ArrayListNN<OrganGroupType> grpTypes;
 			Category *currCate;
 			Bool cateIsFullDir;
 			Data::ArrayListInt32 *bookIds;
-			Data::ArrayList<OrganBook*> *bookObjs;
+			Data::ArrayListNN<OrganBook> *bookObjs;
 			Data::ArrayListNN<DataFileInfo> dataFiles;
 			Int32 userId;
-			Data::FastMap<Int32, SpeciesInfo*> speciesMap;
-			Data::FastMap<Int32, UserFileInfo*> userFileMap;
-			Data::FastMap<Int32, WebUserInfo*> userMap;
+			Data::FastMapNN<Int32, SpeciesInfo> speciesMap;
+			Data::FastMapNN<Int32, UserFileInfo> userFileMap;
+			Data::FastMapNN<Int32, WebUserInfo> userMap;
 
-			Data::ArrayList<Trip*> trips;
-			Data::ArrayList<Location*> locs;
-			Data::ArrayList<LocationType*> locType;
+			Data::ArrayListNN<Trip> trips;
+			Data::ArrayListNN<Location> locs;
+			Data::ArrayListNN<LocationType> locType;
 
 			Data::Timestamp gpsStartTime;
 			Data::Timestamp gpsEndTime;
@@ -226,122 +227,123 @@ namespace SSWR
 			virtual Text::String *GetCacheDir() = 0;
 			virtual Text::CString GetMapFont() = 0;
 
-			UOSInt GetCategories(Data::ArrayList<Category*> *categories);
-			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp) = 0;
-			virtual UOSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp) = 0;
-			virtual UOSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp) = 0;
-			virtual UOSInt GetGroupAllSpecies(Data::ArrayList<OrganSpecies*> *items, OrganGroup *grp) = 0;
-			virtual UOSInt GetGroupAllUserFile(Data::ArrayList<UserFileInfo*> *items, Data::ArrayList<UInt32> *colors, OrganGroup *grp) = 0;
-			virtual UOSInt GetSpeciesItems(Data::ArrayList<OrganGroupItem*> *items, Data::ArrayList<Int32> *speciesIds) = 0;
-			Data::ArrayList<OrganGroupType*> *GetGroupTypes();
-			virtual OrganGroup *GetGroup(Int32 groupId, Int32 *parentId) = 0;
-			virtual OrganSpecies *GetSpecies(Int32 speciesId) = 0;
+			UOSInt GetCategories(NotNullPtr<Data::ArrayListNN<Category>> categories);
+			virtual UOSInt GetGroupItems(NotNullPtr<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp) = 0;
+			virtual UOSInt GetGroupImages(NotNullPtr<Data::ArrayListNN<OrganImageItem>> items, NotNullPtr<OrganGroup> grp) = 0;
+			virtual UOSInt GetSpeciesImages(NotNullPtr<Data::ArrayListNN<OrganImageItem>> items, NotNullPtr<OrganSpecies> sp) = 0;
+			virtual UOSInt GetGroupAllSpecies(NotNullPtr<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp) = 0;
+			virtual UOSInt GetGroupAllUserFile(NotNullPtr<Data::ArrayListNN<UserFileInfo>> items, NotNullPtr<Data::ArrayList<UInt32>> colors, Optional<OrganGroup> grp) = 0;
+			virtual UOSInt GetSpeciesItems(NotNullPtr<Data::ArrayListNN<OrganGroupItem>> items, NotNullPtr<Data::ArrayList<Int32>> speciesIds) = 0;
+			NotNullPtr<Data::ArrayListNN<OrganGroupType>> GetGroupTypes();
+			virtual Optional<OrganGroup> GetGroup(Int32 groupId, OutParam<Int32> parentId) = 0;
+			virtual Optional<OrganSpecies> GetSpecies(Int32 speciesId) = 0;
 //			OrganTripList *GetTripList();
-			virtual UTF8Char *GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff) = 0; /////////////////
+			virtual UTF8Char *GetSpeciesDir(NN<OrganSpecies> sp, UTF8Char *sbuff) = 0; /////////////////
 //			virtual Bool CreateSpeciesDir(OrganSpecies *sp) = 0; ////////////////////////
 			virtual Bool IsSpeciesExist(const UTF8Char *sName) = 0;
 			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool AddSpecies(OrganSpecies *sp) = 0;
-			virtual Bool DelSpecies(OrganSpecies *sp) = 0;
-			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId) = 0;
-			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, NotNullPtr<Text::String> srcURL, NotNullPtr<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
-			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location) = 0;
-			Bool SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img);
-			Bool SetSpeciesMapColor(OrganSpecies *sp, UInt32 mapColor);
-			virtual Bool SaveSpecies(OrganSpecies *sp) = 0;
-			virtual Bool SaveGroup(OrganGroup *grp) = 0;
+			virtual Bool AddSpecies(NN<OrganSpecies> sp) = 0;
+			virtual Bool DelSpecies(NN<OrganSpecies> sp) = 0;
+			virtual FileStatus AddSpeciesFile(NN<OrganSpecies> sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, OptOut<Int32> fileId) = 0;
+			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NotNullPtr<Text::String> srcURL, NotNullPtr<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
+			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, Text::String *srcURL, Text::String *location) = 0;
+			Bool SetSpeciesImg(NotNullPtr<OrganSpecies> sp, NotNullPtr<OrganImageItem> img);
+			Bool SetSpeciesMapColor(NotNullPtr<OrganSpecies> sp, UInt32 mapColor);
+			virtual Bool SaveSpecies(NotNullPtr<OrganSpecies> sp) = 0;
+			virtual Bool SaveGroup(NotNullPtr<OrganGroup> grp) = 0;
 			virtual UOSInt GetGroupCount(Int32 groupId) = 0;
 			virtual UOSInt GetSpeciesCount(Int32 groupId) = 0;
-			virtual Bool AddGroup(OrganGroup *grp, Int32 parGroupId) = 0;
+			virtual Bool AddGroup(NN<OrganGroup> grp, Int32 parGroupId) = 0;
 			virtual Bool DelGroup(Int32 groupId) = 0;
-			virtual Bool SetGroupDefSp(OrganGroup *grp, OrganImageItem *img) = 0;
+			virtual Bool SetGroupDefSp(NN<OrganGroup> grp, NN<OrganImageItem> img) = 0;
 
-			virtual Bool MoveGroups(Data::ArrayList<OrganGroup*> *grpList, OrganGroup *destGroup) = 0;
-			virtual Bool MoveSpecies(Data::ArrayList<OrganSpecies*> *spList, OrganGroup *destGroup) = 0;
-			virtual Bool MoveImages(Data::ArrayList<OrganImages*> *imgList, OrganSpecies *destSp, UI::GUIForm *frm) = 0;
-			virtual Bool CombineSpecies(OrganSpecies *destSp, OrganSpecies *srcSp) = 0;
+			virtual Bool MoveGroups(NotNullPtr<Data::ArrayListNN<OrganGroup>> grpList, NN<OrganGroup> destGroup) = 0;
+			virtual Bool MoveSpecies(NotNullPtr<Data::ArrayListNN<OrganSpecies>> spList, NN<OrganGroup> destGroup) = 0;
+			virtual Bool MoveImages(NotNullPtr<Data::ArrayListNN<OrganImages>> imgList, NN<OrganSpecies> destSp, NN<UI::GUIForm> frm) = 0;
+			virtual Bool CombineSpecies(NN<OrganSpecies> destSp, NN<OrganSpecies> srcSp) = 0;
 
-			virtual UOSInt GetWebUsers(Data::ArrayList<OrganWebUser*> *userList) = 0;
+			virtual UOSInt GetWebUsers(NotNullPtr<Data::ArrayListNN<OrganWebUser>> userList) = 0;
 			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType) = 0;
 			virtual Bool ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark) = 0;
-			virtual void ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList) = 0;
+			virtual void ReleaseWebUsers(NotNullPtr<Data::ArrayListNN<OrganWebUser>> userList) = 0;
 
-			UOSInt GetBooksAll(Data::ArrayList<OrganBook*> *items);
-			UOSInt GetBooksOfYear(Data::ArrayList<OrganBook*> *items, Int32 year);
+			UOSInt GetBooksAll(NotNullPtr<Data::ArrayListNN<OrganBook>> items);
+			UOSInt GetBooksOfYear(NotNullPtr<Data::ArrayListNN<OrganBook>> items, Int32 year);
 			virtual Bool IsSpeciesBookExist(Int32 speciesId, Int32 bookId) = 0;
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName) = 0;
-			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId) = 0;
-			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items) = 0;
+			virtual UOSInt GetSpeciesBooks(NotNullPtr<Data::ArrayListNN<SpeciesBook>> items, Int32 speciesId) = 0;
+			virtual void ReleaseSpeciesBooks(NotNullPtr<Data::ArrayListNN<SpeciesBook>> items) = 0;
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url) = 0;
 
-			WebUserInfo *GetWebUser(Int32 userId);
+			NotNullPtr<WebUserInfo> GetWebUser(Int32 userId);
 			virtual Bool AddDataFile(Text::CStringNN fileName) = 0;
 			NotNullPtr<Data::ArrayListNN<DataFileInfo>> GetDataFiles();
 			virtual Bool DelDataFile(NotNullPtr<DataFileInfo> dataFile) = 0;
-			void ReleaseDataFile(NotNullPtr<DataFileInfo> dataFile);
+			static void ReleaseDataFile(NotNullPtr<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos) = 0;
 			virtual Map::GPSTrack *OpenGPSTrack(NotNullPtr<DataFileInfo> dataFile) = 0;
 
-			void ReleaseSpecies(SpeciesInfo *species);
-			void ReleaseUserFile(UserFileInfo *userFile);
-			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
-			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType) = 0;
-			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, const Data::Timestamp &captureTime, Double lat, Double lon) = 0;
-			UOSInt GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, const Data::Timestamp &fromTime, const Data::Timestamp &toTime);
-			virtual Bool GetUserFilePath(UserFileInfo *userFile, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript) = 0;
-			virtual Bool UpdateUserFileLoc(UserFileInfo *userFile, const UTF8Char *location) = 0;
-			virtual void UpdateWebFileCrop(WebFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
+			static void ReleaseSpecies(NotNullPtr<SpeciesInfo> species);
+			static void ReleaseUserFile(NotNullPtr<UserFileInfo> userFile);
+			virtual void UpdateUserFileCrop(NN<UserFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
+			virtual void UpdateUserFileRot(NN<UserFileInfo> userFile, Int32 rotType) = 0;
+			virtual Bool UpdateUserFilePos(NN<UserFileInfo> userFile, const Data::Timestamp &captureTime, Double lat, Double lon) = 0;
+			UOSInt GetUserFiles(NotNullPtr<Data::ArrayListNN<UserFileInfo>> userFiles, const Data::Timestamp &fromTime, const Data::Timestamp &toTime);
+			virtual Bool GetUserFilePath(NN<UserFileInfo> userFile, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool UpdateUserFileDesc(NN<UserFileInfo> userFile, const UTF8Char *descript) = 0;
+			virtual Bool UpdateUserFileLoc(NN<UserFileInfo> userFile, const UTF8Char *location) = 0;
+			virtual void UpdateWebFileCrop(NN<WebFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
 
 		protected:
 			void TripRelease();
 			virtual void TripReload(Int32 cateId) = 0;
 		public:
 			OSInt TripGetIndex(const Data::Timestamp &ts);
-			Trip *TripGet(Int32 userId, const Data::Timestamp &ts);
-			Data::ArrayList<Trip*> *TripGetList();
+			Optional<Trip> TripGet(Int32 userId, const Data::Timestamp &ts);
+			NotNullPtr<Data::ArrayListNN<Trip>> TripGetList();
 			virtual Bool TripAdd(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId) = 0;
 
 			OSInt LocationGetIndex(Int32 locId);
-			Location *LocationGet(Int32 locId);
-			Data::ArrayList<Location*> *LocationGetSub(Int32 locId);
+			Optional<Location> LocationGet(Int32 locId);
+			NotNullPtr<Data::ArrayListNN<Location>> LocationGetSub(Int32 locId);
 			virtual Bool LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName) = 0;
 			virtual Bool LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName) = 0;
 			OSInt LocationGetTypeIndex(Int32 lType);
 
-			SpeciesInfo *GetSpeciesInfo(Int32 speciesId, Bool createNew);
+			Optional<SpeciesInfo> GetSpeciesInfo(Int32 speciesId);
+			NN<SpeciesInfo> GetSpeciesInfoCreate(Int32 speciesId);
 			//void UpgradeFileStruct(OrganSpecies *sp);
 		protected:
 			virtual void BooksInit() = 0;
 			void BooksDeinit();
 
 		public:
-			virtual Media::ImageList *ParseImage(OrganImageItem *img, UserFileInfo **userFile, WebFileInfo **wfile) = 0;
-			virtual Media::ImageList *ParseSpImage(OrganSpecies *sp) = 0;
-			virtual Media::ImageList *ParseFileImage(UserFileInfo *userFile) = 0;
-			virtual Media::ImageList *ParseWebImage(WebFileInfo *webFile) = 0;
-			Text::String *GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NotNullPtr<UI::GUICore> ui);
+			virtual Media::ImageList *ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> userFile, OptOut<Optional<WebFileInfo>> wfile) = 0;
+			virtual Media::ImageList *ParseSpImage(NotNullPtr<OrganSpecies> sp) = 0;
+			virtual Media::ImageList *ParseFileImage(NotNullPtr<UserFileInfo> userFile) = 0;
+			virtual Media::ImageList *ParseWebImage(NotNullPtr<WebFileInfo> webFile) = 0;
+			Optional<Text::String> GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NotNullPtr<UI::GUICore> ui);
 			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
 
-			void SetCurrCategory(Category *currCate);
+			void SetCurrCategory(NotNullPtr<Category> currCate);
 		protected:
 			virtual void LoadGroupTypes() = 0;
-			void FreeCategory(Category *cate);
+			static void FreeCategory(NotNullPtr<Category> cate);
 			Optional<Media::EXIFData> ParseJPGExif(Text::CStringNN fileName);
 			Optional<Media::EXIFData> ParseTIFExif(Text::CStringNN fileName);
 
 		public:
 			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);
 		private:
-			virtual Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *GetGroupTree() = 0;
-			void FreeGroupTree(Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree);
-			virtual Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *GetSpeciesTree() = 0;
-			void FreeSpeciesTree(Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree);
+			virtual NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> GetGroupTree() = 0;
+			void FreeGroupTree(NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree);
+			virtual NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> GetSpeciesTree() = 0;
+			void FreeSpeciesTree(NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree);
 
-			void ExportBeginPage(IO::Writer *writer, const UTF8Char *title);
-			void ExportEndPage(IO::Writer *writer);
-			void ExportGroup(OrganGroup *grp, Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree, Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
-			Bool ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, Bool *hasMyPhoto);////////////////////
+			void ExportBeginPage(NotNullPtr<IO::Writer> writer, const UTF8Char *title);
+			void ExportEndPage(NotNullPtr<IO::Writer> writer);
+			void ExportGroup(NN<OrganGroup> grp, NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree, NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
+			Bool ExportSpecies(NN<OrganSpecies> sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OutParam<UOSInt> photoCnt, OutParam<Bool> hasMyPhoto);////////////////////
 		public:
 			virtual void Test() = 0;
 

@@ -7,22 +7,22 @@
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(AnyType userObj)
 {
 	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
-	UserFileInfo *userFile;
+	NN<UserFileInfo> userFile;
 	UOSInt i;
 	UOSInt j;
 	Int32 spId;
 	spId = (Int32)me->cboSpecies->GetSelectedItem().GetOSInt();
-	me->currFileList->Clear();
+	me->currFileList.Clear();
 	me->lbPictures->ClearItems();
 	
 	i = 0;
-	j = me->userFileList->GetCount();
+	j = me->userFileList.GetCount();
 	while (i < j)
 	{
-		userFile = me->userFileList->GetItem(i);
+		userFile = me->userFileList.GetItemNoCheck(i);
 		if (spId == 0 || userFile->speciesId == spId)
 		{
-			me->currFileList->Add(userFile);
+			me->currFileList.Add(userFile);
 			me->lbPictures->AddItem(userFile->oriFileName->ToCString(), userFile);
 		}
 		i++;
@@ -71,9 +71,9 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(AnyType userObj)
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 {
 	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
-	UserFileInfo *userFile = (UserFileInfo*)me->lbPictures->GetSelectedItem().p;
+	NN<UserFileInfo> userFile; 
 	NotNullPtr<Text::String> s;
-	if (userFile && userFile->camera.SetTo(s))
+	if (me->lbPictures->GetSelectedItem().GetOpt<UserFileInfo>().SetTo(userFile) && userFile->camera.SetTo(s))
 	{
 		me->selImgCamera = s.Ptr();
 		me->selImgTime = userFile->fileTime;
@@ -86,7 +86,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 		}
 
 		Int32 timeAdj;
-		timeAdj = me->cameraMap->GetNN(s);
+		timeAdj = me->cameraMap.GetNN(s);
 		me->UpdateSelTime(s->v, s->leng, timeAdj);
 	}
 }
@@ -99,7 +99,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnCameraChg(AnyType userObj)
 	UTF8Char *sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(sb);
-	timeAdj = me->cameraMap->Get(sb.ToCString());
+	timeAdj = me->cameraMap.Get(sb.ToCString());
 	sptr = Text::StrInt32(sbuff, timeAdj);
 	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 }
@@ -121,7 +121,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(AnyType userObj)
 			me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 			sb.ClearStr();
 			me->cboCamera->GetText(sb);
-			me->cameraMap->Put(sb.ToCString(), timeAdj);
+			me->cameraMap.Put(sb.ToCString(), timeAdj);
 			me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
 			me->mapMain->UpdateMap();
 			me->mapMain->Redraw();
@@ -138,11 +138,11 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(AnyType userOb
 	UTF8Char *sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(sb);
-	timeAdj = me->cameraMap->Get(sb.ToCString());
+	timeAdj = me->cameraMap.Get(sb.ToCString());
 	timeAdj++;
 	me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
 	me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
-	me->cameraMap->Put(sb.ToCString(), timeAdj);
+	me->cameraMap.Put(sb.ToCString(), timeAdj);
 	sptr = Text::StrInt32(sbuff, timeAdj);
 	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 	me->mapMain->UpdateMap();
@@ -157,11 +157,11 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(AnyType userOb
 	UTF8Char *sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(sb);
-	timeAdj = me->cameraMap->Get(sb.ToCString());
+	timeAdj = me->cameraMap.Get(sb.ToCString());
 	timeAdj--;
 	me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
 	me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
-	me->cameraMap->Put(sb.ToCString(), timeAdj);
+	me->cameraMap.Put(sb.ToCString(), timeAdj);
 	sptr = Text::StrInt32(sbuff, timeAdj);
 	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 	me->mapMain->UpdateMap();
@@ -175,7 +175,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType user
 	Int32 timeAdj;
 	UOSInt i;
 	UOSInt j;
-	UserFileInfo *userFile;
+	NN<UserFileInfo> userFile;
 	Int32 succCnt = 0;
 	Int32 failCnt = 0;
 	Math::Coord2DDbl pos;
@@ -183,12 +183,12 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType user
 	NotNullPtr<Text::String> s;
 
 	me->cboCamera->GetText(sb);
-	timeAdj = me->cameraMap->Get(sb.ToCString());
+	timeAdj = me->cameraMap.Get(sb.ToCString());
 	i = 0;
-	j = me->userFileList->GetCount();
+	j = me->userFileList.GetCount();
 	while (i < j)
 	{
-		userFile = me->userFileList->GetItem(i);
+		userFile = me->userFileList.GetItemNoCheck(i);
 		if (userFile->camera.SetTo(s) && s->Equals(sb.ToString(), sb.GetLength()))
 		{
 			ts = userFile->fileTime.AddSecond(timeAdj);
@@ -242,9 +242,6 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	this->dispImg = 0;
 	this->selImgCamera = 0;
 	this->selImgTime = 0;
-	NEW_CLASS(this->userFileList, Data::ArrayList<UserFileInfo *>());
-	NEW_CLASS(this->currFileList, Data::ArrayList<UserFileInfo *>());
-	NEW_CLASS(this->cameraMap, Data::StringMap<Int32>());
 
 	this->SetText(this->env->GetLang(CSTR("TimeAdjTitle")));
 
@@ -330,7 +327,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	this->btnTimeApply->SetRect(329, 4, 50, 23, false);
 	this->btnTimeApply->HandleButtonClick(OnTimeApplyClicked, this);
 
-	UserFileInfo *userFile;
+	NN<UserFileInfo> userFile;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Map::GPSTrack::GPSRecord3 *records;
@@ -347,13 +344,13 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	}
 
 	Data::ArrayListInt32 spList;
-	Data::ArrayList<OrganGroupItem*> spItems;
-	OrganSpecies *sp;
+	Data::ArrayListNN<OrganGroupItem> spItems;
+	NN<OrganSpecies> sp;
 	i = 0;
-	j = this->userFileList->GetCount();
+	j = this->userFileList.GetCount();
 	while (i < j)
 	{
-		userFile = userFileList->GetItem(i);
+		userFile = userFileList.GetItemNoCheck(i);
 		k = spList.SortedIndexOf(userFile->speciesId);
 		if (k < 0)
 		{
@@ -361,18 +358,18 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 		}
 		if (userFile->camera.SetTo(s))
 		{
-			this->cameraMap->PutNN(s, (Int32)(userFile->captureTime.inst.sec - userFile->fileTime.inst.sec));
+			this->cameraMap.PutNN(s, (Int32)(userFile->captureTime.inst.sec - userFile->fileTime.inst.sec));
 		}
 		i++;
 	}
-	NotNullPtr<Data::ArrayList<Text::String *>> cameraList = this->cameraMap->GetKeys();
+	NotNullPtr<Data::ArrayList<Text::String *>> cameraList = this->cameraMap.GetKeys();
 	Text::StringBuilderUTF8 sbu8;
 	i = 0;
 	j = cameraList->GetCount();
 	while (i < j)
 	{
 		this->cboCamera->AddItem(Text::String::OrEmpty(cameraList->GetItem(i)), 0);
-		this->adjLyr->SetTimeAdj(cameraList->GetItem(i), this->cameraMap->Get(cameraList->GetItem(i)));
+		this->adjLyr->SetTimeAdj(cameraList->GetItem(i), this->cameraMap.Get(cameraList->GetItem(i)));
 		i++;
 	}
 	if (cameraList->GetCount() > 0)
@@ -380,24 +377,24 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
 		this->cboCamera->SetSelectedIndex(0);
-		sptr = Text::StrInt32(sbuff, this->cameraMap->Get(cameraList->GetItem(0)));
+		sptr = Text::StrInt32(sbuff, this->cameraMap.Get(cameraList->GetItem(0)));
 		this->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 	}
 
 	this->cboSpecies->AddItem(this->env->GetLang(CSTR("TimeAdjAllSp")), 0);
-	this->env->GetSpeciesItems(&spItems, &spList);
+	this->env->GetSpeciesItems(spItems, spList);
 	i = 0;
 	j = spItems.GetCount();
 	while (i < j)
 	{
-		sp = (OrganSpecies*)spItems.GetItem(i);
+		sp = NN<OrganSpecies>::ConvertFrom(spItems.GetItemNoCheck(i));
 		sbu8.ClearStr();
 		sbu8.AppendOpt(sp->GetCName());
 		sbu8.AppendC(UTF8STRC(" "));
 		sbu8.AppendOpt(sp->GetSName());
 
 		this->cboSpecies->AddItem(sbu8.ToCString(), (void*)(OSInt)sp->GetSpeciesId());
-		DEL_CLASS(sp);
+		sp.Delete();
 		i++;
 	}
 	this->cboSpecies->SetSelectedIndex(0);
@@ -407,9 +404,6 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 
 SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 {
-	DEL_CLASS(this->userFileList);
-	DEL_CLASS(this->currFileList);
-	DEL_CLASS(this->cameraMap);
 	this->ClearChildren();
 	this->mapEnv.Delete();
 	DEL_CLASS(this->mapRenderer);

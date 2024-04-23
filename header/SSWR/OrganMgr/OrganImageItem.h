@@ -36,8 +36,8 @@ namespace SSWR
 			FileType fileType;
 			Text::String *srcURL;
 			Text::String *imgURL;
-			UserFileInfo *userFile;
-			WebFileInfo *webFile;
+			Optional<UserFileInfo> userFile;
+			Optional<WebFileInfo> webFile;
 			Int32 userId;
 
 		public:
@@ -67,14 +67,12 @@ namespace SSWR
 			void SetImgURL(Text::String *imgURL);
 			void SetImgURL(Text::CString imgURL);
 			Text::String *GetImgURL() const;
-			void SetUserFile(UserFileInfo *userFile);
-			UserFileInfo *GetUserFile() const;
-			void SetWebFile(WebFileInfo *webFile);
-			WebFileInfo *GetWebFile() const;
+			void SetUserFile(Optional<UserFileInfo> userFile);
+			Optional<UserFileInfo> GetUserFile() const;
+			void SetWebFile(Optional<WebFileInfo> webFile);
+			Optional<WebFileInfo> GetWebFile() const;
 
-			OrganImageItem *Clone() const;
-
-			WChar *ToString(WChar *sbuff) const;
+			NotNullPtr<OrganImageItem> Clone() const;
 		};
 	}
 }

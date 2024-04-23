@@ -134,30 +134,30 @@ void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::CString imgURL)
 	if (imgURL.v) this->imgURL = Text::String::New(imgURL).Ptr();
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetUserFile(UserFileInfo *userFile)
+void SSWR::OrganMgr::OrganImageItem::SetUserFile(Optional<UserFileInfo> userFile)
 {
 	this->userFile = userFile;
 }
 
-SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganImageItem::GetUserFile() const
+Optional<SSWR::OrganMgr::UserFileInfo> SSWR::OrganMgr::OrganImageItem::GetUserFile() const
 {
 	return this->userFile;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetWebFile(WebFileInfo *webFile)
+void SSWR::OrganMgr::OrganImageItem::SetWebFile(Optional<WebFileInfo> webFile)
 {
 	this->webFile = webFile;
 }
 
-SSWR::OrganMgr::WebFileInfo *SSWR::OrganMgr::OrganImageItem::GetWebFile() const
+Optional<SSWR::OrganMgr::WebFileInfo> SSWR::OrganMgr::OrganImageItem::GetWebFile() const
 {
 	return this->webFile;
 }
 
-SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImageItem::Clone() const
+NotNullPtr<SSWR::OrganMgr::OrganImageItem> SSWR::OrganMgr::OrganImageItem::Clone() const
 {
-	OrganImageItem *newItem;
-	NEW_CLASS(newItem, OrganImageItem(this->userId));
+	NotNullPtr<OrganImageItem> newItem;
+	NEW_CLASSNN(newItem, OrganImageItem(this->userId));
 	newItem->SetDispName(this->dispName);
 	newItem->SetIsCoverPhoto(this->isCoverPhoto);
 	newItem->SetPhotoDate(this->photoDate);

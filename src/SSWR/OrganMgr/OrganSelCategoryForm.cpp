@@ -7,7 +7,7 @@ void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(AnyType userObj
 	UOSInt i = me->lbCategory->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		Category *cate = (Category*)me->lbCategory->GetItem(i).p;
+		NN<Category> cate = me->lbCategory->GetItem(i).GetNN<Category>();
 		me->env->SetCurrCategory(cate);
 		me->SetDialogResult(DR_OK);
 	}
@@ -46,14 +46,14 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(Optional<UI::GUIClien
 
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<Category *> cates;
-	env->GetCategories(&cates);
+	Data::ArrayListNN<Category> cates;
+	env->GetCategories(cates);
 	i = 0;
 	j = cates.GetCount();
 	while (i < j)
 	{
-		Category *cate;
-		cate = cates.GetItem(i);
+		NN<Category> cate;
+		cate = cates.GetItemNoCheck(i);
 		this->lbCategory->AddItem(cate->chiName, cate);
 		i++;
 	}

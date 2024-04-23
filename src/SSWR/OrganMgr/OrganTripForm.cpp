@@ -7,8 +7,8 @@
 void SSWR::OrganMgr::OrganTripForm::UpdateList()
 {
 	this->lbTrips->ClearItems();
-	Trip *trip;
-	Data::ArrayList<Trip*> *tripList = this->env->TripGetList();
+	NN<Trip> trip;
+	NN<Data::ArrayListNN<Trip>> tripList = this->env->TripGetList();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -18,7 +18,7 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	j = tripList->GetCount();
 	while (i < j)
 	{
-		trip = tripList->GetItem(i);
+		trip = tripList->GetItemNoCheck(i);
 		sptr = trip->ToString(sbuff);
 		this->lbTrips->AddItem(CSTRP(sbuff, sptr), trip);
 		i++;
@@ -39,8 +39,8 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(AnyType userObj)
 		dt.SetTicks(trip->toDate.ToTicks());
 		dt.ToLocalTime();
 		me->dtpTo->SetValue(dt);
-		Location *loc = me->env->LocationGet(trip->locId);
-		if (loc)
+		NN<Location> loc;
+		if (me->env->LocationGet(trip->locId).SetTo(loc))
 		{
 			me->txtLocation->SetText(loc->cname->ToCString());
 			me->locId = trip->locId;
@@ -90,7 +90,10 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(AnyType userObj)
 		t = (Trip*)me->lbTrips->GetItem((UOSInt)k).p;
 		if (t->fromDate <= itoDate && t->toDate >= ifrDate)
 		{
-			sptr = me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcatC(me->env->GetLang(CSTR("TripFormErrorExist")).ConcatTo(sbuff), UTF8STRC(": ")));
+			sptr = Text::StrConcatC(me->env->GetLang(CSTR("TripFormErrorExist")).ConcatTo(sbuff), UTF8STRC(": "));
+			NN<Location> loc;
+			if (me->env->LocationGet(t->locId).SetTo(loc))
+				sptr = loc->cname->ConcatTo(sptr);
 			me->ui->ShowMsgOK(CSTRP(sbuff, sptr), me->env->GetLang(CSTR("TripFormTitle")), me);
 			return;
 		}
@@ -176,9 +179,9 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationLastClicked(AnyType user
 	{
 		Int32 locId = reg->GetValueI32(L"TripLocationLast");
 		IO::Registry::CloseRegistry(reg);
-		if (locId != 0)
+		NN<SSWR::OrganMgr::Location> loc;
+		if (locId != 0 && me->env->LocationGet(locId).SetTo(loc))
 		{
-			SSWR::OrganMgr::Location *loc = me->env->LocationGet(locId);
 			me->locId = loc->id;
 			me->txtLocation->SetText(loc->cname->ToCString());
 		}

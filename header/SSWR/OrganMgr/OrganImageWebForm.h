@@ -34,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, OrganImageItem *userFile, SSWR::OrganMgr::WebFileInfo *wfile);
+			OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NN<OrganImageItem> userFile, NN<SSWR::OrganMgr::WebFileInfo> wfile);
 			virtual ~OrganImageWebForm();
 
 			virtual void OnMonitorChanged();

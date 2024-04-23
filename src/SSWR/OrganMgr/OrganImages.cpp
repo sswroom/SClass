@@ -3,7 +3,7 @@
 #include "SSWR/OrganMgr/OrganImages.h"
 #include "Text/MyString.h"
 
-SSWR::OrganMgr::OrganImages::OrganImages(OrganImageItem *imgItem, const UTF8Char *srcImgDir)
+SSWR::OrganMgr::OrganImages::OrganImages(NN<OrganImageItem> imgItem, const UTF8Char *srcImgDir)
 {
 	this->imgItem = imgItem->Clone();
 	this->srcImgDir = Text::StrCopyNew(srcImgDir).Ptr();
@@ -11,11 +11,11 @@ SSWR::OrganMgr::OrganImages::OrganImages(OrganImageItem *imgItem, const UTF8Char
 
 SSWR::OrganMgr::OrganImages::~OrganImages()
 {
-	DEL_CLASS(this->imgItem);
+	this->imgItem.Delete();
 	Text::StrDelNew(this->srcImgDir);
 }
 
-SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImages::GetImgItem() const
+NN<SSWR::OrganMgr::OrganImageItem> SSWR::OrganMgr::OrganImages::GetImgItem() const
 {
 	return this->imgItem;
 }
@@ -40,9 +40,9 @@ UTF8Char *SSWR::OrganMgr::OrganImages::GetEngName(UTF8Char *buff) const
 	return this->imgItem->GetDispName()->ConcatTo(buff);
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganImages::Clone() const
+NN<SSWR::OrganMgr::OrganGroupItem> SSWR::OrganMgr::OrganImages::Clone() const
 {
-	OrganImages *newItem;
-	NEW_CLASS(newItem, OrganImages(this->imgItem, this->srcImgDir));
+	NN<OrganImages> newItem;
+	NEW_CLASSNN(newItem, OrganImages(this->imgItem, this->srcImgDir));
 	return newItem;
 }

@@ -33,10 +33,10 @@ namespace SSWR
 			NotNullPtr<Map::TileMap> mapTile;
 			Map::DrawMapRenderer *mapRenderer;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Data::ArrayList<UserFileInfo*> *userFileList;
-			Data::ArrayList<UserFileInfo*> *currFileList;
+			Data::ArrayListNN<UserFileInfo> userFileList;
+			Data::ArrayListNN<UserFileInfo> currFileList;
 			Media::ImageList *dispImg;
-			Data::StringMap<Int32> *cameraMap;
+			Data::StringMap<Int32> cameraMap;
 			Text::String *selImgCamera;
 			Data::Timestamp selImgTime;
 

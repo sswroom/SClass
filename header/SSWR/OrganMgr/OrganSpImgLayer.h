@@ -12,7 +12,7 @@ namespace SSWR
 		private:
 			Math::Coord2DDbl min;
 			Math::Coord2DDbl max;
-			Data::ArrayList<UserFileInfo *> objList;
+			Data::ArrayListNN<UserFileInfo> objList;
 
 		public:
 			OrganSpImgLayer();
@@ -39,9 +39,9 @@ namespace SSWR
 			virtual ObjectClass GetObjectClass() const;
 
 			void ClearItems();
-			void AddItems(Data::ArrayList<OrganImageItem*> *objList);
-			void AddItems(Data::ArrayList<UserFileInfo*> *objList);
-			void AddItem(UserFileInfo *obj);
+			void AddItems(NN<Data::ArrayListNN<OrganImageItem>> objList);
+			void AddItems(NN<Data::ArrayListNN<UserFileInfo>> objList);
+			void AddItem(NN<UserFileInfo> obj);
 		};
 	}
 }

@@ -213,10 +213,10 @@ UTF8Char *SSWR::OrganMgr::OrganSpecies::GetEngName(UTF8Char *buff) const
 	return Text::String::OrEmpty(this->sName)->ConcatTo(buff);
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganSpecies::Clone() const
+NN<SSWR::OrganMgr::OrganGroupItem> SSWR::OrganMgr::OrganSpecies::Clone() const
 {
-	OrganSpecies *newItem;
-	NEW_CLASS(newItem, OrganSpecies());
+	NN<OrganSpecies> newItem;
+	NEW_CLASSNN(newItem, OrganSpecies());
 	newItem->SetSpeciesId(this->speciesId);
 	newItem->SetCName(OPTSTR_CSTR(this->cName));
 	newItem->SetEName(OPTSTR_CSTR(this->eName));

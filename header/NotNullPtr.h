@@ -3,29 +3,29 @@
 #include "MyMemory.h"
 #include <stdio.h>
 
-template <typename T> struct NotNullPtr
+template <typename T> struct NN
 {
 private:
 	T *p;
 private:
-	NotNullPtr(T *p)
+	NN(T *p)
 	{
 		this->SetPtr(p);
 	}
 public:
-	NotNullPtr() = default;
+	NN() = default;
 
-	NotNullPtr(T &p)
+	NN(T &p)
 	{
 		this->p = &p;
 	}
 
-	template <typename V> NotNullPtr(NotNullPtr<V> p)
+	template <typename V> NN(NN<V> p)
 	{
 		this->p = p.Ptr();
 	}
 
-/*	NotNullPtr(const NotNullPtr<T> &p)
+/*	NN(const NN<T> &p)
 	{
 		this->p = p.p;
 	}*/
@@ -40,12 +40,12 @@ public:
         return (T*)this->p;
     }
 
-	Bool operator==(const NotNullPtr<T> &p)
+	Bool operator==(const NN<T> &p)
 	{
 		return this->p == p.p;
 	}
 
-	Bool operator!=(const NotNullPtr<T> &p)
+	Bool operator!=(const NN<T> &p)
 	{
 		return this->p != p.p;
 	}
@@ -90,7 +90,7 @@ public:
 		delete p;
 	}
 
-	void CopyFrom(NotNullPtr<T> p)
+	void CopyFrom(NN<T> p)
 	{
 		MemCopyNO(this->p, p.Ptr(), sizeof(T));
 	}
@@ -100,16 +100,18 @@ public:
 		MemClear(this->p, sizeof(T));
 	}
 
-	static NotNullPtr<T> FromPtr(T *p)
+	static NN<T> FromPtr(T *p)
 	{
-		return NotNullPtr<T>(p);
+		return NN<T>(p);
 	}
 
-	template <typename V> static NotNullPtr<T> ConvertFrom(NotNullPtr<V> ptr)
+	template <typename V> static NN<T> ConvertFrom(NN<V> ptr)
 	{
-		NotNullPtr<T> ret;
+		NN<T> ret;
 		ret.p = (T*)ptr.Ptr();
 		return ret;
 	}
 };
+
+#define NotNullPtr NN
 #endif

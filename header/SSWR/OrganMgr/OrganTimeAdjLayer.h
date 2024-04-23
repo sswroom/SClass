@@ -14,10 +14,10 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<Map::GPSTrack> gpsTrk;
-			Data::ArrayList<UserFileInfo *> *userFileList;
+			NN<Data::ArrayListNN<UserFileInfo>> userFileList;
 			Data::StringMap<Int32> cameraMap;
 		public:
-			OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList);
+			OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, NN<Data::ArrayListNN<UserFileInfo>> userFileList);
 			virtual ~OrganTimeAdjLayer();
 
 			virtual Map::DrawLayerType GetLayerType() const;

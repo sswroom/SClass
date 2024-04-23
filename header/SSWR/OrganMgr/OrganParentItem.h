@@ -16,7 +16,7 @@ namespace SSWR
 			virtual ItemType GetItemType() const;
 			virtual UTF8Char *GetItemName(UTF8Char *buff) const;
 			virtual UTF8Char *GetEngName(UTF8Char *buff) const;
-			virtual OrganGroupItem *Clone() const;
+			virtual NN<OrganGroupItem> Clone() const;
 		};
 	}
 }

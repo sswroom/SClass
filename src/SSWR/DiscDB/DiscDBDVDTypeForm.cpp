@@ -14,14 +14,18 @@ void SSWR::DiscDB::DiscDBDVDTypeForm::ShowStatus()
 
 void SSWR::DiscDB::DiscDBDVDTypeForm::UpdateDisplay()
 {
-	this->txtID->SetText(this->currRec->discTypeID->ToCString());
-	this->txtName->SetText(this->currRec->name->ToCString());
-	this->txtDescription->SetText(this->currRec->description->ToCString());
+	NN<const DiscDBEnv::DVDTypeInfo> currRec;
+	if (this->currRec.SetTo(currRec))
+	{
+		this->txtID->SetText(currRec->discTypeID->ToCString());
+		this->txtName->SetText(currRec->name->ToCString());
+		this->txtDescription->SetText(currRec->description->ToCString());
+	}
 }
 
 Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 {
-	if (this->currRec == 0)
+	if (this->currRec.NotNull())
 	{
 		return true;
 	}
@@ -52,8 +56,8 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 
     if (this->newRec)
 	{
-		const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *newRec = this->env->NewDVDType(sbID.ToCString(), sbName.ToCString(), sbDesc.ToCString());
-		if (newRec)
+		NN<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> newRec;
+		if (this->env->NewDVDType(sbID.ToCString(), sbName.ToCString(), sbDesc.ToCString()).SetTo(newRec))
 		{
 			this->newRec = false;
 			this->txtID->SetReadOnly(true);
@@ -121,11 +125,15 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(Optional<UI::GUIClientControl
 	}
     else
 	{
+		NN<const DiscDBEnv::DVDTypeInfo> currRec;
         this->currIndex = 0;
         this->currRec = this->env->GetDVDType(this->currIndex);
-        this->txtID->SetText(this->currRec->discTypeID->ToCString());
-        this->txtName->SetText(this->currRec->name->ToCString());
-        this->txtDescription->SetText(this->currRec->description->ToCString());
+		if (this->currRec.SetTo(currRec))
+		{
+			this->txtID->SetText(currRec->discTypeID->ToCString());
+			this->txtName->SetText(currRec->name->ToCString());
+			this->txtDescription->SetText(currRec->description->ToCString());
+		}
 	}
     this->ShowStatus();
 }

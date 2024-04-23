@@ -18,15 +18,15 @@ namespace SSWR
 {
 	namespace OrganMgr
 	{
-		class BookArrayList : public Data::SortableArrayList<OrganBook*>
+		class BookArrayList : public Data::SortableArrayListNN<OrganBook>
 		{
 		public:
 			BookArrayList();
 			virtual ~BookArrayList();
 
 			void Sort();
-			static OSInt __stdcall CompareBook(OrganBook *book1, OrganBook *book2);
-			virtual OSInt Compare(OrganBook *book1, OrganBook *book2) const;
+			static OSInt __stdcall CompareBook(NN<OrganBook> book1, NN<OrganBook> book2);
+			virtual OSInt Compare(NN<OrganBook> book1, NN<OrganBook> book2) const;
 		};
 
 		class OrganBookForm : public UI::GUIForm

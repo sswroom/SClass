@@ -165,10 +165,10 @@ UTF8Char *SSWR::OrganMgr::OrganGroup::GetEngName(UTF8Char *buff) const
 	return sptr;
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganGroup::Clone() const
+NN<SSWR::OrganMgr::OrganGroupItem> SSWR::OrganMgr::OrganGroup::Clone() const
 {
-	OrganGroup *newItem;
-	NEW_CLASS(newItem, OrganGroup());
+	NN<OrganGroup> newItem;
+	NEW_CLASSNN(newItem, OrganGroup());
 	newItem->SetGroupId(this->groupId);
 	newItem->SetCName(OPTSTR_CSTR(this->cName));
 	newItem->SetEName(OPTSTR_CSTR(this->eName));

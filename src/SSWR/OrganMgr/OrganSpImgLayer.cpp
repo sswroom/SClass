@@ -40,12 +40,12 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(NotNullPtr<Data::Array
 	UOSInt cnt = 0;
 	UOSInt i;
 	UOSInt j;
-	UserFileInfo *ufile;
+	NN<UserFileInfo> ufile;
 	i = 0;
 	j = this->objList.GetCount();
 	while (i < j)
 	{
-		ufile = this->objList.GetItem(i);
+		ufile = this->objList.GetItemNoCheck(i);
 		if (rect.ContainPt(ufile->lon, ufile->lat))
 		{
 			outArr->Add((Int64)i);
@@ -67,10 +67,9 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Map::NameArray *nameArr)
 
 Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	UserFileInfo *ufile;
+	NN<UserFileInfo> ufile;
 	NotNullPtr<Text::String> s;
-	ufile = this->objList.GetItem((UOSInt)id);
-	if (ufile == 0)
+	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))
 		return false;
 	if (strIndex == 0)
 	{
@@ -147,8 +146,8 @@ void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(Map::GetObjectSess *session)
 
 Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
-	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
-	if (ufile == 0)
+	NN<UserFileInfo> ufile;
+	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))
 		return 0;
 	UInt32 srid = this->csys->GetSRID();
 	Math::Geometry::Point *pt;
@@ -168,23 +167,22 @@ void SSWR::OrganMgr::OrganSpImgLayer::ClearItems()
 	this->objList.Clear();
 }
 
-void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> *objList)
+void SSWR::OrganMgr::OrganSpImgLayer::AddItems(NN<Data::ArrayListNN<OrganImageItem>> objList)
 {
 	UOSInt i;
 	UOSInt j;
-	OrganImageItem *imgItem;
-	UserFileInfo *ufile;
+	NN<OrganImageItem> imgItem;
+	NN<UserFileInfo> ufile;
 	Bool found = false;
 	i = 0;
 	j = objList->GetCount();
 	found = (j > 0);
 	while (i < j)
 	{
-		imgItem = objList->GetItem(i);
+		imgItem = objList->GetItemNoCheck(i);
 		if (imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 		{
-			ufile = imgItem->GetUserFile();
-			if (ufile)
+			if (imgItem->GetUserFile().SetTo(ufile))
 			{
 				if (ufile->lat != 0 || ufile->lon != 0)
 				{
@@ -207,18 +205,18 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> 
 	}
 }
 
-void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<UserFileInfo*> *objList)
+void SSWR::OrganMgr::OrganSpImgLayer::AddItems(NN<Data::ArrayListNN<UserFileInfo>> objList)
 {
 	UOSInt i;
 	UOSInt j;
-	UserFileInfo *ufile;
+	NN<UserFileInfo> ufile;
 	Bool found = false;
 	i = 0;
 	j = objList->GetCount();
 	found = (j > 0);
 	while (i < j)
 	{
-		ufile = objList->GetItem(i);
+		ufile = objList->GetItemNoCheck(i);
 		if (ufile->lat != 0 || ufile->lon != 0)
 		{
 			this->objList.Add(ufile);
@@ -238,7 +236,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<UserFileInfo*> *o
 	}
 }
 
-void SSWR::OrganMgr::OrganSpImgLayer::AddItem(UserFileInfo *obj)
+void SSWR::OrganMgr::OrganSpImgLayer::AddItem(NN<UserFileInfo> obj)
 {
 	if (obj->lat != 0 || obj->lon != 0)
 	{

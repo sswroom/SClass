@@ -27,9 +27,9 @@ UTF8Char *SSWR::OrganMgr::OrganParentItem::GetEngName(UTF8Char *buff) const
 	return Text::StrConcatC(buff, UTF8STRC("Parent"));
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganParentItem::Clone() const
+NN<SSWR::OrganMgr::OrganGroupItem> SSWR::OrganMgr::OrganParentItem::Clone() const
 {
-	OrganParentItem *newItem;
-	NEW_CLASS(newItem, OrganParentItem());
+	NN<OrganParentItem> newItem;
+	NEW_CLASSNN(newItem, OrganParentItem());
 	return newItem;
 }

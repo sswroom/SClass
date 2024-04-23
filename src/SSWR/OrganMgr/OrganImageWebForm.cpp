@@ -24,7 +24,7 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnCancelClicked(AnyType userOb
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, OrganImageItem *imgItem, SSWR::OrganMgr::WebFileInfo *wfile) : UI::GUIForm(parent, 800, 176, ui)
+SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NN<OrganImageItem> imgItem, NN<SSWR::OrganMgr::WebFileInfo> wfile) : UI::GUIForm(parent, 800, 176, ui)
 {
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 10.5, false);
@@ -58,10 +58,6 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientContr
 	this->lblLocation->SetRect(0, 96, 100, 23, false);
 	this->txtLocation = ui->NewTextBox(*this, wfile->location->ToCString());
 	this->txtLocation->SetRect(100, 96, 680, 23, false);
-	if (wfile == 0)
-	{
-		this->txtLocation->SetReadOnly(true);
-	}
 	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("ImageWebOk")));
 	this->btnOK->SetRect(120, 120, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
@@ -69,7 +65,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientContr
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
+	if (wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
 	{
 		this->txtSourceURL->Focus();
 		this->txtSourceURL->SelectAll();

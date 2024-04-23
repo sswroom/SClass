@@ -68,14 +68,14 @@ void SSWR::OrganMgr::OrganSearchForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::String *SSWR::OrganMgr::OrganSearchForm::GetFoundStr()
+NN<Text::String> SSWR::OrganMgr::OrganSearchForm::GetFoundStr()
 {
-	return this->foundStr;
+	return NN<Text::String>::FromPtr(this->foundStr);
 }
 
-SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganSearchForm::GetFoundGroup()
+NN<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganSearchForm::GetFoundGroup()
 {
-	return this->foundGroup;
+	return NN<OrganGroup>::FromPtr(this->foundGroup);
 }
 
 Int32 SSWR::OrganMgr::OrganSearchForm::GetParentId()

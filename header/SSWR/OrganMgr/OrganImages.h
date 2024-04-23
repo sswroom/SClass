@@ -11,20 +11,20 @@ namespace SSWR
 		class OrganImages : public OrganGroupItem
 		{
 		private:
-			OrganImageItem *imgItem;
+			NN<OrganImageItem> imgItem;
 			const UTF8Char *srcImgDir;
 
 		public:
-			OrganImages(OrganImageItem *imgItem, const UTF8Char *srcImgDir);
+			OrganImages(NN<OrganImageItem> imgItem, const UTF8Char *srcImgDir);
 			virtual ~OrganImages();
 
-			OrganImageItem *GetImgItem() const;
+			NN<OrganImageItem> GetImgItem() const;
 			const UTF8Char *GetSrcImgDir() const;
 
 			virtual ItemType GetItemType() const;
 			virtual UTF8Char *GetItemName(UTF8Char *buff) const;
 			virtual UTF8Char *GetEngName(UTF8Char *buff) const;
-			virtual OrganGroupItem *Clone() const;
+			virtual NN<OrganGroupItem> Clone() const;
 		};
 	}
 }

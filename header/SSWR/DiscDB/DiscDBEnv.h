@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_DISCDB_DISCDBENV
 #define _SM_SSWR_DISCDB_DISCDBENV
-#include "Data/FastMap.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastMapNN.h"
+#include "Data/FastStringMapNN.h"
 #include "DB/DBTool.h"
 #include "IO/StreamData.h"
 #include "Media/MonitorMgr.h"
@@ -80,11 +80,11 @@ namespace SSWR
 			DB::DBTool *db;
 			IO::LogTool log;
 			Media::MonitorMgr *monMgr;
-			NotNullPtr<Data::FastStringMap<BurntDiscInfo*>> discMap;
-			Data::FastStringMap<DVDTypeInfo*> *dvdTypeMap;
-			NotNullPtr<Data::FastStringMap<CategoryInfo*>> cateMap;
-			NotNullPtr<Data::FastStringMap<DiscTypeInfo*>> discTypeMap;
-			NotNullPtr<Data::FastMap<Int32, DVDVideoInfo*>> dvdVideoMap;
+			Data::FastStringMapNN<BurntDiscInfo> discMap;
+			Data::FastStringMapNN<DVDTypeInfo> dvdTypeMap;
+			Data::FastStringMapNN<CategoryInfo> cateMap;
+			Data::FastStringMapNN<DiscTypeInfo> discTypeMap;
+			Data::FastMapNN<Int32, DVDVideoInfo> dvdVideoMap;
 			
 			void LoadDB();
 		public:
@@ -96,27 +96,27 @@ namespace SSWR
 			Double GetMonitorHDPI(MonitorHandle *hMon);
 			Double GetMonitorDDPI(MonitorHandle *hMon);
 
-			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts);
-			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
-			const BurntDiscInfo *GetBurntDisc(Text::CStringNN discId);
+			Optional<const BurntDiscInfo> NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts);
+			UOSInt GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList);
+			Optional<const BurntDiscInfo> GetBurntDisc(Text::CStringNN discId);
 			OSInt GetBurntDiscIndex(Text::CStringNN discId);
 			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, Text::CString category, Int32 videoId);
-			UOSInt GetBurntFiles(Text::CString discId, Data::ArrayList<DiscFileInfo*> *fileList);
-			void FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList);
+			UOSInt GetBurntFiles(Text::CString discId, NN<Data::ArrayListNN<DiscFileInfo>> fileList);
+			void FreeBurntFiles(NN<Data::ArrayListNN<DiscFileInfo>> fileList);
 			UOSInt GetDVDTypeCount();
-			const DVDTypeInfo *GetDVDType(UOSInt index);
+			Optional<const DVDTypeInfo> GetDVDType(UOSInt index);
 			OSInt GetDVDTypeIndex(Text::CStringNN discTypeID);
 			Bool ModifyDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc);
-			const DVDTypeInfo *NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc);
-			UOSInt GetCategories(Data::ArrayList<CategoryInfo*> *cateList);
-			const DiscTypeInfo *GetDiscType(Text::CStringNN discTypeId);
-			UOSInt GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList);
-			UOSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand, UOSInt brandLen);
+			Optional<const DVDTypeInfo> NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc);
+			UOSInt GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList);
+			Optional<const DiscTypeInfo> GetDiscType(Text::CStringNN discTypeId);
+			UOSInt GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList);
+			UOSInt GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, const UTF8Char *brand, UOSInt brandLen);
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);
-			UOSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
-			const DVDVideoInfo *GetDVDVideo(Int32 videoId);
+			UOSInt GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList);
+			Optional<const DVDVideoInfo> GetDVDVideo(Int32 videoId);
 			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NotNullPtr<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
-			Bool AddMD5(NotNullPtr<IO::StreamData> fd);
+			Bool AddMD5(NN<IO::StreamData> fd);
 		};
 	}
 }

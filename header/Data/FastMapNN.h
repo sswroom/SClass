@@ -80,6 +80,7 @@ namespace Data
 		virtual Optional<V> *ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 		FastMapNNIterator<T,V> Iterator() const;
+		void DeleteAll();
 	};
 
 
@@ -239,6 +240,16 @@ namespace Data
 	template <class T, class V> FastMapNNIterator<T,V> FastMapNN<T, V>::Iterator() const
 	{
 		return FastMapNNIterator<T, V>(this->values);
+	}
+
+	template <class T, class V> void FastMapNN<T, V>::DeleteAll()
+	{
+		UOSInt i = this->values.GetCount();
+		while (i-- > 0)
+		{
+			this->values.GetItem(i).value.Delete();
+		}
+		this->values.Clear();
 	}
 
 	template <class V> class Int32FastMapNN : public FastMapNN<Int32, V>

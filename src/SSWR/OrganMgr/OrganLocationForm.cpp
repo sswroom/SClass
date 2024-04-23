@@ -3,10 +3,10 @@
 
 void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 {
-	Data::ArrayList<Location *> locList;
-	Location *l;
+	Data::ArrayListNN<Location> locList;
+	NN<Location> l;
 	UOSInt i;
-	while ((l = this->env->LocationGet(id)) != 0)
+	while (this->env->LocationGet(id).SetTo(l))
 	{
 		locList.Add(l);
 		id = l->parId;
@@ -15,7 +15,7 @@ void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 	i = locList.GetCount();
 	while (i-- > 0)
 	{
-		l = locList.GetItem(i);
+		l = locList.GetItemNoCheck(i);
 		this->lbLocation->AddItem(l->cname, l);
 	}
 	i = locList.GetCount();
@@ -41,20 +41,17 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 	this->txtCName->SetText(CSTR(""));
 	this->txtEName->SetText(CSTR(""));
 	
-	Data::ArrayList<Location*> *locSubList = this->env->LocationGetSub(parId);
-	if (locSubList)
+	NN<Data::ArrayListNN<Location>> locSubList = this->env->LocationGetSub(parId);
+	NN<Location> l;
+	UOSInt i = 0;
+	UOSInt j = locSubList->GetCount();
+	while (i < j)
 	{
-		Location *l;
-		UOSInt i = 0;
-		UOSInt j = locSubList->GetCount();
-		while (i < j)
-		{
-			l = locSubList->GetItem(i);
-			this->lbSublocations->AddItem(l->cname, l);
-			i++;
-		}
-		DEL_CLASS(locSubList);
+		l = locSubList->GetItemNoCheck(i);
+		this->lbSublocations->AddItem(l->cname, l);
+		i++;
 	}
+	locSubList.Delete();
 	this->sublocUpdating = false;
 }
 

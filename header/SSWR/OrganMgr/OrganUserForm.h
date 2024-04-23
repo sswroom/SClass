@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnModify;
 			NotNullPtr<UI::GUIListView> lvUser;
-			Data::ArrayList<OrganWebUser*> userList;
+			Data::ArrayListNN<OrganWebUser> userList;
 
 			static void __stdcall OnAddClicked(AnyType userObj);
 			static void __stdcall OnModifyClicked(AnyType userObj);

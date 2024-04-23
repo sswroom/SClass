@@ -4,7 +4,7 @@
 #include "Text/StringTool.h"
 #include "UI/Clipboard.h"
 
-SSWR::OrganMgr::BookArrayList::BookArrayList() : Data::SortableArrayList<OrganBook*>()
+SSWR::OrganMgr::BookArrayList::BookArrayList() : Data::SortableArrayListNN<OrganBook>()
 {
 }
 
@@ -14,10 +14,10 @@ SSWR::OrganMgr::BookArrayList::~BookArrayList()
 
 void SSWR::OrganMgr::BookArrayList::Sort()
 {
-	Data::Sort::ArtificialQuickSortFunc<OrganBook*>::Sort(*this, CompareBook);
+	Data::Sort::ArtificialQuickSortFunc<NN<OrganBook>>::Sort(*this, CompareBook);
 }
 
-OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, OrganBook *book2)
+OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(NN<OrganBook> book1, NN<OrganBook> book2)
 {
 	OSInt ret = book1->GetPublishDate().CompareTo(book2->GetPublishDate());
 	if (ret == 0)
@@ -31,7 +31,7 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, Org
 	return ret;
 }
 
-OSInt SSWR::OrganMgr::BookArrayList::Compare(OrganBook *book1, OrganBook *book2) const
+OSInt SSWR::OrganMgr::BookArrayList::Compare(NN<OrganBook> book1, NN<OrganBook> book2) const
 {
 	return CompareBook(book1, book2);
 }
@@ -43,11 +43,11 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, 
 	OSInt i = 0;
 	OSInt j = (OSInt)me->bookList.GetCount() - 1;
 	OSInt k;
-	OrganBook *book;
+	NN<OrganBook> book;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		book = me->bookList.GetItem((UOSInt)k);
+		book = me->bookList.GetItemNoCheck((UOSInt)k);
 		if (book->GetPublishDate().CompareTo(currTime) >= 0)
 		{
 			j = k - 1;
@@ -124,7 +124,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(AnyType userObj)
 
 	me->changed = true;
 	me->bookList.Clear();
-	me->env->GetBooksAll(&me->bookList);
+	me->env->GetBooksAll(me->bookList);
 	me->bookList.Sort();
 	me->UpdateBookList();
 	me->txtBookAuthor->SetText(CSTR(""));
@@ -259,7 +259,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(AnyType userObj
 
 void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 {
-	OrganBook *book;
+	NN<OrganBook> book;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i = 0;
@@ -268,7 +268,7 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	this->lvBook->ClearItems();
 	while (i < j)
 	{
-		book = this->bookList.GetItem(i);;
+		book = this->bookList.GetItemNoCheck(i);;
 		sptr = book->GetPublishDate().ToString(sbuff, "yyyy-MM");
 		k = this->lvBook->AddItem(CSTRP(sbuff, sptr), book);
 		this->lvBook->SetSubItem(k, 1, Text::String::OrEmpty(book->GetDispAuthor()));
@@ -338,7 +338,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> pare
 	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(CSTR("BookFormTabRef")));
 	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(CSTR("BookFormTabAuthor")));
 
-	this->env->GetBooksAll(&this->bookList);
+	this->env->GetBooksAll(this->bookList);
 	this->bookList.Sort();
 	this->UpdateBookList();
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));

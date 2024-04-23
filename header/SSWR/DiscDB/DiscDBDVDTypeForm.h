@@ -16,7 +16,7 @@ namespace SSWR
 			SSWR::DiscDB::DiscDBEnv *env;
 			UOSInt currIndex;
 			Bool newRec;
-			const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *currRec;
+			Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> currRec;
 
 			NotNullPtr<UI::GUILabel> lblID;
 			NotNullPtr<UI::GUITextBox> txtID;

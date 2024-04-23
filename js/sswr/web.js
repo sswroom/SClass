@@ -731,7 +731,7 @@ export function propertiesToHTML(prop, nameMap, timeFormat)
 		{
 			if (nameMap[i])
 			{
-				ret.push("<li><b>"+text.toHTMLText(nameMap[i])+": </b>");
+				ret.push("<li><b>"+nameMap[i]+": </b>");
 				if (prop[i] instanceof data.Timestamp)
 				{
 					ret.push(text.toHTMLText(prop[i].toString(timeFormat)));
