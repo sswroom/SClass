@@ -13,8 +13,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	const UTF8Char *userName = (const UTF8Char*)"testing";
 	const UTF8Char *password = (const UTF8Char*)"testing";*/
 	Text::CString encPwd = CSTR("eRFLDev");
-	Text::CString userName = CSTR("Ukq08EI1PQF47DbDfkhYfjF5fCtehqFQwC/rYU+/T57yvkLhuVf49BwHjLK2AzYr");
-	Text::CString password = CSTR("VN1iRYekV9DqHzJ/yIcXWslczjhI98SYkXpw58FmBsMWour1vYSWf++Sx7AD26Br");
+	Text::CStringNN userName = CSTR("Ukq08EI1PQF47DbDfkhYfjF5fCtehqFQwC/rYU+/T57yvkLhuVf49BwHjLK2AzYr");
+	Text::CStringNN password = CSTR("VN1iRYekV9DqHzJ/yIcXWslczjhI98SYkXpw58FmBsMWour1vYSWf++Sx7AD26Br");
 	UInt8 decBuff[256];
 	UOSInt decSize;
 	Crypto::Encrypt::JasyptEncryptor enc(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, encPwd.ToByteArray());

@@ -134,7 +134,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	NEW_CLASS(dasm, Manage::DasmX86_16());
 	NEW_CLASS(funcCalls, ::Data::ArrayListUInt32());
 	NEW_CLASS(nfuncCalls, ::Data::ArrayListUInt32());
-	sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(&codeSize), this->exeFile->GetDOSCodeSegm());
+	sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
 	if (sess)
 	{
 		this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
@@ -153,7 +153,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 			if (si < 0)
 			{
 				funcCalls->Insert((UOSInt)-si - 1, faddr);
-				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(&codeSize), this->exeFile->GetDOSCodeSegm());
+				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
 				sess->regs.IP = (::UInt16)faddr;
 				NEW_CLASS(codes, Data::ArrayListStringNN());
 				this->codesList->Add(codes);
@@ -359,7 +359,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	j = this->exeFile->GetImportCount();
 	while (i < j)
 	{
-		this->lbImport->AddItem(NotNullPtr<Text::String>::FromPtr(this->exeFile->GetImportName(i)), (void*)i);
+		this->lbImport->AddItem(Text::String::OrEmpty(this->exeFile->GetImportName(i)), (void*)i);
 		i++;
 	}
 
@@ -371,7 +371,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	j = this->exeFile->GetExportCount();
 	while (i < j)
 	{
-		this->lbExport->AddItem(NotNullPtr<Text::String>::FromPtr(this->exeFile->GetExportName(i)), (void*)i);
+		this->lbExport->AddItem(Text::String::OrEmpty(this->exeFile->GetExportName(i)), (void*)i);
 		i++;
 	}
 
@@ -389,9 +389,11 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	j = this->exeFile->GetResourceCount();
 	while (i < j)
 	{
-		const IO::EXEFile::ResourceInfo *res;
-		res = this->exeFile->GetResource(i);
-		this->lbResource->AddItem(res->name, (void*)res);
+		NN<const IO::EXEFile::ResourceInfo> res;
+		if (this->exeFile->GetResource(i).SetTo(res))
+		{
+			this->lbResource->AddItem(res->name, NN<IO::EXEFile::ResourceInfo>::ConvertFrom(res));
+		}
 		i++;
 	}
 

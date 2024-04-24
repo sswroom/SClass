@@ -36,7 +36,7 @@ void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStr
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	IO::SMake::ConfigItem *cfg;
+	NN<IO::SMake::ConfigItem> cfg;
 	const UTF8Char *valEnd = &val.v[val.leng];
 	UOSInt i = 0;
 	UOSInt j;
@@ -65,8 +65,7 @@ void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStr
 		{
 			sptr = Text::StrConcatC(sbuff, &val.v[i + 2], (UOSInt)j - 2);
 			i += j + 1;
-			cfg = this->cfgMap.Get(CSTRP(sbuff, sptr));
-			if (cfg)
+			if (this->cfgMap.Get(CSTRP(sbuff, sptr)).SetTo(cfg))
 			{
 				sb->Append(cfg->value);
 			}
@@ -187,8 +186,9 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 	Text::PString str1;
 	Text::PString str2;
 	UOSInt i;
-	IO::SMake::ConfigItem *cfg;
-	IO::SMake::ProgramItem *prog = 0;
+	NN<IO::SMake::ConfigItem> cfg;
+	Optional<IO::SMake::ProgramItem> prog = 0;
+	NN<ProgramItem> nnprog;
 	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
 	ret = true;
@@ -202,18 +202,18 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		{
 			Bool valid = true;
 			str1 = this->ParseCond(sb.SubstrTrim(1), valid);
-			if (valid && prog)
+			if (valid && prog.SetTo(nnprog))
 			{
-				prog->subItems.Add(Text::String::New(str1.ToCString()));
+				nnprog->subItems.Add(Text::String::New(str1.ToCString()));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
 		{
 			Bool valid = true;
 			str1 = this->ParseCond(sb.SubstrTrim(1), valid);
-			if (valid && prog)
+			if (valid && prog.SetTo(nnprog))
 			{
-				prog->libs.Add(Text::String::New(str1.ToCString()));
+				nnprog->libs.Add(Text::String::New(str1.ToCString()));
 			}
 		}
 		else if (sb.ToString()[0] == '$')
@@ -241,33 +241,32 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					}
 				}
 			}
-			if (prog && valid)
+			if (prog.SetTo(nnprog) && valid)
 			{
 				Text::CString ccfg = str1.ToCString();
-				IO::SMake::ConfigItem *cfg = this->cfgMap.Get(str1.ToCString());
-				if (cfg)
+				NN<IO::SMake::ConfigItem> cfg;
+				if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
 				{
 					ccfg = cfg->value->ToCString();
 				}
-				if (prog->compileCfg)
+				if (nnprog->compileCfg)
 				{
 					sb.ClearStr();
-					sb.Append(prog->compileCfg);
+					sb.Append(nnprog->compileCfg);
 					sb.AppendUTF8Char(' ');
 					sb.Append(ccfg);
-					prog->compileCfg->Release();
-					prog->compileCfg = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					nnprog->compileCfg->Release();
+					nnprog->compileCfg = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 				else
 				{
-					prog->compileCfg = Text::String::New(ccfg).Ptr();
+					nnprog->compileCfg = Text::String::New(ccfg).Ptr();
 				}
 			}
 		}
 		else if (sb.StartsWith(UTF8STRC("export ")))
 		{
-			cfg = this->cfgMap.Get({sb.ToString() + 7, sb.GetLength() - 7});
-			if (cfg)
+			if (this->cfgMap.Get({sb.ToString() + 7, sb.GetLength() - 7}).SetTo(cfg))
 			{
 				Manage::EnvironmentVar env;
 				env.SetValue(cfg->name->ToCString(), cfg->value->ToCString());
@@ -277,8 +276,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		{
 			str2 = sb.SubstrTrim(i + 2);
 			str1 = sb.SubstrTrim(0, i);
-			cfg = this->cfgMap.Get(str1.ToCString());
-			if (cfg)
+			if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
 			{
 				if (cfg->value->leng > 0)
 				{
@@ -299,7 +297,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			}
 			else
 			{
-				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
+				cfg = MemAllocNN(IO::SMake::ConfigItem);
 				cfg->name = Text::String::New(str1.ToCString());
 				sb2.ClearStr();
 				AppendCfgItem(sb2, str2.ToCString());
@@ -313,8 +311,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			{
 				str1 = sb.SubstrTrim(0, i);
 				str2 = sb.SubstrTrim(i + 2);
-				cfg = this->cfgMap.Get(str1.ToCString());
-				if (cfg)
+				if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
 				{
 					cfg->value->Release();
 					sb2.ClearStr();
@@ -323,7 +320,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				}
 				else
 				{
-					cfg = MemAlloc(IO::SMake::ConfigItem, 1);
+					cfg = MemAllocNN(IO::SMake::ConfigItem);
 					cfg->name = Text::String::New(str1.ToCString());
 					sb2.ClearStr();
 					AppendCfgItem(sb2, str2.ToCString());
@@ -337,31 +334,29 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				str2 = sb.SubstrTrim(i + 1);
 				if (str1.v[0] == '+')
 				{
-					prog = this->progMap.GetC(str1.Substring(1).ToCString());
-					if (prog)
+					if (this->progMap.GetC(str1.Substring(1).ToCString()).SetTo(nnprog))
 					{
 					}
 					else
 					{
-						NEW_CLASS(prog, IO::SMake::ProgramItem());
-						prog->name = Text::String::New(str1.Substring(1).ToCString());
+						NEW_CLASSNN(nnprog, IO::SMake::ProgramItem());
+						nnprog->name = Text::String::New(str1.Substring(1).ToCString());
 						if (str2.v[0])
 						{
-							prog->srcFile = Text::String::New(str2.ToCString()).Ptr();
+							nnprog->srcFile = Text::String::New(str2.ToCString()).Ptr();
 						}
 						else
 						{
-							prog->srcFile = 0;
+							nnprog->srcFile = 0;
 						}
-						prog->compileCfg = 0;
-						prog->compiled = false;
-						this->progMap.PutNN(prog->name, prog);
+						nnprog->compileCfg = 0;
+						nnprog->compiled = false;
+						this->progMap.PutNN(nnprog->name, nnprog);
 					}
 				}
 				else
 				{
-					prog = this->progMap.GetC(str1.ToCString());
-					if (prog)
+					if (this->progMap.GetC(str1.ToCString()).SetTo(nnprog))
 					{
 						ret = false;
 						sb2.ClearStr();
@@ -372,19 +367,19 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					}
 					else
 					{
-						NEW_CLASS(prog, IO::SMake::ProgramItem());
-						prog->name = Text::String::New(str1.ToCString());
+						NEW_CLASSNN(nnprog, IO::SMake::ProgramItem());
+						nnprog->name = Text::String::New(str1.ToCString());
 						if (str2.v[0])
 						{
-							prog->srcFile = Text::String::New(str2.ToCString()).Ptr();
+							nnprog->srcFile = Text::String::New(str2.ToCString()).Ptr();
 						}
 						else
 						{
-							prog->srcFile = 0;
+							nnprog->srcFile = 0;
 						}
-						prog->compileCfg = 0;
-						prog->compiled = false;
-						this->progMap.PutNN(prog->name, prog);
+						nnprog->compileCfg = 0;
+						nnprog->compiled = false;
+						this->progMap.PutNN(nnprog->name, nnprog);
 					}
 				}
 			}
@@ -486,15 +481,14 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 			{
 				Int32 val1 = 0;
 				Int32 val2 = 0;
-				ConfigItem *cfg;
+				NN<ConfigItem> cfg;
 				if (str1.v[0] >= '0' && str1.v[0] <= '9')
 				{
 					val1 = str1.ToInt32();
 				}
 				else
 				{
-					cfg = this->cfgMap.Get(str1.ToCString());
-					if (cfg)
+					if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
 					{
 						val1 = cfg->value->ToInt32();
 					}
@@ -505,8 +499,7 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 				}
 				else
 				{
-					cfg = this->cfgMap.Get(str3.ToCString());
-					if (cfg)
+					if (this->cfgMap.Get(str3.ToCString()).SetTo(cfg))
 					{
 						val2 = cfg->value->ToInt32();
 					}
@@ -629,7 +622,7 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	Text::PString line;
 	Text::PString str1;
 	UOSInt i;
-	IO::SMake::ProgramItem *prog;
+	NN<IO::SMake::ProgramItem> prog;
 	Text::UTF8Reader reader(fs);
 	tmpSb->ClearStr();
 	while (reader.ReadLine(tmpSb, 1024))
@@ -659,8 +652,7 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 					}
 					else
 					{
-						prog = this->progMap.GetC(str1.ToCString());
-						if (prog == 0)
+						if (!this->progMap.GetC(str1.ToCString()).SetTo(prog))
 						{
 							Text::StringBuilderUTF8 sb2;
 							sb2.Append(str1);
@@ -751,8 +743,8 @@ Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	Text::CStringNN sourceFile,
 	NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
-	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("INCLUDEPATH"));
-	if (cfg == 0)
+	NN<IO::SMake::ConfigItem> cfg;
+	if (!this->cfgMap.Get(CSTR("INCLUDEPATH")).SetTo(cfg))
 	{
 		this->SetErrorMsg(CSTR("INCLUDEPATH config not found"));
 		return false;
@@ -854,8 +846,8 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 		return true;
 	}
 
-	IO::SMake::ProgramItem *prog = this->progMap.GetNN(objectFile);
-	if (prog == 0)
+	NN<IO::SMake::ProgramItem> prog;
+	if (!this->progMap.GetNN(objectFile).SetTo(prog))
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.Append(objectFile);
@@ -932,7 +924,7 @@ Bool IO::SMake::ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList
 {
 	NotNullPtr<Text::String> subItem;
 	NotNullPtr<Text::String> debugObj;
-	IO::SMake::ProgramItem *subProg;
+	NN<IO::SMake::ProgramItem> subProg;
 	Int64 thisTime;
 	Int64 lastTime = 0;
 	Bool progGrp = true;
@@ -962,11 +954,10 @@ Bool IO::SMake::ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList
 		return true;
 	}
 
-	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("DEPS"));
-	if (cfg)
+	NN<IO::SMake::ConfigItem> cfg;
+	if (this->cfgMap.Get(CSTR("DEPS")).SetTo(cfg))
 	{
-		subProg = this->progMap.GetNN(cfg->value);
-		if (subProg == 0)
+		if (!this->progMap.GetNN(cfg->value).SetTo(subProg))
 		{
 			tmpSb->AppendC(UTF8STRC("Item "));
 			tmpSb->Append(cfg->value);
@@ -987,8 +978,7 @@ Bool IO::SMake::ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList
 	while (it.HasNext())
 	{
 		subItem = it.Next();
-		subProg = this->progMap.GetNN(subItem);
-		if (subProg == 0)
+		if (!this->progMap.GetNN(subItem).SetTo(subProg))
 		{
 			tmpSb->AppendC(UTF8STRC("Item "));
 			tmpSb->Append(subItem);
@@ -1056,8 +1046,8 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 
 	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
 	{
-		IO::SMake::ConfigItem *testCfg = this->cfgMap.Get(CSTR("ENABLE_TEST"));
-		if (testCfg && testCfg->value->Equals(UTF8STRC("1")))
+		NN<IO::SMake::ConfigItem> testCfg;
+		if (this->cfgMap.Get(CSTR("ENABLE_TEST")).SetTo(testCfg) && testCfg->value->Equals(UTF8STRC("1")))
 		{
 			enableTest = true;
 		}
@@ -1075,7 +1065,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		while (iterator.HasNext())
 		{
 			NotNullPtr<Text::String> objName = iterator.Next();
-			if (!subProg.Set(this->progMap.GetNN(objName)))
+			if (!this->progMap.GetNN(objName).SetTo(subProg))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Program "));
@@ -1092,26 +1082,27 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		return true;
 	}
 
-	IO::SMake::ConfigItem *cppCfg = this->cfgMap.Get(CSTR("CXX"));
-	IO::SMake::ConfigItem *ccCfg = this->cfgMap.Get(CSTR("CC"));
-	IO::SMake::ConfigItem *asmCfg = this->cfgMap.Get(CSTR("ASM"));
-	IO::SMake::ConfigItem *asmflagsCfg = this->cfgMap.Get(CSTR("ASMFLAGS"));
-	IO::SMake::ConfigItem *cflagsCfg = this->cfgMap.Get(CSTR("CFLAGS"));
-	IO::SMake::ConfigItem *cppflagsCfg = this->cfgMap.Get(CSTR("CPPFLAGS"));
-	IO::SMake::ConfigItem *libsCfg = this->cfgMap.Get(CSTR("LIBS"));
+	NN<ConfigItem> cfg;
+	NN<IO::SMake::ConfigItem> cppCfg;
+	NN<IO::SMake::ConfigItem> ccCfg;
+	NN<IO::SMake::ConfigItem> asmCfg;
+	Optional<IO::SMake::ConfigItem> asmflagsCfg = this->cfgMap.Get(CSTR("ASMFLAGS"));
+	Optional<IO::SMake::ConfigItem> cflagsCfg = this->cfgMap.Get(CSTR("CFLAGS"));
+	Optional<IO::SMake::ConfigItem> cppflagsCfg = this->cfgMap.Get(CSTR("CPPFLAGS"));
+	Optional<IO::SMake::ConfigItem> libsCfg = this->cfgMap.Get(CSTR("LIBS"));
 	Data::Timestamp dt1;
 	Data::Timestamp dt2;
-	if (cppCfg == 0)
+	if (!this->cfgMap.Get(CSTR("CXX")).SetTo(cppCfg))
 	{
 		this->SetErrorMsg(CSTR("CXX config not found"));
 		return false;
 	}
-	if (ccCfg == 0)
+	if (!this->cfgMap.Get(CSTR("CC")).SetTo(ccCfg))
 	{
 		this->SetErrorMsg(CSTR("CC config not found"));
 		return false;
 	}
-	if (asmCfg == 0)
+	if (!this->cfgMap.Get(CSTR("ASM")).SetTo(asmCfg))
 	{
 		this->SetErrorMsg(CSTR("ASM config not found"));
 		return false;
@@ -1122,7 +1113,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	while (iterator.HasNext())
 	{
 		NotNullPtr<Text::String> objName = iterator.Next();
-		if (!subProg.Set(this->progMap.GetNN(objName)))
+		if (!this->progMap.GetNN(objName).SetTo(subProg))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Object "));
@@ -1252,14 +1243,14 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				sb.ClearStr();
 				AppendCfgPath(sb, cppCfg->value->ToCString());
 				sb.AppendUTF8Char(' ');
-				if (cflagsCfg)
+				if (cflagsCfg.SetTo(cfg))
 				{
-					sb.Append(cflagsCfg->value);
+					sb.Append(cfg->value);
 					sb.AppendUTF8Char(' ');
 				}
-				if (cppflagsCfg)
+				if (cppflagsCfg.SetTo(cfg))
 				{
-					sb.Append(cppflagsCfg->value);
+					sb.Append(cfg->value);
 					sb.AppendUTF8Char(' ');
 				}
 				if (subProg->compileCfg)
@@ -1298,9 +1289,9 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				sb.ClearStr();
 				AppendCfgPath(sb, ccCfg->value->ToCString());
 				sb.AppendUTF8Char(' ');
-				if (cflagsCfg)
+				if (cflagsCfg.SetTo(cfg))
 				{
-					sb.Append(cflagsCfg->value);
+					sb.Append(cfg->value);
 					sb.AppendUTF8Char(' ');
 				}
 				if (subProg->compileCfg)
@@ -1338,9 +1329,9 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				sb.ClearStr();
 				AppendCfgPath(sb, asmCfg->value->ToCString());
 				sb.AppendUTF8Char(' ');
-				if (asmflagsCfg)
+				if (asmflagsCfg.SetTo(cfg))
 				{
-					sb.Append(asmflagsCfg->value);
+					sb.Append(cfg->value);
 					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
@@ -1390,16 +1381,16 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		return false;
 	}
 
-	IO::SMake::ConfigItem *postfixItem = this->cfgMap.Get(CSTR("OUTPOSTFIX"));
+	Optional<IO::SMake::ConfigItem> postfixItem = this->cfgMap.Get(CSTR("OUTPOSTFIX"));
 	sb.ClearStr();
 	sb.Append(this->basePath);
 	sb.AppendC(UTF8STRC("bin"));
 	IO::Path::CreateDirectory(sb.ToCString());
 	sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 	sb.Append(prog->name);
-	if (postfixItem)
+	if (postfixItem.SetTo(cfg))
 	{
-		sb.Append(postfixItem->value);
+		sb.Append(cfg->value);
 	}
 	Bool skipLink = false;
 	if (!(dt2 = IO::Path::GetModifyTime(sb.ToString())).IsNull())
@@ -1418,9 +1409,9 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		sb.AppendUTF8Char(' ');
 		sb.AppendC(UTF8STRC("-o bin/"));
 		sb.Append(prog->name);
-		if (postfixItem)
+		if (postfixItem.SetTo(cfg))
 		{
-			sb.Append(postfixItem->value);
+			sb.Append(cfg->value);
 		}
 		Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
 		while (iterator.HasNext())
@@ -1430,10 +1421,10 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 			sb.Append(iterator.Next());
 		}
-		if (libsCfg)
+		if (libsCfg.SetTo(cfg))
 		{
 			sb.AppendUTF8Char(' ');
-			sb.Append(libsCfg->value);
+			sb.Append(cfg->value);
 		}
 		UOSInt i;
 		UOSInt j;
@@ -1618,26 +1609,26 @@ IO::SMake::~SMake()
 {
 	UOSInt i;
 	UOSInt j;
-	IO::SMake::ConfigItem *cfg;
-	NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem *>> cfgList = this->cfgMap.GetValues();
+	NN<IO::SMake::ConfigItem> cfg;
+	NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = this->cfgMap.GetValues();
 	i = cfgList->GetCount();
 	while (i-- > 0)
 	{
-		cfg = cfgList->GetItem(i);
+		cfg = cfgList->GetItemNoCheck(i);
 		cfg->name->Release();
 		cfg->value->Release();
-		MemFree(cfg);
+		MemFreeNN(cfg);
 	}
 	this->ClearLinks();
 
 //	Data::ArrayList<IO::SMake::ProgramItem*> *progList = progMap->GetValues();
-	IO::SMake::ProgramItem *prog;
+	NN<IO::SMake::ProgramItem> prog;
 //	i = progList->GetCount();
 	i = this->progMap.GetCount();
 	while (i-- > 0)
 	{
 //		prog = progList->GetItem(i);
-		prog = this->progMap.GetItem(i);
+		prog = this->progMap.GetItemNoCheck(i);
 		prog->name->Release();
 		SDEL_STRING(prog->srcFile);
 		SDEL_STRING(prog->compileCfg);
@@ -1651,7 +1642,7 @@ IO::SMake::~SMake()
 		{
 			OPTSTR_DEL(prog->libs.GetItem(j));
 		}
-		DEL_CLASS(prog);
+		prog.Delete();
 	}
 	DEL_CLASS(this->tasks);
 	SDEL_STRING(this->errorMsg);
@@ -1676,7 +1667,7 @@ void IO::SMake::ClearStatus()
 	UOSInt i = this->progMap.GetCount();
 	while (i-- > 0)
 	{
-		this->progMap.GetItem(i)->compiled = false;
+		this->progMap.GetItemNoCheck(i)->compiled = false;
 	}
 }
 
@@ -1776,7 +1767,7 @@ void IO::SMake::AsyncPostCompile()
 	}
 }
 
-NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem*>> IO::SMake::GetConfigList() const
+NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> IO::SMake::GetConfigList() const
 {
 	return this->cfgMap.GetValues();
 }
@@ -1788,8 +1779,8 @@ Bool IO::SMake::HasProg(Text::CStringNN progName) const
 
 Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 {
-	NotNullPtr<const IO::SMake::ProgramItem> prog;
-	if (!prog.Set(this->progMap.GetC(progName)))
+	NotNullPtr<IO::SMake::ProgramItem> prog;
+	if (!this->progMap.GetC(progName).SetTo(prog))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Program "));
@@ -1812,9 +1803,9 @@ Bool IO::SMake::ParseProg(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	OutParam<Bool> progGroup,
 	NotNullPtr<Text::String> progName)
 {
-	NotNullPtr<const IO::SMake::ProgramItem> prog;
+	NotNullPtr<IO::SMake::ProgramItem> prog;
 	Text::StringBuilderUTF8 sb;
-	if (!prog.Set(this->progMap.GetC(progName->ToCString())))
+	if (!this->progMap.GetC(progName->ToCString()).SetTo(prog))
 	{
 		sb.AppendC(UTF8STRC("Program "));
 		sb.AppendC(progName->v, progName->leng);
@@ -1851,28 +1842,30 @@ void IO::SMake::CleanFiles()
 	}
 }
 
-UOSInt IO::SMake::GetProgList(NotNullPtr<Data::ArrayList<Text::String*>> progList)
+UOSInt IO::SMake::GetProgList(NotNullPtr<Data::ArrayListNN<Text::String>> progList)
 {
 //	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
-	Text::String *prog;
+	NN<Text::String> prog;
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = this->progMap.GetCount();
 	while (i < j)
 	{
-		prog = this->progMap.GetKey(i);
-		if (prog->EndsWith(UTF8STRC(".o")))
+		if (prog.Set(this->progMap.GetKey(i)))
 		{
+			if (prog->EndsWith(UTF8STRC(".o")))
+			{
 
-		}
-		else if (prog->EndsWith(UTF8STRC(".h")))
-		{
+			}
+			else if (prog->EndsWith(UTF8STRC(".h")))
+			{
 
-		}
-		else
-		{
-			progList->Add(prog);
-			ret++;
+			}
+			else
+			{
+				progList->Add(prog);
+				ret++;
+			}
 		}
 		i++;
 	}
@@ -1881,8 +1874,8 @@ UOSInt IO::SMake::GetProgList(NotNullPtr<Data::ArrayList<Text::String*>> progLis
 
 Bool IO::SMake::IsProgGroup(Text::CStringNN progName) const
 {
-	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName);
-	if (prog == 0)
+	NN<IO::SMake::ProgramItem> prog;
+	if (!this->progMap.GetC(progName).SetTo(prog))
 	{
 		return false;
 	}
@@ -1898,7 +1891,7 @@ Bool IO::SMake::IsProgGroup(Text::CStringNN progName) const
 	return true;
 }
 
-const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CStringNN progName) const
+Optional<const IO::SMake::ProgramItem> IO::SMake::GetProgItem(Text::CStringNN progName) const
 {
 	return this->progMap.GetC(progName);
 }

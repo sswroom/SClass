@@ -1855,6 +1855,7 @@ AVIRMQTTPublishForm.o: ../../src/SSWR/AVIRead/AVIRMQTTPublishForm.cpp
 AVIRMQTTPublishTestForm.o: ../../src/SSWR/AVIRead/AVIRMQTTPublishTestForm.cpp
 AVIRMQTTSubscribeForm.o: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeForm.cpp
 AVIRMQTTSubscribeTestForm.o: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeTestForm.cpp
+AVIRMSGraphEmailForm.o: ../../src/SSWR/AVIRead/AVIRMSGraphEmailForm.cpp
 AVIRMSSQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMSSQLConnForm.cpp
 AVIRMySQLClientForm.o: ../../src/SSWR/AVIRead/AVIRMySQLClientForm.cpp
 AVIRMySQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMySQLConnForm.cpp

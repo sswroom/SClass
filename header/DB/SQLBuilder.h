@@ -40,6 +40,7 @@ namespace DB
 		void AppendTS(const Data::Timestamp &val);
 		void AppendDate(const Data::Date &val);
 		void AppendDbl(Double val);
+		void AppendNDbl(Double val);
 		void AppendBool(Bool val);
 		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
 		void AppendBinary(const UInt8 *buff, UOSInt buffSize);

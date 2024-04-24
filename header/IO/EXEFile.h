@@ -115,9 +115,9 @@ namespace IO
 	private:
 		Data::ArrayListStringNN propNames;
 		Data::ArrayListStringNN propValues;
-		Data::ArrayList<ImportInfo*> importList;
-		Data::ArrayList<ExportInfo*> exportList;
-		Data::ArrayList<ResourceInfo*> resList;
+		Data::ArrayListNN<ImportInfo> importList;
+		Data::ArrayListNN<ExportInfo> exportList;
+		Data::ArrayListNN<ResourceInfo> resList;
 
 		ProgramEnvDOS *envDOS;
 
@@ -136,24 +136,24 @@ namespace IO
 		UOSInt AddImportModule(Text::CString moduleName);
 		void AddImportFunc(UOSInt modIndex, Text::CString funcName);
 		UOSInt GetImportCount() const;
-		Text::String *GetImportName(UOSInt modIndex) const;
+		Optional<Text::String> GetImportName(UOSInt modIndex) const;
 		UOSInt GetImportFuncCount(UOSInt modIndex) const;
 		Optional<Text::String> GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const;
 
 		void AddExportFunc(Text::CString funcName);
 		UOSInt GetExportCount() const;
-		Text::String *GetExportName(UOSInt index) const;
+		Optional<Text::String> GetExportName(UOSInt index) const;
 
 		Bool HasDOS() const;
 		void AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
-		UInt8 *GetDOSCodePtr(UOSInt *codeLen) const;
+		UInt8 *GetDOSCodePtr(OutParam<UOSInt> codeLen) const;
 		void SetDOSHasPSP(Bool hasPSP);
 		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const;
 		UInt16 GetDOSCodeSegm() const;
 
 		void AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
 		UOSInt GetResourceCount() const;
-		const ResourceInfo *GetResource(UOSInt index) const;
+		Optional<const ResourceInfo> GetResource(UOSInt index) const;
 	public:
 		static Bool GetFileTime(Text::CStringNN fileName, Data::DateTime *fileTimeOut);
 		static Data::Timestamp GetFileTime(Text::CStringNN fileName);

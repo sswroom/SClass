@@ -151,6 +151,7 @@
 #include "SSWR/AVIRead/AVIRMQTTPublishTestForm.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeForm.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h"
+#include "SSWR/AVIRead/AVIRMSGraphEmailForm.h"
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
@@ -508,7 +509,8 @@ typedef enum
 	MNU_GCIS_CLIENT,
 	MNU_SET_DNS,
 	MNU_SSH_INFO,
-	MNU_DATA_MODEL
+	MNU_DATA_MODEL,
+	MNU_MSGRAPH_EMAIL
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
@@ -773,6 +775,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Email Address Validator"), MNU_EMAIL_ADDR_VALID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SMTP Client"), MNU_SMTP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("GCIS Client"), MNU_GCIS_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("MS Graph Client"), MNU_MSGRAPH_EMAIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("NetBIOS"));
 	mnu2->AddItem(CSTR("NetBIOS Scanner"), MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
@@ -2945,6 +2948,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NotNullPtr<SSWR::AVIRead::AVIRDataModelForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDataModelForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_MSGRAPH_EMAIL:
+		{
+			NotNullPtr<SSWR::AVIRead::AVIRMSGraphEmailForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMSGraphEmailForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -74,11 +74,11 @@ namespace IO
 			UInt8 *code;
 			UInt32 codeLen;
 			UInt16 signatureIndex;
-			Data::ArrayList<ExceptionHdlrInfo*> *exHdlrList;
-			Data::ArrayList<LocalVariableInfo*> *lvList;
-			Data::ArrayList<LocalVariableTypeInfo*> *lvtList;
-			Data::ArrayList<LineNumberInfo*> *lineNumList;
-			Data::ArrayList<UInt16> *exList;
+			Data::ArrayListNN<ExceptionHdlrInfo> exHdlrList;
+			Data::ArrayListNN<LocalVariableInfo> lvList;
+			Data::ArrayListNN<LocalVariableTypeInfo> lvtList;
+			Data::ArrayListNN<LineNumberInfo> lineNumList;
+			Data::ArrayList<UInt16> exList;
 		};
 		
 		struct DecompileEnv
@@ -142,8 +142,8 @@ namespace IO
 		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst) const;
 		UTF8Char *GetLVType(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst, Data::ArrayListString *importList, const UTF8Char *packageName) const;
 
-		Bool MethodParse(MethodInfo *method, const UInt8 *methodBuff) const;
-		void MethodFree(MethodInfo *method) const;
+		Bool MethodParse(NN<MethodInfo> method, const UInt8 *methodBuff) const;
+		void MethodFree(NN<MethodInfo> method) const;
 
 		void AppendCodeClassName(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName) const;
 		void AppendCodeClassContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt lev, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName);

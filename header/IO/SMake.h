@@ -6,7 +6,8 @@
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/FastStringMap.h"
-#include "Data/StringMap.h"
+#include "Data/FastStringMapNN.h"
+#include "Data/StringMapNN.h"
 #include "IO/ParsedObject.h"
 #include "IO/Writer.h"
 #include "Sync/Mutex.h"
@@ -43,8 +44,8 @@ namespace IO
 		};
 
 	private:
-		Data::StringMap<ConfigItem*> cfgMap;
-		Data::FastStringMap<ProgramItem*> progMap;
+		Data::StringMapNN<ConfigItem> cfgMap;
+		Data::FastStringMapNN<ProgramItem> progMap;
 		Data::FastStringMap<Int64> fileTimeMap;
 		Sync::Mutex errorMsgMut;
 		Text::String *errorMsg;
@@ -97,16 +98,16 @@ namespace IO
 
 		void AsyncPostCompile();
 
-		NotNullPtr<const Data::ArrayList<ConfigItem*>> GetConfigList() const;
+		NotNullPtr<const Data::ArrayListNN<ConfigItem>> GetConfigList() const;
 		Bool HasProg(Text::CStringNN progName) const;
 		Bool CompileProg(Text::CStringNN progName, Bool asmListing);
 		Bool ParseProg(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NotNullPtr<Text::String> progName);
 
 		void CleanFiles();
 
-		UOSInt GetProgList(NotNullPtr<Data::ArrayList<Text::String*>> progList); //No release
+		UOSInt GetProgList(NotNullPtr<Data::ArrayListNN<Text::String>> progList); //No release
 		Bool IsProgGroup(Text::CStringNN progName) const;
-		const ProgramItem *GetProgItem(Text::CStringNN progName) const;
+		Optional<const ProgramItem> GetProgItem(Text::CStringNN progName) const;
 	};
 }
 

@@ -43,7 +43,7 @@ IO::EXEFile::~EXEFile()
 	i = this->importList.GetCount();
 	while (i-- > 0)
 	{
-		ImportInfo *imp = this->importList.GetItem(i);
+		NN<ImportInfo> imp = this->importList.GetItemNoCheck(i);
 		imp->moduleName->Release();
 		j = imp->funcs->GetCount();
 		while (j-- > 0)
@@ -51,24 +51,24 @@ IO::EXEFile::~EXEFile()
 			OPTSTR_DEL(imp->funcs->GetItem(j));
 		}
 		DEL_CLASS(imp->funcs);
-		MemFree(imp);
+		MemFreeNN(imp);
 	}
 
 	i = this->exportList.GetCount();
 	while (i-- > 0)
 	{
-		ExportInfo *exp = this->exportList.GetItem(i);
+		NN<ExportInfo> exp = this->exportList.GetItemNoCheck(i);
 		exp->funcName->Release();
-		MemFree(exp);
+		MemFreeNN(exp);
 	}
 
 	i = this->resList.GetCount();
 	while (i-- > 0)
 	{
-		ResourceInfo *res = this->resList.GetItem(i);
+		NN<ResourceInfo> res = this->resList.GetItemNoCheck(i);
 		res->name->Release();
 		MemFree((void*)res->data);
-		MemFree(res);
+		MemFreeNN(res);
 	}
 }
 
@@ -103,8 +103,8 @@ Optional<Text::String> IO::EXEFile::GetPropValue(UOSInt index) const
 
 UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 {
-	ImportInfo *imp;
-	imp = MemAlloc(ImportInfo, 1);
+	NN<ImportInfo> imp;
+	imp = MemAllocNN(ImportInfo);
 	NEW_CLASS(imp->funcs, Data::ArrayListStringNN());
 	imp->moduleName = Text::String::New(moduleName);
 	return this->importList.Add(imp);
@@ -112,9 +112,8 @@ UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 
 void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CString funcName)
 {
-	ImportInfo *imp;
-	imp = this->importList.GetItem(modIndex);
-	if (imp)
+	NN<ImportInfo> imp;
+	if (this->importList.GetItem(modIndex).SetTo(imp))
 	{
 		imp->funcs->Add(Text::String::New(funcName));
 	}
@@ -125,10 +124,10 @@ UOSInt IO::EXEFile::GetImportCount() const
 	return this->importList.GetCount();
 }
 
-Text::String *IO::EXEFile::GetImportName(UOSInt modIndex) const
+Optional<Text::String> IO::EXEFile::GetImportName(UOSInt modIndex) const
 {
-	ImportInfo *imp = this->importList.GetItem(modIndex);
-	if (imp)
+	NN<ImportInfo> imp;
+	if (this->importList.GetItem(modIndex).SetTo(imp))
 	{
 		return imp->moduleName.Ptr();
 	}
@@ -137,8 +136,8 @@ Text::String *IO::EXEFile::GetImportName(UOSInt modIndex) const
 
 UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
 {
-	ImportInfo *imp = this->importList.GetItem(modIndex);
-	if (imp)
+	NN<ImportInfo> imp;
+	if (this->importList.GetItem(modIndex).SetTo(imp))
 	{
 		return imp->funcs->GetCount();
 	}
@@ -147,8 +146,8 @@ UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
 
 Optional<Text::String> IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const
 {
-	ImportInfo *imp = this->importList.GetItem(modIndex);
-	if (imp)
+	NN<ImportInfo> imp;
+	if (this->importList.GetItem(modIndex).SetTo(imp))
 	{
 		return imp->funcs->GetItem(funcIndex);
 	}
@@ -157,7 +156,7 @@ Optional<Text::String> IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIn
 
 void IO::EXEFile::AddExportFunc(Text::CString funcName)
 {
-	ExportInfo *exp = MemAlloc(ExportInfo, 1);
+	NN<ExportInfo> exp = MemAllocNN(ExportInfo);
 	exp->funcName = Text::String::New(funcName.v, funcName.leng);
 	this->exportList.Add(exp);
 }
@@ -167,12 +166,12 @@ UOSInt IO::EXEFile::GetExportCount() const
 	return this->exportList.GetCount();
 }
 
-Text::String *IO::EXEFile::GetExportName(UOSInt index) const
+Optional<Text::String> IO::EXEFile::GetExportName(UOSInt index) const
 {
-	ExportInfo *exp = this->exportList.GetItem(index);
-	if (exp)
+	NN<ExportInfo> exp;
+	if (this->exportList.GetItem(index).SetTo(exp))
 	{
-		return exp->funcName.Ptr();
+		return exp->funcName;
 	}
 	return 0;
 }
@@ -197,11 +196,11 @@ void IO::EXEFile::AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b1
 	}
 }
 
-UInt8 *IO::EXEFile::GetDOSCodePtr(UOSInt *codeLen) const
+UInt8 *IO::EXEFile::GetDOSCodePtr(OutParam<UOSInt> codeLen) const
 {
 	if (this->envDOS == 0)
 		return 0;
-	*codeLen = this->envDOS->b16CodeLen;
+	codeLen.Set(this->envDOS->b16CodeLen);
 	return this->envDOS->b16Codes;
 }
 
@@ -228,7 +227,7 @@ UInt16 IO::EXEFile::GetDOSCodeSegm() const
 
 void IO::EXEFile::AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
 {
-	ResourceInfo *res = MemAlloc(ResourceInfo, 1);
+	NN<ResourceInfo> res = MemAllocNN(ResourceInfo);
 	res->name = Text::String::New(name);
 	res->data = MemAlloc(UInt8, dataSize);
 	MemCopyNO((UInt8*)res->data, data, dataSize);
@@ -243,7 +242,7 @@ UOSInt IO::EXEFile::GetResourceCount() const
 	return this->resList.GetCount();
 }
 
-const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index) const
+Optional<const IO::EXEFile::ResourceInfo> IO::EXEFile::GetResource(UOSInt index) const
 {
 	return this->resList.GetItem(index);
 }

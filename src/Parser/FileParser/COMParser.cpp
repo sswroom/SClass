@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::COMParser::ParseFileHdr(NotNullPtr<IO::Str
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
 	UOSInt codeLen;
 	exef->AddDOSEnv((UOSInt)fd->GetDataSize() + 256, &regs, 0x80);
-	UInt8 *codePtr = exef->GetDOSCodePtr(&codeLen);
+	UInt8 *codePtr = exef->GetDOSCodePtr(codeLen);
 	exef->SetDOSHasPSP(true);
 	fd->GetRealData(0, codeLen - 256, Data::ByteArray(&codePtr[256], codeLen - 256));
 	codePtr[0] = 0xcd;

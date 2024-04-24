@@ -1,6 +1,7 @@
 #ifndef _SM_NET_MSGRAPHCLIENT
 #define _SM_NET_MSGRAPHCLIENT
 #include "Data/Timestamp.h"
+#include "IO/LogTool.h"
 #include "Net/HTTPClient.h"
 #include "Net/JSONResponse.h"
 #include "Net/SSLEngine.h"
@@ -31,10 +32,6 @@ namespace Net
 
 	JSONRESP_BEGIN(MSGraphMessageCategory)
 	JSONRESP_SEC_GET(MSGraphMessageCategory)
-	JSONRESP_END
-
-	JSONRESP_BEGIN(MSGraphMessageReplyTo)
-	JSONRESP_SEC_GET(MSGraphMessageReplyTo)
 	JSONRESP_END
 
 	JSONRESP_BEGIN(MSGraphDateTime)
@@ -75,6 +72,12 @@ namespace Net
 	JSONRESP_SEC_GET(MSGraphEmailAddress)
 	JSONRESP_GETSTR("address",GetAddress)
 	JSONRESP_GETSTR("name",GetName)
+	JSONRESP_END
+
+	JSONRESP_BEGIN(MSGraphMessageReplyTo)
+	JSONRESP_OBJ("emailAddress",false,false,MSGraphEmailAddress)
+	JSONRESP_SEC_GET(MSGraphMessageReplyTo)
+	JSONRESP_GETOBJ("emailAddress",GetEmailAddress,MSGraphEmailAddress)
 	JSONRESP_END
 
 	JSONRESP_BEGIN(MSGraphRecipient)
@@ -202,8 +205,9 @@ namespace Net
 	{
 	private:
 		typedef Bool (*IsKnownTypeFunc)(Text::CStringNN type);
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
+		Optional<IO::LogTool> log;
 
 		Optional<MSGraphAccessToken> AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content);
 
@@ -211,6 +215,8 @@ namespace Net
 	public:
 		MSGraphClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		~MSGraphClient();
+
+		void SetLog(NN<IO::LogTool> log);
 
 		Optional<MSGraphAccessToken> AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope);
 		Optional<MSGraphEntity> EntityGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName);

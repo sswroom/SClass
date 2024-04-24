@@ -122,7 +122,7 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(NotNullPtr<IO::ConfigFile> cfg)
 			key = it.Next();
 			if (cfg->GetCateValue(cate, key).SetTo(val) && val->StartsWith(UTF8STRC("ENC(")) && val->EndsWith(')'))
 			{
-				buffSize = this->DecryptB64(Text::CString(&val->v[4], val->leng - 5), buff);
+				buffSize = this->DecryptB64(Text::CStringNN(&val->v[4], val->leng - 5), buff);
 				if (buffSize > 0)
 				{
 					val = Text::String::New(buff, buffSize);
@@ -162,7 +162,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt sr
 	return outSize;
 }
 
-UOSInt Crypto::Encrypt::JasyptEncryptor::DecryptB64(Text::CString b64Str, UInt8 *outBuff)
+UOSInt Crypto::Encrypt::JasyptEncryptor::DecryptB64(Text::CStringNN b64Str, UInt8 *outBuff)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 *tmpBuff = MemAlloc(UInt8, b64Str.leng);

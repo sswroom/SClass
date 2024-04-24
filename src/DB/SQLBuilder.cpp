@@ -119,6 +119,19 @@ void DB::SQLBuilder::AppendDbl(Double val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBDbl(this->sb.GetEndPtr(), val, this->sqlType));
 }
 
+void DB::SQLBuilder::AppendNDbl(Double val)
+{
+	if (Math::IsNAN(val))
+	{
+		this->sb.Append(CSTR("null"));
+	}
+	else
+	{
+		this->sb.AllocLeng(DB::DBUtil::SDBDblLeng(val, this->sqlType));
+		this->sb.SetEndPtr(DB::DBUtil::SDBDbl(this->sb.GetEndPtr(), val, this->sqlType));
+	}
+}
+
 void DB::SQLBuilder::AppendBool(Bool val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBBoolLeng(val, this->sqlType));

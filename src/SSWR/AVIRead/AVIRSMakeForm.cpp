@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 		NotNullPtr<Text::String> s;
 		UOSInt i;
 		UOSInt j;
-		const IO::SMake::ProgramItem *prog;
+		NN<const IO::SMake::ProgramItem> prog;
 		me->smake->ParseProg(objList, liblist, procList, headerList, latestTime, progGroup, progName);
 		procList.Clear();
 		i = 0;
@@ -28,8 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 		{
 			s = Text::String::OrEmpty(objList.GetKey(i));
 			me->lbProgObject->AddItem(s, 0);
-			prog = me->smake->GetProgItem(s->ToCString());
-			if (prog && prog->srcFile)
+			if (me->smake->GetProgItem(s->ToCString()).SetTo(prog) && prog->srcFile)
 			{
 				procList.Put(prog->srcFile, 1);
 			}
@@ -72,8 +71,8 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(AnyType userObj)
 	me->lbProgGroupItems->ClearItems();
 	if (me->lbProgGroup->GetSelectedItemTextNew().SetTo(progName))
 	{
-		const IO::SMake::ProgramItem *prog = me->smake->GetProgItem(progName->ToCString());
-		if (prog)
+		NN<const IO::SMake::ProgramItem> prog;
+		if (me->smake->GetProgItem(progName->ToCString()).SetTo(prog))
 		{
 			UOSInt i = 0;
 			UOSInt j = prog->subItems.GetCount();
@@ -150,7 +149,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> paren
 	this->lvConfig->AddColumn(CSTR("Name"), 150);
 	this->lvConfig->AddColumn(CSTR("Value"), 450);
 
-	Data::ArrayList<Text::String*> progList;
+	Data::ArrayListNN<Text::String> progList;
 	NotNullPtr<Text::String> progName;
 	UOSInt i = 0;
 	UOSInt j = this->smake->GetProgList(progList);
@@ -168,13 +167,13 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> paren
 		i++;
 	}
 
-	NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem*>> configList = this->smake->GetConfigList();
-	IO::SMake::ConfigItem *config;
+	NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> configList = this->smake->GetConfigList();
+	NN<IO::SMake::ConfigItem> config;
 	i = 0;
 	j = configList->GetCount();
 	while (i < j)
 	{
-		config = configList->GetItem(i);
+		config = configList->GetItemNoCheck(i);
 		this->lvConfig->AddItem(config->name, config);
 		this->lvConfig->SetSubItem(i, 1, config->value);
 		i++;

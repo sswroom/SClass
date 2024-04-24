@@ -131,8 +131,13 @@ Bool Net::MSGraphEventMessageRequest::IsKnownType(Text::CStringNN type)
 
 Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content)
 {
+	NN<IO::LogTool> log;
 	if (status != Net::WebStatus::SC_OK)
 	{
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(CSTR("Error in getting access token"), IO::LogHandler::LogLevel::Error);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in getting access token: status = %d, content = %s\r\n", (Int32)status, content.v);
 #endif
@@ -141,6 +146,10 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 	Text::JSONBase *result = Text::JSONBase::ParseJSONStr(content);
 	if (result == 0)
 	{
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(CSTR("Error in parsing access token (Not JSON)"), IO::LogHandler::LogLevel::Error);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in parsing access token (Not JSON): content = %s\r\n", content.v);
 #endif
@@ -158,10 +167,27 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 		NotNullPtr<MSGraphAccessToken> token;
 		NEW_CLASSNN(token, MSGraphAccessToken(t, expiresIn, extExpiresIn, at));
 		result->EndUse();
+		if (this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("token_type = "));
+			sbLog.Append(t);
+			sbLog.Append(CSTR(", access_token = "));
+			sbLog.Append(at);
+			sbLog.Append(CSTR(", expires_in = "));
+			sbLog.AppendI32(expiresIn);
+			sbLog.Append(CSTR(", ext_expires_in = "));
+			sbLog.AppendI32(extExpiresIn);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Command);
+		}
 		return token;
 	}
 	else
 	{
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(CSTR("Error in parsing access token (Fields not found)"), IO::LogHandler::LogLevel::Error);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in parsing access token (Fields not found): content = %s\r\n", content.v);
 #endif
@@ -245,10 +271,16 @@ Net::MSGraphClient::MSGraphClient(NotNullPtr<Net::SocketFactory> sockf, Optional
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
+	this->log = 0;
 }
 
 Net::MSGraphClient::~MSGraphClient()
 {
+}
+
+void Net::MSGraphClient::SetLog(NN<IO::LogTool> log)
+{
+	this->log = log;
 }
 
 Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope)
@@ -256,6 +288,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
+	NN<IO::LogTool> log;
 	if (tenantId.leng > 40 || clientId.leng > 40 || clientSecret.leng > 64)
 	{
 		return 0;
@@ -264,6 +297,13 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, tenantId.v);
 	sb.AppendP(sbuff, sptr);
 	sb.Append(CSTR("/oauth2/v2.0/token"));
+	if (this->log.SetTo(log))
+	{
+		Text::StringBuilderUTF8 sbLog;
+		sbLog.Append(CSTR("AccessTokenGet: POST "));
+		sbLog.Append(sb);
+		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+	}
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 	cli->FormBegin();
 	cli->FormAdd(CSTR("client_id"), clientId);
@@ -279,11 +319,22 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	if (cli->ReadAllContent(sb, 4096, 1048576))
 	{
 		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
 		return AccessTokenParse(status, sb.ToCString());
 	}
 	else
 	{
 		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("AccessTokenGet request error: status = "));
+			sbLog.AppendI32(status);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: AccessTokenGet request error: status = %d\r\n", (Int32)status);
 #endif
@@ -349,6 +400,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 	UTF8Char *sptr;
 	if (userName.leng > 200)
 		return false;
+	NN<IO::LogTool> log;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
 	if (userName.v)
@@ -379,6 +431,13 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 		sb.Append(CSTR("?%24skip="));
 		sb.AppendUOSInt(top);
 	}
+	if (this->log.SetTo(log))
+	{
+		Text::StringBuilderUTF8 sbLog;
+		sbLog.Append(CSTR("MailMessagesGet: GET "));
+		sbLog.Append(sb);
+		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
+	}
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
@@ -386,9 +445,17 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 	if (cli->ReadAllContent(sb, 4096, 1048576))
 	{
 		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 		if (json == 0)
 		{
+			if (this->log.SetTo(log))
+			{
+				log->LogMessage(CSTR("MailMessagesGet cannot parse result"), IO::LogHandler::LogLevel::Error);
+			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesGet cannot parse result: %d, %s\r\n", (Int32)status, sb.ToString());
 #endif
@@ -397,6 +464,10 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 		if (json->GetType() != Text::JSONType::Object)
 		{
 			json->EndUse();
+			if (this->log.SetTo(log))
+			{
+				log->LogMessage(CSTR("MailMessagesGet not json object"), IO::LogHandler::LogLevel::Error);
+			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesGet not json object: %d, %s\r\n", (Int32)status, sb.ToString());
 #endif
@@ -408,6 +479,10 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 		if (arr == 0)
 		{
 			json->EndUse();
+			if (this->log.SetTo(log))
+			{
+				log->LogMessage(CSTR("MailMessagesGet value array not found"), IO::LogHandler::LogLevel::Error);
+			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesGet value array not found: %d, %s\r\n", (Int32)status, sb.ToString());
 #endif
@@ -441,6 +516,13 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 	else
 	{
 		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("MailFoldersGet request error: status = "));
+			sbLog.AppendI32((Int32)status);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: MailFoldersGet request error: status = %d\r\n", (Int32)status);
 #endif

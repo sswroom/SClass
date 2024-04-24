@@ -210,10 +210,10 @@ UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, const MethodInfo *method)
 		return paramIndex;
 	}
 	UInt32 i = 0;
-	UOSInt j = method->lvList->GetCount();
+	UOSInt j = method->lvList.GetCount();
 	while (i < j)
 	{
-		LocalVariableInfo *lv = method->lvList->GetItem(i);
+		NN<LocalVariableInfo> lv = method->lvList.GetItemNoCheck(i);
 		if (lv->startPC == 0 && lv->index == paramIndex)
 		{
 			return i;
@@ -231,17 +231,17 @@ void IO::JavaClass::AppendIndent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt 
 void IO::JavaClass::AppendLineNum(NotNullPtr<Text::StringBuilderUTF8> sb, DecompileEnv *env, const UInt8 *codePtr) const
 {
 	UInt16 codePC = (UInt16)(codePtr - env->codeStart);
-	if (env->method == 0 || env->method->lineNumList->GetCount() == 0)
+	if (env->method == 0 || env->method->lineNumList.GetCount() == 0)
 	{
 		return;
 	}
-	LineNumberInfo *lineNum;
+	NN<LineNumberInfo> lineNum;
 	UOSInt i = 0;
-	UOSInt j = env->method->lineNumList->GetCount();
+	UOSInt j = env->method->lineNumList.GetCount();
 	UOSInt k = INVALID_INDEX;
 	while (i < j)
 	{
-		lineNum = env->method->lineNumList->GetItem(i);
+		lineNum = env->method->lineNumList.GetItemNoCheck(i);
 		if (lineNum->startPC > codePC)
 		{
 			break;
@@ -251,7 +251,7 @@ void IO::JavaClass::AppendLineNum(NotNullPtr<Text::StringBuilderUTF8> sb, Decomp
 	}
 	if (k != INVALID_INDEX)
 	{
-		lineNum = env->method->lineNumList->GetItem(k);
+		lineNum = env->method->lineNumList.GetItemNoCheck(k);
 		sb->AppendC(UTF8STRC(" // LineNum "));
 		sb->AppendU16(lineNum->lineNumber);
 	}
@@ -977,10 +977,10 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	if (method)
 	{
 		i = 0;
-		j = method->lvList->GetCount();
+		j = method->lvList.GetCount();
 		while (i < j)
 		{
-			if ((sptr = this->GetConstName(sbuff, method->lvList->GetItem(i)->nameIndex)) != 0)
+			if ((sptr = this->GetConstName(sbuff, method->lvList.GetItemNoCheck(i)->nameIndex)) != 0)
 			{
 				typeNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
 			}
@@ -3771,10 +3771,10 @@ UTF8Char *IO::JavaClass::GetLVName(UTF8Char *sbuff, UInt16 index, const MethodIn
 	if (method)
 	{
 		UOSInt i = 0;
-		UOSInt j = method->lvList->GetCount();
+		UOSInt j = method->lvList.GetCount();
 		while (i < j)
 		{
-			LocalVariableInfo *lv = method->lvList->GetItem(i);
+			NN<LocalVariableInfo> lv = method->lvList.GetItemNoCheck(i);
 			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UOSInt)lv->length > codeOfst)
 			{
 				UTF8Char *ret = this->GetConstName(sbuff, lv->nameIndex);
@@ -3797,10 +3797,10 @@ UTF8Char *IO::JavaClass::GetLVType(UTF8Char *sbuff, UInt16 index, const MethodIn
 		UOSInt i;
 		UOSInt j;
 		i = 0;
-		j = method->lvtList->GetCount();
+		j = method->lvtList.GetCount();
 		while (i < j)
 		{
-			LocalVariableTypeInfo *lvt = method->lvtList->GetItem(i);
+			NN<LocalVariableTypeInfo> lvt = method->lvtList.GetItemNoCheck(i);
 			if (lvt->index == index && lvt->startPC <= codeOfst && lvt->startPC + (UOSInt)lvt->length > codeOfst)
 			{
 				Text::StringBuilderUTF8 sbTmp;
@@ -3811,10 +3811,10 @@ UTF8Char *IO::JavaClass::GetLVType(UTF8Char *sbuff, UInt16 index, const MethodIn
 		}
 
 		i = 0;
-		j = method->lvList->GetCount();
+		j = method->lvList.GetCount();
 		while (i < j)
 		{
-			LocalVariableInfo *lv = method->lvList->GetItem(i);
+			NN<LocalVariableInfo> lv = method->lvList.GetItemNoCheck(i);
 			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UOSInt)lv->length > codeOfst)
 			{
 				Text::StringBuilderUTF8 sbTmp;
@@ -3827,13 +3827,8 @@ UTF8Char *IO::JavaClass::GetLVType(UTF8Char *sbuff, UInt16 index, const MethodIn
 	return Text::StrConcatC(sbuff, UTF8STRC("java.lang.Object"));
 }
 
-Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) const
+Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, const UInt8 *methodBuff) const
 {
-	NEW_CLASS(method->exHdlrList, Data::ArrayList<ExceptionHdlrInfo*>());
-	NEW_CLASS(method->lvList, Data::ArrayList<LocalVariableInfo*>());
-	NEW_CLASS(method->lvtList, Data::ArrayList<LocalVariableTypeInfo*>());
-	NEW_CLASS(method->lineNumList, Data::ArrayList<LineNumberInfo*>());
-	NEW_CLASS(method->exList, Data::ArrayList<UInt16>());
 	method->accessFlags = ReadMUInt16(methodBuff);
 	method->nameIndex = ReadMUInt16(&methodBuff[2]);
 	method->descriptorIndex = ReadMUInt16(&methodBuff[4]);
@@ -3869,12 +3864,12 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) con
 				ptr2 += 2;
 				while (exceptLen-- > 0)
 				{
-					ExceptionHdlrInfo *exHdlr = MemAlloc(ExceptionHdlrInfo, 1);
+					NN<ExceptionHdlrInfo> exHdlr = MemAllocNN(ExceptionHdlrInfo);
 					exHdlr->startPC = ReadMUInt16(&ptr2[0]);
 					exHdlr->endPC = ReadMUInt16(&ptr2[2]);
 					exHdlr->handlerPC = ReadMUInt16(&ptr2[4]);
 					exHdlr->catchType = ReadMUInt16(&ptr2[6]);
-					method->exHdlrList->Add(exHdlr);
+					method->exHdlrList.Add(exHdlr);
 					ptr2 += 8;
 				}
 				UInt16 attrCount = ReadMUInt16(&ptr2[0]);
@@ -3892,19 +3887,19 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) con
 							const UInt8 *lvTable = &ptr2[6];
 							UOSInt local_variable_table_length = ReadMUInt16(lvTable);
 							UOSInt k;
-							LocalVariableInfo *lv;
+							NN<LocalVariableInfo> lv;
 							if (local_variable_table_length * 10 + 2 <= len)
 							{
 								k = 0;
 								while (k < local_variable_table_length)
 								{
-									lv = MemAlloc(LocalVariableInfo, 1);
+									lv = MemAllocNN(LocalVariableInfo);
 									lv->startPC = ReadMUInt16(&lvTable[2 + k * 10 + 0]);
 									lv->length = ReadMUInt16(&lvTable[2 + k * 10 + 2]);
 									lv->nameIndex = ReadMUInt16(&lvTable[2 + k * 10 + 4]);
 									lv->descriptorIndex = ReadMUInt16(&lvTable[2 + k * 10 + 6]);
 									lv->index = ReadMUInt16(&lvTable[2 + k * 10 + 8]);
-									method->lvList->Add(lv);
+									method->lvList.Add(lv);
 									k++;
 								}
 							}
@@ -3914,19 +3909,19 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) con
 							const UInt8 *lvtTable = &ptr2[6];
 							UOSInt local_variable_type_table_length = ReadMUInt16(lvtTable);
 							UOSInt k;
-							LocalVariableTypeInfo *lvt;
+							NN<LocalVariableTypeInfo> lvt;
 							if (local_variable_type_table_length * 10 + 2 <= len)
 							{
 								k = 0;
 								while (k < local_variable_type_table_length)
 								{
-									lvt = MemAlloc(LocalVariableTypeInfo, 1);
+									lvt = MemAllocNN(LocalVariableTypeInfo);
 									lvt->startPC = ReadMUInt16(&lvtTable[2 + k * 10 + 0]);
 									lvt->length = ReadMUInt16(&lvtTable[2 + k * 10 + 2]);
 									lvt->nameIndex = ReadMUInt16(&lvtTable[2 + k * 10 + 4]);
 									lvt->signatureIndex = ReadMUInt16(&lvtTable[2 + k * 10 + 6]);
 									lvt->index = ReadMUInt16(&lvtTable[2 + k * 10 + 8]);
-									method->lvtList->Add(lvt);
+									method->lvtList.Add(lvt);
 									k++;
 								}
 							}
@@ -3938,10 +3933,10 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) con
 							const UInt8 *ptr3 = &ptr2[8];
 							while (k < line_number_table_length)
 							{
-								LineNumberInfo *lineNumber = MemAlloc(LineNumberInfo, 1);
+								NN<LineNumberInfo> lineNumber = MemAllocNN(LineNumberInfo);
 								lineNumber->startPC = ReadMUInt16(&ptr3[0]);
 								lineNumber->lineNumber = ReadMUInt16(&ptr3[2]);
-								method->lineNumList->Add(lineNumber);
+								method->lineNumList.Add(lineNumber);
 								k++;
 								ptr3 += 4;
 							}
@@ -3957,7 +3952,7 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) con
 				UInt16 j = 0;
 				while (j < exCnt)
 				{
-					method->exList->Add(ReadMUInt16(&ptr[8 + j * 2]));
+					method->exList.Add(ReadMUInt16(&ptr[8 + j * 2]));
 					j++;
 				}
 			}
@@ -3976,22 +3971,17 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff) con
 	return true;
 }
 
-void IO::JavaClass::MethodFree(MethodInfo *method) const
+void IO::JavaClass::MethodFree(NN<MethodInfo> method) const
 {
 	if (method->code)
 	{
 		MemFree(method->code);
 		method->code = 0;
 	}
-	LIST_FREE_FUNC(method->exHdlrList, MemFree);
-	DEL_CLASS(method->exHdlrList);
-	LIST_FREE_FUNC(method->lvList, MemFree);
-	DEL_CLASS(method->lvList);
-	LIST_FREE_FUNC(method->lvtList, MemFree);
-	DEL_CLASS(method->lvtList);
-	LIST_FREE_FUNC(method->lineNumList, MemFree);
-	DEL_CLASS(method->lineNumList);
-	DEL_CLASS(method->exList);
+	method->exHdlrList.MemFreeAll();
+	method->lvList.MemFreeAll();
+	method->lvtList.MemFreeAll();
+	method->lineNumList.MemFreeAll();
 }
 
 void IO::JavaClass::AppendCodeClassName(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName) const
@@ -4384,7 +4374,7 @@ void IO::JavaClass::AppendCodeMethod(NotNullPtr<Text::StringBuilderUTF8> sb, UOS
 	UOSInt j;
 	UTF8Char typeBuff[256];
 	MethodInfo method;
-	MethodParse(&method, ptr);
+	MethodParse(method, ptr);
 	UInt16 attrCnt = ReadMUInt16(&this->methods[index][6]);
 
 	ptr = &this->methods[index][8];
@@ -4462,7 +4452,7 @@ void IO::JavaClass::AppendCodeMethod(NotNullPtr<Text::StringBuilderUTF8> sb, UOS
 	}
 	ptr = &this->methods[index][8];
 	i = 0;
-	j = method.exList->GetCount();
+	j = method.exList.GetCount();
 	while (i < j)
 	{
 		if (i == 0)
@@ -4474,7 +4464,7 @@ void IO::JavaClass::AppendCodeMethod(NotNullPtr<Text::StringBuilderUTF8> sb, UOS
 			sb->AppendC(UTF8STRC(", "));
 		}
 		sbTmp.ClearStr();
-		this->ClassNameString(method.exList->GetItem(i), sbTmp);
+		this->ClassNameString(method.exList.GetItem(i), sbTmp);
 		this->AppendCodeClassName(sb, sbTmp.ToString(), importList, packageName);
 		i++;
 	}
@@ -4532,7 +4522,7 @@ void IO::JavaClass::AppendCodeMethod(NotNullPtr<Text::StringBuilderUTF8> sb, UOS
 	}
 	this->AppendIndent(sb, lev);
 	sb->AppendC(UTF8STRC("}\r\n"));
-	MethodFree(&method);
+	MethodFree(method);
 }
 
 void IO::JavaClass::AppendCodeMethodCodes(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt lev, Data::ArrayListString *importList, const UTF8Char *packageName, const UInt8 *codeAttr, const UTF8Char *typeBuff, const MethodInfo *method) const
@@ -5446,7 +5436,7 @@ Bool IO::JavaClass::FileStructDetail(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	while (i < this->methodCnt)
 	{
 		MethodInfo method;
-		this->MethodParse(&method, this->methods[i]);
+		this->MethodParse(method, this->methods[i]);
 		sb->AppendC(UTF8STRC("Method "));
 		sb->AppendUOSInt(i);
 		sb->AppendC(UTF8STRC(" Access Flags = "));
@@ -5476,7 +5466,7 @@ Bool IO::JavaClass::FileStructDetail(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			attr = this->DetailAttribute(attr, 1, sb);
 			j++;
 		}
-		this->MethodFree(&method);
+		this->MethodFree(method);
 		i++;
 	}
 
@@ -5520,7 +5510,7 @@ Bool IO::JavaClass::MethodsGetDecl(UOSInt index, NotNullPtr<Text::StringBuilderU
 	}
 
 	MethodInfo method;
-	this->MethodParse(&method, this->methods[index]);
+	this->MethodParse(method, this->methods[index]);
 	if (method.accessFlags & 1)
 	{
 		sb->AppendC(UTF8STRC("public "));
@@ -5561,7 +5551,7 @@ Bool IO::JavaClass::MethodsGetDecl(UOSInt index, NotNullPtr<Text::StringBuilderU
 	{
 		this->DetailNameType(method.nameIndex, method.descriptorIndex, thisClass, 0, sb, 0, &method, 0, 0);
 	}
-	this->MethodFree(&method);
+	this->MethodFree(method);
 	return true;
 }
 

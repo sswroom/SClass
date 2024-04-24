@@ -55,14 +55,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				else if (cmdLines[i][1] == 'V')
 				{
 					smake.SetMessageWriter(&console);
-					NotNullPtr<const Data::ArrayList<IO::SMake::ConfigItem*>> cfgList = smake.GetConfigList();
-					IO::SMake::ConfigItem *cfg;
+					NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = smake.GetConfigList();
+					NN<IO::SMake::ConfigItem> cfg;
 					Text::StringBuilderUTF8 sb;
 					j = 0;
 					k = cfgList->GetCount();
 					while (j < k)
 					{
-						cfg = cfgList->GetItem(j);
+						cfg = cfgList->GetItemNoCheck(j);
 						sb.ClearStr();
 						sb.Append(cfg->name);
 						sb.AppendC(UTF8STRC(" = "));

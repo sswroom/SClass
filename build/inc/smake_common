@@ -1213,6 +1213,7 @@ GUITest9.o: ../../main/UI/GUITest9.cpp
 AnyType.h:
 Handles.h:
 InOutParam.h:
+NInt32.h:
 NotNullPtr.h:
 Optional.h:
 OptOut.h:
@@ -4053,6 +4054,8 @@ SSWR/AVIRead/AVIRMQTTSubscribeForm.h:
 @AVIRMQTTSubscribeForm.o
 SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h:
 @AVIRMQTTSubscribeTestForm.o
+SSWR/AVIRead/AVIRMSGraphEmailForm.h:
+@AVIRMSGraphEmailForm.o
 SSWR/AVIRead/AVIRMSSQLConnForm.h:
 @AVIRMSSQLConnForm.o
 SSWR/AVIRead/AVIRMySQLClientForm.h:

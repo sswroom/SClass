@@ -210,7 +210,7 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 	UTF8Char c;
 	while ((c = *s++) != 0)
 	{
-		if (Text::CharUtil::IsAlphaNumeric(c) || c == '-')
+		if (Text::CharUtil::IsAlphaNumeric(c) || c == '-' || c == '_')
 		{
 
 		}

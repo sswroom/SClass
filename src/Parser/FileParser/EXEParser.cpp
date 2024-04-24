@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(NotNullPtr<IO::Str
 
 
 	exef->AddDOSEnv(fileSize - hdrSize + 256, &regs, 0x70);
-	UInt8 *codePtr = exef->GetDOSCodePtr(&codeLen);
+	UInt8 *codePtr = exef->GetDOSCodePtr(codeLen);
 	exef->SetDOSHasPSP(true);
 	fd->GetRealData(hdrSize, codeLen - 256, Data::ByteArray(&codePtr[256], codeLen - 256));
 

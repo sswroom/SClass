@@ -17,6 +17,7 @@
 #include "sdefs.h"
 #include "NotNullPtr.h"
 #include "InOutParam.h"
+#include "NInt32.h"
 #include "OptOut.h"
 #include "Optional.h"
 #include "UnsafeArray.h"
