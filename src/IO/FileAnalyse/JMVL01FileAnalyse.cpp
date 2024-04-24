@@ -49,7 +49,7 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 tagHdr[5];
-	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag;
+	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
 	ofst = 0;
 	dataSize = me->fd->GetDataSize();
 	
@@ -60,7 +60,7 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::
 		
 		if (tagHdr[0] == 0x78 && tagHdr[1] == 0x78)
 		{
-			tag = MemAlloc(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag, 1);
+			tag = MemAllocNN(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag);
 			tag->ofst = ofst;
 			tag->size = (UOSInt)tagHdr[2] + 5;
 			tag->tagType = tagHdr[3];
@@ -69,7 +69,7 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::
 		}
 		else if (tagHdr[0] == 0x79 && tagHdr[1] == 0x79)
 		{
-			tag = MemAlloc(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag, 1);
+			tag = MemAllocNN(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag);
 			tag->ofst = ofst;
 			tag->size = (UOSInt)ReadMUInt16(&tagHdr[2]) + 6;
 			tag->tagType = tagHdr[4];
@@ -107,7 +107,7 @@ IO::FileAnalyse::JMVL01FileAnalyse::~JMVL01FileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->tags, MemFree);
+	this->tags.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::JMVL01FileAnalyse::GetFormatName()
@@ -122,9 +122,9 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag = this->tags.GetItem(index);
+	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
 	Text::CString name;
-	if (tag == 0)
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
@@ -147,11 +147,11 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
-	JMVL01Tag *pack;
+	NN<JMVL01Tag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItem((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -173,8 +173,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));

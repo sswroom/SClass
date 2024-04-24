@@ -1,33 +1,34 @@
 #ifndef _SM_MAP_MULTIMAPRENDERER
 #define _SM_MAP_MULTIMAPRENDERER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Map/MapRenderer.h"
 
 namespace Map
 {
-	class MultiMapRenderer : public Map::MapRenderer, public Data::List<Map::MapRenderer*>
+	class MultiMapRenderer : public Map::MapRenderer, public Data::ReadingListNN<Map::MapRenderer>
 	{
 	private:
 		Int32 bgColor;
 		Bool updating;
 		UpdatedHandler updHdlr;
-		void *updObj;
-		Data::ArrayList<Map::MapRenderer *> *renderers;
+		AnyType updObj;
+		Data::ArrayListNN<Map::MapRenderer> renderers;
 
-		static void __stdcall OnUpdated(void *userObj);
+		static void __stdcall OnUpdated(AnyType userObj);
 	public:
 		MultiMapRenderer(Int32 bgColor);
 		virtual ~MultiMapRenderer();
-		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view);
-		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, void *userObj);
+		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS);
+		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, AnyType userObj);
 
-		void Add(Map::MapRenderer *renderer);
+		UOSInt Add(NN<Map::MapRenderer> renderer);
 		void Clear();
-		virtual OSInt GetCount();
-		virtual Map::MapRenderer *GetItem(OSInt index);
+		virtual UOSInt GetCount();
+		virtual NN<Map::MapRenderer> GetItemNoCheck(UOSInt index);
+		virtual Optional<Map::MapRenderer> GetItem(UOSInt index);
 
 		void BeginUpdate();
 		void EndUpdate();
 	};
-};
+}
 #endif

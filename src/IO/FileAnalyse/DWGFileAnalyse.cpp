@@ -7,12 +7,12 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-class DWGFileAnalyseComparator : public Data::Comparator<IO::FileAnalyse::DWGFileAnalyse::PackInfo*>
+class DWGFileAnalyseComparator : public Data::Comparator<NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo>>
 {
 public:
 	virtual ~DWGFileAnalyseComparator(){};
 
-	virtual OSInt Compare(IO::FileAnalyse::DWGFileAnalyse::PackInfo *a, IO::FileAnalyse::DWGFileAnalyse::PackInfo *b) const
+	virtual OSInt Compare(NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> a, NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> b) const
 	{
 		if (a->fileOfst > b->fileOfst)
 		{
@@ -33,14 +33,14 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 {
 	NotNullPtr<IO::FileAnalyse::DWGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::DWGFileAnalyse>();
 	UInt8 buff[256];
-	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
 	{
 		me->fd->GetRealData(0, 256, BYTEARR(buff));
 		UOSInt sectionCnt = ReadUInt32(&buff[21]);
 		UOSInt i;
 		UOSInt ofst;
-		pack = MemAlloc(IO::FileAnalyse::DWGFileAnalyse::PackInfo, 1);
+		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 25 + 9 * sectionCnt + 2 + 16;
 		pack->packType = PackType::FileHeaderV1;
@@ -57,7 +57,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 				secSize = ReadUInt32(&buff[ofst + 5]);
 				if (secOfst != 0 && secSize != 0)
 				{
-					pack = MemAlloc(IO::FileAnalyse::DWGFileAnalyse::PackInfo, 1);
+					pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 					pack->fileOfst = secOfst;
 					pack->packSize = secSize;
 					switch (buff[ofst])
@@ -91,7 +91,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		UInt32 imgAddr = ReadUInt32(&buff[13]);
 		me->fd->GetRealData(imgAddr, 256, BYTEARR(buff));
 		UInt32 imgSize = ReadUInt32(&buff[16]);
-		pack = MemAlloc(IO::FileAnalyse::DWGFileAnalyse::PackInfo, 1);
+		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 		pack->fileOfst = imgAddr;
 		pack->packSize = imgSize + 20 + 16;
 		pack->packType = PackType::PreviewImage;
@@ -99,7 +99,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 
 		DWGFileAnalyseComparator comparator;
 		Sync::MutexUsage mutUsage;
-		Data::Sort::ArtificialQuickSort::Sort<PackInfo*>(me->packs.GetArrayList(mutUsage).Ptr(), comparator);
+		Data::Sort::ArtificialQuickSort::Sort<NN<PackInfo>>(me->packs.GetArrayList(mutUsage).Ptr(), comparator);
 		mutUsage.EndUse();
 	}
 }
@@ -142,7 +142,7 @@ IO::FileAnalyse::DWGFileAnalyse::~DWGFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::DWGFileAnalyse::GetFormatName()
@@ -157,9 +157,8 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -174,11 +173,11 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -197,11 +196,10 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	Data::UUID uuid;

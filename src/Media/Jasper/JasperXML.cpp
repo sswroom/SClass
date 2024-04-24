@@ -18,6 +18,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 	NotNullPtr<Text::String> nodeText;
 	Media::Jasper::JasperReport *report;
 	Text::StringBuilderUTF8 sb;
+	NN<JasperBand> band;
 	NEW_CLASS(report, Media::Jasper::JasperReport(fileName));
 	i = 0;
 	j = reader->GetAttribCount();
@@ -273,9 +274,9 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		{
 			while (reader->NextElementName().SetTo(nodeText))
 			{
-				if (nodeText->Equals(UTF8STRC("band")))
+				if (nodeText->Equals(UTF8STRC("band")) && ParseBand(reader).SetTo(band))
 				{
-					report->SetTitle(ParseBand(reader));
+					report->SetTitle(band);
 				}
 				else
 				{
@@ -288,9 +289,9 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 		{
 			while (reader->NextElementName().SetTo(nodeText))
 			{
-				if (nodeText->Equals(UTF8STRC("band")))
+				if (nodeText->Equals(UTF8STRC("band")) && ParseBand(reader).SetTo(band))
 				{
-					report->AddDetail(ParseBand(reader));
+					report->AddDetail(band);
 				}
 				else
 				{
@@ -308,7 +309,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 	return report;
 }
 
-Media::Jasper::JasperBand *Media::Jasper::JasperXML::ParseBand(NotNullPtr<Text::XMLReader> reader)
+Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NotNullPtr<Text::XMLReader> reader)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{
@@ -322,8 +323,8 @@ Media::Jasper::JasperBand *Media::Jasper::JasperXML::ParseBand(NotNullPtr<Text::
 		return 0;
 	}
 
-	Media::Jasper::JasperBand *band;
-	NEW_CLASS(band, Media::Jasper::JasperBand());
+	NN<Media::Jasper::JasperBand> band;
+	NEW_CLASSNN(band, Media::Jasper::JasperBand());
 	UOSInt i = 0;
 	UOSInt j = reader->GetAttribCount();
 	while (i < j)

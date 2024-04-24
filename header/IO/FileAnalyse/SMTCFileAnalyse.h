@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_SMTCFILEANALYSE
 #define _SM_IO_FILEANALYSE_SMTCFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
@@ -24,7 +24,7 @@ namespace IO
 			
 		private:
 			IO::StreamData *fd;
-			Data::ArrayList<DataInfo*> dataList;
+			Data::ArrayListNN<DataInfo> dataList;
 			Sync::Mutex dataMut;
 			Data::ByteBuffer packetBuff;
 

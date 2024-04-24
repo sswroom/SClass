@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKPARKINGVACANCY
 #define _SM_MAP_HKPARKINGVACANCY
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Map/MapDrawLayer.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
@@ -33,7 +33,7 @@ namespace Map
 		};
 		
 	private:
-		Data::FastStringMap<ParkingInfo*> parkingMap;
+		Data::FastStringMapNN<ParkingInfo> parkingMap;
 		Sync::Mutex parkingMut;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
@@ -41,7 +41,7 @@ namespace Map
 
 		void LoadParkingInfo();
 		void LoadVacancy();
-		void ParkingInfoFree(ParkingInfo *parking);
+		static void ParkingInfoFree(NN<ParkingInfo> parking);
 	public:
 		HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~HKParkingVacancy();

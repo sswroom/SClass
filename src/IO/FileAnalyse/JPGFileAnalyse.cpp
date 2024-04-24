@@ -109,12 +109,12 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	UInt64 ofst;
 	UInt32 lastSize;
 	UInt8 tagHdr[4];
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag;
+	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	ofst = 2;
 	dataSize = me->fd->GetDataSize();
 	lastSize = 0;
 	
-	tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+	tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 	tag->ofst = 0;
 	tag->size = 2;
 	tag->tagType = 0xd8; //SOI
@@ -133,7 +133,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		{
 			if (lastSize < 2)
 				break;
-			tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+			tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 			tag->ofst = ofst;
 			tag->size = lastSize + 2;
 			tag->tagType = tagHdr[1];
@@ -143,12 +143,12 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 			me->fd->GetRealData(dataSize - 2, 2, BYTEARR(tagHdr));
 			if (ReadMUInt16(tagHdr) == 0xffd9) //EOI
 			{
-				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+				tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 				tag->ofst = ofst;
 				tag->size = (UOSInt)(dataSize - ofst - 2);
 				tag->tagType = 0;
 				me->tags.Add(tag);
-				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+				tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 				tag->ofst = dataSize - 2;
 				tag->size = 2;
 				tag->tagType = 0xd9;
@@ -156,7 +156,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 			}
 			else
 			{
-				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+				tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 				tag->ofst = ofst;
 				tag->size = (UOSInt)(dataSize - ofst);
 				tag->tagType = 0;
@@ -168,7 +168,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		{
 			if (lastSize < 2)
 				break;
-			tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
+			tag = MemAllocNN(IO::FileAnalyse::JPGFileAnalyse::JPGTag);
 			tag->ofst = ofst;
 			tag->size = lastSize + 2;
 			tag->tagType = tagHdr[1];
@@ -196,7 +196,7 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->tags, MemFree);
+	this->tags.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
@@ -211,9 +211,9 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
+	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	Text::CString name;
-	if (tag == 0)
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
@@ -237,8 +237,8 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 	UOSInt k;
 	Int32 v;
 	Text::CString name;
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendC(UTF8STRC("Tag "));
 	sb->AppendUOSInt(index);
@@ -517,11 +517,11 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
-	JPGTag *pack;
+	NN<JPGTag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItem((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -547,9 +547,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
+	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	NotNullPtr<IO::StreamData> fd;
-	if (tag == 0 || !fd.Set(this->fd))
+	if (!this->tags.GetItem(index).SetTo(tag) || !fd.Set(this->fd))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));

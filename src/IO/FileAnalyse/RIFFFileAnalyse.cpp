@@ -11,7 +11,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	UInt8 buff[12];
 	UInt64 endOfst = ofst + size;
 	UInt32 sz;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 
 	while (ofst <= (endOfst - 12) && !this->thread.IsStopping())
 	{
@@ -27,7 +27,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 			{
 				return;
 			}
-			pack = MemAlloc(PackInfo, 1);
+			pack = MemAllocNN(PackInfo);
 			pack->lev = lev;
 			pack->fileOfst = ofst;
 			pack->packSize = sz + 8;
@@ -70,11 +70,11 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -119,7 +119,7 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
@@ -134,10 +134,9 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	UInt8 buff[5];
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -158,13 +157,12 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	UInt8 buff[5];
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
@@ -438,17 +436,16 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	PackInfo *pack;
+	NN<IO::FileAnalyse::FrameDetail> frame;
+	NN<PackInfo> pack;
 	UInt8 buff[5];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NotNullPtr<IO::StreamData> fd;
-	pack = this->packs.GetItem(index);
-	if (pack == 0 || !fd.Set(this->fd))
+	NN<IO::StreamData> fd;
+	if (!this->packs.GetItem(index).SetTo(pack) || !fd.Set(this->fd))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

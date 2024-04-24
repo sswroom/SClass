@@ -63,19 +63,19 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 	this->lvOID->ClearItems();
 	UOSInt i;
 	UOSInt j;
-	Net::ASN1MIB::ObjectInfo *obj;
-	Net::ASN1MIB::ModuleInfo *module = this->mib.GetModuleByFileName(fileName);
-	if (module == 0)
+	NN<Net::ASN1MIB::ObjectInfo> obj;
+	NN<Net::ASN1MIB::ModuleInfo> module;
+	if (!this->mib.GetModuleByFileName(fileName).SetTo(module))
 	{
 		module = this->mib.GetGlobalModule();
 	}
-	Data::ArrayList<Net::ASN1MIB::ObjectInfo *> *objList = &module->objValues;
+	NN<Data::ArrayListNN<Net::ASN1MIB::ObjectInfo>> objList = module->objValues;
 	NotNullPtr<Text::String> s;
 	i = 0;
 	j = objList->GetCount();
 	while (i < j)
 	{
-		obj = objList->GetItem(i);
+		obj = objList->GetItemNoCheck(i);
 		this->lvObjects->AddItem(Text::String::OrEmpty(obj->objectName), obj);
 		if (obj->oidLen > 0)
 		{
@@ -98,7 +98,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 	j = module->oidList.GetCount();
 	while (i < j)
 	{
-		obj = module->oidList.GetItem(i);
+		obj = module->oidList.GetItemNoCheck(i);
 		sb.ClearStr();
 		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, sb);
 		this->lvOID->AddItem(sb.ToCString(), obj);

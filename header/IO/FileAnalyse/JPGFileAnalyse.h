@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_JPGFILEANALYSE
 #define _SM_IO_FILEANALYSE_JPGFILEANALYSE
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Thread.h"
@@ -22,7 +22,7 @@ namespace IO
 			} JPGTag;
 		private:
 			IO::StreamData *fd;
-			Data::SyncArrayList<JPGTag*> tags;
+			Data::SyncArrayListNN<JPGTag> tags;
 
 			Bool pauseParsing;
 			Sync::Thread thread;

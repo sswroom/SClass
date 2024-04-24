@@ -8,22 +8,22 @@ namespace DB
 	template <class T> class DBClassReader
 	{
 	private:
-		NotNullPtr<DB::DBReader> reader;
-		Data::NamedClass<T> *cls;
+		NN<DB::DBReader> reader;
+		NN<Data::NamedClass<T>> cls;
 		UOSInt *colIndex;
 
 	public:
-		DBClassReader(NotNullPtr<DB::DBReader> reader, Data::NamedClass<T> *cls);
+		DBClassReader(NN<DB::DBReader> reader, NN<Data::NamedClass<T>> cls);
 		~DBClassReader();
 
 		Bool IsError();
-		T *ReadNext();
-		Bool ReadNext(T *obj);
-		Bool ReadAll(Data::ArrayList<T*> *outList);
+		Optional<T> ReadNext();
+		Bool ReadNext(NN<T> obj);
+		Bool ReadAll(NN<Data::ArrayListNN<T>> outList);
 	};
 
 
-	template <class T> DBClassReader<T>::DBClassReader(NotNullPtr<DB::DBReader> reader, Data::NamedClass<T> *cls)
+	template <class T> DBClassReader<T>::DBClassReader(NN<DB::DBReader> reader, NN<Data::NamedClass<T>> cls)
 	{
 		this->reader = reader;
 		this->cls = cls;
@@ -84,11 +84,11 @@ namespace DB
 		return this->colIndex == 0;
 	}
 
-	template <class T> T *DBClassReader<T>::ReadNext()
+	template <class T> Optional<T> DBClassReader<T>::ReadNext()
 	{
 		if (this->reader->ReadNext())
 		{
-			T *o = this->cls->CreateObject();
+			NN<T> o = this->cls->CreateObject();
 			Data::VariItem item;
 			UOSInt i = 0;
 			UOSInt j = this->cls->GetFieldCount();
@@ -103,7 +103,7 @@ namespace DB
 		return 0;
 	}
 
-	template <class T> Bool DBClassReader<T>::ReadNext(T *obj)
+	template <class T> Bool DBClassReader<T>::ReadNext(NN<T> obj)
 	{
 		if (this->reader->ReadNext())
 		{
@@ -121,12 +121,12 @@ namespace DB
 		return false;
 	}
 
-	template <class T> Bool DBClassReader<T>::ReadAll(Data::ArrayList<T*> *outList)
+	template <class T> Bool DBClassReader<T>::ReadAll(NN<Data::ArrayListNN<T>> outList)
 	{
 		if (this->colIndex)
 		{
-			T *o;
-			while ((o = this->ReadNext()) != 0)
+			NN<T> o;
+			while (this->ReadNext().SetTo(o))
 			{
 				outList->Add(o);
 			}

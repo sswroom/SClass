@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_FRAMEDETAIL
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/String.h"
@@ -36,9 +36,9 @@ namespace IO
 			UInt64 size;
 
 			Data::ArrayListStringNN headers;
-			Data::ArrayList<FieldInfo*> fields;
+			Data::ArrayListNN<FieldInfo> fields;
 			
-			void FreeFieldInfo(FieldInfo *field);
+			static void FreeFieldInfo(NN<FieldInfo> field);
 			void AddFieldInfo(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value, FieldType fieldType);
 		public:
 			FrameDetail(UInt64 ofst, UInt64 size);
@@ -46,8 +46,8 @@ namespace IO
 
 			UInt64 GetOffset() const;
 			UInt64 GetSize() const;
-			UOSInt GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> fieldList) const;
-			UOSInt GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> areaList) const;
+			UOSInt GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> fieldList) const;
+			UOSInt GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> areaList) const;
 
 			virtual void AddHeader(Text::CStringNN header);
 			virtual void AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);

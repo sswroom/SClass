@@ -12,7 +12,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 	UInt8 buff[16];
 	UInt64 endOfst = ofst + size;
 	UInt64 sz;
-	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	Data::ArrayListInt32 contList;
 	contList.SortedInsert(*(Int32*)"dinf");
 	contList.SortedInsert(*(Int32*)"mdia");
@@ -39,7 +39,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 			{
 				return;
 			}
-			pack = MemAlloc(IO::FileAnalyse::QTFileAnalyse::PackInfo, 1);
+			pack = MemAllocNN(IO::FileAnalyse::QTFileAnalyse::PackInfo);
 			pack->lev = lev;
 			pack->fileOfst = ofst;
 			pack->packSize = sz;
@@ -71,11 +71,11 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -120,7 +120,7 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::QTFileAnalyse::GetFormatName()
@@ -135,10 +135,9 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UInt8 buff[5];
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -152,14 +151,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text:
 
 Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UInt8 buff[5];
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
@@ -869,15 +867,14 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

@@ -7,11 +7,11 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Data::Class::FreeFieldInfo(FieldInfo *field)
+void Data::Class::FreeFieldInfo(NN<FieldInfo> field)
 {
 	field->name->Release();
 	OPTSTR_DEL(field->typeName);
-	MemFree(field);
+	MemFreeNN(field);
 }
 
 Data::Class::Class(const void *refObj)
@@ -21,12 +21,12 @@ Data::Class::Class(const void *refObj)
 
 Data::Class::~Class()
 {
-	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
+	this->fields.FreeAll(FreeFieldInfo);
 }
 
 UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::ItemType itemType, Bool notNull)
 {
-	FieldInfo *field = MemAlloc(FieldInfo, 1);
+	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->name = Text::String::New(name);
 	field->ofst = ofst;
 	field->itemType = itemType;
@@ -39,7 +39,7 @@ UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::I
 
 UOSInt Data::Class::AddFieldEnum(Text::CStringNN name, OSInt ofst, Text::CStringNN typeName, UOSInt fieldSize, ByNameFunc byNameFunc)
 {
-	FieldInfo *field = MemAlloc(FieldInfo, 1);
+	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->name = Text::String::New(name);
 	field->ofst = ofst;
 	if (byNameFunc != 0)
@@ -163,8 +163,8 @@ UOSInt Data::Class::GetFieldCount()
 
 Optional<Text::String> Data::Class::GetFieldName(UOSInt index)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field)
+	NN<FieldInfo> field;
+	if (this->fields.GetItem(index).SetTo(field))
 	{
 		return field->name;
 	}
@@ -173,8 +173,8 @@ Optional<Text::String> Data::Class::GetFieldName(UOSInt index)
 
 Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field)
+	NN<FieldInfo> field;
+	if (this->fields.GetItem(index).SetTo(field))
 	{
 		return field->itemType;
 	}
@@ -186,35 +186,35 @@ Optional<Data::Class::FieldInfo> Data::Class::GetFieldInfo(UOSInt index)
 	return this->fields.GetItem(index);
 }
 
-Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
+Optional<Data::VariItem> Data::Class::GetNewValue(UOSInt index, AnyType obj)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field == 0)
+	NN<FieldInfo> field;
+	if (!this->fields.GetItem(index).SetTo(field))
 	{
 		return 0;
 	}
-	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
+	void *valPtr = (void*)(field->ofst + (UInt8*)obj.p);
 	return Data::VariItem::NewFromPtr(valPtr, field->itemType).Ptr();
 }
 
 Bool Data::Class::IsNotNull(UOSInt index)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field)
+	NN<FieldInfo> field;
+	if (this->fields.GetItem(index).SetTo(field))
 	{
 		return field->notNull;
 	}
 	return false;
 }
 
-Bool Data::Class::GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj)
+Bool Data::Class::GetValue(NN<Data::VariItem> itm, UOSInt index, AnyType obj)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field == 0)
+	NN<FieldInfo> field;
+	if (!this->fields.GetItem(index).SetTo(field))
 	{
 		return false;
 	}
-	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
+	void *valPtr = (void*)(field->ofst + (UInt8*)obj.p);
 	if (field->typeName.NotNull())
 	{
 		Data::VariItem::SetFromPtr(itm, valPtr, Data::VariItem::ItemType::I32);
@@ -226,39 +226,39 @@ Bool Data::Class::GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *o
 	return true;
 }
 
-Bool Data::Class::SetField(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item)
+Bool Data::Class::SetField(AnyType obj, UOSInt index, NN<Data::VariItem> item)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field == 0)
+	NN<FieldInfo> field;
+	if (!this->fields.GetItem(index).SetTo(field))
 	{
 		return false;
 	}
-	void *valPtr = (void*)(field->ofst + (OSInt)obj);
+	void *valPtr = (void*)(field->ofst + (OSInt)obj.p);
 	Data::VariItem::SetPtr(valPtr, field->itemType, item);
 	return true;
 }
 
-Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item)
+Bool Data::Class::SetFieldClearItem(AnyType obj, UOSInt index, NN<Data::VariItem> item)
 {
-	FieldInfo *field = this->fields.GetItem(index);
-	if (field == 0)
+	NN<FieldInfo> field;
+	if (!this->fields.GetItem(index).SetTo(field))
 	{
 		return false;
 	}
-	void *valPtr = (void*)(field->ofst + (OSInt)obj);
+	void *valPtr = (void*)(field->ofst + (OSInt)obj.p);
 	Data::VariItem::SetPtrAndNotKeep(valPtr, field->itemType, item);
 	return true;
 }
 
-Bool Data::Class::Equals(void *obj1, void *obj2)
+Bool Data::Class::Equals(AnyType obj1, AnyType obj2)
 {
 	UOSInt i = this->fields.GetCount();
-	FieldInfo *field;
+	NN<FieldInfo> field;
 	while (i-- > 0)
 	{
-		field = this->fields.GetItem(i);
-		void *valPtr1 = (void*)(field->ofst + (OSInt)obj1);
-		void *valPtr2 = (void*)(field->ofst + (OSInt)obj2);
+		field = this->fields.GetItemNoCheck(i);
+		void *valPtr1 = (void*)(field->ofst + (OSInt)obj1.p);
+		void *valPtr2 = (void*)(field->ofst + (OSInt)obj2.p);
 		if (!Data::VariItem::PtrEquals(valPtr1, valPtr2, field->itemType))
 		{
 			return false;
@@ -277,16 +277,16 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("private:\r\n"));
-	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
-	FieldInfo *field;
-	NotNullPtr<Text::String> typeName;
+	NN<Data::ArrayListNN<FieldInfo>> fieldList = this->fields;
+	NN<FieldInfo> field;
+	NN<Text::String> typeName;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		sb->AppendChar('\t', tabLev + 1);
 		if (field->typeName.SetTo(typeName))
 		{
@@ -316,7 +316,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		if (field->typeName.SetTo(typeName))
 		{
 			sb->AppendChar('\t', tabLev + 1);
@@ -414,9 +414,9 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	{
 		clsPrefix = Text::String::NewEmpty().Ptr();
 	}
-	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
-	FieldInfo *field;
-	NotNullPtr<Text::String> typeName;
+	NN<Data::ArrayListNN<FieldInfo>> fieldList = this->fields;
+	NN<FieldInfo> field;
+	NN<Text::String> typeName;
 	UOSInt i;
 	UOSInt j;
 
@@ -432,7 +432,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		if (field->typeName.SetTo(typeName))
 		{
 			sb->AppendChar('\t', tabLev + 1);
@@ -474,7 +474,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		if (field->typeName.NotNull())
 		{
 
@@ -541,7 +541,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		if (field->typeName.SetTo(typeName))
 		{
 			sb->AppendChar('\t', tabLev);
@@ -846,7 +846,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		if (field->typeName.SetTo(typeName))
 		{
 			sb->AppendChar('\t', tabLev + 1);
@@ -916,7 +916,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	j = fieldList->GetCount();
 	while (i < j)
 	{
-		field = fieldList->GetItem(i);
+		field = fieldList->GetItemNoCheck(i);
 		sb->AppendChar('\t', tabLev + 1);
 		sb->AppendC(UTF8STRC("colList->Add(Text::String::New(CSTR(\""));
 		Text::JavaText::ToDBName(sb, field->name->v);
@@ -927,7 +927,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
-void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::StringMap<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;
@@ -996,168 +996,166 @@ void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev
 	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
 
 	sbCode.AppendC(UTF8STRC("{\r\n"));
-	NotNullPtr<FieldInfo> field;
-	NotNullPtr<Text::String> typeName;
+	NN<FieldInfo> field;
+	NN<Text::String> typeName;
 	Text::CStringNN javaType;
 	UOSInt i = 0;
 	UOSInt j = this->fields.GetCount();
 	while (i < j)
 	{
-		if (field.Set(this->fields.GetItem(i)))
+		field = this->fields.GetItemNoCheck(i);
+		if (field->typeName.SetTo(typeName))
 		{
-			if (field->typeName.SetTo(typeName))
+			if (field->itemType == Data::VariItem::ItemType::Str)
 			{
-				if (field->itemType == Data::VariItem::ItemType::Str)
-				{
-					sbCode.AppendC(UTF8STRC("\t@Enumerated(value = EnumType.STRING)\r\n"));
-				}
-				else
-				{
-					sbCode.AppendC(UTF8STRC("\t@Enumerated(value = EnumType.ORDINAL)\r\n"));
-				}
-				sbCode.AppendC(UTF8STRC("\tprivate "));
-				sbCode.Append(typeName);
-				javaType = typeName->ToCString();
-
+				sbCode.AppendC(UTF8STRC("\t@Enumerated(value = EnumType.STRING)\r\n"));
 			}
 			else
 			{
-				sbCode.AppendC(UTF8STRC("\tprivate "));
-				if (field->itemType == Data::VariItem::ItemType::Vector)
-				{
-					importMap.Put(CSTR("org.locationtech.jts.geom.Geometry"), true);
-				}
-				else if (field->itemType == Data::VariItem::ItemType::Timestamp)
-				{
-					importMap.Put(CSTR("java.sql.Timestamp"), true);
-				}
-				else if (field->itemType == Data::VariItem::ItemType::Date)
-				{
-					importMap.Put(CSTR("java.sql.Date"), true);
-				}
-				javaType = Text::JavaText::GetJavaTypeName(field->itemType, field->notNull);
-				sbCode.Append(javaType);
+				sbCode.AppendC(UTF8STRC("\t@Enumerated(value = EnumType.ORDINAL)\r\n"));
 			}
-			sbCode.AppendUTF8Char(' ');
-			Text::JavaText::ToJavaName(sbCode, field->name->v, false);
-			sbCode.AppendC(UTF8STRC(";\r\n"));
+			sbCode.AppendC(UTF8STRC("\tprivate "));
+			sbCode.Append(typeName);
+			javaType = typeName->ToCString();
 
-			sbConstrHdr.Append(javaType);
-			sbConstrHdr.AppendUTF8Char(' ');
-			Text::JavaText::ToJavaName(sbConstrHdr, field->name->v, false);
-			if (i + 1 < j)
+		}
+		else
+		{
+			sbCode.AppendC(UTF8STRC("\tprivate "));
+			if (field->itemType == Data::VariItem::ItemType::Vector)
 			{
-				sbConstrHdr.AppendC(UTF8STRC(", "));
+				importMap.Put(CSTR("org.locationtech.jts.geom.Geometry"), true);
 			}
+			else if (field->itemType == Data::VariItem::ItemType::Timestamp)
+			{
+				importMap.Put(CSTR("java.sql.Timestamp"), true);
+			}
+			else if (field->itemType == Data::VariItem::ItemType::Date)
+			{
+				importMap.Put(CSTR("java.sql.Date"), true);
+			}
+			javaType = Text::JavaText::GetJavaTypeName(field->itemType, field->notNull);
+			sbCode.Append(javaType);
+		}
+		sbCode.AppendUTF8Char(' ');
+		Text::JavaText::ToJavaName(sbCode, field->name->v, false);
+		sbCode.AppendC(UTF8STRC(";\r\n"));
 
-			sbConstrItem.AppendC(UTF8STRC("\t\tthis."));
-			Text::JavaText::ToJavaName(sbConstrItem, field->name->v, false);
-			sbConstrItem.AppendC(UTF8STRC(" = "));
-			Text::JavaText::ToJavaName(sbConstrItem, field->name->v, false);
-			sbConstrItem.AppendC(UTF8STRC(";\r\n"));
+		sbConstrHdr.Append(javaType);
+		sbConstrHdr.AppendUTF8Char(' ');
+		Text::JavaText::ToJavaName(sbConstrHdr, field->name->v, false);
+		if (i + 1 < j)
+		{
+			sbConstrHdr.AppendC(UTF8STRC(", "));
+		}
 
-			sbGetterSetter.AppendC(UTF8STRC("\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\tpublic "));
-			sbGetterSetter.Append(javaType);
-			if (field->itemType == Data::VariItem::ItemType::BOOL)
-			{
-				sbGetterSetter.AppendC(UTF8STRC(" is"));
-			}
-			else
-			{
-				sbGetterSetter.AppendC(UTF8STRC(" get"));
-			}
-			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, true);
-			sbGetterSetter.AppendC(UTF8STRC("() {\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\t\treturn this."));
-			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
-			sbGetterSetter.AppendC(UTF8STRC(";\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\t}\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\tpublic void set"));
-			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, true);
-			sbGetterSetter.AppendUTF8Char('(');
-			sbGetterSetter.Append(javaType);
-			sbGetterSetter.AppendUTF8Char(' ');
-			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
-			sbGetterSetter.AppendC(UTF8STRC(") {\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\t\tthis."));
-			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
-			sbGetterSetter.AppendC(UTF8STRC(" = "));
-			Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
-			sbGetterSetter.AppendC(UTF8STRC(";\r\n"));
-			sbGetterSetter.AppendC(UTF8STRC("\t}\r\n"));
+		sbConstrItem.AppendC(UTF8STRC("\t\tthis."));
+		Text::JavaText::ToJavaName(sbConstrItem, field->name->v, false);
+		sbConstrItem.AppendC(UTF8STRC(" = "));
+		Text::JavaText::ToJavaName(sbConstrItem, field->name->v, false);
+		sbConstrItem.AppendC(UTF8STRC(";\r\n"));
 
-			Bool isObj = true;
-			if (field->notNull)
-			{
-				switch (field->itemType)
-				{
-				case Data::VariItem::ItemType::BOOL:
-				case Data::VariItem::ItemType::U8:
-				case Data::VariItem::ItemType::I8:
-				case Data::VariItem::ItemType::I16:
-				case Data::VariItem::ItemType::U16:
-				case Data::VariItem::ItemType::U32:
-				case Data::VariItem::ItemType::I32:
-				case Data::VariItem::ItemType::I64:
-				case Data::VariItem::ItemType::U64:
-				case Data::VariItem::ItemType::F64:
-				case Data::VariItem::ItemType::F32:
-					isObj = false;
-					break;
-				case Data::VariItem::ItemType::Str:
-				case Data::VariItem::ItemType::CStr:
-				case Data::VariItem::ItemType::UUID:
-				case Data::VariItem::ItemType::Date:
-				case Data::VariItem::ItemType::Timestamp:
-				case Data::VariItem::ItemType::ByteArr:
-				case Data::VariItem::ItemType::Vector:
-				case Data::VariItem::ItemType::Null:
-				case Data::VariItem::ItemType::Unknown:
-				default:
-					break;
-				}
-			}
-			if (isObj)
-			{
-				sbEquals.AppendC(UTF8STRC("Objects.equals("));
-				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
-				sbEquals.AppendC(UTF8STRC(", "));
-				Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
-				sbEquals.AppendUTF8Char('.');
-				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
-				sbEquals.AppendUTF8Char(')');
-			}
-			else
-			{
-				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
-				sbEquals.AppendC(UTF8STRC(" == "));
-				Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
-				sbEquals.AppendUTF8Char('.');
-				Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
-			}
-			if (i + 1 < j)
-			{
-				sbEquals.AppendC(UTF8STRC(" && "));
-			}
+		sbGetterSetter.AppendC(UTF8STRC("\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\tpublic "));
+		sbGetterSetter.Append(javaType);
+		if (field->itemType == Data::VariItem::ItemType::BOOL)
+		{
+			sbGetterSetter.AppendC(UTF8STRC(" is"));
+		}
+		else
+		{
+			sbGetterSetter.AppendC(UTF8STRC(" get"));
+		}
+		Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, true);
+		sbGetterSetter.AppendC(UTF8STRC("() {\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\t\treturn this."));
+		Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+		sbGetterSetter.AppendC(UTF8STRC(";\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\t}\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\tpublic void set"));
+		Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, true);
+		sbGetterSetter.AppendUTF8Char('(');
+		sbGetterSetter.Append(javaType);
+		sbGetterSetter.AppendUTF8Char(' ');
+		Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+		sbGetterSetter.AppendC(UTF8STRC(") {\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\t\tthis."));
+		Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+		sbGetterSetter.AppendC(UTF8STRC(" = "));
+		Text::JavaText::ToJavaName(sbGetterSetter, field->name->v, false);
+		sbGetterSetter.AppendC(UTF8STRC(";\r\n"));
+		sbGetterSetter.AppendC(UTF8STRC("\t}\r\n"));
 
-			Text::JavaText::ToJavaName(sbHashCode, field->name->v, false);
-			if (i + 1 < j)
+		Bool isObj = true;
+		if (field->notNull)
+		{
+			switch (field->itemType)
 			{
-				sbHashCode.AppendC(UTF8STRC(", "));
+			case Data::VariItem::ItemType::BOOL:
+			case Data::VariItem::ItemType::U8:
+			case Data::VariItem::ItemType::I8:
+			case Data::VariItem::ItemType::I16:
+			case Data::VariItem::ItemType::U16:
+			case Data::VariItem::ItemType::U32:
+			case Data::VariItem::ItemType::I32:
+			case Data::VariItem::ItemType::I64:
+			case Data::VariItem::ItemType::U64:
+			case Data::VariItem::ItemType::F64:
+			case Data::VariItem::ItemType::F32:
+				isObj = false;
+				break;
+			case Data::VariItem::ItemType::Str:
+			case Data::VariItem::ItemType::CStr:
+			case Data::VariItem::ItemType::UUID:
+			case Data::VariItem::ItemType::Date:
+			case Data::VariItem::ItemType::Timestamp:
+			case Data::VariItem::ItemType::ByteArr:
+			case Data::VariItem::ItemType::Vector:
+			case Data::VariItem::ItemType::Null:
+			case Data::VariItem::ItemType::Unknown:
+			default:
+				break;
 			}
+		}
+		if (isObj)
+		{
+			sbEquals.AppendC(UTF8STRC("Objects.equals("));
+			Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+			sbEquals.AppendC(UTF8STRC(", "));
+			Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
+			sbEquals.AppendUTF8Char('.');
+			Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+			sbEquals.AppendUTF8Char(')');
+		}
+		else
+		{
+			Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+			sbEquals.AppendC(UTF8STRC(" == "));
+			Text::JavaText::ToJavaName(sbEquals, clsName->v, false);
+			sbEquals.AppendUTF8Char('.');
+			Text::JavaText::ToJavaName(sbEquals, field->name->v, false);
+		}
+		if (i + 1 < j)
+		{
+			sbEquals.AppendC(UTF8STRC(" && "));
+		}
 
-			sbFieldOrder.AppendC(UTF8STRC("\t\t\""));
-			Text::JavaText::ToJavaName(sbFieldOrder, field->name->v, false);
-			if (i + 1 >= j)
-			{
-				sbFieldOrder.AppendC(UTF8STRC("\"\r\n"));
-			}
-			else
-			{
-				sbFieldOrder.AppendC(UTF8STRC("\",\r\n"));
-			}
+		Text::JavaText::ToJavaName(sbHashCode, field->name->v, false);
+		if (i + 1 < j)
+		{
+			sbHashCode.AppendC(UTF8STRC(", "));
+		}
+
+		sbFieldOrder.AppendC(UTF8STRC("\t\t\""));
+		Text::JavaText::ToJavaName(sbFieldOrder, field->name->v, false);
+		if (i + 1 >= j)
+		{
+			sbFieldOrder.AppendC(UTF8STRC("\"\r\n"));
+		}
+		else
+		{
+			sbFieldOrder.AppendC(UTF8STRC("\",\r\n"));
 		}
 		i++;
 	}

@@ -48,9 +48,9 @@ void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[12];
-	IO::FileAnalyse::SHPFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
 	dataSize = me->fd->GetDataSize();
-	pack = MemAlloc(PackInfo, 1);
+	pack = MemAllocNN(PackInfo);
 	pack->fileOfst = 0;
 	pack->packSize = 100;
 	me->packs.Add(pack);
@@ -69,7 +69,7 @@ void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		{
 			break;
 		}
-		pack = MemAlloc(PackInfo, 1);
+		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = ofst;
 		pack->packSize = 8 + recSize * 2;
 		me->packs.Add(pack);
@@ -95,7 +95,7 @@ IO::FileAnalyse::SHPFileAnalyse::~SHPFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::SHPFileAnalyse::GetFormatName()
@@ -110,8 +110,8 @@ UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::SHPFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::SHPFileAnalyse::PackInfo *pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": size="));
@@ -125,11 +125,11 @@ UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -151,8 +151,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	IO::FileAnalyse::SHPFileAnalyse::PackInfo *pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

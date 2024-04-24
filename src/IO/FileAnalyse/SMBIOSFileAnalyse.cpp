@@ -22,7 +22,7 @@ IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NotNullPtr<IO::StreamData>
 		return;
 	}
 	this->fd = fd->GetPartialData(0, leng).Ptr();
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	UOSInt fileOfst = 0;
 	UOSInt i;
 	UOSInt j;
@@ -39,7 +39,7 @@ IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NotNullPtr<IO::StreamData>
 				break;
 			}
 		}
-		pack = MemAlloc(PackInfo, 1);
+		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = fileOfst;
 		pack->packSize = i;
 		pack->packType = buff[fileOfst];
@@ -55,7 +55,7 @@ IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NotNullPtr<IO::StreamData>
 IO::FileAnalyse::SMBIOSFileAnalyse::~SMBIOSFileAnalyse()
 {
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::SMBIOSFileAnalyse::GetFormatName()
@@ -70,9 +70,8 @@ UOSInt IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::SMBIOSFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::SMBIOSFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendUOSInt(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -89,11 +88,11 @@ UOSInt IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -113,13 +112,12 @@ UOSInt IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	Data::ByteBuffer packBuff(pack->packSize);

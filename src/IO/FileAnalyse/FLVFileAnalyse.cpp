@@ -120,7 +120,7 @@ void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	UInt64 ofst;
 	UInt32 lastSize;
 	UInt8 tagHdr[15];
-	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag;
+	NN<IO::FileAnalyse::FLVFileAnalyse::FLVTag> tag;
 	ofst = me->hdrSize + 4;
 	dataSize = me->fd->GetDataSize();
 	lastSize = 0;
@@ -137,7 +137,7 @@ void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		{
 			break;
 		}
-		tag = MemAlloc(IO::FileAnalyse::FLVFileAnalyse::FLVTag, 1);
+		tag = MemAllocNN(IO::FileAnalyse::FLVFileAnalyse::FLVTag);
 		tag->ofst = ofst;
 		tag->size = lastSize;
 		tag->tagType = tagHdr[4] & 0x1f;
@@ -169,7 +169,7 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->tags, MemFree);
+	this->tags.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
@@ -189,8 +189,8 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text
 		sb->AppendC(UTF8STRC("FLV Header"));
 		return true;
 	}
-	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags.GetItem(index - 1);
-	if (tag == 0)
+	NN<IO::FileAnalyse::FLVFileAnalyse::FLVTag> tag;
+	if (!this->tags.GetItem(index - 1).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -220,8 +220,8 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendI32(ReadMInt32(&buff[5]));
 		return true;
 	}
-	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags.GetItem(index - 1);
-	if (tag == 0)
+	NN<IO::FileAnalyse::FLVFileAnalyse::FLVTag> tag;
+	if (!this->tags.GetItem(index - 1).SetTo(tag))
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
@@ -299,11 +299,11 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
-	FLVTag *pack;
+	NN<FLVTag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItem((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -349,8 +349,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 		frame->AddField(5, 4, CSTR("DataOffset"), CSTRP(sbuff, sptr));
 		return frame;
 	}
-	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags.GetItem(index - 1);
-	if (tag == 0)
+	NN<IO::FileAnalyse::FLVFileAnalyse::FLVTag> tag;
+	if (!this->tags.GetItem(index - 1).SetTo(tag))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));

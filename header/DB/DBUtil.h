@@ -125,12 +125,12 @@ namespace DB
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, Optional<Text::String> fieldName);
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);
 		static Bool HasSchema(SQLType sqlType);
-		template <class T> static Bool SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls);
+		template <class T> static Bool SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayListNN<T>> list, NN<Data::Class> cls);
 		template <typename T> static Bool Model2JSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<T> obj);
 	};
 }
 
-template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls)
+template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayListNN<T>> list, NN<Data::Class> cls)
 {
 	UTF8Char sbuff[512];
 	NotNullPtr<Text::String> s;
@@ -161,7 +161,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 	l = list->GetCount();
 	while (k < l)
 	{
-		T *o = list->GetItem(k);
+		NN<T> o = list->GetItemNoCheck(k);
 		sb.ClearStr();
 		i = 0;
 		j = cls->GetFieldCount();

@@ -12,7 +12,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NotNullPtr<Sync::
 	UInt64 ofst;
 	UInt64 dataSize;
 	UInt32 thisSize;
-	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
+	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	UInt8 packetHdr[16];
 	Data::ArrayList<UInt16> linkTypeList;
 	Data::ArrayList<Int8> resList;
@@ -35,7 +35,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NotNullPtr<Sync::
 		{
 			break;
 		}
-		block = MemAlloc(IO::FileAnalyse::PCapngFileAnalyse::BlockInfo, 1);
+		block = MemAllocNN(IO::FileAnalyse::PCapngFileAnalyse::BlockInfo);
 		block->ofst = ofst;
 		if (me->isBE)
 		{
@@ -159,7 +159,7 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->blockList, MemFree);
+	this->blockList.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
@@ -174,12 +174,12 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
+	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	if (index >= this->blockList.GetCount())
 	{
 		return false;
 	}
-	block = this->blockList.GetItem(index);
+	block = this->blockList.GetItemNoCheck(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendU64(block->ofst);
 	sb->AppendC(UTF8STRC(", size="));
@@ -265,12 +265,12 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
+	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	if (index >= this->blockList.GetCount())
 	{
 		return false;
 	}
-	block = this->blockList.GetItem(index);
+	block = this->blockList.GetItemNoCheck(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(block->ofst);
@@ -817,11 +817,11 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->blockList.GetCount() - 1;
 	OSInt k;
-	BlockInfo *pack;
+	NN<BlockInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->blockList.GetItem((UOSInt)k);
+		pack = this->blockList.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -843,12 +843,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
+	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	if (index >= this->blockList.GetCount())
 	{
 		return 0;
 	}
-	block = this->blockList.GetItem(index);
+	block = this->blockList.GetItemNoCheck(index);
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(block->ofst, block->blockLength));
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	if (this->isBE)

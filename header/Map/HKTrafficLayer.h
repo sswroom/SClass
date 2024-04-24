@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTRAFFICLAYER
 #define _SM_MAP_HKTRAFFICLAYER
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -58,8 +58,8 @@ namespace Map
 		Optional<Net::SSLEngine> ssl;
 		NotNullPtr<Text::EncodingFactory> encFact;
 		Sync::Mutex roadMut;
-		Data::FastMap<Int64, RoadInfo*> roadMap;
-		Data::FastMap<Int64, CenterlineInfo*> vecMap;
+		Data::FastMapNN<Int64, RoadInfo> roadMap;
+		Data::FastMapNN<Int64, CenterlineInfo> vecMap;
 
 		static const NodeInfo *GetNodeInfo(Int32 nodeId);
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);

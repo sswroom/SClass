@@ -105,24 +105,24 @@ void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	UInt64 headerFlags;
 	UInt64 currOfst = 8;
 	UInt64 endOfst = me->fd->GetDataSize();
-	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *block;
+	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> block;
 	while (!thread->IsStopping() && currOfst + 8 <= endOfst)
 	{
 		me->fd->GetRealData(currOfst, 128, BYTEARR(buff));
 		buffPtr = buff + 4;
 		buffPtr = ReadVInt(buffPtr, &iVal);
-		block = MemAlloc(IO::FileAnalyse::RAR5FileAnalyse::BlockInfo, 1);
+		block = MemAllocNN(IO::FileAnalyse::RAR5FileAnalyse::BlockInfo);
 		block->fileOfst = currOfst;
 		if (iVal >= 1048576 * 2)
 		{
-			MemFree(block);
+			MemFreeNN(block);
 			break;
 		}
 		block->headerSize = (UInt32)(iVal + (UOSInt)(buffPtr - buff));
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal > 5)
 		{
-			MemFree(block);
+			MemFreeNN(block);
 			break;
 		}
 		block->headerType = (UInt32)iVal;
@@ -164,7 +164,7 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
@@ -179,9 +179,8 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -195,7 +194,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
+	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> pack;
 	UInt64 iVal;
 	UInt64 headerFlags;
 	UInt64 extraSize;
@@ -203,8 +202,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 	Data::ByteArray extraEnd;
 	Data::ByteArray packEnd;
 	Data::ByteArray nextPtr;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
@@ -519,11 +517,11 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	BlockInfo *pack;
+	NN<BlockInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -543,7 +541,7 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
+	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> pack;
 	UInt64 iVal;
 	UInt64 headerFlags;
 	UInt64 extraSize;
@@ -553,8 +551,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 	Data::ByteArray packEnd;
 	Data::ByteArray nextPtr;
 	Data::ByteArray nextPtr2;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (pack->headerSize + pack->dataSize)));

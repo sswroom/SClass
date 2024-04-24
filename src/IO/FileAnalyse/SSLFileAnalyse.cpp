@@ -10,7 +10,7 @@
 void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
 	NotNullPtr<IO::FileAnalyse::SSLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SSLFileAnalyse>();
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	UInt8 buff[16];
 	UInt64 ofst = 0;
 	UInt64 leng = me->fd->GetDataSize();
@@ -24,7 +24,7 @@ void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		packLen = ReadMUInt16(&buff[3]);
 		if (ofst + packLen + 5 <= leng)
 		{
-			pack = MemAlloc(PackInfo, 1);
+			pack = MemAllocNN(PackInfo);
 			pack->fileOfst = ofst;
 			pack->packSize = packLen + 5;
 			pack->packType = buff[0];
@@ -38,9 +38,9 @@ void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-void IO::FileAnalyse::SSLFileAnalyse::FreePackInfo(PackInfo *pack)
+void IO::FileAnalyse::SSLFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 {
-	MemFree(pack);
+	MemFreeNN(pack);
 }
 
 UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng)
@@ -84,7 +84,7 @@ IO::FileAnalyse::SSLFileAnalyse::~SSLFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, FreePackInfo);
+	this->packs.FreeAll(FreePackInfo);
 }
 
 Text::CStringNN IO::FileAnalyse::SSLFileAnalyse::GetFormatName()
@@ -99,9 +99,8 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::SSLFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -116,11 +115,11 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -140,9 +139,8 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	UOSInt i;

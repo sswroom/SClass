@@ -19,7 +19,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::StreamData *fd;
-			Data::ArrayList<PackInfo*> packs;
+			Data::ArrayListNN<PackInfo> packs;
 
 		public:
 			SMBIOSFileAnalyse(NotNullPtr<IO::StreamData> fd);

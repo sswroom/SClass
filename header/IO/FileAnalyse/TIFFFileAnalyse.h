@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_TIFFFILEANALYSE
 #define _SM_IO_FILEANALYSE_TIFFFILEANALYSE
 #include "Data/ByteOrder.h"
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Thread.h"
@@ -29,14 +29,14 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::StreamData *fd;
-			Data::SyncArrayList<PackInfo*> packs;
+			Data::SyncArrayListNN<PackInfo> packs;
 			Data::ByteOrder *bo;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 
 			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
-			static void FreePackInfo(PackInfo *pack);
+			static void FreePackInfo(NN<PackInfo> pack);
 		public:
 			TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~TIFFFileAnalyse();

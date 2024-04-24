@@ -14,7 +14,7 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	UInt8 readBuff[4096];
 	UInt64 readOfst;
 	UOSInt readSize;
-	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	readOfst = 0;
 	while (!thread->IsStopping())
 	{
@@ -29,7 +29,7 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 			{
 				break;
 			}
-			pack = MemAlloc(PackInfo, 1);
+			pack = MemAllocNN(PackInfo);
 			pack->fileOfst = readOfst;
 			pack->packSize = 4096;
 			pack->packType = ReadUInt16(readBuff);
@@ -70,7 +70,7 @@ IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
@@ -85,9 +85,8 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Num="));
@@ -131,15 +130,14 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[256];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UInt8 packBuff[4096];
 	UInt8 decBuff[128];
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

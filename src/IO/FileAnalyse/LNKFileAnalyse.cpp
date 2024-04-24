@@ -13,9 +13,9 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	UInt8 tagHdr[24];
 	UInt32 linkFlags;
 	UInt64 fileSize = me->fd->GetDataSize();
-	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag;
+	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
 
-	tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+	tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 	tag->ofst = 0;
 	tag->size = 0x4C;
 	tag->tagType = TagType::ShellLinkHeader;
@@ -27,7 +27,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 1)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) + 2;
 		tag->tagType = TagType::LinkTargetIDList;
@@ -37,7 +37,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 2)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = ReadUInt32(&tagHdr[0]);
 		tag->tagType = TagType::LinkInfo;
@@ -47,7 +47,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 4)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::NameString;
@@ -57,7 +57,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 8)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::RelativePath;
@@ -67,7 +67,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 16)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::WorkingDir;
@@ -77,7 +77,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 32)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::CommandLineArguments;
@@ -87,7 +87,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	if (linkFlags & 64)
 	{
 		me->fd->GetRealData(ofst, 24, BYTEARR(tagHdr));
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+		tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 		tag->ofst = ofst;
 		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::IconLocation;
@@ -100,7 +100,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		UInt32 size = ReadUInt32(&tagHdr[0]);
 		if (size < 4)
 		{
-			tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+			tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 			tag->ofst = ofst;
 			tag->size = 4;
 			tag->tagType = TagType::ExtraData;
@@ -110,7 +110,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		}
 		else
 		{
-			tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
+			tag = MemAllocNN(IO::FileAnalyse::LNKFileAnalyse::TagInfo);
 			tag->ofst = ofst;
 			tag->size = size;
 			tag->tagType = TagType::ExtraData;
@@ -138,7 +138,7 @@ IO::FileAnalyse::LNKFileAnalyse::~LNKFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->tags, MemFree);
+	this->tags.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::GetFormatName()
@@ -153,8 +153,8 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -169,11 +169,11 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
-	TagInfo* pack;
+	NN<TagInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItem((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -195,8 +195,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
 	UTF8Char* sptr;
-	IO::FileAnalyse::LNKFileAnalyse::TagInfo* tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));

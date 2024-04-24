@@ -16,14 +16,14 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NotNullPtr<Sync::
 	UInt64 ofst;
 	UInt8 buff[12];
 	UInt32 sz;
-	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 
-	pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
+	pack = MemAllocNN(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo);
 	pack->fileOfst = 0;
 	pack->packSize = 140;
 	pack->packType = 0;
 	me->packs.Add(pack);
-	pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
+	pack = MemAllocNN(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo);
 	pack->fileOfst = 140;
 	pack->packSize = 136;
 	pack->packType = 1;
@@ -46,13 +46,13 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NotNullPtr<Sync::
 				break;
 			}
 
-			pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
+			pack = MemAllocNN(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo);
 			pack->fileOfst = ofst;
 			pack->packSize = 12;
 			pack->packType = 2;
 			me->packs.Add(pack);
 			
-			pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
+			pack = MemAllocNN(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo);
 			pack->fileOfst = ofst + 12;
 			pack->packSize = sz;
 			pack->packType = 3;
@@ -97,7 +97,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 	LIST_CALL_FUNC(&this->extMap, MemFree);
 }
 
@@ -113,9 +113,8 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -145,13 +144,12 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 *extBuff;
-	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
@@ -713,11 +711,11 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -737,9 +735,8 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

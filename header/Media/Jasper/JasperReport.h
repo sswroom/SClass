@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_JASPER_JASPERREPORT
 #define _SM_MEDIA_JASPER_JASPERREPORT
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/ParsedObject.h"
 #include "Media/Jasper/JasperBand.h"
@@ -30,12 +30,12 @@ namespace Media
 				JasperBand *band;
 			};
 		private:
-			Data::ArrayList<JasperProperty*> properties;
+			Data::ArrayListNN<JasperProperty> properties;
 			Data::ArrayListStringNN importList;
-			Data::ArrayList<JasperParameter*> params;
+			Data::ArrayListNN<JasperParameter> params;
 			Optional<Text::String> queryString;
-			JasperBand *title;
-			Data::ArrayList<JasperBand*> detailList;
+			Optional<JasperBand> title;
+			Data::ArrayListNN<JasperBand> detailList;
 			Text::String *uuid;
 			Text::String *reportName;
 			UInt32 pageWidth; //Pixels
@@ -75,8 +75,8 @@ namespace Media
 			void SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value);
 			void AddImport(NotNullPtr<Text::String> value);
 			void AddParameter(Text::String *name, Text::String *className, Text::CString defValueExp);
-			void SetTitle(Media::Jasper::JasperBand *band);
-			void AddDetail(Media::Jasper::JasperBand *band);
+			void SetTitle(NN<Media::Jasper::JasperBand> band);
+			void AddDetail(NN<Media::Jasper::JasperBand> band);
 		};
 	}
 }

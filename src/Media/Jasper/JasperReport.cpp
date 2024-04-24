@@ -35,15 +35,15 @@ Media::Jasper::JasperReport::~JasperReport()
 	OPTSTR_DEL(this->queryString);
 	SDEL_STRING(this->uuid);
 	SDEL_STRING(this->reportName);
-	SDEL_CLASS(this->title);
+	this->title.Delete();
 
 	UOSInt i = this->properties.GetCount();
 	while (i-- > 0)
 	{
-		JasperProperty *property = this->properties.GetItem(i);
+		NN<JasperProperty> property = this->properties.GetItemNoCheck(i);
 		property->name->Release();
 		property->value->Release();
-		MemFree(property);
+		MemFreeNN(property);
 	}
 	i = this->importList.GetCount();
 	while (i-- > 0)
@@ -53,18 +53,13 @@ Media::Jasper::JasperReport::~JasperReport()
 	i = this->params.GetCount();
 	while (i-- > 0)
 	{
-		JasperParameter *param = this->params.GetItem(i);
+		NN<JasperParameter> param = this->params.GetItemNoCheck(i);
 		param->name->Release();
 		param->className->Release();
 		SDEL_STRING(param->defValueExp);
-		MemFree(param);
+		MemFreeNN(param);
 	}
-	i = this->detailList.GetCount();
-	while (i-- > 0)
-	{
-		JasperBand *band = this->detailList.GetItem(i);
-		DEL_CLASS(band);
-	}
+	this->detailList.DeleteAll();
 }
 
 IO::ParserType Media::Jasper::JasperReport::GetParserType() const
@@ -162,7 +157,7 @@ void Media::Jasper::JasperReport::SetQueryString(Optional<Text::String> str)
 
 void Media::Jasper::JasperReport::SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value)
 {
-	JasperProperty *property = MemAlloc(JasperProperty, 1);
+	NN<JasperProperty> property = MemAllocNN(JasperProperty);
 	property->name = name->Clone();
 	property->value = value->Clone();
 	this->properties.Add(property);
@@ -175,7 +170,7 @@ void Media::Jasper::JasperReport::AddImport(NotNullPtr<Text::String> value)
 
 void Media::Jasper::JasperReport::AddParameter(Text::String *name, Text::String *className, Text::CString defValueExp)
 {
-	JasperParameter *param = MemAlloc(JasperParameter, 1);
+	NN<JasperParameter> param = MemAllocNN(JasperParameter);
 	param->name = name->Clone();
 	param->className = className->Clone();
 	if (defValueExp.v == 0)
@@ -189,13 +184,13 @@ void Media::Jasper::JasperReport::AddParameter(Text::String *name, Text::String 
 	this->params.Add(param);
 }
 
-void Media::Jasper::JasperReport::SetTitle(Media::Jasper::JasperBand *band)
+void Media::Jasper::JasperReport::SetTitle(NN<Media::Jasper::JasperBand> band)
 {
-	SDEL_CLASS(this->title);
+	this->title.Delete();
 	this->title = band;
 }
 
-void Media::Jasper::JasperReport::AddDetail(Media::Jasper::JasperBand *band)
+void Media::Jasper::JasperReport::AddDetail(NN<Media::Jasper::JasperBand> band)
 {
 	this->detailList.Add(band);
 }

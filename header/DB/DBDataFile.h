@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBDATAFILE
 #define _SM_DB_DBDATAFILE
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ByteTool.h"
 #include "Data/NamedClass.h"
 #include "IO/BufferedOutputStream.h"
@@ -13,24 +13,24 @@ namespace DB
 	template <class T> class DBDataFile
 	{
 	private:
-		NotNullPtr<IO::FileStream> fs;
+		NN<IO::FileStream> fs;
 		IO::BufferedOutputStream *cstm;
-		Data::NamedClass<T> *cls;
+		NN<Data::NamedClass<T>> cls;
 		UInt8 *recordBuff;
 		Data::VariItem::ItemType *colTypes;
 
 		static UOSInt ReadInt(const UInt8 *buff, UOSInt ofst, UOSInt *outVal);
 		static UOSInt WriteInt(UInt8 *buff, UOSInt ofst, UOSInt val);
 
-		DBDataFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Bool append);
+		DBDataFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, Bool append);
 		~DBDataFile();
 
 		Bool IsError();
-		void AddRecord(T *obj);
+		void AddRecord(NN<T> obj);
 
 	public:
-		static Bool LoadFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut);
-		static Bool SaveFile(Text::CStringNN fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls);
+		static Bool LoadFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, NN<Data::ArrayListNN<T>> dataListOut);
+		static Bool SaveFile(Text::CStringNN fileName, NN<Data::ArrayListNN<T>> dataList, NN<Data::NamedClass<T>> cls);
 	};
 }
 
@@ -115,7 +115,7 @@ template <class T> UOSInt DB::DBDataFile<T>::WriteInt(UInt8 *buff, UOSInt ofst, 
 #endif
 }
 
-template <class T> DB::DBDataFile<T>::DBDataFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Bool append)
+template <class T> DB::DBDataFile<T>::DBDataFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, Bool append)
 {
 	this->cls = cls;
 	this->recordBuff = 0;
@@ -171,7 +171,7 @@ template <class T> Bool DB::DBDataFile<T>::IsError()
 	return this->fs->IsError();
 }
 
-template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
+template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 {
 	if (this->cstm == 0)
 	{
@@ -354,7 +354,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 	}
 }
 
-template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut)
+template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN<Data::NamedClass<T>> cls, NN<Data::ArrayListNN<T>> dataListOut)
 {
 	UOSInt maxBuffSize = 65536;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -449,7 +449,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 				}
 				if (succ)
 				{
-					T *obj = cls->CreateObject();
+					NN<T> obj = cls->CreateObject();
 					m = m2 + rowSize;
 					k = 0;
 					while (k < l)
@@ -598,13 +598,11 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 	return succ;
 }
 
-template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CStringNN fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls)
+template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CStringNN fileName, NN<Data::ArrayListNN<T>> dataList, NN<Data::NamedClass<T>> cls)
 {
-	DB::DBDataFile<T> *file;
-	NEW_CLASS(file, DB::DBDataFile<T>(fileName, cls, false));
-	if (file->IsError())
+	DB::DBDataFile<T> file(fileName, cls, false);
+	if (file.IsError())
 	{
-		DEL_CLASS(file);
 		return false;
 	}
 
@@ -612,10 +610,9 @@ template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CStringNN fileName, Da
 	UOSInt j = dataList->GetCount();
 	while (i < j)
 	{
-		file->AddRecord(dataList->GetItem(i));
+		file.AddRecord(dataList->GetItemNoCheck(i));
 		i++;
 	}
-	DEL_CLASS(file);
 	return true;
 }
 #endif

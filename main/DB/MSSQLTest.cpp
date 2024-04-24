@@ -127,7 +127,7 @@ public:
 	Int32 GetSeqno() const;
 	void SetSeqno(Int32 seqno);
 
-	Data::NamedClass<FlightHoldingsPeriod> *CreateClass() const;
+	NN<Data::NamedClass<FlightHoldingsPeriod>> CreateClass() const;
 };
 
 AdsbMovementstatistics::AdsbMovementstatistics()
@@ -570,10 +570,10 @@ void FlightHoldingsPeriod::SetSeqno(Int32 seqno)
 	this->seqno = seqno;
 }
 
-Data::NamedClass<FlightHoldingsPeriod> *FlightHoldingsPeriod::CreateClass() const
+NN<Data::NamedClass<FlightHoldingsPeriod>> FlightHoldingsPeriod::CreateClass() const
 {
-	Data::NamedClass<FlightHoldingsPeriod> *cls;
-	NEW_CLASS(cls, Data::NamedClass<FlightHoldingsPeriod>(this));
+	NN<Data::NamedClass<FlightHoldingsPeriod>> cls;
+	NEW_CLASSNN(cls, Data::NamedClass<FlightHoldingsPeriod>(this));
 	CLASS_ADD(cls, finalUploadId);
 	CLASS_ADD(cls, beginTime);
 	CLASS_ADD(cls, endTime);
@@ -604,7 +604,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			Manage::HiResClock clk;
-			Data::NamedClass<FlightHoldingsPeriod> *cls;
+			NN<Data::NamedClass<FlightHoldingsPeriod>> cls;
 			{
 				FlightHoldingsPeriod ams;
 				cls = ams.CreateClass();
@@ -615,7 +615,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				while (true)
 				{
 					FlightHoldingsPeriod ams;
-					if (!reader.ReadNext(&ams))
+					if (!reader.ReadNext(ams))
 						break;
 					cnt++;
 				}
@@ -628,7 +628,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(", rows read = "));
 			sb.AppendUOSInt(cnt);
 			console.WriteLineCStr(sb.ToCString());
-			DEL_CLASS(cls);
+			cls.Delete();
 		}
 		db.Delete();
 	}

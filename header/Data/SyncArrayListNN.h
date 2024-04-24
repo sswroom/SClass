@@ -8,6 +8,8 @@ namespace Data
 {
 	template <class T> class SyncArrayListNN : public ReadingListNN<T>
 	{
+	public:
+		typedef void (*FreeFunc)(NotNullPtr<T> v);
 	private:
 		Data::ArrayListNN<T> arr;
 		Sync::Mutex mut;
@@ -34,6 +36,10 @@ namespace Data
 		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
 		NotNullPtr<Data::ArrayListNN<T>> GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage);
+
+		void DeleteAll();
+		void FreeAll(FreeFunc freeFunc);
+		void MemFreeAll();
 	};
 
 
@@ -144,5 +150,24 @@ namespace Data
 		mutUsage->ReplaceMutex(this->mut);
 		return this->arr;
 	}
+
+	template <class T> void Data::SyncArrayListNN<T>::DeleteAll()
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		this->arr.DeleteAll();
+	}
+
+	template <class T> void Data::SyncArrayListNN<T>::FreeAll(FreeFunc freeFunc)
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		this->arr.FreeAll(freeFunc);
+	}
+
+	template <class T> void Data::SyncArrayListNN<T>::MemFreeAll()
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		this->arr.MemFreeAll();
+	}
+
 }
 #endif

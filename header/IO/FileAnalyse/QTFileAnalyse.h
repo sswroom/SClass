@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_QTFILEANALYSE
 #define _SM_IO_FILEANALYSE_QTFILEANALYSE
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Thread.h"
@@ -22,7 +22,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::StreamData *fd;
-			Data::SyncArrayList<PackInfo*> packs;
+			Data::SyncArrayListNN<PackInfo> packs;
 
 			Bool pauseParsing;
 			Sync::Thread thread;

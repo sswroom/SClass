@@ -160,7 +160,7 @@ public:
 	Int32 GetLight10Status();
 	void SetLight10Status(Int32 light10Status);
 
-	Data::NamedClass<LamppostData> *CreateClass();
+	NN<Data::NamedClass<LamppostData>> CreateClass();
 };
 
 LamppostData::LamppostData()
@@ -699,10 +699,10 @@ void LamppostData::SetLight10Status(Int32 light10Status)
 	this->light10Status = light10Status;
 }
 
-Data::NamedClass<LamppostData> *LamppostData::CreateClass()
+NN<Data::NamedClass<LamppostData>> LamppostData::CreateClass()
 {
-	Data::NamedClass<LamppostData> *cls;
-	NEW_CLASS(cls, Data::NamedClass<LamppostData>(this));
+	NN<Data::NamedClass<LamppostData>> cls;
+	NEW_CLASSNN(cls, Data::NamedClass<LamppostData>(this));
 	CLASS_ADD(cls, id);
 	CLASS_ADD(cls, dtRecv);
 	CLASS_ADD(cls, dtData);
@@ -775,16 +775,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			cfg->GetValue(CSTR("spring.datasource.password")).OrNull(), log, sockf).SetTo(db))
 		{
 			UOSInt i;
-			Data::ArrayList<LamppostData*> dataList;
-			Data::ArrayList<LamppostData*> dataList2;
-			Data::NamedClass<LamppostData> *cls = LamppostData().CreateClass();
-			LamppostData *data;
+			Data::ArrayListNN<LamppostData> dataList;
+			Data::ArrayListNN<LamppostData> dataList2;
+			NN<Data::NamedClass<LamppostData>> cls = LamppostData().CreateClass();
 			NotNullPtr<DB::DBReader> r;
 			if (db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				{
 					DB::DBClassReader<LamppostData> reader(r, cls);
-					reader.ReadAll(&dataList);
+					reader.ReadAll(dataList);
 				}
 				db->CloseReader(r);
 
@@ -794,11 +793,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 
 				sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/LamppostData.ddf"));
-				if (DB::DBDataFile<LamppostData>::SaveFile(CSTRP(sbuff, sptr), &dataList, cls))
+				if (DB::DBDataFile<LamppostData>::SaveFile(CSTRP(sbuff, sptr), dataList, cls))
 				{
 					console.WriteLineC(UTF8STRC("File saved"));
 				}
-				if (DB::DBDataFile<LamppostData>::LoadFile(CSTRP(sbuff, sptr), cls, &dataList2))
+				if (DB::DBDataFile<LamppostData>::LoadFile(CSTRP(sbuff, sptr), cls, dataList2))
 				{
 					sb.ClearStr();
 					sb.AppendUOSInt(dataList2.GetCount());
@@ -812,7 +811,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					i = dataList.GetCount();
 					while (i-- > 0)
 					{
-						if (!cls->Equals(dataList.GetItem(i), dataList2.GetItem(i)))
+						if (!cls->Equals(dataList.GetItemNoCheck(i), dataList2.GetItemNoCheck(i)))
 						{
 							console.WriteLineC(UTF8STRC("Data not match"));
 							succ = false;
@@ -826,21 +825,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 			}
 
-			i = dataList.GetCount();
-			while (i-- > 0)
-			{
-				data = dataList.GetItem(i);
-				DEL_CLASS(data);
-			}
-
-			i = dataList2.GetCount();
-			while (i-- > 0)
-			{
-				data = dataList2.GetItem(i);
-				DEL_CLASS(data);
-			}
-
-			DEL_CLASS(cls);
+			dataList.DeleteAll();
+			dataList2.DeleteAll();
+			cls.Delete();
 			db.Delete();
 		}
 		else

@@ -14,21 +14,21 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 {
 	NotNullPtr<IO::FileAnalyse::TIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TIFFFileAnalyse>();
 	UInt8 buff[256];
-	PackInfo *pack;
+	NN<PackInfo> pack;
 
 	me->fd->GetRealData(0, 256, BYTEARR(buff));
 	UInt16 fmt = me->bo->GetUInt16(&buff[2]);
 	if (fmt == 42)
 	{
 		UOSInt nextOfst = me->bo->GetUInt16(&buff[4]);
-		pack = MemAlloc(PackInfo, 1);
+		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 8;
 		pack->packType = PT_HEADER;
 		me->packs.Add(pack);
 		if (nextOfst > 8)
 		{
-			pack = MemAlloc(PackInfo, 1);
+			pack = MemAllocNN(PackInfo);
 			pack->fileOfst = 16;
 			pack->packSize = nextOfst - 16;
 			pack->packType = PT_RESERVED;
@@ -38,14 +38,14 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	else if (fmt == 43 && me->bo->GetUInt16(&buff[4]) == 8 && me->bo->GetUInt16(&buff[6]) == 0) //BigTIFF
 	{
 		UInt64 nextOfst = me->bo->GetUInt16(&buff[8]);
-		pack = MemAlloc(PackInfo, 1);
+		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 16;
 		pack->packType = PT_HEADER;
 		me->packs.Add(pack);
 		if (nextOfst > 16)
 		{
-			pack = MemAlloc(PackInfo, 1);
+			pack = MemAllocNN(PackInfo);
 			pack->fileOfst = 16;
 			pack->packSize = nextOfst - 16;
 			pack->packType = PT_RESERVED;
@@ -57,7 +57,7 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 			UInt64 nTags;
 			me->fd->GetRealData(nextOfst, 8, BYTEARR(buff));
 			nTags = me->bo->GetUInt64(&buff[0]);
-			pack = MemAlloc(PackInfo, 1);
+			pack = MemAllocNN(PackInfo);
 			pack->fileOfst = nextOfst;
 			pack->packSize = nTags * 20 + 16;
 			pack->packType = PT_IFD8;
@@ -74,9 +74,9 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	}
 }
 
-void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(PackInfo *pack)
+void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 {
-	MemFree(pack);
+	MemFreeNN(pack);
 }
 
 IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TIFFFileAnalyse"))
@@ -119,7 +119,7 @@ IO::FileAnalyse::TIFFFileAnalyse::~TIFFFileAnalyse()
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
 	SDEL_CLASS(this->bo);
-	LIST_FREE_FUNC(&this->packs, FreePackInfo);
+	this->packs.FreeAll(FreePackInfo);
 }
 
 Text::CStringNN IO::FileAnalyse::TIFFFileAnalyse::GetFormatName()
@@ -134,9 +134,8 @@ UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -165,11 +164,11 @@ UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -189,11 +188,10 @@ UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

@@ -20,10 +20,10 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	UInt32 lastSize;
 	Int32 rowSize;
 	UInt8 tagHdr[15];
-	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag;
+	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
 	Bool lastIsFree = false;
 
-	tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
+	tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
 	tag->ofst = 0;
 	tag->size = 40;
 	tag->tagType = TagType::Header;
@@ -31,7 +31,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 
 	me->fd->GetRealData(40, 4, BYTEARR(tagHdr));
 	lastSize = ReadUInt32(tagHdr);
-	tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
+	tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
 	tag->ofst = 40;
 	tag->size = lastSize + 4;
 	tag->tagType = TagType::Field;
@@ -81,7 +81,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 			{
 				break;
 			}
-			tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
+			tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
 			tag->ofst = ofst;
 			tag->size = (UInt32)rowSize + 4;
 			tag->tagType = tagType;
@@ -117,7 +117,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 		this->tableInfo = 0;
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->tags, MemFree);
+	this->tags.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
@@ -132,8 +132,8 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -148,11 +148,11 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
-	TagInfo *pack;
+	NN<TagInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItem((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -174,8 +174,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
-	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
 	NotNullPtr<Map::ESRI::FileGDBTableInfo> tableInfo;
 	

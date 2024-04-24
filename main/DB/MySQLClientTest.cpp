@@ -83,7 +83,7 @@ public:
 	Text::String* GetLocation();
 	void SetLocation(Text::String* location);
 
-	Data::NamedClass<Userfile> *CreateClass();
+	NN<Data::NamedClass<Userfile>> CreateClass();
 };
 
 Userfile::Userfile()
@@ -348,10 +348,10 @@ void Userfile::SetLocation(Text::String* location)
 	this->location = location?location->Clone().Ptr():0;
 }
 
-Data::NamedClass<Userfile> *Userfile::CreateClass()
+NN<Data::NamedClass<Userfile>> Userfile::CreateClass()
 {
-	Data::NamedClass<Userfile> *cls;
-	NEW_CLASS(cls, Data::NamedClass<Userfile>(this));
+	NN<Data::NamedClass<Userfile>> cls;
+	NEW_CLASSNN(cls, Data::NamedClass<Userfile>(this));
 	CLASS_ADD(cls, id);
 	CLASS_ADD(cls, filetype);
 	CLASS_ADD(cls, orifilename);
@@ -381,26 +381,18 @@ IO::ConsoleWriter *console;
 
 void TextReadAll(DB::DBTool *db)
 {
-	Data::ArrayList<Userfile*> dataList;
+	Data::ArrayListNN<Userfile> dataList;
 	NotNullPtr<DB::DBReader> r;
 	if (db->QueryTableData(CSTR_NULL, CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
-		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
+		NN<Data::NamedClass<Userfile>> cls = Userfile().CreateClass();
 		{
 			DB::DBClassReader<Userfile> reader(r, cls);
-			reader.ReadAll(&dataList);
+			reader.ReadAll(dataList);
 		}
 		db->CloseReader(r);
-		DEL_CLASS(cls);
-
-		Userfile *userfile;
-		UOSInt i = dataList.GetCount();
-		while (i-- > 0)
-		{
-			userfile = dataList.GetItem(i);
-			DEL_CLASS(userfile);
-		}
-
+		cls.Delete();
+		dataList.DeleteAll();
 	}
 	else
 	{
@@ -410,26 +402,19 @@ void TextReadAll(DB::DBTool *db)
 
 void TestBinaryRead(DB::DBTool *db)
 {
-	Data::ArrayList<Userfile*> dataList;
+	Data::ArrayListNN<Userfile> dataList;
 	NotNullPtr<Net::MySQLTCPClient> conn = NotNullPtr<Net::MySQLTCPClient>::ConvertFrom(db->GetDBConn());
 	NotNullPtr<DB::DBReader> r;
 	if (conn->ExecuteReaderBinary(CSTR("select * from userfile")).SetTo(r))
 	{
-		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
+		NN<Data::NamedClass<Userfile>> cls = Userfile().CreateClass();
 		{
 			DB::DBClassReader<Userfile> reader(r, cls);
-			reader.ReadAll(&dataList);
+			reader.ReadAll(dataList);
 		}
 		db->CloseReader(r);
-		DEL_CLASS(cls);
-
-		Userfile *userfile;
-		UOSInt i = dataList.GetCount();
-		while (i-- > 0)
-		{
-			userfile = dataList.GetItem(i);
-			DEL_CLASS(userfile);
-		}
+		cls.Delete();
+		dataList.DeleteAll();
 /*
 		UOSInt rowCnt = 0;
 		UTF8Char sbuff[64];

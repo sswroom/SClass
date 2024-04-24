@@ -149,11 +149,11 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 	if (me->hexView->GetFrameName(sb))
 	{
 		me->txtFrameName->SetText(sb.ToCString());
-		Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
-		Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> areaList;
+		Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldList;
+		Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo> areaList;
 		me->hexView->GetAreaInfos(areaList);
 		me->hexView->GetFieldInfos(fieldList);
-		const IO::FileAnalyse::FrameDetail::FieldInfo *field;
+		NN<const IO::FileAnalyse::FrameDetail::FieldInfo> field;
 		if (fieldList.GetCount() == 0)
 		{
 			me->txtFieldDetail->SetText(CSTR("-"));
@@ -176,7 +176,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 						else
 							sb.AppendC(UTF8STRC(" > \r\n\t"));
 					}
-					sb.Append(areaList.GetItem(i)->name);
+					sb.Append(areaList.GetItemNoCheck(i)->name);
 					i++;
 				}
 				sb.AppendC(UTF8STRC("\r\n"));
@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 				{
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
-				field = fieldList.GetItem(i);
+				field = fieldList.GetItemNoCheck(i);
 				sb.Append(field->name);
 				sb.AppendUTF8Char('=');
 				sb.Append(field->value);

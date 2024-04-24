@@ -25,7 +25,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 			break;
 		}
 
-		IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
+		NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 		pack->fileOfst = fileOfst;
 		pack->packSize = (UOSInt)fileSize;
 		pack->packType = PT_FILE;
@@ -54,7 +54,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 	this->ParseV2Directory(ReadUInt64(&buff[0]), ReadUInt64(&buff[8]));
 	this->ParseV1Directory(dirOfst + 16, dirSize - 16);
 
-	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
+	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 	pack->fileOfst = dirOfst;
 	pack->packSize = (UOSInt)dirSize;
 	pack->packType = PT_V2DIRECTORY;
@@ -66,7 +66,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 {
 	NotNullPtr<IO::FileAnalyse::SPKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SPKFileAnalyse>();
 	UInt8 buff[256];
-	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	me->fd->GetRealData(0, 256, BYTEARR(buff));
 	Int32 flags = ReadInt32(&buff[4]);
 	UOSInt endOfst;
@@ -91,7 +91,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		endOfst += 8 + customSize;
 	}
 
-	pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
+	pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 	pack->fileOfst = 0;
 	pack->packSize = endOfst;
 	pack->packType = PT_HEADER;
@@ -101,7 +101,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	{
 		me->ParseV1Directory(lastOfst, me->fd->GetDataSize() - lastOfst);
 
-		pack = MemAlloc(IO::FileAnalyse::SPKFileAnalyse::PackInfo, 1);
+		pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 		pack->fileOfst = lastOfst;
 		pack->packSize = (UOSInt)(me->fd->GetDataSize() - lastOfst);
 		pack->packType = PT_V1DIRECTORY;
@@ -114,10 +114,10 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack)
+void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack)
 {
 	SDEL_STRING(pack->fileName);
-	MemFree(pack);
+	MemFreeNN(pack);
 }
 
 IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SPKFileAnalyse"))
@@ -139,7 +139,7 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, FreePackInfo);
+	this->packs.FreeAll(FreePackInfo);
 }
 
 Text::CStringNN IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
@@ -154,9 +154,8 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -191,11 +190,11 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -215,11 +214,10 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

@@ -15,7 +15,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	UOSInt readSize;
 	UOSInt frameSize;
 	UOSInt j;
-	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 
 	currOfst = 0;
 	readOfst = 0;
@@ -56,7 +56,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 			}
 			if (readBuff[j + 3] == 0xB9) //End Of File
 			{
-				pack = MemAlloc(IO::FileAnalyse::MPEGFileAnalyse::PackInfo, 1);
+				pack = MemAllocNN(IO::FileAnalyse::MPEGFileAnalyse::PackInfo);
 				pack->fileOfst = currOfst + j;
 				pack->packSize = 4;
 				pack->packType = 0xb9;
@@ -77,7 +77,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 				{
 					break;
 				}
-				pack = MemAlloc(IO::FileAnalyse::MPEGFileAnalyse::PackInfo, 1);
+				pack = MemAllocNN(IO::FileAnalyse::MPEGFileAnalyse::PackInfo);
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
 				pack->packType = 0xba;
@@ -86,7 +86,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 			else
 			{
 				frameSize = 6 + (UOSInt)ReadMUInt16(&readBuff[j + 4]);
-				pack = MemAlloc(IO::FileAnalyse::MPEGFileAnalyse::PackInfo, 1);
+				pack = MemAllocNN(IO::FileAnalyse::MPEGFileAnalyse::PackInfo);
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
 				pack->packType = readBuff[j + 3];
@@ -138,7 +138,7 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
@@ -153,9 +153,8 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
@@ -197,9 +196,8 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
 	Data::ByteBuffer packBuff(pack->packSize);
@@ -736,11 +734,11 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -760,11 +758,10 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

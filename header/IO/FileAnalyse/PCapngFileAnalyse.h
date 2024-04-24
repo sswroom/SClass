@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPNGFILEANALYSE
 #include "Data/ByteBuffer.h"
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Thread.h"
@@ -25,7 +25,7 @@ namespace IO
 		private:
 			IO::StreamData *fd;
 			Bool isBE;
-			Data::SyncArrayList<BlockInfo *> blockList;
+			Data::SyncArrayListNN<BlockInfo> blockList;
 			Data::ByteBuffer packetBuff;
 
 			Bool pauseParsing;

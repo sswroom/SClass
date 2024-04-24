@@ -57,8 +57,8 @@ namespace UI
 
 		Text::CString GetAnalyzerName();
 		Bool GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb);
-		UOSInt GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> fieldList);
-		UOSInt GetAreaInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> areaList);
+		UOSInt GetFieldInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList);
+		UOSInt GetAreaInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList);
 		Bool GoToNextUnkField();
 	};
 }

@@ -751,13 +751,12 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		return;
 	}
 	Int64 id = (((Int64)fromId) << 32) | (UInt32)toId;
-	RoadInfo *road;
+	NN<RoadInfo> road;
 
 	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap.Get(id);
-	if (road == 0)
+	if (!this->roadMap.Get(id).SetTo(road))
 	{
-		road = MemAlloc(RoadInfo, 1);
+		road = MemAllocNN(RoadInfo);
 		road->objId = id;
 		road->fromId = fromId;
 		road->toId = toId;
@@ -766,8 +765,8 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		road->spd = trafficSpeed;
 		this->roadMap.Put(id, road);
 
-		CenterlineInfo *lineInfo = this->vecMap.Get(id);
-		if (lineInfo)
+		NN<CenterlineInfo> lineInfo;
+		if (this->vecMap.Get(id).SetTo(lineInfo))
 		{
 			road->vec = lineInfo->pl->Clone().Ptr();
 			Math::RectAreaDbl bounds;
@@ -863,25 +862,25 @@ Map::HKTrafficLayer::HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Option
 Map::HKTrafficLayer::~HKTrafficLayer()
 {
 	UOSInt i;
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	i = this->roadMap.GetCount();
 	while (i-- > 0)
 	{
-		road = this->roadMap.GetItem(i);
+		road = this->roadMap.GetItemNoCheck(i);
 		if (road->vec)
 		{
 			DEL_CLASS(road->vec);
 		}
-		MemFree(road);
+		MemFreeNN(road);
 	}
 
-	CenterlineInfo *lineInfo;
+	NN<CenterlineInfo> lineInfo;
 	i = this->vecMap.GetCount();
 	while (i-- > 0)
 	{
-		lineInfo = this->vecMap.GetItem(i);
+		lineInfo = this->vecMap.GetItemNoCheck(i);
 		DEL_CLASS(lineInfo->pl);
-		MemFree(lineInfo);
+		MemFreeNN(lineInfo);
 	}
 	this->url->Release();
 }
@@ -904,7 +903,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 	Int32 fromId;
 	Int32 toId;
 	Int64 id;
-	CenterlineInfo *lineInfo;
+	NN<CenterlineInfo> lineInfo;
 	Bool isFirst = false;
 	Math::RectAreaDbl minMax;
 	Map::NameArray *nameArr;
@@ -976,15 +975,14 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 									this->maxY = minMax.max.y;
 							}
 
-							lineInfo = MemAlloc(CenterlineInfo, 1);
+							lineInfo = MemAllocNN(CenterlineInfo);
 							lineInfo->fromId = fromId;
 							lineInfo->toId = toId;
 							lineInfo->pl = (Math::Geometry::Polyline*)vec;
-							lineInfo = this->vecMap.Put(id, lineInfo);
-							if (lineInfo)
+							if (this->vecMap.Put(id, lineInfo).SetTo(lineInfo))
 							{
 								DEL_CLASS(lineInfo->pl);
-								MemFree(lineInfo);
+								MemFreeNN(lineInfo);
 							}
 						}
 						else
@@ -1130,13 +1128,13 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> out
 	UOSInt ret = 0;
 	UOSInt i;
 	UOSInt j;
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	Sync::MutexUsage mutUsage(this->roadMut);
 	i = 0;
 	j = this->roadMap.GetCount();
 	while (i < j)
 	{
-		road = this->roadMap.GetItem(i);
+		road = this->roadMap.GetItemNoCheck(i);
 		if (road->vec)
 		{
 			outArr->Add(road->objId);
@@ -1155,7 +1153,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr
 UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	UOSInt i;
 	UOSInt j;
 	rect = rect.Reorder();
@@ -1164,7 +1162,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> o
 	j = this->roadMap.GetCount();
 	while (i < j)
 	{
-		road = this->roadMap.GetItem(i);
+		road = this->roadMap.GetItemNoCheck(i);
 		if (road->vec && road->minX <= rect.max.x && road->maxX >= rect.min.x && road->minY <= rect.max.y && road->maxY >= rect.min.y)
 		{
 			outArr->Add(road->objId);
@@ -1236,11 +1234,10 @@ void Map::HKTrafficLayer::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	Math::Geometry::Vector2D *vec = 0;
 	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap.Get(id);
-	if (road && road->vec)
+	if (this->roadMap.Get(id).SetTo(road) && road->vec)
 	{
 		vec = road->vec->Clone().Ptr();
 		if (road->lev == Map::HKTrafficLayer::SL_GOOD)

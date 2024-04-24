@@ -111,10 +111,10 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 		if (!found)
 		{
 			Math::RectAreaDbl bounds = this->bounds;
-			ParkingInfo *parking;
+			NN<ParkingInfo> parking;
 			while (r->ReadNext())
 			{
-				parking = MemAlloc(ParkingInfo, 1);
+				parking = MemAllocNN(ParkingInfo);
 				parking->parkId = r->GetNewStrNN(colInd[0]);
 				parking->parkingNameEn = r->GetNewStr(colInd[1]);
 				parking->parkingAddressEn = r->GetNewStr(colInd[2]);
@@ -141,8 +141,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 				{
 					bounds = bounds.MergePoint(coord);
 				}
-				parking = this->parkingMap.PutNN(parking->parkId, parking);
-				if (parking)
+				if (this->parkingMap.PutNN(parking->parkId, parking).SetTo(parking))
 				{
 					ParkingInfoFree(parking);
 				}
@@ -205,14 +204,13 @@ void Map::HKParkingVacancy::LoadVacancy()
 			}
 			if (!found)
 			{
-				ParkingInfo *parking;
+				NN<ParkingInfo> parking;
 				while (r->ReadNext())
 				{
 					sptr = r->GetStr(colInd[0], sbuff, 512);
 					if (sptr)
 					{
-						parking = this->parkingMap.GetC(CSTRP(sbuff, sptr));
-						if (parking)
+						if (this->parkingMap.GetC(CSTRP(sbuff, sptr)).SetTo(parking))
 						{
 							parking->vacancy = r->GetInt32(colInd[1]);
 							parking->lastupdate = r->GetTimestamp(colInd[2]);
@@ -225,7 +223,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 	}
 }
 
-void Map::HKParkingVacancy::ParkingInfoFree(ParkingInfo *parking)
+void Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
 {
 	parking->parkId->Release();
 	OPTSTR_DEL(parking->parkingNameEn);
@@ -240,7 +238,7 @@ void Map::HKParkingVacancy::ParkingInfoFree(ParkingInfo *parking)
 	OPTSTR_DEL(parking->parkingStarttime);
 	OPTSTR_DEL(parking->parkingEndtime);
 	OPTSTR_DEL(parking->parkingContactNo);
-	MemFree(parking);
+	MemFreeNN(parking);
 }
 
 Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateDefaultCsys())
@@ -262,11 +260,7 @@ Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Op
 
 Map::HKParkingVacancy::~HKParkingVacancy()
 {
-	UOSInt i = this->parkingMap.GetCount();
-	while (i-- > 0)
-	{
-		ParkingInfoFree(this->parkingMap.GetItem(i));
-	}
+	this->parkingMap.FreeAll(ParkingInfoFree);
 }
 
 Map::DrawLayerType Map::HKParkingVacancy::GetLayerType() const
@@ -293,12 +287,12 @@ UOSInt Map::HKParkingVacancy::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outA
 
 UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	ParkingInfo *parking;
+	NN<ParkingInfo> parking;
 	UOSInt i = 0;
 	UOSInt j = this->parkingMap.GetCount();
 	while (i < j)
 	{
-		parking = this->parkingMap.GetItem(i);
+		parking = this->parkingMap.GetItemNoCheck(i);
 		if (rect.ContainPt(parking->parkingLongitude, parking->parkingLatitude))
 		{
 			outArr->Add((Int64)i);
@@ -320,8 +314,8 @@ void Map::HKParkingVacancy::ReleaseNameArr(NameArray *nameArr)
 Bool Map::HKParkingVacancy::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Sync::MutexUsage mutUsage(this->parkingMut);
-	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);
-	if (parking == 0)
+	NN<ParkingInfo> parking;
+	if (!this->parkingMap.GetItem((UOSInt)id).SetTo(parking))
 	{
 		return false;
 	}
@@ -560,8 +554,8 @@ void Map::HKParkingVacancy::EndGetObject(GetObjectSess *session)
 Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(this->parkingMut);
-	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);
-	if (parking)
+	NN<ParkingInfo> parking;
+	if (this->parkingMap.GetItem((UOSInt)id).SetTo(parking))
 	{
 		Math::Geometry::Point *pt;
 		NEW_CLASS(pt, Math::Geometry::Point(4326, parking->parkingLongitude, parking->parkingLatitude));

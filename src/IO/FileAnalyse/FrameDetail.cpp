@@ -1,16 +1,16 @@
 #include "Stdafx.h"
 #include "IO/FileAnalyse/FrameDetail.h"
 
-void IO::FileAnalyse::FrameDetail::FreeFieldInfo(FieldInfo *field)
+void IO::FileAnalyse::FrameDetail::FreeFieldInfo(NN<FieldInfo> field)
 {
 	field->name->Release();
 	field->value->Release();
-	MemFree(field);
+	MemFreeNN(field);
 }
 
 void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value, FieldType fieldType)
 {
-	FieldInfo *field = MemAlloc(FieldInfo, 1);
+	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->ofst = ofst;
 	field->size = size;
 	field->name = Text::String::New(name);
@@ -28,7 +28,7 @@ IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 IO::FileAnalyse::FrameDetail::~FrameDetail()
 {
 	this->headers.FreeAll();
-	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
+	this->fields.FreeAll(FreeFieldInfo);
 }
 
 UInt64 IO::FileAnalyse::FrameDetail::GetOffset() const
@@ -41,20 +41,20 @@ UInt64 IO::FileAnalyse::FrameDetail::GetSize() const
 	return this->size;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> fieldList) const
+UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> fieldList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
 		return 0;
 	}
-	FieldInfo *field;
+	NN<FieldInfo> field;
 	UInt32 frameOfst = (UInt32)(ofst - this->ofst);
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = this->fields.GetCount();
 	while (i < j)
 	{
-		field = this->fields.GetItem(i);
+		field = this->fields.GetItemNoCheck(i);
 		if ((field->fieldType == FT_FIELD || field->fieldType == FT_SUBFRAME) && frameOfst >= field->ofst && frameOfst < field->ofst + field->size)
 		{
 			fieldList->Add(field);
@@ -65,20 +65,20 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NotNullPtr<Data:
 	return ret;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> areaList) const
+UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> areaList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
 		return 0;
 	}
-	FieldInfo *field;
+	NN<FieldInfo> field;
 	UInt32 frameOfst = (UInt32)(ofst - this->ofst);
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = this->fields.GetCount();
 	while (i < j)
 	{
-		field = this->fields.GetItem(i);
+		field = this->fields.GetItemNoCheck(i);
 		if (field->fieldType == FT_AREA && frameOfst >= field->ofst && frameOfst < field->ofst + field->size)
 		{
 			areaList->Add(field);
@@ -135,7 +135,7 @@ void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> 
 		sb->Append(it.Next());
 	}
 
-	FieldInfo *field;
+	NN<FieldInfo> field;
 	UOSInt j = this->fields.GetCount();
 	if (j > 0)
 	{
@@ -143,7 +143,7 @@ void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> 
 		UOSInt i = 0;
 		while (i < j)
 		{
-			field = this->fields.GetItem(i);
+			field = this->fields.GetItemNoCheck(i);
 			if (field->fieldType != FT_AREA)
 			{
 				switch (field->fieldType)

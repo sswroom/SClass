@@ -9,7 +9,7 @@
 void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
 {
 	NotNullPtr<IO::FileAnalyse::SMTCFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SMTCFileAnalyse>();
-	DataInfo *data;
+	NN<DataInfo> data;
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 packetHdr[23];
@@ -20,7 +20,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 		if (me->fd->GetRealData(ofst, 23, BYTEARR(packetHdr)) < 21)
 			break;
 		
-		data = MemAlloc(DataInfo, 1);
+		data = MemAllocNN(DataInfo);
 		data->ofst = ofst;
 		data->type = packetHdr[20];
 		if (data->type == 0 || data->type == 1)
@@ -33,7 +33,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 		}
 		else
 		{
-			MemFree(data);
+			MemFreeNN(data);
 			break;
 		}
 		Sync::MutexUsage mutUsage(me->dataMut);
@@ -86,7 +86,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 		sb->AppendC(UTF8STRC("SMTC Header"));
 		return true;
 	}
-	DataInfo *data;
+	NN<DataInfo> data;
 	if (index > this->dataList.GetCount())
 	{
 		return false;
@@ -95,7 +95,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	UTF8Char *sptr;
 	UInt8 hdr[21];
 	Sync::MutexUsage mutUsage(this->dataMut);
-	data = this->dataList.GetItem(index - 1);
+	data = this->dataList.GetItemNoCheck(index - 1);
 	mutUsage.EndUse();
 	this->fd->GetRealData(data->ofst, 21, BYTEARR(hdr));
 	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&hdr[0]), ReadUInt32(&hdr[8])), Data::DateTimeUtil::GetLocalTzQhr());
@@ -138,11 +138,11 @@ UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->dataList.GetCount() - 1;
 	OSInt k;
-	DataInfo *data;
+	NN<DataInfo> data;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		data = this->dataList.GetItem((UOSInt)k);
+		data = this->dataList.GetItemNoCheck((UOSInt)k);
 		if (ofst < data->ofst)
 		{
 			j = k - 1;
@@ -172,13 +172,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 		frame->AddHexBuff(0, CSTR("File Header"), this->packetBuff.WithSize(4), false);
 		return frame;
 	}
-	DataInfo *data;
+	NN<DataInfo> data;
 	if (index > this->dataList.GetCount())
 	{
 		return 0;
 	}
 	Sync::MutexUsage mutUsage(this->dataMut);
-	data = this->dataList.GetItem(index - 1);
+	data = this->dataList.GetItemNoCheck(index - 1);
 	mutUsage.EndUse();
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(data->ofst, data->size));
 	fd->GetRealData(data->ofst, (UOSInt)data->size, this->packetBuff);

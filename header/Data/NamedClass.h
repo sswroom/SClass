@@ -10,7 +10,7 @@ namespace Data
 		NamedClass(const T *refObj);
 		virtual ~NamedClass();
 
-		T *CreateObject();
+		NN<T> CreateObject();
 	};
 }
 
@@ -22,8 +22,10 @@ template <class T> Data::NamedClass<T>::~NamedClass()
 {
 }
 
-template <class T> T *Data::NamedClass<T>::CreateObject()
+template <class T> NN<T> Data::NamedClass<T>::CreateObject()
 {
-	return NEW_CLASS_D(T());
+	NN<T> v;
+	NEW_CLASSNN(v, T());
+	return v;
 }
 #endif

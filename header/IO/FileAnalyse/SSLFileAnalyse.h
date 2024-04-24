@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_SSLFILEANALYSE
 #define _SM_IO_FILEANALYSE_SSLFILEANALYSE
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Thread.h"
@@ -21,13 +21,13 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::StreamData *fd;
-			Data::SyncArrayList<PackInfo*> packs;
+			Data::SyncArrayListNN<PackInfo> packs;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 
 			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
-			static void FreePackInfo(PackInfo *pack);
+			static void FreePackInfo(NN<PackInfo> pack);
 
 			static UOSInt AppendExtension(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng);
 		public:

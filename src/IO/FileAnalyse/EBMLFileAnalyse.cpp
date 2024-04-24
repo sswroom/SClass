@@ -355,7 +355,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	const UInt8 *buffPtr;
 	UInt64 id;
 	UInt64 sz;
-	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
+	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
 
 	while (ofst <= (endOfst - 3) && !this->thread.IsStopping())
 	{
@@ -372,7 +372,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 			{
 				return;
 			}
-			pack = MemAlloc(IO::FileAnalyse::EBMLFileAnalyse::PackInfo, 1);
+			pack = MemAllocNN(IO::FileAnalyse::EBMLFileAnalyse::PackInfo);
 			pack->fileOfst = ofst;
 			pack->packSize = (UOSInt)(sz + (UOSInt)(buffPtr - buff));
 			pack->lev = lev;
@@ -405,11 +405,11 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
-	PackInfo *pack;
+	NN<PackInfo> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs.GetItem((UOSInt)k);
+		pack = this->packs.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -449,7 +449,7 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->packs, MemFree);
+	this->packs.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
@@ -464,9 +464,8 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendChar('+', pack->lev);
 	sb->AppendU64(pack->fileOfst);
@@ -502,9 +501,8 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
@@ -729,9 +727,8 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	pack = this->packs.GetItem(index);
-	if (pack == 0)
+	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
+	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;

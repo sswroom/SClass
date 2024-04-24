@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_FLVFILEANALYSE
 #define _SM_IO_FILEANALYSE_FLVFILEANALYSE
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
@@ -22,7 +22,7 @@ namespace IO
 			} FLVTag;
 		private:
 			IO::StreamData *fd;
-			Data::SyncArrayList<FLVTag*> tags;
+			Data::SyncArrayListNN<FLVTag> tags;
 			UOSInt hdrSize;
 
 			Bool pauseParsing;

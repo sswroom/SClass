@@ -188,7 +188,7 @@ public:
 	Single GetZCoor();
 	void SetZCoor(Single zCoor);
 
-	Data::NamedClass<Lamppost> *CreateClass();
+	NN<Data::NamedClass<Lamppost>> CreateClass();
 };
 
 Lamppost::Lamppost()
@@ -874,10 +874,10 @@ void Lamppost::SetZCoor(Single zCoor)
 	this->zCoor = zCoor;
 }
 
-Data::NamedClass<Lamppost> *Lamppost::CreateClass()
+NN<Data::NamedClass<Lamppost>> Lamppost::CreateClass()
 {
-	Data::NamedClass<Lamppost> *cls;
-	NEW_CLASS(cls, Data::NamedClass<Lamppost>(this));
+	NN<Data::NamedClass<Lamppost>> cls;
+	NEW_CLASSNN(cls, Data::NamedClass<Lamppost>(this));
 	CLASS_ADD(cls, accLocati);
 	CLASS_ADD(cls, antiBurgl);
 	CLASS_ADD(cls, bulbQty);
@@ -970,21 +970,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			fileGDB->CloseReader(r);
 		}*/
 
-		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
+		NN<Data::NamedClass<Lamppost>> cls = Lamppost().CreateClass();
 
 		if (fileGDB->QueryTableData(CSTR_NULL, CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
-			Lamppost *lamppost;
-			UOSInt i;
 			Double t1;
 			Double t2;
 			Double t3;
 //			Double t4 = 0;
-			Data::ArrayList<Lamppost*> lamppostList;
+			Data::ArrayListNN<Lamppost> lamppostList;
 			clk.Start();
 			{
 				DB::DBClassReader<Lamppost> reader(r, cls);
-				reader.ReadAll(&lamppostList);
+				reader.ReadAll(lamppostList);
 			}
 			t1 = clk.GetTimeDiff();
 			fileGDB->CloseReader(r);
@@ -993,12 +991,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				clk.Start();
-				DB::DBUtil::SaveCSV(&fs, &lamppostList, cls);
+				DB::DBUtil::SaveCSV<Lamppost>(fs, lamppostList, cls);
 				t2 = clk.GetTimeDiff();
 			}
 			
 
-			Data::ArrayList<Lamppost*> lamppostListCSV;
+			Data::ArrayListNN<Lamppost> lamppostListCSV;
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
@@ -1007,7 +1005,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				clk.Start();
 				{
 					DB::DBClassReader<Lamppost> reader(r, cls);
-					reader.ReadAll(&lamppostListCSV);
+					reader.ReadAll(lamppostListCSV);
 				}
 				t3 = clk.GetTimeDiff();
 				csv->CloseReader(r);
@@ -1057,19 +1055,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Text::StringTool::BuildString(sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
 			console.WriteLineC(sb.ToString(), sb.GetLength());*/
 
-			i = lamppostList.GetCount();
-			while (i-- > 0)
-			{
-				lamppost = lamppostList.GetItem(i);
-				DEL_CLASS(lamppost);
-			}
-
-			i = lamppostListCSV.GetCount();
-			while (i-- > 0)
-			{
-				lamppost = lamppostListCSV.GetItem(i);
-				DEL_CLASS(lamppost);
-			}
+			lamppostList.DeleteAll();
+			lamppostListCSV.DeleteAll();
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("t1 = "));
@@ -1082,7 +1069,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendDouble(t4);*/
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
-		DEL_CLASS(cls);
+		cls.Delete();
 
 		DEL_CLASS(fileGDB);
 	}

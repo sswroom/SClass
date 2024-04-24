@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_CLASS
 #define _SM_DATA_CLASS
-#include "Data/ArrayList.h"
+#include "AnyType.h"
+#include "Data/ArrayListNN.h"
 #include "Data/VariItem.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -12,7 +13,7 @@ namespace Data
 		typedef OSInt (*ByNameFunc)(Text::CStringNN name);
 		struct FieldInfo
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			OSInt ofst;
 			Data::VariItem::ItemType itemType;
 			Bool notNull;
@@ -21,9 +22,9 @@ namespace Data
 		};
 	private:
 		const void *refObj;
-		Data::ArrayList<FieldInfo *> fields;
+		Data::ArrayListNN<FieldInfo> fields;
 
-		void FreeFieldInfo(FieldInfo *field);
+		static void FreeFieldInfo(NN<FieldInfo> field);
 	public:
 		Class(const void *refObj);
 		virtual ~Class();
@@ -55,16 +56,16 @@ namespace Data
 		Data::VariItem::ItemType GetFieldType(UOSInt index);
 		Optional<FieldInfo> GetFieldInfo(UOSInt index);
 		
-		Data::VariItem *GetNewValue(UOSInt index, void *obj);
+		Optional<Data::VariItem> GetNewValue(UOSInt index, AnyType obj);
 		Bool IsNotNull(UOSInt index);
-		Bool GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj);
-		Bool SetField(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item);
-		Bool SetFieldClearItem(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item);
-		Bool Equals(void *obj1, void *obj2);
+		Bool GetValue(NN<Data::VariItem> itm, UOSInt index, AnyType obj);
+		Bool SetField(AnyType obj, UOSInt index, NN<Data::VariItem> item);
+		Bool SetFieldClearItem(AnyType obj, UOSInt index, NN<Data::VariItem> item);
+		Bool Equals(AnyType obj1, AnyType obj2);
 
-		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
-		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
-		void ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NotNullPtr<Text::StringBuilderUTF8> sb);
+		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb);
+		void ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb);
 
 		static Optional<Data::Class> ParseFromStr(Text::CStringNN str);
 		static Optional<Data::Class> ParseFromCpp(Text::CStringNN str);

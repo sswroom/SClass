@@ -16,7 +16,8 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	UInt32 lastSize;
 	UOSInt readSize;
 	UInt8 tagHdr[12];
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag;
+	Optional<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
+	NN<PNGTag> nntag;
 	ofst = 4;
 	dataSize = me->fd->GetDataSize();
 	lastSize = 0;
@@ -29,20 +30,21 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 		if (readSize < 4)
 			break;
 		
-		if (tag)
+		if (tag.SetTo(nntag))
 		{
-			tag->crc = ReadMUInt32(tagHdr);
+			nntag->crc = ReadMUInt32(tagHdr);
 		}
 		if (readSize < 12)
 			break;
 		lastSize = ReadMUInt32(&tagHdr[4]);
 
-		tag = MemAlloc(IO::FileAnalyse::PNGFileAnalyse::PNGTag, 1);
-		tag->ofst = ofst + 4;
-		tag->size = lastSize + 12;
-		tag->tagType = ReadInt32(&tagHdr[8]);
-		tag->crc = 0;
-		me->tags.Add(tag);
+		nntag = MemAllocNN(IO::FileAnalyse::PNGFileAnalyse::PNGTag);
+		nntag->ofst = ofst + 4;
+		nntag->size = lastSize + 12;
+		nntag->tagType = ReadInt32(&tagHdr[8]);
+		nntag->crc = 0;
+		me->tags.Add(nntag);
+		tag = nntag;
 		ofst += lastSize + 12;
 	}
 }
@@ -65,7 +67,7 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 {
 	this->thread.Stop();
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(&this->tags, MemFree);
+	this->tags.MemFreeAll();
 }
 
 Text::CStringNN IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
@@ -80,8 +82,8 @@ UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type="));
@@ -95,8 +97,8 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text
 
 Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
@@ -286,11 +288,11 @@ UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
-	PNGTag *pack;
+	NN<PNGTag> pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags.GetItem((UOSInt)k);
+		pack = this->tags.GetItemNoCheck((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -313,8 +315,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	UTF8Char *sptr2;
 	UTF8Char *sptr;
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
-	if (tag == 0)
+	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
+	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);

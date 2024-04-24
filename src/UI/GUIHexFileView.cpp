@@ -202,11 +202,12 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		const UTF8Char *textPtr2;
 		UOSInt textSkip;
 		UInt64 drawOfst;
-		const IO::FileAnalyse::FrameDetail::FieldInfo *fieldInfo = 0;
+		Optional<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldInfo = 0;
+		NN<const IO::FileAnalyse::FrameDetail::FieldInfo> nnfieldInfo;
 		NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 		if (this->frame.SetTo(frame))
 		{
-			Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
+			Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldList;
 			frame->GetFieldInfos(this->currOfst, fieldList);
 			if (fieldList.GetCount() > 0)
 			{
@@ -274,9 +275,9 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 					{
 						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight * 1.5, this->pageLineHeight), 0, frameBrush);
 					}
-					if (fieldInfo && drawOfst >= frame->GetOffset() + fieldInfo->ofst && drawOfst < frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
+					if (fieldInfo.SetTo(nnfieldInfo) && drawOfst >= frame->GetOffset() + nnfieldInfo->ofst && drawOfst < frame->GetOffset() + nnfieldInfo->ofst + nnfieldInfo->size)
 					{
-						if (j + 1 == k || drawOfst + 1 == frame->GetOffset() + fieldInfo->ofst + fieldInfo->size)
+						if (j + 1 == k || drawOfst + 1 == frame->GetOffset() + nnfieldInfo->ofst + nnfieldInfo->size)
 						{
 							dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, fieldBrush);
 						}
@@ -602,7 +603,7 @@ Bool UI::GUIHexFileView::GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return analyse->GetFrameName(index, sb);
 }
 
-UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> fieldList)
+UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList)
 {
 	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
@@ -611,12 +612,12 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::Fi
 		UOSInt i = frame->GetFieldInfos(this->currOfst, fieldList);
 		if (i > 0)
 		{
-			const IO::FileAnalyse::FrameDetail::FieldInfo *field;
+			NN<const IO::FileAnalyse::FrameDetail::FieldInfo> field;
 			UOSInt k = fieldList->GetCount();
 			UOSInt j = k - i;
 			while (j < k)
 			{
-				field = fieldList->GetItem(j);
+				field = fieldList->GetItemNoCheck(j);
 				if (field->fieldType == IO::FileAnalyse::FrameDetail::FT_SUBFRAME)
 				{
 					j = analyse->GetFrameIndex(this->currOfst);
@@ -640,7 +641,7 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::Fi
 	return 0;
 }
 
-UOSInt UI::GUIHexFileView::GetAreaInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> areaList)
+UOSInt UI::GUIHexFileView::GetAreaInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList)
 {
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
 	if (this->frame.SetTo(frame))
@@ -664,8 +665,8 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 		return true;
 	}
 	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
-	Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
-	const IO::FileAnalyse::FrameDetail::FieldInfo *field;
+	Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldList;
+	NN<const IO::FileAnalyse::FrameDetail::FieldInfo> field;
 	if (!analyse->GetFrameDetail(index).SetTo(frame))
 	{
 		return true;
@@ -700,7 +701,7 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 			frame.Delete();
 			return true;
 		}
-		field = fieldList.GetItem(0);
+		field = fieldList.GetItemNoCheck(0);
 		currOfst = frame->GetOffset() + field->ofst + field->size;
 	}
 	frame.Delete();

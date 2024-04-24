@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Net/MIBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -23,7 +23,7 @@ namespace Net
 			UOSInt oidLen;
 			Data::ArrayListStringNN valName;
 			Data::ArrayListStringNN valCont;
-			ModuleInfo *impModule;
+			Optional<ModuleInfo> impModule;
 			Bool parsed;
 		};
 
@@ -32,20 +32,20 @@ namespace Net
 			NotNullPtr<Text::String> moduleName;
 			NotNullPtr<Text::String> moduleFileName;
 			Data::ArrayListStringNN objKeys;
-			Data::ArrayList<ObjectInfo*> objValues;
-			Data::ArrayList<ObjectInfo *> oidList;
+			Data::ArrayListNN<ObjectInfo> objValues;
+			Data::ArrayListNN<ObjectInfo> oidList;
 		};
 	private:
-		Data::FastStringMap<ModuleInfo *> moduleMap;
+		Data::FastStringMapNN<ModuleInfo> moduleMap;
 		ModuleInfo globalModule;
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
-		static void ModuleAppendOID(ModuleInfo *module, ObjectInfo *obj);
-		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::String *s, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyModuleOIDs(ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		static void ModuleAppendOID(NN<ModuleInfo> module, NN<ObjectInfo> obj);
+		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *s, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleOIDs(NN<ModuleInfo> module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
 		Bool ApplyOIDs(NotNullPtr<Text::StringBuilderUTF8> errMessage);
 		Bool ApplyModuleImports(ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
 		Bool ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage);
@@ -62,8 +62,8 @@ namespace Net
 		ASN1MIB();
 		~ASN1MIB();
 
-		ModuleInfo *GetGlobalModule();
-		ModuleInfo *GetModuleByFileName(Text::CString fileName);
+		NN<ModuleInfo> GetGlobalModule();
+		Optional<ModuleInfo> GetModuleByFileName(Text::CStringNN fileName);
 
 		void UnloadAll();
 		Bool LoadFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage);
