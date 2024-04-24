@@ -1469,15 +1469,15 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			sb.AppendUTF8Char(' ');
 			sb.AppendC(UTF8STRC("-o bin/"));
 			sb.Append(prog->name);
-			if (postfixItem)
+			if (postfixItem.SetTo(cfg))
 			{
-				sb.Append(postfixItem->value);
+				sb.Append(cfg->value);
 			}
 			sb.AppendC(UTF8STRC(" @filelist.txt"));
-			if (libsCfg)
+			if (libsCfg.SetTo(cfg))
 			{
 				sb.AppendUTF8Char(' ');
-				sb.Append(libsCfg->value);
+				sb.Append(cfg->value);
 			}
 			UOSInt i;
 			UOSInt j;
