@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(AnyType userObj)
 		Crypto::Encrypt::JasyptEncryptor *enc;
 		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)me->cboKeyAlg->GetSelectedItem().GetOSInt(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)me->cboEncAlg->GetSelectedItem().GetOSInt(), sb.ToByteArray()));
 		sb.ClearStr();
-		enc->EncryptAsB64(sb, sb2.ToString(), sb2.GetLength());
+		enc->EncryptAsB64(sb, sb2.ToByteArray());
 		me->txtResult->SetText(sb.ToCString());
 		DEL_CLASS(enc);
 	}

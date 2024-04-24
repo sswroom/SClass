@@ -55,7 +55,7 @@ namespace Crypto
 			Bool Decrypt(NotNullPtr<IO::ConfigFile> cfg);
 			UOSInt Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff);
 			UOSInt DecryptB64(Text::CStringNN b64Str, UInt8 *outBuff);
-			UOSInt EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *srcBuff, UOSInt srcLen);
+			UOSInt EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ByteArrayR srcBuff);
 
 			static Text::CStringNN KeyAlgorithmGetName(KeyAlgorithm keyAlg);
 			static Text::CStringNN CipherAlgorithmGetName(CipherAlgorithm cipherAlg);

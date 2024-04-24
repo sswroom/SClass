@@ -173,18 +173,18 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::DecryptB64(Text::CStringNN b64Str, UInt
 	return retSize;
 }
 
-UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *srcBuff, UOSInt srcLen)
+UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ByteArrayR srcBuff)
 {
 	UInt8 *srcTmpBuff = 0;
-	UOSInt nBlock = srcLen / this->ivSize;
+	UOSInt nBlock = srcBuff.GetSize() / this->ivSize;
 	UOSInt destLen;
-	if (nBlock * this->ivSize != srcLen)
+	if (nBlock * this->ivSize != srcBuff.GetSize())
 	{
 		destLen = (nBlock + 1) * this->ivSize;
 		srcTmpBuff = MemAlloc(UInt8, destLen);
-		MemCopyNO(srcTmpBuff, srcBuff, srcLen);
-		MemFillB(&srcTmpBuff[srcLen], destLen - srcLen, (UInt8)(destLen - srcLen));
-		srcBuff = srcTmpBuff;
+		MemCopyNO(srcTmpBuff, srcBuff.Ptr(), srcBuff.GetSize());
+		MemFillB(&srcTmpBuff[srcBuff.GetSize()], destLen - srcBuff.GetSize(), (UInt8)(destLen - srcBuff.GetSize()));
+		srcBuff = Data::ByteArrayR(srcTmpBuff, destLen);
 	}
 	else
 	{
@@ -225,7 +225,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NotNullPtr<Text::StringBui
 	UInt8 *key = MemAlloc(UInt8, this->dkLen);
 	this->GetEncKey(salt, key);
 	NotNullPtr<Crypto::Encrypt::ICrypto> enc = this->CreateCrypto(iv, key);
-	destOfst += enc->Encrypt(srcBuff, destLen - destOfst, &destBuff[destOfst]);
+	destOfst += enc->Encrypt(srcBuff.Ptr(), destLen - destOfst, &destBuff[destOfst]);
 	enc.Delete();
 	MemFree(key);
 	if (srcTmpBuff)
