@@ -420,6 +420,8 @@ Text::CStringNN Text::CPPText::GetCppType(Data::VariItem::ItemType itemType, Boo
 			return CSTR("Int32");
 		else
 			return CSTR("NInt32");
+	case Data::VariItem::ItemType::NI32:
+		return CSTR("NInt32");
 	case Data::VariItem::ItemType::U32:
 		return CSTR("UInt32");
 	case Data::VariItem::ItemType::I64:

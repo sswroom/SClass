@@ -93,7 +93,7 @@ Bool Data::Class::AddField(Text::CStringNN name, const Int32 *val)
 
 Bool Data::Class::AddField(Text::CStringNN name, const NInt32 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32, false) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::NI32, false) != 0;
 }
 
 Bool Data::Class::AddField(Text::CStringNN name, const UInt64 *val)
@@ -529,6 +529,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			case Data::VariItem::ItemType::U8:
 			case Data::VariItem::ItemType::I16:
 			case Data::VariItem::ItemType::U16:
+			case Data::VariItem::ItemType::NI32:
 			case Data::VariItem::ItemType::I32:
 			case Data::VariItem::ItemType::U32:
 			case Data::VariItem::ItemType::I64:
@@ -810,6 +811,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			case Data::VariItem::ItemType::U16:
 			case Data::VariItem::ItemType::I32:
 			case Data::VariItem::ItemType::U32:
+			case Data::VariItem::ItemType::NI32:
 			case Data::VariItem::ItemType::I64:
 			case Data::VariItem::ItemType::U64:
 			case Data::VariItem::ItemType::BOOL:
@@ -1108,6 +1110,7 @@ void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev
 			case Data::VariItem::ItemType::U16:
 			case Data::VariItem::ItemType::U32:
 			case Data::VariItem::ItemType::I32:
+			case Data::VariItem::ItemType::NI32:
 			case Data::VariItem::ItemType::I64:
 			case Data::VariItem::ItemType::U64:
 			case Data::VariItem::ItemType::F64:

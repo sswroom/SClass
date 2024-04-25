@@ -25,6 +25,7 @@ Single Data::VariItem::GetAsF32() const
 	case ItemType::U16:
 		return (Single)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (Single)this->val.i32;
 	case ItemType::U32:
 		return (Single)this->val.u32;
@@ -67,6 +68,7 @@ Double Data::VariItem::GetAsF64() const
 	case ItemType::U16:
 		return (Double)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (Double)this->val.i32;
 	case ItemType::U32:
 		return (Double)this->val.u32;
@@ -108,6 +110,7 @@ Int8 Data::VariItem::GetAsI8() const
 		return (Int8)this->val.i16;
 	case ItemType::U16:
 		return (Int8)this->val.u16;
+	case ItemType::NI32:
 	case ItemType::I32:
 		return (Int8)this->val.i32;
 	case ItemType::U32:
@@ -150,6 +153,7 @@ UInt8 Data::VariItem::GetAsU8() const
 		return (UInt8)this->val.i16;
 	case ItemType::U16:
 		return (UInt8)this->val.u16;
+	case ItemType::NI32:
 	case ItemType::I32:
 		return (UInt8)this->val.i32;
 	case ItemType::U32:
@@ -192,6 +196,7 @@ Int16 Data::VariItem::GetAsI16() const
 		return (Int16)this->val.i16;
 	case ItemType::U16:
 		return (Int16)this->val.u16;
+	case ItemType::NI32:
 	case ItemType::I32:
 		return (Int16)this->val.i32;
 	case ItemType::U32:
@@ -235,6 +240,7 @@ UInt16 Data::VariItem::GetAsU16() const
 	case ItemType::U16:
 		return (UInt16)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (UInt16)this->val.i32;
 	case ItemType::U32:
 		return (UInt16)this->val.u32;
@@ -277,6 +283,7 @@ Int32 Data::VariItem::GetAsI32() const
 	case ItemType::U16:
 		return (Int32)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (Int32)this->val.i32;
 	case ItemType::U32:
 		return (Int32)this->val.u32;
@@ -319,6 +326,7 @@ UInt32 Data::VariItem::GetAsU32() const
 	case ItemType::U16:
 		return (UInt32)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (UInt32)this->val.i32;
 	case ItemType::U32:
 		return (UInt32)this->val.u32;
@@ -344,6 +352,55 @@ UInt32 Data::VariItem::GetAsU32() const
 	}
 }
 
+NInt32 Data::VariItem::GetAsNI32() const
+{
+	switch (this->itemType)
+	{
+	case ItemType::F32:
+		return (Int32)this->val.f32;
+	case ItemType::F64:
+		return (Int32)this->val.f64;
+	case ItemType::I8:
+		return (Int32)this->val.i8;
+	case ItemType::U8:
+		return (Int32)this->val.u8;
+	case ItemType::I16:
+		return (Int32)this->val.i16;
+	case ItemType::U16:
+		return (Int32)this->val.u16;
+	case ItemType::I32:
+	case ItemType::NI32:
+		return (Int32)this->val.i32;
+	case ItemType::U32:
+		return (Int32)this->val.u32;
+	case ItemType::I64:
+		return (Int32)this->val.i64;
+	case ItemType::U64:
+		return (Int32)this->val.u64;
+	case ItemType::BOOL:
+		return this->val.boolean?1:0;
+	case ItemType::Str:
+		return this->val.str->ToNInt32();
+	case ItemType::CStr:
+		{
+			Int32 v;
+			if (Text::StrToInt32(this->val.cstr.v, v))
+				return v;
+			else
+				return nullptr;
+		}
+	case ItemType::Timestamp:
+	case ItemType::Date:
+	case ItemType::ByteArr:
+	case ItemType::Vector:
+	case ItemType::UUID:
+	case ItemType::Unknown:
+	case ItemType::Null:
+	default:
+		return nullptr;
+	}
+}
+
 Int64 Data::VariItem::GetAsI64() const
 {
 	switch (this->itemType)
@@ -361,6 +418,7 @@ Int64 Data::VariItem::GetAsI64() const
 	case ItemType::U16:
 		return (Int64)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (Int64)this->val.i32;
 	case ItemType::U32:
 		return (Int64)this->val.u32;
@@ -403,6 +461,7 @@ UInt64 Data::VariItem::GetAsU64() const
 	case ItemType::U16:
 		return (UInt64)this->val.u16;
 	case ItemType::I32:
+	case ItemType::NI32:
 		return (UInt64)this->val.i32;
 	case ItemType::U32:
 		return (UInt64)this->val.u32;
@@ -461,6 +520,7 @@ void Data::VariItem::GetAsString(NN<Text::StringBuilderUTF8> sb) const
 	case ItemType::U16:
 		sb->AppendU16(this->val.u16);
 		return;
+	case ItemType::NI32:
 	case ItemType::I32:
 		sb->AppendI32(this->val.i32);
 		return;
@@ -536,6 +596,7 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 	case ItemType::U16:
 		return Text::StrUInt16(sbuff, this->val.u16);
 	case ItemType::I32:
+	case ItemType::NI32:
 		return Text::StrInt32(sbuff, this->val.i32);
 	case ItemType::U32:
 		return Text::StrUInt32(sbuff, this->val.u32);
@@ -653,6 +714,7 @@ Text::String *Data::VariItem::GetAsNewString() const
 		s = Text::String::New(5);
 		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u16) - s->v);
 		return s.Ptr();
+	case ItemType::NI32:
 	case ItemType::I32:
 		s = Text::String::New(11);
 		s->leng = (UOSInt)(Text::StrInt32(s->v, this->val.i32) - s->v);
@@ -1033,6 +1095,21 @@ void Data::VariItem::SetU32(UInt32 val)
 	this->itemType = ItemType::U32;
 }
 
+void Data::VariItem::SetNI32(NInt32 val)
+{
+	this->FreeItem();
+	if (val.IsNull())
+	{
+		this->val.i32 = 0;
+		this->itemType = ItemType::Null;
+	}
+	else
+	{
+		this->val.i32 = val.IntVal();
+		this->itemType = ItemType::I32;
+	}
+}
+
 void Data::VariItem::SetI64(Int64 val)
 {
 	this->FreeItem();
@@ -1128,6 +1205,7 @@ void Data::VariItem::Set(NN<VariItem> item)
 		this->val.u16 = item->val.u16;
 		break;
 	case ItemType::I32:
+	case ItemType::NI32:
 		this->val.i32 = item->val.i32;
 		break;
 	case ItemType::U32:
@@ -1198,6 +1276,7 @@ NN<Data::VariItem> Data::VariItem::Clone() const
 		ival.u16 = this->val.u16;
 		break;
 	case ItemType::I32:
+	case ItemType::NI32:
 		ival.i32 = this->val.i32;
 		break;
 	case ItemType::U32:
@@ -1274,6 +1353,12 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 		return;
 	case ItemType::U32:
 		sb->AppendU32(this->val.u32);
+		return;
+	case ItemType::NI32:
+		if (this->val.i32 == NINT32_NULL)
+			sb->Append(CSTR("null"));
+		else
+			sb->AppendI32(this->val.i32);
 		return;
 	case ItemType::I64:
 		sb->AppendI64(this->val.i64);
@@ -1472,6 +1557,23 @@ NN<Data::VariItem> Data::VariItem::NewU32(UInt32 val)
 	return item;
 }
 
+NN<Data::VariItem> Data::VariItem::NewNI32(NInt32 val)
+{
+	ItemValue ival;
+	NN<Data::VariItem> item;
+	if (val.IsNull())
+	{
+		ival.i32 = 0;		
+		NEW_CLASSNN(item, Data::VariItem(ItemType::Null, ival));
+	}
+	else
+	{
+		ival.i32 = val.IntVal();
+		NEW_CLASSNN(item, Data::VariItem(ItemType::I32, ival));
+	}
+	return item;
+}
+
 NN<Data::VariItem> Data::VariItem::NewI64(Int64 val)
 {
 	ItemValue ival;
@@ -1582,6 +1684,8 @@ NN<Data::VariItem> Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 		return NewI32(*(Int32*)ptr);
 	case ItemType::U32:
 		return NewU32(*(UInt32*)ptr);
+	case ItemType::NI32:
+		return NewNI32(*(NInt32*)ptr);
 	case ItemType::I64:
 		return NewI64(*(Int64*)ptr);
 	case ItemType::U64:
@@ -1642,6 +1746,9 @@ void Data::VariItem::SetFromPtr(NN<Data::VariItem> item, void *ptr, ItemType ite
 		return;
 	case ItemType::U32:
 		item->SetU32(*(UInt32*)ptr);
+		return;
+	case ItemType::NI32:
+		item->SetNI32(*(NInt32*)ptr);
 		return;
 	case ItemType::I64:
 		item->SetI64(*(Int64*)ptr);
@@ -1719,6 +1826,9 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NN<VariItem> item)
 		break;
 	case ItemType::I32:
 		*(Int32*)ptr = item->GetAsI32();
+		break;
+	case ItemType::NI32:
+		*(NInt32*)ptr = item->GetAsNI32();
 		break;
 	case ItemType::U32:
 		*(UInt32*)ptr = item->GetAsU32();
@@ -1829,6 +1939,9 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, NN<VariItem>
 		break;
 	case ItemType::I32:
 		*(Int32*)ptr = item->GetAsI32();
+		break;
+	case ItemType::NI32:
+		*(NInt32*)ptr = item->GetAsNI32();
 		break;
 	case ItemType::U32:
 		*(UInt32*)ptr = item->GetAsU32();
@@ -1957,6 +2070,8 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		return *(UInt16*)ptr1 == *(UInt16*)ptr2;
 	case ItemType::I32:
 		return *(Int32*)ptr1 == *(Int32*)ptr2;
+	case ItemType::NI32:
+		return *(NInt32*)ptr1 == *(NInt32*)ptr2;
 	case ItemType::U32:
 		return *(UInt32*)ptr1 == *(UInt32*)ptr2;
 	case ItemType::I64:
@@ -2062,6 +2177,8 @@ UOSInt Data::VariItem::GetItemSize(ItemType itemType)
 	case ItemType::I32:
 	case ItemType::U32:
 		return sizeof(Int32);
+	case ItemType::NI32:
+		return sizeof(NInt32);
 	case ItemType::I64:
 	case ItemType::U64:
 		return sizeof(Int64);
@@ -2104,6 +2221,8 @@ Text::CStringNN Data::VariItem::ItemTypeGetName(ItemType itemType)
 		return CSTR("Int32");
 	case ItemType::U32:
 		return CSTR("UInt32");
+	case ItemType::NI32:
+		return CSTR("NInt32");
 	case ItemType::I64:
 		return CSTR("Int64");
 	case ItemType::U64:

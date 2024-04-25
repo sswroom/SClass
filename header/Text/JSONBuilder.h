@@ -43,6 +43,7 @@ namespace Text
 		~JSONBuilder();
 
 		Bool ArrayAddInt32(Int32 val);
+		Bool ArrayAddNInt32(NInt32 val);
 		Bool ArrayAddInt64(Int64 val);
 		Bool ArrayAddFloat64(Double val);
 		Bool ArrayAddBool(Bool val);
@@ -60,6 +61,7 @@ namespace Text
 
 		Bool ObjectAddFloat64(Text::CStringNN name, Double val);
 		Bool ObjectAddInt32(Text::CStringNN name, Int32 val);
+		Bool ObjectAddNInt32(Text::CStringNN name, NInt32 val);
 		Bool ObjectAddInt64(Text::CStringNN name, Int64 val);
 		Bool ObjectAddUInt64(Text::CStringNN name, UInt64 val);
 		Bool ObjectAddBool(Text::CStringNN name, Bool val);

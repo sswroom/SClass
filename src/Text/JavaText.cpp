@@ -171,6 +171,7 @@ Text::CStringNN Text::JavaText::GetJavaTypeName(Data::VariItem::ItemType itemTyp
 		}
 	case Data::VariItem::ItemType::U32:
 	case Data::VariItem::ItemType::I32:
+	case Data::VariItem::ItemType::NI32:
 		if (notNull)
 		{
 			return CSTR("int");

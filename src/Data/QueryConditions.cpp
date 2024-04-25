@@ -93,6 +93,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(NN<Data::VariItem> i
 	case Data::VariItem::ItemType::U16:
 	case Data::VariItem::ItemType::I32:
 	case Data::VariItem::ItemType::U32:
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I64:
 	case Data::VariItem::ItemType::U64:
 	case Data::VariItem::ItemType::BOOL:
@@ -157,6 +158,7 @@ Bool Data::QueryConditions::Int32Condition::TestValid(NN<Data::VariItem> item)
 	case Data::VariItem::ItemType::U16:
 		iVal = item->GetItemValue().u16;
 		break;
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 		iVal = item->GetItemValue().i32;
 		break;
@@ -273,6 +275,7 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(NN<Data::VariItem> item)
 	case Data::VariItem::ItemType::U16:
 		iVal = item->GetItemValue().u16;
 		break;
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 		iVal = item->GetItemValue().i32;
 		break;
@@ -358,6 +361,7 @@ Bool Data::QueryConditions::Int64Condition::TestValid(NN<Data::VariItem> item)
 	case Data::VariItem::ItemType::U16:
 		iVal = item->GetItemValue().u16;
 		break;
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 		iVal = item->GetItemValue().i32;
 		break;
@@ -903,6 +907,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(NN<Data::VariItem> 
 	case Data::VariItem::ItemType::U16:
 	case Data::VariItem::ItemType::I32:
 	case Data::VariItem::ItemType::U32:
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I64:
 	case Data::VariItem::ItemType::U64:
 	case Data::VariItem::ItemType::BOOL:

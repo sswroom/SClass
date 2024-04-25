@@ -239,6 +239,7 @@ Int32 DB::SortableDBReader::GetInt32(UOSInt colIndex)
 		return (Int32)item->GetItemValue().i16;
 	case Data::VariItem::ItemType::U16:
 		return (Int32)item->GetItemValue().u16;
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 		return (Int32)item->GetItemValue().i32;
 	case Data::VariItem::ItemType::U32:
@@ -286,6 +287,7 @@ Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
 	case Data::VariItem::ItemType::U16:
 		return (Int64)item->GetItemValue().u16;
 	case Data::VariItem::ItemType::I32:
+	case Data::VariItem::ItemType::NI32:
 		return (Int64)item->GetItemValue().i32;
 	case Data::VariItem::ItemType::U32:
 		return (Int64)item->GetItemValue().u32;
@@ -385,6 +387,7 @@ Double DB::SortableDBReader::GetDbl(UOSInt colIndex)
 	case Data::VariItem::ItemType::U16:
 		return (Double)item->GetItemValue().u16;
 	case Data::VariItem::ItemType::I32:
+	case Data::VariItem::ItemType::NI32:
 		return (Double)item->GetItemValue().i32;
 	case Data::VariItem::ItemType::U32:
 		return (Double)item->GetItemValue().u32;

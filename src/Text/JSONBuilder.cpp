@@ -325,6 +325,23 @@ Bool Text::JSONBuilder::ArrayAddInt32(Int32 val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddNInt32(NInt32 val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	if (val.IsNull())
+		this->sb.Append(CSTR("null"));
+	else
+		this->sb.AppendI32(val.IntVal());
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAddInt64(Int64 val)
 {
 	if (this->currType != OT_ARRAY)
@@ -624,6 +641,25 @@ Bool Text::JSONBuilder::ObjectAddInt32(Text::CStringNN name, Int32 val)
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
 	this->sb.AppendI32(val);
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddNInt32(Text::CStringNN name, NInt32 val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendC(UTF8STRC(":"));
+	if (val.IsNull())
+		this->sb.Append(CSTR("null"));
+	else
+		this->sb.AppendI32(val.IntVal());
 	return true;
 }
 
@@ -1022,6 +1058,8 @@ Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NN<Data::VariItem
 		return ObjectAddInt32(name, item->GetAsI32());
 	case Data::VariItem::ItemType::U32:
 		return ObjectAddUInt64(name, item->GetAsU32());
+	case Data::VariItem::ItemType::NI32:
+		return ObjectAddNInt32(name, item->GetAsNI32());
 	case Data::VariItem::ItemType::I64:
 		return ObjectAddInt64(name, item->GetAsI64());
 	case Data::VariItem::ItemType::U64:

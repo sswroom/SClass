@@ -31,6 +31,7 @@ namespace Data
 			BOOL,
 			CStr,
 			Date,
+			NI32,
 
 			Str,
 			ByteArr,
@@ -131,6 +132,7 @@ namespace Data
 		UInt16 GetAsU16() const;
 		Int32 GetAsI32() const;
 		UInt32 GetAsU32() const;
+		NInt32 GetAsNI32() const;
 		Int64 GetAsI64() const;
 		UInt64 GetAsU64() const;
 		Bool GetAsBool() const;
@@ -165,6 +167,7 @@ namespace Data
 		void SetU16(UInt16 val);
 		void SetI32(Int32 val);
 		void SetU32(UInt32 val);
+		void SetNI32(NInt32 val);
 		void SetI64(Int64 val);
 		void SetU64(UInt64 val);
 		void SetBool(Bool val);
@@ -194,6 +197,7 @@ namespace Data
 		static NN<VariItem> NewU16(UInt16 val);
 		static NN<VariItem> NewI32(Int32 val);
 		static NN<VariItem> NewU32(UInt32 val);
+		static NN<VariItem> NewNI32(NInt32 val);
 		static NN<VariItem> NewI64(Int64 val);
 		static NN<VariItem> NewU64(UInt64 val);
 		static NN<VariItem> NewBool(Bool val);

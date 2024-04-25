@@ -46,7 +46,7 @@ Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, N
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 			}
 		}
-		else
+		else 
 		{
 			switch (field->itemType)
 			{
@@ -80,11 +80,23 @@ Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, N
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 				break;
 			case Data::VariItem::ItemType::I32:
-				item.SetI32((Int32)r->GetInt32(i));
-				Data::VariItem::SetPtr(ptr, field->itemType, item);
+				if (field->notNull)
+				{
+					item.SetI32(r->GetInt32(i));
+					Data::VariItem::SetPtr(ptr, field->itemType, item);
+				}
+				else
+				{
+					item.SetNI32(r->GetNInt32(i));
+					Data::VariItem::SetPtr(ptr, Data::VariItem::ItemType::NI32, item);
+				}
 				break;
 			case Data::VariItem::ItemType::U32:
 				item.SetU32((UInt32)r->GetInt32(i));
+				Data::VariItem::SetPtr(ptr, field->itemType, item);
+				break;
+			case Data::VariItem::ItemType::NI32:
+				item.SetNI32(r->GetNInt32(i));
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 				break;
 			case Data::VariItem::ItemType::I64:

@@ -331,7 +331,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		b64.EncodeBin(sbCmd, pwdBuff, (UOSInt)(sptr2 - pwdBuff));
 		
 		this->statusChg = false;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("[Authentication message hidden]"));
 		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
 		UInt32 code = WaitForResult(0);
 		return code == 235;
@@ -374,7 +374,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		b64.EncodeBin(sbCmd, password.v, password.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("[Password hidden]"));
 		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
 		code = WaitForResult(0);
 		return code == 235;

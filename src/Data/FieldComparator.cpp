@@ -129,6 +129,7 @@ OSInt Data::FieldComparator::Compare(VariItem *a, VariItem *b)
 			return Data::DataComparer::Compare(a->GetItemValue().i16, b->GetItemValue().i16);
 		case Data::VariItem::ItemType::U16:
 			return Data::DataComparer::Compare(a->GetItemValue().u16, b->GetItemValue().u16);
+		case Data::VariItem::ItemType::NI32:
 		case Data::VariItem::ItemType::I32:
 			return Data::DataComparer::Compare(a->GetItemValue().i32, b->GetItemValue().i32);
 		case Data::VariItem::ItemType::U32:

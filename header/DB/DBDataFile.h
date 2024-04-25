@@ -213,6 +213,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 			WriteUInt16(&this->recordBuff[m], item.GetItemValue().u16);
 			m += 2;
 			break;
+		case Data::VariItem::ItemType::NI32:
 		case Data::VariItem::ItemType::I32:
 			WriteInt32(&this->recordBuff[m], item.GetItemValue().i32);
 			m += 4;
@@ -493,6 +494,11 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							break;
 						case Data::VariItem::ItemType::U32:
 							item.SetU32(ReadUInt32(&buff[m2]));
+							cls->SetField(obj, k, item);
+							m2 += 4;
+							break;
+						case Data::VariItem::ItemType::NI32:
+							item.SetI32(ReadInt32(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;

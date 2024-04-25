@@ -3,7 +3,7 @@
 #include "NotNullPtr.h"
 #include <cstddef>
 
-#define NINT32_NULL ((Int32)0x80000000);
+#define NINT32_NULL ((Int32)0x80000000)
 
 struct NInt32
 {
@@ -27,6 +27,11 @@ struct NInt32
 	Int32 IntVal() const
 	{
 		return this->val;
+	}
+
+	Bool operator==(NInt32 val) const
+	{
+		return this->val == val.val;
 	}
 };
 #endif
